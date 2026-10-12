@@ -4,9 +4,12 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { SearchField } from '@ui/components/SearchField'
-import type { TokenOption as Option } from '@ui/features/select-token/types'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
+import { toValue } from '@ui/features/queries/util'
+import { TOKEN_CATEGORY_LABELS, TokenCategory, type TokenOption as Option } from '@ui/features/select-token/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useFuzzySearch } from '@ui/hooks/useFuzzySearch'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -25,7 +28,7 @@ export type TokenListProps = Pick<
   /** List of favorite token options to display at the top */
   favorites?: Option[]
   /** Token volumes in USD mapped by token address */
-  volumes?: Record<string, number>
+  volumes?: Record<Address, number>
   /** Custom error message to display (e.g., when tokens failed to load) */
   error?: string
   /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
@@ -69,6 +72,18 @@ export const TokenList = ({
 
   const tokensSearched = useFuzzySearch(tokens, search, ['symbol', 'address'])
 
+  const [category, setCategory] = useState<TokenCategory>('all')
+  const categories = useMemo(() => new Set(notFalsy('all', ...tokens.map(token => token.category))), [tokens])
+  const categoriesTabs = useMemo(
+    () => [...categories].map(category => ({ value: category, label: TOKEN_CATEGORY_LABELS[category] })),
+    [categories],
+  )
+
+  const tokensCategorized = useMemo(
+    () => (category == 'all' ? tokensSearched : tokensSearched.filter(token => token.category === category)),
+    [category, tokensSearched],
+  )
+
   /**
    * Filters and sorts tokens that the user owns (has a balance > 0).
    *
@@ -81,23 +96,22 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter(token => +(balances?.[token.address] ?? 0) > 0)
+    const balanceTokens = tokensCategorized.filter(token => +(toValue(balances?.[token.address]) ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       balanceTokens.sort((a, b) => {
-        const aBalance = +(balances?.[a.address] ?? 0)
-        const bBalance = +(balances?.[b.address] ?? 0)
-        const aBalanceUsd = (tokenPrices?.[a.address] ?? 0) * aBalance
-        const bBalanceUsd = (tokenPrices?.[b.address] ?? 0) * bBalance
-
+        const aBalance = +(toValue(balances?.[a.address]) ?? 0)
+        const bBalance = +(toValue(balances?.[b.address]) ?? 0)
+        const aBalanceUsd = (toValue(tokenPrices?.[a.address]) ?? 0) * aBalance
+        const bBalanceUsd = (toValue(tokenPrices?.[b.address]) ?? 0) * bBalance
         return bBalanceUsd - aBalanceUsd || bBalance - aBalance
       })
     }
 
     return balanceTokens
-  }, [disableMyTokens, tokensSearched, disableSorting, balances, tokenPrices])
+  }, [disableMyTokens, tokensCategorized, disableSorting, balances, tokenPrices])
 
   /**
    * Filters tokens to show only those with significant value.
@@ -109,17 +123,16 @@ export const TokenList = ({
     if (!showPreviewMy) return []
 
     const totalUsdBalance = myTokens.reduce((sum, token) => {
-      const balance = +(balances?.[token.address] ?? 0)
-      const price = tokenPrices?.[token.address] ?? 0
+      const balance = +(toValue(balances?.[token.address]) ?? 0)
+      const price = toValue(tokenPrices?.[token.address]) ?? 0
       return sum + balance * price
     }, 0)
 
     const threshold = totalUsdBalance * 0.01
 
     return myTokens.filter((token: Option) => {
-      const balance = +(balances?.[token.address] ?? 0)
-      const price = tokenPrices?.[token.address] ?? 0
-
+      const balance = +(toValue(balances?.[token.address]) ?? 0)
+      const price = toValue(tokenPrices?.[token.address]) ?? 0
       // We used to include tokens with a balance > 0, but no $ price (0),
       // but it turns out that way quite a few scam tokens show up in the preview.
       return balance * price > threshold
@@ -136,12 +149,16 @@ export const TokenList = ({
    */
   const allTokens = useMemo(() => {
     const allTokensBase = notFalsy(
-      disableMyTokens ? tokensSearched : tokensSearched.filter(token => +(balances?.[token.address] ?? 0) === 0),
+      disableMyTokens
+        ? tokensCategorized
+        : tokensCategorized.filter(token => +(toValue(balances?.[token.address]) ?? 0) === 0),
 
+      // Add tokens that have balance but aren't in the preview (dust tokens)
+      // When showPreviewMy is false, those dust tokens should be in the myTokens section
+      // However, TokenSection falls back to showing all myTokens when the preview is empty,
+      // so only a nonempty preview can leave hidden dust to add to the volume section.
       showPreviewMy &&
-        // Add tokens that have balance but aren't in the preview (dust tokens)
-        // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
-        // When showPreviewMy is false, those dust tokens should be in the myTokens section
+        previewMy.length > 0 &&
         myTokens.filter(token => !previewMy.some(previewToken => previewToken.address === token.address)),
     ).flat()
     return disableSorting
@@ -149,7 +166,7 @@ export const TokenList = ({
       : allTokensBase.toSorted(
           (a, b) => (volumes[b.address] ?? 0) - (volumes[a.address] ?? 0) || a.symbol.localeCompare(b.symbol),
         )
-  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy, volumes])
+  }, [disableMyTokens, tokensCategorized, showPreviewMy, myTokens, disableSorting, balances, previewMy, volumes])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.
@@ -166,6 +183,15 @@ export const TokenList = ({
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
       {showFavorites && children && <Divider />}
       {children}
+      {categories.size > 1 && ( // categories always contain at least 'all'.
+        <TabsSwitcher
+          variant="underlined"
+          size="small"
+          value={category}
+          onChange={setCategory}
+          options={categoriesTabs}
+        />
+      )}
       {error ? (
         <ErrorAlert error={error} />
       ) : myTokens.length + allTokens.length === 0 ? (

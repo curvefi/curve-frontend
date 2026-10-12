@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import Typography from '@mui/material/Typography'
-import type { Amount } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -10,7 +10,7 @@ import { FireIcon } from '@ui/icons/FireIcon'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 
-export type TxGasInfo = { estGasCost?: Amount; estGasCostUsd?: Amount; nativeSymbol?: string; tooltip?: string }
+export type TxGasInfo = { estGasCost?: Decimal; estGasCostUsd?: Amount; nativeSymbol?: string; tooltip?: string }
 
 export type EstimatedTxCostProps = {
   gas: QueryProp<TxGasInfo | null>

@@ -4,7 +4,7 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getResetDebtReduction } from '@/llamalend/queries/reset/reset-query.helpers'
 import { validateMaxBorrowed } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
@@ -69,7 +69,7 @@ const validateMinimumResetAmount = (userBorrowed: Decimal | Nullish, minBorrowed
   })
   skipWhen(minBorrowed == null, () => {
     test('userBorrowed', `Add at least ${minBorrowed} from wallet to reset this position`, () => {
-      enforce(userBorrowed ?? '0').gte(minBorrowed)
+      enforce(userBorrowed ?? '0').gte(minBorrowed!)
     })
   })
 }
@@ -120,14 +120,14 @@ const resetValidationGroup = (
 
 export const resetSupportedValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => {
-    userMarketValidationSuite({ chainId, marketId, userAddress })
+    userMarketValidationSuite.run({ chainId, marketId, userAddress })
     validateResetSupported(marketId)
   },
 )
 
 export const resetValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress, ...params }: ResetParams) => {
-    userMarketValidationSuite({ chainId, marketId, userAddress })
+    userMarketValidationSuite.run({ chainId, marketId, userAddress })
     validateResetSupported(marketId)
     resetValidationGroup(params, { requireLoadedAvailability: true })
   },

@@ -1,5 +1,4 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { parseRoute as parseRoute } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -57,17 +56,18 @@ export const {
     maxDebt,
     routeId,
   }: CreateLoanDebtParams) =>
-    [
-      ...rootKeys.market({ chainId, marketId }),
-      'createLoanExpectedCollateral',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { slippage },
-      { leverageEnabled },
-      { maxDebt },
-      { routeId },
-    ] as const,
+    ({
+      name: 'createLoanExpectedCollateral',
+      chainId,
+      marketId,
+      userCollateral,
+      userBorrowed,
+      debt,
+      slippage,
+      leverageEnabled,
+      maxDebt,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     userBorrowed = '0',

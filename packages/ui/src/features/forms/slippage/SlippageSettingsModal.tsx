@@ -6,12 +6,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { FormProvider } from '@ui/features/forms'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
-import { SLIPPAGE_TYPES, type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
+import { SLIPPAGE_TYPES, type SlippageSettings, type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageFormField } from '@ui/features/forms/slippage/SlippageFormField'
-import {
-  type SlippageSettingsFormData,
-  useSlippageSettingsForm,
-} from '@ui/features/forms/slippage/useSlipageSettingsForm'
+import { useSlippageSettingsForm } from '@ui/features/forms/slippage/useSlipageSettingsForm'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
@@ -28,7 +25,7 @@ export const SlippageSettingsModal = ({
 }: {
   isOpen: boolean
   onClose: () => void
-  onChanged: (data: SlippageSettingsFormData) => void
+  onChanged: (data: SlippageSettings) => void
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType
   maxSlippage?: Decimal

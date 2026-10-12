@@ -51,7 +51,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
   const hashScrollRef = useRef('')
   const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const globalNavHeight = useLayoutStore(state => state.navHeight)
-  const [, sectionNavHeight = 0] = useResizeObserver(navigationRef, { threshold: 1 })
+  const [, sectionNavHeight = 0] = useResizeObserver(navigationRef, { dimension: 'height' })
   // The activation band starts immediately below both stacked navigation bars.
   const activationTop = globalNavHeight + sectionNavHeight
   const activeSection = sections.find(({ value }) => value === hash)?.value ?? sections[0]?.value

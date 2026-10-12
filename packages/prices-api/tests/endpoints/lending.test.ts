@@ -16,12 +16,17 @@ const llamalendUserSeed = endpointSeed(getLlamalendUserSeed)
 
 runEndpointCases('lending', [
   endpointCase('getLoanDistribution', 'crvusd', () =>
-    lending.getLoanDistribution('crvusd', crvUsdMarketSeed().chain, crvUsdMarketSeed().controller, requestOptions),
+    lending.getLoanDistribution(
+      'crvusd',
+      crvUsdMarketSeed().blockchainId,
+      crvUsdMarketSeed().controller,
+      requestOptions,
+    ),
   ),
   endpointCase('getLoanDistribution', 'lending', () =>
     lending.getLoanDistribution(
       'lending',
-      llamalendMarketSeed().chain,
+      llamalendMarketSeed().blockchainId,
       llamalendMarketSeed().controller,
       requestOptions,
     ),
@@ -35,13 +40,13 @@ runEndpointCases('lending', [
   endpointCase('getUserMarketCollateralEvents', () =>
     lending.getUserMarketCollateralEvents(
       llamalendUserSeed().user,
-      llamalendUserSeed().chain,
+      llamalendUserSeed().blockchainId,
       llamalendUserSeed().controller,
       undefined,
       requestOptions,
     ),
   ),
   endpointCase('getRateCurve', () =>
-    lending.getRateCurve(llamalendMarketSeed().chain, llamalendMarketSeed().controller, requestOptions),
+    lending.getRateCurve(llamalendMarketSeed().blockchainId, llamalendMarketSeed().controller, requestOptions),
   ),
 ])

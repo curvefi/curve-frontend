@@ -1,20 +1,20 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address, getAddress } from 'viem'
-import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
-import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
-import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
+import { MAINNET_CRV, MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
+import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
+import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
 import { t } from '@ui/lib/i18n'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
 
@@ -27,9 +27,8 @@ export const useYieldBreakdown = ({
   pool: PoolTemplate
   poolId: string
 }) => {
-  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
   const poolAddress = pool.address as Address
-  const gaugeIsKilled = !!gauge?.isKilled
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
@@ -42,7 +41,7 @@ export const useYieldBreakdown = ({
     () => rewards?.other?.flatMap(({ tokenAddress, tokenPrice }) => (tokenPrice == null ? [tokenAddress] : [])) ?? [],
     [rewards?.other],
   )
-  const { data: fallbackTokenRates } = useTokenUsdRates(
+  const fallbackTokenRates = useTokenUsdRates(
     { chainId, tokenAddresses: missingTokenRates },
     missingTokenRates.length > 0,
   )
@@ -70,7 +69,16 @@ export const useYieldBreakdown = ({
         rate: unboostedCrvRate,
         maxBoostRate: maxBoostCrvRate,
         ...maybe(crvRateRange, range => ({
-          rateTooltip: { title: t`Gauge APR`, body: <CrvRateTooltipContent {...range} />, clickable: true },
+          rateTooltip: {
+            title: t`Gauge APR`,
+            body: (
+              <CrvRateTooltipContent
+                {...range}
+                crvToken={{ address: MAINNET_CRV.address, blockchainId: MAINNET_CRV.blockchainId }}
+              />
+            ),
+            clickable: true,
+          },
         })),
       })
     }
@@ -82,7 +90,7 @@ export const useYieldBreakdown = ({
         source: { address, blockchainId: network?.blockchainId, iconPosition: 'left', primary: symbol },
         address,
         explorerUrl: scanTokenPath(chainId, tokenAddress),
-        price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
+        price: tokenPrice ?? fallbackTokenRates[tokenAddress]?.data,
         rate,
       })
     })

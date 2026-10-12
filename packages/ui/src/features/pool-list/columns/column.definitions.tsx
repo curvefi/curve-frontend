@@ -1,0 +1,162 @@
+import { maybe } from '@primitives/objects.utils'
+import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { AgeCell } from '../cells/AgeCell'
+import { BaseRateCell, WeeklyBaseRateCell } from '../cells/BaseRateCell'
+import { ClaimablesCell } from '../cells/ClaimablesCell'
+import { CrvRateCell } from '../cells/CrvRateCell'
+import { DepositsCell } from '../cells/DepositsCell'
+import { NetRateCell } from '../cells/NetRateCell'
+import { PointsCell } from '../cells/PointsCell'
+import { PoolTitleCell } from '../cells/PoolTitleCell'
+import { RewardsRateCell } from '../cells/RewardsRateCell'
+import { TokensCell } from '../cells/TokensCell'
+import { UsdCell } from '../cells/UsdCell'
+import { getCrvAprRange } from '../cells/utils'
+import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
+import { BaseRateHeaderTooltipContent } from '../header-tooltips/BaseRateHeaderTooltipContent'
+import { ClaimablesHeaderTooltipContent } from '../header-tooltips/ClaimablesHeaderTooltipContent'
+import { CrvRateHeaderTooltipContent } from '../header-tooltips/CrvRateHeaderTooltipContent'
+import { DepositsHeaderTooltipContent } from '../header-tooltips/DepositsHeaderTooltipContent'
+import { NetRateHeaderTooltipContent } from '../header-tooltips/NetRateHeaderTooltipContent'
+import { PointsHeaderTooltipContent } from '../header-tooltips/PointsHeaderTooltipContent'
+import { PoolHeaderTooltipContent } from '../header-tooltips/PoolHeaderTooltipContent'
+import { RewardsRateHeaderTooltipContent } from '../header-tooltips/RewardsRateHeaderTooltipContent'
+import { TokensHeaderTooltipContent } from '../header-tooltips/TokensHeaderTooltipContent'
+import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
+import { VolumeHeaderTooltipContent } from '../header-tooltips/VolumeHeaderTooltipContent'
+import { getPoolTableMeta } from '../table-meta'
+import type { PoolRow } from '../types'
+import { POOL_TITLES } from './column.titles'
+import { PoolColumnId } from './columns.enum'
+
+const columnHelper = createAppColumnHelper<PoolRow>()
+
+export const POOL_COLUMNS = columnHelper.columns([
+  columnHelper.accessor('name', {
+    id: PoolColumnId.PoolName,
+    header: POOL_TITLES[PoolColumnId.PoolName],
+    cell: PoolTitleCell,
+    meta: { tooltip: { title: POOL_TITLES[PoolColumnId.PoolName], body: <PoolHeaderTooltipContent /> } },
+  }),
+  columnHelper.display({
+    id: PoolColumnId.Tokens,
+    header: POOL_TITLES[PoolColumnId.Tokens],
+    cell: ({ row }) => <TokensCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Tokens], body: <TokensHeaderTooltipContent /> },
+    },
+  }),
+  columnHelper.accessor('netApr', {
+    id: PoolColumnId.NetRate,
+    sortUndefined: 'last',
+    header: POOL_TITLES[PoolColumnId.NetRate],
+    cell: ({ row, table }) => <NetRateCell pool={row.original} crvToken={getPoolTableMeta(table).crvToken} />,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.NetRate], body: <NetRateHeaderTooltipContent /> },
+    },
+  }),
+  columnHelper.accessor('baseDailyApr', {
+    id: PoolColumnId.BaseRate,
+    header: POOL_TITLES[PoolColumnId.BaseRate],
+    cell: BaseRateCell,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.BaseRate], body: <BaseRateHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('baseWeeklyApr', {
+    id: PoolColumnId.WeeklyBaseRate,
+    header: POOL_TITLES[PoolColumnId.WeeklyBaseRate],
+    cell: WeeklyBaseRateCell,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.WeeklyBaseRate], body: <BaseRateHeaderTooltipContent weekly /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(pool => (pool.gauge?.isKilled ? undefined : getCrvAprRange(pool)?.unboostedRate), {
+    id: PoolColumnId.CrvRate,
+    header: POOL_TITLES[PoolColumnId.CrvRate],
+    cell: ({ row, table }) => <CrvRateCell pool={row.original} crvToken={getPoolTableMeta(table).crvToken} />,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.CrvRate], body: <CrvRateHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('rewardsApr', {
+    id: PoolColumnId.RewardsRate,
+    sortUndefined: 'last',
+    header: POOL_TITLES[PoolColumnId.RewardsRate],
+    cell: ({ row }) => <RewardsRateCell pool={row.original} />,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.RewardsRate], body: <RewardsRateHeaderTooltipContent /> },
+    },
+  }),
+  columnHelper.display({
+    id: PoolColumnId.Points,
+    header: POOL_TITLES[PoolColumnId.Points],
+    cell: ({ row }) => <PointsCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Points], body: <PointsHeaderTooltipContent /> },
+    },
+  }),
+  columnHelper.accessor('tradingVolume24h', {
+    id: PoolColumnId.Volume,
+    header: POOL_TITLES[PoolColumnId.Volume],
+    cell: UsdCell,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Volume], body: <VolumeHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('tvlUsd', {
+    id: PoolColumnId.Tvl,
+    header: POOL_TITLES[PoolColumnId.Tvl],
+    cell: UsdCell,
+    meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Tvl], body: <TvlHeaderTooltipContent /> } },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('creationDate', {
+    id: PoolColumnId.Age,
+    header: POOL_TITLES[PoolColumnId.Age],
+    cell: AgeCell,
+    meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Age], body: <AgeHeaderTooltipContent /> } },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(pool => pool.userPosition?.depositsUsd.data, {
+    id: PoolColumnId.Deposits,
+    sortUndefined: 'last',
+    header: POOL_TITLES[PoolColumnId.Deposits],
+    cell: ({ row }) => <DepositsCell pool={row.original} />,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Deposits], body: <DepositsHeaderTooltipContent /> },
+    },
+  }),
+  columnHelper.accessor(pool => pool.userPosition?.claimablesUsd.data, {
+    id: PoolColumnId.Claimables,
+    sortUndefined: 'last',
+    header: POOL_TITLES[PoolColumnId.Claimables],
+    cell: ({ row }) =>
+      maybe(row.original.userPosition, position => (
+        <ClaimablesCell
+          blockchainId={row.original.blockchainId}
+          claimables={position.claimables}
+          totalUsd={position.claimablesUsd}
+        />
+      )),
+    meta: {
+      type: 'numeric',
+      tooltip: { title: POOL_TITLES[PoolColumnId.Claimables], body: <ClaimablesHeaderTooltipContent /> },
+    },
+  }),
+])

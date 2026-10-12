@@ -48,7 +48,7 @@ export const WithdrawForm = ({
       balance={lpBalance}
       isDisabled={isPending}
     />
-    <PoolTokenInputs tokens={tokens} reserves={reserves} isDisabled={isPending} maxAmounts={maxAmounts} hideMaxButton />
+    <PoolTokenInputs tokens={tokens} reserves={reserves} disabled={isPending} positionAmounts={maxAmounts} />
     <FormButton
       {...wallet}
       pending={isPending}

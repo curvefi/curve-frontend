@@ -1,18 +1,16 @@
 import type { ContractMethod } from 'ethers'
-import { isValidAddress } from '@/dex/utils'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
+import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
+import { isValidAddress } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const NOT_AVAILABLE = { totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' } as const
 
 const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked } = queryFactory({
   category: 'dex.pool',
-  queryKey: (params: PoolParams) => [...rootKeys.pool(params), 'totalStaked'] as const,
+  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'totalStaked', chainId, poolId }) as const,
   queryFn: async ({ poolId }: PoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     if (!isValidAddress(pool.gauge.address)) return NOT_AVAILABLE
@@ -35,16 +33,9 @@ const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked
       return NOT_AVAILABLE
     }
   },
-  validationSuite: createValidationSuite((params: PoolParams) => {
-    curveApiValidationGroup(params, { requireRpc: true })
-    chainValidationGroup(params)
-    poolValidationGroup(params)
-  }),
+  validationSuite: curvePoolValidationSuite,
 })
 
 export { invalidatePoolTotalStaked }
 
-export function usePoolTotalStaked(params: PoolParams) {
-  const { isHydrated } = useCurve()
-  return usePoolTotalStakedQuery(params, isHydrated)
-}
+export const usePoolTotalStaked = (params: PoolParams) => useHydratedQuery(usePoolTotalStakedQuery, params)

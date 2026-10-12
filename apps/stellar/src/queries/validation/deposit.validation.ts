@@ -6,7 +6,8 @@ import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import { poolAmountField, poolMaxAmountField, getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import { validateLiquidityInputs, validateSlippage } from './liquidity.validation'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { validateLiquidityInputs } from './liquidity.validation'
 
 export const depositValidationSuite = createValidationSuite(
   ({ pool, network, account, minMint, ...inputs }: DepositParams) => {
@@ -44,7 +45,7 @@ const validateFundedInputs = ({ decimals, maxAmounts, ...inputs }: DepositInputs
 }
 
 const validateForm = ({ decimals, supply, slippage, ...values }: DepositForm) => {
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateInputs({
     decimals,
     supply,
@@ -75,7 +76,7 @@ export const depositMutationValidationSuite = createValidationSuite(
   }: DepositMutationParams) => {
     validatePool({ pool, network })
     validateAccount(account)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateFundedInputs({ amounts, decimals, maxAmounts, supply })
     validateTokens({ tokens })
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {

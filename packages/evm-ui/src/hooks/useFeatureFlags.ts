@@ -29,3 +29,5 @@ export const useNewLlamaMarketDetailPage = useBetaChannel
 
 /** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
 export const useMarketMobileFormDrawer = useBetaChannel
+
+export const useNewPoolForms = useBetaChannel

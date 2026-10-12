@@ -24,6 +24,15 @@ const routerApi = prepareApi(createRouterApiServer, 'router-api')
 const merklApi = prepareApi(createMerklServer, 'merkl')
 
 export default {
-  fetch: async (request: Request): Promise<Response> =>
-    new URL(request.url).pathname.startsWith('/api/merkl/') ? await merklApi(request) : await routerApi(request),
+  fetch: async (
+    request: Request,
+    { ASSETS }: { ASSETS: { fetch(request: Request): Promise<Response> } },
+  ): Promise<Response> => {
+    const { pathname } = new URL(request.url)
+    return pathname.startsWith('/api/merkl/')
+      ? await merklApi(request)
+      : ['/api', '/health'].includes(pathname) || pathname.startsWith('/api/')
+        ? await routerApi(request)
+        : await ASSETS.fetch(request) // forward any non-API requests to the frontend
+  },
 }

@@ -68,18 +68,18 @@ const createStatsEntries = (markets: LlamaMarket[], userAddress: Address | undef
           ? getUserLendingVaultStatsOptions({
               contractAddress: market.controllerAddress,
               userAddress,
-              blockchainId: market.chain,
+              blockchainId: market.blockchainId,
             })
           : getUserMintMarketsStatsOptions({
               contractAddress: market.controllerAddress,
               userAddress,
-              blockchainId: market.chain,
+              blockchainId: market.blockchainId,
             }),
     }))
 
 const createTokenPriceEntries = (markets: LlamaMarket[]) =>
   uniqBy(
-    markets.flatMap(({ assets, chain, userHasPositions }) => {
+    markets.flatMap(({ assets, blockchainId: chain, userHasPositions }) => {
       if (!userHasPositions) return []
       const borrowed = { chainId: requireChainId(chain), tokenAddress: assets.borrowed.address }
       const collateral = { chainId: requireChainId(chain), tokenAddress: assets.collateral.address }
@@ -113,8 +113,8 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
 
-    const getPriceQuery = (chain: Chain, tokenAddress: Address) =>
-      pricesByToken.get(getTokenPriceKey({ chainId: requireChainId(chain), tokenAddress })) ?? DISABLED_Q
+    const getPriceQuery = (blockchainId: Chain, tokenAddress: Address) =>
+      pricesByToken.get(getTokenPriceKey({ chainId: requireChainId(blockchainId), tokenAddress })) ?? DISABLED_Q
 
     return markets.map(market => {
       if (!market.userHasPositions) return { ...market, positionQueries: EMPTY_POSITION_QUERIES }
@@ -124,8 +124,8 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         positionQueries: {
           stats: mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats),
           prices: {
-            borrowed: getPriceQuery(market.chain, market.assets.borrowed.address),
-            collateral: getPriceQuery(market.chain, market.assets.collateral.address),
+            borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
+            collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
           },
         },
       }

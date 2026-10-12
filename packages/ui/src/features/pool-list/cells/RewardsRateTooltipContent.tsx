@@ -1,0 +1,41 @@
+import Stack from '@mui/material/Stack'
+import { formatNumber } from '@primitives/number.utils'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { t } from '@ui/lib/i18n'
+import type { PoolRow } from '../types'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './RateTooltipItems'
+import { getAprCampaigns, getExtraRewards } from './utils'
+
+export const RewardsRateTooltipContent = ({ pool }: { pool: PoolRow }) => {
+  const extraRewards = getExtraRewards(pool)
+  const campaigns = getAprCampaigns(pool)
+
+  return (
+    <TooltipWrapper>
+      <TooltipDescription text={t`Yield from extra token rewards and APR campaigns. Points are not included.`} />
+      <Stack>
+        {!!extraRewards.length && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Liquidity incentives`}>
+              {formatNumber(pool.extraRewardsTotalApr, 'percent.rate')}
+            </TooltipItem>
+            <ExtraRewardTooltipItems blockchainId={pool.blockchainId} rewards={extraRewards} />
+          </TooltipItems>
+        )}
+        {!!campaigns?.length && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Campaign rewards`}>
+              {formatNumber(pool.campaignRewardsApr, 'percent.rate')}
+            </TooltipItem>
+            <CampaignRewardTooltipItems campaigns={campaigns} />
+          </TooltipItems>
+        )}
+        <TooltipItems borderTop>
+          <TooltipItem variant="primary" title={t`Rewards APR`}>
+            {formatNumber(pool.rewardsApr, 'percent.rate')}
+          </TooltipItem>
+        </TooltipItems>
+      </Stack>
+    </TooltipWrapper>
+  )
+}

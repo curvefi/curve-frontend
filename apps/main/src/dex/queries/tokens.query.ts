@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
 import { getAddress, isAddress, type Address } from 'viem'
-import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/queries/root-keys'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import type { ChainParams, ChainQuery } from '@evm-ui/queries/query-types'
+import { chainValidationSuite } from '@evm-ui/queries/validation/chain-validation'
 import { addQueryString, fetchJson } from '@primitives/fetch.utils'
 import { maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { useMappedQuery } from '@ui/features/queries/util'
-import { createValidationSuite } from '@ui/lib/validation/lib'
 
 type TokenMetadata = { decimals: number; symbol: string; lp?: true; volume?: number }
 
@@ -14,9 +13,9 @@ type TokenMetadata = { decimals: number; symbol: string; lp?: true; volume?: num
 export type TokenMapper = Record<Address, TokenMetadata>
 
 export const { useQuery: useTokens } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'tokens'] as const,
+  queryKey: ({ chainId }: ChainParams) => ({ name: 'tokens', chainId }) as const,
   queryFn: ({ chainId }: ChainQuery) => fetchJson<TokenMapper>(`/api/router/v1/tokens${addQueryString({ chainId })}`),
-  validationSuite: createValidationSuite(chainValidationGroup),
+  validationSuite: chainValidationSuite,
   category: 'dex.pools',
 })
 

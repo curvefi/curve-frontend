@@ -1,28 +1,38 @@
 import { groupBy } from 'lodash'
-import { useCallback } from 'react'
-import type { ClaimableReward } from '@/dex/types/main.types'
+import { useMemo } from 'react'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserChainParams, type UserChainQuery } from '@evm-ui/queries/root-keys'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries } from '@primitives/objects.utils'
-import { queryFactory } from '@ui/features/queries/factory'
-import { q, useMappedQuery, type QueryData } from '@ui/features/queries/util'
+import { Chain } from '@primitives/network.utils'
+import { assert, fromEntries, recordEntries } from '@primitives/objects.utils'
+import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { q, type QueryData } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
-import type { useUserPoolPositions } from './user-pool-positions.query'
 
-export type PoolClaimables = (ClaimableReward & { amountUsd: Decimal })[]
-
-type UserPoolClaimablesQuery = UserChainQuery & { poolAddresses: Address[] }
+type UserPoolClaimablesQuery = UserChainQuery<Chain> & { poolAddresses: Address[] }
 type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
 
+// Temporary (?) workaround: these pools have broken behavior that breaks multicall
+const CLAIMABLES_BLACKLIST: Partial<Record<Chain, Set<Address>>> = {
+  [Chain.Ethereum]: new Set([
+    // REUSD/3Crv: reward token 0xdBd34485773B0C9aDAC1B61b64e7c59049EB0944 reverts on symbol() and decimals().
+    '0xC61557C5d177bd7DC889A3b621eEC333e168f68A',
+  ]),
+  [Chain.Polygon]: new Set([
+    '0x2FB12dA70a17802200A512DE31dc0B1b2Da03b4c', // CRV2USD
+    '0x82489c785f8edE332C8f08faD841f58e35FF201F', // UUS
+  ]),
+  [Chain.Arbitrum]: new Set(['0xd7bB79aeE866672419999a0496D99c54741D67B5']), // REUSD/2CRV
+}
+
 // Use this key to invalidate all user rewards regardless of the pools fetched.
-export const getUserPoolClaimablesQueryKey = (params: UserChainParams) =>
-  [...rootKeys.userChain(params), 'userPoolClaimables'] as const
+export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChainParams) =>
+  ({ name: 'userPoolClaimables', chainId, userAddress }) as const
 
 /**
  * Including pool addresses in the query key makes refetching straightforward, but a position
@@ -34,32 +44,38 @@ export const getUserPoolClaimablesQueryKey = (params: UserChainParams) =>
  *
  */
 const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
-  queryKey: (params: UserPoolClaimablesParams) =>
-    [...getUserPoolClaimablesQueryKey(params), { poolAddresses: params.poolAddresses }] as const,
+  queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) =>
+    ({ ...getUserPoolClaimablesQueryKey({ chainId, userAddress }), poolAddresses }) as const,
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
-    const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress)
+
+    // This is a very heavy function call, so we want to avoid many retries.
+    const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress).catch(error => {
+      throw new NoRetryError(error instanceof Error ? error.message : 'Failed to fetch user claimables')
+    })
 
     return fromEntries(
-      poolAddresses.map((poolAddress, index) => {
+      poolAddresses.map((poolAddress, index) =>
         // Curve can return CRV emissions and extra CRV rewards separately for the same token.
-        const claimables = Object.entries(groupBy(poolRewards[index], reward => reward.token)).map(
-          ([token, rewards]) => {
-            const [{ symbol, price }] = rewards
-            return {
-              token,
-              symbol,
-              price,
-              amount: decimalSum(...rewards.map(reward => decimal(reward.amount))),
-              amountUsd: decimalSum(
-                ...rewards.map(reward => decimalMultiply(decimal(reward.amount) ?? '0', reward.price)),
-              ),
-            }
-          },
-        )
-
-        return [poolAddress, claimables]
-      }),
+        [
+          poolAddress,
+          recordEntries(
+            groupBy(
+              poolRewards[index].map(reward => ({
+                ...reward,
+                amount: assert(decimal(reward.amount), 'Invalid claimable amount'),
+              })),
+              reward => reward.token,
+            ),
+          ).map(([token, rewards]) => ({
+            token,
+            symbol: rewards[0]?.symbol,
+            price: rewards[0]?.price,
+            amount: decimalSum(...rewards.map(reward => reward.amount)),
+            amountUsd: decimalSum(...rewards.map(reward => decimalMultiply(reward.amount, reward.price))),
+          })),
+        ],
+      ),
     )
   },
   validationSuite: createValidationSuite((params: UserPoolClaimablesParams) => {
@@ -69,16 +85,17 @@ const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
   category: 'dex.claims',
 })
 
-export function useUserPoolClaimables(params: UserChainParams, positions: ReturnType<typeof useUserPoolPositions>) {
-  const { curveApi, isHydrated } = useCurve()
-  const poolAddresses = useMappedQuery(
-    positions,
-    useCallback(({ positions }) => [...new Set(positions.map(({ address }) => address))], []),
+export function useUserPoolClaimables(params: UserPoolClaimablesParams, enabled = true) {
+  const { curveApi } = useCurve()
+  const { chainId, poolAddresses } = params
+  const filteredPoolAddresses = useMemo(
+    () => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
+    [chainId, poolAddresses],
   )
-
-  const query = useUserPoolClaimablesQuery(
-    { ...params, poolAddresses: poolAddresses.data },
-    (poolAddresses.data?.length ?? 0) > 0 && isHydrated && curveApi?.chainId === params.chainId,
+  const query = useHydratedQuery(
+    useUserPoolClaimablesQuery,
+    { ...params, poolAddresses: filteredPoolAddresses },
+    enabled && !!filteredPoolAddresses?.length && curveApi?.chainId === chainId,
   )
 
   return {

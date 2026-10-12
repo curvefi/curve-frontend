@@ -1,9 +1,9 @@
 import { listLitePoolChains, listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
-import { rootKeys, type ChainParams, type ChainQuery } from '@evm-ui/queries/root-keys'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import type { ChainParams, ChainQuery } from '@evm-ui/queries/query-types'
+import { chainValidationSuite } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
 type PoolListRequestParams = Pick<
@@ -25,8 +25,7 @@ type PoolListRequestParams = Pick<
 type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
 type PoolListParams = FieldsOf<PoolListQuery>
 
-export const getPoolListRootQueryKey = ({ chainId }: ChainParams) =>
-  [...rootKeys.chain({ chainId }), 'listPools'] as const
+export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({ name: 'listPools', chainId }) as const
 
 export const { useQuery: usePoolList } = queryFactory({
   queryKey: ({
@@ -46,42 +45,43 @@ export const { useQuery: usePoolList } = queryFactory({
     sortBy,
     sortDirection,
   }: PoolListParams) =>
-    [
-      ...getPoolListRootQueryKey({ chainId }),
-      { page },
-      { pageSize },
-      { searchString },
-      { poolType },
-      { minTvl },
-      { maxTvl },
-      { minVolume },
-      { maxVolume },
-      { minApy },
-      { maxApy },
-      { minCreationDate },
-      { maxCreationDate },
-      { sortBy },
-      { sortDirection },
-    ] as const,
+    ({
+      name: 'listPools',
+      chainId,
+      page,
+      pageSize,
+      searchString,
+      poolType,
+      minTvl,
+      maxTvl,
+      minVolume,
+      maxVolume,
+      minApy,
+      maxApy,
+      minCreationDate,
+      maxCreationDate,
+      sortBy,
+      sortDirection,
+    }) as const,
   queryFn: async ({ pageSize, ...params }: PoolListQuery) => {
     const poolList = await listPools({ ...params, pagination: pageSize })
 
     return { ...poolList, pageCount: getPageCount(poolList.count, poolList.pagination) }
   },
-  validationSuite: createValidationSuite(chainValidationGroup),
+  validationSuite: chainValidationSuite,
   category: 'dex.pools',
   keepPreviousData: true,
 })
 
 export const { useQuery: usePoolChains, queryKey: getPoolChainsQueryKey } = queryFactory({
-  queryKey: () => ['listPoolChains'] as const,
+  queryKey: () => ({ name: 'listPoolChains' }) as const,
   queryFn: () => listPoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',
 })
 
 export const { useQuery: useLitePoolChains, queryKey: getLitePoolChainsQueryKey } = queryFactory({
-  queryKey: () => ['listLitePoolChains', 'v2'] as const,
+  queryKey: () => ({ name: 'listLitePoolChains', version: 2 }) as const,
   queryFn: () => listLitePoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',

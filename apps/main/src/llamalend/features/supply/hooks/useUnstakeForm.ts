@@ -11,7 +11,6 @@ import {
   userSupplyVaultAssetsValidationSuite,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useFormSync, useForm } from '@ui/features/forms'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -31,7 +30,7 @@ const emptyUnstakeForm = (): UnstakeForm => ({
 
 const { useQuery: useUnstakeAssetsToShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake.assetsToShares', { assets }] as const,
+    ({ name: 'unstake.assetsToShares', chainId, marketId, userAddress, assets }) as const,
   queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>
     (await requireVault(marketId).vault.convertToShares(assets)) as Decimal,
   category: 'llamalend.supply',

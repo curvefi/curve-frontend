@@ -3,11 +3,19 @@ import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/
 import { DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { type AppName } from '@evm-ui/shared/routes'
 import { Chain } from '@primitives/network.utils'
+import { InlineLink } from '@ui/components/InlineLink'
 import { Banner } from '@ui/features/banners/Banner'
 import { GlobalBanner, type GlobalBannerProps } from '@ui/features/banners/GlobalBanner'
-import { useDismissAaveBanner, useDismissFantomRetirementBanner } from '@ui/features/storage/useLocalStorage'
-import { t } from '@ui/lib/i18n'
+import {
+  useDismissAaveBanner,
+  useDismissDexDashboardRetirementBanner,
+  useDismissFantomRetirementBanner,
+} from '@ui/features/storage/useLocalStorage'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
+import { t, Trans } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
+
+const DEX_DASHBOARD_RETIREMENT_BANNER_END = new Date('2026-12-01T00:00:00Z')
 
 export const EvmBanners = ({
   currentApp,
@@ -19,7 +27,9 @@ export const EvmBanners = ({
   const { chainId } = bannerProps
   const { connectState } = useCurve()
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
+  const [showDashboardRetirementBanner, dismissDashboardRetirementBanner] = useDismissDexDashboardRetirementBanner()
   const [showFantomRetirementBanner, dismissFantomRetirementBanner] = useDismissFantomRetirementBanner()
+  const currentDate = useCurrentDate()
 
   return (
     <GlobalBanner
@@ -32,6 +42,23 @@ export const EvmBanners = ({
       chainName={getChainName(chainId)}
       {...bannerProps}
     >
+      {showDashboardRetirementBanner && currentApp === 'dex' && currentDate < DEX_DASHBOARD_RETIREMENT_BANNER_END && (
+        <Banner
+          severity="info"
+          subtitle={
+            <Trans>
+              As part of ongoing maintenance and improvements on the website, the DEX dashboard has been retired in
+              favour of the user positions list on the{' '}
+              <InlineLink to="https://www.curve.finance/dex/ethereum/pools">pool page</InlineLink>. Claiming veCRV fees
+              can be done on the DAO app via the{' '}
+              <InlineLink to="https://www.curve.finance/dao/ethereum/vecrv">lock CRV</InlineLink> page.
+            </Trans>
+          }
+          onClick={dismissDashboardRetirementBanner}
+        >
+          {t`Dashboard retirement`}
+        </Banner>
+      )}
       {showAaveBanner && currentApp === 'dex' && [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
         <Banner
           severity="info"

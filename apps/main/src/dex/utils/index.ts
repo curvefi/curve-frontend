@@ -1,5 +1,3 @@
-import { zeroAddress } from 'viem'
-
 export function shortenTokenName(token: string) {
   const tokenLength = token.length
   if (tokenLength > 30) {
@@ -8,8 +6,6 @@ export function shortenTokenName(token: string) {
     return token
   }
 }
-
-export const isValidAddress = (address: string) => address?.length === 42 && address !== zeroAddress
 
 export const isHighSlippage = (slippage: number, maxSlippage: string) =>
   slippage < 0 && Math.abs(slippage) > Number(maxSlippage)

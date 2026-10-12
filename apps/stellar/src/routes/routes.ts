@@ -1,4 +1,4 @@
-import type { NetworkQuery, PoolQuery } from '@/stellar/queries/root-keys'
+import type { NetworkQuery, PoolQuery } from '@/stellar/queries/query-types'
 
 export const StellarUrls = {
   poolList: ({ network }: NetworkQuery) => `/dex/${network}/pools`,

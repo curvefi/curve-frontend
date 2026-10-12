@@ -1,5 +1,5 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -10,7 +10,8 @@ export const {
   getQueryData: getUserState,
   queryKey: getUserStateKey,
 } = queryFactory({
-  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userState'] as const,
+  queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
+    ({ name: 'userState', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const userState = await getUserPositionImplementation(marketId).userState(userAddress)
     return {

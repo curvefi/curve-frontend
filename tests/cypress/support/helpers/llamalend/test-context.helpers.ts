@@ -4,7 +4,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
-import { getTokenUsdRateKey } from '@evm-ui/queries/token-usd-rate.query'
+import { setTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { blockUnmockedApis, mockNewHashCollateralEvents } from './market-list-mocks'
 
@@ -34,6 +34,6 @@ export const setGasInfo = (
   },
   ethPrice = 1,
 ) => {
-  queryClient.setQueryData(getTokenUsdRateKey({ chainId: params.chainId, tokenAddress: ethAddress }), ethPrice)
+  setTokenUsdRateQueryData({ chainId: params.chainId, tokenAddress: ethAddress }, ethPrice)
   return setGasInfoAndUpdateLib(params, info)
 }

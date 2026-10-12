@@ -22,16 +22,16 @@ const Currency = ({
   balance,
   symbol,
   address,
-  chain,
+  blockchainId,
 }: {
   symbol: string
   address: string
   balance: number | null
-  chain: Chain
+  blockchainId: Chain
 }) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     {formatNumber(balance, 'token.compact')}
-    <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
+    <TokenIcon blockchainId={blockchainId} address={address} tooltip={symbol} size="mui-sm" />
   </Stack>
 )
 

@@ -1,13 +1,12 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { WithdrawLockParams, WithdrawLockQuery } from './withdraw-lock.types'
 import { withdrawLockValidationSuite } from './withdraw-lock.validation'
 
 const { useQuery: useWithdrawLockEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress }: WithdrawLockParams) =>
-    [...rootKeys.userChain({ chainId, userAddress }), 'boosting.estimateGas.withdrawLockedCrv'] as const,
+    ({ name: 'boosting.estimateGas.withdrawLockedCrv', chainId, userAddress }) as const,
   queryFn: async (_query: WithdrawLockQuery) => await requireLib('curveApi').boosting.estimateGas.withdrawLockedCrv(),
   category: 'dao.user',
   validationSuite: withdrawLockValidationSuite,

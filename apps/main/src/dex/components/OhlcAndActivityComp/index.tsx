@@ -1,7 +1,9 @@
 import { type ReactNode, useMemo } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
-import { ActivityTable, PoolLiquidityExpandedPanel, PoolTradesExpandedPanel } from '@evm-ui/features/activity-table'
+import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
+import { PoolTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolTradesExpandedPanel'
 import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
@@ -70,11 +72,11 @@ const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
 )
 
 export const OhlcAndActivityComp = ({
-  rChainId: chainId,
+  chainId,
   poolAddress,
   pricesApiPoolData,
 }: {
-  rChainId: ChainId
+  chainId: ChainId
   poolAddress: Address
   pricesApiPoolData: Pool
 }) => {

@@ -100,7 +100,7 @@ export const PageRouterSwap = () => {
             pageLoaded={loaded}
             params={props}
             searchedParams={searchedParams}
-            rChainId={chainId}
+            chainId={chainId}
             redirect={redirect}
           />
         )}

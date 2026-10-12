@@ -34,8 +34,9 @@ export const BalancedDepositCheckbox = ({
   const { watchValues, update } = useFormContext<PoolForm>()
   const values = watchValues()
   const decimals = completeArray(values.decimals)
-  const maxAmounts = completeArray(reserves?.map((_, index) => values[poolMaxAmountField(index)]))
-  const amounts = isConnected ? maxAmounts : reserves?.map((_, index) => values[poolAmountField(index)] ?? '0')
+  const amounts = decimals?.map(
+    (_, index) => values[(isConnected ? poolMaxAmountField : poolAmountField)(index)] ?? '0',
+  )
   return (
     <CheckboxField
       label={t`Add all coins in a balanced proportion`}

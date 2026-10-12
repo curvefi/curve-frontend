@@ -16,7 +16,7 @@ function isDecimal<T>(value: T, options?: { decimal_digits?: string }): boolean 
   return new RegExp(`^[-+]?([0-9]+)?(\\.[0-9]{${decimal_digits}})?$`).test(value)
 }
 
-vestEnforce.extend({
+const customMatchers = {
   isDecimal: <T>(value: T, options?: Parameters<typeof isDecimal>[1]) => ({
     pass: isDecimal(value, options),
     message: () => 'Must be a valid decimal number',
@@ -37,6 +37,10 @@ vestEnforce.extend({
     pass: typeof value === 'string' && isPricesApiChain(value),
     message: () => 'Must be a valid chain ID',
   }),
-})
+}
+
+export type CustomMatchers = typeof customMatchers
+
+vestEnforce.extend(customMatchers)
 
 export const enforce: typeof vestEnforce = vestEnforce

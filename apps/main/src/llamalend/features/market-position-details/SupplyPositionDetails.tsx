@@ -2,8 +2,12 @@ import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
-import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
+import { isLendMarket } from '@/llamalend/llama.utils'
+import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
+import { useMarketVaultPricePerShare } from '@/llamalend/queries/market/market-vault-price-per-share.query'
+import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
+import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.query'
 import {
   formatSupplyExtraIncentives,
   getLatestSnapshotValue,
@@ -15,9 +19,8 @@ import {
 } from '@/llamalend/rates.utils'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
@@ -59,7 +62,7 @@ export const SupplyPositionDetails = () => {
     controllerAddress,
   } = useMarketContext<LlamaChainId>()
   const market = assert(
-    contextMarket instanceof LendMarketTemplate ? contextMarket : undefined,
+    isLendMarket(contextMarket) ? contextMarket : undefined,
     'SupplyPositionDetails requires a lend market',
   )
 

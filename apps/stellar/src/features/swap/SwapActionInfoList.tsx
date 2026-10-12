@@ -28,6 +28,7 @@ export const SwapActionInfoList = ({ onSlippageChange, ...params }: SwapActionIn
 
   return (
     <PoolActionInfoList
+      slippageType="stable"
       exchangeRate={combineQueries([inputAmount, outputAmount], (input, output) => decimalDiv(output, input))}
       minimumReceived={minimum}
       priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, outputAmount)}

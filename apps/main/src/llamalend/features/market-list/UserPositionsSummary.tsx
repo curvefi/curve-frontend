@@ -17,7 +17,7 @@ export const UserPositionSummary = ({
 }) => {
   const filteredMarkets = useMemo(() => {
     const chains = parseListFilter(selectedChains)
-    return chains ? markets?.filter(market => chains.includes(market.chain)) : markets
+    return chains ? markets?.filter(market => chains.includes(market.blockchainId)) : markets
   }, [markets, selectedChains])
   const summary = getUserPositionsSummary(filteredMarkets)
   return (

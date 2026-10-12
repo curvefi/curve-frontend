@@ -1,6 +1,6 @@
 import { getRefuelDonationEvents } from '@curvefi/prices-api/refuel'
 import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
-import { rootKeys, type ChainNameQuery } from '@evm-ui/queries/root-keys'
+import type { ChainNameQuery } from '@evm-ui/queries/query-types'
 import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -15,19 +15,13 @@ type RecentRefuelsParams = FieldsOf<RecentRefuelsQuery>
 
 export const { useQuery: useRecentRefuels } = queryFactory({
   queryKey: ({ blockchainId, poolAddress, page, pageSize }: RecentRefuelsParams) =>
-    [
-      ...rootKeys.chainName({ blockchainId }),
-      'getRefuelDonationEvents',
-      { poolAddress },
-      { page },
-      { pageSize },
-    ] as const,
+    ({ name: 'getRefuelDonationEvents', blockchainId, poolAddress, page, pageSize }) as const,
   queryFn: async ({
     blockchainId,
     poolAddress,
     page = DEFAULT_PAGE_START_INDEX,
     pageSize = RECENT_REFUELS_PAGE_SIZE,
-  }: RecentRefuelsQuery) => getRefuelDonationEvents({ chain: blockchainId, poolAddress, page, pageSize }),
+  }: RecentRefuelsQuery) => getRefuelDonationEvents({ blockchainId, poolAddress, page, pageSize }),
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RecentRefuelsParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),

@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import type { CampaignRewards } from '@evm-ui/queries/campaigns'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { formatNumber } from '@primitives/number.utils'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 type CampaignRewardsCompProps = {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
+import { SupplyClaimTab } from '@/llamalend/features/supply/components/SupplyClaimTab'
 import { oneAddress } from '@cy/support/generators'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
@@ -26,7 +26,7 @@ const testCases: { title: string; claimableCrv: Decimal; claimableRewards: { amo
   { title: 'crv and rewards', claimableCrv: '5.00', claimableRewards: [{ amount: '2.50', symbol: 'CVX' }] },
 ]
 
-describe('ClaimTab (mocked)', () => {
+describe('SupplyClaimTab (mocked)', () => {
   beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(({ title, claimableCrv, claimableRewards }) => {
@@ -42,7 +42,7 @@ describe('ClaimTab (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <ClaimTab networks={llamaNetworks} />
+          <SupplyClaimTab networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 
@@ -51,6 +51,7 @@ describe('ClaimTab (mocked)', () => {
       validateClaimTabState({
         crvButtonDisabled: expected.crvButtonDisabled,
         otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
+        isMocked: true,
       })
 
       cy.wrap(stubs.claimableCrv).should('have.been.calledWithExactly', ...expected.claimableCrv)
@@ -70,7 +71,7 @@ describe('ClaimTab (mocked)', () => {
       })
 
       if (expected.crvButtonDisabled && expected.otherRewardsButtonDisabled) {
-        checkClaimDetailsLoaded({ hasCrvRewards: false, hasOtherRewards: false })
+        checkClaimDetailsLoaded({ hasCrvRewards: false, hasOtherRewards: false, isMocked: true })
         return
       }
 
@@ -79,10 +80,11 @@ describe('ClaimTab (mocked)', () => {
         hasCrvRewards: expected.shouldClaimCrv,
         hasOtherRewards: expected.shouldClaimRewards,
         expectedSymbols: expected.table.rows.map(({ symbol }) => symbol),
+        isMocked: true,
       })
 
-      if (expected.shouldClaimCrv) submitClaimAndSettle('crv')
-      if (expected.shouldClaimRewards) submitClaimAndSettle('other')
+      if (expected.shouldClaimCrv) submitClaimAndSettle('crv', { isMocked: true })
+      if (expected.shouldClaimRewards) submitClaimAndSettle('other', { isMocked: true })
 
       cy.then(() => {
         if (expected.shouldClaimCrv) {

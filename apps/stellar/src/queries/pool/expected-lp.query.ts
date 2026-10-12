@@ -1,6 +1,5 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import {
   quoteValidationSuite,
   type ExpectedLpParams,
@@ -15,15 +14,16 @@ export const {
   fetchQuery: fetchExpectedLp,
 } = queryFactory({
   queryKey: ({ network, pool, amounts, decimals, supply, isDeposit, maxAmounts }: ExpectedLpParams) =>
-    [
-      ...rootKeys.pool({ network, pool }),
-      'calc_token_amount',
-      { amounts },
-      { decimals },
-      { supply },
-      { isDeposit },
-      { maxAmounts: isDeposit ? undefined : maxAmounts },
-    ] as const,
+    ({
+      name: 'calc_token_amount',
+      network,
+      pool,
+      amounts,
+      decimals,
+      supply,
+      isDeposit,
+      maxAmounts: isDeposit ? undefined : maxAmounts,
+    }) as const,
   queryFn: async ({ network, pool, amounts, decimals, isDeposit }: ExpectedLpQuery) =>
     fromWei(
       await readContract<bigint>(network, pool, 'calc_token_amount', [

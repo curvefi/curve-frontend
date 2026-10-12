@@ -1,12 +1,12 @@
-import type { MarketParams, MarketQuery } from '@evm-ui/queries/root-keys'
-import { rootKeys } from '@evm-ui/queries/root-keys'
+import type { MarketParams, MarketQuery } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { getLendVault } from './market.query-helpers'
 
 export const { useQuery: useMarketVaultPricePerShare } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'previewRedeem', 'v1'] as const,
+  queryKey: ({ chainId, marketId }: MarketParams) =>
+    ({ name: 'previewRedeem', version: 1, chainId, marketId }) as const,
   queryFn: async (
     { marketId }: MarketQuery, // Use convertToAssets instead of redeem preview: previewRedeem can revert when the vault
   ) =>

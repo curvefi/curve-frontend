@@ -1,5 +1,5 @@
 import { group, test } from 'vest'
-import { MarketParams } from '@evm-ui/queries/root-keys'
+import type { MarketParams } from '@evm-ui/queries/query-types'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'

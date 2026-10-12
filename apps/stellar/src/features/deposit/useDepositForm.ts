@@ -11,7 +11,7 @@ import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { depositFormValidationSuite } from '@/stellar/queries/validation/deposit.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -25,7 +25,13 @@ import type { DepositForm, DepositFormQuery } from './types'
 
 const formOptions = {
   validation: depositFormValidationSuite,
-  defaultValues: { isBalanced: false, decimals: undefined, supply: undefined, slippage: SLIPPAGE.stable.default },
+  defaultValues: {
+    isBalanced: false,
+    isWrapped: false,
+    decimals: undefined,
+    supply: undefined,
+    slippage: SLIPPAGE.stable.default,
+  },
 }
 
 export function useDepositForm(poolParams: PoolQuery) {
@@ -33,11 +39,11 @@ export function useDepositForm(poolParams: PoolQuery) {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const supply = usePoolSupply(poolParams)
-  const reserves = usePoolReserves(poolParams)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
   const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const reserves = usePoolReserves({ ...poolParams, decimals: decimals.data })
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
     [tokenCount],
@@ -64,9 +70,9 @@ export function useDepositForm(poolParams: PoolQuery) {
         decimals: decimals.data,
         slippage: values.slippage,
         supply: supply.data,
-        maxAmounts: maxAmounts.data,
+        maxAmounts: maxAmounts.map(q => q.data),
       }),
-      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts.data],
+      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts],
     ),
     userDefaultValues,
   )
@@ -95,8 +101,9 @@ export function useDepositForm(poolParams: PoolQuery) {
     params,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
+    inputsDisabled: isPending,
     isDisabled:
-      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data === false),
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data !== true),
     isLoading: isPending || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
@@ -104,6 +111,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
+    maxAmounts,
     isSeed,
   }
 }

@@ -1,5 +1,4 @@
 import { orderBy } from 'lodash'
-import { POOL_TYPE_FILTERS } from '@/dex/features/pool-list/filters/utils'
 import type { SortDirection, V2PoolSortField, PoolType } from '@curvefi/prices-api/pools'
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
@@ -8,6 +7,7 @@ import { requireBlockchainId } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, range } from '@primitives/objects.utils'
+import { POOL_TYPE_FILTERS } from '@ui/features/pool-list/filters/utils'
 
 const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
 type MockChainId = (typeof MOCK_CHAIN_IDS)[number]

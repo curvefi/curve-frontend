@@ -21,6 +21,7 @@ type EmptyStateButtonProps = Omit<ButtonProps, 'type'> & {
 export type EmptyStateCardProps = AllOrNone<ConnectionProps> & {
   title?: ReactNode
   description?: ReactNode
+  icon?: ReactNode
   isLoading?: boolean
   size?: 'sm' | 'md'
   button?: EmptyStateButtonProps
@@ -75,6 +76,7 @@ const EmptyStateButton = ({
 export const EmptyStateCard = ({
   title,
   description,
+  icon,
   button,
   secondaryButton,
   isLoading,
@@ -82,11 +84,8 @@ export const EmptyStateCard = ({
   testId,
   ...connectionProps
 }: EmptyStateCardProps) => (
-  <Stack
-    sx={{ gap: Spacing.xs, alignItems: 'center', justifySelf: 'center', maxWidth: MaxWidth.emptyStateCard }}
-    data-testid={testId}
-  >
-    <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />
+  <Stack sx={{ gap: Spacing.xs, alignItems: 'center', maxWidth: MaxWidth.emptyStateCard }} data-testid={testId}>
+    {icon || <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />}
     {isLoading ? (
       <Skeletons />
     ) : (
@@ -98,7 +97,7 @@ export const EmptyStateCard = ({
             </Typography>
           )}
           {description && (
-            <Typography component="span" variant="bodySRegular" color="textSecondary">
+            <Typography component="span" variant="bodySRegular" color="textSecondary" sx={{ overflowWrap: 'anywhere' }}>
               {description}
             </Typography>
           )}

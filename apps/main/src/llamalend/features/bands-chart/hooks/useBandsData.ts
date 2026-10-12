@@ -1,8 +1,10 @@
 import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
-import { useMarketBandsBalances, useUserBandsBalances } from '@/llamalend/queries/bands'
-import { useMarketLiquidationBand, useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useLoanExists } from '@/llamalend/queries/user'
+import { useMarketBandsBalances } from '@/llamalend/queries/bands/market-bands-balances.query'
+import { useUserBandsBalances } from '@/llamalend/queries/bands/user-bands-balances.query'
+import { useMarketLiquidationBand } from '@/llamalend/queries/market/market-liquidation-band.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
+import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 
 export const useBandsData = ({

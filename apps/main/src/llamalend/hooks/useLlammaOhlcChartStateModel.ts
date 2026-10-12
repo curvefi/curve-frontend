@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
-import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from '@evm-ui/features/candle-chart'
 import type { OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
+import { useChartLegendToggles } from '@evm-ui/features/candle-chart/hooks/useChartLegendToggles'
+import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useChartTimeSettings'
+import { useLiquidationRange } from '@evm-ui/features/candle-chart/hooks/useLiquidationRange'
 import { useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@evm-ui/features/candle-chart/types'
 import type { Address } from '@primitives/address.utils'
@@ -84,7 +86,7 @@ export const useLlammaOhlcChartStateModel = ({
     isLlammaFallbackEnabled,
   } = useLlammaOhlcChartData({
     endpoint,
-    chain: network,
+    blockchainId: network,
     controller: controllerAddress,
     llamma: llammaAddress,
     oraclePrice,

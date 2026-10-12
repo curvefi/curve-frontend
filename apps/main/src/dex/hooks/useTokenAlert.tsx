@@ -18,7 +18,7 @@ const MA_ALERT: PoolAlert = {
   ),
 }
 
-const TOKEN_ALERTS: Record<string, PoolAlert> = {
+export const TOKEN_ALERTS: Record<string, PoolAlert> = {
   '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d': {
     alertType: 'warning',
     address: '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d',

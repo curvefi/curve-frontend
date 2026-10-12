@@ -15,7 +15,7 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -174,7 +174,7 @@ export const PriceCell = ({
           key={asset.address}
           amount={value}
           amountUsd={usdValue}
-          blockchainId={asset.chain}
+          blockchainId={asset.blockchainId}
           tokenAddress={asset.address}
           amountLoading={usesBorrowStats && isLoadingStats}
           usdLoading={isPriceLoading}

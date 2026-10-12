@@ -15,7 +15,7 @@ import { approveErc20, fundErc20 } from '@cy/support/helpers/tenderly/vnet-fund'
 import { setVirtualNetworkStorageAt } from '@cy/support/helpers/tenderly/vnet-storage'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assert, maybe, notFalsy, range } from '@primitives/objects.utils'
 import { setupTenderlyLoan } from './loan-setup.helpers'
 
@@ -198,7 +198,7 @@ const prepareBorrowedForSoftLiquidationActions = ({
     recipientAddresses: [userAddress],
   })
 
-  return loadTenderlyAccount().then(LOAD_TIMEOUT, tenderlyAccount =>
+  return loadTenderlyAccount().then(TIMEOUTS['tenderly.approve'], tenderlyAccount =>
     approveErc20({
       client,
       spenderAddress: controllerAddress,
@@ -291,7 +291,7 @@ const moveAmmToOraclePrice = ({
   type Quote = { amount: bigint; inputUsed: bigint; isPump: boolean; outputAmount: bigint }
 
   return cy
-    .then<Quote>(LOAD_TIMEOUT, async () => {
+    .then<Quote>(TIMEOUTS['evm.contractRead'], async () => {
       const [amount, isPump] = await client.readContract({
         address: ammAddress,
         abi: AMM_ABI,
@@ -324,7 +324,7 @@ const moveAmmToOraclePrice = ({
         recipientAddresses: [userAddress],
       }).then(() =>
         loadTenderlyAccount()
-          .then(LOAD_TIMEOUT, async tenderlyAccount => {
+          .then(TIMEOUTS['tenderly.exchange'], async tenderlyAccount => {
             const tenderly = { ...tenderlyAccount, vnetId: vnet.id }
             await approveErc20({
               client,
@@ -369,7 +369,7 @@ const runSoftLiquidationPriceMove = ({
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
 }) =>
-  cy.then(TRANSACTION_LOAD_TIMEOUT, async () => {
+  cy.then(TIMEOUTS['tenderly.softLiquidation'], async () => {
     const readParams = { client, controllerAddress, ammAddress, userAddress }
     const state = await readSoftLiquidationState(readParams)
 
@@ -393,15 +393,15 @@ const runSoftLiquidationPriceMove = ({
       targetPrice,
       timestamp: oracleObservationTimestamp,
     })
-      .then(LOAD_TIMEOUT, () => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
-      .then(LOAD_TIMEOUT, async () => {
+      .then(TIMEOUTS['tenderly.clock'], () => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
+      .then(TIMEOUTS['evm.contractRead'], async () => {
         const oracle = await readOracleState({ client, ammAddress })
         assert(
           oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
           `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetBand, targetPrice })}`,
         )
       })
-      .then(LOAD_TIMEOUT, () =>
+      .then(TIMEOUTS['tenderly.exchange'], () =>
         moveAmmToOraclePrice({
           ammAddress,
           borrowedAddress,
@@ -412,7 +412,7 @@ const runSoftLiquidationPriceMove = ({
           vnet,
         }),
       )
-      .then(LOAD_TIMEOUT, async quote => {
+      .then(TIMEOUTS['evm.contractRead'], async quote => {
         const { oracle, state } = await readSoftLiquidationSetup(readParams)
         assert(
           isSoftLiquidationState(state) && state.health > 0n,
@@ -426,7 +426,7 @@ const runSoftLiquidationPriceMove = ({
         )
         return state
       })
-      .then(LOAD_TIMEOUT, state =>
+      .then(TIMEOUTS['tenderly.fund'], state =>
         fundErc20({
           adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
           amountWei: `0x${state.debt.toString(16)}`,

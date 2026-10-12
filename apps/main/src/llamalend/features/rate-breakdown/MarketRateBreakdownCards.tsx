@@ -55,15 +55,15 @@ const FooterRow = ({
   visibleColumns.map(({ id }) =>
     id === 'source' ? (
       <TableCell key={id} sx={{ paddingInline: Spacing.md }}>
-        <Typography variant="tableCellMBold">{title}</Typography>
+        <Typography variant="tableCellValueStrong">{title}</Typography>
       </TableCell>
     ) : id === 'price' ? (
       <TableCell key={id} />
     ) : (
       <TableCell key={id} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-        <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
+        <Typography variant="tableCellValueStrong">{formatNumber(total, 'percent.rate')}</Typography>
         {maxBoostTotal != null && maxBoostTotal !== total && (
-          <Typography variant="tableCellSRegular" color="textSecondary">
+          <Typography variant="tableCellSupport" color="textSecondary">
             {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
           </Typography>
         )}

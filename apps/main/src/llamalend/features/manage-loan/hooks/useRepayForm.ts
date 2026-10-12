@@ -176,6 +176,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     ...useMarketRoutes({
       chainId,
       marketAddress: ammAddress,
+      controllerAddress,
       tokenIn: collateralToken,
       tokenOut: borrowToken,
       amountIn: decimalSum(params.userCollateral, params.stateCollateral),

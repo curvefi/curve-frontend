@@ -5,8 +5,10 @@ import { endpointSeed, getPoolSeed, requestOptions } from '../seeds'
 const poolSeed = endpointSeed(getPoolSeed)
 
 runEndpointCases('usd-price', [
-  endpointCase('getUsdPrice', () => usdPrice.getUsdPrice(poolSeed().chain, poolSeed().mainToken, requestOptions)),
+  endpointCase('getUsdPrice', () =>
+    usdPrice.getUsdPrice(poolSeed().blockchainId, poolSeed().mainToken, requestOptions),
+  ),
   endpointCase('getUsdPriceHistory', () =>
-    usdPrice.getUsdPriceHistory(poolSeed().chain, poolSeed().mainToken, 7, requestOptions),
+    usdPrice.getUsdPriceHistory(poolSeed().blockchainId, poolSeed().mainToken, 7, requestOptions),
   ),
 ])

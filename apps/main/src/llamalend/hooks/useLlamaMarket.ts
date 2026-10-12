@@ -16,7 +16,7 @@ export const useLlamaMarket = (
     useCallback(
       ({ markets }) =>
         maybe(getPricesApiBlockchainId(network), chain =>
-          markets.find(m => m.chain === chain && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)),
+          markets.find(m => m.blockchainId === chain && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)),
         ),
       [network, rMarket],
     ),

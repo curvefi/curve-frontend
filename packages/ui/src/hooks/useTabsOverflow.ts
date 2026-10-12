@@ -2,7 +2,7 @@ import { partition, sumBy } from 'lodash'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { splitAtFirst } from '@primitives/array.utils'
 import type { TabOption } from '@ui/components/Tabs/TabsSwitcher'
-import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui/features/themes/components/tabs/mui-tabs'
+import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui/features/themes/components/mui-tabs'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 import { useSwitch } from '@ui/hooks/useSwitch'
 
@@ -22,7 +22,7 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
   const [kebabMenuOpen, openKebabMenu, closeKebabMenu] = useSwitch()
   const visibleTabsRef = useRef<HTMLDivElement>(null)
   const kebabTabRef = useRef<HTMLDivElement | null>(null)
-  const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 })
+  const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { dimension: 'width' })
   const [tabWidths, setTabWidths] = useState<number[]>([])
 
   // useLayoutEffect is used to measure tab widths before the browser paints, ensuring that

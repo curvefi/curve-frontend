@@ -4,9 +4,8 @@ import {
   amountValidationFn,
   tokenIdValidationFn,
 } from '@evm-ui/queries/validation/basic-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
-import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { curvePoolValidationGroup, poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { formatNumber } from '@primitives/number.utils'
 import { amount as toAmount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -42,10 +41,8 @@ export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch
         .isNotEmpty()
         .message(t`Epoch should be a positive number`)
         .isPositiveNumber()
-        .condition((epoch: unknown) => ({
-          pass: typeof epoch === 'number' && epoch % TIME_FRAMES.WEEK === 0,
-          message: t`Epoch must be a multiple of a week`,
-        }))
+        .message(t`Epoch must be a multiple of a week`)
+        .condition((epoch: unknown) => typeof epoch === 'number' && epoch % TIME_FRAMES.WEEK === 0)
     })
   })
 
@@ -63,8 +60,7 @@ export const gaugeDepositRewardValidationSuite = createValidationSuite((data: De
 })
 export const gaugeDistributorsValidationSuite = createValidationSuite(
   ({ chainId, poolId, userAddress }: GaugeDistributorsParams) => {
-    curveApiValidationGroup({ chainId })
-    poolValidationGroup({ chainId, poolId })
+    curvePoolValidationGroup({ chainId, poolId })
     evmAddressValidationGroup({ evmAddress: userAddress })
   },
 )
@@ -73,14 +69,13 @@ function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApp
   amountValidationFn(amount)
   if (!rewardTokenId || !amount) return
 
-  enforce(userBalance).condition(userBalance => ({
-    pass: userBalance != null && +userBalance > 0,
-    message: t`Wallet balance is zero for the selected reward token`,
-  }))
+  enforce(userBalance)
+    .message(t`Wallet balance is zero for the selected reward token`)
+    .condition(userBalance => userBalance != null && +userBalance > 0)
 
-  enforce(amount).condition(amount => ({
-    pass: +amount <= +userBalance!,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-    message: t`Amount ${formatNumber(toAmount(amount), 'token.balance')} > wallet balance ${formatNumber(toAmount(userBalance), 'token.balance')}`,
-  }))
+  enforce(amount)
+    .message(
+      t`Amount ${formatNumber(toAmount(amount), 'token.balance')} > wallet balance ${formatNumber(toAmount(userBalance), 'token.balance')}`,
+    )
+    .condition(amount => +amount <= +userBalance!)
 }

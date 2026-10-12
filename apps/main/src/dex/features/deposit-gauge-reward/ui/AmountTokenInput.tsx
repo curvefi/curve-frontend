@@ -5,14 +5,14 @@ import { useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.qu
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import { ChainId, type NetworkEnum } from '@/dex/types/main.types'
-import { TokenList } from '@evm-ui/features/select-token'
+import { TokenList } from '@evm-ui/features/select-token/ui/modal/TokenList'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
-import { mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -75,14 +75,8 @@ export const AmountTokenInput = ({
   const tokenPrices = useTokenUsdRates({ chainId, tokenAddresses })
   const tokenBalances = useTokenBalances({ chainId, userAddress, tokenAddresses })
 
-  const rewardTokenBalance = useMappedQuery(
-    tokenBalances,
-    useCallback(tokenBalances => rewardTokenId && tokenBalances?.[rewardTokenId], [rewardTokenId]),
-  )
-
-  const tokenUsdRate = mapQuery(tokenPrices, tokenPrices =>
-    maybe(rewardTokenId, rewardTokenId => tokenPrices?.[rewardTokenId]),
-  )
+  const rewardTokenBalance = maybe(rewardTokenId, id => tokenBalances[id])
+  const tokenUsdRate = maybe(rewardTokenId, id => tokenPrices[id])
 
   const onChangeToken = useCallback(
     (value: TokenOption) => {
@@ -108,7 +102,7 @@ export const AmountTokenInput = ({
         }
       }
       maxBalance={{ balance: rewardTokenBalance, chips: 'max' }}
-      inputBalanceUsd={maybes([amount, decimal(tokenUsdRate.data)], decimalMultiply)}
+      inputBalanceUsd={maybes([amount, decimal(tokenUsdRate?.data)], decimalMultiply)}
       disabled={disabled}
       testId="deposit-amount"
       tokenSelector={
@@ -122,8 +116,8 @@ export const AmountTokenInput = ({
           >
             <TokenList
               tokens={filteredTokens}
-              balances={tokenBalances.data}
-              tokenPrices={tokenPrices.data}
+              balances={tokenBalances}
+              tokenPrices={tokenPrices}
               onToken={onChangeToken}
             />
           </TokenSelector>

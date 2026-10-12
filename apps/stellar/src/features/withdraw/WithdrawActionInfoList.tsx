@@ -27,6 +27,7 @@ export const WithdrawActionInfoList = ({
 
   return (
     <PoolActionInfoList
+      slippageType="stable"
       expectedLp={expected}
       expectedLpLabel={t`Expected LP burned`}
       expectedLpTestId="pool-withdraw-expected-lp"

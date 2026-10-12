@@ -21,7 +21,7 @@ import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 
 export const Compensation = ({
-  rChainId: chainId,
+  chainId,
   activeKey,
   curve,
   contract,
@@ -32,7 +32,7 @@ export const Compensation = ({
   token,
   vestedTotal,
 }: {
-  rChainId: ChainId
+  chainId: ChainId
   activeKey: string
   curve: CurveApi | null
   contract: EtherContract['contract']

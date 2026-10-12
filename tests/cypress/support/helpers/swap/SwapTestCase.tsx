@@ -40,7 +40,7 @@ function QuickSwapTest({
       pageLoaded={!!(curveApi && fromToken && toToken)}
       params={{ network: defaultNetworks[chainId].blockchainId }}
       searchedParams={{ fromAddress, toAddress }}
-      rChainId={chainId}
+      chainId={chainId}
       redirect={noop}
     />
   )

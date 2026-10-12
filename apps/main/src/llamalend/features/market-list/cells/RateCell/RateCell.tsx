@@ -11,7 +11,7 @@ import { TooltipProps } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
-import { MarketColumnId } from '../../columns'
+import { MarketColumnId } from '../../columns/columns.enum'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
 import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
@@ -45,7 +45,7 @@ export const RateCell = <TValue extends number | null>({
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
       <Tooltip market={market}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography variant="tableCellMBold" color="textPrimary">
+          <Typography variant="tableCellValueStrong" color="textPrimary">
             {formatCappedRatePercent(rate)}
           </Typography>
 

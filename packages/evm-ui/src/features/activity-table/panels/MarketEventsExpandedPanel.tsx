@@ -1,63 +1,34 @@
+import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
-import { TokenIcon } from '@ui/components/TokenIcon'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { constQ } from '@ui/features/queries/util'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
 import type { MarketEventRow } from '../types'
+import { formatTokenDeltaUsd, getChangeColor, getLlammaEventTokenDeltas } from '../utils'
 
-const { Spacing } = SizesAndSpaces
+export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({ row: { original: event } }) => {
+  const currentDate = useCurrentDate()
 
-export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({
-  row: {
-    original: { deposit, withdrawal, provider, blockchainId, collateralToken, borrowToken },
-  },
-}) => (
-  <Stack>
-    {deposit && (
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="bodyMRegular" color="textSecondary">{t`Amount`}</Typography>
-        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-          <Typography variant="tableCellMBold" color="success">
-            {formatNumber(deposit.amount, { abbreviate: false })} {collateralToken?.symbol}
-          </Typography>
-          {collateralToken && <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />}
-        </Stack>
-      </Stack>
-    )}
-    {withdrawal && (
-      <>
-        {withdrawal.amountCollateral !== 0 && (
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="bodyMRegular" color="textSecondary">{t`Collateral`}</Typography>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-              <Typography variant="tableCellMBold" color="error">
-                {formatNumber(withdrawal.amountCollateral, { abbreviate: false })} {collateralToken?.symbol}
-              </Typography>
-              {collateralToken && (
-                <TokenIcon blockchainId={blockchainId} address={collateralToken.address} size="mui-sm" />
-              )}
-            </Stack>
-          </Stack>
-        )}
-        {withdrawal.amountBorrowed !== 0 && (
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="bodyMRegular" color="textSecondary">{t`Borrowed`}</Typography>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-              <Typography variant="tableCellMBold" color="error">
-                {formatNumber(withdrawal.amountBorrowed, { abbreviate: false })} {borrowToken?.symbol}
-              </Typography>
-              {borrowToken && <TokenIcon blockchainId={blockchainId} address={borrowToken.address} size="mui-sm" />}
-            </Stack>
-          </Stack>
-        )}
-      </>
-    )}
-    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-      <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
+  return (
+    <Stack>
+      <MetricsGrid variant="mobileRows">
+        {getLlammaEventTokenDeltas(event).map(delta => (
+          <MetricExpandedPanel
+            key={delta.label}
+            label={notFalsy(delta.label, delta.token?.symbol && `(${delta.token.symbol})`).join(' ')}
+            value={Math.abs(delta.amount)}
+            valueOptions={{ color: getChangeColor(delta.amount, 'success', 'error') }}
+            notional={constQ(formatTokenDeltaUsd({ ...delta, amount: Math.abs(delta.amount) }, currentDate))}
+            icon={{ blockchainId: delta.blockchainId, token: delta.token }}
+          />
+        ))}
+      </MetricsGrid>
+      <ActionInfo label={t`User`} value={shortenString(event.provider)} />
     </Stack>
-  </Stack>
-)
+  )
+}

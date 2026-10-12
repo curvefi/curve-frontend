@@ -1,19 +1,19 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { ScrvUsdWithdrawParams, ScrvUsdWithdrawQuery } from './scrvusd.validation'
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 
 const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) =>
-    [
-      ...rootKeys.userChain({ chainId, userAddress }),
-      'st_crvUSD.estimateGas.withdraw',
-      { withdrawAmount },
-      { isFull },
-      { maxWithdrawAmount },
-    ] as const,
+    ({
+      name: 'st_crvUSD.estimateGas.withdraw',
+      chainId,
+      userAddress,
+      withdrawAmount,
+      isFull,
+      maxWithdrawAmount,
+    }) as const,
   queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) =>
     await requireLib('llamaApi').st_crvUSD.estimateGas.redeem(isFull ? maxWithdrawAmount : withdrawAmount),
   category: 'savings.user',

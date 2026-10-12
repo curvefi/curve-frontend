@@ -7,7 +7,6 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 
 type GasEstimateParams = BorrowMoreParams & { isControllerApproved?: boolean }
@@ -24,15 +23,17 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       leverageEnabled,
       routeId,
     }: GasEstimateParams) =>
-      [
-        ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-        'estimateGas.borrowMoreApprove',
-        { userCollateral },
-        { userBorrowed },
-        { maxDebt },
-        { leverageEnabled },
-        { routeId },
-      ] as const,
+      ({
+        name: 'estimateGas.borrowMoreApprove',
+        chainId,
+        marketId,
+        userAddress,
+        userCollateral,
+        userBorrowed,
+        maxDebt,
+        leverageEnabled,
+        routeId,
+      }) as const,
     queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery): Promise<TGas | null> => {
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
@@ -66,16 +67,18 @@ const {
     leverageEnabled,
     routeId,
   }: GasEstimateParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'estimateGas.borrowMore',
-      { userCollateral },
-      { userBorrowed },
-      { debt },
-      { slippage },
-      { leverageEnabled },
-      { routeId },
-    ] as const,
+    ({
+      name: 'estimateGas.borrowMore',
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral,
+      userBorrowed,
+      debt,
+      slippage,
+      leverageEnabled,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     userCollateral = '0',

@@ -93,12 +93,12 @@ const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Ba
   return [shouldShowBanner, dismissBanner] as const
 }
 
+export const useDismissDexDashboardRetirementBanner = () =>
+  useDismissBanner('dex-dashboard-retirement-dismissed', 'Never')
+
 export const useDismissAaveBanner = () => useDismissBanner('aave-v2-frozen-avalanche-polygon')
-
 export const useDismissFantomRetirementBanner = () => useDismissBanner('fantom-chain-retirement', 'Daily')
-
 export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
-
 export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-dismissed')
 
 export const useDismissPoolBanner = (network: string, poolId: string) =>
@@ -106,7 +106,6 @@ export const useDismissPoolBanner = (network: string, poolId: string) =>
 
 export const useDismissMaintenanceModal = (dateISO: string | undefined) =>
   useLocalStorage<string | null>(`maintenance-modal-${dateISO}`, null)
-
 export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
   useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily')
 

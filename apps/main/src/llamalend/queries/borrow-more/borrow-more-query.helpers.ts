@@ -1,7 +1,6 @@
-import { getMarket, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasZapV2, isMintMarket } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@evm-ui/queries/router-api'
 import type { Nullish } from '@primitives/objects.utils'
 
@@ -16,7 +15,7 @@ export function getBorrowMoreImplementation(marketId: string | MarketTemplate, l
    */
   return !!leverageEnabled && hasZapV2(market)
     ? (['zapV2', market.leverageZapV2] as const)
-    : (['unleveraged', market instanceof MintMarketTemplate ? market : market.loan] as const)
+    : (['unleveraged', isMintMarket(market) ? market : market.loan] as const)
 }
 
 /**

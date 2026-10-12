@@ -1,4 +1,3 @@
-import { noop } from 'lodash'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import type { Amount } from './decimal.utils'
 import {
@@ -317,7 +316,7 @@ describe('defaultNumberFormatter', () => {
 
 describe('decomposeNumber', () => {
   // Mock console.warn for USD overflow tests
-  const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(noop)
+  const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
 
   afterEach(() => {
     consoleSpy.mockClear()
@@ -462,6 +461,12 @@ describe('formatNumber', () => {
     it('formats token categories', () => {
       expect(formatNumber(1234.56, 'token.amount')).toBe('1,234.56')
       expect(formatNumber(1234.56, 'token.compact')).toBe('1.23k')
+    })
+
+    it('formats token changes with signs, preserved precision, and a missing-value fallback', () => {
+      expect(formatNumber(null, 'token.delta')).toBe('-')
+      expect(formatNumber(1.004, 'token.delta')).toBe('+1.004')
+      expect(formatNumber(-1.004, 'token.delta')).toBe('-1.004')
     })
 
     it('formats token balances with precision-sensitive decimal handling', () => {

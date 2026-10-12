@@ -1,4 +1,4 @@
-import type { UserMarketParams } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'
 import { llamaApiValidationGroup } from './curve-api-validation'

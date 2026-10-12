@@ -143,6 +143,17 @@ export const Sizing = {
   '800': '5.5rem', // 88px
 } as const
 
+export const FontWeight = {
+  '200': 200,
+  '300': 300,
+  '400': 400,
+  '450': 450,
+  '500': 500,
+  '600': 600,
+  '700': 700,
+  '800': 800,
+} as const
+
 export const Duration = {
   ChartFrame: 16, // 16ms = ~60fps
   Delay: 100,
@@ -154,7 +165,7 @@ export const Duration = {
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
   LoadingAnimation: 1000,
-  Banner: { Daily: TIME_FRAMES.DAY_MS, Weekly: TIME_FRAMES.DAY_MS * 7, Monthly: TIME_FRAMES.MONTH_MS },
+  Banner: { Daily: TIME_FRAMES.DAY_MS, Weekly: TIME_FRAMES.DAY_MS * 7, Monthly: TIME_FRAMES.MONTH_MS, Never: Infinity },
   AverageRates: { Weekly: 7, Monthly: 30 },
   WagmiBatch: { Size: 3, Time: 50 },
   DataRefresh: {

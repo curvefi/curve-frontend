@@ -1,6 +1,5 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
@@ -33,6 +32,7 @@ import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { TIME_OPTION_MS } from '@ui/lib/time'
 import { useMarketContext } from '../features/market-context'
+import { useMarketRates, type MarketRates } from '../queries/market/market-rates.query'
 
 const { Spacing, Height } = SizesAndSpaces
 

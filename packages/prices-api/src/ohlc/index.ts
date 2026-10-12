@@ -11,13 +11,17 @@ type LpOhlcPriceUnits = 'usd' | 'token0'
 type OhlcRangeParams = { interval?: number; units?: OhlcUnits; start?: number; end?: number; daysRange?: number }
 
 export type GetOHLCParams = OhlcRangeParams & {
-  chain: Chain
+  blockchainId: Chain
   poolAddress: string
   mainToken: string
   referenceToken: string
 }
 
-export type GetLpOHLCParams = OhlcRangeParams & { chain: Chain; poolAddress: string; priceUnits?: LpOhlcPriceUnits }
+export type GetLpOHLCParams = OhlcRangeParams & {
+  blockchainId: Chain
+  poolAddress: string
+  priceUnits?: LpOhlcPriceUnits
+}
 
 const DEFAULT_DAYS_RANGE = 90
 const DEFAULT_INTERVAL = 1
@@ -45,7 +49,7 @@ const fetchOhlc = async (url: string, options?: Options) => {
 
 export function getOHLC(params: GetOHLCParams, options?: Options): Promise<Schema.OHLC[]>
 export function getOHLC(
-  chain: Chain,
+  blockchainId: Chain,
   poolAddress: string,
   mainToken: string,
   referenceToken: string,
@@ -61,7 +65,7 @@ export async function getOHLC(
   const params =
     typeof paramsOrChain === 'string'
       ? {
-          chain: paramsOrChain,
+          blockchainId: paramsOrChain,
           poolAddress: poolAddressOrOptions as string,
           mainToken: mainToken ?? '',
           referenceToken: referenceToken ?? '',
@@ -78,11 +82,11 @@ export async function getOHLC(
     daysRange: params.daysRange,
   })
 
-  return fetchOhlc(`/v1/ohlc/${params.chain}/${params.poolAddress}${query}`, options)
+  return fetchOhlc(`/v1/ohlc/${params.blockchainId}/${params.poolAddress}${query}`, options)
 }
 
 export async function getLpOHLC(
-  { chain, poolAddress, priceUnits = 'usd', interval, units, start, end, daysRange }: GetLpOHLCParams,
+  { blockchainId: chain, poolAddress, priceUnits = 'usd', interval, units, start, end, daysRange }: GetLpOHLCParams,
   options?: Options,
 ) {
   const query = getOhlcQuery({ price_units: priceUnits, interval, units, start, end, daysRange })

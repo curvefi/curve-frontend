@@ -1,6 +1,6 @@
 import { type Address, zeroAddress } from 'viem'
 import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
-import { GaugeParams, GaugeQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { GaugeParams, GaugeQuery } from '@evm-ui/queries/query-types'
 import { poolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import {
@@ -16,14 +16,14 @@ export const {
   invalidate: invalidateDepositRewardAvailable,
   queryKey: getDepositRewardAvailableQueryKey,
 } = queryFactory({
-  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,
+  queryKey: ({ chainId, poolId }: GaugeParams) => ({ name: 'isDepositRewardAvailable', chainId, poolId }) as const,
   queryFn: async ({ poolId }: GaugeQuery) => getGauge(poolId).isDepositRewardAvailable(),
   validationSuite: poolValidationSuite,
   category: 'dex.gauge',
 })
 
 export const { useQuery: useGaugeManager } = queryFactory({
-  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'manager'] as const,
+  queryKey: ({ chainId, poolId }: GaugeParams) => ({ name: 'manager', chainId, poolId }) as const,
   queryFn: async ({ poolId }: GaugeQuery): Promise<Address | null> => {
     const gaugeManager = (await getGauge(poolId).gaugeManager()) as Address | null
     return gaugeManager === zeroAddress ? null : gaugeManager
@@ -33,8 +33,8 @@ export const { useQuery: useGaugeManager } = queryFactory({
 })
 
 export const { useQuery: useGaugeRewardsDistributors, invalidate: invalidateGaugeDistributors } = queryFactory({
-  queryKey: ({ userAddress, ...params }: GaugeDistributorsParams) =>
-    [...rootKeys.gauge(params), ...rootKeys.user({ userAddress }), 'distributors'] as const,
+  queryKey: ({ chainId, poolId, userAddress }: GaugeDistributorsParams) =>
+    ({ name: 'distributors', chainId, poolId, userAddress }) as const,
   queryFn: async ({ poolId }: GaugeDistributorsQuery) =>
     (await getGauge(poolId).gaugeDistributors()) as Record<Address, Address>,
   validationSuite: gaugeDistributorsValidationSuite,
@@ -46,8 +46,8 @@ export const {
   fetchQuery: fetchDepositRewardIsApproved,
   queryKey: getDepositRewardIsApprovedQueryKey,
 } = queryFactory({
-  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) =>
-    [...rootKeys.gauge(gaugeParams), 'depositRewardIsApproved', { rewardTokenId }, { amount }] as const,
+  queryKey: ({ chainId, poolId, rewardTokenId, amount }: DepositRewardApproveParams) =>
+    ({ name: 'depositRewardIsApproved', chainId, poolId, rewardTokenId, amount }) as const,
   queryFn: async ({ poolId, amount, rewardTokenId }: DepositRewardApproveQuery) =>
     getGauge(poolId).depositRewardIsApproved(rewardTokenId, amount),
   validationSuite: gaugeDepositRewardApproveValidationSuite,

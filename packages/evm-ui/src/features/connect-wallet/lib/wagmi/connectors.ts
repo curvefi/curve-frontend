@@ -1,4 +1,3 @@
-import { assert } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { coinbaseWallet, injected, metaMask, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
@@ -24,9 +23,4 @@ export const connectors: CreateConnectorFn[] = [
     },
   }),
   injected({ target: { id: 'injected', name: t`Browser Wallet`, provider: () => window.ethereum } }),
-  // this will crash the whole app on purpose to make sure our setup is correct
-  ...assert(
-    window.eip6963Connectors,
-    'eip6963Connectors not initialized, make sure eip-6963.ts is loaded before this file',
-  ).map(target => injected({ target })),
 ]

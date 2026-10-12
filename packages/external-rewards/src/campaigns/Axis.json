@@ -1,0 +1,33 @@
+{
+  "campaignName": "Coordinates",
+  "platform": "Axis",
+  "description": "Earn Coordinates on eligible wallet-held Curve LP tokens, excluding gauge and Convex staking.",
+  "platformImageId": "coordinates.png",
+  "dashboardLink": "https://app.axis.to/coordinates",
+  "pools": [
+    {
+      "id": "curve-usdx-usdt",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "0",
+      "address": "0xE521BA88837B2726E5343ccA91adA6f19F356C45",
+      "network": "ethereum",
+      "multiplier": "20x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "curve-susdx-usdx",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "0",
+      "address": "0x1C9A0b9bFF066756c4586CB6711483Cfa9f281eE",
+      "network": "ethereum",
+      "multiplier": "10x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

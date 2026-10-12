@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { zip } from '@primitives/array.utils'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { type Amount, type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 
 export const ZERO: Decimal = '0'
@@ -17,7 +17,7 @@ export const decimal = (value: number | string | Nullish | BigNumber | bigint): 
   if (value instanceof BigNumber) {
     value = value.toFixed()
   }
-  if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
+  if (value != null && DECIMAL_REGEX.test(value)) {
     return value as Decimal
   }
 }
@@ -66,6 +66,17 @@ export const decimalSqrt = (value: Decimal): Decimal => {
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
+
+/** Round a decimal amount to the token's precision, truncating excess digits by default. */
+export const decimalRound = (
+  value: Decimal,
+  decimals: number,
+  rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN,
+) => new BigNumber(value).decimalPlaces(decimals, rounding).toFixed() as Decimal
+
+/** Divide and truncate toward zero at the requested precision, without intermediate rounding or changing global settings. */
+export const decimalDivToPrecision = (numerator: Decimal, denominator: Decimal, decimals: number): Decimal =>
+  new BigNumber(numerator).shiftedBy(decimals).dividedToIntegerBy(denominator).shiftedBy(-decimals).toFixed() as Decimal
 
 export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
   +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'

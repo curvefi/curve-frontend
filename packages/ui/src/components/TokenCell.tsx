@@ -41,7 +41,6 @@ export const TokenCell = ({ source, address, explorerUrl, endAdornment, displayA
         <Box sx={{ ...(endAdornment && { display: 'flex', alignItems: 'center', gap: Spacing.xs }) }}>
           <TokenInfo
             {...source}
-            boldPrimary
             secondary={
               !useIsMobile() &&
               displayAddress && (

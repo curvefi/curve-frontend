@@ -4,18 +4,20 @@ import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { AnyCurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type ChainQuery, rootKeys } from '@evm-ui/queries/root-keys'
+import type { ChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { gweiToEther, gweiToWai, weiToGwei } from '@evm-ui/utils'
+import { gweiToWai, weiToGwei } from '@evm-ui/utils'
 import type { Provider } from '@evm-ui/utils/ethers'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, assert, maybe, maybes, type PartialRecord } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS } from '@primitives/units.util'
 import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
 import { constQ, type Query as QueryResult } from '@ui/features/queries/util'
+import { fromWei } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -102,8 +104,8 @@ const {
   fetchQuery: fetchGasInfoAndUpdateLibBase,
   setQueryData: setGasInfoAndUpdateLibBase,
 } = queryFactory({
-  queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
-    [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
+  queryKey: ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoParams) =>
+    ({ name: 'gasInfo', chainId, gasPricesUrl, gasPricesUrlL2 }) as const,
   queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const chainId = chain as Chain
@@ -375,7 +377,7 @@ export function calculateGas(
           ? 0
           : basePlusPriority * +estimatedGas // Default calculation for regular networks
 
-  const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
+  const estGasCost = fromWei(gasCostInWei.toString(), DEFAULT_DECIMALS)
   const tooltip =
     `${formatToken(estGasCost, networkSymbol, 'amount')} at ` +
     `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false })} ${gasPricesUnit}`
@@ -383,7 +385,7 @@ export function calculateGas(
     estGasCost,
     nativeSymbol: networkSymbol,
     tooltip,
-    ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }),
+    ...(chainTokenUsdRate != null && { estGasCostUsd: +estGasCost * chainTokenUsdRate }),
   }
 }
 
@@ -427,6 +429,23 @@ export const createEstimateGasHook =
     const converted = useEstimateGas(query.chainId, estimate, enabled)
     return combineQueries([converted, estimate], data => data)
   }
+
+/** Like `createEstimateGasHook`, but first fetches claimable rewards and skips gas estimation when none exist. */
+export const createClaimEstimateGasHook = <
+  Query extends WithOptionalChainId,
+  Claimable,
+  Estimate extends EstimateValue,
+>(
+  useClaimable: (query: Query, enabled?: boolean) => QueryResult<Claimable>,
+  useEstimateGasQuery: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
+  isClaimEnabled: (claimable: Claimable | undefined) => boolean,
+) =>
+  createEstimateGasHook((query: Query, enabled?: boolean) => {
+    const claimable = useClaimable(query, enabled)
+    const estimateGas = useEstimateGasQuery(query, enabled && isClaimEnabled(claimable.data))
+
+    return combineQueries([claimable, estimateGas], (_, estimateGas) => estimateGas)
+  })
 
 /** Builds a reusable gas-cost hook for actions that may need approval first. */
 export const createApprovedEstimateGasHook =

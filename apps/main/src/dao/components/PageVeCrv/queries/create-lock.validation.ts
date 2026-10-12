@@ -38,7 +38,7 @@ export const createLockFormValidationSuite = createValidationSuite(
     validateCreateLockAmount(lockedAmount)
     skipWhen(lockedAmount == null || maxLockedAmount == null, () => {
       test('maxLockedAmount', t`The maximum lock amount is ${maxLockedAmount}`, () => {
-        enforce(lockedAmount).lte(maxLockedAmount)
+        enforce(lockedAmount).lte(maxLockedAmount!)
       })
     })
     test('utcDate', t`Select a valid unlock date`, () => {

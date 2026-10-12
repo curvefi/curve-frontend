@@ -1,39 +1,48 @@
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { PoolTokenInput, type PoolToken } from './PoolTokenInput'
 
+export type PoolTokenDisabled = boolean | 'first-only'
+
 export const PoolTokenInputs = ({
   tokens: { data: tokens, error },
   reserves,
-  isDisabled,
-  hideMaxButton,
+  disabled,
   maxAmounts,
+  positionAmounts,
 }: {
   tokens: QueryProp<PoolToken[]>
   reserves: QueryProp<Decimal[]>
-  isDisabled: boolean
-  hideMaxButton?: boolean
-  maxAmounts?: QueryProp<(Decimal | undefined)[]>
+  disabled: PoolTokenDisabled
+  maxAmounts?: QueryProp<Decimal>[]
+  positionAmounts?: QueryProp<(Decimal | undefined)[]> | undefined
 }) =>
   tokens?.map((token, index) => (
     <PoolTokenInput
       key={token.address}
       token={token}
       index={index}
-      disabled={isDisabled}
-      hideMaxButton={hideMaxButton}
+      disabled={disabled === true || (disabled === 'first-only' && index > 0)}
       reserves={reserves}
+      max={maxAmounts?.[index]}
       positionBalance={
-        maxAmounts && {
-          position: mapQuery(maxAmounts, amounts => amounts[index]),
+        positionAmounts && {
+          position: mapQuery(positionAmounts, amounts => amounts[index]),
           tooltip: t`Available pool liquidity`,
         }
       }
     />
   )) ??
-  (!error && (
+  (error ? (
+    <Alert>
+      <AlertTitle>{t`Error retrieving pool tokens`}</AlertTitle>
+      {error.message}
+    </Alert>
+  ) : (
     <>
       <LargeTokenInputSkeleton />
       <LargeTokenInputSkeleton />

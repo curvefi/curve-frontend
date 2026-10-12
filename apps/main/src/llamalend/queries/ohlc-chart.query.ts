@@ -17,7 +17,7 @@ type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type BaseOhlcQueryParams = {
   endpoint: Endpoint
-  chain: Chain | undefined
+  blockchainId: Chain | undefined
   interval: number
   timeOption: TimeOption
   units: OhlcTimeUnit
@@ -55,7 +55,7 @@ const getOraclePoolTokenPair = (pools: OraclePool[]): Pick<OraclePoolOhlcPage, '
 
 export const useOraclePoolOhlcQuery = ({
   endpoint,
-  chain,
+  blockchainId: chain,
   controller,
   interval,
   timeOption,
@@ -83,7 +83,7 @@ export const useOraclePoolOhlcQuery = ({
       const { data, pools, ohlc } = await getOracle(
         {
           endpoint,
-          chain: validChain,
+          blockchainId: validChain,
           controller: controller!, // validated via `enabled` prop
           interval,
           units,
@@ -102,7 +102,7 @@ export const useOraclePoolOhlcQuery = ({
 
 export const useLlammaOhlcQuery = ({
   endpoint,
-  chain,
+  blockchainId: chain,
   llamma,
   interval,
   timeOption,
@@ -130,7 +130,7 @@ export const useLlammaOhlcQuery = ({
       const ohlc = await getOHLC(
         {
           endpoint,
-          chain: validChain,
+          blockchainId: validChain,
           llamma: llamma!, // validated via `enabled` prop
           interval,
           units,

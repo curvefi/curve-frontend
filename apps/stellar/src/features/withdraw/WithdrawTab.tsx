@@ -1,4 +1,4 @@
-import type { PoolQuery } from '@/stellar/queries/root-keys'
+import type { PoolQuery } from '@/stellar/queries/query-types'
 import { WithdrawForm } from '@ui/features/pool-forms/withdraw/WithdrawForm'
 import { useWithdrawForm } from './useWithdrawForm'
 import { WithdrawActionInfoList } from './WithdrawActionInfoList'

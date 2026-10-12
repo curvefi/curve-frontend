@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { claimableRewardsValidationSuite, requireGauge } from '../validation/supply.validation'
@@ -8,7 +8,7 @@ export type ClaimableReward = { token: Address; symbol: string; amount: Decimal 
 
 export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableRewards'] as const,
+    ({ name: 'claimableRewards', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableRewards(userAddress)) as ClaimableReward[],
   category: 'llamalend.supply',
@@ -17,7 +17,7 @@ export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards 
 
 export const { useQuery: useClaimableCrv, fetchQuery: fetchClaimableCrv } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableCrv'] as const,
+    ({ name: 'claimableCrv', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableCrv(userAddress)) as Decimal,
   category: 'llamalend.supply',

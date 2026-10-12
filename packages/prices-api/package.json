@@ -11,15 +11,15 @@
     "prepublishOnly": "yarn run build",
     "lint": "eslint --cache --cache-location ../../.cache/eslint/prices-api --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/prices-api --cache-strategy content . --fix",
-    "test:endpoints": "vitest run --config vitest.endpoints.config.ts",
+    "test:endpoints": "yarn run --top-level test --root \"$(pwd)\" --config vitest.endpoints.config.ts",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-prices-api.tsbuildinfo"
   },
   "dependencies": {
     "@curvefi/primitives": "workspace:^",
-    "zod": "4.5.2"
+    "zod": "4.6.5"
   },
   "devDependencies": {
-    "vite": "7.3.5"
+    "vite": "8.3.1"
   },
   "publishConfig": {
     "access": "public"

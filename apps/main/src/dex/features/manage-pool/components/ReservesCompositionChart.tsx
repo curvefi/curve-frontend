@@ -53,13 +53,15 @@ const getReserveUsdShares = ({
 export const ReservesCompositionChart = ({
   blockchainId,
   poolAddress,
+  end,
 }: {
   blockchainId: Chain
   poolAddress: Address
+  end: number
 }) => {
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('6m')
   const [fullscreen, , closeFullscreen, toggleFullscreen] = useSwitch(false)
-  const { start, end } = useMemo(() => getTimeRange({ daysRange: DAYS[period] }), [period])
+  const { start } = getTimeRange({ daysRange: DAYS[period], end })
 
   const { data, isFetching: loading } = useRefuelTimeseries({
     blockchainId,

@@ -6,8 +6,9 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
+import { setVirtualNetworkClockToFork } from '@cy/support/helpers/tenderly/vnet-clock'
 import { fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { CurveProvider } from '@evm-ui/features/connect-wallet'
 
 const USER_ADDRESS = '0xD4f9FE0039Da59e6DDb21bbb6E84e0C9e83D73eD'
@@ -19,6 +20,8 @@ describe('FormClaimFees (RPC)', () => {
     display_name: `Claim fees (${uuid})`,
     fork_config: { block_number: '26055408' }, // At this point in time USER_ADDRESS has a claim on both types of fees (3crv and crvusd)
   }))
+
+  before(() => setVirtualNetworkClockToFork(getRpcUrls(getVirtualNetwork())))
 
   beforeEach(setupMockedDaoComponentTest)
 
@@ -37,7 +40,7 @@ describe('FormClaimFees (RPC)', () => {
     )
 
     Object.entries(REWARDS).forEach(([token, amount]) => {
-      cy.get(`[data-testid="claim-fees-${token}"]`, LOAD_TIMEOUT)
+      cy.get(`[data-testid="claim-fees-${token}"]`, TIMEOUTS['evm.contractRead'])
         .should('contain.text', amount)
         .find('button')
         .should('be.enabled')
@@ -45,7 +48,7 @@ describe('FormClaimFees (RPC)', () => {
 
     Object.keys(REWARDS).forEach(token => {
       cy.get(`[data-testid="claim-fees-${token}"]`).find('button').should('be.enabled').click()
-      cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).should(
+      cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should(
         'contain.text',
         `${token} fees have been claimed and sent to your wallet.`,
       )

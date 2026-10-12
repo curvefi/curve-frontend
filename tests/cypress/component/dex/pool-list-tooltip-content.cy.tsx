@@ -1,14 +1,15 @@
 import type { ReactElement } from 'react'
-import { BaseRateTooltipContent } from '@/dex/components/BaseRateTooltipContent'
-import { CrvRateTooltipContent } from '@/dex/components/CrvRateTooltipContent'
-import { NetRateTooltipContent } from '@/dex/features/pool-list/cells/NetRateTooltipContent'
-import { CampaignTooltipContent } from '@/dex/features/pool-list/cells/RewardIcons'
-import { RewardsRateTooltipContent } from '@/dex/features/pool-list/cells/RewardsRateTooltipContent'
-import type { PoolRow } from '@/dex/features/pool-list/types'
-import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import type { CampaignRewards } from '@evm-ui/queries/campaigns'
+import { MAINNET_CRV } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
-import { constQ } from '@ui/features/queries/util'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
+import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
+import { CampaignTooltipContent } from '@ui/features/pool-list/cells/RewardIcons'
+import { RewardsRateTooltipContent } from '@ui/features/pool-list/cells/RewardsRateTooltipContent'
+import type { PoolRow, PoolTableMeta } from '@ui/features/pool-list/types'
+import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
+import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
+import { constQ, DISABLED_Q } from '@ui/features/queries/util'
+import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 
 const CONTENT = '[data-testid="pool-tooltip-content"]'
 const POOL_ADDRESS = '0xefc6516323fbd28e80b85a497b65a86243a54b3e'
@@ -16,6 +17,10 @@ const GAUGE_ADDRESS = '0x07a01471fa544d9c6531b631e6a96a79a9ad05e9'
 const POINTS_CAMPAIGN_LINK = 'https://www.liquity.org/forks/'
 const APR_CAMPAIGN_LINK = 'https://www.liquity.org/'
 const CAMPAIGN_ICON = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms/liquity.png'
+const CRV_TOKEN = {
+  address: MAINNET_CRV.address,
+  blockchainId: MAINNET_CRV.blockchainId,
+} satisfies PoolTableMeta['crvToken']
 
 const BOLD = {
   symbol: 'BOLD',
@@ -43,11 +48,12 @@ const BOLD_CAMPAIGN: CampaignRewards = {
   dashboardLink: POINTS_CAMPAIGN_LINK,
   action: 'lp',
   tags: ['points'],
+  isMerkl: false,
   address: POOL_ADDRESS,
   network: 'ethereum',
+  lock: false,
   description:
     'Providing liquidity earns you additional rewards from 15+ friendly forks. For more information please visit issuer.',
-  lock: false,
   symbol: '15+',
 }
 
@@ -75,7 +81,13 @@ const createPool = (): PoolRow => ({
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
-  userPosition: { lpBalance: '0', depositsUsd: undefined, claimables: constQ([]) },
+  userPosition: { lpBalance: '0', depositsUsd: DISABLED_Q, claimables: constQ([]), claimablesUsd: constQ('0') },
+  extraRewardsTotalApr: 2,
+  campaignRewardsApr: 3,
+  rewardsApr: 5,
+  incentivesApr: 10,
+  netApr: 20,
+  netAprBoosted: 27.5,
   hasVyperVulnerability: false,
   isMetapool: false,
   chainId: Chain.Ethereum,
@@ -88,9 +100,9 @@ const createPool = (): PoolRow => ({
 
 const mountContent = (content: ReactElement) =>
   cy.mount(
-    <ComponentTestWrapper>
+    <ThemeProvider theme="light">
       <div data-testid="pool-tooltip-content">{content}</div>
-    </ComponentTestWrapper>,
+    </ThemeProvider>,
   )
 
 const expectContent = (expected: readonly string[]) => {
@@ -113,12 +125,12 @@ describe('V2 pool-list tooltip content', () => {
     mountContent(<BaseRateTooltipContent dailyRate={10} weeklyRate={-10} />)
     cy.get(CONTENT).should('contain.text', 'Base APR can temporarily be negative')
 
-    mountContent(<CrvRateTooltipContent unboostedRate={5} maximumRate={12.5} />)
+    mountContent(<CrvRateTooltipContent unboostedRate={5} maximumRate={12.5} crvToken={CRV_TOKEN} />)
     expectContent(['Unboosted5%', 'Max boost12.50%'])
   })
 
   it('renders the complete Net APR breakdown and BOLD campaign links', () => {
-    mountContent(<NetRateTooltipContent pool={createPool()} volatile={false} />)
+    mountContent(<NetRateTooltipContent pool={createPool()} crvToken={CRV_TOKEN} volatile={false} />)
 
     expectContent([
       'Base APR10%',
@@ -137,7 +149,7 @@ describe('V2 pool-list tooltip content', () => {
   })
 
   it('renders the volatile Net rate warning', () => {
-    mountContent(<NetRateTooltipContent pool={createPool()} volatile />)
+    mountContent(<NetRateTooltipContent pool={createPool()} crvToken={CRV_TOKEN} volatile />)
     cy.get(CONTENT).should('contain.text', 'This net rate is volatile and is unlikely to persist.')
   })
 

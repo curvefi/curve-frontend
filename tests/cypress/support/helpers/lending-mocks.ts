@@ -19,11 +19,11 @@ const oneApiToken = (token: ReturnType<typeof oneToken>) => ({
 })
 
 const oneLendingPool = (
-  chain: Chain,
+  blockchainId: Chain,
   { utilization = oneFloat(0, 0.99), tvl = oneTvl() }: { utilization?: number; tvl?: number },
 ): GetMarketsResponse['data'][number] => {
-  const collateral = oneToken(chain)
-  const borrowed = oneToken(chain)
+  const collateral = oneToken(blockchainId)
+  const borrowed = oneToken(blockchainId)
   const borrowedPrice = borrowed.usdPrice ?? onePrice()
   const collateralPrice = collateral.usdPrice ?? onePrice()
   const liquidityUsd = Math.max(0, oneFloat(0, tvl)) // portion of TVL represented by (assets - debt)
@@ -98,28 +98,28 @@ export const HIGH_TVL_ADDRESS = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as 
 export const HIGH_UTILIZATION_ADDRESS = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 const REWARDS_TEST_ADDRESS = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
-function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
+function oneLendingVaultResponse(blockchainId: Chain): GetMarketsResponse {
   const count = oneInt(15, 20)
   const data = [
-    ...range(count).map(index => oneLendingPool(chain, { utilization: index / count, tvl: oneTvl() })),
-    ...(chain == 'ethereum'
+    ...range(count).map(index => oneLendingPool(blockchainId, { utilization: index / count, tvl: oneTvl() })),
+    ...(blockchainId == 'ethereum'
       ? ([
           {
             // fixed vault address to test campaign rewards
-            ...oneLendingPool(chain, { utilization: oneFloat(0.98) }),
+            ...oneLendingPool(blockchainId, { utilization: oneFloat(0.98) }),
             vault: REWARDS_TEST_ADDRESS,
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
           },
           {
             // largest TVL to test the sorting
-            ...oneLendingPool(chain, { utilization: oneFloat(0.4, 0.8), tvl: MAX_USD_VALUE * 2 }),
+            ...oneLendingPool(blockchainId, { utilization: oneFloat(0.4, 0.8), tvl: MAX_USD_VALUE * 2 }),
             address: HIGH_TVL_ADDRESS,
             vault: HIGH_TVL_ADDRESS,
             controller: HIGH_TVL_ADDRESS,
           },
           {
             // 99% utilization to test the sorting and slider filter
-            ...oneLendingPool(chain, { utilization: 0.99 }),
+            ...oneLendingPool(blockchainId, { utilization: 0.99 }),
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
             address: HIGH_UTILIZATION_ADDRESS,
             vault: HIGH_UTILIZATION_ADDRESS,

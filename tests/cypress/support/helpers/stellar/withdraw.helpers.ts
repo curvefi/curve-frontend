@@ -5,10 +5,10 @@ import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { fetchPoolState, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { decimalMinus, decimalSum, fromWei } from '@ui/lib/decimal'
 
 export const fetchWithdrawState = async (pool: StellarContract, config: TestnetConfig) => {
@@ -20,8 +20,8 @@ export const fetchWithdrawState = async (pool: StellarContract, config: TestnetC
 }
 export type WithdrawState = Awaited<ReturnType<typeof fetchWithdrawState>>
 
-export const withdrawLpInput = () => cy.get('[data-testid="pool-withdraw-lp-input"]', LOAD_TIMEOUT)
-export const withdrawSubmit = () => cy.get('[data-testid="pool-withdraw-submit"]', LOAD_TIMEOUT)
+export const withdrawLpInput = () => cy.get('[data-testid="pool-withdraw-lp-input"]', TIMEOUTS['ui.render'])
+export const withdrawSubmit = () => cy.get('[data-testid="pool-withdraw-submit"]', TIMEOUTS['ui.render'])
 export const writeWithdrawLp = (amount: Decimal) => {
   withdrawLpInput().find('input').should('be.enabled').clear()
   withdrawLpInput().find('input').type(amount)
@@ -31,7 +31,11 @@ export const writeWithdrawLp = (amount: Decimal) => {
 export const checkWithdrawDetail = (
   detail: 'expected-lp' | 'maximum-lp' | 'current-lp' | 'projected-lp',
   amount: Decimal,
-) => getActionValue(`pool-withdraw-${detail}`).should('equal', formatNumber(amount, 'token.balance'))
+) =>
+  getActionValue(`pool-withdraw-${detail}`, detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation').should(
+    'equal',
+    formatNumber(amount, 'token.balance'),
+  )
 
 export const checkWithdrawBalances = ({ coins, lp, reserves }: WithdrawState) => {
   checkWithdrawDetail('current-lp', lp.balance)
@@ -61,7 +65,10 @@ export const fetchWithdrawPreview = async (pool: StellarContract, state: Withdra
 
 export const submitWithdrawForm = ({ coins }: PoolState) => {
   withdrawSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Withdrawal confirmed')
+  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should(
+    'contain.text',
+    'Withdrawal confirmed',
+  )
   withdrawLpInput().find('input').should('have.value', '')
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')

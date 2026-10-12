@@ -6,7 +6,7 @@ import { type AppName, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
 import { fetchJson } from '@primitives/fetch.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useMatchRoute } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -14,7 +14,7 @@ import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
-  queryKey: () => ['appStatsDailyVolume'] as const,
+  queryKey: () => ({ name: 'appStatsDailyVolume' }) as const,
   queryFn: async () => {
     const resp = await fetchJson<{ data: { totalVolume: number } }>(
       'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',

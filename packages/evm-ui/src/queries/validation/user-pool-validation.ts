@@ -1,4 +1,4 @@
-import type { UserPoolParams } from '@evm-ui/queries/root-keys'
+import type { UserPoolParams } from '@evm-ui/queries/query-types'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { evmAddressValidationGroup } from './evm-address-validation'
 import { poolValidationGroup } from './pool-validation'

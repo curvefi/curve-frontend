@@ -1,14 +1,12 @@
+import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import { notFalsy } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
-import { TokenIcon } from '@ui/components/TokenIcon'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { formatToken } from '@ui/lib/tokens'
 import type { MarketTradeRow } from '../types'
-
-const { Spacing } = SizesAndSpaces
 
 export const MarketTradesExpandedPanel: ExpandedPanelComponent<MarketTradeRow> = ({
   row: {
@@ -16,18 +14,14 @@ export const MarketTradesExpandedPanel: ExpandedPanelComponent<MarketTradeRow> =
   },
 }) => (
   <Stack>
-    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
-      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        <Typography variant="tableCellMBold" color="error">
-          {formatToken(amountSold, tokenSold.symbol, 'amount')}
-        </Typography>
-        <TokenIcon blockchainId={blockchainId} address={tokenSold.address} size="mui-sm" />
-      </Stack>
-    </Stack>
-    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-      <Typography variant="tableCellMBold">{shortenString(buyer)}</Typography>
-    </Stack>
+    <MetricsGrid variant="mobileRows">
+      <MetricExpandedPanel
+        label={notFalsy(t`Sold`, tokenSold.symbol && `(${tokenSold.symbol})`).join(' ')}
+        value={amountSold}
+        valueOptions={{ color: 'error' }}
+        icon={{ blockchainId, token: tokenSold }}
+      />
+    </MetricsGrid>
+    <ActionInfo label={t`User`} value={shortenString(buyer)} />
   </Stack>
 )

@@ -121,8 +121,8 @@ describe('leverage action info', () => {
       </ComponentTestWrapper>,
     )
 
-    getActionValue('borrow-return-on-equity', 'previous').should('equal', formatNumber(8, 'percent.rate'))
-    getActionValue('borrow-return-on-equity').should('equal', formatNumber(7, 'percent.rate'))
+    getActionValue('borrow-return-on-equity', 'ui.render', 'previous').should('equal', formatNumber(8, 'percent.rate'))
+    getActionValue('borrow-return-on-equity', 'ui.render').should('equal', formatNumber(7, 'percent.rate'))
   })
 })
 

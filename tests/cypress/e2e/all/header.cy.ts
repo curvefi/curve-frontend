@@ -8,9 +8,8 @@ import {
   getRouteTestId,
   oneAppRoute,
 } from '@cy/support/routes'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import {
-  API_LOAD_TIMEOUT,
-  LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
   oneViewport,
@@ -41,9 +40,8 @@ describe('Header', () => {
     beforeEach(() => {
       ;[width, height] = oneDesktopViewport()
       cy.viewport(width, height)
-      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visitWithoutTestConnector(route)
+      cy.visitWithoutTestConnector(route, { onBeforeLoad: dismissHeaderBanners })
       waitIsLoaded(route)
     })
 
@@ -119,9 +117,8 @@ describe('Header', () => {
     beforeEach(() => {
       ;[width, height] = oneMobileOrTabletViewport()
       cy.viewport(width, height)
-      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visitWithoutTestConnector(route)
+      cy.visitWithoutTestConnector(route, { onBeforeLoad: dismissHeaderBanners })
       waitIsLoaded(route)
     })
 
@@ -163,7 +160,7 @@ describe('Header', () => {
         const index = isFirstPage ? 1 : 0 // pick 2nd link if first is current
         cy.get('[data-testid^="sidebar-item-"]').eq(index).should('have.attr', 'href').and('not.equal', pathname)
         cy.get('[data-testid^="sidebar-item-"]').eq(index).click()
-        cy.url(LOAD_TIMEOUT).should('not.equal', href)
+        cy.url(TIMEOUTS['ui.navigation']).should('not.equal', href)
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       })
     })
@@ -219,7 +216,7 @@ describe('Header', () => {
 
     it('should display the banner and allow dismissal', () => {
       visitWithDismissedBanner()
-      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
+      cy.get("[data-testid='phishing-warning-banner']", TIMEOUTS['ui.render']).should('be.visible')
       // Click the banner to dismiss it
       cy.get("[data-testid='phishing-warning-banner']").find('button').first().click()
       cy.get("[data-testid='phishing-warning-banner']").should('not.exist')
@@ -229,14 +226,14 @@ describe('Header', () => {
       // Set dismissal date to 31 days ago (more than one month)
       const oneMonthAgo = Date.now() - 31 * TIME_FRAMES.DAY_MS
       visitWithDismissedBanner(oneMonthAgo)
-      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
+      cy.get("[data-testid='phishing-warning-banner']", TIMEOUTS['ui.render']).should('be.visible')
     })
 
     it('should remain hidden within one month', () => {
       // Set dismissal date to 15 days ago (less than one month)
       const fifteenDaysAgo = Date.now() - 15 * TIME_FRAMES.DAY_MS
       visitWithDismissedBanner(fifteenDaysAgo)
-      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
+      cy.get("[data-testid='phishing-warning-banner']", TIMEOUTS['ui.render']).should('not.exist')
     })
   })
 
@@ -250,26 +247,27 @@ describe('Header', () => {
     })
 
     it('should have no missing wagmi chains alert', () => {
-      cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
+      cy.get(`[data-testid='chain-icon-ethereum']`, TIMEOUTS['ui.render']).should('be.visible')
       cy.get(`[data-testid='btn-change-chain']`).click()
       cy.get(`[data-testid='missing-chain-config']`).should('not.exist')
     })
   })
 
-  const dismissPhishingWarningBanner = (date?: number) => {
-    cy.window().then(win => {
-      win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
-    })
+  const dismissHeaderBanners = (win: Cypress.AUTWindow) => {
+    // Keep navigation size assertions independent of temporary header announcements.
+    const dismissedAt = JSON.stringify(Date.now())
+    win.localStorage.setItem('phishing-warning-dismissed', dismissedAt)
+    win.localStorage.setItem('dex-dashboard-retirement-dismissed', dismissedAt)
   }
 
   const waitIsLoaded = (route: AppRoute) =>
-    cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid='${getRouteTestId(route)}']`, TIMEOUTS['ui.render']).should('be.visible')
 
   function switchEthToArbitrum() {
-    cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid='chain-icon-ethereum']`, TIMEOUTS['ui.render']).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
     cy.get(`[data-testid='menu-item-chain-arbitrum']`).click()
-    cy.get(`[data-testid^='menu-item-chain-']`, API_LOAD_TIMEOUT).should('not.exist')
+    cy.get(`[data-testid^='menu-item-chain-']`, TIMEOUTS['ui.render']).should('not.exist')
     cy.get(`[data-testid='chain-icon-arbitrum']`).should('be.visible')
   }
 

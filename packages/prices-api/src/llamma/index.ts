@@ -8,49 +8,49 @@ export type * from './schema'
 
 export type GetEventsParams = {
   endpoint: Schema.Endpoint
-  chain: Chain
+  blockchainId: Chain
   llamma: Address
   page?: number
   perPage?: number
 }
 
 export async function getEvents(
-  { endpoint: endpointParam, chain, llamma, page = 1, perPage = 10 }: GetEventsParams,
+  { endpoint: endpointParam, blockchainId, llamma, page = 1, perPage = 10 }: GetEventsParams,
   options?: Options,
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
   const params = new URLSearchParams({ page: page.toString(), per_page: perPage.toString() })
 
-  const response = await fetch(`${host}/v1/${endpointParam}/llamma_events/${chain}/${llamma}?${params}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_events/${blockchainId}/${llamma}?${params}`)
 
   return Schema.getLlammaEventsResponse.parse(response)
 }
 
 export type GetTradesParams = {
   endpoint: Schema.Endpoint
-  chain: Chain
+  blockchainId: Chain
   llamma: Address
   page?: number
   perPage?: number
 }
 
 export async function getTrades(
-  { endpoint: endpointParam, chain, llamma, page = 1, perPage = 10 }: GetTradesParams,
+  { endpoint: endpointParam, blockchainId, llamma, page = 1, perPage = 10 }: GetTradesParams,
   options?: Options,
 ) {
   const host = getHost(options)
   Schema.endpoint.parse(endpointParam)
   const params = new URLSearchParams({ page: page.toString(), per_page: perPage.toString() })
 
-  const response = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${chain}/${llamma}?${params}`)
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_trades/${blockchainId}/${llamma}?${params}`)
 
   return Schema.getLlammaTradesResponse.parse(response)
 }
 
 type GetOHLCParams = {
   endpoint: Schema.Endpoint
-  chain: Chain
+  blockchainId: Chain
   llamma: Address
   interval?: number
   units?: 'day' | 'hour' | 'minute'
@@ -59,7 +59,7 @@ type GetOHLCParams = {
 }
 
 export async function getOHLC(
-  { endpoint: endpointParam, chain, llamma, interval = 1, units = 'hour', start, end }: GetOHLCParams,
+  { endpoint: endpointParam, blockchainId, llamma, interval = 1, units = 'hour', start, end }: GetOHLCParams,
   options?: Options,
 ) {
   const host = getHost(options)
@@ -74,7 +74,7 @@ export async function getOHLC(
     end: range.end.toString(),
   })
 
-  const response = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params}`, {
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${blockchainId}/${llamma}?${params}`, {
     signal: options?.signal,
   })
 

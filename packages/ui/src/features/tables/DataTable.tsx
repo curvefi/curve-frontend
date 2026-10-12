@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, useMemo, useRef } from 'react'
+import { type ReactNode, type RefObject, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -50,10 +50,11 @@ export type DataTableProps<TData extends RowData> = {
   emptyState?: TableEmptyState // optional overrides for the built-in empty state
   errorState?: TableErrorState // optional overrides for the built-in error state
   children?: ReactNode // passed to <FilterRow />
+  anchorRef?: RefObject<HTMLTableSectionElement | null> // anchor for overlays that follow the sticky column headers
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
 } & AllOrNone<ConnectionProps & { userAddress: Address | undefined }> &
-  Omit<DataRowProps<TData>, 'table' | 'row'>
+  Omit<DataRowProps<TData>, 'table' | 'row' | 'rowHeight'>
 
 /**
  * DataTable component to render the table with headers and rows.
@@ -65,6 +66,7 @@ export const DataTable = <TData extends RowData>({
   emptyState,
   errorState,
   children,
+  anchorRef,
   shouldStickFirstColumn = false,
   footerRow,
   viewAllLabel,
@@ -85,6 +87,7 @@ export const DataTable = <TData extends RowData>({
     emptyStateSize = 'md',
     emptyStateRowSize = 'sm',
     enablePageChangeScroll = false,
+    rowHeight = 'lg',
   }: DataTableCategoryConfig = DATA_TABLE_CATEGORIES[category]
   const { table } = rowProps
   const { isLoading, error } = table
@@ -136,7 +139,7 @@ export const DataTable = <TData extends RowData>({
             data-testid={!isLoading && 'data-table'}
           >
             {!hideHeader && (
-              <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+              <TableHead ref={anchorRef} sx={tableHeaderSx} data-testid="data-table-head">
                 {children && shouldStickyHeader && (
                   <FilterRow colSpan={columnCount} testId={TABLE_FILTERS_TEST_ID}>
                     {children}
@@ -159,7 +162,13 @@ export const DataTable = <TData extends RowData>({
             )}
             <TableBody>
               {visibleRows.map(row => (
-                <DataRow key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
+                <DataRow
+                  key={row.id}
+                  row={row}
+                  shouldStickFirstColumn={shouldStickFirstColumn}
+                  rowHeight={rowHeight}
+                  {...rowProps}
+                />
               ))}
               {error ? (
                 <EmptyStateRow colSpan={columnCount} size={emptyStateRowSize}>

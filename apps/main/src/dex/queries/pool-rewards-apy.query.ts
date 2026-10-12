@@ -5,15 +5,15 @@ import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { type PoolParams, type PoolQuery, rootKeys } from '@evm-ui/queries/root-keys'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
+import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { isValidAddress } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
-import { fulfilledValue, isValidAddress } from '../utils'
+import { fulfilledValue } from '../utils'
 
 type RewardCrv = number
 type RewardOther = {
@@ -135,16 +135,14 @@ type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
 const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQuery } = queryFactory({
   category: 'dex.pool',
   queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'rewardsApy', { useApi }] as const,
+    ({ name: 'rewardsApy', chainId, poolId, useApi }) as const,
   queryFn: async ({ chainId, poolId, useApi }: PoolRewardsApyQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
     const networks = await fetchNetworks()
     return await poolAllRewardsApy(networks[chainId], pool, useApi)
   },
   validationSuite: createValidationSuite((params: PoolRewardsApyParams) => {
-    curveApiValidationGroup(params)
-    chainValidationGroup(params)
-    poolValidationGroup(params)
+    curvePoolValidationGroup(params)
     test('useApi', () => {
       enforce(params.useApi).isBoolean()
     })
@@ -154,8 +152,5 @@ const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQu
 export const invalidatePoolRewardsApy = (params: PoolParams<ChainId>) =>
   Promise.all([true, false].map(useApi => invalidatePoolRewardsApyQuery({ ...params, useApi })))
 
-/** Prefer on-chain rewards for pool details when a wallet is connected. */
-export function usePoolRewardsApy(params: PoolParams<ChainId>) {
-  const { curveApi, isHydrated } = useCurve()
-  return usePoolRewardsApyQuery({ ...params, useApi: !curveApi?.signerAddress }, isHydrated)
-}
+export const usePoolRewardsApy = (params: PoolParams<ChainId>) =>
+  useHydratedQuery(usePoolRewardsApyQuery, { ...params, useApi: !useCurve()?.curveApi?.signerAddress })

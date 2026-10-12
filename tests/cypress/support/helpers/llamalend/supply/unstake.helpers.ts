@@ -8,10 +8,10 @@ import {
   writeSupplyInput,
 } from './supply.helpers'
 
-export const submitUnstakeForm = () => submitSupplyForm('unstake', 'Unstake successful!')
+export const submitUnstakeForm = (isMocked = false) => submitSupplyForm('unstake', 'Unstake successful!', isMocked)
 
-export const readUnstakeAvailableAssets = () =>
-  getSupplyInputBalanceValueAttr('unstake')
+export const readUnstakeAvailableAssets = (isMocked = false) =>
+  getSupplyInputBalanceValueAttr('unstake', isMocked)
     .should(value => expect(Number(value)).gt(0))
     .then(value => value as Decimal)
 
@@ -33,6 +33,7 @@ export function checkUnstakeDetailsLoaded({
   expectedButtonText = 'Unstake',
   symbol = 'crvUSD',
   hasApi = true,
+  isMocked = false,
 }: {
   vaultShares?: Decimal
   prevVaultShares?: Decimal
@@ -41,9 +42,18 @@ export function checkUnstakeDetailsLoaded({
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
+  isMocked?: boolean
 }) {
-  checkSupplyActionInfoValues({ vaultShares, prevVaultShares, suppliedAssets, prevSuppliedAssets, symbol, hasApi })
-  checkSupplySubmitButtonText('unstake', expectedButtonText)
+  checkSupplyActionInfoValues({
+    vaultShares,
+    prevVaultShares,
+    suppliedAssets,
+    prevSuppliedAssets,
+    symbol,
+    hasApi,
+    isMocked,
+  })
+  checkSupplySubmitButtonText('unstake', expectedButtonText, isMocked)
 }
 
 /**

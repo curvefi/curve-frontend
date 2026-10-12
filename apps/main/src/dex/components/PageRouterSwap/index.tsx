@@ -23,7 +23,8 @@ import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types
 import { getRouterSwapsExchangeRate, getRouterWarningModal, getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { TokenList, useTokenSelectorData } from '@evm-ui/features/select-token'
+import { TokenList } from '@evm-ui/features/select-token/ui/modal/TokenList'
+import { useTokenSelectorData } from '@evm-ui/features/select-token/useTokenSelectorData'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useEstimateGasValue } from '@evm-ui/queries/gas-info.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
@@ -38,7 +39,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { assert, fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
+import { assert, fromEntries, maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
@@ -51,7 +52,7 @@ import { mapQuery, q, toQuery, useMappedQuery } from '@ui/features/queries/util'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { notify } from '@ui/features/toast/Toast/notify'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { decimal } from '@ui/lib/decimal'
@@ -70,14 +71,14 @@ const getSlippageType = ({ isStableswapRoute }: RouterRouteResponse | RawRoutesA
 export const QuickSwap = ({
   pageLoaded,
   params,
-  rChainId: chainId,
+  chainId,
   searchedParams,
   redirect,
   curve,
 }: {
   pageLoaded: boolean
   params: NetworkUrlParams
-  rChainId: ChainId
+  chainId: ChainId
   searchedParams: SearchedParams
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
@@ -180,11 +181,7 @@ export const QuickSwap = ({
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromToken?.address })
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toToken?.address })
 
-  const {
-    balances,
-    tokenPrices,
-    isLoading: tokenSelectorLoading,
-  } = useTokenSelectorData(
+  const { balances, tokenPrices } = useTokenSelectorData(
     { chainId, userAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
@@ -549,7 +546,7 @@ export const QuickSwap = ({
               balances={balances}
               tokenPrices={tokenPrices}
               volumes={tokenVolumes.data}
-              isLoading={tokenSelectorLoading}
+              isLoading={recordValues(balances).some(q => q.isLoading)}
               onToken={({ address: fromAddress }) => {
                 const toAddress =
                   fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress

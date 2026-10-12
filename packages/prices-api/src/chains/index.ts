@@ -11,9 +11,9 @@ export async function getSupportedChains(options?: Options) {
   return Schema.getSupportedChainsResponse.parse(response)
 }
 
-export async function getChainInfo(chain: Chain, options?: Options) {
+export async function getChainInfo(blockchainId: Chain, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/chains/${chain}`)
+  const response = await fetch(`${host}/v1/chains/${blockchainId}`)
 
   return Schema.getChainInfoResponse.parse(response)
 }

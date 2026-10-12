@@ -1,21 +1,23 @@
 import { useRef, useState } from 'react'
 import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
-import { useSortFromQueryString } from '@evm-ui/hooks/useSortFromQueryString'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import { useFilters } from '@ui/features/tables/hooks/useFilters'
 import { TableFilters } from '@ui/features/tables/TableFilters'
 import { TableFiltersChip } from '@ui/features/tables/TableFiltersChip'
 import { TableHeader } from '@ui/features/tables/TableHeader'
 import { TableVisibilitySettingsPopover } from '@ui/features/tables/TableVisibilitySettingsPopover'
 import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
+import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { MarketsChips } from './chips/MarketsChips'
-import { DEFAULT_SORT, MARKET_COLUMNS, MarketColumnId } from './columns'
+import { DEFAULT_SORT } from './columns/column.constants'
+import { MARKET_COLUMNS } from './columns/column.definitions'
+import { MarketColumnId } from './columns/columns.enum'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
@@ -38,10 +40,10 @@ export const MarketsTable = ({
   tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
-  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState<boolean | undefined>()
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
-  const visibilitySettingsRef = useRef<HTMLButtonElement>(null)
+  const anchorRef = useRef<HTMLTableSectionElement>(null)
   const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
@@ -73,9 +75,15 @@ export const MarketsTable = ({
 
   return (
     <Stack>
-      <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
+      <TableHeader
+        title={t`Markets`}
+        onReload={onReload}
+        isLoading={isLoading}
+        visibilitySettings={{ isOpen: visibilitySettingsOpen, open: openVisibilitySettings }}
+      />
       <EvmDataTable
         table={table}
+        anchorRef={anchorRef}
         emptyState={{
           title: t`No markets found`,
           description: t`Try adjusting your filters or search query`,
@@ -87,11 +95,6 @@ export const MarketsTable = ({
       >
         <TableFilters
           testIdPrefix={LOCAL_STORAGE_KEY}
-          visibilitySettings={{
-            anchorRef: visibilitySettingsRef,
-            open: visibilitySettingsOpen,
-            onOpen: openVisibilitySettings,
-          }}
           disableSearchAutoFocus
           searchText={globalFilter}
           onSearch={setGlobalFilter}
@@ -120,7 +123,7 @@ export const MarketsTable = ({
         />
       </EvmDataTable>
       <TableVisibilitySettingsPopover<MarketColumnId>
-        anchorRef={visibilitySettingsRef}
+        anchorRef={anchorRef}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         open={visibilitySettingsOpen}

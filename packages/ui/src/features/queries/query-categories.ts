@@ -52,6 +52,7 @@ export const QUERY_CATEGORIES = {
   'llamalend.addCollateral': form,
   'llamalend.removeCollateral': form,
   'llamalend.supply': form,
+  'llamalend.collateralRewards': form,
   'llamalend.closeLoan': form,
 
   // DAO

@@ -5,7 +5,7 @@ import { Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
-import type { Decimal } from '@primitives/decimal.utils'
+import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
@@ -77,7 +77,7 @@ const sanitize = (value: string, current: string): string => {
 const clamp = (value?: string, min?: Decimal, max?: Decimal): BigNumber => {
   const bigMin = new BigNumber(min ?? -Infinity)
   const bigMax = new BigNumber(max ?? Infinity)
-  const num = value ? new BigNumber(value) : bigMin
+  const num = value && DECIMAL_REGEX.test(value) ? new BigNumber(value) : bigMin
   return num.isNaN() ? bigMin : BigNumber.max(bigMin, BigNumber.min(bigMax, num))
 }
 

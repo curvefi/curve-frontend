@@ -4,6 +4,10 @@ import type { Decimal } from './decimal.utils'
 export const RouteProviders = ['curve', 'curve-solver', 'enso', '0x'] as const
 export type RouteProvider = (typeof RouteProviders)[number]
 
+/** External route providers are subject to router fees. */
+export const ExternalRouteProviders = ['enso', '0x'] as const satisfies readonly RouteProvider[]
+export type ExternalRouteProvider = (typeof ExternalRouteProviders)[number]
+
 export type RouteStep = {
   name: string
   tokenIn: [Address]

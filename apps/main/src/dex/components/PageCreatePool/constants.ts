@@ -286,7 +286,11 @@ export const FXSWAP_A_CONFIG = {
 } as const
 
 export const parseCryptoA = (value: string | number, swapType: SwapType) =>
-  swapType === FXSWAP ? new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed() : value.toString()
+  swapType === FXSWAP && value !== ''
+    ? new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed()
+    : value.toString()
 
 export const formatCryptoA = (value: string | number, swapType: SwapType) =>
-  swapType === FXSWAP ? new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString() : value.toString()
+  swapType === FXSWAP && value !== ''
+    ? new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString()
+    : value.toString()

@@ -1,6 +1,5 @@
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { loanExistsValidationGroup } from '@evm-ui/queries/validation/loan-exists-validation'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -10,6 +9,7 @@ import { constQ, q, type Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
+import { useMarketOraclePrice } from '../market/market-oracle-price.query'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
@@ -20,12 +20,12 @@ const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, [, liqu
 
 const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
+    ({ name: 'userPrices', chainId, marketId, userAddress, loanExists }) as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<Range<Decimal>> =>
     (await getUserPositionImplementation(marketId).userPrices(userAddress)) as Range<Decimal>,
   category: 'llamalend.user',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
-    marketIdValidationSuite(params)
+    marketIdValidationSuite.run(params)
     loanExistsValidationGroup(params)
   }),
 })

@@ -9,12 +9,12 @@ import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/A
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { SupplyClaimTab } from '@/llamalend/features/supply/components/SupplyClaimTab'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import { useLoanExists } from '@/llamalend/queries/user'
+import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import { useMintMarket } from '@/loan/hooks/useMintMarket'
 import { ChainId as MintChain } from '@/loan/types/loan.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -24,7 +24,7 @@ import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helper
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
-import type { UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -44,7 +44,7 @@ const LoanComponentMap = {
 }
 
 const SupplyComponents = {
-  claim: ClaimTab,
+  claim: SupplyClaimTab,
   deposit: DepositForm,
   stake: StakeForm,
   unstake: UnstakeForm,

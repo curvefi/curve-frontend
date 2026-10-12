@@ -210,7 +210,7 @@ const atricryptoAlert = (): PoolAlert => ({
 })
 
 // all networks
-const getVyperExploitedAlert = (): PoolAlert => ({
+export const getVyperExploitedAlert = (): PoolAlert => ({
   alertType: 'danger',
   isDisableDeposit: true,
   isInformationOnly: true,
@@ -348,7 +348,7 @@ const vsdCRVPoolAlert = (): PoolAlert => ({
   ),
 })
 
-const Alerts: Record<string, Record<string, PoolAlert>> = {
+export const Alerts: Record<string, Record<string, PoolAlert>> = {
   ethereum: {
     '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
     '0xfc636d819d1a98433402ec9dec633d864014f28c': zunamiAlert(),

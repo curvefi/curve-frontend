@@ -8,7 +8,6 @@ export type TestnetConfig = {
   issuer: StellarAddress
   factory: StellarContract
   coins: StellarContract[]
-  pool: StellarContract
 }
 
 /** Set STELLAR_TESTNET_CONFIG in tests/cypress.env.json, or CYPRESS_STELLAR_TESTNET_CONFIG as JSON in the shell. */

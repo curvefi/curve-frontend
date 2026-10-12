@@ -68,7 +68,8 @@ export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) =>
     isFundraisingGauge(gaugeData)
       ? undefined
       : gaugeData.isPool
-        ? gaugeData.poolUrls.deposit[0]
+        ? // Legacy pool URLs have a hash fragment; redirects have been removed. This is a legacy query anyway and most likely be removed in the future.
+          gaugeData.poolUrls.deposit[0]?.replace('/#/', '/')
         : gaugeData.lendingVaultUrls.deposit,
   )
 
@@ -77,7 +78,7 @@ export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) =>
  * At some point in the future this functionality should be migrated to Prices API.
  */
 export const { useQuery: useGaugesLegacy } = queryFactory({
-  queryKey: () => ['gauges-legacy'] as const,
+  queryKey: () => ({ name: 'gauges-legacy' }) as const,
   queryFn: async () => {
     const { data } = await fetchJson<CurveGaugeResponse>(GAUGES_LEGACY_URL)
 

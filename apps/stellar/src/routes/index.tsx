@@ -28,7 +28,7 @@ export const router = createRouter({
       </head>
       <StellarErrorPage
         title={t`Unexpected Error`}
-        subtitle={error.message || t`An unexpected error occurred`}
+        subtitle={(error as Error).message || t`An unexpected error occurred`}
         error={error}
       />
     </>

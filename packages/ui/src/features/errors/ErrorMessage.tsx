@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { Stack, SxProps } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import { EmptyStateCard, EmptyStateCardProps } from '@ui/components/EmptyStateCard'
-import { ErrorReportModal } from '@ui/features/report-error'
+import { ErrorReportModal } from '@ui/features/report-error/ErrorReportModal'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { t } from '@ui/lib/i18n'
@@ -19,7 +19,7 @@ export const ErrorMessage = ({
 }: {
   title: ReactNode
   subtitle?: ReactNode
-  error?: Error | string
+  error?: unknown
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
   size?: EmptyStateCardProps['size']

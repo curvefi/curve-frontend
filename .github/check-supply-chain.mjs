@@ -29,7 +29,7 @@ async function checkPackage({ name, version }) {
   const publishTime = await getPublishTime(name, version)
   const ageMs = Date.now() - publishTime.getTime()
   const ageDays = ageMs / DAY_MS
-  const isForbidden = ageMs < MAX_AGE_MS && !ALLOWED_SCOPES.some((scope) => name.startsWith(`${scope}/`))
+  const isForbidden = ageMs < MAX_AGE_MS && !ALLOWED_SCOPES.some(scope => name.startsWith(`${scope}/`))
   if (isForbidden) {
     console.info(`  ✗ ${name}@${version} — published ${ageDays.toFixed(1)}d ago`)
   } else {
@@ -47,7 +47,7 @@ async function main() {
 
   console.info(`Checking ${packages.length} newly added package(s) against registry publish dates...\n`)
   const results = await Promise.all(packages.map(checkPackage))
-  const forbidden = results.filter((r) => r.isForbidden)
+  const forbidden = results.filter(r => r.isForbidden)
   if (!forbidden.length) {
     return console.info(`\n✓ All ${packages.length} changed package(s) are at least ${MAX_AGE_DAYS} days old.`)
   }
@@ -62,7 +62,7 @@ async function main() {
   )
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err.message)
   process.exit(1)
 })

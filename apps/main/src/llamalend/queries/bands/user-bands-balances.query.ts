@@ -2,8 +2,7 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { getUserPositionImplementation, normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
-import type { UserMarketQuery } from '@evm-ui/queries/root-keys'
-import { rootKeys } from '@evm-ui/queries/root-keys'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import { loanExistsValidationGroup } from '@evm-ui/queries/validation/loan-exists-validation'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -17,19 +16,14 @@ type UserBandsBalancesQuery = UserMarketQuery & { loanExists: boolean; liquidati
 type UserBandsBalancesParams = FieldsOf<UserBandsBalancesQuery>
 
 const userBandsBalancesValidationSuite = createValidationSuite((params: UserBandsBalancesParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   loanExistsValidationGroup(params)
   liquidationBandValidationGroup(params)
 })
 
 export const { useQuery: useUserBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: UserBandsBalancesParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      QUERY_KEY,
-      { loanExists },
-      { liquidationBand },
-    ] as const,
+    ({ name: QUERY_KEY, chainId, marketId, userAddress, loanExists, liquidationBand }) as const,
   queryFn: async ({ marketId, userAddress, liquidationBand }: UserBandsBalancesQuery) => {
     const market = getMarket(marketId)
     const userBandsBalances = normalizeBands(await getUserPositionImplementation(market).userBandsBalances(userAddress))

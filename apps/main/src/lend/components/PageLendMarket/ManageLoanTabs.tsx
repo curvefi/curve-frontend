@@ -12,8 +12,9 @@ import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { type QueryProp, type Range } from '@ui/features/queries/util'
 import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
+import { borrowClaimTab, BorrowTabsClaimVisibility } from './borrow-claim-tab'
 
-type LendManageLoanProps = {
+type LendManageLoanProps = BorrowTabsClaimVisibility & {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
   showReset: boolean
@@ -38,6 +39,7 @@ const LendManageMenu = [
       },
     ],
   },
+  borrowClaimTab,
 ] satisfies LendManageLoanTab[]
 
 const LiquidationMenu = [
@@ -63,6 +65,7 @@ const LiquidationMenu = [
       } satisfies LendManageLoanSubTab,
     ],
   },
+  borrowClaimTab,
 ] satisfies LendManageLoanTab[]
 
 export const ManageLoanTabs = (params: LendManageLoanProps) => (

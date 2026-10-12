@@ -14,7 +14,7 @@ import { t } from '@ui/lib/i18n'
 
 type DexOhlcQueryParams = {
   anchorEnd: number
-  chain: Chain | undefined
+  blockchainId: Chain | undefined
   chartSelection: ChartSelection
   enabled?: boolean
   interval: number
@@ -43,20 +43,20 @@ export const getDexChartSelectionKey = (chartSelection: ChartSelection) => {
 
 const fetchDexOhlc = (
   {
-    chain,
+    blockchainId,
     chartSelection,
     interval,
     poolAddress,
     start,
     end,
     units,
-  }: DexOhlcQueryParams & OhlcPageParam & { chain: Chain },
+  }: DexOhlcQueryParams & OhlcPageParam & { blockchainId: Chain },
   signal: AbortSignal,
 ) => {
   if (chartSelection.type === 'pair') {
     return getOHLC(
       {
-        chain,
+        blockchainId,
         poolAddress,
         mainToken: chartSelection.mainToken.address,
         referenceToken: chartSelection.refToken.address,
@@ -71,7 +71,7 @@ const fetchDexOhlc = (
 
   return getLpOHLC(
     {
-      chain,
+      blockchainId,
       poolAddress,
       priceUnits: LP_PRICE_UNITS_BY_CHART_SELECTION[chartSelection.type],
       interval,
@@ -85,7 +85,7 @@ const fetchDexOhlc = (
 
 export const useDexOhlcQuery = ({
   anchorEnd,
-  chain,
+  blockchainId: chain,
   chartSelection,
   enabled = true,
   interval,
@@ -114,7 +114,7 @@ export const useDexOhlcQuery = ({
       const responseData = await fetchDexOhlc(
         {
           anchorEnd,
-          chain: validChain,
+          blockchainId: validChain,
           chartSelection,
           interval,
           poolAddress,

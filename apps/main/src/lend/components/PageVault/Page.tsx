@@ -12,15 +12,15 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
-import { MarketPageHeader } from '@/llamalend/widgets/page-header'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
@@ -30,7 +30,7 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId: chainId } = parseMarketParams(params)
+  const { rMarket, chainId } = parseMarketParams(params)
   const { isInitialized } = useCurve()
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -61,7 +61,7 @@ export const Page = () => {
   })
 
   const error = marketError ?? apiMarket.error
-  return error ? (
+  return error && !(market ?? apiMarket.data) ? (
     <ErrorPage
       title={t`Error`}
       subtitle={error.message}

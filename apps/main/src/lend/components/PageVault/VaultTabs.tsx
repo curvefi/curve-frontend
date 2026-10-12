@@ -1,7 +1,7 @@
 import { networks } from '@/lend/networks'
-import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { SupplyClaimTab } from '@/llamalend/features/supply/components/SupplyClaimTab'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
@@ -29,7 +29,7 @@ const VaultMenu = [
     label: t`Claim`,
     // claim tab handles its own buttons because it has multiple actions that are not submit buttons.
     omitFormButton: true,
-    component: props => <ClaimTab networks={networks} {...props} />,
+    component: props => <SupplyClaimTab networks={networks} {...props} />,
   },
 ] satisfies FormTab<object>[]
 

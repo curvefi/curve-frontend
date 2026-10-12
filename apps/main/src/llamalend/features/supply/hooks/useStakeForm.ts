@@ -15,7 +15,6 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
@@ -36,7 +35,7 @@ const emptyStakeForm = (): StakeForm => ({
 
 const { useQuery: useStakeAssetsToShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake.assetsToShares', { assets }] as const,
+    ({ name: 'stake.assetsToShares', chainId, marketId, userAddress, assets }) as const,
   queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>
     (await requireVault(marketId).vault.convertToShares(assets)) as Decimal,
   category: 'llamalend.supply',

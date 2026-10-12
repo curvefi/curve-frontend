@@ -1,5 +1,5 @@
 import { group, test } from 'vest'
-import { ContractParams } from '@evm-ui/queries/root-keys'
+import type { ContractParams } from '@evm-ui/queries/query-types'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { pricesApiChainNameValidationGroup } from './prices-chain-validation'

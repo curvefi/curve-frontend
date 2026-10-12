@@ -17,11 +17,7 @@ export type Options = { host?: string; signal?: AbortSignal }
  */
 export const getHost = (options?: Options): Required<Options>['host'] => options?.host ?? 'https://prices.curve.finance'
 
-/**
- * List of supported blockchain networks
- * @example
- * const chain: Chain = "ethereum"
- */
+/** List of supported blockchain network */
 export const chains = [
   'ethereum',
   'arbitrum',

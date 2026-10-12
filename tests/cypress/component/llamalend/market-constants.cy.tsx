@@ -4,16 +4,16 @@ import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamale
 import { getMarketAddressesByAssetsType } from '@/llamalend/market-assets-type.utils'
 import {
   DEPRECATED_LLAMAS,
-  // eslint-disable-next-line no-restricted-imports
-  MARKET_ASSETS_TYPE_BY_CONTROLLER,
   MARKETS_ALERTS,
   MARKETS_LEVERAGE_CONFIG,
   NO_LEVERAGE_LEND,
 } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
-import { MarketAssetsType, MarketType } from '@evm-ui/types/market'
+import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
+// eslint-disable-next-line no-restricted-imports
+import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'

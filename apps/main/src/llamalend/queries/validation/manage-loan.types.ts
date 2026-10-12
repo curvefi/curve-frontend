@@ -1,5 +1,5 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UserMarketQuery } from '@evm-ui/queries/root-keys'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@ui/lib/validation/types'
 

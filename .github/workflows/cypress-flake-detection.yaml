@@ -56,7 +56,7 @@ env:
 jobs:
   prepare:
     name: Prepare test matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 1
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
@@ -96,7 +96,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
@@ -104,8 +104,10 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-      - name: Restore cache
+      - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
+        with:
+          path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
 

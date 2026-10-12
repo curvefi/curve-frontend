@@ -2,7 +2,6 @@ import { getBorrowMoreExpectedCollateralKey } from '@/llamalend/queries/borrow-m
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
-import { rootKeys } from '@evm-ui/queries/root-keys'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 
@@ -18,16 +17,18 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
     slippage,
     routeId,
   }: BorrowMoreParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'borrowMorePriceImpact',
-      { userBorrowed },
-      { debt },
-      { maxDebt },
-      { leverageEnabled },
-      { slippage },
-      { routeId },
-    ] as const,
+    ({
+      name: 'borrowMorePriceImpact',
+      chainId,
+      marketId,
+      userAddress,
+      userBorrowed,
+      debt,
+      maxDebt,
+      leverageEnabled,
+      slippage,
+      routeId,
+    }) as const,
   queryFn: async ({
     marketId,
     userCollateral = '0',

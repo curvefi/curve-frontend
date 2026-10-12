@@ -15,6 +15,7 @@ export type RoutesQuery = {
   router?: RouteProvider | readonly RouteProvider[]
   userAddress?: Address
   zapAddress?: Address
+  controllerAddress?: Address
   slippage?: Decimal
 }
 

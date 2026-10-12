@@ -70,9 +70,11 @@ export const getExpectedFn =
     router,
     userAddress,
     zapAddress,
+    controllerAddress,
     slippage,
   }: Pick<RoutesQuery, 'chainId' | 'slippage' | 'userAddress' | 'zapAddress'> & {
     router: RoutesQuery['router']
+    controllerAddress: Address
   }): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn, blacklist) => {
     const providers = toArray(router)
@@ -88,6 +90,7 @@ export const getExpectedFn =
       slippage,
       userAddress,
       zapAddress,
+      controllerAddress,
     })
     if (!routes.length) return null
     return parseRoute(routes[0].id).quote // router api is expected to return a single entry, add sorting if needed

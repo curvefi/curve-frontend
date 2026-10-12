@@ -1,0 +1,32 @@
+name: Compact Cloudflare comments
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  compact:
+    if: >-
+      github.event.issue.pull_request &&
+      github.event.comment.user.login == 'cloudflare-workers-and-pages[bot]' &&
+      github.event.sender.login == 'cloudflare-workers-and-pages[bot]'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 2
+    concurrency:
+      group: cloudflare-comment-${{ github.event.comment.id }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const compact = require('./.github/scripts/compact-cloudflare-comment.cjs')
+            await compact({ github, context, core })

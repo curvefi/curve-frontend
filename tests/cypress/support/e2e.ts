@@ -1,4 +1,4 @@
-import '@evm-ui/eip6963-test-setup'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
@@ -44,7 +44,7 @@ const ensureTestExited = () =>
   })
 
 /** Install the cypress internals to force a blank page after each test */
-afterEach(() => Cypress.isBrowser('firefox') && cy.then(ensureTestExited))
+afterEach(() => Cypress.isBrowser('firefox') && cy.then(TIMEOUTS['ui.teardown'], ensureTestExited))
 
 if (Cypress.config('isInteractive')) {
   skipTestsAfterFailure()

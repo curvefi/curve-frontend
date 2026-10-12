@@ -50,15 +50,17 @@ export const RefuelSharesChart = ({
   chainId,
   blockchainId,
   poolAddress,
+  end,
 }: {
   chainId: number
   blockchainId: Chain
   poolAddress: Address
+  end: number
 }) => {
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('6m')
   const [fullscreen, , closeFullscreen, toggleFullscreen] = useSwitch(false)
   const [visibility, setVisibility] = useState<Record<string, boolean>>({})
-  const { start, end } = useMemo(() => getTimeRange({ daysRange: DAYS[period] }), [period])
+  const { start } = getTimeRange({ daysRange: DAYS[period], end })
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 

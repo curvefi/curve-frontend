@@ -9,16 +9,16 @@ export { MAX_USER_POOL_PAGE_SIZE } from './constants'
 
 const LITE_POOLS_HOST = 'https://api2.curve.finance'
 
-export async function getPools(chain: Chain, options?: Options) {
+export async function getPools(blockchainId: Chain, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/chains/${chain}`)
+  const response = await fetch(`${host}/v1/chains/${blockchainId}`)
 
   return Schema.getPoolsResponse.parse(response)
 }
 
-export async function getPool(chain: Chain, poolAddr: string, options?: Options) {
+export async function getPool(blockchainId: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/pools/${chain}/${poolAddr}`)
+  const response = await fetch(`${host}/v1/pools/${blockchainId}/${poolAddr}`)
 
   return Schema.getPoolResponse.parse(response)
 }
@@ -132,32 +132,32 @@ export async function getUserPoolPositions(
   return Schema.getUserPoolPositionsResponse.parse(response)
 }
 
-export async function getVolume(chain: Chain, poolAddr: string, options?: Options) {
+export async function getVolume(blockchainId: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
 
   const { start, end } = getTimeRange({ daysRange: 90 })
 
   const response = await fetch(
-    `${host}/v1/volume/usd/${chain}/${poolAddr}?` + `interval=day&` + `start=${start}&` + `end=${end}`,
+    `${host}/v1/volume/usd/${blockchainId}/${poolAddr}?` + `interval=day&` + `start=${start}&` + `end=${end}`,
   )
 
   return Schema.getVolumeResponse.parse(response)
 }
 
-export async function getTvl(chain: Chain, poolAddr: string, options?: Options) {
+export async function getTvl(blockchainId: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
 
   const { start, end } = getTimeRange({ daysRange: 90 })
 
   const response = await fetch(
-    `${host}/v1/snapshots/${chain}/${poolAddr}/tvl?` + `interval=day&` + `start=${start}&` + `end=${end}`,
+    `${host}/v1/snapshots/${blockchainId}/${poolAddr}/tvl?` + `interval=day&` + `start=${start}&` + `end=${end}`,
   )
 
   return Schema.getTvlResponse.parse(response)
 }
 
 type GetPoolTradesParams = {
-  chain: Chain
+  blockchainId: Chain
   poolAddress: Address
   mainToken: Address
   referenceToken: Address
@@ -166,19 +166,19 @@ type GetPoolTradesParams = {
 }
 
 export async function getPoolTrades(
-  { chain, poolAddress, mainToken, referenceToken, page = 1, perPage = 100 }: GetPoolTradesParams,
+  { blockchainId, poolAddress, mainToken, referenceToken, page = 1, perPage = 100 }: GetPoolTradesParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ main_token: mainToken, reference_token: referenceToken, page, per_page: perPage })
 
-  const response = await fetch(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/trades/${blockchainId}/${poolAddress}${query}`)
 
   return Schema.getPoolTradesResponse.parse(response)
 }
 
 export type GetAllPoolTradesParams = {
-  chain: Chain
+  blockchainId: Chain
   poolAddress: Address
   page?: number
   perPage?: number
@@ -186,43 +186,48 @@ export type GetAllPoolTradesParams = {
 }
 
 export async function getAllPoolTrades(
-  { chain, poolAddress, page = 1, perPage = 100, includeState = false }: GetAllPoolTradesParams,
+  { blockchainId, poolAddress, page = 1, perPage = 100, includeState = false }: GetAllPoolTradesParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ page, per_page: perPage, include_state: includeState })
 
-  const response = await fetch(`${host}/v1/trades/all/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/trades/all/${blockchainId}/${poolAddress}${query}`)
 
   return Schema.getAllPoolTradesResponse.parse(response)
 }
 
-export type GetPoolLiquidityEventsParams = { chain: Chain; poolAddress: Address; page?: number; perPage?: number }
+export type GetPoolLiquidityEventsParams = {
+  blockchainId: Chain
+  poolAddress: Address
+  page?: number
+  perPage?: number
+}
 
 export async function getPoolLiquidityEvents(
-  { chain, poolAddress, page = 1, perPage = 100 }: GetPoolLiquidityEventsParams,
+  { blockchainId, poolAddress, page = 1, perPage = 100 }: GetPoolLiquidityEventsParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ page, per_page: perPage })
 
-  const response = await fetch(`${host}/v1/liquidity/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/liquidity/${blockchainId}/${poolAddress}${query}`)
 
   return Schema.getPoolLiquidityEventsResponse.parse(response)
 }
 
-export type GetPoolMetadataParams = { chain: Chain; poolAddress: Address }
+export type GetPoolMetadataParams = { blockchainId: Chain; poolAddress: Address }
 
-export async function getPoolMetadata({ chain, poolAddress }: GetPoolMetadataParams, options?: Options) {
+export async function getPoolMetadata({ blockchainId, poolAddress }: GetPoolMetadataParams, options?: Options) {
   const host = getHost(options)
 
-  const response = await fetch(`${host}/v1/pools/${chain}/${poolAddress}/metadata`)
+  const response = await fetch(`${host}/v1/pools/${blockchainId}/${poolAddress}/metadata`)
 
   return Schema.getPoolMetadataResponse.parse(response)
 }
 
 export type GetPoolSnapshotsParams = {
-  chain: Chain
+  blockchainId: Chain
   poolAddress: Address
   start: number
   end: number
@@ -230,13 +235,13 @@ export type GetPoolSnapshotsParams = {
 }
 
 export async function getPoolSnapshots(
-  { chain, poolAddress, start, end, unit = 'none' }: GetPoolSnapshotsParams,
+  { blockchainId, poolAddress, start, end, unit = 'none' }: GetPoolSnapshotsParams,
   options?: Options,
 ) {
   const host = getHost(options)
   const query = addQueryString({ start, end, unit })
 
-  const response = await fetch(`${host}/v1/snapshots/${chain}/${poolAddress}${query}`)
+  const response = await fetch(`${host}/v1/snapshots/${blockchainId}/${poolAddress}${query}`)
 
   return Schema.getPoolSnapshotsResponse.parse(response)
 }

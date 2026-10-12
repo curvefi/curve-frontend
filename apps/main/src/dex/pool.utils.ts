@@ -6,17 +6,19 @@ import { maybes, type Nullish } from '@primitives/objects.utils'
 const WRAPPED_ONLY_POOL_IDS = ['pax', 'busd', 'y']
 
 /** Gets a pool by its ID, throws an error if no pool is found with the given ID. */
-const getPool = (poolIdOrAddress: string | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
+export const getPool = (poolIdOrAddress: string | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
   typeof poolIdOrAddress === 'string' ? lib.getPool(poolIdOrAddress) : poolIdOrAddress
 
 export const tryGetPool = (poolIdOrAddress: PoolTemplate | string | Nullish, lib = getLib('curveApi')) =>
   typeof poolIdOrAddress === 'object'
     ? poolIdOrAddress
-    : maybes([poolIdOrAddress, lib], (poolIdOrAddress, lib) => {
+    : maybes([poolIdOrAddress, lib], (pool, lib) => {
         try {
-          return getPool(poolIdOrAddress, lib)
-        } catch {
-          return undefined
+          return getPool(pool, lib)
+        } catch (e) {
+          const msg = (e as Error).message
+          if ([`Pool with address ${pool} not found`, `Pool with id ${pool} not found`].includes(msg)) return undefined
+          throw e
         }
       })
 

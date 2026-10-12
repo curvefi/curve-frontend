@@ -4,7 +4,8 @@ import { maybe } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapAmountField, type SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import { validateAmount, validateSlippage } from './liquidity.validation'
+import { validateSlippage } from '@ui/lib/validation/slippage.validation'
+import { validateAmount } from './liquidity.validation'
 import { validateAccount, validatePool } from './pool.validation'
 
 type SwapInputs = Pick<SwapQuoteParams, 'fromIndex' | 'toIndex' | 'inputAmount' | 'outputAmount' | 'decimals'>
@@ -15,29 +16,34 @@ const validateTokens = ({ fromIndex, toIndex, decimals }: SwapInputs) => {
     decimals?.forEach(precision => enforce(precision).isNumber())
   })
   test('fromIndex', 'Select different pool tokens', () => {
-    enforce(fromIndex).isNumber().equals(maybe(fromIndex, Math.trunc)).gte(0).lt(decimals?.length).notEquals(toIndex)
+    enforce(fromIndex)
+      .isNumber()
+      .equals(maybe(fromIndex, Math.trunc))
+      .gte(0)
+      .lt(decimals?.length ?? NaN)
+      .notEquals(toIndex)
   })
   test('toIndex', 'Select a receiving token', () => {
-    enforce(toIndex).isNumber().equals(maybe(toIndex, Math.trunc)).gte(0).lt(decimals?.length)
+    enforce(toIndex)
+      .isNumber()
+      .equals(maybe(toIndex, Math.trunc))
+      .gte(0)
+      .lt(decimals?.length ?? NaN)
   })
 }
 
-const validateSwapAmount = (
-  { fromIndex, toIndex, inputAmount, outputAmount, decimals }: SwapInputs,
-  field: SwapAmountField,
-) => {
-  const precision = maybe(field === 'inputAmount' ? fromIndex : toIndex, index => decimals?.[index])
+const validateSwapAmount = ({ inputAmount, outputAmount }: SwapInputs, field: SwapAmountField) => {
   const amount = { inputAmount, outputAmount }[field]
   test(field, 'Enter an amount to swap', () => {
     enforce(amount).isDecimal().gt(0)
   })
-  validateAmount(field, amount, precision)
+  validateAmount(field, amount)
 }
 
 const validateBalance = ({ inputAmount, maxAmount }: Pick<SwapParams, 'inputAmount' | 'maxAmount'>) => {
   skipWhen(maxAmount == null, () => {
     test('inputAmount', 'Insufficient token balance', () => {
-      enforce(+(inputAmount || '0')).lte(maybe(maxAmount, value => +value))
+      enforce(+(inputAmount || '0')).lte(maxAmount!)
     })
   })
 }
@@ -47,7 +53,7 @@ const validateReserve = ({ outputAmount, maxOutput }: Pick<SwapQuoteParams, 'out
     enforce(maxOutput).isDecimal().gte(0)
   })
   test('outputAmount', 'Amount must be less than the available pool reserve', () => {
-    enforce(+(outputAmount || '0')).lt(maybe(maxOutput, value => +value))
+    enforce(+(outputAmount || '0')).lt(maybe(maxOutput, value => +value) ?? NaN)
   })
 }
 
@@ -72,7 +78,7 @@ export const swapFormValidationSuite = createValidationSuite(({ editedSide, slip
   skipWhen(editedSide !== 'receive' && values.outputAmount == null, () => validateSwapAmount(values, 'outputAmount'))
   skipWhen(editedSide !== 'receive', () => validateReserve(values))
   validateBalance(values)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
 })
 
 const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }: SwapParams) => {
@@ -84,11 +90,7 @@ const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }:
   test('maxAmount', 'Wallet balance is unavailable', () => {
     enforce(maxAmount).isDecimal().gte(0)
   })
-  validateAmount(
-    'minimum',
-    minimum,
-    maybe(values.toIndex, index => values.decimals?.[index]),
-  )
+  validateAmount('minimum', minimum)
   test('minimum', 'Minimum received is unavailable', () => {
     enforce(minimum).isDecimal().gte(0)
   })

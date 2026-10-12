@@ -6,16 +6,14 @@ import {
   getTokens,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  useMarketCapAndAvailable,
-  useMarketMaxLeverage,
-  useMarketOverview,
-  useMarketSnapshots,
-  useMarketTotalCollateral,
-} from '@/llamalend/queries/market'
+import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
+import { useMarketOverview } from '@/llamalend/queries/market/market-overview.query'
+import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
+import { useMarketTotalCollateral } from '@/llamalend/queries/market/market-total-collateral.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getReturnOnEquity } from '@/llamalend/rates.utils'
-import type { MarketParams } from '@evm-ui/queries/root-keys'
+import type { MarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireBlockchainId } from '@evm-ui/utils/network'

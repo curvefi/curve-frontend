@@ -4,7 +4,7 @@ import type { SxProps } from '@ui/lib/mui'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 
 export type ConnectWalletProps = {
-  disconnect: () => void
+  disconnect: () => Promise<void>
   address: Address | undefined
   addressLabel: string | undefined
   isConnecting: boolean
@@ -26,7 +26,7 @@ export const ConnectWalletIndicator = ({
     <ConnectedWalletLabel
       address={address}
       addressLabel={addressLabel}
-      onClick={() => disconnect()}
+      onClick={() => void disconnect()}
       loading={isConnecting}
       sx={sx}
     />

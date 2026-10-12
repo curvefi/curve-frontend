@@ -1,13 +1,13 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { rootKeys, type UserPoolParams, type UserPoolQuery } from '@evm-ui/queries/root-keys'
+import type { UserPoolParams, UserPoolQuery } from '@evm-ui/queries/query-types'
 import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
+import { isValidAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
-import { isValidAddress } from '../utils'
 
 const ETH: number = Chain.Ethereum
 
@@ -16,7 +16,7 @@ const userPoolBoost = async (chainId: number, pool: PoolTemplate, userAddress: A
 
 export const { useQuery: useUserPoolBoostQuery, invalidate: invalidateUserPoolBoostQuery } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'userBoost'] as const,
+    ({ name: 'userBoost', chainId, poolId, userAddress }) as const,
   category: 'dex.user',
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) =>
     await userPoolBoost(chainId, requireLib('curveApi').getPool(poolId), userAddress),

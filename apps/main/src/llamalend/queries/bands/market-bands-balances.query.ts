@@ -2,8 +2,7 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
-import type { MarketQuery } from '@evm-ui/queries/root-keys'
-import { rootKeys } from '@evm-ui/queries/root-keys'
+import type { MarketQuery } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -16,13 +15,13 @@ type MarketBandsBalancesQuery = MarketQuery & { liquidationBand: number }
 type MarketBandsBalancesParams = FieldsOf<MarketBandsBalancesQuery>
 
 const marketBandsBalancesValidationSuite = createValidationSuite((params: MarketBandsBalancesParams) => {
-  marketIdValidationSuite(params)
+  marketIdValidationSuite.run(params)
   liquidationBandValidationGroup(params)
 })
 
 export const { useQuery: useMarketBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, liquidationBand }: MarketBandsBalancesParams) =>
-    [...rootKeys.market({ chainId, marketId }), QUERY_KEY, { liquidationBand }] as const,
+    ({ name: QUERY_KEY, chainId, marketId, liquidationBand }) as const,
   queryFn: async ({ marketId, liquidationBand }: MarketBandsBalancesQuery) => {
     const market = getMarket(marketId)
     const normalizedLiquidationBand = liquidationBand ?? null

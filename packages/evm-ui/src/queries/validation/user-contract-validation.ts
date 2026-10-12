@@ -1,4 +1,4 @@
-import { type ContractParams, type ContractQuery, UserParams, type UserQuery } from '@evm-ui/queries/root-keys'
+import type { ContractParams, ContractQuery, UserParams, UserQuery } from '@evm-ui/queries/query-types'
 import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { createValidationSuite } from '@ui/lib/validation/lib'

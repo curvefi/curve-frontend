@@ -21,6 +21,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
@@ -31,6 +32,9 @@ export const ManagePool = () => {
   const { network, poolAddress } = useParams<PoolAddressParams>()
   const chainId = useChainId(network)
   const blockchainId = network as Chain
+
+  // Keep timestamp so charts with the same period share a stable timeseries query.
+  const chartEnd = Math.floor(useCurrentDate('15m').getTime() / 1000) //  Don't refresh too often as that can reset chart state.
 
   const pool = useRefuelPool({ blockchainId, poolAddress })
   const refuelShares = useReadContract({
@@ -86,15 +90,15 @@ export const ManagePool = () => {
           </Grid>
 
           <Grid size={{ mobile: 12, desktop: 6 }}>
-            <RefuelPricesChart blockchainId={blockchainId} poolAddress={poolAddress} />
+            <RefuelPricesChart blockchainId={blockchainId} poolAddress={poolAddress} end={chartEnd} />
           </Grid>
 
           <Grid size={{ mobile: 12, desktop: 6 }}>
-            <RefuelSharesChart chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />
+            <RefuelSharesChart chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} end={chartEnd} />
           </Grid>
 
           <Grid size={{ mobile: 12, desktop: 6 }}>
-            <ReservesCompositionChart blockchainId={blockchainId} poolAddress={poolAddress} />
+            <ReservesCompositionChart blockchainId={blockchainId} poolAddress={poolAddress} end={chartEnd} />
           </Grid>
 
           <Grid size={{ mobile: 12, desktop: 6 }}>

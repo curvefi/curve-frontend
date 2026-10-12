@@ -21,7 +21,7 @@ export const increaseLockFormValidationSuite = createValidationSuite(
     validateIncreaseLockAmount(lockedAmount)
     skipWhen(lockedAmount == null || maxLockedAmount == null, () => {
       test('maxLockedAmount', t`The maximum lock amount is ${maxLockedAmount}`, () => {
-        enforce(lockedAmount).lte(maxLockedAmount)
+        enforce(lockedAmount).lte(maxLockedAmount!)
       })
     })
   },

@@ -157,7 +157,7 @@ export const repayValidationSuite = (options: {
   return createValidationSuite(
     ({ chainId, marketId, userAddress, ...params }: RepayParams & { isControllerApproved?: boolean }) => {
       const market = tryGetMarket(marketId)
-      userMarketValidationSuite({ chainId, marketId, userAddress })
+      userMarketValidationSuite.run({ chainId, marketId, userAddress })
       repayValidationGroup(market, params, {
         leverageRequired,
         validateMax,

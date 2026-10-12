@@ -1,7 +1,6 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
-import { rootKeys } from '@/stellar/queries/root-keys'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
@@ -26,21 +25,22 @@ export const {
     quote,
     slippage,
   }: WithdrawSimulationParams) =>
-    [
-      ...rootKeys.pool({ network, pool }),
-      'remove_liquidity_imbalance',
-      { amounts },
-      { decimals },
-      { account },
-      { maximumBurn },
-      { supply },
-      { maxAmounts },
-      { lpAmount },
-      { maxLpAmount },
-      { seedLock },
-      { quote },
-      { slippage },
-    ] as const,
+    ({
+      name: 'remove_liquidity_imbalance',
+      network,
+      pool,
+      amounts,
+      decimals,
+      account,
+      maximumBurn,
+      supply,
+      maxAmounts,
+      lpAmount,
+      maxLpAmount,
+      seedLock,
+      quote,
+      slippage,
+    }) as const,
   queryFn: ({ network, pool, account, amounts, decimals, maximumBurn }: WithdrawSimulationQuery) =>
     simulateContractCall<bigint>(
       network,

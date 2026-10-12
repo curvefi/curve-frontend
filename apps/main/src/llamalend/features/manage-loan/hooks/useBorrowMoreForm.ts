@@ -222,6 +222,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     ...useMarketRoutes({
       chainId,
       marketAddress: ammAddress,
+      controllerAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),

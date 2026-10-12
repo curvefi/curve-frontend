@@ -26,15 +26,19 @@ export async function getAllMarkets(params: { page?: number; per_page?: number }
   return Schema.getAllMarketsResponse.parse(response)
 }
 
-export async function getMarkets(chain: Chain, params: { page?: number; per_page?: number } = {}, options?: Options) {
+export async function getMarkets(
+  blockchainId: Chain,
+  params: { page?: number; per_page?: number } = {},
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/markets/${chain}${addQueryString(params)}`)
+  const response = await fetch(`${host}/v1/lending/markets/${blockchainId}${addQueryString(params)}`)
 
   return Schema.getMarketsResponse.parse(response)
 }
 
 export async function getSnapshots(
-  chain: Chain,
+  blockchainId: Chain,
   marketController: string,
   params: { agg?: string; fetch_on_chain?: boolean; limit?: number; start?: number; end?: number } = {
     fetch_on_chain: true,
@@ -45,7 +49,7 @@ export async function getSnapshots(
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/markets/${chain}/${marketController}/snapshots${addQueryString(params)}`,
+    `${host}/v1/lending/markets/${blockchainId}/${marketController}/snapshots${addQueryString(params)}`,
   )
 
   return Schema.getSnapshotsResponse.parse(response)
@@ -64,7 +68,7 @@ export async function getAllUserMarkets(
 
 export async function getUserMarkets(
   userAddr: string,
-  chain: Chain,
+  blockchainId: Chain,
   {
     page = USER_MARKETS_FIRST_PAGE,
     per_page = USER_MARKETS_DEFAULT_PER_PAGE,
@@ -74,7 +78,7 @@ export async function getUserMarkets(
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/users/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
+    `${host}/v1/lending/users/${blockchainId}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
   )
 
   return Schema.getUserMarketsResponse.parse(response)
@@ -93,7 +97,7 @@ export async function getAllUserLendingPositions(
 
 export async function getUserLendingPositions(
   userAddr: string,
-  chain: Chain,
+  blockchainId: Chain,
   {
     page = USER_MARKETS_FIRST_PAGE,
     per_page = USER_MARKETS_DEFAULT_PER_PAGE,
@@ -103,64 +107,74 @@ export async function getUserLendingPositions(
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
+    `${host}/v1/lending/users/lending_positions/${blockchainId}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
   )
 
   return Schema.getUserLendingPositionsResponse.parse(response)
 }
 
-export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
+export async function getUserMarketStats(
+  userAddr: string,
+  blockchainId: Chain,
+  marketController: string,
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/stats`)
+  const response = await fetch(`${host}/v1/lending/users/${blockchainId}/${userAddr}/${marketController}/stats`)
 
   return Schema.getUserMarketStatsResponse.parse(response)
 }
 
-export async function getMarketUsers(endpoint: Endpoint, chain: Chain, controller: string, options?: Options) {
+export async function getMarketUsers(endpoint: Endpoint, blockchainId: Chain, controller: string, options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/${endpoint}/users/${chain}/${controller}/users`)
+  const response = await fetch(`${host}/v1/${endpoint}/users/${blockchainId}/${controller}/users`)
 
   return Schema.getMarketUsersResponse.parse(response)
 }
 
-export async function getUserMarketEarnings(userAddr: string, chain: Chain, vaultAddress: string, options?: Options) {
+export async function getUserMarketEarnings(
+  userAddr: string,
+  blockchainId: Chain,
+  vaultAddress: string,
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/earnings/${userAddr}`)
+  const response = await fetch(`${host}/v1/lending/vaults/${blockchainId}/${vaultAddress}/earnings/${userAddr}`)
 
   return Schema.getUserMarketEarningsResponse.parse(response)
 }
 
 export async function getMarketBorrowers(
-  chain: Chain,
+  blockchainId: Chain,
   controller: string,
   options: PaginatedOptions & { endpoint?: Endpoint } = {},
 ) {
   const { endpoint = 'lending', page = 1, perPage = 10, ...requestOptions } = options
   const host = getHost(requestOptions)
   const response = await fetch(
-    `${host}/v1/${endpoint}/markets/${chain}/${controller}/borrowers${addQueryString({ page, per_page: perPage })}`,
+    `${host}/v1/${endpoint}/markets/${blockchainId}/${controller}/borrowers${addQueryString({ page, per_page: perPage })}`,
     { signal: requestOptions.signal },
   )
 
   return Schema.getMarketBorrowersResponse.parse(response)
 }
 
-export async function getVaultDepositors(chain: Chain, vaultAddress: string, options: PaginatedOptions = {}) {
+export async function getVaultDepositors(blockchainId: Chain, vaultAddress: string, options: PaginatedOptions = {}) {
   const { page = 1, perPage = 10, ...requestOptions } = options
   const host = getHost(requestOptions)
   const response = await fetch(
-    `${host}/v1/lending/vaults/${chain}/${vaultAddress}/depositors${addQueryString({ page, per_page: perPage })}`,
+    `${host}/v1/lending/vaults/${blockchainId}/${vaultAddress}/depositors${addQueryString({ page, per_page: perPage })}`,
     { signal: requestOptions.signal },
   )
 
   return Schema.getVaultDepositorsResponse.parse(response)
 }
 
-export async function getVaultEvents(chain: Chain, vaultAddress: string, options: PaginatedOptions = {}) {
+export async function getVaultEvents(blockchainId: Chain, vaultAddress: string, options: PaginatedOptions = {}) {
   const { page = 1, perPage = 10, ...requestOptions } = options
   const host = getHost(requestOptions)
   const response = await fetch(
-    `${host}/v1/lending/vault_events/${chain}/${vaultAddress}${addQueryString({ page, per_page: perPage })}`,
+    `${host}/v1/lending/vault_events/${blockchainId}/${vaultAddress}${addQueryString({ page, per_page: perPage })}`,
     { signal: requestOptions.signal },
   )
 
@@ -169,13 +183,13 @@ export async function getVaultEvents(chain: Chain, vaultAddress: string, options
 
 export async function getUserMarketSnapshots(
   userAddr: string,
-  chain: Chain,
+  blockchainId: Chain,
   marketController: string,
   options?: Options,
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/snapshots?page=1&per_page=100`,
+    `${host}/v1/lending/users/${blockchainId}/${userAddr}/${marketController}/snapshots?page=1&per_page=100`,
   )
 
   return Schema.getUserMarketSnapshotsResponse.parse(response)
@@ -183,19 +197,24 @@ export async function getUserMarketSnapshots(
 
 export async function getUserMarketCollateralEvents(
   userAddr: string,
-  chain: Chain,
+  blockchainId: Chain,
   marketController: string,
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}`)
+  const response = await fetch(`${host}/v1/lending/collateral_events/${blockchainId}/${marketController}/${userAddr}`)
 
   return Schema.getUserCollateralEventsResponse.parse(response)
 }
 
-export async function getUserVaultEvents(userAddr: string, chain: Chain, vaultAddress: string, options?: Options) {
+export async function getUserVaultEvents(
+  userAddr: string,
+  blockchainId: Chain,
+  vaultAddress: string,
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/${userAddr}`, {
+  const response = await fetch(`${host}/v1/lending/vaults/${blockchainId}/${vaultAddress}/${userAddr}`, {
     signal: options?.signal,
   })
   return Schema.getUserVaultEventsResponse.parse(response)
