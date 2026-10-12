@@ -9,7 +9,7 @@ import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
-import { usePoolReserves, useScaleReserves } from '@/stellar/queries/pool/pool-reserves.query'
+import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
@@ -20,7 +20,7 @@ import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q, toQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawFormQuery } from './types'
@@ -49,8 +49,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
 
   const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
-  const reserves = usePoolReserves(poolParams)
-  const maxAmounts = useScaleReserves(reserves, decimals)
+  const reserves = q(usePoolReserves({ ...poolParams, decimals: decimalsData }))
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined }),
     [tokenCount],
@@ -78,7 +77,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         supply: supply.data,
         seedLock: config.data?.seedLock,
         maxLpAmount: lpBalance.data,
-        maxAmounts: maxAmounts?.map(q => q.data),
+        maxAmounts: reserves.data,
       }),
       [
         values,
@@ -90,7 +89,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         supply.data,
         config.data?.seedLock,
         lpBalance.data,
-        maxAmounts,
+        reserves.data,
       ],
     ),
     userDefaultValues,
@@ -126,10 +125,10 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const isPending = formState.isSubmitting || isWithdrawing
   return {
     form,
-    reserves: q(reserves),
+    reserves,
     decimals,
     lpTokenDecimals: LP_TOKEN_DECIMALS,
-    maxAmounts,
+    maxAmounts: maybe(reserves.data, amounts => amounts.map(amount => toQuery(amount, reserves))),
     params,
     supply: q(supply),
     lpBalance: q(lpBalance),

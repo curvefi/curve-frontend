@@ -9,7 +9,7 @@ import {
   getVaultAddress,
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { useMarketOracleAddress } from '@/llamalend/queries/market'
+import { useMarketOracleAddress } from '@/llamalend/queries/market/market-oracle-address.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { evmAddressDisplay } from '@evm-ui/utils'

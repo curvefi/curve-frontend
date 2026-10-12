@@ -5,7 +5,6 @@ import type { AllowUndefined } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type CompleteRepayForm = {
-  userCollateral: Decimal
   stateCollateral: Decimal
   userBorrowed: Decimal
   slippage: Decimal
@@ -13,13 +12,12 @@ type CompleteRepayForm = {
 }
 
 type RepayCalculatedValues = {
-  maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined
   maxStateCollateral: Decimal | undefined
   isFull: boolean | undefined
 }
 
-export type RepayFormData = AllowUndefined<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &
+export type RepayFormData = AllowUndefined<CompleteRepayForm, 'userBorrowed' | 'stateCollateral'> &
   RepayCalculatedValues
 export type RepayFormParams = RepayFormData & UserMarketParams<IChainId>
 

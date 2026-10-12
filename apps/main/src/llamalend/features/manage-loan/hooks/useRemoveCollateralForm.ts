@@ -5,8 +5,8 @@ import {
   useMaxRemovableCollateral,
 } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
-import { useUserState } from '@/llamalend/queries/user'
 import { resetUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   type CollateralForm,
