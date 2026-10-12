@@ -55,7 +55,7 @@ type Factory = {
 
 /** Replenish the existing wallet to the deployment script's target before creating another test pool. */
 const fundTestWallet = async (
-  { deployer, issuer, issuerSecret, coins }: TestnetConfig,
+  { deployer, issuer, coins }: TestnetConfig,
   targetBalance: Decimal = '100', // mint enough to cover 100 units of each coin
   rechargeWhenLowerThan: Decimal = '50', // mint more if the balance is below 50 units
   decimals = 7, // default to 7 decimals for test tokens
@@ -71,8 +71,8 @@ const fundTestWallet = async (
 
     const toMint = BigInt(toWei(shortfall, decimals))
     await sendStellarTransaction(
-      await simulateContractCall<void>(TEST_NETWORK, token, 'mint', [deployer.address, toMint], issuer),
-      contract.basicNodeSigner(Keypair.fromSecret(issuerSecret), Networks.TESTNET).signTransaction,
+      await simulateContractCall<void>(TEST_NETWORK, token, 'mint', [deployer.address, toMint], issuer.address),
+      contract.basicNodeSigner(Keypair.fromSecret(issuer.secret), Networks.TESTNET).signTransaction,
     )
   }
 }

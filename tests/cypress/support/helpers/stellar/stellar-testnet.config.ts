@@ -5,8 +5,7 @@ import { assert } from '@primitives/objects.utils'
 export type TestnetConfig = {
   network: StellarNetwork
   deployer: { address: StellarAddress; secret: StellarSecret }
-  issuer: StellarAddress
-  issuerSecret: StellarSecret
+  issuer: { address: StellarAddress; secret: StellarSecret }
   factory: StellarContract
   coins: StellarContract[]
 }
