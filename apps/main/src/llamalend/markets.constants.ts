@@ -510,6 +510,7 @@ export const SOLVENCY_THRESHOLDS = {
   insolvent: 0,
 }
 
+// TODO: remove once the prices API returns the tokens of LP tokens
 export const LP_TOKEN_PAIRS: PartialRecord<ApiChain, Record<Address, [Token, Token]>> = {
   ethereum: {
     // reUSD/sfrxUSD
