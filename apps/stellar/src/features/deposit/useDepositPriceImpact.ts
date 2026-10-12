@@ -17,8 +17,7 @@ export function useDepositPriceImpact(params: QuoteParams, quote: Query<Decimal>
   const balancedAmounts = combineQueries([reserves, rates], (reserves, rates) =>
     maybes([params.amounts, params.decimals], (amounts, decimals) => {
       if (!decimals.every(precision => precision != null)) return undefined // wait until all decimals are available
-      // Raw amounts × stored rates normalize coins with different decimals.
-      const value = rateAdjustedValue(amounts, rates, decimals)
+      const value = rateAdjustedValue(amounts, rates)
       const reserveValue = rateAdjustedValue(reserves, rates)
       if (!+reserveValue) return undefined // Empty seed reserves have no proportions to compare against.
       return scaleReserves(reserves, decimals, value, reserveValue)

@@ -3,7 +3,7 @@ import { assert } from '@primitives/objects.utils'
 import { createFacetedRowModel, type RowModel, type Table } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { parseListFilter } from '@ui/features/tables/filters'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 
 const CHAIN_COLUMN_ID: string = MarketColumnId.Chain
 

@@ -1,5 +1,5 @@
 import { TIMEOUTS } from '@cy/support/timeout-categories'
-import { PoolColumnId } from '@ui/features/pool-list/columns'
+import { PoolColumnId } from '@ui/features/pool-list/columns/columns.enum'
 import { V2_POOL_FIXTURES } from './dex-pool-list-v2-mocks'
 
 export const DESKTOP_VIEWPORT = [1200, 800] as const

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ActivityTable } from '@evm-ui/features/activity-table'
+import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
 import type { SortingState } from '@tanstack/react-table'
 import type { QueryProp } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
