@@ -137,7 +137,10 @@ const fixResourceFee = <T>(
     sorobanData,
   }).build()
 
-export async function sendStellarTransaction<T>(transaction: StellarTransaction<T>) {
+export async function sendStellarTransaction<T>(
+  transaction: StellarTransaction<T>,
+  signTransaction: contract.SignTransaction = StellarWalletsKit.signTransaction.bind(StellarWalletsKit),
+) {
   // Capture the budget once, before SDK sign() rebuilds its transaction; retries reuse it.
   const { sorobanData, inclusionFee } = getStellarTransactionFees(transaction)
   const sent = await retry(
@@ -145,7 +148,7 @@ export async function sendStellarTransaction<T>(transaction: StellarTransaction<
       transaction.signAndSend({
         signTransaction: (envelope, options) => {
           const tx = fixResourceFee(envelope, transaction, inclusionFee, sorobanData)
-          return StellarWalletsKit.signTransaction(tx.toXdr(), options)
+          return signTransaction(tx.toXdr(), options)
         },
         watcher: {}, // we could change the watcher to log submission and confirmation events
       }),

@@ -43,7 +43,7 @@ export const seedPoolAndTransferMostLpToIssuer = async (
       TEST_NETWORK,
       pool,
       'transfer',
-      [deployer.address, issuer, BigInt(toWei(lp.balance, LP_TOKEN_DECIMALS)) * ratio],
+      [deployer.address, issuer.address, BigInt(toWei(lp.balance, LP_TOKEN_DECIMALS)) * ratio],
       deployer.address,
     ),
   )
