@@ -9,7 +9,7 @@ import {
   MAX_SLIPPAGE,
   MIN_SLIPPAGE,
 } from '@ui/features/forms/slippage/slippage.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
+import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { t } from '@ui/lib/i18n'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'

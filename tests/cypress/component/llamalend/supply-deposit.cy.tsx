@@ -74,11 +74,17 @@ describe('DepositForm (mocked)', () => {
 
         writeDepositForm({ amount: input.amount })
         checkMaxDeposit(maxDeposit)
-        checkDepositSubmit({ buttonText, withDisabledAlert: !!disabledMarketController, maxDeposit, solvencyPercent })
+        checkDepositSubmit({
+          buttonText,
+          withDisabledAlert: !!disabledMarketController,
+          maxDeposit,
+          solvencyPercent,
+          isMocked: true,
+        })
         // When `maxDeposit` is set, the entered amount exceeds the max, so the test stops after validating the disabled state.
         // This avoids adding custom expectations for action info values in this scenario.
         if (maxDeposit) return
-        checkSupplyActionInfoValues(expected.actionInfo)
+        checkSupplyActionInfoValues({ ...expected.actionInfo, isMocked: true })
 
         cy.then(() => {
           expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
@@ -97,7 +103,7 @@ describe('DepositForm (mocked)', () => {
         // A market alert or very low solvency blocks submission, so the test stops after validating the disabled state and action infos.
         if (disabledMarketController || solvencyPercent < SOLVENCY_THRESHOLDS.low) return
 
-        submitDepositForm({ solvencyPercent }).then(() => {
+        submitDepositForm({ solvencyPercent, isMocked: true }).then(() => {
           expect(stubs.deposit).to.have.been.calledWithExactly(...expected.submit)
           if (approved) {
             expect(stubs.depositApprove).to.not.have.been.called

@@ -14,7 +14,8 @@ const createTradesMobileVisibility = (): ColumnVisibilityState => ({
 const createEventsMobileVisibility = (): ColumnVisibilityState => ({
   [LlammaEventsColumnId.User]: true,
   [LlammaEventsColumnId.Action]: true,
-  [LlammaEventsColumnId.Change]: false,
+  [LlammaEventsColumnId.TokenAmount]: false,
+  [LlammaEventsColumnId.UsdValue]: false,
   [LlammaEventsColumnId.Time]: false,
 })
 

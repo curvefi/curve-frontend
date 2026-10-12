@@ -2,11 +2,11 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address, getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
+import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV, MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
@@ -27,9 +27,8 @@ export const useYieldBreakdown = ({
   pool: PoolTemplate
   poolId: string
 }) => {
-  const { data: gauge } = usePoolGaugeStatus({ chainId, poolId })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
   const poolAddress = pool.address as Address
-  const gaugeIsKilled = !!gauge?.isKilled
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs

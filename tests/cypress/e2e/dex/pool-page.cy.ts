@@ -1,7 +1,7 @@
 import { oneFloat, oneOf } from '@cy/support/generators'
 import { clickTab } from '@cy/support/helpers/tabs'
 import type { AppRoute } from '@cy/support/routes'
-import { API_LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { SLIPPAGE, type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 
 describe('Pool page', () => {
@@ -17,8 +17,8 @@ describe('Pool page', () => {
 
   it('should update slippage settings', () => {
     cy.visitWithoutTestConnector(path)
-    clickTab('tab', 'deposit', API_LOAD_TIMEOUT)
-    cy.get('[data-testid="tab-deposit"]', API_LOAD_TIMEOUT).should('have.class', 'Mui-selected')
+    clickTab('tab', 'deposit', TIMEOUTS['ui.render'])
+    cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.render']).should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(slippageConfig.default))
     cy.get('[data-testid="slippage-settings-button"]').click()
     const [isPreset, value] = oneOf<[boolean, string]>(

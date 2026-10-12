@@ -9,63 +9,26 @@ import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
 import type { MarketEventRow } from '../types'
-import { formatActivityUsdValue } from '../utils'
+import { formatTokenDeltaUsd, getChangeColor, getLlammaEventTokenDeltas } from '../utils'
 
-export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({
-  row: {
-    original: { deposit, withdrawal, provider, blockchainId, collateralToken, borrowToken, timestamp },
-  },
-}) => {
+export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({ row: { original: event } }) => {
   const currentDate = useCurrentDate()
 
   return (
     <Stack>
       <MetricsGrid variant="mobileRows">
-        {deposit && (
+        {getLlammaEventTokenDeltas(event).map(delta => (
           <MetricExpandedPanel
-            label={notFalsy(t`Amount`, collateralToken?.symbol && `(${collateralToken.symbol})`).join(' ')}
-            value={deposit.amount}
-            valueOptions={{ color: 'success' }}
-            notional={constQ(
-              formatActivityUsdValue({ amount: deposit.amount, amountUsd: deposit.amountUsd, timestamp }, currentDate),
-            )}
-            icon={{ blockchainId, token: collateralToken }}
+            key={delta.label}
+            label={notFalsy(delta.label, delta.token?.symbol && `(${delta.token.symbol})`).join(' ')}
+            value={Math.abs(delta.amount)}
+            valueOptions={{ color: getChangeColor(delta.amount, 'success', 'error') }}
+            notional={constQ(formatTokenDeltaUsd({ ...delta, amount: Math.abs(delta.amount) }, currentDate))}
+            icon={{ blockchainId: delta.blockchainId, token: delta.token }}
           />
-        )}
-        {withdrawal && (
-          <>
-            {!!withdrawal.amountCollateral && (
-              <MetricExpandedPanel
-                label={notFalsy(t`Collateral`, collateralToken?.symbol && `(${collateralToken.symbol})`).join(' ')}
-                value={withdrawal.amountCollateral}
-                valueOptions={{ color: 'error' }}
-                notional={constQ(
-                  formatActivityUsdValue(
-                    { amount: withdrawal.amountCollateral, amountUsd: withdrawal.amountCollateralUsd, timestamp },
-                    currentDate,
-                  ),
-                )}
-                icon={{ blockchainId, token: collateralToken }}
-              />
-            )}
-            {!!withdrawal.amountBorrowed && (
-              <MetricExpandedPanel
-                label={notFalsy(t`Borrowed`, borrowToken?.symbol && `(${borrowToken.symbol})`).join(' ')}
-                value={withdrawal.amountBorrowed}
-                valueOptions={{ color: 'error' }}
-                notional={constQ(
-                  formatActivityUsdValue(
-                    { amount: withdrawal.amountBorrowed, amountUsd: withdrawal.amountBorrowedUsd, timestamp },
-                    currentDate,
-                  ),
-                )}
-                icon={{ blockchainId, token: borrowToken }}
-              />
-            )}
-          </>
-        )}
+        ))}
       </MetricsGrid>
-      <ActionInfo label={t`User`} value={shortenString(provider)} />
+      <ActionInfo label={t`User`} value={shortenString(event.provider)} />
     </Stack>
   )
 }

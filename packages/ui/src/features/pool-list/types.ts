@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { TableMeta } from '@tanstack/react-table'
+import type { EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import type { AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -65,14 +66,14 @@ type PoolUserPosition = {
 type PoolRowContext = {
   chainId: number
   blockchainId: string
-  campaigns: CampaignRewards[]
+  campaigns: CampaignRewards[] | undefined
   /** Absent until a position is known; do not fabricate a zero LP balance. */
   userPosition: PoolUserPosition | undefined
   hasVyperVulnerability: boolean | undefined
   url: string
 }
 
-type PoolRates = {
+export type PoolRates = {
   extraRewardsTotalApr: number
   campaignRewardsApr: number
   rewardsApr: number
@@ -101,6 +102,27 @@ export type PoolAlerts = {
 }
 
 export type PoolTableVariant = keyof typeof POOLS_COLUMN_OPTIONS
+export type UserPositionsTableVariant = Extract<PoolTableVariant, 'userPositions' | 'residualClaims'>
+
+/** Query results supplied by the host without importing its data hooks into UI. */
+export type PoolTableData = {
+  tableQuery: QueryProp<PoolRow[]>
+  isFetching: boolean
+  onReload: () => Promise<unknown>
+  alerts: PoolAlerts
+}
+
+export type PoolsTableData = PoolTableData & { pageCount: number; userHasPositions: boolean | undefined }
+
+type EmptyStateDescription = Pick<EmptyStateCardProps, 'title' | 'description' | 'icon'>
+
+export type ResidualClaimsTableData = PoolTableData & {
+  claimablesTotalUsd: QueryProp<Decimal>
+  labels: { errorTitle: string; loading: EmptyStateDescription; empty: EmptyStateDescription }
+}
+
+export type UserPositionsTableData = ResidualClaimsTableData & { totalLiquidityUsd: QueryProp<Decimal> }
+
 /**
  * Host-supplied presentation dependencies for static columns and expanded panels.
  * Access through getPoolTableMeta so the temporary metadata cast stays in one place.
@@ -110,5 +132,5 @@ export type PoolTableMeta = TableMeta<CurveTableFeatures, PoolRow> & {
   alerts: PoolAlerts
   /** Formatting and explorer links remain app-specific without duplicating them onto each row. */
   addressDisplay: AddressDisplay
-  crvToken: { address: Address; blockchainId: string }
+  crvToken?: { address: Address; blockchainId: string }
 }

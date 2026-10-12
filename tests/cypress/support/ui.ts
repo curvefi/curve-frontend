@@ -48,10 +48,6 @@ export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd'
 
 export type AppPath = ReturnType<typeof oneAppPath>
 
-export const LOAD_TIMEOUT = { timeout: 30000 }
-export const TRANSACTION_LOAD_TIMEOUT = { timeout: 90000 } // higher timeout in case confirmations are slow
-export const API_LOAD_TIMEOUT = { timeout: 120000 } // unfortunately the prices API can be REAL SLOW 😭
-
 /** Intercept callback for blocking the backend for testing. We use 510 to avoid the HTTP retries for some 5xx errors */
 export const UnexpectedApiRequest: HttpRequestInterceptor = req =>
   req.reply({ statusCode: 510, body: { error: `Unexpected API request in Cypress test to url ${req.url}` } })

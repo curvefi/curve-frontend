@@ -8,7 +8,8 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { POOL_TITLES, PoolColumnId } from '../columns'
+import { POOL_TITLES } from '../columns/column.titles'
+import { PoolColumnId } from '../columns/columns.enum'
 import type { PoolClaimables } from '../types'
 import { hasClaimableRewards } from '../utils'
 import { ClaimablesTooltipContent } from './ClaimablesTooltipContent'
@@ -57,7 +58,7 @@ export const ClaimablesCell = ({
           </>
         ) : (
           <>
-            <Typography variant="tableCellMBold">
+            <Typography variant="tableCellValue">
               {formatNumber(hasClaimables ? totalUsd.data : null, 'usd.precise')}
             </Typography>
             {claimables.data && <ClaimablesIcons claimables={claimables.data} blockchainId={blockchainId} />}

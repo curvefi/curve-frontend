@@ -1,7 +1,7 @@
 import { type ComponentProps, type ReactNode, useState } from 'react'
 import { action } from 'storybook/actions'
 import { ethAddress, type Address } from 'viem'
-import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
+import { MAINNET_CRV_ADDRESS, REUSD_ADDRESS } from '@evm-ui/utils'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -15,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 
 const defaultTokens: TokenOption[] = [
   { chain: 'ethereum', address: ethAddress, symbol: 'ETH' },
-  { chain: 'ethereum', address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC' },
+  { chain: 'ethereum', address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', category: 'lp' },
   { chain: 'ethereum', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', symbol: 'WBTC' },
   { chain: 'ethereum', address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', symbol: 'USDT' },
   { chain: 'ethereum', address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', symbol: 'DAI' },
@@ -27,18 +27,14 @@ const defaultTokens: TokenOption[] = [
   { chain: 'ethereum', address: '0x853d955aCEf822Db058eb8505911ED77F175b99e', symbol: 'FRAX' },
   { chain: 'ethereum', address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e', symbol: 'YFI' },
   { chain: 'ethereum', address: '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0', symbol: 'FXS' },
-  { chain: 'ethereum', address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', symbol: 'stETH' },
+  { chain: 'ethereum', address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', symbol: 'stETH', category: 'staked' },
   { chain: 'ethereum', address: '0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B', symbol: 'CVX' },
   { chain: 'ethereum', address: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32', symbol: 'LDO' },
   { chain: 'ethereum', address: '0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF', symbol: 'ALCX' },
   { chain: 'ethereum', address: '0x3231Cb76718CDeF2155FC47b5286d82e6eDA273f', symbol: 'EURE' },
   { chain: 'ethereum', address: '0x365AccFCa291e7D3914637ABf1F7635dB165Bb09', symbol: 'FXN' },
   { chain: 'ethereum', address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38', symbol: 'A7A5' },
-  {
-    chain: 'ethereum',
-    address: MAINNET_CRV_ADDRESS,
-    symbol: 'CRV with a very superlong name that should be truncated',
-  },
+  { chain: 'ethereum', address: REUSD_ADDRESS, symbol: 'reUSD with a very superlong name that should be truncated' },
 ]
 
 const defaultBalances = {

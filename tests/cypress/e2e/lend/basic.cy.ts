@@ -5,7 +5,8 @@ import {
 } from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
-import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { oneViewport } from '@cy/support/ui'
 
 const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
 
@@ -20,18 +21,17 @@ describe('Lend app', () => {
   })
 
   it('should open', () => {
-    cy.visit('/lend/')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
-  })
-
-  it('should redirect from the old root URL', () => {
-    cy.visit('/lend/#/ethereum')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
+    cy.visit('/lend/?foo=derp')
+    cy.location('pathname', TIMEOUTS['ui.navigation']).should('match', /^\/llamalend\/ethereum\/markets\/?$/)
+    cy.location('search').should('equal', '?foo=derp')
   })
 
   it('should redirect from the old nested URL', () => {
-    cy.visit('/lend/#/ethereum/disclaimer?tab=lend')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/lend\/ethereum\/legal\/?\?tab=disclaimers$/)
+    cy.visit('/lend/ethereum/disclaimer?tab=lend')
+    cy.url(TIMEOUTS['ui.navigation']).should(
+      'match',
+      /http:\/\/localhost:\d+\/lend\/ethereum\/legal\/?\?tab=disclaimers$/,
+    )
     cy.title().should('equal', 'Legal - Curve')
   })
 

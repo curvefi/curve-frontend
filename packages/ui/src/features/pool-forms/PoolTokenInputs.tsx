@@ -1,3 +1,5 @@
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -35,7 +37,12 @@ export const PoolTokenInputs = ({
       }
     />
   )) ??
-  (!error && (
+  (error ? (
+    <Alert>
+      <AlertTitle>{t`Error retrieving pool tokens`}</AlertTitle>
+      {error.message}
+    </Alert>
+  ) : (
     <>
       <LargeTokenInputSkeleton />
       <LargeTokenInputSkeleton />

@@ -15,7 +15,9 @@ import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { MarketsChips } from './chips/MarketsChips'
-import { DEFAULT_SORT, MARKET_COLUMNS, MarketColumnId } from './columns'
+import { DEFAULT_SORT } from './columns/column.constants'
+import { MARKET_COLUMNS } from './columns/column.definitions'
+import { MarketColumnId } from './columns/columns.enum'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
@@ -38,7 +40,7 @@ export const MarketsTable = ({
   tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
-  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState<boolean | undefined>()
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef<HTMLTableSectionElement>(null)

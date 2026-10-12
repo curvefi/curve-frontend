@@ -1,4 +1,6 @@
-import { useMarketFutureRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
+import { useMarketFutureRates } from '@/llamalend/queries/market/market-future-rates.query'
+import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'

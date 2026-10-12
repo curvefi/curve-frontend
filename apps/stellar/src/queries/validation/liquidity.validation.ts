@@ -1,12 +1,10 @@
 import { each, skipWhen, test } from 'vest'
-import { MAX_I128 } from '@/stellar/lib/amounts'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy, notFalsyArray, type Nullish } from '@primitives/objects.utils'
 import { poolAmountField, poolMaxAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
-import { fromWei } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -16,19 +14,11 @@ export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
 export type ExpectedLpQuery = QuoteQuery & { isDeposit: boolean; maxAmounts?: (Decimal | undefined)[] }
 export type ExpectedLpParams = FieldsOf<DeepPartial<ExpectedLpQuery>>
 
-export const validateAmount = (field: string, amount: Decimal | Nullish, precision: number | undefined) => {
+export const validateAmount = (field: string, amount: Decimal | Nullish) => {
   test(field, 'Enter a valid non-negative amount', () => {
     enforce(amount || '0')
       .isDecimal({ decimal_digits: '0,' })
       .gte(0)
-  })
-  maybe(precision, precision => {
-    test(field, 'Amount exceeds token decimal precision', () => {
-      enforce(amount || '0').isDecimal({ decimal_digits: `0,${precision}` })
-    })
-    test(field, 'Amount exceeds the maximum supported token amount', () => {
-      enforce(+(amount || '0')).lte(+fromWei(MAX_I128, precision))
-    })
   })
 }
 
@@ -46,7 +36,7 @@ export const validateLiquidityInputs = ({
     enforce(decimals?.length).isNumber().gte(2).lte(8).equals(amounts?.length)
     decimals?.forEach(precision => enforce(precision).isNumber())
   })
-  each(notFalsyArray(amounts), (amount, index) => validateAmount(poolAmountField(index), amount, decimals?.[index]))
+  each(notFalsyArray(amounts), (amount, index) => validateAmount(poolAmountField(index), amount))
   test('root', isDeposit ? 'Enter an amount to deposit' : 'Enter an amount to withdraw', () => {
     enforce(maybe(amounts, amounts => notFalsy(...amounts).filter(amount => +amount > 0).length)).gt(0)
   })

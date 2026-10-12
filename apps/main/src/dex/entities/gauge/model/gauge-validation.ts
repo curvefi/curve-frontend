@@ -4,9 +4,8 @@ import {
   amountValidationFn,
   tokenIdValidationFn,
 } from '@evm-ui/queries/validation/basic-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
-import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { curvePoolValidationGroup, poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { formatNumber } from '@primitives/number.utils'
 import { amount as toAmount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -61,8 +60,7 @@ export const gaugeDepositRewardValidationSuite = createValidationSuite((data: De
 })
 export const gaugeDistributorsValidationSuite = createValidationSuite(
   ({ chainId, poolId, userAddress }: GaugeDistributorsParams) => {
-    curveApiValidationGroup({ chainId })
-    poolValidationGroup({ chainId, poolId })
+    curvePoolValidationGroup({ chainId, poolId })
     evmAddressValidationGroup({ evmAddress: userAddress })
   },
 )

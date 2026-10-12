@@ -18,7 +18,8 @@ import { ClaimablesTooltipContent } from '../cells/ClaimablesTooltipContent'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { ClaimablesIcons, RewardIcons } from '../cells/RewardIcons'
 import { getBaseApr, isVolatileRate } from '../cells/utils'
-import { POOL_TITLES, PoolColumnId } from '../columns'
+import { POOL_TITLES } from '../columns/column.titles'
+import { PoolColumnId } from '../columns/columns.enum'
 import type { PoolRow, PoolTableMeta, PoolTableVariant } from '../types'
 
 const { Spacing } = SizesAndSpaces
@@ -77,14 +78,10 @@ const PoolTokens = ({ pool, addressDisplay }: { pool: PoolRow; addressDisplay: A
 
 export const PoolExpandedPanel = ({
   pool,
-  variant,
-  addressDisplay,
-  crvToken,
+  meta: { variant, addressDisplay, crvToken },
 }: {
   pool: PoolRow
-  variant: PoolTableVariant
-  addressDisplay: AddressDisplay
-  crvToken: PoolTableMeta['crvToken']
+  meta: PoolTableMeta
 }) => {
   const currentDate = useCurrentDate()
   const baseRate = getBaseApr(pool, 'daily')

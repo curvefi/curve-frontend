@@ -2,7 +2,7 @@ import { encodeFunctionData, erc20Abi, type Address, type PublicClient } from 'v
 import { oneInt } from '@cy/support/generators'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Hex } from '@primitives/address.utils'
 
 /**
@@ -25,7 +25,7 @@ export const fundEth = ({
     url: adminRpcUrl,
     headers: { 'Content-Type': 'application/json' },
     body: { jsonrpc: '2.0', method: 'tenderly_setBalance', params: [recipientAddresses, amountWei], id: oneInt() },
-    ...LOAD_TIMEOUT,
+    ...TIMEOUTS['tenderly.fund'],
   })
 
 /**
@@ -56,7 +56,7 @@ export const fundErc20 = ({
       params: [tokenAddress, recipientAddresses, amountWei],
       id: oneInt(),
     },
-    ...LOAD_TIMEOUT,
+    ...TIMEOUTS['tenderly.fund'],
   })
 
 export const approveErc20 = ({

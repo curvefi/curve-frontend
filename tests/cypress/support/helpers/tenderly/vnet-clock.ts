@@ -1,5 +1,5 @@
 import { toHex } from 'viem'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Hex } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
 
@@ -14,14 +14,14 @@ export const setVirtualNetworkClockToFork = ({ adminRpcUrl }: { adminRpcUrl: str
       method: 'POST',
       url: adminRpcUrl,
       body: { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: ['latest', false], id: 1 },
-      ...LOAD_TIMEOUT,
+      ...TIMEOUTS['tenderly.clock'],
     })
     .then(({ body }) =>
       cy.request<{ result?: number; error?: unknown }>({
         method: 'POST',
         url: adminRpcUrl,
         body: { jsonrpc: '2.0', method: 'evm_setNextBlockTimestamp', params: getNextBlock(body), id: 2 },
-        ...LOAD_TIMEOUT,
+        ...TIMEOUTS['tenderly.clock'],
       }),
     )
     .then(({ body }) => assert(body.result, `Failed to set fork clock: ${JSON.stringify(body.error)}`))

@@ -51,7 +51,8 @@
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "prettier": "3.9.9",
-    "typescript": "6.0.3",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "typescript-7": "npm:typescript@7.0.2",
     "typescript-eslint": "8.71.0",
     "vite-plugin-svgr": "5.2.0"
   },
