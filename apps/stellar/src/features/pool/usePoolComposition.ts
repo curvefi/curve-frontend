@@ -1,5 +1,5 @@
 import { shortenAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
-import { usePoolReserveAmounts } from '@/stellar/queries/pool/pool-reserves.query'
+import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { getTokenUsdRateQueryOptions } from '@/stellar/queries/token/token-usd-rate.query'
 import { isComplete, zip } from '@primitives/array.utils'
@@ -22,7 +22,7 @@ export function usePoolComposition({
   tokens: QueryProp<PoolToken[]>
   decimals: QueryProp<(number | undefined)[]>
 }) {
-  const reserve = usePoolReserveAmounts({ network, pool }, decimals)
+  const reserve = usePoolReserves({ network, pool, decimals: decimals.data })
   const prices = useQueries({
     queries: tokenAddresses.data?.map(token => getTokenUsdRateQueryOptions({ network, token })) ?? [],
   })

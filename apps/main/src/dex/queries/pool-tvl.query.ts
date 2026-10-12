@@ -1,4 +1,5 @@
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -14,8 +15,4 @@ const { useQuery: usePoolTvlQuery } = queryFactory({
   validationSuite: curvePoolValidationSuite,
 })
 
-/** Hook to fetch the TVL for a single pool. */
-export function usePoolTvl({ chainId, poolId }: PoolParams) {
-  const { isHydrated } = useCurve()
-  return usePoolTvlQuery({ chainId, poolId }, isHydrated)
-}
+export const usePoolTvl = (params: PoolParams) => useHydratedQuery(usePoolTvlQuery, params)

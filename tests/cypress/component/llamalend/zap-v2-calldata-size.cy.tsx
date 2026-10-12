@@ -21,7 +21,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { constQ } from '@ui/features/queries/util'
 
 const routerCalldataOfSize = (bytes: number): Hex => `0x${'00'.repeat(bytes)}`
@@ -29,7 +29,7 @@ const CHAIN_ID = 1
 const ROUTE_ERROR = '[data-testid="loan-form-error-routeId"]'
 
 const checkOversizedCalldataBlocked = (submitButtonTestId: string) => {
-  cy.wait('@routerRoutes', LOAD_TIMEOUT)
+  cy.wait('@routerRoutes', TIMEOUTS['mock.router.routes'])
   cy.get(ROUTE_ERROR).should('be.visible')
   cy.get(`[data-testid="${submitButtonTestId}"]`).should('be.disabled')
 }
@@ -53,7 +53,14 @@ describe('ZapV2 router calldata size', () => {
       </MockLoanTestWrapper>,
     )
 
-    writeCreateLoanForm({ collateral, borrow, leverageEnabled: true, hasLeverage: true, waitForRoutes: true })
+    writeCreateLoanForm({
+      collateral,
+      borrow,
+      leverageEnabled: true,
+      hasLeverage: true,
+      waitForRoutes: true,
+      isMocked: true,
+    })
     cy.get(ROUTE_ERROR).should('not.exist')
   })
 
@@ -73,7 +80,7 @@ describe('ZapV2 router calldata size', () => {
       </MockLoanTestWrapper>,
     )
 
-    writeCreateLoanForm({ collateral, borrow, leverageEnabled: true, hasLeverage: true })
+    writeCreateLoanForm({ collateral, borrow, leverageEnabled: true, hasLeverage: true, isMocked: true })
     checkOversizedCalldataBlocked('create-loan-submit-button')
   })
 
@@ -99,7 +106,7 @@ describe('ZapV2 router calldata size', () => {
       </MockLoanTestWrapper>,
     )
 
-    writeBorrowMoreForm({ debt: borrow, hasLeverageManagement: true, leverageEnabled: true })
+    writeBorrowMoreForm({ debt: borrow, hasLeverageManagement: true, leverageEnabled: true, isMocked: true })
     checkOversizedCalldataBlocked('borrow-more-submit-button')
   })
 
@@ -130,7 +137,7 @@ describe('ZapV2 router calldata size', () => {
       hasLeverageManagement: true,
       optionIndex: 1,
     })
-    writeRepayLoanForm({ amount: collateral })
+    writeRepayLoanForm({ amount: collateral, isMocked: true })
     checkOversizedCalldataBlocked('repay-submit-button')
   })
 })

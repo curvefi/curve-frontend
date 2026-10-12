@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { t } from '@ui/lib/i18n'
-import { MarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns/columns.enum'
 
 type Option<T = string> = { id: T; label: ReactNode }
 
@@ -17,7 +17,6 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserBorrowed, label: t`Borrow Amount` },
           { id: MarketColumnId.UserCollateral, label: t`Collateral Amount` },
           { id: MarketColumnId.UserLtv, label: t`LTV` },
-          { id: MarketColumnId.UserEarnings, label: t`My Earnings` },
           { id: MarketColumnId.UserDeposited, label: t`Supplied Amount` },
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
         ]

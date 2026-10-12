@@ -21,7 +21,7 @@ export const EmptyStateRow = ({
 }) => (
   <TableRow data-testid="table-empty-row" sx={{ height: Height.table.noResults[size] }}>
     <Typography
-      variant="tableCellL"
+      variant="tableCellTitle"
       colSpan={colSpan}
       component="td"
       sx={{ padding: Spacing[SPACING_SIZE_MAP[size]], textAlign: 'center' }}

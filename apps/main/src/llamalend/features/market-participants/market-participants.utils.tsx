@@ -39,11 +39,11 @@ export const TokenHeader = ({
 )
 
 export const Percentage = ({ value }: { value: number | Nullish }) => (
-  <Typography variant="tableCellMBold">{formatNumber(value, 'percent.value')}</Typography>
+  <Typography variant="tableCellValueStrong">{formatNumber(value, 'percent.value')}</Typography>
 )
 
 export const Health = ({ health }: Pick<BorrowerRow, 'health'>) => (
-  <Typography variant="tableCellMRegular">{formatNumber(health, 'percent.value')}</Typography>
+  <Typography variant="tableCellValue">{formatNumber(health, 'percent.value')}</Typography>
 )
 
 export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row: { original: borrower } }) => (

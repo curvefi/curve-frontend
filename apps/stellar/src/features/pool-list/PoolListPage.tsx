@@ -1,41 +1,50 @@
-import { asStellarContract } from '@/stellar/features/connect-wallet/address'
+import { asAddress, formatAddress, stellarAddressDisplay } from '@/stellar/features/connect-wallet/address'
+import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolList } from '@/stellar/features/pool-list/usePoolList'
+import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import type { NetworkQuery } from '@/stellar/queries/query-types'
-import { StellarUrls } from '@/stellar/routes/routes'
-import Stack from '@mui/material/Stack'
 import { ListPageLayout } from '@ui/features/layout/ListPageLayout'
-import { q } from '@ui/features/queries/util'
-import { useCurveTable } from '@ui/features/tables/data-table.utils'
-import { DataTable } from '@ui/features/tables/DataTable'
-import { TableHeader } from '@ui/features/tables/TableHeader'
+import { PoolExpandedPanelActions } from '@ui/features/pool-list/components/PoolExpandedPanelActions'
+import { usePoolsFilters } from '@ui/features/pool-list/hooks/usePoolsFilters'
+import { usePoolsPagination } from '@ui/features/pool-list/hooks/usePoolsPagination'
+import { usePoolsSorting } from '@ui/features/pool-list/hooks/usePoolsSorting'
+import { PoolsTable } from '@ui/features/pool-list/PoolsTable'
+import type { PoolAlerts, PoolRow } from '@ui/features/pool-list/types'
+import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useParams } from '@ui/hooks/router'
-import { t } from '@ui/lib/i18n'
-import { POOL_LIST_COLUMNS } from './pool-list.columns'
 
-const pagination = { pageIndex: 0, pageSize: 20 }
+const NO_ALERTS: PoolAlerts = { pools: {}, tokens: {}, vyper: { alertType: '' } }
+
+const PoolActions: ExpandedPanelComponent<PoolRow> = ({ row: { original: pool } }) => (
+  <PoolExpandedPanelActions poolAddress={pool.address} path={pool.url} formatAddress={formatAddress} />
+)
 
 export const PoolListPage = () => {
   const { network } = useParams<NetworkQuery>()
-  const params = { network }
-  const query = usePoolList(params)
-  const table = useCurveTable({
-    query: q(query),
-    columns: POOL_LIST_COLUMNS,
-    getRowId: p => p.address,
-    initialState: { pagination },
-    meta: { getRowHref: ({ network, address }) => StellarUrls.pool({ pool: asStellarContract(address), network }) },
-  })
-
+  const { address, connect, isConnected, isConnecting } = useWallet()
+  const { isLite } = STELLAR_NETWORKS[network]
+  const pagination = usePoolsPagination()
+  const { isFetching, refetch, pageCount, query } = usePoolList({ network })
   return (
     <ListPageLayout>
-      <Stack>
-        <TableHeader title={t`Pools`} onReload={query.refetch} isLoading={query.isFetching} />
-        <DataTable
-          table={table}
-          emptyState={{ title: t`No pools found` }}
-          errorState={{ title: t`Could not load pools`, onReload: query.refetch }}
-        />
-      </Stack>
+      <PoolsTable
+        tableQuery={query}
+        isFetching={isFetching}
+        onReload={refetch}
+        pageCount={pageCount}
+        userHasPositions={undefined}
+        alerts={NO_ALERTS}
+        isLite={isLite}
+        filters={usePoolsFilters()}
+        pagination={pagination}
+        sorting={usePoolsSorting(isLite, pagination.updateQueryAndResetPage)}
+        addressDisplay={stellarAddressDisplay}
+        Actions={PoolActions}
+        userAddress={asAddress(address)}
+        connect={connect}
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+      />
     </ListPageLayout>
   )
 }

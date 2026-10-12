@@ -10,7 +10,7 @@ import type { PoolRow } from '../types'
 const { Spacing, IconSize } = SizesAndSpaces
 
 type ExtraReward = PoolRow['extraRewardsApr'][number]
-type Campaign = PoolRow['campaigns'][number]
+type Campaign = NonNullable<PoolRow['campaigns']>[number]
 
 export const ExtraRewardTooltipItems = ({ blockchainId, rewards }: { blockchainId: string; rewards: ExtraReward[] }) =>
   rewards.map((reward, index) => (

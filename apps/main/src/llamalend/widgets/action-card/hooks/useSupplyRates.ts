@@ -1,10 +1,8 @@
-import {
-  useMarketRates,
-  useMarketSnapshots,
-  useMarketSupplyFutureRates,
-  useMarketVaultOnChainRewards,
-} from '@/llamalend/queries/market'
-import { useUserSupplyBoost } from '@/llamalend/queries/user'
+import { useMarketSupplyFutureRates } from '@/llamalend/queries/market/market-future-rates.query'
+import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
+import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
+import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.query'
 import {
   getLatestSnapshotValue,
   getSupplyApyMetrics,
@@ -13,7 +11,7 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'

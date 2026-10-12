@@ -1,5 +1,6 @@
 import type { ContractMethod } from 'ethers'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
@@ -37,7 +38,4 @@ const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked
 
 export { invalidatePoolTotalStaked }
 
-export function usePoolTotalStaked(params: PoolParams) {
-  const { isHydrated } = useCurve()
-  return usePoolTotalStakedQuery(params, isHydrated)
-}
+export const usePoolTotalStaked = (params: PoolParams) => useHydratedQuery(usePoolTotalStakedQuery, params)

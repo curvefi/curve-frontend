@@ -2,13 +2,14 @@ import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
+import type { RouterState } from '@ui/components/RouterLink'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { useParams } from '@ui/hooks/router'
+import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { StellarUrls } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
@@ -26,6 +27,7 @@ const menu = [
 
 export const PoolPage = () => {
   const { network, pool } = useParams<PoolQuery>()
+  const { defaultTab } = useLocation().state as RouterState
   const { address: account } = useWallet()
   const params = { network, pool }
   const config = usePoolConfig(params)
@@ -44,7 +46,10 @@ export const PoolPage = () => {
           rightItems={<PoolHeaderMetrics tvl={composition.totalUsd} />}
         />
       }
-      formTabs={{ placement: 'inline', content: <FormTabs menu={menu} params={{ network, pool }} /> }}
+      formTabs={{
+        placement: 'inline',
+        content: <FormTabs menu={menu} params={{ network, pool }} defaultValue={defaultTab?.toString()} />,
+      }}
     >
       <PoolCompositionCard {...composition} />
       <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} />

@@ -3,13 +3,10 @@ import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/use
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  type MarketRates,
-  useMarketCapAndAvailable,
-  useMarketRates,
-  useMarketVaultOnChainRewards,
-  useMarketSnapshots,
-} from '@/llamalend/queries/market'
+import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
+import { useMarketRates, type MarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
+import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   formatSupplyExtraIncentives,
@@ -25,7 +22,7 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'

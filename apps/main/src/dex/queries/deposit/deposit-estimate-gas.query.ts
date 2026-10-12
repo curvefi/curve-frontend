@@ -1,6 +1,7 @@
 import { userDepositParamsValidationSuite } from '@/dex/features/deposit/deposit.validation'
 import type { DepositParams, DepositQuery, UserDepositParams } from '@/dex/features/deposit/types'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -30,7 +31,5 @@ const useDepositEstimateGasQuery = createApprovedEstimateGasHook({
   useActionEstimate: useDepositEstimate,
 })
 
-export const useDepositEstimateGas = (params: DepositParams, enabled?: boolean) => {
-  const { isHydrated } = useCurve()
-  return useDepositEstimateGasQuery(params, isHydrated && enabled)
-}
+export const useDepositEstimateGas = (params: DepositParams, enabled?: boolean) =>
+  useHydratedQuery(useDepositEstimateGasQuery, params, enabled)

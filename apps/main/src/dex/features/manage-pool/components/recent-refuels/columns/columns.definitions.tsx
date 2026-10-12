@@ -1,4 +1,5 @@
-import { AddressCell, TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
+import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import type { Address } from '@primitives/address.utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'

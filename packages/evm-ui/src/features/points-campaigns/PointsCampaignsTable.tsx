@@ -22,7 +22,7 @@ const COLUMNS = columnHelper.columns([
     header: t`Source`,
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <TokenInfo {...getValue()} boldPrimary />
+        <TokenInfo {...getValue()} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -32,7 +32,7 @@ const COLUMNS = columnHelper.columns([
     header: t`Multiplier`,
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography>{getValue()}</Typography>
+        <Typography variant="tableCellValue">{getValue()}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,

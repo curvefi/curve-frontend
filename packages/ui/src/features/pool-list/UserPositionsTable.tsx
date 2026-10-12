@@ -8,7 +8,6 @@ import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
-import { POOL_COLUMNS, PoolColumnId } from '@ui/features/pool-list/columns'
 import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
 import { usePoolsVisibility } from '@ui/features/pool-list/hooks/usePoolsVisibility'
 import { getPoolTableMeta, createPoolTableMeta } from '@ui/features/pool-list/table-meta'
@@ -30,6 +29,8 @@ import { useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { borderStyle, directChildrenAfterFirst } from '@ui/lib/mui'
+import { POOL_COLUMNS } from './columns/column.definitions'
+import { PoolColumnId } from './columns/columns.enum'
 
 const { Spacing } = SizesAndSpaces
 

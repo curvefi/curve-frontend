@@ -1,9 +1,9 @@
 import { listLitePoolChains, listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
 import type { ChainParams, ChainQuery } from '@evm-ui/queries/query-types'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { chainValidationSuite } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
 type PoolListRequestParams = Pick<
@@ -68,7 +68,7 @@ export const { useQuery: usePoolList } = queryFactory({
 
     return { ...poolList, pageCount: getPageCount(poolList.count, poolList.pagination) }
   },
-  validationSuite: createValidationSuite(chainValidationGroup),
+  validationSuite: chainValidationSuite,
   category: 'dex.pools',
   keepPreviousData: true,
 })
