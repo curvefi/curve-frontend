@@ -55,6 +55,7 @@ export function LiquidityProviderInput({
     (lpAmount: Decimal | undefined) =>
       update({
         lpAmount,
+        maxWithdrawIndex: undefined,
         ...(getBalancedAmountUpdates(lpAmount, decimalsData, reserves.data, supply.data, slippage, lpTokenDecimals) ??
           getPoolDefaultValues(tokenCount ?? 0)),
       }),
