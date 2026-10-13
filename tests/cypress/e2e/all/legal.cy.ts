@@ -23,6 +23,12 @@ describe('Legal', () => {
       cy.viewport(width, height)
       cy.visit(`/${oneAppPath() || 'dex'}/ethereum/legal`)
 
+      // Wait for the selected tab and its content before interacting with the page.
+      cy.get('[data-testid="legal-tab-terms"]', TIMEOUTS['ui.render']).should('have.attr', 'aria-selected', 'true')
+      cy.get('[data-testid="legal-page"] [role="tabpanel"]', TIMEOUTS['ui.render'])
+        .should('be.visible')
+        .and('not.be.empty')
+
       // click one Legal page tab.
       clickTab('legal-tab', oneLegalPageTab())
 

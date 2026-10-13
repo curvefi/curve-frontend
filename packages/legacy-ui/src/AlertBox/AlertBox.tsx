@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import type { AlertBoxProps } from '@legacy-ui/AlertBox/types'
 import { Box } from '@legacy-ui/Box'
@@ -14,7 +14,7 @@ export const AlertBox = ({
   handleBtnClose,
   ...props
 }: AlertBoxProps) => {
-  const [enabledHeightToggle, setEnabledHeightToggle] = useState(false)
+  const enabledHeightToggle = typeof children === 'string' && children.length > 200
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
     alertType === '' ? null : (
@@ -22,13 +22,6 @@ export const AlertBox = ({
     )
 
   const alertContentRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof children === 'string' && children.length > 200) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setEnabledHeightToggle(true)
-    }
-  }, [children])
 
   const cutAlert = useMemo(() => {
     if (typeof children === 'string' && children.length > 200 && limitHeight) {

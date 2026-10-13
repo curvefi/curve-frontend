@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
@@ -43,6 +43,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { constQ } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
+import { usePreviousValue } from '@ui/hooks/usePreviousValue'
 import { t } from '@ui/lib/i18n'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
@@ -139,23 +140,21 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
   const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress: signerAddress })
 
-  const [seed, setSeed] = useState(DEFAULT_SEED)
   const { state } = useLocation()
   const defaultTab = (state as PoolRouteState).defaultTab
 
   const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
-  // is seed
-  useEffect(() => {
+  const currentSeed = useMemo(() => {
     const balances = currencyReserves?.tokens.map(({ balance }) => +balance) ?? pricesApiPoolData?.balances
-    if (!balances?.length) return
+    return balances?.length ? { isSeed: balances.every(balance => balance === 0), loaded: true } : null
+  }, [currencyReserves, pricesApiPoolData])
+  // Keep the last loaded status while reserve data is temporarily unavailable, including wrapped-mode changes.
+  const seed = usePreviousValue(currentSeed) ?? DEFAULT_SEED
 
-    const isSeed = balances.every(balance => balance === 0)
-
-    if (isSeed && hasWrapped(pool)) setIsWrapped(true)
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setSeed({ isSeed, loaded: true })
-  }, [currencyReserves, pricesApiPoolData, pool, setIsWrapped])
+  useEffect(() => {
+    if (currentSeed?.isSeed && hasWrapped(pool)) setIsWrapped(true)
+  }, [currentSeed, pool, setIsWrapped])
 
   const tabParams = useMemo(
     () => ({
