@@ -1,4 +1,5 @@
-import { MarketType } from '@evm-ui/types/market'
+import { BORROW_APR_DESCRIPTION, NET_BORROW_APR_DESCRIPTION } from '@/llamalend/constants'
+import { hasEstimatedNetBorrowApr } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
@@ -7,26 +8,19 @@ import { t } from '@ui/lib/i18n'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
-export type MarketNetBorrowAprTooltipContentProps = {
-  marketType: MarketType
+export type MarketBorrowAprTooltipContentProps = {
   borrowApr: number | Nullish
   averageApr: number | Nullish
   totalBorrowApr: number | Nullish
   totalAverageBorrowApr: number | Nullish
   periodLabel: string // e.g. "7D", "30D"
-  extraRewards: CampaignRewards[]
+  extraRewards: CampaignRewards[] | Nullish
   rebasingYieldApr: number | Nullish
   collateralSymbol: string | Nullish
   isLoading?: boolean
 }
 
-const messages: Record<MarketType, string> = {
-  [MarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
-  [MarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
-}
-
-export const MarketNetBorrowAprTooltipContent = ({
-  marketType,
+export const MarketBorrowAprTooltipContent = ({
   borrowApr,
   totalBorrowApr,
   totalAverageBorrowApr,
@@ -36,14 +30,12 @@ export const MarketNetBorrowAprTooltipContent = ({
   rebasingYieldApr,
   collateralSymbol,
   isLoading,
-}: MarketNetBorrowAprTooltipContentProps) => (
+}: MarketBorrowAprTooltipContentProps) => (
   <TooltipWrapper>
-    <TooltipDescription text={messages[marketType]} />
+    <TooltipDescription text={BORROW_APR_DESCRIPTION} />
 
-    {!!rebasingYieldApr && (
-      <TooltipDescription
-        text={t`Net borrow APR represents your effective borrowing cost after yields and incentives.`}
-      />
+    {hasEstimatedNetBorrowApr({ totalBorrowApr, extraRewards, rebasingYieldApr }) && (
+      <TooltipDescription text={NET_BORROW_APR_DESCRIPTION} />
     )}
 
     <Stack>
@@ -54,7 +46,7 @@ export const MarketNetBorrowAprTooltipContent = ({
         </TooltipItem>
       </TooltipItems>
 
-      {extraRewards.length > 0 && (
+      {!!extraRewards?.length && (
         <TooltipItems secondary>
           <RewardsTooltipItems
             title={t`Borrowing incentives`}
@@ -67,7 +59,7 @@ export const MarketNetBorrowAprTooltipContent = ({
 
       {rebasingYieldApr != null && (
         <TooltipItems secondary>
-          <TooltipItem title={t`Yield bearing tokens`}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
+          <TooltipItem title={t`Collateral yield`}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
           {!!collateralSymbol && (
             <TooltipItem variant="subItem" title={collateralSymbol}>
               {formatCappedRatePercent(-rebasingYieldApr)}
@@ -76,9 +68,9 @@ export const MarketNetBorrowAprTooltipContent = ({
         </TooltipItems>
       )}
 
-      {totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) && (
+      {hasEstimatedNetBorrowApr({ totalBorrowApr, extraRewards, rebasingYieldApr }) && (
         <TooltipItems>
-          <TooltipItem variant="primary" title={t`Net borrow APR`}>
+          <TooltipItem variant="primary" title={t`Est. net borrow APR`}>
             {formatCappedRatePercent(totalBorrowApr)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>

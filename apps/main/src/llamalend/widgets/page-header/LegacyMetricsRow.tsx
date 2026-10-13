@@ -46,11 +46,11 @@ export const LegacyMetricsRow = ({
         justifyContent: 'start',
       }}
     >
-      <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
+      <BorrowAprMetric borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
       {supplyRate && (
         <Metric
           category={METRIC_CATEGORY}
-          testId="market-net-supply-apy"
+          testId="market-supply-apy"
           label={NET_SUPPLY_RATE_TITLE}
           value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
           valueOptions={{ unit: 'percentage' }}

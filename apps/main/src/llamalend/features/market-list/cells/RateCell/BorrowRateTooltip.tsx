@@ -1,11 +1,11 @@
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
-import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
-import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { MarketBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowAprTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, AverageCategory } from '@evm-ui/utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { t } from '@ui/lib/i18n'
 import { RateTooltipProps } from './RateCell'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.marketList.rate'
@@ -27,18 +27,16 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
-  const title = getBorrowRateTooltipTitle({ totalBorrowApr, rebasingYieldApr, extraRewards: poolRewards })
 
   return (
     <Tooltip
       clickable
-      title={title}
+      title={t`Borrow APR`}
       open={open}
       onOpen={onOpen}
       onClose={onClose}
       body={
-        <MarketNetBorrowAprTooltipContent
-          marketType={marketType}
+        <MarketBorrowAprTooltipContent
           borrowApr={borrowApr}
           averageApr={averageApr}
           totalBorrowApr={totalBorrowApr}

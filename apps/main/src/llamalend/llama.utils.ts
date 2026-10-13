@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { getAddress, isAddressEqual, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
+import type { MarketBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -489,13 +489,13 @@ export const formatCollateralNotional = (
     borrow?.value && +borrow?.value && borrow.symbol && formatToken(borrow.value, borrow.symbol),
   ).join(' + ')
 
-/** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */
-export const getBorrowRateTooltipTitle = ({
+/** The estimated net borrow APR differs from the borrow APR only when there are extra rewards or collateral yield. */
+export const hasEstimatedNetBorrowApr = ({
   totalBorrowApr,
   extraRewards,
   rebasingYieldApr,
-}: Pick<MarketNetBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
-  totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) ? t`Net borrow APR` : t`Borrow APR`
+}: Pick<MarketBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
+  totalBorrowApr != null && (!!extraRewards?.length || rebasingYieldApr != null)
 
 /** Compute utilization percentage from available liquidity and total assets. */
 export const getUtilizationPercent = (available: Decimal | undefined, totalAssets: Decimal | undefined) => {
