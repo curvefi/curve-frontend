@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useEstimateGasValue } from '@evm-ui/queries/gas-info.query'
-import type { RouteQuery } from '@evm-ui/queries/router-api'
+import type { RouteQuery } from '@evm-ui/queries/router-api/types'
 import { fromWei } from '@evm-ui/utils'
 import { RouteComparisonChip } from '@evm-ui/widgets/RouteProvider/RouteComparisonChip'
 import { RouteProviderIcons, RouteProviderLabels } from '@evm-ui/widgets/RouteProvider/RouteProviders'
