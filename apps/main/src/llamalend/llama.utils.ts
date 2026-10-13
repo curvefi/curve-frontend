@@ -10,10 +10,11 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
+import type { ActivityToken } from '@evm-ui/features/activity-table/types'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
-import { type Address, Hex } from '@primitives/address.utils'
+import { type Address, Hex, type Token } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
@@ -27,6 +28,7 @@ import {
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
+import type { TokenOrPair } from '@ui/components/TokenIcons'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
@@ -35,7 +37,7 @@ import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
-import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
+import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
 
 /**
@@ -246,6 +248,27 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
           },
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
+
+/** Returns the token pair of a known LP token */
+const findLpTokenPair = (blockchainId: Chain, address: string) => LP_TOKEN_PAIRS[blockchainId]?.[getAddress(address)]
+
+/** Returns the token pair of a known LP token, or the token itself */
+export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>
+  findLpTokenPair(blockchainId, token.address) ?? token
+
+/** Returns the addresses of the token pair of a known LP token, or the address itself */
+export const getAddressOrPair = <T extends string | Nullish>(
+  blockchainId: Chain | Nullish,
+  address: T,
+): T | Address[] =>
+  maybe(maybes([blockchainId, address], findLpTokenPair), ([first, second]): Address[] => [
+    first.address,
+    second.address,
+  ]) ?? address
+
+/** Returns the token of an activity row, with the addresses of its token pair when it is a known LP token */
+export const getActivityToken = (blockchainId: Chain, token: Token | Nullish): ActivityToken | undefined =>
+  maybe(token, ({ symbol, address }) => ({ symbol, address: getAddressOrPair(blockchainId, address) }))
 
 export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,

@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketVaultEvents } from '@/llamalend/queries/market/market-vault-events.query'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
 import { LlammaTokenAmount } from '@evm-ui/features/activity-table/cells/LlammaTokenAmount'
@@ -119,7 +120,14 @@ export const VaultActivityEventsTable = ({ chainId, blockchainId, borrowToken, v
     query: useMappedQuery(
       eventsQuery,
       useCallback(
-        ({ events }) => events.map(event => ({ ...event, chainId, blockchainId, borrowToken, vaultToken })),
+        ({ events }) =>
+          events.map(event => ({
+            ...event,
+            chainId,
+            blockchainId,
+            borrowToken: getActivityToken(blockchainId, borrowToken),
+            vaultToken: getActivityToken(blockchainId, vaultToken),
+          })),
         [chainId, blockchainId, borrowToken, vaultToken],
       ),
     ),

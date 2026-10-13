@@ -1,6 +1,4 @@
-import { identity } from 'lodash'
 import { useEffect, useMemo } from 'react'
-import { useShallow } from 'zustand/react/shallow'
 import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
@@ -91,35 +89,21 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const { formState, reset } = form
 
   // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = useShallow(identity<WithdrawFormValues>)(form.watchValues())
+  const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount' | 'maxWithdrawIndex'>(
-    useMemo(
-      () => ({
-        ...values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals: decimalsData,
-        slippage: values.slippage,
-        supply: supply.data,
-        seedLock: config.data?.seedLock,
-        maxLpAmount: lpBalance.data,
-        maxAmounts: maxAmounts.map(q => q.data),
-      }),
-      [
-        values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimalsData,
-        supply.data,
-        config.data?.seedLock,
-        lpBalance.data,
-        maxAmounts,
-      ],
-    ),
+    {
+      ...values,
+      network,
+      pool,
+      account,
+      tokenCount,
+      decimals: decimalsData,
+      slippage: values.slippage,
+      supply: supply.data,
+      seedLock: config.data?.seedLock,
+      maxLpAmount: lpBalance.data,
+      maxAmounts: maxAmounts.map(q => q.data),
+    },
     userDefaultValues,
   )
   const queryParams = { ...params, amounts: getPoolAmounts(params, params.tokenCount) }
