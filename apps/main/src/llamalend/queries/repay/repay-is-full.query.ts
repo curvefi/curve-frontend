@@ -5,13 +5,12 @@ import { repayValidationSuite } from '@/llamalend/queries/validation/repay.valid
 import { queryFactory } from '@ui/features/queries/factory'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-/** Returns whether the planned repay fully closes the loan, whether repayment comes from debt token, wallet collateral, or position collateral. */
+/** Returns whether the planned repay fully closes the loan, whether repayment comes from debt token or position collateral. */
 export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -23,7 +22,6 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
@@ -32,19 +30,12 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     chainId,
     marketId,
     stateCollateral,
-    userCollateral,
     userBorrowed,
     userAddress,
     slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
-    const [type, impl, args] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      slippage,
-      routeId,
-    })
+    const [type, impl, args] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, slippage, routeId })
     switch (type) {
       case 'zapV2':
         return await impl.repayIsFull(...args)
