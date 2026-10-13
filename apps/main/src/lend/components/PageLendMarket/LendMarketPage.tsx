@@ -19,7 +19,7 @@ import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useMarketResetPosition, useMarketMobileFormDrawer } from '@evm-ui/hooks/useFeatureFlags'
+import { useMarketResetPosition } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
@@ -43,7 +43,6 @@ export const LendMarketPage = () => {
   const { isInitialized } = useCurve()
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
-  const isMobileFormDrawer = useMarketMobileFormDrawer()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -91,7 +90,7 @@ export const LendMarketPage = () => {
     >
       <DetailPageLayout
         formTabs={{
-          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          placement: 'mobile-drawer',
           content:
             !isLoading &&
             !isLoanExistsLoading &&
