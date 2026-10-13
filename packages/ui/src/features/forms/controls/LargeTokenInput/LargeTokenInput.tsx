@@ -167,15 +167,6 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
-/** Recalculate the local percentage only when the maximum changes, without notifying the parent. */
-const useInputPercentage = ({
-  balance,
-  maxBalance: max,
-}: {
-  maxBalance: Decimal | undefined
-  balance: Decimal | undefined
-}) => useResettableState(() => (max && balance ? calculateNewPercentage(balance, max) : undefined), [max])
-
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -204,7 +195,10 @@ export const LargeTokenInput = ({
   const onMax = maxBalance?.onMax
   const showChips = !!chips?.length
   const { data: maxBalanceValue, isLoading: maxBalanceLoading, error: maxBalanceError } = toQuery(maxBalance?.balance)
-  const [percentage, setPercentage] = useInputPercentage({ balance, maxBalance: maxBalanceValue })
+  const [percentage, setPercentage] = useResettableState(
+    () => (maxBalanceValue && balance ? calculateNewPercentage(balance, maxBalanceValue) : undefined),
+    [maxBalanceValue],
+  )
   const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
   const chipDisabled = !!disabled || maxBalanceLoading
   const isError = !!maxBalanceError || !!error
