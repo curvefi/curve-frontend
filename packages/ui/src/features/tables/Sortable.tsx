@@ -1,12 +1,12 @@
 import { forwardRef, type ReactNode, type MouseEvent } from 'react'
 import Stack from '@mui/material/Stack'
-import type { Column, ColumnMeta, RowData, StockFeatures } from '@tanstack/react-table'
+import type { Column, ColumnMeta, RowData, SortDirection, StockFeatures } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui/icons/ArrowDownIcon'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import type { DataTableSize } from './data-table.utils'
 
 type SortingFeatures = Pick<StockFeatures, 'rowSortingFeature'>
-type SortableColumn = Pick<Column<SortingFeatures, RowData>, 'id' | 'getIsSorted' | 'getToggleSortingHandler'> & {
+type SortableColumn = Pick<Column<SortingFeatures, RowData>, 'id' | 'getToggleSortingHandler'> & {
   columnDef: { meta?: Pick<ColumnMeta<SortingFeatures, RowData>, 'type'> }
 }
 
@@ -15,6 +15,7 @@ type SortableProps = {
   children: ReactNode
   size: DataTableSize
   isEnabled?: boolean
+  sortDirection: SortDirection | undefined
 }
 
 const HeaderCellSortableAlign = { extraSmall: 'center', small: 'center', medium: 'end', large: 'end' }
@@ -22,7 +23,7 @@ const HeaderCellSortableAlign = { extraSmall: 'center', small: 'center', medium:
 // forwardRef needed to pass ref to Tooltip for it to work
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const Sortable = forwardRef<HTMLDivElement, SortableProps>(function Sortable(
-  { children, column, size, isEnabled = true, ...props },
+  { children, column, size, isEnabled = true, sortDirection, ...props },
   ref,
 ) {
   return (
@@ -45,10 +46,10 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(function Sorta
       {children}
       <RotatableIcon
         icon={ArrowDownIcon}
-        rotated={column?.getIsSorted() === 'asc'}
-        fontSize={column?.getIsSorted() ? 20 : 0}
+        rotated={sortDirection === 'asc'}
+        fontSize={sortDirection ? 20 : 0}
         isEnabled={isEnabled}
-        {...(isEnabled && { testId: `icon-sort-${column?.id}-${column?.getIsSorted()}` })}
+        {...(isEnabled && { testId: `icon-sort-${column?.id}-${sortDirection ?? false}` })}
       />
     </Stack>
   )

@@ -1,3 +1,4 @@
+import { isUndefined, omitBy } from 'lodash'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
@@ -139,8 +140,11 @@ export function queryFactory<
         staleTime: 0,
       }),
     useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
-    /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
-    invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: internalKey(params) }),
+    /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */
+    invalidate: (params: TParams, { partial = false } = {}) =>
+      queryClient.invalidateQueries({
+        queryKey: partial ? [omitBy(queryKey(params), isUndefined)] : internalKey(params),
+      }),
     /** Removes all the cached data for the query **/
     reset: (params: TParams) => queryClient.resetQueries({ queryKey: internalKey(params) }),
   } as const
