@@ -1,10 +1,10 @@
 import type { GaugeFormattedData } from '@/dao/types/dao.types'
+import { getChartSignedValueColor } from '@evm-ui/shared/ui/Chart/chart.utils'
 import {
   ChartTooltipDataRow,
   ChartTooltipSeriesGroup,
   ChartTooltipShell,
-  getChartSignedValueColor,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'

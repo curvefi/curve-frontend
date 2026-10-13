@@ -1,7 +1,7 @@
 import { CandleChart } from '@evm-ui/features/candle-chart/CandleChart'
 import { useChartPalette } from '@evm-ui/features/candle-chart/hooks/useChartPalette'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart'
 import type { ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui/lib/i18n'
 import type { LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'

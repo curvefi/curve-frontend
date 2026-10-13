@@ -1,6 +1,6 @@
 import { getYield, type Yield } from '@curvefi/prices-api/savings'
 import { timeOptionValidationSuite, type TimeOption } from '@evm-ui/queries/validation/time-option-validation'
-import { addMovingAverages } from '@evm-ui/shared/ui/Chart'
+import { addMovingAverages } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { TIME_OPTION_MS } from '@ui/lib/time'
 

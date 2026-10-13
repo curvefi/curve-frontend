@@ -5,15 +5,11 @@ import { TotalDebtMetric, TotalLiquidityMetric } from '@/llamalend/widgets/Marke
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { TooltipOptions, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import {
-  CHART_LINE_DASH_PATTERNS,
-  ChartFooter,
-  type ChartLineDashPattern,
-  EChartsLineChart,
-  EvmChartStateWrapper,
-  type LegendItem,
-  type LineSeriesConfig,
-} from '@evm-ui/shared/ui/Chart'
+import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { MarketType } from '@evm-ui/types/market'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
