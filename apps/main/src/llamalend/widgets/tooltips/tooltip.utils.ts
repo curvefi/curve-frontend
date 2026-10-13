@@ -12,3 +12,5 @@ export const formatPercentage = (
   totalValue && value != null
     ? formatNumber(((+value * +(conversionRate ?? '1')) / +totalValue) * 100, 'percent.rate')
     : null
+
+export const TooltipOptions = { placement: 'top', arrow: false, clickable: true } as const
