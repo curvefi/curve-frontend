@@ -1,4 +1,4 @@
-import { useEffect, useState, ComponentProps } from 'react'
+import { useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -10,11 +10,12 @@ type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> &
 
 const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }: SliderInputStoryProps) => {
   const [value, setValue] = useState<Decimal | DecimalRangeValue>(initialValue)
+  const [previousInitialValue, setPreviousInitialValue] = useState(initialValue)
 
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+  if (!Object.is(previousInitialValue, initialValue)) {
+    setPreviousInitialValue(initialValue)
     setValue(initialValue)
-  }, [initialValue])
+  }
 
   return (
     <Box sx={{ width: '400px' }}>

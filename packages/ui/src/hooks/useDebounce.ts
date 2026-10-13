@@ -75,8 +75,12 @@ export function useDebounce<T>({
   debounceMs?: number
 }) {
   const [value, setValue] = useState<T>(initialValue)
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setValue(initialValue), [initialValue])
+  const [previousInitialValue, setPreviousInitialValue] = useState<T>(initialValue)
+  // External resets update the draft but preserve any callback already scheduled by useDebounced.
+  if (!Object.is(previousInitialValue, initialValue)) {
+    setPreviousInitialValue(initialValue)
+    setValue(initialValue)
+  }
   return [value, useDebounced(callback, debounceMs, setValue)] as const
 }
 

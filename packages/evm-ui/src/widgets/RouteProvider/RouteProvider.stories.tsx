@@ -1,10 +1,10 @@
-import { type ComponentProps, useCallback, useEffect, useMemo, useState } from 'react'
+import { type ComponentProps, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ethAddress } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
 import Box from '@mui/material/Box'
-import { fromEntries, mapRecord } from '@primitives/objects.utils'
+import { areEntriesSame, fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
@@ -19,8 +19,8 @@ const mockedWagmiConfig = createTestWagmiConfig()
 const RouteProviderStory = ({
   isExpanded: givenExpanded,
   isLoading: givenIsLoading,
-  isFetching: givenIsFetching,
-  queries: givenRoutes,
+  isFetching = false,
+  queries: routes,
   queryData,
   selectedRoute: givenSelectedRoute,
   ...args
@@ -29,20 +29,21 @@ const RouteProviderStory = ({
   isFetching?: boolean
   queryData?: ComponentProps<typeof TestQueryProvider>['data']
 }) => {
-  const [routes, setRoutes] = useState(givenRoutes)
   const [selectedRouter, setSelectedRouter] = useState(givenSelectedRoute?.router)
   const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
-  const [isFetching, setIsFetching] = useState(false)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setRoutes(givenRoutes), [givenRoutes])
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setSelectedRouter(givenSelectedRoute?.router), [givenSelectedRoute])
-  useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setIsLoading(givenIsLoading ?? false), [givenIsLoading])
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setIsFetching(givenIsFetching ?? false), [givenIsFetching])
+  const inputs = { givenSelectedRoute, givenIsLoading, givenExpanded }
+  const [previousInputs, setPreviousInputs] = useState(inputs)
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  if (!areEntriesSame(previousInputs, inputs)) {
+    setPreviousInputs(inputs)
+    if (previousInputs.givenSelectedRoute !== givenSelectedRoute) setSelectedRouter(givenSelectedRoute?.router)
+    if (previousInputs.givenIsLoading !== givenIsLoading) setIsLoading(givenIsLoading ?? false)
+    if (previousInputs.givenExpanded !== givenExpanded) setIsExpanded(givenExpanded)
+  }
+
+  useEffect(() => () => clearTimeout(refreshTimeoutRef.current), [])
 
   return (
     <WagmiProvider config={mockedWagmiConfig}>
@@ -55,13 +56,14 @@ const RouteProviderStory = ({
               [isLoading, isFetching, routes],
             )}
             selectedRoute={selectedRouter && (routes[selectedRouter]?.data ?? undefined)}
+            selectedRouter={selectedRouter}
             onChange={setSelectedRouter}
             isExpanded={isExpanded}
             onToggle={toggle}
             onRefresh={useCallback(() => {
+              clearTimeout(refreshTimeoutRef.current)
               setIsLoading(true)
-              const timeout = setTimeout(() => setIsLoading(false), 1000)
-              return () => clearTimeout(timeout)
+              refreshTimeoutRef.current = setTimeout(() => setIsLoading(false), 1000)
             }, [])}
           />
         </Box>

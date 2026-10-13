@@ -1,11 +1,12 @@
 import { BigNumber } from 'bignumber.js'
 import type { Property } from 'csstype'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
 import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
+import { areEntriesSame } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
@@ -143,12 +144,13 @@ export const NumericTextField = ({
   const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
   const [isFocused, setIsFocused] = useState(false)
+  const inputs = { value, isFocused, format }
+  const [previousInputs, setPreviousInputs] = useState(inputs)
 
-  // Update input value when value changes externally
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+  if (!areEntriesSame(previousInputs, inputs)) {
+    setPreviousInputs(inputs)
     setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
-  }, [value, isFocused, format])
+  }
 
   return (
     <TextField

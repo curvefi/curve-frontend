@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -113,9 +113,12 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
 
   /** Local display value while dragging or typing, synchronized with external resets. */
   const [displayValue, setDisplayValue] = useState<T>(value)
+  const [previousValue, setPreviousValue] = useState<T>(value)
 
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Keep local interaction state in sync with controlled value changes.
-  useEffect(() => setDisplayValue(value), [value])
+  if (!Object.is(previousValue, value)) {
+    setPreviousValue(value)
+    setDisplayValue(value)
+  }
 
   /** The slider's numeric value with sliderValueTransform mapping if provided (e.g. logarithmic scales) */
   const sliderValue = useMemo(

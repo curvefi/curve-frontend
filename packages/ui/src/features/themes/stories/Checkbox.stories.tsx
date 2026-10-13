@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react'
+import { useState, ChangeEvent } from 'react'
 import { fn } from 'storybook/test'
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
@@ -8,12 +8,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
   const [state, setState] = useState({ option1: checked ?? false, option2: false })
+  const [previousChecked, setPreviousChecked] = useState(checked)
 
-  // Update internal state when the checked prop changes
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+  if (previousChecked !== checked) {
+    setPreviousChecked(checked)
     setState(prev => ({ ...prev, option1: checked ?? false }))
-  }, [checked])
+  }
 
   const handleChange = (option: string) => (event: ChangeEvent<HTMLInputElement>) => {
     const newState = { ...state, [option]: event.target.checked }

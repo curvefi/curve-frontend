@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { fn } from 'storybook/test'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -8,12 +8,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
   const [value, setValue] = useState(checked ? 'option1' : 'option2')
+  const [previousChecked, setPreviousChecked] = useState(checked)
 
-  // Update internal state when the checked prop changes
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+  if (previousChecked !== checked) {
+    setPreviousChecked(checked)
     setValue(checked ? 'option1' : 'option2')
-  }, [checked])
+  }
 
   return (
     <FormControl>
