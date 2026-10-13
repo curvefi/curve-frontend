@@ -1,7 +1,7 @@
 import { sortBy, uniqBy } from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
-import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
+import { type CrvUsdPriceHistory, useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
 import {
@@ -48,17 +48,18 @@ const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashP
   { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
-const averageDeviation = (priceHistory: PricePoint[], days: number) =>
-  calculateAverageRates(priceHistory, days, { deviation: ({ price }) => Math.abs(price - 1) * 100 })?.deviation
+const averageDeviation = (priceHistory: PricePoint[], days: number, now: Date) =>
+  calculateAverageRates(priceHistory, days, { deviation: ({ price }) => Math.abs(price - 1) * 100 }, now)?.deviation
 
-const getDeviations = (priceHistory: PricePoint[], price: number, timestamp = Date.now()) => {
-  const pricePoints = notFalsyArray(priceHistory, [{ timestamp, price }])
-
+const getDeviations = ({ prices, fetchedAt }: CrvUsdPriceHistory, price: number, priceUpdatedAt: Date) => {
+  const pricePoints = notFalsyArray(prices, [{ timestamp: priceUpdatedAt.getTime(), price }])
+  const historyFetchedAt = new Date(fetchedAt)
+  const now = historyFetchedAt > priceUpdatedAt ? historyFetchedAt : priceUpdatedAt
   return {
-    week: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.week),
-    month: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.month),
-    year: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.year),
-    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_WINDOW_DAYS.year, timestamp),
+    week: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.week, now),
+    month: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.month, now),
+    year: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.year, now),
+    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_WINDOW_DAYS.year, now.getTime()),
   }
 }
 
@@ -77,24 +78,34 @@ export const CrvUsdPriceChart = () => {
     () =>
       sortBy(
         uniqBy(
-          (priceHistory.data ?? []).map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
+          (priceHistory.data?.prices ?? []).map(item => ({
+            timestamp: new Date(item.timestamp).getTime(),
+            price: item.price,
+          })),
           'timestamp',
         ),
         item => item.timestamp,
       ),
-    [priceHistory.data],
+    [priceHistory.data?.prices],
   )
 
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
-    const cutoff = Date.now() - TIME_OPTION_MS[timeOption]
+    if (!priceHistory.data?.fetchedAt) return []
+    const cutoff = new Date(new Date(priceHistory.data.fetchedAt).getTime() - TIME_OPTION_MS[timeOption])
     return addMovingAverages(
-      pricePoints.filter(({ timestamp }) => timestamp >= cutoff),
+      pricePoints.filter(({ timestamp }) => timestamp >= cutoff.getTime()),
       d => d.price,
       d => d.timestamp,
     )
-  }, [pricePoints, timeOption])
+  }, [priceHistory.data?.fetchedAt, pricePoints, timeOption])
 
-  const deviations = useCombinedQueries([priceHistory, currentPrice], getDeviations)
+  const deviations = useCombinedQueries(
+    [priceHistory, currentPrice],
+    useCallback(
+      (priceHistory, price) => getDeviations(priceHistory, price, new Date(currentPrice.dataUpdatedAt)),
+      [currentPrice.dataUpdatedAt],
+    ),
+  )
   const showOneYearDeviation = deviations.isLoading || deviations.data?.hasFullYear
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(

@@ -21,7 +21,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { combineQueryState } from '@ui/features/queries/combine'
-import { q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
+import { mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 type SupplyRewards = {
@@ -67,7 +67,7 @@ export function useSupplyRates<ChainId extends IChainId>(
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
   const snapshotsQuery = useMarketSnapshots({ marketType: MarketType.Lend, controllerAddress, blockchainId, enabled })
-  const lendingSnapshotsQuery = q({ ...snapshotsQuery, data: snapshotsQuery.data })
+  const lendingSnapshotsQuery = mapQuery(snapshotsQuery, ({ snapshots }) => snapshots)
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
   const campaignsQuery = useCampaignsByAddress({ blockchainId, address: controllerAddress })
@@ -81,7 +81,7 @@ export function useSupplyRates<ChainId extends IChainId>(
     userSupplyBoostQuery,
   )
   const [prevRates, prevNetSupplyApy] = addNetApy(
-    useMarketRates({ chainId, marketId }, enabled),
+    mapQuery(useMarketRates({ chainId, marketId }, enabled), ({ rates }) => rates),
     lendingSnapshotsQuery,
     marketOnChainRewardsQuery,
     campaignsQuery,

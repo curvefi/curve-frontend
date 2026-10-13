@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
+import { type MarketSnapshots, useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
-import { MarketHistoricalRatesChart, type RateSnapshot } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
@@ -20,7 +20,7 @@ import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 
-type HistoricalRatesTabProps = { timeOption: TimeOption; snapshots: QueryProp<RateSnapshot[]> }
+type HistoricalRatesTabProps = { timeOption: TimeOption; snapshots: QueryProp<MarketSnapshots> }
 
 const MarketBorrowHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesTabProps) => {
   const {

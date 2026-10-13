@@ -1,4 +1,5 @@
 import { getSnapshots, type Snapshot } from '@curvefi/prices-api/crvusd'
+import type { IsoDateString } from '@curvefi/prices-api/timestamp'
 import type { ContractQuery } from '@evm-ui/queries/query-types'
 import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import type { TimeOption } from '@evm-ui/queries/validation/time-option-validation'
@@ -13,19 +14,22 @@ type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
   queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) =>
-    ({ name: 'getSnapshots', version: 3, blockchainId, contractAddress, timeOption, limit }) as const,
-  queryFn: ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
+    ({ name: 'getSnapshots', version: 4, blockchainId, contractAddress, timeOption, limit }) as const,
+  queryFn: async ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query) => {
     const now = Date.now()
-    return NoRetryError.catch404(async () =>
-      // A limit requests the latest snapshots directly; otherwise fetch the full selected range in chunks.
-      limit
-        ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
-        : fetchDailySnapshotHistory({
-            range: { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) },
-            fetchSnapshots: (range, fetchOnChain) =>
-              getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: fetchOnChain, ...range }),
-          }),
-    )
+    return {
+      snapshots: await NoRetryError.catch404(async () =>
+        // A limit requests the latest snapshots directly; otherwise fetch the full selected range in chunks.
+        limit
+          ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
+          : fetchDailySnapshotHistory({
+              range: { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) },
+              fetchSnapshots: (range, fetchOnChain) =>
+                getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: fetchOnChain, ...range }),
+            }),
+      ),
+      fetchedAt: new Date(now).toISOString() as IsoDateString,
+    }
   },
   validationSuite: contractValidationSuite,
   category: 'global.snapshots',

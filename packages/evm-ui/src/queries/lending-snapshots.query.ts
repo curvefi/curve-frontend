@@ -1,4 +1,5 @@
 import { getSnapshots, Snapshot } from '@curvefi/prices-api/llamalend'
+import type { IsoDateString } from '@curvefi/prices-api/timestamp'
 import type { ContractQuery } from '@evm-ui/queries/query-types'
 import { contractValidationSuite } from '@evm-ui/queries/validation/contract-validation'
 import type { TimeOption } from '@evm-ui/queries/validation/time-option-validation'
@@ -13,8 +14,8 @@ type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) =>
-    ({ name: 'lendingSnapshots', version: 5, blockchainId, contractAddress, timeOption, limit }) as const,
-  queryFn: async ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<LendingSnapshot[]> => {
+    ({ name: 'lendingSnapshots', version: 6, blockchainId, contractAddress, timeOption, limit }) as const,
+  queryFn: async ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query) => {
     const now = Date.now()
     const response = await NoRetryError.catch404(async () =>
       // A limit requests the latest snapshots directly; otherwise fetch the full selected range in chunks.
@@ -26,7 +27,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
               getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: fetchOnChain, ...range }),
           }),
     )
-    return response.toReversed()
+    return { snapshots: response.toReversed(), fetchedAt: new Date(now).toISOString() as IsoDateString }
   },
   validationSuite: contractValidationSuite,
   category: 'global.snapshots',

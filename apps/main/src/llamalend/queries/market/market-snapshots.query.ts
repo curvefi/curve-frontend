@@ -9,8 +9,8 @@ import type { Query } from '@ui/features/queries/util'
 
 type SnapshotByMarketType = { [MarketType.Lend]: LendingSnapshot; [MarketType.Mint]: CrvUsdSnapshot }
 
-type SnapshotsByMarketType<TMarketType extends MarketType> = TMarketType extends MarketType
-  ? SnapshotByMarketType[TMarketType][]
+export type MarketSnapshots<TMarketType extends MarketType = MarketType> = TMarketType extends MarketType
+  ? { snapshots: SnapshotByMarketType[TMarketType][]; fetchedAt: string }
   : never
 
 export function useMarketSnapshots<TMarketType extends MarketType>({
@@ -25,7 +25,7 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
   range?: SnapshotRange
   controllerAddress: Address | undefined
   marketType: TMarketType
-}): Query<SnapshotsByMarketType<TMarketType>> {
+}): Query<MarketSnapshots<TMarketType>> {
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
   const snapshotsByMarketType = {
@@ -37,7 +37,7 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
       enabled && marketType === MarketType.Mint,
     ),
-  } satisfies { [T in MarketType]: Query<SnapshotByMarketType[T][]> }
+  } satisfies { [T in MarketType]: Query<MarketSnapshots<T>> }
 
-  return snapshotsByMarketType[marketType] as Query<SnapshotsByMarketType<TMarketType>>
+  return snapshotsByMarketType[marketType] as Query<MarketSnapshots<TMarketType>>
 }

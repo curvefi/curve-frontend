@@ -273,10 +273,11 @@ export const usePageHeaderRates = () => {
   const { chainId, blockchainId, market, marketQuery, apiMarket, marketType } = useMarketContext()
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const snapshot = q(
+  const snapshot = mapQuery(
     useMarketSnapshots({ marketType, controllerAddress, blockchainId, range: { kind: 'limit', limit: RATE_WINDOW } }),
+    ({ snapshots }) => snapshots,
   )
-  const marketRates = q(useMarketRates({ chainId, marketId: market?.id }))
+  const marketRates = mapQuery(useMarketRates({ chainId, marketId: market?.id }), ({ rates }) => rates)
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 

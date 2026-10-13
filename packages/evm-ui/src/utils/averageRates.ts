@@ -38,16 +38,22 @@ export function hasFullTimeWindow(
  * @param snapshots - Array of snapshot objects with timestamp
  * @param daysBack - Number of days to look back from today
  * @param extractors - Object where keys are result field names and values are functions to extract data from snapshots
+ * @param now - Reference date for the trailing window, defaulting to the current time
  * @returns Object with averaged values or null if no data
  */
 export function calculateAverageRates<
   T extends WithTimestamp,
   K extends Record<string, (snapshot: T) => number | Nullish>,
->(snapshots: T[] | undefined, daysBack: number, extractors: K): { [P in keyof K]: number | null } | null {
+>(
+  snapshots: T[] | undefined,
+  daysBack: number,
+  extractors: K,
+  now = new Date(),
+): { [P in keyof K]: number | null } | null {
   if (!snapshots) return null
 
   // Filter snapshots to only include recent ones
-  const cutoffDate = new Date()
+  const cutoffDate = new Date(now)
   cutoffDate.setDate(cutoffDate.getDate() - daysBack)
 
   const recentSnapshots = snapshots.filter(snapshot => new Date(snapshot.timestamp) > cutoffDate)

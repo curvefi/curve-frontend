@@ -1,7 +1,7 @@
 declare const TimestampBrand: unique symbol
 
 /** ISO 8601 date string shape (e.g. `"2024-01-01T00:00:00.000Z"`), always including timezone info. */
-type IsoDateString = `${number}-${number}-${number}T${string}`
+export type IsoDateString = `${number}-${number}-${number}T${string}`
 
 /**
  * A raw, serialized timestamp as returned by the Prices API. The exact shape varies

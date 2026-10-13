@@ -1,5 +1,6 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
+import type { MarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
@@ -48,7 +49,7 @@ type RateValue = Amount | Nullish
 type MarketHistoricalRatesChartProps = {
   rateMode: MarketRateType
   timeOption: TimeOption
-  snapshots: QueryProp<RateSnapshot[]>
+  snapshots: QueryProp<MarketSnapshots>
 }
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
@@ -102,14 +103,20 @@ const RATE_MODE_CONFIG = {
   },
 } satisfies Record<MarketRateType, RateModeConfig>
 
-const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: number) =>
-  calculateAverageRates(ratePoints, days, { rate: ({ rate }) => rate })?.rate
+const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: number, now: Date) =>
+  calculateAverageRates(ratePoints, days, { rate: ({ rate }) => rate }, now)?.rate
 
-const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => ({
-  week: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.week),
-  month: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.month),
-  year: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.year),
-  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year),
+const getAverageRates = ({
+  points: ratePoints,
+  fetchedAt: now,
+}: {
+  points: { rate: number; timestamp: number }[]
+  fetchedAt: Date
+}) => ({
+  week: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.week, now),
+  month: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.month, now),
+  year: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.year, now),
+  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year, now.getTime()),
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: MarketHistoricalRatesChartProps) => {
@@ -126,22 +133,35 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
   const ratePoints = useMappedQuery(
     snapshots,
     useCallback(
-      snapshots => {
-        const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates.data))
+      ({ snapshots, fetchedAt }) => {
+        const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates.data?.rates))
         const snapshotRatePoints = toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate)
-        return sortBy(
-          notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
-          item => item.timestamp,
-        )
+        const snapshotsFetchedAt = new Date(fetchedAt)
+        const ratesFetchedAt = maybe(marketRates.data?.fetchedAt, fetchedAt => new Date(fetchedAt))
+        return {
+          fetchedAt: ratesFetchedAt && ratesFetchedAt > snapshotsFetchedAt ? ratesFetchedAt : snapshotsFetchedAt,
+          points: sortBy(
+            notFalsy(
+              ...snapshotRatePoints,
+              currentLiveRate != null &&
+                marketRates.data && {
+                  timestamp: new Date(marketRates.data.fetchedAt).getTime(),
+                  rate: currentLiveRate,
+                },
+            ),
+            item => item.timestamp,
+          ),
+        }
       },
       [modeConfig, marketRates.data],
     ),
   )
 
   const chartData = useMemo<RateChartPoint[]>(() => {
-    const cutoff = Date.now() - TIME_OPTION_MS[timeOption]
+    if (!ratePoints.data) return []
+    const cutoff = new Date(ratePoints.data.fetchedAt.getTime() - TIME_OPTION_MS[timeOption])
     return addMovingAverages(
-      (ratePoints.data ?? []).filter(({ timestamp }) => timestamp >= cutoff),
+      ratePoints.data.points.filter(({ timestamp }) => timestamp >= cutoff.getTime()),
       d => d.rate,
       d => d.timestamp,
     )
@@ -179,7 +199,7 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
             category={METRIC_CATEGORY}
             label={modeConfig.currentRateLabel}
             value={fallbackQ(
-              mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates))),
+              mapQuery(marketRates, ({ rates }) => toRateNumber(modeConfig.getLiveRate(rates))),
               mapQuery(apiMarket, market => toRateNumber(modeConfig.getApiRate(market))),
             )}
             valueOptions={{ unit: 'percentage' }}
