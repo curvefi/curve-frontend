@@ -8,6 +8,16 @@ import { applySxProps } from '@ui/lib/mui'
 import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
 
+const CollapseIcon = ({ isExpanded }: { isExpanded: boolean }) => (
+  <RotatableIcon
+    icon={TriangleDown}
+    rotated={isExpanded}
+    fontSize={28}
+    testId={`${isExpanded ? 'collapse' : 'expand'}-icon`}
+    sx={{ color: t => t.design.Button.Ghost.Default.Label }}
+  />
+)
+
 export const DataCell = <TData extends RowData>({
   cell,
   enableCollapse,
@@ -32,15 +42,7 @@ export const DataCell = <TData extends RowData>({
         <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>
           <Box sx={applySxProps({ flexGrow: 1 }, wrapperSx)}>{children}</Box>
           <Subscribe source={row.table.atoms.expanded} selector={expanded => expanded === true || expanded[row.id]}>
-            {isExpanded => (
-              <RotatableIcon
-                icon={TriangleDown}
-                rotated={isExpanded}
-                fontSize={28}
-                testId={`${isExpanded ? 'collapse' : 'expand'}-icon`}
-                sx={{ color: t => t.design.Button.Ghost.Default.Label }}
-              />
-            )}
+            {isExpanded => <CollapseIcon isExpanded={isExpanded} />}
           </Subscribe>
         </Stack>
       ) : (

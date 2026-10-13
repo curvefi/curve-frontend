@@ -64,7 +64,6 @@ type HeaderCellProps<TData extends RowData> = {
 }
 
 export const HeaderCell = <TData extends RowData>(props: HeaderCellProps<TData>) => (
-  // Headers stay stable when sorting changes, so pass the selected direction through to the rendered content.
   <Subscribe
     source={props.header.column.table.atoms.sorting}
     selector={sorting => sorting.find(sort => sort.id === props.header.column.id)}
