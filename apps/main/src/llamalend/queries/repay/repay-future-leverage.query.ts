@@ -10,7 +10,6 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -23,30 +22,14 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
       isFull,
     }) as const,
-  queryFn: async ({
-    marketId,
-    userAddress,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    slippage,
-    routeId,
-    isFull,
-  }: RepayQuery) => {
+  queryFn: async ({ marketId, userAddress, stateCollateral, userBorrowed, slippage, routeId, isFull }: RepayQuery) => {
     if (isFull) return '0' satisfies Decimal
-    const [type, impl, args] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-      slippage,
-    })
+    const [type, impl, args] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, routeId, slippage })
     switch (type) {
       case 'zapV2':
         return decimal(await impl.repayFutureLeverage(...args)) ?? null

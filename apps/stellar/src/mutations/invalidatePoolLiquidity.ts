@@ -5,6 +5,7 @@ import { invalidatePoolReserves } from '@/stellar/queries/pool/pool-reserves.que
 import { invalidatePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery, UserQuery } from '@/stellar/queries/query-types'
 import { invalidateTokenBalance } from '@/stellar/queries/token/token-balance.query'
+import { invalidateWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
 import { zip } from '@primitives/array.utils'
 
 export const invalidatePoolLiquidity = async ({
@@ -22,5 +23,6 @@ export const invalidatePoolLiquidity = async ({
     invalidatePoolReserves(params),
     invalidatePoolSupply(params),
     invalidatePoolRates(params),
+    invalidateWithdrawMaxAmount({ network, pool }, { partial: true }),
   ])
 }

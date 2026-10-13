@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress, isAddressEqual, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
@@ -25,7 +25,6 @@ import {
   maybe,
   maybes,
   notFalsy,
-  recordEntries,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
@@ -131,8 +130,6 @@ export const isPositionLeveraged = (leverage: Amount | Nullish) =>
 export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => (isMintMarket(market) ? hasDeleverage(market) : hasLeverage(market)))
 
-export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) => hasZapV2(market)
-
 export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => hasLegacyMintLeverage(market))
 
@@ -141,8 +138,19 @@ export const hasVault = (market: MarketTemplate) => isLendMarket(market) && 'vau
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
-/** Only LLv2 markets use the upgraded ZapV2 contract for now */
-export const hasUpgradedZapV2 = (market: MarketTemplate | Nullish) => isV2Market(market)
+/** LLv1 markets whose controller supports delegation use the delegation ZapV2 (no router calldata size limit). */
+const hasV1ZapDelegation = (market: LendMarketTemplate) => {
+  const delegationZap = market.getLlamalend().constants.ALIASES.leverage_zap_v2_transient
+  return (
+    market.version === 'v1' &&
+    !!delegationZap &&
+    isAddressEqual(market.getZapAddress() as Address, delegationZap as Address)
+  )
+}
+
+/** LLv2 markets and the newer LLv1 markets use the delegation ZapV2 contract */
+export const hasZapDelegation = (market: MarketTemplate | Nullish) =>
+  maybe(market, market => isLendMarket(market) && (market.version === 'v2' || hasV1ZapDelegation(market)))
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
@@ -240,11 +248,8 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
 
-/** Returns the token pair of a known LP token, comparing addresses in lowercase so any address string is accepted */
-const findLpTokenPair = (blockchainId: Chain, address: string) =>
-  recordEntries(LP_TOKEN_PAIRS[blockchainId] ?? {}).find(
-    ([lpAddress]) => lpAddress.toLowerCase() === address.toLowerCase(),
-  )?.[1]
+/** Returns the token pair of a known LP token */
+const findLpTokenPair = (blockchainId: Chain, address: string) => LP_TOKEN_PAIRS[blockchainId]?.[getAddress(address)]
 
 /** Returns the token pair of a known LP token, or the token itself */
 export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>

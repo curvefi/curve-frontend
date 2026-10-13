@@ -13,7 +13,6 @@ export const {
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     isFull,
@@ -26,7 +25,6 @@ export const {
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       isFull,
       slippage,
@@ -35,27 +33,19 @@ export const {
   queryFn: async ({
     marketId,
     stateCollateral,
-    userCollateral,
     userBorrowed,
     isFull,
     userAddress,
     slippage,
     routeId,
   }: RepayQuery): Promise<boolean> => {
-    const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)
+    const useFullRepay = isFullRepayFromDebtToken(isFull, stateCollateral)
     if (useFullRepay) return await getLoanImplementation(marketId).fullRepayIsApproved(userAddress)
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      slippage,
-      routeId,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, slippage, routeId })
     switch (type) {
       case 'zapV2':
-        return await impl.repayIsApproved({ userCollateral })
       case 'deleverage':
-        return true // deleverage query doesn't need approval because it only uses the user stateCollateral
+        return true // no token approval needed, repaying from the position collateral
       case 'unleveragedMint':
         return await impl.repayIsApproved(userBorrowed)
       case 'unleveragedLend':

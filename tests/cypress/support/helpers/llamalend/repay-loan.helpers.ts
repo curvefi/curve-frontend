@@ -11,12 +11,10 @@ export function selectRepayToken({
   symbol,
   tokenAddress,
   hasLeverageManagement,
-  optionIndex = 0,
 }: {
   symbol: string
   tokenAddress: string
   hasLeverageManagement: boolean
-  optionIndex?: number
 }) {
   const tokenIconTestId = `token-icon-${tokenAddress.toLowerCase()}`
   if (!hasLeverageManagement) {
@@ -25,7 +23,7 @@ export function selectRepayToken({
   cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', TIMEOUTS['ui.interaction']).click()
   cy.get(`[data-testid="token-option-${tokenAddress.toLowerCase()}"]`, TIMEOUTS['ui.render'])
     .filter(`:has([data-testid="${tokenIconTestId}"])`)
-    .eq(optionIndex)
+    .should('have.length', 1)
     .click()
   cy.get(`[data-testid="${tokenIconTestId}"]`, TIMEOUTS['ui.render']).should('be.visible')
   cy.get('[data-testid^="repay-input-"]', TIMEOUTS['ui.render']).contains(symbol).should('be.visible')

@@ -24,7 +24,6 @@ export const {
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -36,28 +35,12 @@ export const {
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
     }) as const,
-  queryFn: async ({
-    chainId,
-    marketId,
-    userAddress,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    slippage,
-    routeId,
-  }: RepayQuery) => {
-    const [type, impl, args] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-      slippage,
-    })
+  queryFn: async ({ chainId, marketId, userAddress, stateCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
+    const [type, impl, args] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, routeId, slippage })
     switch (type) {
       case 'zapV2':
         return (await impl.repayExpectedBorrowed(...args)) as RepayExpectedBorrowedResult
