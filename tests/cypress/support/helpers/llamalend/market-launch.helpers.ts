@@ -218,13 +218,19 @@ export const fundBorrower = ({
   })
 }
 
-/** Clicks the max balance of the repay input. The max is the whole debt when the wallet holds enough tokens. */
+/**
+ * Clicks the 100% chip of the repay input, capped at the debt. Clicking the wallet balance instead would enter the
+ * whole wallet, which is more than the debt since the borrower holds an interest buffer.
+ */
 export const selectMaxRepayAmount = () =>
-  cy.get('[data-testid^="repay-input-"] [data-testid="balance-value"]', TIMEOUTS['evm.balances']).first().click()
+  cy.get('[data-testid^="repay-input-"] [data-testid="input-chip-100%"]', TIMEOUTS['evm.balances']).click()
 
 /** The repay form detects a full repayment and offers to close the position. */
 export const checkFullRepayDetailsLoaded = () => {
-  cy.get('[data-testid="repay-submit-button"]', TIMEOUTS['evm.simulation']).should('contain.text', 'Close Position')
+  cy.get('[data-testid="repay-submit-button"]', TIMEOUTS['evm.simulation'])
+    .should('contain.text', 'Close Position')
+    .and('be.enabled')
+  cy.get('[data-testid="helper-message-error"]').should('not.exist')
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
