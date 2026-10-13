@@ -65,10 +65,9 @@ export const ChartWrapper = ({
         height={chartHeight}
         isLoading={isLoading}
         error={error}
-        errorMessage={errorMessage}
+        errorState={{ description: errorMessage, onReload: refetchPricesData }}
         isEmpty={isEmpty}
-        emptyMessage={emptyMessage}
-        refreshData={refetchPricesData}
+        emptyState={{ description: emptyMessage }}
       >
         <CandleChart
           hideCandleSeriesLabel={hideCandleSeriesLabel}

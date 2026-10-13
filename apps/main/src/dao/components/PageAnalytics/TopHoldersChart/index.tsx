@@ -80,8 +80,10 @@ export const TopLockers = () => {
           isLoading={isLoading}
           isEmpty={chartData?.length === 0}
           error={chartError}
-          errorMessage={t`Unable to fetch veCRV holders data.`}
-          refreshData={() => Promise.all([refetchHolders(), refetchStats()])}
+          errorState={{
+            description: t`Unable to fetch veCRV holders data.`,
+            onReload: () => Promise.all([refetchHolders(), refetchStats()]),
+          }}
         >
           <TopHoldersBarChartComponent
             height={DAO_COMPACT_CHART_HEIGHT}

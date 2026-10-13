@@ -20,8 +20,7 @@ export const DailyLocks = () => {
           isLoading={isLoading}
           isEmpty={locks?.length === 0}
           error={error}
-          errorMessage={t`Unable to fetch daily veCRV locks.`}
-          refreshData={refetch}
+          errorState={{ description: t`Unable to fetch daily veCRV locks.`, onReload: refetch }}
         >
           {locks && <PositiveAndNegativeBarChart height={DAO_CHART_HEIGHT} data={locks} />}
         </EvmChartStateWrapper>

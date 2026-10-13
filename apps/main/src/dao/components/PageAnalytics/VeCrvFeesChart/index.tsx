@@ -19,7 +19,7 @@ export const VeCrvFeesChart = ({ data }: { data: VeCrvFee[] }) => (
         isLoading={false}
         isEmpty={data.length === 0}
         error={null}
-        errorMessage={t`Unable to fetch veCRV fees data.`}
+        errorState={{ description: t`Unable to fetch veCRV fees data.` }}
       >
         <FeesBarChart height={DAO_CHART_HEIGHT} data={data} />
       </EvmChartStateWrapper>
