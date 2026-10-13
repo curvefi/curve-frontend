@@ -89,33 +89,19 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const { formState, reset, values } = form
 
   const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount' | 'maxWithdrawIndex'>(
-    useMemo(
-      () => ({
-        ...values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals: decimalsData,
-        slippage: values.slippage,
-        supply: supply.data,
-        seedLock: config.data?.seedLock,
-        maxLpAmount: lpBalance.data,
-        maxAmounts: maxAmounts.map(q => q.data),
-      }),
-      [
-        values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimalsData,
-        supply.data,
-        config.data?.seedLock,
-        lpBalance.data,
-        maxAmounts,
-      ],
-    ),
+    {
+      ...values,
+      network,
+      pool,
+      account,
+      tokenCount,
+      decimals: decimalsData,
+      slippage: values.slippage,
+      supply: supply.data,
+      seedLock: config.data?.seedLock,
+      maxLpAmount: lpBalance.data,
+      maxAmounts: maxAmounts.map(q => q.data),
+    },
     userDefaultValues,
   )
   const queryParams = { ...params, amounts: getPoolAmounts(params, params.tokenCount) }

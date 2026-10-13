@@ -78,10 +78,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   }, [canDepositWrapped, update, isSeed.data])
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ ...values, chainId, poolId, decimals, userAddress }),
-      [chainId, poolId, values, decimals, userAddress],
-    ),
+    { ...values, chainId, poolId, decimals, userAddress },
     userDefaultValues,
   )
 

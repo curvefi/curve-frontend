@@ -53,23 +53,20 @@ export function useDepositForm(poolParams: PoolQuery) {
   const { formState, reset, values } = form
 
   useFormSync(form, { decimals: decimalsData, supply: supply.data })
-  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues])
 
   const [params, isDebouncing] = useFormDebounce<DepositFormQuery, PoolAmountField>(
-    useMemo(
-      () => ({
-        ...values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals: decimalsData,
-        slippage: values.slippage,
-        supply: supply.data,
-        maxAmounts: maxAmounts?.map(q => q.data),
-      }),
-      [values, network, pool, account, tokenCount, decimalsData, supply.data, maxAmounts],
-    ),
+    {
+      ...values,
+      network,
+      pool,
+      account,
+      tokenCount,
+      decimals: decimalsData,
+      slippage: values.slippage,
+      supply: supply.data,
+      maxAmounts: maxAmounts?.map(q => q.data),
+    },
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
