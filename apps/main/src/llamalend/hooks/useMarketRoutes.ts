@@ -1,5 +1,7 @@
+import { identity } from 'lodash'
 import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { useShallow } from 'zustand/react/shallow'
 import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
@@ -107,12 +109,13 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     slippage,
   }
   const routesEnabled = enabled && !!providers?.length
-  const { queries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
+  const { queries: routeQueries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
     params,
     getRouteGasOptions,
     providers,
     routesEnabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
+  const queries = useShallow(identity<RouteQueries>)(routeQueries)
 
   // Disabled providers can retain cached query data after switching release channels, so exclude them from selection.
   const selectedRoute = useMemo(
@@ -126,8 +129,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
           )
             // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             .sort(sortRoutes)[0],
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [chosenRouter, ...recordValues(queries)],
+    [chosenRouter, queries],
   )
 
   usePinRouteById(selectedRoute?.id)
