@@ -1,3 +1,4 @@
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LiquidityUsdTooltipContent } from '@/llamalend/widgets/tooltips/LiquidityUsdTooltipContent'
 import Box from '@mui/material/Box'
@@ -19,7 +20,7 @@ export const LiquidityUsdCell = ({ getValue, row }: CellContext<CurveTableFeatur
     >
       <Box>
         <TokenInfo
-          address={assets.borrowed.address}
+          address={getAddressOrPair(assets.borrowed.blockchainId, assets.borrowed.address)}
           blockchainId={assets.borrowed.blockchainId}
           iconSize="mui-sm"
           iconPosition="right"
