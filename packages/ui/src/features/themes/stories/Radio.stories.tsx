@@ -1,19 +1,13 @@
-import { useState } from 'react'
 import { fn } from 'storybook/test'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio, { RadioProps } from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useResettableState } from '@ui/hooks/useResettableState'
 
 const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
-  const [value, setValue] = useState(checked ? 'option1' : 'option2')
-  const [previousChecked, setPreviousChecked] = useState(checked)
-
-  if (previousChecked !== checked) {
-    setPreviousChecked(checked)
-    setValue(checked ? 'option1' : 'option2')
-  }
+  const [value, setValue] = useResettableState(checked ? 'option1' : 'option2', [checked])
 
   return (
     <FormControl>

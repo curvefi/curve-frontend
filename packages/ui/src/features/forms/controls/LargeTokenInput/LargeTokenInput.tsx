@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { type ReactNode, type Ref, useCallback, useId, useImperativeHandle, useState } from 'react'
+import { type ReactNode, type Ref, useCallback, useId, useImperativeHandle } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -12,6 +12,7 @@ import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { chipSizeClickable } from '@ui/features/themes/components/mui-chip'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { useUnique } from '@ui/hooks/useUnique'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -166,25 +167,14 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
-/** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
-function useInputPercentage({
+/** Recalculate the local percentage only when the maximum changes, without notifying the parent. */
+const useInputPercentage = ({
   balance,
   maxBalance: max,
 }: {
   maxBalance: Decimal | undefined
   balance: Decimal | undefined
-}) {
-  const initialState = () => (max && balance ? calculateNewPercentage(balance, max) : undefined)
-  const [percentage, setPercentage] = useState<Decimal | undefined>(initialState)
-  const [previousMaxBalance, setPreviousMaxBalance] = useState(max)
-
-  // A new maximum adjusts only the local percentage, without notifying the parent of a balance change.
-  if (!Object.is(previousMaxBalance, max)) {
-    setPreviousMaxBalance(max)
-    setPercentage(initialState)
-  }
-  return [percentage, setPercentage] as const
-}
+}) => useResettableState(() => (max && balance ? calculateNewPercentage(balance, max) : undefined), [max])
 
 export const LargeTokenInput = ({
   ref,

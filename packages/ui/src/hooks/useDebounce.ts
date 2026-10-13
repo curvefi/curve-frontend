@@ -2,6 +2,7 @@ import { isEqual, pick } from 'lodash'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { objectKeys } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
+import { useResettableState } from './useResettableState'
 
 type DebouncedValueOptions<T> = { defaultValue?: T; debounceMs?: number }
 
@@ -74,13 +75,8 @@ export function useDebounce<T>({
   callback: (value: T) => void
   debounceMs?: number
 }) {
-  const [value, setValue] = useState<T>(initialValue)
-  const [previousInitialValue, setPreviousInitialValue] = useState<T>(initialValue)
   // External resets update the draft but preserve any callback already scheduled by useDebounced.
-  if (!Object.is(previousInitialValue, initialValue)) {
-    setPreviousInitialValue(initialValue)
-    setValue(initialValue)
-  }
+  const [value, setValue] = useResettableState<T>(initialValue, [initialValue])
   return [value, useDebounced(callback, debounceMs, setValue)] as const
 }
 

@@ -1,16 +1,16 @@
-import { type ComponentProps, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { type ComponentProps, useCallback, useEffect, useMemo, useRef } from 'react'
 import { ethAddress } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
 import Box from '@mui/material/Box'
-import { areEntriesSame, fromEntries, mapRecord } from '@primitives/objects.utils'
+import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
 import { constQ, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useSwitch } from '@ui/hooks/useSwitch'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
@@ -29,19 +29,10 @@ const RouteProviderStory = ({
   isFetching?: boolean
   queryData?: ComponentProps<typeof TestQueryProvider>['data']
 }) => {
-  const [selectedRouter, setSelectedRouter] = useState(givenSelectedRoute?.router)
-  const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
-  const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
-  const inputs = { givenSelectedRoute, givenIsLoading, givenExpanded }
-  const [previousInputs, setPreviousInputs] = useState(inputs)
+  const [selectedRouter, setSelectedRouter] = useResettableState(givenSelectedRoute?.router, [givenSelectedRoute])
+  const [isLoading, setIsLoading] = useResettableState(givenIsLoading ?? false, [givenIsLoading])
+  const [isExpanded, setIsExpanded] = useResettableState(givenExpanded ?? false, [givenExpanded])
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-
-  if (!areEntriesSame(previousInputs, inputs)) {
-    setPreviousInputs(inputs)
-    if (previousInputs.givenSelectedRoute !== givenSelectedRoute) setSelectedRouter(givenSelectedRoute?.router)
-    if (previousInputs.givenIsLoading !== givenIsLoading) setIsLoading(givenIsLoading ?? false)
-    if (previousInputs.givenExpanded !== givenExpanded) setIsExpanded(givenExpanded)
-  }
 
   useEffect(() => () => clearTimeout(refreshTimeoutRef.current), [])
 
@@ -59,12 +50,12 @@ const RouteProviderStory = ({
             selectedRouter={selectedRouter}
             onChange={setSelectedRouter}
             isExpanded={isExpanded}
-            onToggle={toggle}
+            onToggle={useCallback(() => setIsExpanded(v => !v), [setIsExpanded])}
             onRefresh={useCallback(() => {
               clearTimeout(refreshTimeoutRef.current)
               setIsLoading(true)
               refreshTimeoutRef.current = setTimeout(() => setIsLoading(false), 1000)
-            }, [])}
+            }, [setIsLoading])}
           />
         </Box>
       </TestQueryProvider>

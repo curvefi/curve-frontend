@@ -1,11 +1,12 @@
 import { sortBy } from 'lodash'
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Slider, type SliderProps } from '@ui/components/Slider'
 import { SliderSize } from '@ui/features/themes/components/slider/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { decimal } from '@ui/lib/decimal'
 import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
 
@@ -112,13 +113,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   /** Local display value while dragging or typing, synchronized with external resets. */
-  const [displayValue, setDisplayValue] = useState<T>(value)
-  const [previousValue, setPreviousValue] = useState<T>(value)
-
-  if (!Object.is(previousValue, value)) {
-    setPreviousValue(value)
-    setDisplayValue(value)
-  }
+  const [displayValue, setDisplayValue] = useResettableState<T>(value, [value])
 
   /** The slider's numeric value with sliderValueTransform mapping if provided (e.g. logarithmic scales) */
   const sliderValue = useMemo(

@@ -81,7 +81,3 @@ export const maybe = <T, R>(value: T, mapper: (value: NonNullable<T>) => R) =>
     : undefined extends T
       ? R | undefined
       : R
-
-export const areEntriesSame = <K extends string, V>(inputs: Record<K, V>, previousInputs: Record<K, V>) =>
-  recordEntries(inputs).length === recordEntries(previousInputs).length &&
-  recordEntries(inputs).every(([key, value]) => Object.is(previousInputs[key], value))
