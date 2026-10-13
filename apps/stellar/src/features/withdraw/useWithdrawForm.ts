@@ -1,24 +1,29 @@
 import { useEffect, useMemo } from 'react'
-import { asAddress } from '@/stellar/features/connect-wallet/address'
+import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
 import { useWithdrawPriceImpact } from '@/stellar/features/withdraw/useWithdrawPriceImpact'
-import { calculateExpectedBurn, calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
-import type { PoolQuery } from '@/stellar/queries/query-types'
+import type { PoolParams, PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { withdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
+import { getWithdrawMaxAmountQueryOptions } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { useQueries } from '@tanstack/react-query'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
-import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { mapQuery, q, toQuery } from '@ui/features/queries/util'
+import {
+  getSingleCoinWithdrawIndex,
+  type WithdrawFormValues,
+} from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawFormQuery } from './types'
@@ -29,6 +34,7 @@ const formOptions = {
     isBalanced: false,
     lpAmount: undefined,
     maxLpAmount: undefined,
+    maxWithdrawIndex: undefined,
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
@@ -36,6 +42,29 @@ const formOptions = {
     slippage: SLIPPAGE.stable.default,
   },
 }
+
+const useWithdrawMaxAmounts = ({
+  decimals,
+  lpBalance,
+  tokenAddresses,
+  ...poolParams
+}: PoolParams & {
+  decimals: Query<number>[] | undefined
+  lpBalance: Query<Decimal>
+  tokenAddresses: QueryProp<StellarContract[]>
+}) =>
+  useQueries({
+    queries:
+      tokenAddresses.data?.map((_, index) =>
+        getWithdrawMaxAmountQueryOptions({
+          ...poolParams,
+          index,
+          decimals: decimals?.[index]?.data,
+          lpAmount: lpBalance.data,
+        }),
+      ) ?? [],
+    combine: results => results.map(q),
+  })
 
 export function useWithdrawForm(poolParams: PoolQuery) {
   const { network, pool } = poolParams
@@ -48,8 +77,9 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
   const reserves = q(usePoolReserves({ ...poolParams, decimals: decimalsData }))
+  const maxAmounts = useWithdrawMaxAmounts({ ...poolParams, tokenAddresses, decimals, lpBalance })
   const userDefaultValues = useMemo(
-    () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined }),
+    () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined, maxWithdrawIndex: undefined }),
     [tokenCount],
   )
   const form = useForm<WithdrawFormValues>({
@@ -58,9 +88,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   })
   const { formState, reset, values } = form
 
-  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
-
-  const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount'>(
+  const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount' | 'maxWithdrawIndex'>(
     useMemo(
       () => ({
         ...values,
@@ -73,7 +101,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         supply: supply.data,
         seedLock: config.data?.seedLock,
         maxLpAmount: lpBalance.data,
-        maxAmounts: reserves.data,
+        maxAmounts: maxAmounts.map(q => q.data),
       }),
       [
         values,
@@ -85,26 +113,28 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         supply.data,
         config.data?.seedLock,
         lpBalance.data,
-        reserves.data,
+        maxAmounts,
       ],
     ),
     userDefaultValues,
   )
-  const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: false })
-  const expected = mapQuery(quote, calculateExpectedBurn)
-  const maximum = mapQuery(expected, value => calculateMaximumBurn(value, params.slippage))
-  const priceImpact = useWithdrawPriceImpact(
-    { ...params, amounts: getPoolAmounts(params, params.tokenCount) },
-    expected,
+  const queryParams = { ...params, amounts: getPoolAmounts(params, params.tokenCount) }
+  const expectedLp = q(useExpectedLp({ ...queryParams, isDeposit: false }))
+  const maximumLp = mapQuery(expectedLp, value =>
+    getSingleCoinWithdrawIndex(queryParams) == null ? calculateMaximumBurn(value, params.slippage) : value,
   )
+  const priceImpact = useWithdrawPriceImpact(queryParams, expectedLp)
 
   useFormSync(form, {
     decimals: decimalsData,
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    maximumBurn: maximum.data,
+    maximumBurn: maximumLp.data,
   })
+  useFormSync(form, { lpAmount: lpBalance.data }, values.maxWithdrawIndex != null && lpBalance.data != null)
+
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues, network, pool, account]) // cannot useFormSync with a flexible number of fields
 
   const {
     onSubmit,
@@ -114,7 +144,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokenAddresses.data,
-    quote: quote.data,
+    expected: expectedLp.data,
     onReset: () => reset(userDefaultValues),
   })
 
@@ -124,7 +154,9 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     reserves,
     decimals,
     lpTokenDecimals: LP_TOKEN_DECIMALS,
-    maxAmounts: maybe(reserves.data, amounts => amounts.map(amount => toQuery(amount, reserves))),
+    maxAmounts,
+    expectedLp,
+    maximumLp,
     params,
     supply: q(supply),
     lpBalance: q(lpBalance),

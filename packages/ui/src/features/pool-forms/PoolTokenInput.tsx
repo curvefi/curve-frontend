@@ -8,6 +8,7 @@ import { useFormContext, useFormSync } from '@ui/features/forms'
 import { LargeTokenInput, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
+import { decimalEqual } from '@ui/lib/decimal'
 import { getBalancedAmounts } from './balanced-amounts.utils'
 import { poolAmountField, type PoolForm, poolMaxAmountField } from './pool-form.utils'
 
@@ -29,7 +30,10 @@ export const PoolTokenInput = ({
   disabled,
   reserves: { data: reserves },
   max,
+  isMaxSelected = false,
   positionBalance,
+  onMax,
+  onValueChange,
 }: {
   token: PoolToken
   index: number
@@ -37,6 +41,12 @@ export const PoolTokenInput = ({
   reserves: QueryProp<Decimal[]>
   /** Spendable maximum used for amount validation and the Max chip. */
   max?: QueryProp<Decimal>
+  /** Keep this input at its maximum as the quote refreshes. */
+  isMaxSelected?: boolean
+  /** Apply the token's maximum, including dependent updates when the Max chip or displayed balance is clicked. */
+  onMax?: (index: number) => void
+  /** Called after an amount edit; Max selection is handled separately by onMax. */
+  onValueChange?: (index: number, value: Decimal | undefined) => void
   /** Display the position balance instead of the wallet balance. */
   positionBalance?: {
     position: QueryProp<Decimal>
@@ -51,6 +61,7 @@ export const PoolTokenInput = ({
   const { position, tooltip } = positionBalance ?? {}
   const limit = max ?? position
   useFormSync({ update }, { [poolMaxAmountField(index)]: limit?.data })
+  useFormSync({ update }, { [field]: max?.data }, isMaxSelected && max?.data != null)
   const error = fieldError ?? limit?.error
   return (
     <LargeTokenInput
@@ -61,18 +72,20 @@ export const PoolTokenInput = ({
       balance={q({ data: amount, error: error ?? null, isLoading: false })}
       onBalance={useCallback(
         (value: Decimal | undefined) => {
+          if (onMax && value && +value && max?.data && decimalEqual(value, max.data)) return onMax(index)
           const decimals = getValue('decimals')
           update(
             getValue('isBalanced') && isComplete(reserves) && isComplete(decimals)
               ? getBalancedUpdates(reserves, decimals, value, index)
               : { [field]: value },
           )
+          onValueChange?.(index, value)
         },
-        [getValue, update, reserves, index, field],
+        [getValue, update, reserves, index, field, onMax, max?.data, onValueChange],
       )}
       disabled={disabled}
       walletBalance={{ symbol, balance: position ?? balance, tooltip, prefix: position && LlamaIcon }}
-      maxBalance={max && { balance: max, chips: 'max' }}
+      maxBalance={max && { balance: max, chips: 'max', onMax: onMax && (() => onMax(index)) }}
       message={error?.message}
       testId={`pool-token-input-${address}`}
     />

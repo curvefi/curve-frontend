@@ -12,13 +12,13 @@ import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-export const useWithdrawMutation = ({ onReset, tokens, quote, ...params }: WithdrawMutationOptions) => {
+export const useWithdrawMutation = ({ onReset, tokens, expected, ...params }: WithdrawMutationOptions) => {
   const { network, pool, account } = params
   const { mutate, error, isPending } = useStellarMutation<WithdrawMutation, WithdrawMutationContext>({
     mutationKey: [{ network, pool, account, name: 'withdraw' }] as const,
-    buildContext: (_, baseContext) => ({ ...baseContext, ...params, quote, tokens }) as WithdrawMutationContext,
+    buildContext: (_, baseContext) => ({ ...baseContext, ...params, expected, tokens }) as WithdrawMutationContext,
     createTransaction: (values, context) => fetchWithdrawSimulation({ ...values, ...context }, { staleTime: 0 }),
-    validationParams: { ...params, quote },
+    validationParams: { ...params, expected },
     validationSuite: withdrawValidationSuite,
     pendingMessage: () => t`Preparing withdrawal`,
     successMessage: () => t`Withdrawal confirmed`,

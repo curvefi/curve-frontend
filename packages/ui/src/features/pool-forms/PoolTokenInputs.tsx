@@ -14,13 +14,21 @@ export const PoolTokenInputs = ({
   reserves,
   disabled,
   maxAmounts,
+  maxSelectedIndex,
   positionAmounts,
+  positionTooltip,
+  onMax,
+  onValueChange,
 }: {
   tokens: QueryProp<PoolToken>[] | undefined
   reserves: QueryProp<Decimal[]>
   disabled: PoolTokenDisabled
   maxAmounts?: QueryProp<Decimal>[]
+  maxSelectedIndex?: number
   positionAmounts?: QueryProp<Decimal>[]
+  positionTooltip?: string
+  onMax?: (index: number) => void
+  onValueChange?: (index: number, value: Decimal | undefined) => void
 }) =>
   tokens?.map(({ data: token, isLoading, error }, index) => (
     // eslint-disable-next-line @eslint-react/no-array-index-key
@@ -33,9 +41,10 @@ export const PoolTokenInputs = ({
           disabled={disabled === true || (disabled === 'first-only' && index > 0)}
           reserves={reserves}
           max={maxAmounts?.[index]}
-          positionBalance={
-            positionAmounts && { position: positionAmounts[index], tooltip: t`Available pool liquidity` }
-          }
+          isMaxSelected={index === maxSelectedIndex}
+          onMax={onMax}
+          onValueChange={onValueChange}
+          positionBalance={positionAmounts && { position: positionAmounts[index], tooltip: positionTooltip }}
         />
       ) : (
         isLoading && <LargeTokenInputSkeleton />
