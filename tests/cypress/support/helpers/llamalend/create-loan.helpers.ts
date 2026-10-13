@@ -1,10 +1,13 @@
+import { BigNumber } from 'bignumber.js'
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
+import { getLib } from '@evm-ui/features/connect-wallet'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
+import { waitFor } from '@primitives/promise.utils'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
 import {
   checkEstimatedTxCost,
@@ -257,3 +260,19 @@ export const submitCreateLoanForm = ({
   isMocked = false,
 }: { controllerApproved?: boolean; isMocked?: boolean } = {}) =>
   submitLoanForm({ form: 'create-loan', message: 'Loan created', approveDelegation: !controllerApproved, isMocked })
+
+/**
+ * The lend markets have a memoize() around the userState function that we cannot control from the outside.
+ * This leads to the borrow more form detecting maxDebt=0 during the first render. It needs to be recalled once the user state is updated.
+ * The proper fix is here: https://github.com/curvefi/curve-llamalend.js/pull/86
+ */
+export const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: MarketType) => {
+  if (marketType !== MarketType.Lend) return // mint markets don't have cache
+  cy.then(TIMEOUTS['evm.contractRead'], () =>
+    waitFor(async () => {
+      const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()
+      if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
+      console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
+    }, TIMEOUTS['evm.contractRead']),
+  )
+}

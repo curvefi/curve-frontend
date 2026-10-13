@@ -15,6 +15,7 @@ import {
   CREATE_LOAN_FUND_AMOUNT,
   oneLoanTestMarket,
   submitCreateLoanForm,
+  waitUntilLendMarketUpdated,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
@@ -29,13 +30,10 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
-import { getLib } from '@evm-ui/features/connect-wallet'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { waitFor } from '@primitives/promise.utils'
 
 const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 /**
@@ -43,22 +41,6 @@ const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(m
  * lets earlier online markets warm the cache, making later offline assertions order-dependent.
  * */
 const HAS_API = oneBool()
-
-/**
- * The lend markets have a memoize() around the userState function that we cannot control from the outside.
- * This leads to the borrow more form detecting maxDebt=0 during the first render. It needs to be recalled once the user state is updated.
- * The proper fix is here: https://github.com/curvefi/curve-llamalend.js/pull/86
- */
-const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: MarketType) => {
-  if (marketType !== MarketType.Lend) return // mint markets don't have cache
-  cy.then(TIMEOUTS['evm.contractRead'], () =>
-    waitFor(async () => {
-      const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()
-      if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
-      console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
-    }, TIMEOUTS['evm.contractRead']),
-  )
-}
 
 testCases.forEach(
   ({

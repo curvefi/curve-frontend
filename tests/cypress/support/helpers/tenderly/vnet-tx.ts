@@ -14,12 +14,14 @@ export const sendAdminTransaction = ({
   to,
   data,
   client,
+  errorMessage = 'Failed to set available balance',
 }: {
   adminRpcUrl: string
   from: Address
   to: Address
   data: Hex
   client: PublicClient
+  errorMessage?: string
 }) =>
   cy
     .request<{ result?: Hex; error?: unknown }>({
@@ -30,11 +32,11 @@ export const sendAdminTransaction = ({
     })
     .then(TIMEOUTS['evm.confirmation'], ({ body }) =>
       client.waitForTransactionReceipt({
-        hash: assert(body.result, `Failed to send available balance transaction: ${JSON.stringify(body.error)}`),
+        hash: assert(body.result, `${errorMessage}, transaction not sent: ${JSON.stringify(body.error)}`),
         pollingInterval: VNET_RECEIPT_POLLING_INTERVAL,
       }),
     )
-    .then(({ status }) => assert(status == 'success', 'Failed to set available balance'))
+    .then(({ status }) => assert(status == 'success', errorMessage))
 
 /** Creates a raw transaction through Tenderly's VNet transactions API. */
 export async function sendVnetTransaction({
