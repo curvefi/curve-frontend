@@ -8,7 +8,7 @@ import { Metric } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
+import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips/tooltips'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
 import { getHealthDetailsState, getHealthTextColor, getLiquidationBufferTextColor } from './utils'
 
