@@ -2,7 +2,7 @@ import { test } from 'vest'
 import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import type { PoolDecimalsParams, PoolParams, TokenQuery, UserQuery } from '@/stellar/queries/query-types'
+import type { PoolDecimalsQuery, PoolParams, TokenQuery, UserQuery } from '@/stellar/queries/query-types'
 import type { Nullish } from '@primitives/objects.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -35,18 +35,22 @@ const validateToken = ({ network, token }: TokenQuery) => {
 }
 
 export const poolValidationSuite = createValidationSuite(validatePool)
-export const poolDecimalsValidationSuite = createValidationSuite(({ decimals, ...params }: PoolDecimalsParams) => {
-  validatePool(params)
+export const validatePoolDecimals = ({ network, pool, decimals }: PoolDecimalsQuery) => {
+  validatePool({ network, pool })
   test('decimals', 'Pool token decimals are unavailable', () => {
     enforce(decimals).isArray().isNotEmpty()
     enforce(decimals?.every(precision => precision != null)).equals(true)
   })
-})
+}
+export const poolDecimalsValidationSuite = createValidationSuite(validatePoolDecimals)
 export const tokenValidationSuite = createValidationSuite(validateToken)
-export const balanceValidationSuite = createValidationSuite(({ network, token, account, decimals }: BalanceQuery) => {
-  validateToken({ network, token })
-  validateAccount(account)
+export const validateTokenDecimals = ({ decimals }: Pick<BalanceQuery, 'decimals'>) => {
   test('decimals', 'Token decimals are unavailable', () => {
     enforce(decimals).isNumber()
   })
+}
+export const balanceValidationSuite = createValidationSuite(({ network, token, account, decimals }: BalanceQuery) => {
+  validateToken({ network, token })
+  validateAccount(account)
+  validateTokenDecimals({ decimals })
 })

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress, isAddressEqual, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
@@ -10,10 +10,11 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
+import type { ActivityToken } from '@evm-ui/features/activity-table/types'
 import { getLib, requireLib, type Wallet } from '@evm-ui/features/connect-wallet'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
-import { type Address, Hex } from '@primitives/address.utils'
+import { type Address, Hex, type Token } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
@@ -27,6 +28,7 @@ import {
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
+import type { TokenOrPair } from '@ui/components/TokenIcons'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { QueryProp, toQuery } from '@ui/features/queries/util'
@@ -35,7 +37,7 @@ import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
-import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
+import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
 
 /**
@@ -137,8 +139,19 @@ export const hasVault = (market: MarketTemplate) => isLendMarket(market) && 'vau
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
-/** Only LLv2 markets use the upgraded ZapV2 contract for now */
-export const hasUpgradedZapV2 = (market: MarketTemplate | Nullish) => isV2Market(market)
+/** LLv1 markets whose controller supports delegation use the delegation ZapV2 (no router calldata size limit). */
+const hasV1ZapDelegation = (market: LendMarketTemplate) => {
+  const delegationZap = market.getLlamalend().constants.ALIASES.leverage_zap_v2_transient
+  return (
+    market.version === 'v1' &&
+    !!delegationZap &&
+    isAddressEqual(market.getZapAddress() as Address, delegationZap as Address)
+  )
+}
+
+/** LLv2 markets and the newer LLv1 markets use the delegation ZapV2 contract */
+export const hasZapDelegation = (market: MarketTemplate | Nullish) =>
+  maybe(market, market => isLendMarket(market) && (market.version === 'v2' || hasV1ZapDelegation(market)))
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
@@ -235,6 +248,27 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
           },
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
+
+/** Returns the token pair of a known LP token */
+const findLpTokenPair = (blockchainId: Chain, address: string) => LP_TOKEN_PAIRS[blockchainId]?.[getAddress(address)]
+
+/** Returns the token pair of a known LP token, or the token itself */
+export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>
+  findLpTokenPair(blockchainId, token.address) ?? token
+
+/** Returns the addresses of the token pair of a known LP token, or the address itself */
+export const getAddressOrPair = <T extends string | Nullish>(
+  blockchainId: Chain | Nullish,
+  address: T,
+): T | Address[] =>
+  maybe(maybes([blockchainId, address], findLpTokenPair), ([first, second]): Address[] => [
+    first.address,
+    second.address,
+  ]) ?? address
+
+/** Returns the token of an activity row, with the addresses of its token pair when it is a known LP token */
+export const getActivityToken = (blockchainId: Chain, token: Token | Nullish): ActivityToken | undefined =>
+  maybe(token, ({ symbol, address }) => ({ symbol, address: getAddressOrPair(blockchainId, address) }))
 
 export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,

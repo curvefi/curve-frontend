@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
@@ -32,10 +31,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
 
   const depositAmount = form.watchValue('depositAmount')
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): DepositParams<ChainId> => ({ chainId, marketId, userAddress, depositAmount }),
-      [chainId, marketId, userAddress, depositAmount],
-    ),
+    { chainId, marketId, userAddress, depositAmount } satisfies DepositParams<ChainId>,
     userDefaultValues,
   )
 
