@@ -13,7 +13,8 @@ import {
   stakeFormValidationSuite,
   userSupplyVaultAssetsValidationSuite,
 } from '@/llamalend/queries/validation/supply.validation'
-import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
+import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
+import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -79,28 +80,21 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   )
 
   const {
-    onSubmit: submitStake,
+    onSubmit: stake,
     isPending: isStaking,
     error: stakeError,
   } = useStakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
 
-  const {
-    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
-    solvencyDisabledAlert,
-    onSubmit,
-    modal: solvencyModal,
-  } = useFormLowSolvency({
-    controllerAddress,
-    marketType: MarketType.Lend,
-    chainId,
-    onSubmit: submitStake,
-    handleFormSubmit: form.handleSubmit,
+  const { onSubmit, solvencyModal, solvencyAlert, ...formActions } = marketFormActions({
+    handleSubmit: form.handleSubmit,
+    lowSolvency: useLowSolvencyAction({ controllerAddress, marketType: MarketType.Lend, chainId }),
+    onConfirmed: stake,
   })
 
   useFormSync(form, { maxStakeAssets: maxStakeAssets.data })
   useFormSync(form, { stakeShares })
 
-  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyAlert
   const { formState } = form
   const isPending = formState.isSubmitting || isStaking
   return {
@@ -108,13 +102,13 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     values,
     params,
     isPending,
-    isLoading: isPending || !marketId || isSolvencyLoading,
+    isLoading: isPending || !marketId || formActions.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     userAddress,
     borrowToken,
     collateralToken,
-    error: stakeError ?? solvencyError,
+    error: formActions.error ?? stakeError,
     max: maxStakeAssets,
     isApproved: q(useStakeIsApproved(params)),
     hasGauge: marketHasGauge,

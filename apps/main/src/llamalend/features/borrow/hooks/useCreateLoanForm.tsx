@@ -9,8 +9,9 @@ import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
-import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
-import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
+import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
+import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
+import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -126,7 +127,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   )
 
   const {
-    onSubmit: onMutationSubmit,
+    onSubmit: createLoan,
     isPending: isCreating,
     error: creationError,
   } = useCreateLoanMutation({
@@ -144,29 +145,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     leverageEnabled: values.leverageEnabled,
   })
 
-  const { onSubmit: onDelegationSubmit, modal: delegationModal } = useControllerDelegation<CreateLoanForm>({
-    chainId,
-    userAddress,
-    marketId,
-    approval: q(isControllerApproved),
-    handleFormSubmit: form.handleSubmit,
-    onSubmit: onMutationSubmit,
+  const { onSubmit, solvencyModal, solvencyAlert, delegationModal, ...formActions } = marketFormActions({
+    handleSubmit: form.handleSubmit,
+    lowSolvency: useLowSolvencyAction({ controllerAddress, marketType, chainId }),
+    delegation: useControllerDelegationAction({ chainId, userAddress, marketId, approval: q(isControllerApproved) }),
+    onConfirmed: createLoan,
   })
 
-  const {
-    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
-    solvencyDisabledAlert,
-    onSubmit,
-    modal: solvencyModal,
-  } = useFormLowSolvency({
-    controllerAddress,
-    marketType,
-    chainId,
-    onSubmit: onDelegationSubmit,
-    handleFormSubmit: form.handleSubmit,
-  })
-
-  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyAlert
 
   const { formState } = form
   const collateralTokenAddress = collateralToken?.address
@@ -184,14 +170,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: isPending || isSolvencyLoading || isControllerApproved.isLoading,
+    isLoading: isPending || formActions.isLoading,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     userAddress,
     onSubmit,
     maxTokenValues,
     borrowToken,
     collateralToken,
-    error: isControllerApproved.error ?? creationError ?? solvencyError,
+    error: formActions.error ?? creationError,
     leverage: {
       data: expectedCollateral.data?.leverage,
       // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.

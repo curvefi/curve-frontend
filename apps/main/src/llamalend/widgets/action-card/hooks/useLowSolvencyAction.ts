@@ -5,16 +5,12 @@ import { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { FieldValues, UseFormHandleSubmit } from '@ui/features/forms'
-import { q } from '@ui/features/queries/util'
 import { useSwitch } from '@ui/hooks/useSwitch'
 
-type Props<T extends FieldValues, ChainId extends IChainId> = {
+type Props<ChainId extends IChainId> = {
   controllerAddress: Address | undefined
   marketType: MarketType
   chainId: ChainId
-  onSubmit: (form: T) => void
-  handleFormSubmit: UseFormHandleSubmit<T>
 }
 
 const isLowSolvencyActionBlocked = (solvencyPercent: number | Nullish) =>
@@ -23,29 +19,23 @@ const isLowSolvencyActionBlocked = (solvencyPercent: number | Nullish) =>
 const requiresLowSolvencyModalConfirmation = (solvencyPercent: number | Nullish) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.solvent
 
-export const useFormLowSolvency = <T extends FieldValues, ChainId extends IChainId>({
+/** Blocks the form when the market is insolvent, and asks for confirmation when its solvency is low. */
+export const useLowSolvencyAction = <ChainId extends IChainId>({
   controllerAddress,
   marketType,
   chainId,
-  onSubmit,
-  handleFormSubmit,
-}: Props<T, ChainId>) => {
-  const [isOpen, openModal, closeModal] = useSwitch(false)
+}: Props<ChainId>) => {
+  const [isOpen, open, close] = useSwitch(false)
   const solvency = useSolvencyMarket({ blockchainId: BlockchainIds[chainId], controllerAddress, marketType })
-
+  const solvencyPercent = solvency.data?.solvencyPercent
   return {
-    solvency: q(solvency),
-    solvencyDisabledAlert: isLowSolvencyActionBlocked(solvency.data?.solvencyPercent) ? DEFAULT_ALERT : undefined,
-    onSubmit: requiresLowSolvencyModalConfirmation(solvency.data?.solvencyPercent)
-      ? handleFormSubmit(() => openModal())
-      : handleFormSubmit(onSubmit),
-    modal: {
-      open: isOpen,
-      onClose: closeModal,
-      onConfirm: () => {
-        closeModal()
-        void handleFormSubmit(onSubmit)()
-      },
-    },
+    key: 'lowSolvency' as const,
+    isRequired: requiresLowSolvencyModalConfirmation(solvencyPercent),
+    isOpen,
+    open,
+    close,
+    isLoading: solvency.isLoading,
+    error: solvency.error,
+    disabledAlert: isLowSolvencyActionBlocked(solvencyPercent) ? DEFAULT_ALERT : undefined,
   }
 }
