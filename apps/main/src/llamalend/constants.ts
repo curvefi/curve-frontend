@@ -19,6 +19,10 @@ export const MarketTypeSuffix: Record<MarketType, string> = {
   [MarketType.Mint]: t`(Mint Markets)`,
 }
 
+export const BORROW_RATE_TITLE = t`Borrow APR`
+export const NET_BORROW_RATE_TITLE = t`Est. Net Borrow APR`
+export const COLLATERAL_YIELD_TITLE = t`Collateral Yield`
+export const SUPPLY_RATE_TITLE = t`Supply APY`
 export const NET_SUPPLY_RATE_TITLE = t`Net Supply APY`
 export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
 export const BORROW_APR_DESCRIPTION = t`Borrow APR is the interest charged on the debt. It follows the market's monetary policy. On mint markets it also follows crvUSD's peg and borrow incentives. It does not include collateral yield.`

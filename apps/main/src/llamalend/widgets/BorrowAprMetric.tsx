@@ -1,3 +1,4 @@
+import { BORROW_RATE_TITLE } from '@/llamalend/constants'
 import { MarketBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowAprTooltipContent'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
 import type { Nullish } from '@primitives/objects.utils'
@@ -37,7 +38,7 @@ export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: Bor
       category="llamalend.marketHeader"
       alignment={alignment}
       testId="market-borrow-apr"
-      label={t`Borrow APR`}
+      label={BORROW_RATE_TITLE}
       value={mapQuery(borrowRate, ({ rate }) => rate)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       {...(showNetBorrowApr && {
@@ -47,7 +48,7 @@ export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: Bor
         ),
       })}
       valueTooltip={{
-        title: t`Borrow APR`,
+        title: BORROW_RATE_TITLE,
         body: (
           <MarketBorrowAprTooltipContent
             borrowApr={borrowRate.data?.rate}

@@ -1,4 +1,5 @@
 import { getAddress } from 'viem'
+import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
@@ -12,7 +13,6 @@ import { type Nullish, maybes, notFalsy } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { constQ, type QueryProp } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; yieldBearing?: boolean }
@@ -83,7 +83,7 @@ export const buildBorrowRateBreakdown = ({
       })),
       ...rebasingRow,
       {
-        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Borrow APR` } },
+        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: BORROW_RATE_TITLE } },
         price: constQ(undefined), // Base APR/APY rows have no token price.
         rate: rate.rate,
       },
@@ -171,7 +171,7 @@ export const buildSupplyRateBreakdown = ({
       })),
       ...rebasingRow,
       {
-        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: t`Supply APY` } },
+        source: { tokenInfo: { icon: null, iconPosition: 'left', primary: SUPPLY_RATE_TITLE } },
         price: constQ(undefined),
         rate: rate.supplyApy,
       },

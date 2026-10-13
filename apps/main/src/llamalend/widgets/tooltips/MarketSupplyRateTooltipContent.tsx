@@ -1,3 +1,4 @@
+import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -60,7 +61,7 @@ export const MarketSupplyRateTooltipContent = ({
 
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Supply APY`} loading={isLoading}>
+          <TooltipItem title={SUPPLY_RATE_TITLE} loading={isLoading}>
             {formatCappedRatePercent(supplyApy)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>

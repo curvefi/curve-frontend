@@ -1,5 +1,4 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -23,6 +22,8 @@ import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import type { RateTooltipProps } from './cells/RateCell/RateCell'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
+import { MARKET_TITLES } from './columns/column.titles'
+import { MarketColumnId } from './columns/columns.enum'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,10 +36,14 @@ const ratesConfig: Record<
 > = {
   [MarketRateType.Supply]: {
     tooltipComponent: SupplyRateLendTooltip,
-    title: NET_SUPPLY_RATE_TITLE,
+    title: MARKET_TITLES[MarketColumnId.LendRate],
     rateKey: 'lendTotalApyMinBoosted',
   },
-  [MarketRateType.Borrow]: { tooltipComponent: BorrowRateTooltip, title: t`Borrow APR`, rateKey: 'borrowApr' },
+  [MarketRateType.Borrow]: {
+    tooltipComponent: BorrowRateTooltip,
+    title: MARKET_TITLES[MarketColumnId.BorrowRate],
+    rateKey: 'borrowApr',
+  },
 }
 
 function useMobileGraphSize() {
@@ -110,21 +115,21 @@ export const MarketExpandedPanel = ({
           {leverage && (
             <Metric
               category={EXPANDED_DETAILS_METRIC_CATEGORY}
-              label={t`Leverage`}
+              label={MARKET_TITLES[MarketColumnId.MaxLeverage]}
               value={leverage}
               valueOptions={{ unit: 'multiplier' }}
             />
           )}
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Utilization`}
+            label={MARKET_TITLES[MarketColumnId.UtilizationPercent]}
             value={utilizationPercent}
             valueOptions={{ unit: 'percentage' }}
             testId="metric-utilizationPercent"
           />
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Available Liquidity`}
+            label={MARKET_TITLES[MarketColumnId.LiquidityUsd]}
             {...tokenMetric({
               value: liquidity,
               symbol: assets.borrowed.symbol,
@@ -146,7 +151,7 @@ export const MarketExpandedPanel = ({
             {lendingPosition && (
               <Metric
                 category={POSITION_METRIC_CATEGORY}
-                label={t`Earnings`}
+                label={MARKET_TITLES[MarketColumnId.UserEarnings]}
                 value={lendingPosition.earnings}
                 valueOptions={{ unit: 'dollar' }}
               />
@@ -154,7 +159,7 @@ export const MarketExpandedPanel = ({
             {lendingPosition && (
               <Metric
                 category={POSITION_METRIC_CATEGORY}
-                label={t`Supplied Amount`}
+                label={MARKET_TITLES[MarketColumnId.UserDeposited]}
                 value={lendingPosition.supplied}
                 valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
               />

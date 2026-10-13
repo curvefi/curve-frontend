@@ -1,3 +1,4 @@
+import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketSupplyRateTooltipContent, TooltipOptions } from '@/llamalend/widgets/tooltips'
@@ -12,8 +13,6 @@ import { formatCappedRatePercent, formatCappedRateValue } from '@ui/lib/rates.ut
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const METRIC_CATEGORY = 'llamalend.marketHeader'
-
-const SUPPLY_RATE_TITLE = t`Supply APY`
 
 export const MetricsRow = ({
   borrowRate,

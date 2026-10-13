@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { BORROW_RATE_TITLE, COLLATERAL_YIELD_TITLE, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from './columns.enum'
@@ -21,8 +21,8 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserBoostMultiplier]: t`Boost`,
   [MarketColumnId.UserEarnings]: t`My Earnings`,
   [MarketColumnId.UserDeposited]: t`Supplied Amount`,
-  [MarketColumnId.BorrowRate]: t`Borrow APR`,
-  [MarketColumnId.CollateralYield]: t`Collateral Yield`,
+  [MarketColumnId.BorrowRate]: BORROW_RATE_TITLE,
+  [MarketColumnId.CollateralYield]: COLLATERAL_YIELD_TITLE,
   [MarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
   [MarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
   [MarketColumnId.MaxLtv]: t`Max LTV`,
