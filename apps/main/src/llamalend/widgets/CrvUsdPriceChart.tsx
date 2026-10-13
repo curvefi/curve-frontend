@@ -59,7 +59,7 @@ const getDeviations = ({ prices, fetchedAt }: CrvUsdPriceHistory, price: number,
     week: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.week, now),
     month: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.month, now),
     year: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.year, now),
-    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_WINDOW_DAYS.year, now.getTime()),
+    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_WINDOW_DAYS.year, now),
   }
 }
 

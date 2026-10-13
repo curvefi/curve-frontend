@@ -24,7 +24,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, notFalsy, maybes } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
@@ -116,7 +116,7 @@ const getAverageRates = ({
   week: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.week, now),
   month: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.month, now),
   year: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.year, now),
-  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year, now.getTime()),
+  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year, now),
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: MarketHistoricalRatesChartProps) => {
@@ -129,31 +129,31 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
   } = useTheme()
 
   const marketRates = q(useMarketRates({ chainId, marketId }))
+  const { rates: marketRatesData, fetchedAt: marketRatesFetchedAt } = marketRates.data ?? {}
 
   const ratePoints = useMappedQuery(
     snapshots,
     useCallback(
       ({ snapshots, fetchedAt }) => {
-        const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates.data?.rates))
+        const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRatesData))
         const snapshotRatePoints = toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate)
         const snapshotsFetchedAt = new Date(fetchedAt)
-        const ratesFetchedAt = maybe(marketRates.data?.fetchedAt, fetchedAt => new Date(fetchedAt))
+        const ratesFetchedAt = maybe(marketRatesFetchedAt, fetchedAt => new Date(fetchedAt))
         return {
           fetchedAt: ratesFetchedAt && ratesFetchedAt > snapshotsFetchedAt ? ratesFetchedAt : snapshotsFetchedAt,
           points: sortBy(
             notFalsy(
               ...snapshotRatePoints,
-              currentLiveRate != null &&
-                marketRates.data && {
-                  timestamp: new Date(marketRates.data.fetchedAt).getTime(),
-                  rate: currentLiveRate,
-                },
+              maybes([currentLiveRate, marketRatesFetchedAt], (currentLiveRate, fetchedAt) => ({
+                timestamp: new Date(fetchedAt).getTime(),
+                rate: currentLiveRate,
+              })),
             ),
             item => item.timestamp,
           ),
         }
       },
-      [modeConfig, marketRates.data],
+      [modeConfig, marketRatesData, marketRatesFetchedAt],
     ),
   )
 

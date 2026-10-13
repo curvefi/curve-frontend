@@ -21,15 +21,15 @@ export const AVERAGE_WINDOW_DAYS = {
 export function hasFullTimeWindow(
   snapshots: WithTimestamp[] | undefined,
   daysBack: number,
-  now = Date.now(),
+  now = new Date(),
   tolerance = TIME_FRAMES.DAY_MS,
 ) {
   const timestamps = (snapshots ?? []).map(snapshot => new Date(snapshot.timestamp).getTime()).filter(Number.isFinite)
 
   if (timestamps.length === 0) return false
 
-  const cutoff = now - daysBack * TIME_FRAMES.DAY_MS
-  return Math.min(...timestamps) <= cutoff + tolerance && Math.max(...timestamps) >= now - tolerance
+  const cutoff = now.getTime() - daysBack * TIME_FRAMES.DAY_MS
+  return Math.min(...timestamps) <= cutoff + tolerance && Math.max(...timestamps) >= now.getTime() - tolerance
 }
 
 /**
