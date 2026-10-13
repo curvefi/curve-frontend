@@ -8,7 +8,6 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
     chainId,
     marketId,
     stateCollateral = '0',
-    userCollateral = '0',
     userBorrowed = '0',
     userAddress,
     slippage,
@@ -20,19 +19,12 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
       marketId,
       userAddress,
       stateCollateral,
-      userCollateral,
       userBorrowed,
       slippage,
       routeId,
     }) as const,
-  queryFn: ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
-    const [type] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      slippage,
-      routeId,
-    })
+  queryFn: ({ marketId, stateCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
+    const [type] = getRepayImplementation(marketId, { stateCollateral, userBorrowed, slippage, routeId })
     switch (type) {
       case 'zapV2':
         return Promise.resolve(null) // todo: get image from api

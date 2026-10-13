@@ -11,12 +11,18 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimals: number[]; supply: Decimal }
 export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
-export type ExpectedLpQuery = QuoteQuery & { isDeposit: boolean; maxAmounts?: (Decimal | undefined)[] }
+export type ExpectedLpQuery = QuoteQuery & {
+  isDeposit: boolean
+  maxAmounts?: (Decimal | undefined)[]
+  lpAmount?: Decimal
+  maxLpAmount?: Decimal
+  maxWithdrawIndex?: number
+}
 export type ExpectedLpParams = FieldsOf<DeepPartial<ExpectedLpQuery>>
 
-export const validateAmount = (field: string, amount: Decimal | Nullish) => {
+export const validateAmount = (field: string, amount: Decimal | Nullish, required = false) => {
   test(field, 'Enter a valid non-negative amount', () => {
-    enforce(amount || '0')
+    enforce(required ? amount : amount || '0')
       .isDecimal({ decimal_digits: '0,' })
       .gte(0)
   })
@@ -49,13 +55,13 @@ export const validateLiquidityInputs = ({
   })
 }
 
-export const validateReserveAmounts = ({ amounts, maxAmounts }: Pick<ExpectedLpParams, 'amounts' | 'maxAmounts'>) => {
+export const validateMaxAmounts = ({ amounts, maxAmounts }: Pick<ExpectedLpParams, 'amounts' | 'maxAmounts'>) => {
   each(notFalsyArray(amounts), (amount, index) => {
-    test(poolMaxAmountField(index), 'Pool reserve is unavailable', () => {
+    test(poolMaxAmountField(index), 'Maximum withdrawal is unavailable', () => {
       enforce(maxAmounts?.[index]).isDecimal().gte(0)
     })
-    test(poolAmountField(index), 'Amount must be less than the available pool reserve', () => {
-      enforce(+(amount || '0')).lt(maybe(maxAmounts?.[index], maxAmount => +maxAmount) ?? NaN)
+    test(poolAmountField(index), 'Amount exceeds the maximum withdrawal', () => {
+      enforce(+(amount || '0')).lte(maybe(maxAmounts?.[index], amount => +amount)!)
     })
   })
 }
@@ -64,6 +70,6 @@ export const quoteValidationSuite = createValidationSuite(
   ({ pool, network, isDeposit, amounts, decimals, supply, maxAmounts }: ExpectedLpQuery) => {
     validatePool({ pool, network })
     validateLiquidityInputs({ amounts, decimals, supply, isDeposit })
-    skipWhen(isDeposit, () => validateReserveAmounts({ amounts, maxAmounts }))
+    skipWhen(isDeposit, () => validateMaxAmounts({ amounts, maxAmounts }))
   },
 )

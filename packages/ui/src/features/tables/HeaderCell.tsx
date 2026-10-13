@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
-import { flexRender, type Header, type RowData } from '@tanstack/react-table'
+import { maybe } from '@primitives/objects.utils'
+import { flexRender, Subscribe, type Header, type RowData, type SortDirection } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { Sortable } from '@ui/features/tables/Sortable'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -55,32 +56,43 @@ function useHeaderSx({
   )
 }
 
-export const HeaderCell = function <TData extends RowData>({
-  header,
-  isSticky,
-  width,
-  size,
-}: {
+type HeaderCellProps<TData extends RowData> = {
   header: Header<CurveTableFeatures, TData>
   isSticky: boolean
   width?: string | number
   size: DataTableSize
-}) {
+}
+
+export const HeaderCell = <TData extends RowData>(props: HeaderCellProps<TData>) => (
+  <Subscribe
+    source={props.header.column.table.atoms.sorting}
+    selector={sorting => sorting.find(sort => sort.id === props.header.column.id)}
+  >
+    {sort => <HeaderCellContent {...props} sortDirection={maybe(sort, sort => (sort.desc ? 'desc' : 'asc'))} />}
+  </Subscribe>
+)
+
+const HeaderCellContent = <TData extends RowData>({
+  header,
+  isSticky,
+  width,
+  size,
+  sortDirection,
+}: HeaderCellProps<TData> & { sortDirection: SortDirection | undefined }) => {
   const { column } = header
-  const { tooltip } = column.columnDef.meta ?? {}
+  const { tooltip, type: columnType } = column.columnDef.meta ?? {}
   const canSort = column.getCanSort()
-  const isSorted = !!column.getIsSorted()
   return (
     <Typography
       component="th"
-      sx={useHeaderSx({ canSort, columnType: column.columnDef.meta?.type, isSorted, isSticky, width, size })}
+      sx={useHeaderSx({ canSort, columnType, isSorted: !!sortDirection, isSticky, width, size })}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
       variant="tableHeaderLabel"
     >
       <Tooltip title={tooltip?.title} {...tooltip}>
-        <Sortable column={column} size={size} isEnabled={canSort}>
+        <Sortable column={column} size={size} isEnabled={canSort} sortDirection={sortDirection}>
           {flexRender(column.columnDef.header, header.getContext())}
         </Sortable>
       </Tooltip>

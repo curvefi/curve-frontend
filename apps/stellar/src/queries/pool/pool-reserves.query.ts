@@ -6,7 +6,11 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { fromWei } from '@ui/lib/decimal'
 
 /** Pool reserves in decimal token amounts, in pool token order. */
-export const { useQuery: usePoolReserves, invalidate: invalidatePoolReserves } = queryFactory({
+export const {
+  useQuery: usePoolReserves,
+  fetchQuery: fetchPoolReserves,
+  invalidate: invalidatePoolReserves,
+} = queryFactory({
   queryKey: ({ network, pool, decimals }: PoolDecimalsParams) =>
     ({ name: 'get_balances', network, pool, decimals }) as const,
   queryFn: async ({ network, pool, decimals }: PoolDecimalsQuery) =>
