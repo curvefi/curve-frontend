@@ -41,32 +41,18 @@ const useRepayParams = ({
   routeId,
 }: RepayFormParams) =>
   useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral,
-        userBorrowed,
-        maxStateCollateral,
-        maxBorrowed,
-        isFull,
-        slippage,
-        routeId,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral,
-        userBorrowed,
-        maxStateCollateral,
-        maxBorrowed,
-        isFull,
-        slippage,
-        routeId,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userBorrowed,
+      maxStateCollateral,
+      maxBorrowed,
+      isFull,
+      slippage,
+      routeId,
+    },
     userDefaultValues,
   )
 

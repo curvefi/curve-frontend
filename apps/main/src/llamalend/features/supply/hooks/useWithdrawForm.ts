@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useMaxWithdrawTokenValues } from '@/llamalend/features/supply/hooks/useMaxWithdraw'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
@@ -30,17 +29,14 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): WithdrawParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        withdrawAmount: values.withdrawAmount,
-        isFull: values.isFull,
-        userVaultShares: values.userVaultShares,
-      }),
-      [chainId, marketId, userAddress, values.withdrawAmount, values.isFull, values.userVaultShares],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      withdrawAmount: values.withdrawAmount,
+      isFull: values.isFull,
+      userVaultShares: values.userVaultShares,
+    } satisfies WithdrawParams<ChainId>,
     userDefaultValues,
   )
 
