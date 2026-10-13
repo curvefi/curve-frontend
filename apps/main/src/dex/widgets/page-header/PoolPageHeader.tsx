@@ -20,7 +20,7 @@ export const PoolPageHeader = ({
   blockchainId: string
   poolIdOrAddress: string
   title: QueryProp<string>
-  tokens: QueryProp<{ symbol: string | undefined; address: Address }[]>
+  tokens: QueryProp<{ symbol: string | undefined; address: Address }>[] | undefined
   pricesApiPoolData: PricesApiPool | undefined
   backHref: string
 }) => {
