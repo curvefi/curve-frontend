@@ -1,6 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { SwapTokenSelector } from '@ui/features/pool-forms/swap/SwapTokenSelector'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'

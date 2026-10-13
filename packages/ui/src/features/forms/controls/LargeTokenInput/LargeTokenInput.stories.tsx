@@ -7,7 +7,7 @@ import {
   LargeTokenInput,
   type LargeTokenInputRef,
   type LargeTokenInputProps,
-} from '@ui/features/forms/controls/LargeTokenInput'
+} from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { q } from '@ui/features/queries/util'
 
 // Test options for token selector with corresponding pre-seeded wallet balances
