@@ -12,8 +12,8 @@ import type { WithdrawFormValues } from './withdraw-form.utils'
 
 type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   reserves: QueryProp<Decimal[]>
-  maxAmounts: QueryProp<(Decimal | undefined)[]>
-  decimals: QueryProp<(number | undefined)[]>
+  maxAmounts: QueryProp<Decimal>[] | undefined
+  decimals: QueryProp<number>[] | undefined
   lpBalance: QueryProp<Decimal>
   supply: QueryProp<Decimal>
   lpTokenDecimals: number
@@ -61,7 +61,7 @@ export const WithdrawForm = ({
     <FormAlerts
       error={error}
       formErrors={formErrors}
-      handledErrors={['lpAmount', 'maxLpAmount', ...(allTokenFields(tokens.data?.length) ?? [])]}
+      handledErrors={['lpAmount', 'maxLpAmount', ...(allTokenFields(tokens?.length) ?? [])]}
       userAddress={userAddress}
     />
   </Form>

@@ -18,7 +18,7 @@ import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q, toQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawFormQuery } from './types'
@@ -45,9 +45,9 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals } = usePoolTokens({ ...poolParams, account, tokenAddresses })
+  const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
-  const reserves = q(usePoolReserves({ ...poolParams, decimals: decimals.data }))
+  const reserves = q(usePoolReserves({ ...poolParams, decimals: decimalsData }))
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined }),
     [tokenCount],
@@ -68,7 +68,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         pool,
         account,
         tokenCount,
-        decimals: decimals.data,
+        decimals: decimalsData,
         slippage: values.slippage,
         supply: supply.data,
         seedLock: config.data?.seedLock,
@@ -81,7 +81,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
         pool,
         account,
         tokenCount,
-        decimals.data,
+        decimalsData,
         supply.data,
         config.data?.seedLock,
         lpBalance.data,
@@ -99,7 +99,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   )
 
   useFormSync(form, {
-    decimals: decimals.data,
+    decimals: decimalsData,
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
@@ -122,16 +122,16 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   return {
     form,
     reserves,
-    decimals: q(decimals),
+    decimals,
     lpTokenDecimals: LP_TOKEN_DECIMALS,
-    maxAmounts: reserves,
+    maxAmounts: maybe(reserves.data, amounts => amounts.map(amount => toQuery(amount, reserves))),
     params,
     supply: q(supply),
     lpBalance: q(lpBalance),
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
-    isLoading: isPending || priceImpact.isLoading,
+    isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: withdrawError,
