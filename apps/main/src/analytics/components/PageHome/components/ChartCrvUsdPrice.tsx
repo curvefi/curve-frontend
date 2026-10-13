@@ -1,18 +1,12 @@
 import { useState, useMemo } from 'react'
-import {
-  ButtonExport,
-  ButtonFullscreen,
-  ChartFooter,
-  createChartOptions,
-  createPalette,
-  createTooltip,
-  timeToCategory,
-  DAYS,
-  EChartsCard,
-  type Period,
-} from '@/analytics/features/charts'
+import { ButtonExport } from '@/analytics/features/charts/components/ButtonExport'
+import { ButtonFullscreen } from '@/analytics/features/charts/components/ButtonFullscreen'
+import { EChartsCard } from '@/analytics/features/charts/components/EChartsCard'
+import { createChartOptions, createPalette, createTooltip, timeToCategory } from '@/analytics/features/charts/options'
+import { type Period, DAYS } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { useTheme } from '@mui/material/styles'
