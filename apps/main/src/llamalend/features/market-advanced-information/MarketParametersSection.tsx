@@ -20,8 +20,8 @@ type MarketParametersProps = {
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
   tokens: MarketTokensOrEmpty
-  maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
-  maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
+  maxLeverage: QueryProp<{ value: Decimal } | { value: number }>
+  maxReturnOnEquity: QueryProp<MaxReturnOnEquity>
 }
 
 export const MarketParametersSection = ({

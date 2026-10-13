@@ -15,7 +15,7 @@ import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
@@ -37,7 +37,6 @@ export const Page = () => {
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -81,8 +80,8 @@ export const Page = () => {
           content: (market ?? apiMarket.data) && <VaultTabs />,
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
-        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
-        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
+        header={<MarketPageHeader isLoading={isLoading} />}
+        sections={MARKET_SECTIONS}
       >
         <MarketBanners
           chainId={chainId}

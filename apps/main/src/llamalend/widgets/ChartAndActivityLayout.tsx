@@ -16,7 +16,7 @@ import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import { type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
@@ -111,18 +111,6 @@ const buildMarketActivityMenu = <T extends MarketRateType>(rateType: T) =>
       ],
     }) as { [K in MarketRateType]: readonly Omit<TabItem<string, MarketActivityTabsParams<K>>, 'subTabs'>[] }
   )[rateType]
-
-const LEGACY_CHART_AND_ACTIVITY_MENU = [
-  {
-    value: 'chart',
-    label: t`Chart`,
-    component: ({ chart, bands }: ChartAndActivityLayoutProps) => (
-      <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
-    ),
-  },
-  { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
-  { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
-]
 
 const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
@@ -289,118 +277,5 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
         <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
       </Stack>
     </Card>
-  )
-}
-
-export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => (
-  <Stack data-testid="market-chart-and-activity">
-    <Tabs
-      menu={LEGACY_CHART_AND_ACTIVITY_MENU}
-      params={useMemo(() => ({ chart, bands, activity }), [chart, bands, activity])}
-      variant="contained"
-      ContentWrapper={ActivityTabsContent}
-    />
-  </Stack>
-)
-
-const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
-  const { isConnected } = useConnection()
-  const { tokenPair, isMarketLoading } = useMarketTokenPair()
-  const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
-  const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
-  const bandsPalette = useBandsChartPalette()
-  const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
-
-  const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
-    setCandlePriceRange(previous =>
-      previous && !hasVisiblePriceRangeChanged(previous, { min, max }) ? previous : { min, max },
-    )
-  }, [])
-
-  const showBands = bands && isBandsVisible && isConnected
-  const hasUserBands = !!bands?.userBandsBalances?.length
-  const collateralSymbol = bands?.collateralToken?.symbol
-  const borrowSymbol = bands?.borrowToken?.symbol
-  const chartFooterLegendSets = useMemo(
-    () =>
-      showBands && hasUserBands
-        ? notFalsy<LegendItem>(
-            ...chart.legendSets,
-            collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
-            borrowSymbol && { label: borrowSymbol, box: { fill: bandsPalette.userBorrowedShareColor } },
-          )
-        : chart.legendSets,
-    [
-      showBands,
-      hasUserBands,
-      chart.legendSets,
-      collateralSymbol,
-      borrowSymbol,
-      bandsPalette.userCollateralShareColor,
-      bandsPalette.userBorrowedShareColor,
-    ],
-  )
-
-  return (
-    <Stack
-      data-testid="market-price-chart"
-      sx={{ gap: Spacing.sm, padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}
-    >
-      <ChartHeader
-        chartOptionVariant="select"
-        chartSelections={{
-          selections: chart.ohlcChartProps.selectChartList.map(selection => ({
-            ...selection,
-            activeTitle: tokenPair ?? '',
-          })),
-          activeSelection: chart.selectedChartKey,
-        }}
-        timeOption={{
-          options: TIME_OPTIONS,
-          activeOption: chart.ohlcChartProps.timeOption,
-          setActiveOption: chart.setTimeOption,
-        }}
-        isLoading={chart.isLoading || isMarketLoading}
-        customButton={
-          isConnected &&
-          bands && (
-            <ToggleBandsChartButton
-              label={t`Bands`}
-              tooltip={t`The price ranges your position can move through during soft liquidation.`}
-              isVisible={isBandsVisible}
-              toggle={toggleBandsVisible}
-            />
-          )
-        }
-      />
-      <Stack
-        sx={{
-          display: showBands ? 'grid' : undefined,
-          gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
-        }}
-      >
-        <ChartWrapper
-          {...chart.ohlcChartProps}
-          onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
-        />
-        {showBands && (
-          <BandsChart
-            isLoading={bands.isLoading}
-            error={bands.error}
-            collateralToken={bands.collateralToken}
-            borrowToken={bands.borrowToken}
-            chartData={bands.chartData}
-            userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
-            newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
-            liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
-            liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
-            oraclePrice={bands.oraclePrice}
-            priceRange={candlePriceRange}
-            height={chart.ohlcChartProps.chartHeight}
-          />
-        )}
-      </Stack>
-      <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
-    </Stack>
   )
 }

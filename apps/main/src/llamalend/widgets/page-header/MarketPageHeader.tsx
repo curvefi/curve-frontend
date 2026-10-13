@@ -2,28 +2,25 @@ import { useConnection } from 'wagmi'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { getTokenOrPair } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
-import { MarketType, MarketRateType } from '@evm-ui/types/market'
+import { MarketType } from '@evm-ui/types/market'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { Badge } from '@ui/components/Badge'
 import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { WithWrapper } from '@ui/components/WithWrapper'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ChainIcon } from '@ui/icons/ChainIcon'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { usePageHeader } from './hooks/usePageHeader'
-import { LegacyMetricsRow } from './LegacyMetricsRow'
 import { MetricsRow } from './MetricsRow'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; rateType: MarketRateType }) => {
+export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   const { address: userAddress } = useConnection()
   const {
     chainId,
@@ -34,7 +31,6 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
     tokens: { collateralToken, borrowToken },
   } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
-  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const title = (collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`) ?? t`Market`
 
@@ -43,21 +39,8 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
     borrowToken &&
     t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
-  const MetricComponent = isNewLlamaMarketDetailPage ? MetricsRow : LegacyMetricsRow
-  const metrics = (
-    <MetricComponent
-      borrowRate={borrowRate}
-      supplyRate={supplyRate}
-      availableLiquidity={availableLiquidity}
-      marketType={marketType}
-      collateral={collateralToken}
-      borrowToken={borrowToken}
-      rateType={rateType}
-    />
-  )
-
   return (
-    <WithWrapper shouldWrap={isNewLlamaMarketDetailPage} Wrapper={Stack}>
+    <Stack>
       <PageHeader
         backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
         title={title}
@@ -103,9 +86,15 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
             )}
           </>
         }
-        {...(!isNewLlamaMarketDetailPage && { rightItems: metrics })}
       />
-      {isNewLlamaMarketDetailPage && metrics}
-    </WithWrapper>
+      <MetricsRow
+        borrowRate={borrowRate}
+        supplyRate={supplyRate}
+        availableLiquidity={availableLiquidity}
+        marketType={marketType}
+        collateral={collateralToken}
+        borrowToken={borrowToken}
+      />
+    </Stack>
   )
 }

@@ -1,13 +1,8 @@
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { MarketParticipantsTabs } from '@/llamalend/features/market-participants/MarketParticipantsCards'
-import {
-  LegacyChartAndActivityLayout,
-  MarketActivityLayout,
-  MarketPriceChartLayout,
-} from '@/llamalend/widgets/ChartAndActivityLayout'
+import { MarketActivityLayout, MarketPriceChartLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import type { ChainId } from '@/loan/types/loan.types'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,7 +16,6 @@ type ChartAndActivityCompProps = { previewPrices: Range<Decimal> | undefined }
 export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
   const {
     chainId,
-    blockchainId,
     marketId,
     ammAddress,
     controllerAddress,
@@ -56,15 +50,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     borrowToken,
   }
 
-  return useNewLlamaMarketDetailPage() ? (
-    <MarketPriceChartLayout chart={chart} bands={bands} />
-  ) : (
-    <LegacyChartAndActivityLayout
-      chart={chart}
-      bands={bands}
-      activity={{ chainId, blockchainId, ammAddress, collateralToken, borrowToken, endpoint: 'crvusd' }}
-    />
-  )
+  return <MarketPriceChartLayout chart={chart} bands={bands} />
 }
 
 export const MarketActivityComp = () => {

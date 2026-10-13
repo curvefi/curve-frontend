@@ -19,11 +19,7 @@ import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import {
-  useMarketResetPosition,
-  useMarketMobileFormDrawer,
-  useNewLlamaMarketDetailPage,
-} from '@evm-ui/hooks/useFeatureFlags'
+import { useMarketResetPosition, useMarketMobileFormDrawer } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
@@ -48,7 +44,6 @@ export const LendMarketPage = () => {
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -113,8 +108,8 @@ export const LendMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} showCollateralClaim={showCollateralClaim} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
-        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
+        header={<MarketPageHeader isLoading={isLoading} />}
+        sections={MARKET_SECTIONS}
       >
         <MarketBanners
           chainId={chainId}

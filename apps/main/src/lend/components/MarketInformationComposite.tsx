@@ -1,10 +1,8 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
-import { MarketAdvancedDetails } from '@/llamalend/features/market-advanced-information/MarketAdvancedDetails'
 import { MarketInfoLayout } from '@/llamalend/features/market-advanced-information/MarketInfoLayout'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketHistoricalRatesTabs } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -22,7 +20,6 @@ type MarketInformationCompProps = { rateType: MarketRateType; previewPrices?: Ra
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
-  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   const isBorrow = rateType === MarketRateType.Borrow
 
   return (
@@ -36,16 +33,13 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
         <MarketHistoricalRatesTabs rateType={rateType} />
         <MarketRateCurveChart />
       </MarketSection>
-      {isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-activity">
-          <MarketActivityComp rateType={rateType} />
-        </MarketSection>
-      )}
+      <MarketSection id="market-activity">
+        <MarketActivityComp rateType={rateType} />
+      </MarketSection>
       <MarketSection id="market-parameters">
         <Card size="small" data-testid="market-parameters-card">
           <CardHeader title={t`Advanced Details`} />
           <CardContent component={Stack}>
-            {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
             <MarketInfoLayout />
           </CardContent>
         </Card>

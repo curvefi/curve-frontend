@@ -97,7 +97,6 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketCharts': METRIC_TYPES.secondaryStat,
   'llamalend.marketAdvancedDetailsSummary': METRIC_TYPES.secondaryStat,
   'llamalend.marketParticipants': METRIC_TYPES.secondaryStat,
-  'llamalend.marketAdvancedDetails': METRIC_TYPES.responsiveDetail,
   'llamalend.marketListRates': METRIC_TYPES.primaryStat,
   'llamalend.marketListExpandedDetails': METRIC_TYPES.responsiveDetail,
   'llamalend.marketListPosition': METRIC_TYPES.responsiveDetail,

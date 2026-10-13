@@ -1,10 +1,8 @@
-import { MarketAdvancedDetails } from '@/llamalend/features/market-advanced-information/MarketAdvancedDetails'
 import { MarketInfoLayout } from '@/llamalend/features/market-advanced-information/MarketInfoLayout'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketHistoricalRatesTabs } from '@/llamalend/features/rate-breakdown/MarketRateBreakdowns'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/ChartAndActivityComp'
-import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -18,37 +16,30 @@ import { t } from '@ui/lib/i18n'
 
 type MarketInformationCompProps = { previewPrices: Range<Decimal> | undefined }
 
-export const MarketInformationComposite = ({ previewPrices }: MarketInformationCompProps) => {
-  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
-
-  return (
-    <Stack sx={{ gap: PAGE_SPACING }}>
-      <MarketSection id="price-chart">
-        <Stack sx={{ gap: PAGE_SPACING }}>
-          <ChartAndActivityComp previewPrices={previewPrices} />
-          <CrvUsdPriceChart />
-        </Stack>
-      </MarketSection>
-      <MarketSection id="historical-rates">
-        <MarketHistoricalRatesTabs rateType={MarketRateType.Borrow} />
-      </MarketSection>
-      {isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-activity">
-          <MarketActivityComp />
-        </MarketSection>
-      )}
-      <MarketSection id="market-parameters">
-        <Card size="small" data-testid="market-parameters-card">
-          <CardHeader title={t`Advanced Details`} />
-          <CardContent component={Stack}>
-            {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
-            <MarketInfoLayout />
-          </CardContent>
-        </Card>
-      </MarketSection>
-      <MarketSection id="faqs">
-        <MarketFaqCard />
-      </MarketSection>
-    </Stack>
-  )
-}
+export const MarketInformationComposite = ({ previewPrices }: MarketInformationCompProps) => (
+  <Stack sx={{ gap: PAGE_SPACING }}>
+    <MarketSection id="price-chart">
+      <Stack sx={{ gap: PAGE_SPACING }}>
+        <ChartAndActivityComp previewPrices={previewPrices} />
+        <CrvUsdPriceChart />
+      </Stack>
+    </MarketSection>
+    <MarketSection id="historical-rates">
+      <MarketHistoricalRatesTabs rateType={MarketRateType.Borrow} />
+    </MarketSection>
+    <MarketSection id="market-activity">
+      <MarketActivityComp />
+    </MarketSection>
+    <MarketSection id="market-parameters">
+      <Card size="small" data-testid="market-parameters-card">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <MarketInfoLayout />
+        </CardContent>
+      </Card>
+    </MarketSection>
+    <MarketSection id="faqs">
+      <MarketFaqCard />
+    </MarketSection>
+  </Stack>
+)

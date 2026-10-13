@@ -2,7 +2,7 @@ import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketSupplyRateTooltipContent, TooltipOptions } from '@/llamalend/widgets/tooltips'
-import { MarketType, MarketRateType } from '@evm-ui/types/market'
+import { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
@@ -21,7 +21,6 @@ export const MetricsRow = ({
   marketType,
   collateral,
   borrowToken,
-  rateType,
 }: {
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
@@ -29,7 +28,6 @@ export const MetricsRow = ({
   marketType: MarketType
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
-  rateType: MarketRateType
 }) => {
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
@@ -93,13 +91,10 @@ export const MetricsRow = ({
     </>
   )
 
-  const [primaryRateMetric, secondaryRateMetric] =
-    rateType === MarketRateType.Supply ? [supplyRateMetric, borrowRateMetric] : [borrowRateMetric, supplyRateMetric]
-
   return (
     <MetricsGrid>
-      {primaryRateMetric}
-      {secondaryRateMetric}
+      {borrowRateMetric}
+      {supplyRateMetric}
       {liquidityMetrics}
     </MetricsGrid>
   )
