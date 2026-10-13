@@ -3,8 +3,8 @@ import { styled } from 'styled-components'
 import type { UrlParams } from '@/dao/types/dao.types'
 import { getPath } from '@/dao/utils/utilsRouter'
 import { InternalLink } from '@legacy-ui/Link'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { useParams } from '@ui/hooks/router'
-import { ArrowRightIcon } from '@ui/icons/ArrowRightIcon'
 
 type InternalLinkButtonProps = { to: string; children: ReactNode; smallSize?: boolean }
 
@@ -13,7 +13,7 @@ export const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButt
   return (
     <StyledInternalLink size={smallSize ? 'small' : undefined} href={getPath(params, to)}>
       {children}
-      <ArrowRightIcon sx={{ fontSize: 16 }} />
+      <ArrowForwardIcon sx={{ fontSize: 16 }} />
     </StyledInternalLink>
   )
 }

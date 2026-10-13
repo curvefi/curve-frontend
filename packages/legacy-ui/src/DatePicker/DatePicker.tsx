@@ -35,7 +35,7 @@ import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import { IconButton } from '@legacy-ui/IconButton'
 import { InputProvider } from '@legacy-ui/InputComp'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import { CalendarIcon } from '@ui/icons/CalendarIcon'
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined'
 import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
@@ -201,7 +201,7 @@ export function DatePicker<T extends DateValue>(
             <DateField {...dateFieldProps} state={dateFieldState} />
           </Box>
           <Button {...buttonProps} isDisabled={props.isDisabled}>
-            <CalendarIcon sx={{ fontSize: 24 }} />
+            <CalendarTodayOutlinedIcon sx={{ fontSize: 24 }} />
           </Button>
         </Box>
 

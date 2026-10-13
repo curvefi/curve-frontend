@@ -27,8 +27,8 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Checkbox } from '@legacy-ui/Checkbox'
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import type { Address } from '@primitives/address.utils'
-import { TrashIcon } from '@ui/icons/TrashIcon'
 import { t } from '@ui/lib/i18n'
 import { WarningBox } from '../components/WarningBox'
 import { SelectTokenButton } from './SelectTokenButton'
@@ -92,7 +92,7 @@ export const SelectToken = ({
                 onClick={() => removeToken(TOKEN_C, tokensInPool)}
                 aria-label={t`Remove token`}
               >
-                <TrashIcon sx={{ fontSize: 16 }} />
+                <DeleteOutlinedIcon sx={{ fontSize: 16 }} />
               </RemoveButton>
             )}
           </Box>
@@ -113,7 +113,7 @@ export const SelectToken = ({
                 onClick={() => removeToken(tokenId, tokensInPool)}
                 aria-label={t`Remove token`}
               >
-                <TrashIcon sx={{ fontSize: 16 }} />
+                <DeleteOutlinedIcon sx={{ fontSize: 16 }} />
               </RemoveButton>
             </Box>
           </LabelRow>
