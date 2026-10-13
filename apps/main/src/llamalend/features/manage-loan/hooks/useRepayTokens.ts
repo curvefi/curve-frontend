@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import {
   canRepayFromStateCollateral,
-  canRepayFromUserCollateral,
   hasZapV2,
   isPositionLeveraged,
   type MarketToken,
@@ -14,7 +13,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import type { TokenOption } from '@ui/features/select-token/types'
 import { useMarketContext } from '../../market-context'
 
-export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'userBorrowed' }
+export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userBorrowed' }
 
 /**
  * Get token options for repayment based on market and network
@@ -46,14 +45,6 @@ const getRepayTokenOptions = ({
         chain: blockchainId,
         symbol: collateralToken.symbol,
         field: 'stateCollateral',
-      },
-    collateralToken &&
-      canRepayFromUserCollateral(market) &&
-      hasLeverageProvider && {
-        address: collateralToken.address,
-        chain: blockchainId,
-        symbol: collateralToken.symbol,
-        field: 'userCollateral',
       },
   )
 
