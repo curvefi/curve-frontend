@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { mapRecord } from '@primitives/objects.utils'
@@ -25,10 +26,18 @@ const FILTER_ONLY_COLUMNS = [
   MarketColumnId.UserEarnings, // hidden until we have a backend
 ]
 
+/** Borrow APR replaced the removed net borrow APR column, so it falls back to its new default visibility. */
+const resolveMarketActive = (
+  preservedActive: boolean,
+  currentOption: VisibilityGroup<MarketColumnId>['options'][number],
+) => (isEqual(currentOption.columns, [MarketColumnId.BorrowRate]) ? currentOption.active : preservedActive)
+
 const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 7,
+  version: 8,
   migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
+    mapRecord(initialValue, (variant, currentGroups) =>
+      preserveVisibilityChoices(oldValue[variant], currentGroups, resolveMarketActive),
+    ),
 }
 
 export const getMarketsColumnVariant = (

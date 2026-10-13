@@ -24,7 +24,6 @@ export type RateTooltipProps = { market: LlamaMarket; children: TooltipProps['ch
 const RateTypes = {
   [MarketColumnId.LendRate]: MarketRateType.Supply,
   [MarketColumnId.BorrowRate]: MarketRateType.Borrow,
-  [MarketColumnId.NetBorrowRate]: MarketRateType.Borrow,
 } as const
 
 const TooltipComponents: Record<MarketRateType, Record<MarketType, FunctionComponent<RateTooltipProps>>> = {

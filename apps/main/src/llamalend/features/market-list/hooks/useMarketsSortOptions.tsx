@@ -21,8 +21,8 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
         ]
       : []),
-    { id: MarketColumnId.NetBorrowRate, label: t`Net borrow APR` },
     { id: MarketColumnId.BorrowRate, label: t`Borrow APR` },
+    { id: MarketColumnId.CollateralYield, label: t`Collateral yield` },
     { id: MarketColumnId.LendRate, label: NET_SUPPLY_RATE_TITLE },
     { id: MarketColumnId.Tvl, label: t`Total Value Locked` },
     { id: MarketColumnId.MaxLtv, label: t`Max LTV` },

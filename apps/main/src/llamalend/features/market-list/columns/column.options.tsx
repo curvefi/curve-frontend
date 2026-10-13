@@ -84,14 +84,14 @@ const createMarketsColumnOptions = ({
     label: t`Borrow`,
     options: [
       {
-        label: MARKET_TITLES[MarketColumnId.NetBorrowRate],
-        columns: [MarketColumnId.NetBorrowRate],
+        label: MARKET_TITLES[MarketColumnId.BorrowRate],
+        columns: [MarketColumnId.BorrowRate],
         active: onlyPositions != MarketRateType.Supply,
         enabled: true,
       },
       {
-        label: MARKET_TITLES[MarketColumnId.BorrowRate],
-        columns: [MarketColumnId.BorrowRate],
+        label: MARKET_TITLES[MarketColumnId.CollateralYield],
+        columns: [MarketColumnId.CollateralYield],
         active: false,
         enabled: true,
       },

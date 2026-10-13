@@ -19,10 +19,10 @@ import { RateCell } from '../cells/RateCell/RateCell'
 import { SolvencyCell } from '../cells/SolvencyCell'
 import { TvlCell } from '../cells/TvlCell'
 import { UtilizationCell } from '../cells/UtilizationCell'
+import { BorrowAprHeaderTooltipContent } from '../header-tooltips/BorrowAprHeaderTooltipContent'
 import { CollateralBorrowHeaderTooltipContent } from '../header-tooltips/CollateralBorrowHeaderTooltipContent'
 import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderTooltipContent'
 import { LiquidityUsdHeaderTooltipContent } from '../header-tooltips/LiquidityUsdHeaderTooltipContent'
-import { NetBorrowAprHeaderTooltipContent } from '../header-tooltips/NetBorrowAprHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationHeaderTooltipContent'
 import {
@@ -89,18 +89,19 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.BorrowRate,
     header: MARKET_TITLES[MarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', unit: 'percentage' },
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.BorrowRate], body: <BorrowAprHeaderTooltipContent /> },
+    },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  columnHelper.accessor('rates.borrowTotalApr', {
-    id: MarketColumnId.NetBorrowRate,
-    header: MARKET_TITLES[MarketColumnId.NetBorrowRate],
-    cell: RateCell,
-    meta: {
-      type: 'numeric',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
-    },
+  columnHelper.accessor(({ assets }) => assets.collateral.rebasingYieldApr ?? undefined, {
+    id: MarketColumnId.CollateralYield,
+    header: MARKET_TITLES[MarketColumnId.CollateralYield],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {

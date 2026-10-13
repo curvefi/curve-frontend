@@ -22,7 +22,7 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserEarnings]: t`My Earnings`,
   [MarketColumnId.UserDeposited]: t`Supplied Amount`,
   [MarketColumnId.BorrowRate]: t`Borrow APR`,
-  [MarketColumnId.NetBorrowRate]: t`Net Borrow APR`,
+  [MarketColumnId.CollateralYield]: t`Collateral Yield`,
   [MarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
   [MarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
   [MarketColumnId.MaxLtv]: t`Max LTV`,
