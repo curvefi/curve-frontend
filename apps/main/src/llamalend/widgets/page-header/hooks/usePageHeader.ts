@@ -4,8 +4,8 @@ import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
-import { useMarketRates, type MarketRates } from '@/llamalend/queries/market/market-rates.query'
-import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
+import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { type MarketSnapshots, useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
@@ -23,7 +23,6 @@ import {
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
-import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -32,7 +31,7 @@ import type { Address } from '@primitives/address.utils'
 import { type Nullish, maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, Query, type QueryData, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
 
@@ -100,34 +99,37 @@ const useBorrowRate = ({
   campaigns,
 }: {
   apiMarket: QueryProp<LlamaMarket>
-  marketRates: QueryProp<MarketRates>
+  marketRates: QueryProp<QueryData<typeof useMarketRates>>
   marketType: MarketType
   marketQuery: QueryProp<MarketTemplate>
-  snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
+  snapshot: QueryProp<MarketSnapshots>
   campaigns: CampaignRewards[]
 }) => {
   const borrowCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Borrow)
 
-  const onChainBorrowRate = combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
-    const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
-      borrowRate: toNumberOrNull(borrowApr),
-      campaignsRate: sumCampaignsApr(borrowCampaigns),
-      snapshots,
-      getBorrowRate: getSnapshotBorrowApr,
-      getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-      daysBack: RATE_WINDOW,
-    })
-    return {
-      rate: toNumberOrNull(borrowApr),
-      averageRate,
-      averageCategory: RATE_CATEGORY,
-      rebasingYield,
-      averageRebasingYield,
-      totalBorrowRate: totalRate,
-      totalAverageBorrowRate: averageTotalRate,
-      extraRewards: borrowCampaigns,
-    }
-  })
+  const onChainBorrowRate = combineQueries(
+    [marketRates, snapshot, marketQuery],
+    ({ rates: { borrowApr } }, { snapshots }) => {
+      const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
+        borrowRate: toNumberOrNull(borrowApr),
+        campaignsRate: sumCampaignsApr(borrowCampaigns),
+        snapshots,
+        getBorrowRate: getSnapshotBorrowApr,
+        getRebasingYield: getSnapshotCollateralRebasingYieldApr,
+        daysBack: RATE_WINDOW,
+      })
+      return {
+        rate: toNumberOrNull(borrowApr),
+        averageRate,
+        averageCategory: RATE_CATEGORY,
+        rebasingYield,
+        averageRebasingYield,
+        totalBorrowRate: totalRate,
+        totalAverageBorrowRate: averageTotalRate,
+        extraRewards: borrowCampaigns,
+      }
+    },
+  )
 
   const useApiMarket = !!apiMarket.data && !marketQuery.data
   const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useMarketRateHistory(
@@ -161,8 +163,8 @@ const useSupplyRate = ({
 }: {
   chainId: number
   useApiMarket: boolean
-  marketRates: QueryProp<MarketRates>
-  snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
+  marketRates: QueryProp<QueryData<typeof useMarketRates>>
+  snapshot: QueryProp<MarketSnapshots>
   marketQuery: QueryProp<MarketTemplate>
   blockchainId: Chain | undefined
   apiMarket: QueryProp<LlamaMarket>
@@ -182,10 +184,10 @@ const useSupplyRate = ({
   const apiSupplyCampaigns = useFilteredRewards(apiMarket.data?.rewards ?? [], marketType, MarketRateType.Supply)
 
   const onChainSupplyRate = combineQueries(
-    [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards, marketQuery],
-    (marketRates, lendingSnapshots, marketOnChainRewards) =>
+    [marketRates, snapshot as Query<MarketSnapshots<MarketType.Lend>>, onChainRewards, marketQuery],
+    ({ rates: { lendApy } }, { snapshots: lendingSnapshots }, marketOnChainRewards) =>
       buildSupplyRate({
-        supplyApy: marketRates?.lendApy,
+        supplyApy: lendApy,
         rebasingYieldApy: getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield),
         marketOnChainRewards,
         lendingSnapshots,
@@ -273,11 +275,10 @@ export const usePageHeaderRates = () => {
   const { chainId, blockchainId, market, marketQuery, apiMarket, marketType } = useMarketContext()
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const snapshot = mapQuery(
+  const snapshot = q(
     useMarketSnapshots({ marketType, controllerAddress, blockchainId, range: { kind: 'limit', limit: RATE_WINDOW } }),
-    ({ snapshots }) => snapshots,
   )
-  const marketRates = mapQuery(useMarketRates({ chainId, marketId: market?.id }), ({ rates }) => rates)
+  const marketRates = q(useMarketRates({ chainId, marketId: market?.id }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 
