@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { getAddress, isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
@@ -11,14 +11,37 @@ import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import { useCurve } from '@evm-ui/features/connect-wallet'
-import { maybe } from '@primitives/objects.utils'
+import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import type { PoolQuery, UserPoolParams } from '@evm-ui/queries/query-types'
+import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
+import { queryFactory } from '@ui/features/queries/factory'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
+
+const { useQuery: usePoolQuery } = queryFactory({
+  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
+    ({ name: 'pool.lookup', chainId, poolId, userAddress }) as const,
+  queryFn: async ({ poolId }: PoolQuery) => {
+    const curveApi = requireLib('curveApi')
+    const pool = tryGetPool(poolId, curveApi)
+    if (pool) return pool
+
+    try {
+      await fetchNewPools(curveApi)
+      return tryGetPool(poolId, curveApi) ?? null
+    } catch {
+      return null
+    }
+  },
+  validationSuite: curvePoolValidationSuite,
+  category: 'global.no-persist',
+  disableLog: true, // Pool instances have circular references that cannot be serialized by the query logger used in Cypress.
+})
 
 export const PagePool = () => {
   const { curveApi = null, isHydrated } = useCurve()
@@ -28,39 +51,21 @@ export const PagePool = () => {
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const lookup = useMemo(() => ({ curveApi, poolIdOrAddress, isHydrated }), [curveApi, poolIdOrAddress, isHydrated])
-  const [lookupResult, setLookupResult] = useState<{ lookup: typeof lookup; notFound: boolean }>()
-  const poolNotFound = lookupResult?.lookup === lookup && lookupResult.notFound
-
-  // Whether there's a pool depends on if the given curve api is hydrated or not.
-  const pool = useMemo(
-    () => maybe(curveApi, curveApi => tryGetPool(poolIdOrAddress, curveApi)),
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [curveApi, poolIdOrAddress, isHydrated, lookupResult],
-  )
-
-  useEffect(() => {
-    const { curveApi, poolIdOrAddress, isHydrated } = lookup
-    let cancelled = false
-    if (!pool && poolIdOrAddress && curveApi && isHydrated) {
-      fetchNewPools(curveApi)
-        .then(() => {
-          if (!cancelled) setLookupResult({ lookup, notFound: !tryGetPool(poolIdOrAddress, curveApi) })
-        })
-        .catch(() => {
-          if (!cancelled) setLookupResult({ lookup, notFound: true })
-        })
-    }
-    return () => {
-      cancelled = true
-    }
-  }, [lookup, pool])
+  const { data: pool } = useHydratedQuery(usePoolQuery, {
+    chainId,
+    poolId: poolIdOrAddress,
+    // The query returns a pool tied to a specific curve-js instance, which gets recreated on user address change.
+    userAddress: curveApi?.signerAddress || undefined,
+  })
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
     () => pool && blacklist?.some(badPool => isAddressEqual(badPool, getAddress(pool.address))),
     [blacklist, pool],
   )
+
+  // In a future PR we'll remove this check and make everything a query with skeletons and such.
+  if (!isHydrated) return null
 
   if (isBlacklisted)
     return (
@@ -77,7 +82,8 @@ export const PagePool = () => {
       />
     )
 
-  if (poolNotFound)
+  // Strict check with null as `undefined` means unresolved; null means 'doesn't exist'.
+  if (pool === null)
     return (
       <ErrorPage
         title="404"
