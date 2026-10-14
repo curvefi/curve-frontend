@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { objectKeys } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
+import { useResettableState } from './useResettableState'
 
 type DebouncedValueOptions<T> = { defaultValue?: T; debounceMs?: number }
 
@@ -75,9 +76,8 @@ export function useDebounce<T>({
   callback: (value: T) => void
   debounceMs?: number
 }) {
-  const [value, setValue] = useState<T>(initialValue)
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setValue(initialValue), [initialValue])
+  // External resets update the draft but preserve any callback already scheduled by useDebounced.
+  const [value, setValue] = useResettableState<T>(initialValue, [initialValue])
   return [value, useDebounced(callback, debounceMs, setValue)] as const
 }
 
