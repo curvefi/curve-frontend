@@ -492,10 +492,8 @@ export const formatCollateralNotional = (
     borrow?.value && +borrow?.value && borrow.symbol && formatToken(borrow.value, borrow.symbol),
   ).join(' + ')
 
-/** Second line under a borrow APR, e.g. "Est. net -0.59%". */
 export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. net ${formatCappedRatePercent(rate)}`
 
-/** Second line under a supply APY with the net supply APY, labelled "Total", e.g. "Total 3.43%". */
 export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
 
 /** Whether the market has extras (collateral yield or borrow rewards) that make up an estimated net borrow APR. */

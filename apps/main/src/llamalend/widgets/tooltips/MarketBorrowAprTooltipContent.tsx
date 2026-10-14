@@ -46,20 +46,15 @@ export const MarketBorrowAprTooltipContent = ({
 
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={BORROW_RATE_TITLE}>{formatCappedRatePercent(borrowApr ?? 0)}</TooltipItem>
+          <TooltipItem title={BORROW_RATE_TITLE}>{formatCappedRatePercent(borrowApr)}</TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {averageApr == null ? 'N/A' : formatCappedRatePercent(averageApr)}
+            {formatCappedRatePercent(averageApr)}
           </TooltipItem>
         </TooltipItems>
 
         {!!extraRewards?.length && (
           <TooltipItems secondary>
-            <RewardsTooltipItems
-              title={t`Borrowing incentives`}
-              tooltipType="borrow"
-              extraRewards={extraRewards}
-              extraIncentives={[]}
-            />
+            <RewardsTooltipItems title={t`Borrowing incentives`} tooltipType="borrow" extraRewards={extraRewards} />
           </TooltipItems>
         )}
 
@@ -80,7 +75,7 @@ export const MarketBorrowAprTooltipContent = ({
               {formatCappedRatePercent(totalBorrowApr)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-              {totalAverageBorrowApr == null ? 'N/A' : formatCappedRatePercent(totalAverageBorrowApr)}
+              {formatCappedRatePercent(totalAverageBorrowApr)}
             </TooltipItem>
           </TooltipItems>
         )}
