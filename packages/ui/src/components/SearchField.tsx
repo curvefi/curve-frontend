@@ -1,8 +1,8 @@
 import { RefObject, useCallback, useRef } from 'react'
-import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import TextField, { type TextFieldProps } from '@mui/material/TextField'
 import { useDebounce } from '@ui/hooks/useDebounce'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
 import { SearchIcon } from '@ui/icons/SearchIcon'
 import { t } from '@ui/lib/i18n'
 
@@ -49,7 +49,7 @@ export const SearchField = ({
           startAdornment: <SearchIcon />,
           endAdornment: search && (
             <IconButton size="extraSmall" onClick={resetSearch}>
-              <CloseIcon />
+              <Cross2Icon />
             </IconButton>
           ),
         },
