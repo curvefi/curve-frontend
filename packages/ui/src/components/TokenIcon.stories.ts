@@ -41,6 +41,17 @@ export const MuiMedium: Story = { args: { size: 'mui-md' } }
 
 export const WithFallback: Story = { args: { address: '0x0' } }
 
+export const TokenPair: Story = {
+  args: {
+    address: ['0x57aB1E0003F623289CD798B1824Be09a793e4Bec', '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6'],
+    tooltip: 'reUSD/sfrxUSD',
+  },
+  argTypes: { address: { control: 'object' } },
+  parameters: {
+    docs: { description: { story: 'Two tokens shown as one icon split in half, e.g. the coins of an LP token.' } },
+  },
+}
+
 export const WithChainIcon: Story = {
   args: { showChainIcon: true },
   parameters: { docs: { description: { story: 'Token icon with blockchain chain badge overlay.' } } },

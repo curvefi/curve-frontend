@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
@@ -9,8 +10,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { FieldPath, FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
-import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
-import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
+import { LargeTokenInput, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { decimal } from '@ui/lib/decimal'
@@ -128,7 +129,7 @@ export const LoanFormTokenInput = <
           <TokenLabel
             blockchainId={blockchainId}
             tooltip={token?.symbol}
-            address={token?.address ?? null}
+            address={getAddressOrPair(blockchainId, token?.address) ?? null}
             label={token?.symbol ?? '?'}
           />
         )

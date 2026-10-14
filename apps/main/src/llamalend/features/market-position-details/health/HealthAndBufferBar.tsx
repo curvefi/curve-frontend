@@ -15,7 +15,7 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
+import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips/tooltips'
 import {
   getLiquidationBufferColor,
   getLiquidationBufferPercent,

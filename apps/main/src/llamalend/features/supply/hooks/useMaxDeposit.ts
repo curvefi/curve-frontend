@@ -1,4 +1,4 @@
-import { useMarketVaultMaxDeposit } from '@/llamalend/queries/market'
+import { useMarketVaultMaxDeposit } from '@/llamalend/queries/market/market-vault-max-deposit.query'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'

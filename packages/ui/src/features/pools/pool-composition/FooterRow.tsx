@@ -25,19 +25,19 @@ type FooterCellProps = FooterRowProps & { columnId: PoolCompositionColumnId }
 const footerCellByColumnId: Record<PoolCompositionColumnId, (props: FooterCellProps) => ReactNode> = {
   [PoolCompositionColumnId.Asset]: ({ columnId }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ padding: Spacing.md }}>
-      <Typography variant="tableCellMBold">{t`USD Total`}</Typography>
+      <Typography variant="tableCellValueStrong">{t`USD Total`}</Typography>
     </TableCell>
   ),
   [PoolCompositionColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
   [PoolCompositionColumnId.Balance]: ({ columnId, hasBalance }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.sm, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-      <Typography variant="tableCellMBold">{hasBalance.data ? '100%' : '-'}</Typography>
+      <Typography variant="tableCellValueStrong">{hasBalance.data ? '100%' : '-'}</Typography>
     </TableCell>
   ),
   [PoolCompositionColumnId.TokenAmount]: ({ columnId, totalUsd }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <WithSkeleton loading={totalUsd.isLoading} sx={{ justifySelf: 'end' }}>
-        <Typography variant="tableCellMBold">{formatNumber(totalUsd.data, 'usd.notional')}</Typography>
+        <Typography variant="tableCellValueStrong">{formatNumber(totalUsd.data, 'usd.notional')}</Typography>
       </WithSkeleton>
     </TableCell>
   ),

@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
@@ -65,17 +64,14 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const stakeShares = values.isFull ? maxStakeShares.data : convertedStakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): StakeFormParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        stakeAssets: values.stakeAssets,
-        stakeShares,
-        isFull: values.isFull,
-      }),
-      [chainId, marketId, stakeShares, userAddress, values.isFull, values.stakeAssets],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      stakeAssets: values.stakeAssets,
+      stakeShares,
+      isFull: values.isFull,
+    } satisfies StakeFormParams<ChainId>,
     userDefaultValues,
   )
 

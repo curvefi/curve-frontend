@@ -34,7 +34,7 @@ export const ValueCellDisplay = ({
         // fit on one line the '+' separator sticks to the end of the preceding token symbol.
         // 1ch is for some reason too large, 0.25rem seems to do the trick.
         <Typography
-          variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
+          variant={isFooter ? 'tableCellValueStrong' : 'tableCellValue'}
           color={tokensColor}
           data-testid={testId}
           sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'end', textAlign: 'end' }}
@@ -52,11 +52,11 @@ export const ValueCellDisplay = ({
         variant={
           tokens.length
             ? isFooter
-              ? 'tableCellSBold'
-              : 'tableCellSRegular'
+              ? 'tableCellSupportStrong'
+              : 'tableCellSupport'
             : isFooter
-              ? 'tableCellMBold'
-              : 'tableCellMRegular'
+              ? 'tableCellValueStrong'
+              : 'tableCellValue'
         }
         color="textSecondary"
         sx={{ textAlign: 'end' }}

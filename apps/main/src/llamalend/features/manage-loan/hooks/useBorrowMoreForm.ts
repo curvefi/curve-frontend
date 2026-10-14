@@ -28,7 +28,7 @@ import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/h
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
@@ -59,35 +59,20 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   leverageProviders: readonly RouteProvider[] | undefined
 }) =>
   useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        userCollateral,
-        userBorrowed,
-        debt,
-        maxDebt,
-        slippage,
-        leverageEnabled,
-        routeId,
-        slippageType: LEVERAGE,
-        leverageProviders,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        userCollateral,
-        userBorrowed,
-        debt,
-        maxDebt,
-        slippage,
-        leverageEnabled,
-        routeId,
-        leverageProviders,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral,
+      userBorrowed,
+      debt,
+      maxDebt,
+      slippage,
+      leverageEnabled,
+      routeId,
+      slippageType: LEVERAGE,
+      leverageProviders,
+    },
     userDefaultValues,
   )
 

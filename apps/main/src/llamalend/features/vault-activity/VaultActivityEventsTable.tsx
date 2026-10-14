@@ -1,17 +1,14 @@
 import { useCallback, useMemo } from 'react'
+import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketVaultEvents } from '@/llamalend/queries/market/market-vault-events.query'
-import {
-  ActivityTable,
-  AddressCell,
-  DEFAULT_PAGE_SIZE,
-  getVaultEventChange,
-  LlammaTokenAmount,
-  TimestampCell,
-  useManualPagination,
-  VaultActivityExpandedPanel,
-  type VaultActivityProps,
-  type VaultActivityRow,
-} from '@evm-ui/features/activity-table'
+import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { LlammaTokenAmount } from '@evm-ui/features/activity-table/cells/LlammaTokenAmount'
+import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
+import { VaultActivityExpandedPanel } from '@evm-ui/features/activity-table/panels/VaultActivityExpandedPanel'
+import type { VaultActivityProps, VaultActivityRow } from '@evm-ui/features/activity-table/types'
+import { DEFAULT_PAGE_SIZE, getVaultEventChange } from '@evm-ui/features/activity-table/utils'
+import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
+import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
@@ -47,7 +44,7 @@ const VAULT_ACTIVITY_COLUMNS = columnHelper.columns([
       return (
         <InlineTableCell>
           {action && (
-            <Typography variant="tableCellMBold" color={action.color}>
+            <Typography variant="tableCellValue" color={action.color}>
               {action.label}
             </Typography>
           )}
@@ -123,7 +120,14 @@ export const VaultActivityEventsTable = ({ chainId, blockchainId, borrowToken, v
     query: useMappedQuery(
       eventsQuery,
       useCallback(
-        ({ events }) => events.map(event => ({ ...event, chainId, blockchainId, borrowToken, vaultToken })),
+        ({ events }) =>
+          events.map(event => ({
+            ...event,
+            chainId,
+            blockchainId,
+            borrowToken: getActivityToken(blockchainId, borrowToken),
+            vaultToken: getActivityToken(blockchainId, vaultToken),
+          })),
         [chainId, blockchainId, borrowToken, vaultToken],
       ),
     ),

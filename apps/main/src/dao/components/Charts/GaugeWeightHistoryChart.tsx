@@ -1,14 +1,13 @@
 import { useGaugeWeightHistoryQuery, type GaugeWeightHistoryData } from '@/dao/entities/gauge-weight-history'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import {
-  ChartFooter,
-  EvmChartStateWrapper,
   ChartTooltipDataRow,
   ChartTooltipSeriesGroup,
   ChartTooltipShell,
-  EChartsLineChart,
-  type LegendItem,
-  type LineSeriesConfig,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
+import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { Address } from '@primitives/address.utils'

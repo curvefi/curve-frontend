@@ -24,7 +24,8 @@ import {
   visitAndWait,
 } from '@cy/support/helpers/llamalend/llamalend-markets'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
-import { assertInViewport, assertNotInViewport, LOAD_TIMEOUT, oneDesktopViewport, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { assertInViewport, assertNotInViewport, oneDesktopViewport, oneViewport } from '@cy/support/ui'
 import { MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
 import { assert, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
 
@@ -61,7 +62,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       if (breakpoint === 'mobile') {
         cy.get(`[data-testid^="llama-market-go-to-borrow"]`).click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', urlRegex)
+      cy.url(TIMEOUTS['ui.navigation']).should('match', urlRegex)
     })
 
     it('should have sticky headers or horizontally scrollable table', () => {
@@ -138,7 +139,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         })
         cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
         openDrawer(breakpoint, 'sort')
-        cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
+        cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', TIMEOUTS['ui.render'])
         cy.get(`[data-testid="drawer-sort-menu-lamalend-markets"] li[value="${utilizationColumnId}"]`).click()
         assertModalClosed('drawer-sort-menu-lamalend-markets')
         cy.get(`[data-testid^="data-table-row"]`)
@@ -147,13 +148,13 @@ testCases.forEach(([width, height, breakpoint]) => {
           .should('exist')
         expandFirstRowOnMobile(breakpoint)
         // note: not possible currently to sort ascending
-        return cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
+        return cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', TIMEOUTS['ui.render'])
       } else {
         cy.get(`[data-testid="data-table-cell-${MarketColumnId.NetBorrowRate}"]`).first().contains('%')
         cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
-        cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', LOAD_TIMEOUT)
+        cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', TIMEOUTS['ui.render'])
         cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
-        cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('0%', LOAD_TIMEOUT)
+        cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('0%', TIMEOUTS['ui.render'])
       }
     })
 
@@ -168,9 +169,9 @@ testCases.forEach(([width, height, breakpoint]) => {
       }
       checkLineGraphColor(MarketRateType.Borrow, '#ed242f', height)
 
-      cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
+      cy.get<unknown[]>(`@lend-snapshots.all`, TIMEOUTS['ui.render']).then(calls1 => {
         expect(calls1.length).to.be.greaterThan(0).lessThan(vaultCount) // make sure we have some calls before scrolling, but not all
-        cy.wait(repeat('@lend-snapshots', calls1.length), LOAD_TIMEOUT)
+        cy.wait(repeat('@lend-snapshots', calls1.length), TIMEOUTS['mock.prices.snapshots'])
 
         // check that scrolling to the last row loads more snapshots
         cy.get('[data-testid^="data-table-row"]')
@@ -182,9 +183,9 @@ testCases.forEach(([width, height, breakpoint]) => {
           cy.get(`[data-testid="expand-icon"]`).last().click()
         }
         cy.get('[data-testid^="data-table-row"]').last().should('be.visible')
-        cy.wait(`@lend-snapshots`, LOAD_TIMEOUT) // wait for an extra request
+        cy.wait(`@lend-snapshots`, TIMEOUTS['mock.prices.snapshots']) // wait for an extra request
         cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
-        cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls2 =>
+        cy.get<unknown[]>(`@lend-snapshots.all`, TIMEOUTS['ui.render']).then(calls2 =>
           expect(calls2.length).to.be.greaterThan(calls1.length),
         )
       })

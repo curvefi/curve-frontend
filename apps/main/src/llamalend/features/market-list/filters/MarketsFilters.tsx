@@ -1,4 +1,5 @@
 import { noop, type Dictionary } from 'lodash'
+import { getAddressOrPair } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -9,7 +10,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { type AssetDetails } from '../../../queries/market-list/llama-markets'
 import { MarketsChainFilterChips } from '../chips/MarketsChainFilterChips'
-import { MARKET_TITLES, MarketColumnId } from '../columns'
+import { MARKET_TITLES } from '../columns/column.titles'
+import { MarketColumnId } from '../columns/columns.enum'
 import { type MarketsFiltersProps, useMarketsFilters } from './hooks/useMarketsFilters'
 import { MultiSelectFilter } from './MultiSelectFilter'
 import { RangeSliderRowFilter } from './RangeSliderRowFilter'
@@ -22,7 +24,15 @@ const { Spacing } = SizesAndSpaces
  */
 const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
   const { blockchainId: chain, address = null } = tokens[symbol] ?? {}
-  return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="xl" />
+  return (
+    <TokenLabel
+      blockchainId={chain}
+      tooltip={symbol}
+      address={getAddressOrPair(chain, address)}
+      label={symbol}
+      size="xl"
+    />
+  )
 }
 
 /**

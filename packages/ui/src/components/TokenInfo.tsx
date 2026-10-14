@@ -22,7 +22,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  address: Address
+  address: Address | Address[]
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size
@@ -75,9 +75,9 @@ export const TokenInfo = (props: TokenInfoProps) => {
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
-        <TokenInfoItem value={toQuery(primary)} variant={boldPrimary ? 'tableCellMBold' : 'tableCellMRegular'} />
+        <TokenInfoItem value={toQuery(primary)} variant={boldPrimary ? 'tableCellValueStrong' : 'tableCellValue'} />
 
-        {secondary && <TokenInfoItem value={toQuery(secondary)} variant="tableCellSRegular" color="textSecondary" />}
+        {secondary && <TokenInfoItem value={toQuery(secondary)} variant="tableCellSupport" color="textSecondary" />}
       </Stack>
 
       {iconPosition === 'right' && tokenIcon}

@@ -1,6 +1,5 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
@@ -9,13 +8,12 @@ import { type TimeOption } from '@evm-ui/queries/validation/time-option-validati
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
-  ChartFooter,
   type ChartLineDashPattern,
-  EvmChartStateWrapper,
-  EChartsLineChart,
-  type LegendItem,
-  type LineSeriesConfig,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/chart.utils'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
@@ -33,6 +31,7 @@ import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { TIME_OPTION_MS } from '@ui/lib/time'
 import { useMarketContext } from '../features/market-context'
+import { useMarketRates, type MarketRates } from '../queries/market/market-rates.query'
 
 const { Spacing, Height } = SizesAndSpaces
 

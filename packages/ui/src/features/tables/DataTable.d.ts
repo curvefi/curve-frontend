@@ -17,7 +17,6 @@ declare module '@tanstack/table-core' {
   > {
     type?: 'numeric' // aligns cell content to the right
     unit?: Unit // used when displaying the filter's serialized value
-    hidden?: boolean // todo: get rid of this property; metadata and column visibility can diverge
     variant?: TypographyVariantKey
     tooltip?: Omit<TooltipProps, 'children'>
   }

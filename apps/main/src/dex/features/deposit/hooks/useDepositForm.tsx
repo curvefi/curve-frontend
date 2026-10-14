@@ -1,7 +1,5 @@
-import { identity } from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useShallow } from 'zustand/react/shallow'
 import { usePoolTokens } from '@/dex/features/pool/usePoolTokens'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
@@ -15,7 +13,6 @@ import { useForm, type UseFormReturn, useFormSync } from '@ui/features/forms'
 import { getPoolAmounts, getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { toWei } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import { useDepositMutation } from '../deposit.mutation'
 import { depositFormValidationSuite } from '../deposit.validation'
@@ -58,7 +55,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const { formState, handleSubmit, update, watchValues, reset } = form
   const { connect, connectState, wallet } = useWallet()
 
-  const values = useShallow(identity<DepositFormValues>)(watchValues()) // Dynamic field names prevent destructuring dependencies; useShallow keeps the values stable between actual changes.
+  const values = watchValues()
   const { isWrapped } = values
   const canDepositWrapped = hasWrapped(pool)
 
@@ -82,10 +79,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   }, [canDepositWrapped, update, isSeed.data])
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ ...values, chainId, poolId, decimals, userAddress }),
-      [chainId, poolId, values, decimals, userAddress],
-    ),
+    { ...values, chainId, poolId, decimals, userAddress },
     userDefaultValues,
   )
 
@@ -105,10 +99,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   return {
     form,
     params: queryParams,
-    reserves: mapQuery(reserves, reserves =>
-      // todo: make sure reserves use formatted values across the app, keep raw values to queries and mutations
-      reserves.tokens.map((token, index) => toWei(token.balance, decimals[index])),
-    ),
+    reserves: mapQuery(reserves, reserves => reserves.tokens.map(t => t.balance)),
     isSeed,
     canDepositWrapped,
     isWrappedOnly: isWrappedOnly(pool),

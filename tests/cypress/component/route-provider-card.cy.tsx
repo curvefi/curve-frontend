@@ -1,7 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import { RouteProviderCard } from '@evm-ui/widgets/RouteProvider/RouteProviderCard'
 import type { RouteProvider } from '@primitives/router.utils'
 import { constQ, q, type QueryProp } from '@ui/features/queries/util'
@@ -104,7 +104,7 @@ allViewports().forEach(([width, height, breakpoint]) => {
       mountRouteProviderCard()
       cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
         const { height } = $card.getBoundingClientRect()
-        expect(height).to.equal(breakpoint === 'desktop' ? 50 : 48)
+        expect(height).to.equal(50)
       })
     })
 

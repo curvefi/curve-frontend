@@ -26,7 +26,8 @@ import {
   swapSubmit,
   writeSwapAmount,
 } from '@cy/support/helpers/stellar/swap.helpers'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { SWAP_FIELDS } from '@ui/features/pool-forms/swap/swap-form.utils'
 
@@ -45,12 +46,14 @@ describe('Stellar testnet swap', () => {
         testnetConfig = config
         await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
-      .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
-      .then(API_LOAD_TIMEOUT, async () => await seedTestPool(pool, testnetConfig))
+      .then(TIMEOUTS['stellar.deployPool'], async () => await deployTestPool(testnetConfig))
+      .then(TIMEOUTS['ui.render'], deployedPool => (pool = deployedPool))
+      .then(TIMEOUTS['stellar.seedPool'], async () => await seedTestPool(pool, testnetConfig))
   })
 
-  beforeEach(() => cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh)))
+  beforeEach(() =>
+    cy.then(TIMEOUTS['stellar.read'], () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh)),
+  )
 
   const mountSwap = ({ connected = true } = {}) => {
     cy.mount(
@@ -65,7 +68,7 @@ describe('Stellar testnet swap', () => {
     mountSwap({ connected: false })
     writeSwapAmount('pay', SWAP_AMOUNT)
     swapAmountInput('receive').should(input => expect(Number(input.val())).to.be.greaterThan(0))
-    cy.get('[data-testid="pool-swap-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="pool-swap-connect-wallet"]', TIMEOUTS['ui.render']).should('be.enabled')
     swapSubmit().should('not.exist')
   })
 
@@ -124,11 +127,11 @@ describe('Stellar testnet swap', () => {
             : readSwapMinimum().then(minimumOutputAmount => ({ inputAmount: amounts.inputAmount, minimumOutputAmount }))
         expectedResult.then(result => {
           if (side === 'pay') checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
-          checkEstimatedTxCost()
+          checkEstimatedTxCost({ category: 'stellar.simulation' })
           checkPoolSlippage()
           checkPoolPriceImpact()
           submitSwapForm()
-          cy.then(LOAD_TIMEOUT, () => fetchPoolState(pool, testnetConfig)).then(fresh => {
+          cy.then(TIMEOUTS['stellar.read'], () => fetchPoolState(pool, testnetConfig)).then(fresh => {
             checkSwapResult(state, fresh, result, fromIndex, toIndex)
           })
         })

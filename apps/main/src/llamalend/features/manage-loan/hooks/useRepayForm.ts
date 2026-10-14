@@ -18,13 +18,12 @@ import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.v
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
 import { type AllowUndefined, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
 
@@ -35,9 +34,7 @@ const useRepayParams = ({
   marketId,
   userAddress,
   stateCollateral,
-  userCollateral,
   userBorrowed,
-  maxCollateral,
   maxStateCollateral,
   maxBorrowed,
   isFull,
@@ -45,54 +42,35 @@ const useRepayParams = ({
   routeId,
 }: RepayFormParams) =>
   useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral,
-        userCollateral,
-        userBorrowed,
-        maxCollateral,
-        maxStateCollateral,
-        maxBorrowed,
-        isFull,
-        slippage,
-        routeId,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral,
-        userCollateral,
-        userBorrowed,
-        maxCollateral,
-        maxStateCollateral,
-        maxBorrowed,
-        isFull,
-        slippage,
-        routeId,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userBorrowed,
+      maxStateCollateral,
+      maxBorrowed,
+      isFull,
+      slippage,
+      routeId,
+    },
     userDefaultValues,
   )
 
-const userDefaultValues = { stateCollateral: undefined, userCollateral: undefined, userBorrowed: undefined }
+const userDefaultValues = { stateCollateral: undefined, userBorrowed: undefined }
 
 const defaultValues = {
   ...userDefaultValues,
   routeId: undefined,
   maxStateCollateral: undefined,
-  maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: false,
 }
 
 const isRepayRouteRequired = (
   market: MarketTemplate | undefined,
-  { stateCollateral = '0', userBorrowed = '0', userCollateral = '0' }: AllowUndefined<RepayFormFields>,
-) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
+  { stateCollateral = '0', userBorrowed = '0' }: AllowUndefined<RepayFormFields>,
+) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userBorrowed }))
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   networks,
@@ -145,13 +123,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useRepayPrices(params), onPricesUpdated)
 
   const { data: isAvailable } = useRepayIsAvailable(params)
-  const { isFull, max } = useMaxRepayTokenValues({
-    market,
-    borrowTokenAddress: borrowToken?.address,
-    collateralTokenAddress: collateralToken?.address,
-    params,
-    form,
-  })
+  const { isFull, max } = useMaxRepayTokenValues({ market, borrowTokenAddress: borrowToken?.address, params, form })
 
   const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
@@ -177,7 +149,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       controllerAddress,
       tokenIn: collateralToken,
       tokenOut: borrowToken,
-      amountIn: decimalSum(params.userCollateral, params.stateCollateral),
+      amountIn: params.stateCollateral,
       ...pick(params, 'slippage'),
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {

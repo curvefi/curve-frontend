@@ -3,8 +3,11 @@ import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { isLendMarket } from '@/llamalend/llama.utils'
-import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
-import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
+import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
+import { useMarketVaultPricePerShare } from '@/llamalend/queries/market/market-vault-price-per-share.query'
+import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
+import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.query'
 import {
   formatSupplyExtraIncentives,
   getLatestSnapshotValue,
@@ -17,7 +20,7 @@ import {
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns'
+import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
@@ -33,7 +36,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatCappedRateValue, aprToApy } from '@ui/lib/rates.utils'
-import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
+import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
+import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 

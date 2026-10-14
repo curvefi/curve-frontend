@@ -2,7 +2,8 @@ import { orderBy } from 'lodash'
 import { assertModalClosed } from '@cy/support/helpers/data-table.helpers'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
-import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { type Breakpoint, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 import { getPoolsTvlLabelRange, POOL_DEFAULT_TVL_MIN } from '@ui/features/pool-list/filters/utils'
 import { getRangeFilterLabel } from '@ui/features/tables/filters'
@@ -18,11 +19,11 @@ const getPoolListResponseFirstPoolName = (body: unknown) =>
   assert((body as PoolListResponseBody).pools?.[0]?.name, 'No pool in DEX pool list response')
 
 const waitForPoolListResponse = () =>
-  cy.wait('@dex-pools', API_LOAD_TIMEOUT).then(({ response }) => {
+  cy.wait('@dex-pools', TIMEOUTS['mock.prices.pools']).then(({ response }) => {
     cy.contains(
       '[data-testid^="table-row-link-"]',
       getPoolListResponseFirstPoolName(response?.body),
-      API_LOAD_TIMEOUT,
+      TIMEOUTS['ui.render'],
     ).should('be.visible')
   })
 
@@ -121,7 +122,7 @@ describe('DEX Pools', () => {
     visitAndWait(width, height, { query: { page: '5' } })
     action()
     if (waitForRequest) {
-      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+      cy.wait('@dex-pools', TIMEOUTS['mock.prices.pools'])
     }
     cy.location('search').should('not.include', 'page=')
   }
@@ -136,7 +137,7 @@ describe('DEX Pools', () => {
         cy.get(`[data-testid="data-table-header-${field}"]`).click()
         cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
       }
-      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+      cy.wait('@dex-pools', TIMEOUTS['mock.prices.pools'])
       if (expectedOrder) {
         cy.get(`[data-testid="icon-sort-${field}-${expectedOrder}"]`).should('be.visible')
       } else {
@@ -148,7 +149,7 @@ describe('DEX Pools', () => {
       openPoolFilters()
       cy.get(`[data-testid="table-filter-btn-pool-filter-type-${chip}"]`).click()
       closePoolFilters()
-      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+      cy.wait('@dex-pools', TIMEOUTS['mock.prices.pools'])
     }
 
     function setRangeFilter(id: string, bound: 'min' | 'max', value: number | string) {
@@ -194,15 +195,15 @@ describe('DEX Pools', () => {
       expectLastPoolRequestParams(params => {
         expect(params.get('pool_type')).to.equal(poolType)
       })
-      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      cy.get('[data-testid^="data-table-row-"]', TIMEOUTS['mock.prices.pools']).should('have.length.greaterThan', 0)
       assertSelectedFilterChip()
       cy.reload()
       assertSelectedFilterChip()
-      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      cy.get('[data-testid^="data-table-row-"]', TIMEOUTS['mock.prices.pools']).should('have.length.greaterThan', 0)
       cy.get('[data-testid="dex-pool-active-filter-type"]').click()
       cy.url().should('not.include', '?')
       cy.get('[data-testid="dex-pool-active-filter-type"]').should('not.exist')
-      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      cy.get('[data-testid^="data-table-row-"]', TIMEOUTS['mock.prices.pools']).should('have.length.greaterThan', 0)
     })
 
     it('resets page when search changes', () => {
@@ -281,7 +282,7 @@ describe('DEX Pools', () => {
         cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/?$/)
+      cy.url(TIMEOUTS['ui.navigation']).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
     })
   })
@@ -290,10 +291,10 @@ describe('DEX Pools', () => {
     visitAndWait(width, height, { network: 'ethereum' })
     const filter = DEX_POOL_LIST_SEARCH
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
-    cy.url(API_LOAD_TIMEOUT).should('include', `?search=${filter}`)
-    cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+    cy.url(TIMEOUTS['ui.navigation']).should('include', `?search=${filter}`)
+    cy.wait('@dex-pools', TIMEOUTS['mock.prices.pools'])
     const getMatchedPoolRow = () =>
-      cy.contains('[data-testid^="data-table-row-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
+      cy.contains('[data-testid^="data-table-row-"]', filter, TIMEOUTS['ui.render']).should('be.visible')
 
     getMatchedPoolRow()
     if (breakpoint === 'mobile') {
@@ -308,21 +309,21 @@ describe('DEX Pools', () => {
     } else {
       cy.contains('[data-testid^="table-row-link-"]', filter).click()
     }
-    cy.get('[data-testid="tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.render']).should('be.visible')
     cy.window().then(win => win.history.go(-1))
-    cy.url(API_LOAD_TIMEOUT).should('include', `?search=${filter}`)
+    cy.url(TIMEOUTS['ui.navigation']).should('include', `?search=${filter}`)
   })
 
   it('keeps search-only state out of active filter chips and empty reset clears search', () => {
     visitAndWait(width, height)
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type('no-such-pool')
-    cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+    cy.wait('@dex-pools', TIMEOUTS['mock.prices.pools'])
     cy.url().should('include', '?search=no-such-pool')
     cy.get('[data-testid="table-empty-row"]').should('be.visible')
     cy.get('[data-testid^="dex-pool-active-filter-"]').should('not.exist')
     cy.get('[data-testid="dex-pool-empty-state-reset"]').click()
     cy.url().should('not.include', 'search=')
-    cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+    cy.get('[data-testid^="data-table-row-"]', TIMEOUTS['mock.prices.pools']).should('have.length.greaterThan', 0)
   })
 
   it('paginates', () => {

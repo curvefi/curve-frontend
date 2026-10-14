@@ -143,6 +143,17 @@ export const Sizing = {
   '800': '5.5rem', // 88px
 } as const
 
+export const FontWeight = {
+  '200': 200,
+  '300': 300,
+  '400': 400,
+  '450': 450,
+  '500': 500,
+  '600': 600,
+  '700': 700,
+  '800': 800,
+} as const
+
 export const Duration = {
   ChartFrame: 16, // 16ms = ~60fps
   Delay: 100,

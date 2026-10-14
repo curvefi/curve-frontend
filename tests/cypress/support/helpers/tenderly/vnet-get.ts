@@ -1,4 +1,4 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
 
@@ -35,7 +35,7 @@ export const getVirtualTestnet = ({
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Access-Key': accessKey },
       failOnStatusCode: false,
-      ...LOAD_TIMEOUT,
+      ...TIMEOUTS['tenderly.get'],
     })
     .then(response => {
       if (!response.isOkStatusCode) {

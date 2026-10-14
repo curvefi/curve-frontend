@@ -1,4 +1,5 @@
-import { Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { Breakpoint } from '@cy/support/ui'
 
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
@@ -46,12 +47,15 @@ export function closeDrawer(breakpoint: Breakpoint) {
 
 /** Wait for the close transition to finish while ensuring the contents remain mounted. */
 export const assertModalClosed = (testId: string) =>
-  cy.get(`[data-testid="${testId}"]`, LOAD_TIMEOUT).closest('.MuiModal-root').should('have.class', 'MuiModal-hidden')
+  cy
+    .get(`[data-testid="${testId}"]`, TIMEOUTS['ui.render'])
+    .closest('.MuiModal-root')
+    .should('have.class', 'MuiModal-hidden')
 
 export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
   if (breakpoint !== 'mobile') {
-    cy.get('[data-testid="table-filters-popover"]', LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="table-filters-popover"]', TIMEOUTS['ui.render']).should('be.visible')
   }
   return callback().then(result => {
     if (breakpoint === 'mobile') {

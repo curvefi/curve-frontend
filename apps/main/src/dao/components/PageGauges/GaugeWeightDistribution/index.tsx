@@ -8,11 +8,11 @@ import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
 import {
   CHART_X_AXIS_LABEL_ROTATION,
-  EvmChartStateWrapper,
   createChartSeriesColorScale,
-  EChartsBarChart,
   formatChartAxisNumber,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/chart.utils'
+import { EChartsBarChart } from '@evm-ui/shared/ui/Chart/EChartsBarChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { Box } from '@legacy-ui/Box'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'

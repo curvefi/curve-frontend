@@ -1,5 +1,8 @@
+import type { ComponentProps } from 'react'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
+import type { Address } from '@primitives/address.utils'
+import { toArray } from '@primitives/array.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -27,6 +30,20 @@ const squareSize = <T,>(value: T) => ({ width: value, height: value })
 const getTokenImageUrl = (blockchainId: string, address?: string | null) =>
   address ? `${getImageBaseUrl(blockchainId)}${address.toLowerCase()}.png` : FallbackIcon
 
+const TokenImage = ({
+  blockchainId,
+  address,
+  ...props
+}: Omit<ComponentProps<'img'>, 'src'> & { blockchainId: string; address?: string | null; sx?: SxProps }) => (
+  <Box
+    component="img"
+    onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
+    src={getTokenImageUrl(blockchainId, address)}
+    loading="lazy"
+    {...props}
+  />
+)
+
 const getTokenIconSizeSx = (
   theme: Theme,
   size: Size, // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
@@ -52,8 +69,8 @@ export type TokenIconProps = {
   tooltip?: string
   /** Size variant for the token icon */
   size?: Size
-  /** Token contract address used for fetching the icon image */
-  address?: string | null
+  /** Token contract address used for fetching the icon image, or the addresses of the tokens it is made of, e.g. the coins of an LP token */
+  address?: string | Address[] | null
   /** Secondary token contract address used for fetching the badge image */
   badgeAddress?: string | null
   /** Whether the icon should appear disabled (greyed out) */
@@ -67,6 +84,7 @@ export type TokenIconProps = {
  * Displays a token icon with optional blockchain chain and secondary token badge overlays.
  * Uses WithWrapper to conditionally wrap the icon in a relative-positioned Box only when
  * an overlay is shown, preventing absolute positioning conflicts with other components.
+ * When `address` holds several addresses, the icon is split between the first two.
  */
 export const TokenIcon = ({
   className = '',
@@ -78,42 +96,73 @@ export const TokenIcon = ({
   disabled,
   showChainIcon = false,
   sx,
-}: TokenIconProps) => (
-  <WithWrapper
-    shouldWrap={showChainIcon || !!badgeAddress}
-    Wrapper={Box}
-    sx={{
-      position: 'relative', // to position overlay icons on top of the token icon
-    }}
-  >
-    <Tooltip title={tooltip} placement="top">
-      <Box
-        component="img"
-        data-testid={`token-icon-${tooltip || address}`}
-        className={`${className}`}
-        alt={tooltip}
-        onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
-        src={getTokenImageUrl(blockchainId, address)}
-        loading="lazy"
-        sx={applySxProps(
-          { display: 'block' }, // Not sure why, but without this the image is sometimes not properly centered and/or may have extra space below it
-          theme => ({ borderRadius: '50%', ...getTokenIconSizeSx(theme, size) }),
-          sx,
-          disabled && { filter: 'saturate(0)' },
+}: TokenIconProps) => {
+  const iconSx = applySxProps(
+    { display: 'block' }, // Not sure why, but without this the image is sometimes not properly centered and/or may have extra space below it
+    theme => ({ borderRadius: '50%', ...getTokenIconSizeSx(theme, size) }),
+    sx,
+    disabled && { filter: 'saturate(0)' },
+  )
+  const addresses = toArray(address)
+  const testId = `token-icon-${tooltip || addresses.join('-')}`
+  return (
+    <WithWrapper
+      shouldWrap={showChainIcon || !!badgeAddress}
+      Wrapper={Box}
+      sx={{
+        position: 'relative', // to position overlay icons on top of the token icon
+      }}
+    >
+      <Tooltip title={tooltip} placement="top">
+        {addresses.length > 1 ? (
+          // The design only covers two tokens, so the first two are shown as one icon split in half
+          <Box
+            data-testid={testId}
+            className={`${className}`}
+            sx={applySxProps(
+              { position: 'relative', overflow: 'hidden', backgroundColor: t => t.design.Layer[3].Fill },
+              iconSx,
+            )}
+          >
+            {addresses.slice(0, 2).map((tokenAddress, index) => (
+              <TokenImage
+                key={tokenAddress}
+                blockchainId={blockchainId}
+                address={tokenAddress}
+                alt={tooltip}
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+                  ...squareSize('100%'),
+                  /** Shows the left half of the first token and the right half of the second token */
+                  clipPath: ['inset(0 50% 0 0)', 'inset(0 0 0 50%)'][index],
+                }}
+              />
+            ))}
+          </Box>
+        ) : (
+          <TokenImage
+            blockchainId={blockchainId}
+            address={addresses[0]}
+            data-testid={testId}
+            className={`${className}`}
+            alt={tooltip}
+            sx={iconSx}
+          />
         )}
-      />
-    </Tooltip>
-    {showChainIcon && <TokenChainIcon disabled={disabled} chain={blockchainId} />}
-    {badgeAddress && (
-      <TokenBadge tooltipTitle={badgeAddress} position="br">
-        <BadgeIcon
-          testId={`token-secondary-icon-${blockchainId}-${badgeAddress}`}
-          alt={blockchainId}
-          src={getTokenImageUrl(blockchainId, badgeAddress)}
-          disabled={disabled}
-          onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
-        />
-      </TokenBadge>
-    )}
-  </WithWrapper>
-)
+      </Tooltip>
+      {showChainIcon && <TokenChainIcon disabled={disabled} chain={blockchainId} />}
+      {badgeAddress && (
+        <TokenBadge tooltipTitle={badgeAddress} position="br">
+          <BadgeIcon
+            testId={`token-secondary-icon-${blockchainId}-${badgeAddress}`}
+            alt={blockchainId}
+            src={getTokenImageUrl(blockchainId, badgeAddress)}
+            disabled={disabled}
+            onError={({ currentTarget }) => (currentTarget.src = FallbackIcon)}
+          />
+        </TokenBadge>
+      )}
+    </WithWrapper>
+  )
+}

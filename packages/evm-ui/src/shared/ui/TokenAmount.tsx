@@ -16,8 +16,8 @@ type TokenAmountProps = {
   amount: number | undefined
   amountUsd: number | Nullish
   blockchainId?: string
-  /** Token contract address used to render the token icon. */
-  tokenAddress?: Address
+  /** Token contract address used to render the token icon, or the addresses of a token pair. */
+  tokenAddress?: Address | Address[]
   amountLoading?: boolean
   usdLoading?: boolean
   tooltipTitle?: ReactNode
@@ -53,7 +53,7 @@ export const TokenAmount = ({
     <Box sx={{ gridRow: horizontal ? 'auto' : 2 }}>
       <WithSkeleton loading={usdLoading}>
         <Tooltip title={formatNumber(amountUsd, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
-          <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
+          <Typography variant="tableCellSupport" color="textSecondary">
             {formatNumber(amountUsd, 'usd.notional')}
           </Typography>
         </Tooltip>
@@ -63,7 +63,7 @@ export const TokenAmount = ({
       <WithSkeleton loading={amountLoading}>
         <Tooltip title={tooltipTitle ?? ''} body={tooltipBody}>
           <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
-            <Typography variant="tableCellMRegular">{formatNumber(amount, { abbreviate, fallback: '-' })}</Typography>
+            <Typography variant="tableCellValue">{formatNumber(amount, { abbreviate, fallback: '-' })}</Typography>
             {blockchainId && tokenAddress && (
               <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={iconSize} />
             )}

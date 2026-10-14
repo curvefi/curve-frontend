@@ -1,11 +1,13 @@
-import { getMarketSections, type MarketSectionId } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
+import { MarketSectionId } from '@/llamalend/widgets/market-section-nav/types'
 import { oneOf } from '@cy/support/generators'
 import { mockLendingSnapshots, mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { LOAN_TEST_MARKETS } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llamalend-chart.mocks'
 import { clickTab } from '@cy/support/helpers/tabs'
 import type { AppRoute } from '@cy/support/routes'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { oneViewport } from '@cy/support/ui'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 
 const NAV_ID = 'detail-page-section-nav'
@@ -28,9 +30,9 @@ const headerBottom = (document: Document) =>
 const assertSectionReached = (section: MarketSectionId) =>
   cy.window().then(win =>
     cy
-      .get(`#${section}`, LOAD_TIMEOUT)
+      .get(`#${section}`, TIMEOUTS['ui.render'])
       .its(0)
-      .invoke(LOAD_TIMEOUT, 'getBoundingClientRect')
+      .invoke(TIMEOUTS['ui.render'], 'getBoundingClientRect')
       .should(({ top }) => {
         const obstruction = Math.max(
           headerBottom(win.document),
@@ -50,13 +52,13 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
 
   const visit = (hash = '') => {
     cy.visitWithoutTestConnector(`${PAGE.path.slice(1)}${hash}` as AppRoute)
-    cy.get(NAV, LOAD_TIMEOUT).should('be.visible')
+    cy.get(NAV, TIMEOUTS['ui.render']).should('be.visible')
     sections.forEach(section => {
-      cy.get(`#${section}`, LOAD_TIMEOUT).should('exist')
+      cy.get(`#${section}`, TIMEOUTS['ui.render']).should('exist')
     })
-    cy.get('[data-testid="no-position-disconnected"]', LOAD_TIMEOUT).should('exist')
+    cy.get('[data-testid="no-position-disconnected"]', TIMEOUTS['ui.render']).should('exist')
     // Loading tables can change section positions when their rows arrive.
-    cy.get('[data-testid^="data-table-loading-"]', API_LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid^="data-table-loading-"]', TIMEOUTS['prices.activity']).should('not.exist')
   }
 
   beforeEach(() => {
@@ -73,8 +75,8 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
     orderedSections.forEach(section => {
       cy.log(`Navigate to ${section}`)
       // Mobile navigation scrolls off-screen; sticky desktop/tablet tabs need no automatic scrolling.
-      clickTab(NAV_ID, section, LOAD_TIMEOUT, { scrollBehavior: BREAKPOINT === 'mobile' ? 'center' : false })
-      cy.location('hash', LOAD_TIMEOUT).should('equal', `#${section}`)
+      clickTab(NAV_ID, section, TIMEOUTS['ui.render'], { scrollBehavior: BREAKPOINT === 'mobile' ? 'center' : false })
+      cy.location('hash', TIMEOUTS['ui.navigation']).should('equal', `#${section}`)
       assertSectionReached(section)
     })
   })
@@ -93,6 +95,6 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
     visit()
     cy.location('hash').should('not.equal', `#${selectedSection}`)
     cy.get(`#${selectedSection}`).its(0).invoke('scrollIntoView')
-    cy.location('hash', LOAD_TIMEOUT).should('equal', `#${selectedSection}`)
+    cy.location('hash', TIMEOUTS['ui.navigation']).should('equal', `#${selectedSection}`)
   })
 })

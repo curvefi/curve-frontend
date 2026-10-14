@@ -1,6 +1,8 @@
-import { ActivityTable, MarketEventsExpandedPanel } from '@evm-ui/features/activity-table'
+import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { LLAMMA_EVENTS_BREAKDOWN } from '@evm-ui/features/activity-table/columns/llamma-events-columns'
+import { MarketEventsExpandedPanel } from '@evm-ui/features/activity-table/panels/MarketEventsExpandedPanel'
 import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
-import { LlammaActivityProps } from '.'
+import type { LlammaActivityProps } from './types'
 
 export const LlammaActivityEventsTable = ({
   chainId,
@@ -25,6 +27,7 @@ export const LlammaActivityEventsTable = ({
       emptyState={emptyState}
       errorState={errorState}
       expandedPanel={{ Body: MarketEventsExpandedPanel }}
+      rowBreakdown={LLAMMA_EVENTS_BREAKDOWN}
     />
   )
 }

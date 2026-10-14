@@ -26,7 +26,8 @@ import {
 } from '@cy/support/helpers/stellar/pool.helpers'
 import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import { fromEntries } from '@primitives/objects.utils'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 
@@ -47,13 +48,13 @@ describe('Stellar testnet deposit', () => {
         testnetConfig = config
         await connectTestWallet(config)
       })
-      .then(API_LOAD_TIMEOUT, async () => await deployTestPool(testnetConfig))
-      .then(LOAD_TIMEOUT, deployedPool => (pool = deployedPool))
+      .then(TIMEOUTS['stellar.deployPool'], async () => await deployTestPool(testnetConfig))
+      .then(TIMEOUTS['ui.render'], deployedPool => (pool = deployedPool))
   })
 
   beforeEach(() =>
     cy
-      .then(LOAD_TIMEOUT, async () => await fetchPoolState(pool, testnetConfig))
+      .then(TIMEOUTS['stellar.read'], async () => await fetchPoolState(pool, testnetConfig))
       .then(freshState => (state = freshState)),
   )
 
@@ -72,7 +73,7 @@ describe('Stellar testnet deposit', () => {
     coins.forEach(({ address }) => {
       poolInput(address).should('be.visible')
     })
-    cy.get('[data-testid="pool-deposit-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="pool-deposit-connect-wallet"]', TIMEOUTS['ui.render']).should('be.enabled')
     depositSubmit().should('not.exist')
     cy.get('[data-testid="pool-deposit-balanced-checkbox"]').should('be.visible')
   })
@@ -81,7 +82,7 @@ describe('Stellar testnet deposit', () => {
     mountDeposit()
     depositSubmit().should('be.disabled')
     writePoolForm(state.coins, zeroDeposit(state.coins))
-    cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
+    cy.get('[data-testid="loan-form-error-root"]', TIMEOUTS['ui.render'])
       .should('be.visible')
       .and('contain.text', 'Enter an amount to deposit')
     depositSubmit().should('be.disabled')
@@ -108,14 +109,14 @@ describe('Stellar testnet deposit', () => {
     expect(state.supply, 'new pool supply').to.equal('0')
     expect(state.lp.balance, 'new pool LP balance').to.equal('0')
     mountDeposit()
-    cy.get('[data-testid="pool-deposit-seed-alert"]', LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="pool-deposit-seed-alert"]', TIMEOUTS['ui.render']).should('be.visible')
     checkDepositDetail('seed-lock', state.config.seedLock)
     depositBalancedCheckbox().should('be.disabled')
     state.coins.forEach(({ address }) => {
       writePoolForm(state.coins, allCoinDeposit(state.coins))
       ;(['0', undefined] as const).forEach(amount => {
         writePoolAmount(address, amount)
-        cy.get('[data-testid="loan-form-error-root"]', LOAD_TIMEOUT)
+        cy.get('[data-testid="loan-form-error-root"]', TIMEOUTS['ui.render'])
           .should('be.visible')
           .and('contain.text', 'Seed deposits require a positive amount of every coin')
         depositSubmit().should('be.disabled')
@@ -135,7 +136,9 @@ describe('Stellar testnet deposit', () => {
   it('previews disconnected amounts', () => {
     mountDeposit({ connected: false })
     writePoolAmount(state.coins[0].address, '0.001')
-    getActionValue('pool-deposit-expected-lp').should(value => expect(Number(value)).to.be.greaterThan(0))
+    getActionValue('pool-deposit-expected-lp', 'stellar.simulation').should(value =>
+      expect(Number(value)).to.be.greaterThan(0),
+    )
     state.coins.forEach(({ address }) => {
       poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist')
     })

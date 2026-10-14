@@ -1,8 +1,6 @@
 import type { EChartsOption } from 'echarts-for-react'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export type { FetchedBandsBalances } from '@/llamalend/queries/bands/types'
-
 export type BandsChartToken = { symbol: string; address: string } | undefined
 
 /**

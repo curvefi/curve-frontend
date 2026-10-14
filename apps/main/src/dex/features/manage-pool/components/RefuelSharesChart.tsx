@@ -1,21 +1,15 @@
 import { useMemo, useState } from 'react'
 import { formatUnits, type Address } from 'viem'
 import { useReadContract } from 'wagmi'
-import {
-  ButtonExport,
-  ButtonFullscreen,
-  ChartFooter,
-  createChartOptions,
-  createPalette,
-  createTooltip,
-  DAYS,
-  EChartsCard,
-  timeToCategory,
-  type Period,
-} from '@/analytics/features/charts'
+import { ButtonExport } from '@/analytics/features/charts/components/ButtonExport'
+import { ButtonFullscreen } from '@/analytics/features/charts/components/ButtonFullscreen'
+import { EChartsCard } from '@/analytics/features/charts/components/EChartsCard'
+import { createChartOptions, createPalette, createTooltip, timeToCategory } from '@/analytics/features/charts/options'
+import { type Period, DAYS } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import Grid from '@mui/material/Grid'

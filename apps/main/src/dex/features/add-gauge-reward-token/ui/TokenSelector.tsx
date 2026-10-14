@@ -6,7 +6,7 @@ import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/
 import { useTokens } from '@/dex/queries/tokens.query'
 import { ChainId } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { TokenList } from '@evm-ui/features/select-token'
+import { TokenList } from '@evm-ui/features/select-token/ui/modal/TokenList'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'

@@ -4,7 +4,8 @@ import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneBool, oneOf, type TokenType } from '@cy/support/generators'
 import { getTableCellAssets, withFilters, withMultiSelectFilter } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
-import { assertInViewport, LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { assertInViewport, Breakpoint } from '@cy/support/ui'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { median } from '@primitives/array.utils'
 import { fromEntries, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -17,11 +18,11 @@ export function visitAndWait(
 ) {
   cy.viewport(width, height)
   if (oneBool()) {
-    cy.visit(path, { ...LOAD_TIMEOUT, ...options })
+    cy.visit(path, { ...TIMEOUTS['ui.pageLoad'], ...options })
   } else {
-    cy.visitWithoutTestConnector(path, { ...LOAD_TIMEOUT, ...options })
+    cy.visitWithoutTestConnector(path, { ...TIMEOUTS['ui.pageLoad'], ...options })
   }
-  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="data-table"]', TIMEOUTS['mock.prices.markets']).should('be.visible')
   cy.get('[data-testid="submit-error-report-button"]').should('not.exist')
 }
 
@@ -89,7 +90,10 @@ export function checkLineGraphColor(type: MarketRateType, color: string, height:
   cy.get(`[data-testid="line-graph-${type}"]:visible`).first().as('rateGraph')
   cy.get('@rateGraph').scrollIntoView({ offset: { top: -height / 2, left: 0 } }) // clear of the sticky table header.
   cy.get('@rateGraph').should(assertInViewport)
-  cy.get('@rateGraph').find('svg path[stroke]', LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
+  cy.get('@rateGraph')
+    .find('svg path[stroke]', TIMEOUTS['mock.prices.snapshots'])
+    .first()
+    .should('have.attr', 'stroke', color)
 }
 
 export function checkCoinSelection(

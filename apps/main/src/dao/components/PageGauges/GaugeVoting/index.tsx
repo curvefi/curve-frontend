@@ -1,5 +1,6 @@
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
-import { ConnectWalletPrompt, useCurve } from '@evm-ui/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { ConnectWalletPrompt } from '@evm-ui/features/connect-wallet/ui/ConnectWalletPrompt'
 import Box from '@mui/material/Box'
 import { Chain } from '@primitives/network.utils'
 import { CurrentVotes } from './CurrentVotes'

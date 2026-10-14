@@ -4,9 +4,10 @@ import {
   tokenMetric,
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
@@ -19,7 +20,7 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
-import { LiquidationThresholdTooltipContent } from './'
+import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 

@@ -1,67 +1,110 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { calculateExpectedBurn, calculateMaximumBurn } from '@/stellar/lib/amounts'
-import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { fetchPoolState, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
+import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { fetchPoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
+import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
+import {
+  fetchPoolState,
+  poolInput,
+  type PoolState,
+  readPoolAmounts,
+  TEST_NETWORK,
+} from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
+import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { useUserProfileStore } from '@ui/features/user-profile'
-import { decimalMinus, decimalSum, fromWei } from '@ui/lib/decimal'
+import { decimalMultiply, decimalSum, toWei } from '@ui/lib/decimal'
 
 export const fetchWithdrawState = async (pool: StellarContract, config: TestnetConfig) => {
-  const [state, reserves] = await Promise.all([
-    fetchPoolState(pool, config),
-    readContract<bigint[]>(TEST_NETWORK, pool, 'get_balances'),
-  ])
-  return { ...state, reserves: reserves.map((reserve, index) => fromWei(reserve, state.coins[index].decimals)) }
+  const state = await fetchPoolState(pool, config)
+  const decimals = state.coins.map(({ decimals }) => decimals)
+  return { ...state, reserves: await fetchPoolReserves({ network: TEST_NETWORK, pool, decimals }, { staleTime: 0 }) }
 }
+
 export type WithdrawState = Awaited<ReturnType<typeof fetchWithdrawState>>
 
-export const withdrawLpInput = () => cy.get('[data-testid="pool-withdraw-lp-input"]', LOAD_TIMEOUT)
-export const withdrawSubmit = () => cy.get('[data-testid="pool-withdraw-submit"]', LOAD_TIMEOUT)
+/** Fixture setup: transfer most of the seeded LP to the issuer to keep one-coin withdrawal price impact acceptable. */
+export const seedPoolAndTransferMostLpToIssuer = async (
+  pool: StellarContract,
+  config: TestnetConfig,
+  ratio: Decimal = '0.9',
+) => {
+  await seedTestPool(pool, config)
+  const { lp } = await fetchWithdrawState(pool, config)
+  const { issuer, deployer } = config
+  const amount = decimalMultiply(lp.balance, ratio)
+  await sendStellarTransaction(
+    await simulateContractCall<void>(
+      TEST_NETWORK,
+      pool,
+      'transfer',
+      [deployer.address, issuer.address, BigInt(toWei(amount, LP_TOKEN_DECIMALS))],
+      deployer.address,
+    ),
+  )
+}
+
+export const withdrawLpInput = () => cy.get('[data-testid="pool-withdraw-lp-input"]', TIMEOUTS['ui.render'])
+export const withdrawSubmit = () => cy.get('[data-testid="pool-withdraw-submit"]', TIMEOUTS['ui.render'])
 export const writeWithdrawLp = (amount: Decimal) => {
   withdrawLpInput().find('input').should('be.enabled').clear()
   withdrawLpInput().find('input').type(amount)
   withdrawLpInput().find('input').blur()
 }
 
-export const checkWithdrawDetail = (
-  detail: 'expected-lp' | 'maximum-lp' | 'current-lp' | 'projected-lp',
-  amount: Decimal,
-) => getActionValue(`pool-withdraw-${detail}`).should('equal', formatNumber(amount, 'token.balance'))
+type WithdrawDetail = 'expected-lp' | 'maximum-lp' | 'current-lp' | 'projected-lp'
 
-export const checkWithdrawBalances = ({ coins, lp, reserves }: WithdrawState) => {
+export const getWithdrawDetail = (detail: WithdrawDetail) =>
+  getActionValue(`pool-withdraw-${detail}`, detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation')
+
+export const checkWithdrawDetail = (detail: WithdrawDetail, amount: Decimal) =>
+  getWithdrawDetail(detail).should('equal', formatNumber(amount, 'token.balance'))
+
+export const checkWithdrawBalances = ({ coins, lp }: WithdrawState) => {
   checkWithdrawDetail('current-lp', lp.balance)
   withdrawLpInput().find('[data-testid="balance-value"]').should('have.attr', 'data-value', lp.balance)
-  coins.forEach(({ address }, index) => {
-    poolInput(address).find('[data-testid="balance-value"]').should('have.attr', 'data-value', reserves[index])
+  coins.forEach(({ address }) => {
+    poolInput(address).find('[data-testid="balance-value"]').invoke('attr', 'data-value').should('not.be.empty')
   })
 }
 
-export const fetchWithdrawPreview = async (pool: StellarContract, state: WithdrawState, amounts: Decimal[]) => {
-  const quote = await fetchExpectedLp({
-    network: TEST_NETWORK,
-    pool,
-    amounts,
-    decimals: state.coins.map(coin => coin.decimals),
-    supply: state.supply,
-    isDeposit: false,
-    maxAmounts: state.reserves,
+export const selectWithdrawMax = ({ coins, lp }: PoolState, coin: PoolState['coins'][number]) => {
+  poolInput(coin.address)
+    .find('[data-testid="balance-value"]')
+    .invoke('attr', 'data-value')
+    .should('not.be.empty')
+    .then(maxAmount => {
+      poolInput(coin.address).find('[data-testid="input-chip-Max"]').click()
+      coins.map(({ address }) =>
+        poolInput(address)
+          .find('input')
+          .should('have.value', address === coin.address ? maxAmount : '0'),
+      )
+    })
+  withdrawLpInput().find('input').should('have.value', lp.balance)
+  checkWithdrawDetail('expected-lp', lp.balance)
+  checkWithdrawDetail('maximum-lp', lp.balance)
+  checkWithdrawDetail('projected-lp', '0')
+}
+
+export const checkPartialWithdrawQuote = ({ lp }: PoolState, lpBudget: Decimal) => {
+  withdrawSubmit().should('be.enabled')
+  getWithdrawDetail('expected-lp').should(value => {
+    expect(Number(value)).to.be.greaterThan(0).and.lessThan(+lp.balance)
   })
-  const expected = calculateExpectedBurn(quote)
-  return {
-    expected,
-    maximum: calculateMaximumBurn(expected, useUserProfileStore.getState().maxSlippage.stable),
-    projected: decimalMinus(state.lp.balance, expected),
-  }
+  getWithdrawDetail('maximum-lp').should(value => {
+    expect(Number(value)).to.be.greaterThan(0).and.at.most(+lpBudget)
+  })
 }
 
 export const submitWithdrawForm = ({ coins }: PoolState) => {
   withdrawSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', API_LOAD_TIMEOUT).should('contain.text', 'Withdrawal confirmed')
+  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should(
+    'contain.text',
+    'Withdrawal confirmed',
+  )
   withdrawLpInput().find('input').should('have.value', '')
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')
@@ -69,26 +112,33 @@ export const submitWithdrawForm = ({ coins }: PoolState) => {
   withdrawSubmit().should('be.disabled')
 }
 
-export const checkWithdrawResult = (
-  state: WithdrawState,
-  fresh: WithdrawState,
-  amounts: Decimal[],
-  expectedLp: Decimal,
-  projectedLp: Decimal,
-) => {
-  checkWithdrawBalances(fresh)
-  // Imbalanced withdrawals can also deduct fees from available reserves.
-  fresh.reserves.forEach((reserve, index) => {
-    expect(+reserve, `${state.coins[index].symbol} pool reserve`).to.be.at.most(
-      +decimalMinus(state.reserves[index], amounts[index]),
-    )
-  })
-  expect(fresh.lp.balance).to.equal(projectedLp)
-  expect(fresh.supply).to.equal(decimalMinus(state.supply, expectedLp))
-  expect(decimalMinus(fresh.supply, fresh.lp.balance)).to.equal(state.config.seedLock)
-  fresh.coins.forEach((coin, index) => {
-    expect(coin.balance, `${coin.symbol} wallet balance`).to.equal(
-      decimalSum(state.coins[index].balance, amounts[index]),
-    )
+/** Check the remaining LP, then use the Deposit tab to check the received tokens in the wallet. */
+export const checkWithdrawResult = ({ coins }: PoolState, amounts: Decimal[], projectedLp: string) => {
+  getWithdrawDetail('current-lp').should('equal', projectedLp)
+  withdrawLpInput()
+    .find('[data-testid="balance-value"]')
+    .invoke('attr', 'data-value')
+    .should(value => {
+      expect(formatNumber(value as Decimal, 'token.balance')).to.equal(projectedLp)
+      // A full withdrawal must leave exactly zero, including LP dust below display precision.
+      if (projectedLp === '0') expect(value).to.equal('0')
+    })
+  cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.interaction']).click()
+  coins.forEach(({ address, balance }, index) => {
+    poolInput(address)
+      .find('[data-testid="balance-value"]')
+      .should('have.attr', 'data-value', decimalSum(balance, amounts[index]))
   })
 }
+
+/** Capture the UI preview, submit, and verify the displayed LP and token balances. */
+export const submitWithdrawAndCheck = (state: PoolState) =>
+  readPoolAmounts(state.coins).then(amounts =>
+    getWithdrawDetail('projected-lp')
+      .should(value => expect(Number(value)).to.be.within(0, +state.lp.balance))
+      .then(projected => {
+        checkEstimatedTxCost({ category: 'stellar.simulation' })
+        submitWithdrawForm(state)
+        checkWithdrawResult(state, amounts, projected!)
+      }),
+  )

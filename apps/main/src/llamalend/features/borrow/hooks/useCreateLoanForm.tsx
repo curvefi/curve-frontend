@@ -13,7 +13,7 @@ import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/h
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -90,39 +90,22 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        debt: values.debt,
-        maxDebt: values.maxDebt,
-        maxCollateral: values.maxCollateral,
-        range: values.range,
-        slippage: values.slippage,
-        leverageEnabled: values.leverageEnabled,
-        userCollateral: values.userCollateral,
-        userBorrowed: values.userBorrowed,
-        routeId: values.routeId,
-        leverageProviders,
-        slippageType: LEVERAGE,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        values.debt,
-        values.maxDebt,
-        values.maxCollateral,
-        values.range,
-        values.slippage,
-        values.leverageEnabled,
-        values.userCollateral,
-        values.userBorrowed,
-        values.routeId,
-        leverageProviders,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      debt: values.debt,
+      maxDebt: values.maxDebt,
+      maxCollateral: values.maxCollateral,
+      range: values.range,
+      slippage: values.slippage,
+      leverageEnabled: values.leverageEnabled,
+      userCollateral: values.userCollateral,
+      userBorrowed: values.userBorrowed,
+      routeId: values.routeId,
+      leverageProviders,
+      slippageType: LEVERAGE,
+    },
     userDefaultValues,
   )
 

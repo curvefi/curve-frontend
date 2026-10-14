@@ -27,7 +27,7 @@ type TokenCellProps = {
 
 /** Displays token information with copy-address and optional explorer interactions. */
 export const TokenCell = ({ source, address, explorerUrl, endAdornment, displayAddress }: TokenCellProps) => {
-  address = address ?? ('address' in source ? source.address : undefined)
+  address = address ?? ('address' in source && !Array.isArray(source.address) ? source.address : undefined)
   const copyAddress = useCopyToClipboard({ copyText: address })
 
   return (
@@ -41,7 +41,6 @@ export const TokenCell = ({ source, address, explorerUrl, endAdornment, displayA
         <Box sx={{ ...(endAdornment && { display: 'flex', alignItems: 'center', gap: Spacing.xs }) }}>
           <TokenInfo
             {...source}
-            boldPrimary
             secondary={
               !useIsMobile() &&
               displayAddress && (

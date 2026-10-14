@@ -5,9 +5,9 @@ import { formatHolderName } from '@/dao/utils'
 import {
   CHART_X_AXIS_LABEL_ROTATION,
   createChartSeriesColorScale,
-  EChartsBarChart,
   formatChartAxisNumber,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/chart.utils'
+import { EChartsBarChart } from '@evm-ui/shared/ui/Chart/EChartsBarChart'
 import { useTheme } from '@mui/material/styles'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 

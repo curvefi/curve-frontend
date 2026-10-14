@@ -1,6 +1,10 @@
-import { useMarketParameters } from '@/llamalend/queries/market'
+import { useMarketParameters } from '@/llamalend/queries/market/market-parameters.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { MaxLeverageTooltip, MaxReturnOnEquity, MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips'
+import { MaxLeverageTooltip } from '@/llamalend/widgets/tooltips/MaxLeverageTooltip'
+import {
+  MaxReturnOnEquityTooltipContent,
+  type MaxReturnOnEquity,
+} from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import type { Decimal } from '@primitives/decimal.utils'

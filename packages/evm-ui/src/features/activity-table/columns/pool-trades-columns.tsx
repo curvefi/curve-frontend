@@ -1,10 +1,11 @@
+import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
+import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { TimestampCell, AddressCell } from '../cells'
 import { ActivityUsdValue } from '../cells/ActivityUsdValue'
 import type { PoolTradeRow } from '../types'
 

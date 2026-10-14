@@ -3,7 +3,6 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { ExpandedState } from '@tanstack/react-table'
 import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
-import { POOL_COLUMNS, PoolColumnId } from '@ui/features/pool-list/columns'
 import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
 import { PoolsFilters } from '@ui/features/pool-list/filters/PoolsFilters'
 import { PoolsFiltersCollapsible } from '@ui/features/pool-list/filters/PoolsFiltersCollapsible'
@@ -27,11 +26,13 @@ import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
+import { POOL_COLUMNS } from './columns/column.definitions'
+import type { PoolColumnId } from './columns/columns.enum'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 
-type PoolsTableProps = PoolsTableData &
+export type PoolsTableProps = PoolsTableData &
   ConnectionProps &
   Pick<PoolTableMeta, 'addressDisplay' | 'crvToken'> & {
     userAddress: Address | undefined
@@ -98,7 +99,7 @@ export const PoolsTable = ({
     ...(isLite && { globalFilterFn }),
   })
 
-  const hasActiveFilters = !isLite && !!table.state.columnFilters.length
+  const hasActiveFilters = !!table.state.columnFilters.length || !!table.state.globalFilter
 
   return (
     <Stack>
@@ -116,9 +117,17 @@ export const PoolsTable = ({
         table={table}
         anchorRef={anchorRef}
         emptyState={{
-          title: t`Can't find what you're looking for?`,
-          description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
-          button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
+          ...(hasActiveFilters
+            ? {
+                title: t`Can't find what you're looking for?`,
+                description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
+                button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
+              }
+            : {
+                title: t`We couldn't find any results.`,
+                description: t`If this is unexpected, feel free to ask us on Telegram.`,
+                testId: 'dex-pool-empty-state-no-results',
+              }),
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}
