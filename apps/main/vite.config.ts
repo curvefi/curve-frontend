@@ -71,7 +71,7 @@ export default defineConfig(({ command }) => ({
         })
       : []),
   ],
-  optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
+  optimizeDeps: { include: ['styled-components', '@mui/material'] },
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, './src') },

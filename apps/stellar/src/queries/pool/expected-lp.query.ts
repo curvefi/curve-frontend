@@ -9,7 +9,7 @@ import {
 import type { Decimal } from '@primitives/decimal.utils'
 import { getSingleCoinWithdrawIndex } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { fromWei, toBigIntArray, toWeiArray } from '@ui/lib/decimal'
+import { decimalRound, fromWei, toBigIntArray, toWeiArray } from '@ui/lib/decimal'
 
 /** The imbalance quote excludes the smallest LP amount added by execution. */
 const calculateExpectedLp = (quote: Decimal): Decimal =>
@@ -30,6 +30,7 @@ export const {
     decimals,
     supply,
     isDeposit,
+    isBalanced,
     maxAmounts,
     lpAmount,
     maxLpAmount,
@@ -43,6 +44,7 @@ export const {
       decimals,
       supply,
       isDeposit,
+      isBalanced: isDeposit ? undefined : isBalanced,
       maxAmounts: isDeposit ? undefined : maxAmounts,
       lpAmount: isDeposit ? undefined : lpAmount,
       maxLpAmount: isDeposit ? undefined : maxLpAmount,
@@ -54,12 +56,13 @@ export const {
     amounts,
     decimals,
     isDeposit,
+    isBalanced,
     lpAmount,
     maxLpAmount,
     maxWithdrawIndex,
   }: ExpectedLpQuery): Promise<Decimal> => {
-    if (!isDeposit && getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }) != null) {
-      return lpAmount!
+    if (!isDeposit && (isBalanced || getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }) != null)) {
+      return decimalRound(lpAmount!, LP_TOKEN_DECIMALS)
     }
     const quote = fromWei(
       await readContract<bigint>(network, pool, 'calc_token_amount', [
