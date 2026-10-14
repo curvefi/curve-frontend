@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
-import type { LlamaApi } from '@evm-ui/features/connect-wallet'
 import { useLlamaQuery } from '@evm-ui/features/connect-wallet/lib/CurveContext'
+import type { LlamaApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'

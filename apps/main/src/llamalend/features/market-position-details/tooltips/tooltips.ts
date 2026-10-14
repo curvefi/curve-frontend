@@ -4,13 +4,6 @@ import { HealthTooltipContent } from './HealthTooltipContent'
 import { LegacyHealthTooltipContent } from './LegacyHealthTooltipContent'
 import { LiquidationBufferTooltipContent } from './LiquidationBufferTooltipContent'
 
-export * from './AmountSuppliedTooltipContent'
-export * from './HealthTooltipContent'
-export * from './LegacyHealthTooltipContent'
-export * from './LiquidationBufferTooltipContent'
-export * from './LiquidationThresholdMetricTooltipContent'
-export * from './VaultSharesTooltipContent'
-
 export const LEGACY_HEALTH_TOOLTIP = { title: t`Health`, body: createElement(LegacyHealthTooltipContent) } as const
 
 export const HEALTH_TOOLTIP = {

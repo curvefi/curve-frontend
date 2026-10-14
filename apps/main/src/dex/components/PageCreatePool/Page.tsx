@@ -1,5 +1,6 @@
 import { CreatePool as PoolCreation } from '@/dex/components/PageCreatePool/index'
-import { ConnectWalletPrompt, useCurve } from '@evm-ui/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { ConnectWalletPrompt } from '@evm-ui/features/connect-wallet/ui/ConnectWalletPrompt'
 import Box from '@mui/material/Box'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 

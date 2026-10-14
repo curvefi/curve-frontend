@@ -9,13 +9,12 @@ import { type TimeOption } from '@evm-ui/queries/validation/time-option-validati
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
-  ChartFooter,
   type ChartLineDashPattern,
-  EvmChartStateWrapper,
-  EChartsLineChart,
-  type LegendItem,
-  type LineSeriesConfig,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/chart.utils'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'

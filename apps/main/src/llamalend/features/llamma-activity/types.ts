@@ -2,9 +2,6 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Endpoint } from '@curvefi/prices-api/llamma'
 import type { Address, Token } from '@primitives/address.utils'
 
-export { LlammaActivityEventsTable } from './LlammaActivityEventsTable'
-export { LlammaActivityTradesTable } from './LlammaActivityTradesTable'
-
 export type LlammaActivityProps = {
   chainId: number
   blockchainId: Chain

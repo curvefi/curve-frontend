@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { Config } from 'wagmi'
-import { useCurve, type CurveApi } from '@evm-ui/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { fetchTokenBalance, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import type { Address } from '@primitives/address.utils'

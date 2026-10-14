@@ -1,7 +1,7 @@
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
 import { MarketTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/MarketTradesExpandedPanel'
 import { useLlammaActivityTradesConfig } from './hooks/useLlammaActivityTradesConfig'
-import { LlammaActivityProps } from './'
+import type { LlammaActivityProps } from './types'
 
 export type LlammaActivityTradesProps = Omit<LlammaActivityProps, 'borrowToken' | 'collateralToken'>
 

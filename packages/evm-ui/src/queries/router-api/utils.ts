@@ -7,8 +7,8 @@ import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, assert } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { fetchApiRoutes, getRouteById } from './router-api.query'
-import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
+import { fetchApiRoutes, getRouteById } from './query'
+import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './types'
 
 /**
  * Maximum router calldata accepted by ZapV2. Larger payloads exceed its fixed 9,600-byte buffer and deterministically

@@ -1,7 +1,6 @@
 import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
-import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,9 @@ import { Metric } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { AvailableLiquidityTooltip } from '../tooltips/AvailableLiquidityTooltip'
+import { MarketSupplyRateTooltipContent } from '../tooltips/MarketSupplyRateTooltipContent'
+import { TooltipOptions } from '../tooltips/tooltip.utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces

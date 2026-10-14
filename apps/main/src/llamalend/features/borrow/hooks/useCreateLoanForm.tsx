@@ -12,7 +12,7 @@ import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan
 import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'

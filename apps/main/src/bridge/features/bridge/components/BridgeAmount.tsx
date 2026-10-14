@@ -1,7 +1,8 @@
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { LargeTokenInput, HelperMessage, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
+import { LargeTokenInput, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 

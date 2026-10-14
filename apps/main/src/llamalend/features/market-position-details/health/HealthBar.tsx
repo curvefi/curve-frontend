@@ -4,7 +4,7 @@ import { LinearProgress } from '@ui/components/LinearProgress'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { HEALTH_THRESHOLDS, getHealthTrackColor } from '..'
+import { getHealthTrackColor, HEALTH_THRESHOLDS } from '../market-position-details.utils'
 import { clampPercentage } from './utils'
 
 const { Height } = SizesAndSpaces
