@@ -1,7 +1,7 @@
 import { getMarket, hasZapV2, isMintMarket } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
-import { parseMutationRoute } from '@evm-ui/queries/router-api'
+import { parseMutationRoute } from '@evm-ui/queries/router-api/utils'
 import type { Nullish } from '@primitives/objects.utils'
 
 /**

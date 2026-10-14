@@ -6,8 +6,9 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
-import { getHealthValueColor, HealthBar } from '..'
-import { LEGACY_HEALTH_TOOLTIP } from '../tooltips'
+import { getHealthValueColor } from '../market-position-details.utils'
+import { LEGACY_HEALTH_TOOLTIP } from '../tooltips/tooltips'
+import { HealthBar } from './HealthBar'
 
 const { Spacing } = SizesAndSpaces
 

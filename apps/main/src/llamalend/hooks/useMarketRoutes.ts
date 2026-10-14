@@ -5,13 +5,8 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import {
-  type GetGasCallback,
-  type RouteQueries,
-  type RouteResponse,
-  usePinRouteById,
-  useRouterQueries,
-} from '@evm-ui/queries/router-api'
+import { usePinRouteById, useRouterQueries, type GetGasCallback } from '@evm-ui/queries/router-api/query'
+import type { RouteQueries, RouteResponse } from '@evm-ui/queries/router-api/types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { fromWei } from '@evm-ui/utils'
 import type { NetworkDef } from '@legacy-ui/utils'

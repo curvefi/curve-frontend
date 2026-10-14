@@ -1,7 +1,7 @@
 import { MARKET_TITLES } from '@/llamalend/features/market-list/columns/column.titles'
 import { MarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips'
+import { MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'

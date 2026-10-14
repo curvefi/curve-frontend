@@ -1,10 +1,8 @@
 import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
-import {
-  MaxLeverageTooltip,
-  SolvencyTooltip,
-  TotalCollateralTooltip,
-  TooltipOptions,
-} from '@/llamalend/widgets/tooltips'
+import { MaxLeverageTooltip } from '@/llamalend/widgets/tooltips/MaxLeverageTooltip'
+import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
+import { TooltipOptions } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { TotalCollateralTooltip } from '@/llamalend/widgets/tooltips/TotalCollateralTooltip'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import { Metric } from '@ui/components/Metric'

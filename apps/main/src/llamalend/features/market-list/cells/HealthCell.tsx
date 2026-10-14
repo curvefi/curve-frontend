@@ -1,4 +1,3 @@
-import { HealthBar } from '@/llamalend/features/market-position-details'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { Stack } from '@mui/material'
@@ -10,6 +9,7 @@ import { TooltipDescription } from '@ui/components/TooltipComponents'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { HealthBar } from '../../market-position-details/health/HealthBar'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
