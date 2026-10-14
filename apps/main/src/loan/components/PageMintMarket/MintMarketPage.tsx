@@ -17,6 +17,7 @@ import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { useCurve } from '@evm-ui/features/connect-wallet'
+import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
@@ -38,6 +39,8 @@ export const MintMarketPage = () => {
   const chainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
+  const isMobileFormDrawer = useMarketMobileFormDrawer()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -86,7 +89,7 @@ export const MintMarketPage = () => {
     >
       <DetailPageLayout
         formTabs={{
-          placement: 'mobile-drawer',
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
           content:
             !isLoading &&
             !isLoanExistsLoading &&
@@ -102,7 +105,7 @@ export const MintMarketPage = () => {
             )),
         }}
         header={<MarketPageHeader isLoading={isLoading} />}
-        sections={MARKET_SECTIONS}
+        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners chainId={chainId} market={market} />
         <MarketSection id="position-details">

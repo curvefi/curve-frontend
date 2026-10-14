@@ -6,6 +6,7 @@ import {
   type MaxReturnOnEquity,
 } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -23,8 +24,8 @@ export const MarketLoanParameters = ({
   chainId: IChainId
   marketId: string | undefined
   apiMarket: QueryProp<LlamaMarket>
-  maxLeverage: QueryProp<{ value: Decimal } | { value: number }>
-  maxReturnOnEquity: QueryProp<MaxReturnOnEquity>
+  maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
+  maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }) => {
   const parameters = useMarketParameters({ chainId, marketId })
   return (
@@ -104,27 +105,31 @@ export const MarketLoanParameters = ({
 
       <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
 
-      <ActionInfo
-        testId="market-param-max-leverage"
-        label={t`Max leverage`}
-        labelTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> }}
-        value={mapQuery(maxLeverage, ({ value }) => formatNumber(value, 'multiplier'))}
-      />
-      <ActionInfo
-        testId="market-param-max-roe"
-        label={t`Max RoE`}
-        labelTooltip={{
-          title: t`Max RoE`,
-          body: (
-            <MaxReturnOnEquityTooltipContent
-              leverage={maxReturnOnEquity.data?.leverage}
-              collateralApy={maxReturnOnEquity.data?.collateralApy}
-              borrowApy={maxReturnOnEquity.data?.borrowApy}
-            />
-          ),
-        }}
-        value={mapQuery(maxReturnOnEquity, ({ value }) => formatNumber(value, 'percent.rate'))}
-      />
+      {useNewLlamaMarketDetailPage() && (
+        <>
+          <ActionInfo
+            testId="market-param-max-leverage"
+            label={t`Max leverage`}
+            labelTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> }}
+            value={maxLeverage && mapQuery(maxLeverage, ({ value }) => formatNumber(value, 'multiplier'))}
+          />
+          <ActionInfo
+            testId="market-param-max-roe"
+            label={t`Max RoE`}
+            labelTooltip={{
+              title: t`Max RoE`,
+              body: (
+                <MaxReturnOnEquityTooltipContent
+                  leverage={maxReturnOnEquity?.data?.leverage}
+                  collateralApy={maxReturnOnEquity?.data?.collateralApy}
+                  borrowApy={maxReturnOnEquity?.data?.borrowApy}
+                />
+              ),
+            }}
+            value={maxReturnOnEquity && mapQuery(maxReturnOnEquity, ({ value }) => formatNumber(value, 'percent.rate'))}
+          />
+        </>
+      )}
     </>
   )
 }

@@ -1,5 +1,6 @@
 import type { MaxReturnOnEquity } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
+import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -21,8 +22,8 @@ const MarketInfoSections = ({
   maxLeverage,
   maxReturnOnEquity,
 }: {
-  maxLeverage: QueryProp<{ value: Decimal } | { value: number }>
-  maxReturnOnEquity: QueryProp<MaxReturnOnEquity>
+  maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
+  maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }) => {
   const { chainId, blockchainId, marketId, marketType, market, apiMarket, tokens } = useMarketContext()
 
@@ -56,7 +57,7 @@ const MarketInfoSections = ({
   )
 }
 
-const MarketInfoContent = () => {
+const NewMarketInfoContent = () => {
   const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
   const { solvency, deployedDays, maxLeverage, maxReturnOnEquity } = useAdvancedDetailsData({
     chainId,
@@ -94,6 +95,6 @@ const MarketInfoContent = () => {
 
 export const MarketInfoLayout = () => (
   <Stack data-testid="market-advanced-details" sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-    <MarketInfoContent />
+    {useNewLlamaMarketDetailPage() ? <NewMarketInfoContent /> : <MarketInfoSections />}
   </Stack>
 )
