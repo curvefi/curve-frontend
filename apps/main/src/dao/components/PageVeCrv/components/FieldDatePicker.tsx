@@ -11,7 +11,7 @@ import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@primitives/date.utils'
-import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
 import { t } from '@ui/lib/i18n'
 
 const QUICK_ACTIONS: { unit: dayjs.ManipulateType | undefined; value: number | undefined; label: string }[] = [

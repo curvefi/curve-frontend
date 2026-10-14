@@ -21,11 +21,11 @@ export const UserPosition = () => {
     () => ({ blockchainId, chainId, poolId, tokens, tokenAddresses }),
     [blockchainId, chainId, poolId, tokens, tokenAddresses],
   )
-  const { hasPosition } = useLiquidityDetails(params)
+  const liquidityDetails = useLiquidityDetails(params)
   return (
-    hasPosition && (
+    liquidityDetails.hasPosition && (
       <Stack>
-        <Tabs menu={menu} params={params} ContentWrapper={Content} />
+        <Tabs menu={menu} params={{ blockchainId, ...liquidityDetails }} ContentWrapper={Content} />
       </Stack>
     )
   )

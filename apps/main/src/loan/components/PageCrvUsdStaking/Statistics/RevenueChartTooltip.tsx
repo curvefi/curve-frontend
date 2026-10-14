@@ -1,6 +1,10 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
-import { ChartTooltipShell, ChartTooltipSeriesGroup, ChartTooltipSeriesRow } from '@evm-ui/shared/ui/Chart'
+import {
+  ChartTooltipShell,
+  ChartTooltipSeriesGroup,
+  ChartTooltipSeriesRow,
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'

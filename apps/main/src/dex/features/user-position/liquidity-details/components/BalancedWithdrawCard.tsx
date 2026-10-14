@@ -5,11 +5,11 @@ import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
+import type { BalancedWithdrawRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -18,7 +18,7 @@ export const BalancedWithdrawCard = ({
   rows,
 }: {
   blockchainId: string
-  rows: LiquidityDetailsData['rows']
+  rows: QueryProp<BalancedWithdrawRow[]>
 }) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Balanced withdraw amount`} />

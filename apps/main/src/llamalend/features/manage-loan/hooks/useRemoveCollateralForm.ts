@@ -41,7 +41,7 @@ export const useRemoveCollateralForm = <
 
   const form = useForm<CollateralForm>(formOptions)
 
-  const values = form.watchValues()
+  const { values, formState } = form
 
   const [params, isDebouncing] = useFormDebounce(
     {
@@ -60,7 +60,6 @@ export const useRemoveCollateralForm = <
     onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
-  const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params)
 
   useCallbackSync(useRemoveCollateralPrices(params), onPricesUpdated)

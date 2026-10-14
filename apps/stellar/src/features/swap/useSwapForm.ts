@@ -42,8 +42,7 @@ export function useSwapForm(poolParams: PoolQuery) {
   const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const reserves = usePoolReserves({ ...poolParams, decimals: decimalsData })
   const form = useForm<SwapFormValues>(formOptions)
-  const { formState, reset } = form
-  const values = form.watchValues()
+  const { formState, reset, values } = form
   const { fromIndex, toIndex, editedSide } = values
   const maxAmount = maxAmounts?.[fromIndex]?.data
   const maxOutput = reserves.data?.[toIndex]

@@ -3,7 +3,7 @@ import { completeArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, maybes } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { scaleReserves } from '@ui/features/pool-forms/balanced-amounts.utils'
 import { getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
@@ -43,11 +43,11 @@ export function LiquidityProviderInput({
   supply: QueryProp<Decimal>
   lpTokenDecimals: number
 }) {
-  const { update, formState, watchValues } = useFormContext<WithdrawFormValues>()
+  const { update, formState, values } = useFormContext<WithdrawFormValues>()
   const { errors, touchedFields } = formState
   const queryState = combineQueryState(balance, reserves, supply, ...(decimals ?? []))
   const error = (touchedFields.lpAmount ? (errors.lpAmount ?? errors.maxLpAmount) : undefined) ?? queryState.error
-  const { lpAmount, slippage } = watchValues()
+  const { lpAmount, slippage } = values
   const tokenCount = tokens?.length
   const decimalsData = useMemo(() => completeArray(decimals?.map(q => q.data)), [decimals])
 

@@ -3,12 +3,12 @@ import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
 import { maybe } from '@primitives/objects.utils'
-import { flexRender, Subscribe, type Header, type RowData, type SortDirection } from '@tanstack/react-table'
+import { flexRender, type Header, type RowData, type SortDirection, Subscribe } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { Sortable } from '@ui/features/tables/Sortable'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
-import { type CurveTableFeatures, getAlignment, type DataTableSize, EXTRA_COLUMN_PADDING } from './data-table.utils'
+import { type CurveTableFeatures, type DataTableSize, EXTRA_COLUMN_PADDING, getAlignment } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -58,6 +58,7 @@ function useHeaderSx({
 
 type HeaderCellProps<TData extends RowData> = {
   header: Header<CurveTableFeatures, TData>
+  canSort: boolean | undefined
   isSticky: boolean
   width?: string | number
   size: DataTableSize
@@ -74,6 +75,7 @@ export const HeaderCell = <TData extends RowData>(props: HeaderCellProps<TData>)
 
 const HeaderCellContent = <TData extends RowData>({
   header,
+  canSort = false,
   isSticky,
   width,
   size,
@@ -81,13 +83,12 @@ const HeaderCellContent = <TData extends RowData>({
 }: HeaderCellProps<TData> & { sortDirection: SortDirection | undefined }) => {
   const { column } = header
   const { tooltip, type: columnType } = column.columnDef.meta ?? {}
-  const canSort = column.getCanSort()
   return (
     <Typography
       component="th"
       sx={useHeaderSx({ canSort, columnType, isSorted: !!sortDirection, isSticky, width, size })}
       colSpan={header.colSpan}
-      onClick={column.getToggleSortingHandler()}
+      onClick={e => column.getToggleSortingHandler()?.(e)}
       data-testid={`data-table-header-${column.id}`}
       variant="tableHeaderLabel"
     >

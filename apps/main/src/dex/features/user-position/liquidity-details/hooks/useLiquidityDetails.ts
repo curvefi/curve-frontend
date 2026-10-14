@@ -6,18 +6,26 @@ import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId } from '@/dex/types/main.types'
+import type { Address } from '@primitives/address.utils'
+import { Chain } from '@primitives/network.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalPercent, decimalSum } from '@ui/lib/decimal'
+import type { LiquidityDetailsData } from '../types'
 
 export type UseLiquidityDetailsParams = {
   chainId: ChainId
   poolId: string | undefined
   tokens: string[]
-  tokenAddresses: string[]
+  tokenAddresses: Address[]
 }
 
-export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }: UseLiquidityDetailsParams) => {
+export const useLiquidityDetails = ({
+  chainId,
+  poolId,
+  tokens,
+  tokenAddresses,
+}: UseLiquidityDetailsParams): LiquidityDetailsData => {
   const { address: userAddress } = useConnection()
   const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
 
@@ -35,16 +43,14 @@ export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }:
 
   const withdrawRows = useMemo(
     () =>
-      tokenAddresses.map((address, index) => ({
-        address,
-        amount: userBalances.data?.[index],
-        symbol: tokens[index] ?? '',
-      })),
+      tokenAddresses.map((address, index) => ({ address, amount: userBalances.data?.[index], symbol: tokens[index] })),
     [tokenAddresses, tokens, userBalances.data],
   )
 
   return {
     hasPosition,
+    // There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A.
+    showBoost: chainId === Number(Chain.Ethereum),
     marketParticipation: {
       stakedBalance: gaugeTokenBalance,
       stakedPercent,
@@ -56,5 +62,3 @@ export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }:
     rows: mapQuery(userBalances, () => withdrawRows),
   }
 }
-
-export type LiquidityDetailsData = ReturnType<typeof useLiquidityDetails>

@@ -13,25 +13,25 @@ import { Metrics } from './components/Metrics'
 import { PointsCampaigns } from './components/points-campaigns'
 import { PoolComposition } from './components/PoolComposition'
 import { YieldBreakdown } from './components/yield-breakdown'
+import { useMetrics } from './hooks/useMetrics'
+import { useYieldBreakdown } from './hooks/useYieldBreakdown'
 
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
 
 export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformation) => {
-  const { tokenAddressesAll } = usePoolContext()
-  const tokenAlert = useTokenAlert(tokenAddressesAll)
-
+  const { chainId, poolId, pool, tokenAddressesAll } = usePoolContext()
   return (
     <Stack sx={stackedCardHeadersSx}>
       <Card size="small">
         <CardHeader title={t`Pool Information`} />
         <CardContent component={Stack}>
-          <Metrics pricesApiPoolData={pricesApiPoolData} />
+          <Metrics {...useMetrics({ chainId, poolId, pricesApiPoolData })} />
         </CardContent>
       </Card>
       <PoolComposition pricesApiPoolData={pricesApiPoolData} />
-      <YieldBreakdown />
+      <YieldBreakdown {...useYieldBreakdown({ chainId, pool, poolId })} />
       <PointsCampaigns />
-      <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
+      <Alerts poolAlert={poolAlert} tokenAlert={useTokenAlert(tokenAddressesAll)} />
     </Stack>
   )
 }

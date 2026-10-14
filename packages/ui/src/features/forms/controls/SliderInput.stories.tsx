@@ -1,20 +1,16 @@
-import { useEffect, useState, ComponentProps } from 'react'
+import { type ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DecimalRangeValue, SliderInput } from '@ui/features/forms/controls/SliderInput'
+import { useResettableState } from '@ui/hooks/useResettableState'
 
 type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> & { value?: Decimal | DecimalRangeValue }
 
 const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }: SliderInputStoryProps) => {
-  const [value, setValue] = useState<Decimal | DecimalRangeValue>(initialValue)
-
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setValue(initialValue)
-  }, [initialValue])
+  const [value, setValue] = useResettableState<Decimal | DecimalRangeValue>(initialValue, [initialValue])
 
   return (
     <Box sx={{ width: '400px' }}>

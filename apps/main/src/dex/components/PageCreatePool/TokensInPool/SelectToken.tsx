@@ -27,7 +27,7 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Checkbox } from '@legacy-ui/Checkbox'
-import { Icon } from '@legacy-ui/Icon'
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import type { Address } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 import { WarningBox } from '../components/WarningBox'
@@ -87,8 +87,12 @@ export const SelectToken = ({
           <Box flex>
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
             {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) && removeToken && (
-              <RemoveButton variant="text" onClick={() => removeToken(TOKEN_C, tokensInPool)}>
-                <Icon name="RowDelete" size={16} aria-label={t`Remove token`} />
+              <RemoveButton
+                variant="text"
+                onClick={() => removeToken(TOKEN_C, tokensInPool)}
+                aria-label={t`Remove token`}
+              >
+                <DeleteOutlinedIcon sx={{ fontSize: 16 }} />
               </RemoveButton>
             )}
           </Box>
@@ -104,8 +108,12 @@ export const SelectToken = ({
             <p>{getTokenName(tokenId)}</p>
             <Box flex>
               <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
-              <RemoveButton variant="text" onClick={() => removeToken(tokenId, tokensInPool)}>
-                <Icon name="RowDelete" size={16} aria-label={t`Remove token`} />
+              <RemoveButton
+                variant="text"
+                onClick={() => removeToken(tokenId, tokensInPool)}
+                aria-label={t`Remove token`}
+              >
+                <DeleteOutlinedIcon sx={{ fontSize: 16 }} />
               </RemoveButton>
             </Box>
           </LabelRow>

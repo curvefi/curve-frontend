@@ -9,7 +9,6 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-legacy-ui.tsbuildinfo"
   },
   "dependencies": {
-    "@carbon/icons-react": "11.89.0",
     "@curvefi/evm-ui": "workspace:^",
     "react-aria": "3.52.1",
     "react-stately": "3.50.0",

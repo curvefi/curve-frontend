@@ -24,10 +24,11 @@ import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
-import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
-import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
+import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
+import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
+import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
@@ -134,10 +135,10 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, leverageProviders, ...values })
   const {
-    onSubmit: onMutationSubmit,
+    onSubmit: borrowMore,
     isPending: isBorrowing,
     error: borrowError,
   } = useBorrowMoreMutation({
@@ -155,48 +156,32 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     leverageEnabled: values.leverageEnabled,
   })
 
-  const { onSubmit: onDelegationSubmit, modal: delegationModal } = useControllerDelegation<BorrowMoreForm>({
-    chainId,
-    userAddress,
-    marketId,
-    approval: q(isControllerApproved),
-    handleFormSubmit: form.handleSubmit,
-    onSubmit: onMutationSubmit,
+  const { onSubmit, solvencyModal, solvencyAlert, delegationModal, ...formActions } = marketFormActions({
+    handleSubmit: form.handleSubmit,
+    lowSolvency: useLowSolvencyAction({ controllerAddress, marketType, chainId }),
+    delegation: useControllerDelegationAction({ chainId, userAddress, marketId, approval: q(isControllerApproved) }),
+    onConfirmed: borrowMore,
   })
 
-  const {
-    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
-    solvencyDisabledAlert,
-    onSubmit,
-    modal: solvencyModal,
-  } = useFormLowSolvency({
-    controllerAddress,
-    marketType,
-    chainId,
-    onSubmit: onDelegationSubmit,
-    handleFormSubmit: form.handleSubmit,
-  })
-
-  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyAlert
 
   useCallbackSync(useBorrowMorePrices(params), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
-  const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
     form,
     values,
     params,
     isPending,
-    isLoading: isPending || !market || isSolvencyLoading || isControllerApproved.isLoading,
+    isLoading: isPending || !market || formActions.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     userAddress,
     borrowToken,
     collateralToken,
-    error: isControllerApproved.error ?? borrowError ?? solvencyError,
+    error: formActions.error ?? borrowError,
     isApproved: q(useBorrowMoreIsApproved(params)),
     isControllerApproved: q(isControllerApproved),
     delegationModal,

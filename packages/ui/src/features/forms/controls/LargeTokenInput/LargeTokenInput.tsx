@@ -1,14 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import {
-  type ReactNode,
-  type Ref,
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useId,
-  useImperativeHandle,
-  useState,
-} from 'react'
+import { type ReactNode, type Ref, useCallback, useId, useImperativeHandle } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,6 +12,7 @@ import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
 import { chipSizeClickable } from '@ui/features/themes/components/mui-chip'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { useUnique } from '@ui/hooks/useUnique'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -191,7 +183,6 @@ export const LargeTokenInput = ({
   sliderProps,
   children,
 }: LargeTokenInputProps) => {
-  const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const { data: externalBalance, error } = toQuery(balanceProp)
   const [balance, setBalance] = useUnique({
     defaultValue: externalBalance,
@@ -204,6 +195,10 @@ export const LargeTokenInput = ({
   const onMax = maxBalance?.onMax
   const showChips = !!chips?.length
   const { data: maxBalanceValue, isLoading: maxBalanceLoading, error: maxBalanceError } = toQuery(maxBalance?.balance)
+  const [percentage, setPercentage] = useResettableState(
+    () => (maxBalanceValue && balance ? calculateNewPercentage(balance, maxBalanceValue) : undefined),
+    [maxBalanceValue],
+  )
   const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
   const chipDisabled = !!disabled || maxBalanceLoading
   const isError = !!maxBalanceError || !!error
@@ -213,7 +208,7 @@ export const LargeTokenInput = ({
       setPercentage(newPercentage)
       if (maxBalanceValue != null) setBalance(maybe(newPercentage, p => calculateNewBalance(maxBalanceValue, p)))
     },
-    [maxBalanceValue, setBalance],
+    [maxBalanceValue, setBalance, setPercentage],
   )
 
   const handleBalanceChange = useCallback(
@@ -223,21 +218,13 @@ export const LargeTokenInput = ({
       setBalance(decimalBalance)
       setPercentage(maybes([decimalBalance, maxBalanceValue], calculateNewPercentage))
     },
-    [maxBalanceValue, setBalance],
+    [maxBalanceValue, setBalance, setPercentage],
   )
-
-  const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
-  })
-
-  /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
-  useEffect(() => updatePercentageOnNewMaxBalance(maxBalanceValue), [maxBalanceValue])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)
     setBalance(undefined)
-  }, [setBalance])
+  }, [setBalance, setPercentage])
 
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])

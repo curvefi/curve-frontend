@@ -1,6 +1,7 @@
 import { styled } from 'styled-components'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
+import { ArrowDownIcon } from '@ui/icons/ArrowDownIcon'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
 
 type TableHeaderProps<T> = {
   columns: { key: keyof T; label: string; disabled?: boolean }[]
@@ -32,7 +33,12 @@ export const TableHeader = <T,>({
         >
           {column.label}
           {sortBy.key === column.key && (
-            <StyledIcon size={16} name={sortBy.order === 'asc' ? 'ArrowUp' : 'ArrowDown'} />
+            <RotatableIcon
+              icon={ArrowDownIcon}
+              rotated={sortBy.order === 'asc'}
+              fontSize={16}
+              sx={{ margin: 'auto 0 auto var(--spacing-1)' }}
+            />
           )}
         </TableTitleButton>
       ))}
@@ -83,8 +89,4 @@ const TableTitleButton = styled(Button)`
   &:disabled {
     color: var(--page-text-color);
   }
-`
-
-const StyledIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-1);
 `

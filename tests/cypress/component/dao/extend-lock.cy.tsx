@@ -3,7 +3,7 @@ import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTes
 import { createExtendLockScenario } from '@cy/support/helpers/dao/mocks/extend-lock.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
 import { setGasInfo } from '@cy/support/helpers/llamalend/test-context.helpers'
-import type { CurveApi } from '@evm-ui/features/connect-wallet'
+import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 
 const CHAIN_ID = 1
 const TEST_NOW = Date.UTC(2026, 7, 31, 12)

@@ -36,7 +36,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatCappedRateValue, aprToApy } from '@ui/lib/rates.utils'
-import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
+import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
+import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 

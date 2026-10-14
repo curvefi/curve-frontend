@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart'
+import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import Box from '@mui/material/Box'

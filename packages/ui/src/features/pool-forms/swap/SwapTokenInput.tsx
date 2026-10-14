@@ -1,6 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { SwapTokenSelector } from '@ui/features/pool-forms/swap/SwapTokenSelector'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -27,9 +27,12 @@ export const SwapTokenInput = ({
 }) => {
   const { amountField: name, amountIndexField, calculatedIndexField } = SWAP_FIELDS[side]
   const { label, testId, selectorLabel } = INPUT_BY_SIDE[side]
-  const values = form.watchValues()
+  const {
+    values,
+    formState: { errors },
+  } = form
   const { data: token, error: tokenError } = tokens?.[values[amountIndexField]] ?? {}
-  const error = (form.isTouched('inputAmount', 'outputAmount') ? form.formState.errors[name] : undefined) ?? tokenError
+  const error = (form.isTouched('inputAmount', 'outputAmount') ? errors[name] : undefined) ?? tokenError
 
   return (
     <LargeTokenInput

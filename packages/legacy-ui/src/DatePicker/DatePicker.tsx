@@ -32,10 +32,11 @@ import { dayjs } from '@evm-ui/utils/dayjs'
 import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { InputProvider } from '@legacy-ui/InputComp'
 import { Chip } from '@legacy-ui/Typography/Chip'
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details
@@ -93,10 +94,10 @@ function Calendar<T extends DateValue>(props: AriaCalendarProps<T>) {
         <CalendarTitle>{title}</CalendarTitle>
         <Box flex>
           <Button {...prevButtonProps}>
-            <Icon name="ChevronLeft" size={16} />
+            <ChevronDownIcon sx={{ fontSize: 16, rotate: '90deg' }} />
           </Button>
           <Button {...nextButtonProps}>
-            <Icon name="ChevronRight" size={16} />
+            <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} />
           </Button>
         </Box>
       </CalendarHeader>
@@ -200,7 +201,7 @@ export function DatePicker<T extends DateValue>(
             <DateField {...dateFieldProps} state={dateFieldState} />
           </Box>
           <Button {...buttonProps} isDisabled={props.isDisabled}>
-            <Icon name="Calendar" size={24} />
+            <CalendarTodayOutlinedIcon sx={{ fontSize: 24 }} />
           </Button>
         </Box>
 

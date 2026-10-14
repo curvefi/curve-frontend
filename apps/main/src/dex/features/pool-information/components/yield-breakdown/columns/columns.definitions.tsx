@@ -1,28 +1,16 @@
-import { getAddress } from 'viem'
-import { shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenCell } from '@ui/components/TokenCell'
-import { TokenInfo, type TokenInfoProps } from '@ui/components/TokenInfo'
-import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
+import { TokenInfo } from '@ui/components/TokenInfo'
+import { Tooltip } from '@ui/components/Tooltip'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
+import type { YieldBreakdownRow } from '../types'
 import { YieldBreakdownColumnId } from './columns.enum'
-
-export type YieldBreakdownRow = {
-  source: TokenInfoProps
-  address?: Address
-  explorerUrl?: string
-  price?: number
-  rate?: number
-  maxBoostRate?: number
-  rateTooltip?: Pick<TooltipProps, 'title' | 'body' | 'clickable'>
-}
 
 const columnHelper = createAppColumnHelper<YieldBreakdownRow>()
 
@@ -45,8 +33,8 @@ export const YIELD_BREAKDOWN_COLUMNS = columnHelper.columns([
     cell: ({ getValue, row }) => (
       <TokenCell
         source={getValue()}
-        address={maybe(row.original.address, getAddress)}
-        displayAddress={maybe(row.original.address, shortenAddress)}
+        address={row.original.address}
+        displayAddress={row.original.displayAddress}
         explorerUrl={row.original.explorerUrl}
       />
     ),

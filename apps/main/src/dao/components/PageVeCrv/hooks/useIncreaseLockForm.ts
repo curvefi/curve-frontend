@@ -24,8 +24,7 @@ const userDefaultValues = { lockedAmount: undefined }
 
 export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
   const form = useForm<IncreaseLockFormValues>({ defaultValues, validation: increaseLockFormValidationSuite })
-  const { update } = form
-  const values = form.watchValues()
+  const { update, values } = form
   const { address: userAddress } = useConnection()
   const crv = useLockerCrv({ chainId, userAddress })
   const currentLock = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })

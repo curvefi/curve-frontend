@@ -4,7 +4,7 @@ import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/bor
 import { pickMaxDebtQuery } from '@/llamalend/queries/llamma-query.helpers'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
-import { getExpectedFn } from '@evm-ui/queries/router-api'
+import { getExpectedFn } from '@evm-ui/queries/router-api/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
