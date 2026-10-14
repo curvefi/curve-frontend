@@ -24,9 +24,10 @@ export const useWallet = () => {
   // disconnect by calling disconnect on all connectors, since we don't know which one is connected.
   // this is a workaround the fact that multiInjectedProviderDiscovery auto-connects to the next available injected provider,
   // which is not what we want when disconnecting.
-  const disconnect = useCallback(async () => {
-    await Promise.all(connectors.map(connector => connector.disconnect()))
-  }, [connectors])
+  const disconnect = useCallback(
+    async () => await Promise.all(connectors.map(connector => connector.disconnect())),
+    [connectors],
+  )
 
   // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(
