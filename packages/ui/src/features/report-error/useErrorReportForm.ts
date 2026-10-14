@@ -21,7 +21,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
   })
   return {
     form,
-    values: form.watchValues(),
+    values: form.values,
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     onSubmit: form.handleSubmit(async formData => {
       const body = {

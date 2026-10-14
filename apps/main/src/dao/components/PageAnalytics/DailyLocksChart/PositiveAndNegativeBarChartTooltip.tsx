@@ -1,5 +1,9 @@
 import type { VeCrvLock } from '@/dao/entities/vecrv-locks'
-import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
+import {
+  ChartTooltipDataRow,
+  ChartTooltipSeriesGroup,
+  ChartTooltipShell,
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'

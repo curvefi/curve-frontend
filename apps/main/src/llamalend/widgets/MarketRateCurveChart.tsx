@@ -3,17 +3,12 @@ import { useMemo, useState } from 'react'
 import { getUtilizationPercent } from '@/llamalend/llama.utils'
 import { TotalDebtMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
-import { TooltipOptions, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import {
-  CHART_LINE_DASH_PATTERNS,
-  ChartFooter,
-  type ChartLineDashPattern,
-  EChartsLineChart,
-  EvmChartStateWrapper,
-  type LegendItem,
-  type LineSeriesConfig,
-} from '@evm-ui/shared/ui/Chart'
+import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { MarketType } from '@evm-ui/types/market'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -32,6 +27,8 @@ import { useMarketContext } from '../features/market-context'
 import { useMarketCapAndAvailable } from '../queries/market/market-cap-and-available.query'
 import { useRateCurve } from '../queries/market/market-rate-curve.query'
 import { useMarketTotalDebt } from '../queries/market/market-total-debt.query'
+import { TooltipOptions } from './tooltips/tooltip.utils'
+import { UtilizationTooltip } from './tooltips/UtilizationTooltip'
 
 const { Spacing, Height } = SizesAndSpaces
 

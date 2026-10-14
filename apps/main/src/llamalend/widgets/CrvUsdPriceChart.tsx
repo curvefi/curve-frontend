@@ -7,15 +7,14 @@ import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-op
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
-  ChartFooter,
   type ChartLineDashPattern,
-  EChartsLineChart,
-  EvmChartStateWrapper,
   formatChartAxisNumber,
-  type LegendItem,
-  type LineSeriesConfig,
-  SelectTimeOption,
-} from '@evm-ui/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart/chart.utils'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'

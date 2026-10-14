@@ -17,7 +17,7 @@ import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validat
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
@@ -41,32 +41,18 @@ const useRepayParams = ({
   routeId,
 }: RepayFormParams) =>
   useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral,
-        userBorrowed,
-        maxStateCollateral,
-        maxBorrowed,
-        isFull,
-        slippage,
-        routeId,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral,
-        userBorrowed,
-        maxStateCollateral,
-        maxBorrowed,
-        isFull,
-        slippage,
-        routeId,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userBorrowed,
+      maxStateCollateral,
+      maxBorrowed,
+      isFull,
+      slippage,
+      routeId,
+    },
     userDefaultValues,
   )
 
@@ -110,7 +96,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
@@ -141,7 +127,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { data: isAvailable } = useRepayIsAvailable(params)
   const { isFull, max } = useMaxRepayTokenValues({ market, borrowTokenAddress: borrowToken?.address, params, form })
 
-  const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
     form,

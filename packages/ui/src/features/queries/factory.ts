@@ -1,3 +1,4 @@
+import { isUndefined, omitBy } from 'lodash'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
@@ -75,7 +76,7 @@ export function queryFactory<
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
-  queryFn,
+  queryFn: query,
   queryKey,
   category,
   validationSuite,
@@ -95,13 +96,15 @@ export function queryFactory<
   keepPreviousData?: boolean
 }) {
   const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
+
+  const queryFn = async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
+    await runQuery(queryKey, query, disableLog)
+
   const getQueryOptions = (params: TParams, enabled = true) =>
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
       queryKey: internalKey(params),
-      queryFn: async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
-        await runQuery(queryKey, queryFn, disableLog),
+      queryFn,
       enabled:
         enabled &&
         isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)) &&
@@ -139,8 +142,11 @@ export function queryFactory<
         staleTime: 0,
       }),
     useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
-    /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
-    invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: internalKey(params) }),
+    /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */
+    invalidate: (params: TParams, { partial = false } = {}) =>
+      queryClient.invalidateQueries({
+        queryKey: partial ? [omitBy(queryKey(params), isUndefined)] : internalKey(params),
+      }),
     /** Removes all the cached data for the query **/
     reset: (params: TParams) => queryClient.resetQueries({ queryKey: internalKey(params) }),
   } as const

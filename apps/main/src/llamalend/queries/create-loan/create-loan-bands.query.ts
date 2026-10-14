@@ -1,5 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { parseRoute as parseRoute } from '@evm-ui/queries/router-api'
+import { parseRoute as parseRoute } from '@evm-ui/queries/router-api/utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { Range } from '@ui/features/queries/util'

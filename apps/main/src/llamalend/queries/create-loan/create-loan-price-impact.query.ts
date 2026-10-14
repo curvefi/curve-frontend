@@ -1,5 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { parseRoute as parseRoute } from '@evm-ui/queries/router-api'
+import { parseRoute as parseRoute } from '@evm-ui/queries/router-api/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'

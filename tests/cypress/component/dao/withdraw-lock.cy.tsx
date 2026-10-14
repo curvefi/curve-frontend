@@ -3,7 +3,7 @@ import { CurveComponentTestWrapper } from '@cy/support/helpers/CurveComponentTes
 import { createWithdrawLockScenario } from '@cy/support/helpers/dao/mocks/withdraw-lock.mocks'
 import { setupMockedDaoComponentTest } from '@cy/support/helpers/dao/test-context.helpers'
 import { setGasInfo } from '@cy/support/helpers/llamalend/test-context.helpers'
-import type { CurveApi } from '@evm-ui/features/connect-wallet'
+import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { dayjs } from '@evm-ui/utils/dayjs'
 
 const CHAIN_ID = 1

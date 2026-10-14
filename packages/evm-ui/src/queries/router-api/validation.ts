@@ -8,7 +8,7 @@ import { ExternalRouteProviders, type RouteProvider, RouteProviders } from '@pri
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
-import type { RoutesQuery } from './router-api.types'
+import type { RoutesQuery } from './types'
 
 const validateRouter = ({
   router,

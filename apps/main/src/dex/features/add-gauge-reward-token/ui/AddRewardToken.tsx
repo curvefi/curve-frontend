@@ -38,7 +38,7 @@ export const AddRewardToken = () => {
 
   useFormSync(form, { distributorId: userAddress }, !!userAddress && !form.isTouched('distributorId'))
 
-  const gas = useAddRewardTokenEstimateGas({ chainId, poolId, ...form.watchValues() }, isValid)
+  const gas = useAddRewardTokenEstimateGas({ chainId, poolId, ...form.values }, isValid)
 
   const {
     onSubmit,

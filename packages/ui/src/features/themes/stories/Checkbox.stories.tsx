@@ -1,38 +1,34 @@
-import { useState, useEffect, ChangeEvent } from 'react'
+import { useState } from 'react'
 import { fn } from 'storybook/test'
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useResettableState } from '@ui/hooks/useResettableState'
 
 const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
-  const [state, setState] = useState({ option1: checked ?? false, option2: false })
-
-  // Update internal state when the checked prop changes
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setState(prev => ({ ...prev, option1: checked ?? false }))
-  }, [checked])
-
-  const handleChange = (option: string) => (event: ChangeEvent<HTMLInputElement>) => {
-    const newState = { ...state, [option]: event.target.checked }
-    setState(newState)
-
-    if (option === 'option1') {
-      onChange?.(event, event.target.checked)
-    }
-  }
+  const [option1, setOption1] = useResettableState(checked ?? false, [checked])
+  const [option2, setOption2] = useState(false)
 
   return (
     <FormControl component="fieldset">
       <FormGroup>
         <FormControlLabel
-          control={<Checkbox {...props} checked={state.option1} onChange={handleChange('option1')} />}
+          control={
+            <Checkbox
+              {...props}
+              checked={option1}
+              onChange={event => {
+                setOption1(event.target.checked)
+                onChange?.(event, event.target.checked)
+              }}
+            />
+          }
           label="Option 1"
         />
         <FormControlLabel
-          control={<Checkbox {...props} checked={state.option2} onChange={handleChange('option2')} />}
+          control={<Checkbox {...props} checked={option2} onChange={event => setOption2(event.target.checked)} />}
           label="Option 2"
         />
       </FormGroup>

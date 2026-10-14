@@ -4,8 +4,10 @@ import { t } from '@ui/lib/i18n'
 import type { PoolDepositForm } from '../pool-form.utils'
 
 export const WrappedDepositCheckbox = ({ disabled }: { disabled: boolean }) => {
-  const { watchValue, update } = useFormContext<PoolDepositForm>()
-  const isWrapped = watchValue('isWrapped')
+  const {
+    values: { isWrapped },
+    update,
+  } = useFormContext<PoolDepositForm>()
   return (
     <CheckboxField
       label={t`Deposit Wrapped`}

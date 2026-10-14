@@ -6,7 +6,7 @@ import type { Address } from '@primitives/address.utils'
 import { BannerProps } from '@ui/features/banners/Banner'
 
 export type { Provider } from '@evm-ui/utils/ethers'
-export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
+export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet/lib/types'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName

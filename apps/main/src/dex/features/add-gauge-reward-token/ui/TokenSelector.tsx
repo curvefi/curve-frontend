@@ -34,7 +34,10 @@ export const TokenSelector = ({
 }) => {
   const { curveApi } = useCurve()
   const crvAddress = maybe(curveApi?.getNetworkConstants()?.ALIASES?.crv, crv => getAddress(crv))
-  const { update: updateForm, watchValue } = useFormContext<AddRewardFormValues>()
+  const {
+    update: updateForm,
+    values: { rewardTokenId },
+  } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
   const [isOpen, openModal, closeModal] = useSwitch()
 
@@ -63,7 +66,6 @@ export const TokenSelector = ({
     ),
   )
 
-  const rewardTokenId = watchValue('rewardTokenId')
   const selectedToken = filteredTokens.find(x => x.address === rewardTokenId)
 
   useEffect(() => {

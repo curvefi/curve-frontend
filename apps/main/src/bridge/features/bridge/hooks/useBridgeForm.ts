@@ -36,10 +36,7 @@ const useBridgeParams = ({
   userAddress,
   amount,
 }: BridgeForm & { chainId: number | undefined; userAddress: Address | undefined }) =>
-  useFormDebounce(
-    useMemo(() => ({ chainId, userAddress, amount }), [chainId, userAddress, amount]),
-    bridgeQueryDefaults,
-  )
+  useFormDebounce({ chainId, userAddress, amount }, bridgeQueryDefaults)
 
 const userDefaultValues = { fromChainId: undefined, amount: undefined }
 
@@ -51,7 +48,7 @@ const formProps = { validation: bridgeFormValidationSuite, defaultValues: emptyB
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, NetworkDef> }) => {
   const form = useForm<BridgeForm>(formProps)
 
-  const values = form.watchValues()
+  const { values, formState } = form
 
   const { address: userAddress } = useConnection()
   const [params, isDebouncing] = useBridgeParams({ chainId, userAddress, ...values })
@@ -111,7 +108,6 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
   useFormSync(form, { fromChainId: network?.chainId ?? supportedNetworks[0]?.chainId })
 
   // Form errors
-  const { formState } = form
   const formErrors = form.formState.visibleErrors
   const amountError = formErrors.find(([field]) => field === 'amount')?.[1]
 
