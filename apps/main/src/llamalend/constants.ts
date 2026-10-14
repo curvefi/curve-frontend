@@ -21,7 +21,7 @@ export const MarketTypeSuffix: Record<MarketType, string> = {
 
 export const BORROW_RATE_TITLE = t`Borrow APR`
 export const NET_BORROW_RATE_TITLE = t`Est. Net Borrow APR`
-export const COLLATERAL_YIELD_TITLE = t`Collateral Yield`
+export const COLLATERAL_YIELD_TITLE = t`Collateral Yield APR`
 export const SUPPLY_RATE_TITLE = t`Supply APY`
 export const NET_SUPPLY_RATE_TITLE = t`Net Supply APY`
 export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
