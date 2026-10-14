@@ -22,8 +22,11 @@ import { TvlCell } from '../cells/TvlCell'
 import { UtilizationCell } from '../cells/UtilizationCell'
 import { BorrowAprHeaderTooltipContent } from '../header-tooltips/BorrowAprHeaderTooltipContent'
 import { CollateralBorrowHeaderTooltipContent } from '../header-tooltips/CollateralBorrowHeaderTooltipContent'
-import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderTooltipContent'
 import { LiquidityUsdHeaderTooltipContent } from '../header-tooltips/LiquidityUsdHeaderTooltipContent'
+import {
+  SupplyRateHeaderTooltipContent,
+  NetSupplyRateHeaderTooltipContent,
+} from '../header-tooltips/SupplyRateHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationHeaderTooltipContent'
 import {
@@ -98,6 +101,17 @@ export const MARKET_COLUMNS = columnHelper.columns([
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
+  columnHelper.accessor('rates.borrowTotalApr', {
+    id: MarketColumnId.NetBorrowRate,
+    header: MARKET_TITLES[MarketColumnId.NetBorrowRate],
+    cell: RateCell,
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <BorrowAprHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor(({ assets }) => assets.collateral.rebasingYieldApr ?? undefined, {
     id: MarketColumnId.CollateralYield,
     header: MARKET_TITLES[MarketColumnId.CollateralYield],
@@ -119,13 +133,23 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
-    id: MarketColumnId.LendRate,
-    header: MARKET_TITLES[MarketColumnId.LendRate],
+  columnHelper.accessor('rates.lendApy', {
+    id: MarketColumnId.SupplyRate,
+    header: MARKET_TITLES[MarketColumnId.SupplyRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.LendRate], body: <LendRateHeaderTooltipContent /> },
+      tooltip: { title: MARKET_TITLES[MarketColumnId.SupplyRate], body: <SupplyRateHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
+    id: MarketColumnId.NetSupplyRate,
+    header: MARKET_TITLES[MarketColumnId.NetSupplyRate],
+    cell: RateCell,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.NetSupplyRate], body: <NetSupplyRateHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),

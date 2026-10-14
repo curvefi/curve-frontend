@@ -35,6 +35,7 @@ import { QueryProp, toQuery } from '@ui/features/queries/util'
 import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
+import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
 import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
@@ -489,6 +490,12 @@ export const formatCollateralNotional = (
     collateral.value && +collateral.value && collateral.symbol && formatToken(collateral.value, collateral.symbol),
     borrow?.value && +borrow?.value && borrow.symbol && formatToken(borrow.value, borrow.symbol),
   ).join(' + ')
+
+/** Second line under a borrow APR, e.g. "Est. net -0.59%". */
+export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. net ${formatCappedRatePercent(rate)}`
+
+/** Second line under a supply APY with the net supply APY, labelled "Total", e.g. "Total 3.43%". */
+export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
 
 /** The estimated net borrow APR differs from the borrow APR only when there are extra rewards or collateral yield. */
 export const hasEstimatedNetBorrowApr = ({

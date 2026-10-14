@@ -1,5 +1,5 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
-import { tokenMetric } from '@/llamalend/llama.utils'
+import { formatEstimatedNetBorrowRate, formatNetSupplyRate, tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils/average-categories'
@@ -32,17 +32,24 @@ const POSITION_METRIC_CATEGORY = 'llamalend.marketListPosition'
 
 const ratesConfig: Record<
   MarketRateType,
-  { tooltipComponent: FunctionComponent<RateTooltipProps>; title: string; rateKey: keyof LlamaMarket['rates'] }
+  {
+    tooltipComponent: FunctionComponent<RateTooltipProps>
+    title: string
+    rateKey: keyof LlamaMarket['rates']
+    getSubRate: (rates: LlamaMarket['rates']) => string
+  }
 > = {
   [MarketRateType.Supply]: {
     tooltipComponent: SupplyRateLendTooltip,
-    title: MARKET_TITLES[MarketColumnId.LendRate],
-    rateKey: 'lendTotalApyMinBoosted',
+    title: MARKET_TITLES[MarketColumnId.SupplyRate],
+    rateKey: 'lendApy',
+    getSubRate: ({ lendTotalApyMinBoosted }) => formatNetSupplyRate(lendTotalApyMinBoosted),
   },
   [MarketRateType.Borrow]: {
     tooltipComponent: BorrowRateTooltip,
     title: MARKET_TITLES[MarketColumnId.BorrowRate],
     rateKey: 'borrowApr',
+    getSubRate: ({ borrowTotalApr }) => formatEstimatedNetBorrowRate(borrowTotalApr),
   },
 }
 
@@ -53,7 +60,7 @@ function useMobileGraphSize() {
 }
 
 const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType }) => {
-  const { tooltipComponent: Tooltip, title, rateKey } = ratesConfig[type]
+  const { tooltipComponent: Tooltip, title, rateKey, getSubRate } = ratesConfig[type]
   const rateValue = market.rates[rateKey] as number
   return (
     rateValue != null && (
@@ -70,6 +77,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
                 formatter: formatCappedRateValue,
                 disableTooltip: true,
               }}
+              notional={constQ(getSubRate(market.rates))}
               icon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>

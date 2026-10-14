@@ -44,7 +44,7 @@ export const MetricsRow = ({
       value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
-        maybe(totalMinBoost, value => t`Net ${formatCappedRatePercent(value)}`),
+        maybe(totalMinBoost, value => t`${formatCappedRatePercent(value)} Total`),
       )}
       valueTooltip={{
         title: SUPPLY_RATE_TITLE,

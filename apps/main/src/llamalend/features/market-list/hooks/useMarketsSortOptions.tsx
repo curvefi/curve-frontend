@@ -14,8 +14,10 @@ const USER_SORT_COLUMNS = [
 
 const MARKET_SORT_COLUMNS = [
   MarketColumnId.BorrowRate,
+  MarketColumnId.NetBorrowRate,
   MarketColumnId.CollateralYield,
-  MarketColumnId.LendRate,
+  MarketColumnId.SupplyRate,
+  MarketColumnId.NetSupplyRate,
   MarketColumnId.Tvl,
   MarketColumnId.MaxLtv,
   MarketColumnId.MaxLeverage,
