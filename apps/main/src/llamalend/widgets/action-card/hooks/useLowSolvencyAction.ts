@@ -29,7 +29,6 @@ export const useLowSolvencyAction = <ChainId extends IChainId>({
   const solvency = useSolvencyMarket({ blockchainId: BlockchainIds[chainId], controllerAddress, marketType })
   const solvencyPercent = solvency.data?.solvencyPercent
   return {
-    key: 'lowSolvency' as const,
     isRequired: requiresLowSolvencyModalConfirmation(solvencyPercent),
     isOpen,
     open,

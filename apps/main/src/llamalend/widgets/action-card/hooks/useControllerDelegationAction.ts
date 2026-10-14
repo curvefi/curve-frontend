@@ -17,7 +17,6 @@ export const useControllerDelegationAction = ({
 }) => {
   const [isOpen, open, close] = useSwitch(false)
   return {
-    key: 'controllerDelegation' as const,
     isRequired: !approval.data,
     isOpen,
     open,

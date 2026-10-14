@@ -1,12 +1,7 @@
+import { notFalsy } from '@primitives/objects.utils'
 import type { FieldValues, UseFormHandleSubmit } from './form.types'
 
-/**
- * An action that may need the user's confirmation (usually via a modal) before the form action runs.
- * Each action owns its open state, so it can enable its own queries (e.g. gas) only while open.
- * Action hooks may return extra fields (modal data, banners...), the form reads those from the action directly.
- */
-export type FormAction<K extends string = string> = {
-  key: K
+type FormAction = {
   isRequired: boolean
   isOpen: boolean
   open: () => void
@@ -15,42 +10,37 @@ export type FormAction<K extends string = string> = {
   error?: Error | null
 }
 
-export type FormActionModalProps = { open: boolean; onClose: () => void; onConfirm: () => void }
-
 /**
  * Runs the required `actions` in order before calling `onConfirmed`.
  * The first required action opens; confirming it revalidates the form and continues with the next one.
- * To add an action, create a hook returning a `FormAction`, add it to `actions` and render its modal.
+ * Actions can be undefined, so forms can pass optional actions directly.
  */
-export function combineFormActions<T extends FieldValues, const K extends string>({
+export function combineFormActions<T extends FieldValues>({
   handleSubmit,
   actions,
   onConfirmed,
 }: {
   handleSubmit: UseFormHandleSubmit<T>
-  actions: readonly FormAction<K>[]
+  actions: (FormAction | undefined)[]
   onConfirmed: (values: T) => unknown
 }) {
+  const givenActions = notFalsy(...actions)
   const runFrom = (index: number) => (values: T) => {
-    actions.forEach(action => action.close())
-    const next = actions.slice(index).find(action => action.isRequired)
+    givenActions.forEach(action => action.close())
+    const next = givenActions.slice(index).find(action => action.isRequired)
     if (next) next.open()
     else void onConfirmed(values)
   }
 
   return {
     onSubmit: handleSubmit(runFrom(0)),
-    modals: Object.fromEntries(
-      actions.map(({ key, isOpen, close }, index) => [
-        key,
-        {
-          open: isOpen,
-          onClose: close,
-          onConfirm: () => void handleSubmit(runFrom(index + 1))(),
-        } satisfies FormActionModalProps,
-      ]),
-    ) as Record<K, FormActionModalProps>,
-    isLoading: actions.some(action => action.isLoading),
-    error: actions.find(action => action.error)?.error ?? null,
+    /** Props for the modal of the given action */
+    getModalProps: (action: FormAction) => ({
+      open: action.isOpen,
+      onClose: action.close,
+      onConfirm: () => void handleSubmit(runFrom(givenActions.indexOf(action) + 1))(),
+    }),
+    isLoading: givenActions.some(action => action.isLoading),
+    error: givenActions.find(action => action.error)?.error ?? null,
   }
 }
