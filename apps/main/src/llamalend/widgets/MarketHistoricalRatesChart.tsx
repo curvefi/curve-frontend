@@ -1,5 +1,6 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
+import type { MarketSnapshotsQuery } from '@/llamalend/queries/market/market-snapshots.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
@@ -25,7 +26,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { fallbackQ, mapQuery, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -47,7 +48,7 @@ type RateValue = Amount | Nullish
 type MarketHistoricalRatesChartProps = {
   rateMode: MarketRateType
   timeOption: TimeOption
-  snapshots: QueryProp<RateSnapshot[]> & { dataUpdatedAt: number }
+  snapshots: MarketSnapshotsQuery
 }
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
@@ -122,7 +123,7 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
 
   const marketRates = useMarketRates({ chainId, marketId })
   const dataUpdatedAt = useMemo(
-    () => new Date(Math.max(snapshots.dataUpdatedAt, marketRates.dataUpdatedAt)),
+    () => new Date(Math.max(snapshots.dataUpdatedAt.getTime(), marketRates.dataUpdatedAt)),
     [snapshots.dataUpdatedAt, marketRates.dataUpdatedAt],
   )
 

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/queries/crvusd-snapshots.query'
 import { type LendingSnapshot, useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
@@ -6,12 +7,17 @@ import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
+import { q, type QueryProp } from '@ui/features/queries/util'
 
 type SnapshotByMarketType = { [MarketType.Lend]: LendingSnapshot; [MarketType.Mint]: CrvUsdSnapshot }
 
 type SnapshotsByMarketType<TMarketType extends MarketType> = TMarketType extends MarketType
   ? SnapshotByMarketType[TMarketType][]
   : never
+
+export type MarketSnapshotsQuery<TMarketType extends MarketType = MarketType> = QueryProp<
+  SnapshotsByMarketType<TMarketType>
+> & { dataUpdatedAt: Date }
 
 export function useMarketSnapshots<TMarketType extends MarketType>({
   blockchainId,
@@ -25,7 +31,7 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
   range?: SnapshotRange
   controllerAddress: Address | undefined
   marketType: TMarketType
-}): UseQueryResult<SnapshotsByMarketType<TMarketType>> {
+}): MarketSnapshotsQuery<TMarketType> {
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
   const snapshotsByMarketType = {
@@ -39,5 +45,8 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
     ),
   } satisfies { [T in MarketType]: UseQueryResult<SnapshotByMarketType[T][]> }
 
-  return snapshotsByMarketType[marketType] as UseQueryResult<SnapshotsByMarketType<TMarketType>>
+  const snapshots = snapshotsByMarketType[marketType] as UseQueryResult<SnapshotsByMarketType<TMarketType>>
+  const dataUpdatedAt = useMemo(() => new Date(snapshots.dataUpdatedAt), [snapshots.dataUpdatedAt])
+
+  return { ...q(snapshots), dataUpdatedAt }
 }
