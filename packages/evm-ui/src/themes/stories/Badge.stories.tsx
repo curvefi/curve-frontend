@@ -1,9 +1,9 @@
-import CheckIcon from '@mui/icons-material/Check'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type BadgeProps, Badge } from '@ui/components/Badge'
+import { CheckIcon } from '@ui/icons/CheckIcon'
 
 type BadgeStoryProps = { color: BadgeProps['color'] }
 

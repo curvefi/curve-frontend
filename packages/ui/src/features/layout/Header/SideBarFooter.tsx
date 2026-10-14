@@ -1,4 +1,3 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 // eslint-disable-next-line no-restricted-imports
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
@@ -11,6 +10,7 @@ import type { ConnectWalletProps } from '@ui/features/connect-wallet/ConnectWall
 import { MOBILE_SIDEBAR_WIDTH } from '@ui/features/themes/components'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { Settings } from '@ui/features/user-profile/settings/Settings'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 import { GearIcon } from '@ui/icons/GearIcon'
 import { t } from '@ui/lib/i18n'
 
@@ -26,7 +26,7 @@ export const SideBarFooter = ({ onConnect, connectWalletProps }: SideBarFooterPr
 
     <Accordion sx={{ backgroundColor: BACKGROUND_COLOR }} disableGutters>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ChevronDownIcon />}
         sx={{ backgroundColor: BACKGROUND_COLOR, paddingInline: Spacing.sm }}
       >
         <GearIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />

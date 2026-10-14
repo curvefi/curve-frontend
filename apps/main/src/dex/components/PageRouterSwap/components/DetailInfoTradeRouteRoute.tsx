@@ -10,7 +10,6 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { TokenIcons } from '@ui/components/TokenIcons'
@@ -59,7 +58,7 @@ export const DetailInfoTradeRouteRoute = ({
                 blockchainId={params.network}
                 tokens={zip(poolTokens, tokenAddresses).map(([symbol = '?', address = zeroAddress]) => ({
                   symbol,
-                  address: address as Address,
+                  address,
                 }))}
                 size="md"
               />

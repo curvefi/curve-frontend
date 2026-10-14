@@ -1,5 +1,4 @@
 import { type FormHTMLAttributes, ReactNode } from 'react'
-import CloseIcon from '@mui/icons-material/Close'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -11,6 +10,7 @@ import { WithWrapper } from '@ui/components/WithWrapper'
 import type { FormSubmitHandler } from '@ui/features/forms'
 import { Responsive } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
 import type { SxProps } from '@ui/lib/mui'
 
 const {
@@ -138,7 +138,7 @@ export const ModalDialog = ({
           action={
             onClose && (
               <IconButton onClick={onClose} size="extraSmall">
-                <CloseIcon />
+                <Cross2Icon />
               </IconButton>
             )
           }

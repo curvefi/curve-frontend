@@ -5,7 +5,7 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Button } from '@legacy-ui/Button'
 import { CheckedIcon } from '@ui/icons/CheckedIcon'
-import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = {
@@ -25,7 +25,7 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
       <ButtonStyles className={navigation === 0 ? 'active' : ''} nowrap size="small" onClick={() => setNavigation(0)}>
         {validation.poolType && <StyledCheckmark sx={{ fontSize: 16 }} />}
         <p className="button-text">{t`POOL TYPE`}</p>
-        <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} className="navigation-icon" />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 1 ? 'active' : ''}
@@ -36,7 +36,7 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
       >
         {validation.poolType && validation.tokensInPool && <StyledCheckmark sx={{ fontSize: 16 }} />}
         <p className="button-text">{t`TOKENS IN POOL`}</p>
-        <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} className="navigation-icon" />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 2 ? 'active' : ''}
@@ -49,7 +49,7 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
           <StyledCheckmark sx={{ fontSize: 16 }} />
         )}
         <p className="button-text">{t`PARAMETERS`}</p>
-        <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} className="navigation-icon" />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 3 ? 'active' : ''}
@@ -62,7 +62,7 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
           <StyledCheckmark sx={{ fontSize: 16 }} />
         )}
         <p className="button-text">{t`POOL INFO`}</p>
-        <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} className="navigation-icon" />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <SummaryContainer>
         <ConfirmModal smallScreen chainId={chainId} curve={curve} blockchainId={blockchainId} />

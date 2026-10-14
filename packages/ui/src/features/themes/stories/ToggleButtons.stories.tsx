@@ -1,17 +1,17 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'storybook/internal/preview-api' // Intentionally, can't use React's useState: https://github.com/storybookjs/storybook/issues/29189
-import CheckIcon from '@mui/icons-material/Check'
-import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'
-import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify'
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
-import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight'
-import FormatBoldIcon from '@mui/icons-material/FormatBold'
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill'
-import FormatItalicIcon from '@mui/icons-material/FormatItalic'
-import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { CheckIcon } from '@ui/icons/CheckIcon'
+import { FontBoldIcon } from '@ui/icons/FontBoldIcon'
+import { FontItalicIcon } from '@ui/icons/FontItalicIcon'
+import { TextAlignCenterIcon } from '@ui/icons/TextAlignCenterIcon'
+import { TextAlignJustifyIcon } from '@ui/icons/TextAlignJustifyIcon'
+import { TextAlignLeftIcon } from '@ui/icons/TextAlignLeftIcon'
+import { TextAlignRightIcon } from '@ui/icons/TextAlignRightIcon'
+import { UnderlineIcon } from '@ui/icons/UnderlineIcon'
 
 const meta: Meta<typeof ToggleButtonGroup> = {
   title: 'UI/Themes/ToggleButtons',
@@ -43,19 +43,19 @@ export const Exclusive: Story = {
     return (
       <ToggleButtonGroup exclusive value={alignment} onChange={handleAlignment} aria-label="alignments" {...args}>
         <ToggleButton value="left" aria-label="left aligned">
-          <FormatAlignLeftIcon />
+          <TextAlignLeftIcon />
         </ToggleButton>
 
         <ToggleButton value="center" aria-label="centered">
-          <FormatAlignCenterIcon />
+          <TextAlignCenterIcon />
         </ToggleButton>
 
         <ToggleButton value="right" aria-label="right aligned">
-          <FormatAlignRightIcon />
+          <TextAlignRightIcon />
         </ToggleButton>
 
         <ToggleButton value="justify" aria-label="justified" disabled>
-          <FormatAlignJustifyIcon />
+          <TextAlignJustifyIcon />
         </ToggleButton>
       </ToggleButtonGroup>
     )
@@ -74,15 +74,15 @@ export const Multiple: Story = {
     return (
       <ToggleButtonGroup value={formats} onChange={handleFormat} aria-label="text formatting" {...args}>
         <ToggleButton value="bold" aria-label="bold">
-          <FormatBoldIcon />
+          <FontBoldIcon />
         </ToggleButton>
 
         <ToggleButton value="italic" aria-label="italic">
-          <FormatItalicIcon />
+          <FontItalicIcon />
         </ToggleButton>
 
         <ToggleButton value="underlined" aria-label="underlined">
-          <FormatUnderlinedIcon />
+          <UnderlineIcon />
         </ToggleButton>
 
         <ToggleButton value="justify" aria-label="color" disabled>
