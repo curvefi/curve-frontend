@@ -57,14 +57,7 @@ export function Select<T extends object>({
           buttonRef={buttonRef}
         >
           {noLabelChange ? title : state.selectedItem ? props.selectedItemLabel || state.selectedItem.rendered : title}
-          {!onSelectionDelete && (
-            <StyledIcon
-              $hideIcon={!selectListIsGreaterThanOne}
-              sx={{ fontSize: 16 }}
-              aria-hidden="true"
-              aria-label="select"
-            />
-          )}
+          {!onSelectionDelete && <StyledIcon $hideIcon={!selectListIsGreaterThanOne} sx={{ fontSize: 16 }} />}
         </SelectBtn>
       </InnerWrapper>
       {state.isOpen && (

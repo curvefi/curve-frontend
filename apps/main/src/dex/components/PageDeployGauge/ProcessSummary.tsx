@@ -43,7 +43,7 @@ export const ProcessSummary = ({ chainId }: Props) => {
               {deploymentStatus.sidechain.status === 'SUCCESS' && deploymentStatus.sidechain.transaction && (
                 <SuccessfulTransactionInfo>
                   <Box flex flexAlignItems="center">
-                    <StyledCheckmark sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
+                    <StyledCheckmark sx={{ fontSize: 16 }} />
                     <SuccessMessage>{t`Sidechain gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction
@@ -75,7 +75,7 @@ export const ProcessSummary = ({ chainId }: Props) => {
               {deploymentStatus.mirror.status == 'SUCCESS' && deploymentStatus.mirror.transaction && (
                 <SuccessfulTransactionInfo>
                   <Box flex flexAlignItems="center">
-                    <StyledCheckmark sx={{ fontSize: 16 }} aria-label={t`Checkmark filled`} />
+                    <StyledCheckmark sx={{ fontSize: 16 }} />
                     <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction variant="contained" href={scanTxPath(chainId, deploymentStatus.mirror.transaction.hash)}>

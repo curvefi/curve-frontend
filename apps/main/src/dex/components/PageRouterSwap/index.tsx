@@ -567,6 +567,7 @@ export const QuickSwap = ({
         onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
         size="medium"
         testId="swap-tokens"
+        aria-label={t`Switch tokens`}
       >
         <ArrowsHorizontalIcon sx={{ fontSize: 24, rotate: '90deg' }} />
       </IconButton>

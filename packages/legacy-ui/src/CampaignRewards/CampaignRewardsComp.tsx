@@ -66,7 +66,7 @@ const Multiplier = styled.span<{ highContrast?: boolean }>`
   white-space: nowrap;
 `
 
-// note: $ prefix so prop is not passed to <Icon>
+// note: $ prefix so prop is not passed to the svg
 const StyledIcon = styled(LockOutlinedIcon)<{ $highContrast?: boolean }>`
   color: ${({ $highContrast }) => ($highContrast ? 'var(--white)' : 'var(--page--text-color)')};
 `

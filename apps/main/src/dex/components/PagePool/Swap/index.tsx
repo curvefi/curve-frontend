@@ -442,7 +442,7 @@ export const Swap = ({
             updateFormValues(cFormValues, null, '')
           }}
           size="medium"
-          aria-label="icon arrow vertical"
+          aria-label={t`Switch tokens`}
         >
           <ArrowsHorizontalIcon sx={{ fontSize: 24, rotate: '90deg' }} />
         </IconButton>

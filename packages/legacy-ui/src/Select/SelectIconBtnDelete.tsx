@@ -4,8 +4,8 @@ import { Cross2Icon } from '@ui/icons/Cross2Icon'
 export type SelectIconBtnDeleteProps = { loading?: boolean; onSelectionDelete?: () => void }
 
 export const SelectIconBtnDelete = ({ loading, onSelectionDelete }: SelectIconBtnDeleteProps) => (
-  <StyledBtn $loading={loading} onClick={onSelectionDelete}>
-    <Cross2Icon sx={{ fontSize: 16 }} aria-hidden="true" aria-label="delete" />
+  <StyledBtn $loading={loading} onClick={onSelectionDelete} aria-label="delete">
+    <Cross2Icon sx={{ fontSize: 16 }} />
   </StyledBtn>
 )
 

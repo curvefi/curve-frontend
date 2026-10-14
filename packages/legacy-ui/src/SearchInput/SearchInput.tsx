@@ -33,7 +33,7 @@ export const SearchInput = ({
     id={id}
     inputVariant={variant}
   >
-    {variant === 'small' ? <SearchIcon sx={{ fontSize: 16 }} /> : <SearchIcon sx={{ fontSize: 24 }} />}
+    <SearchIcon sx={{ fontSize: variant === 'small' ? 16 : 24 }} />
     <InputDebounced
       {...props}
       id={id}
