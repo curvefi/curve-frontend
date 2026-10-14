@@ -16,7 +16,8 @@ import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import { IconButton } from '@legacy-ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Switch } from '@legacy-ui/Switch/Switch'
-import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { ChevronLeftIcon } from '@ui/icons/ChevronLeftIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
 import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { t } from '@ui/lib/i18n'
 
@@ -95,7 +96,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(1)}>
-                      <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} />
+                      <ChevronRightIcon sx={{ fontSize: 16 }} />
                     </StyledIconButton>
                   </>
                 ) : (
@@ -107,7 +108,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(0)}>
-                      <ChevronDownIcon sx={{ fontSize: 16, rotate: '90deg' }} />
+                      <ChevronLeftIcon sx={{ fontSize: 16 }} />
                     </StyledIconButton>
                   </>
                 )}
