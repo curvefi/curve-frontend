@@ -37,7 +37,7 @@ export const MetricsRow = ({
   const borrowRateMetric = <BorrowAprMetric borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
 
   const showNetSupplyRate =
-    !!supplyRate?.data &&
+    supplyRate?.data?.totalMinBoost != null &&
     hasNetSupplyRate({
       extraRewards: supplyRate.data.extraRewards,
       extraIncentives: supplyRate.data.extraIncentives,

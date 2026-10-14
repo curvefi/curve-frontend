@@ -11,7 +11,6 @@ export const useHasNetRate = ({ rewards, type, rates, assets }: LlamaMarket, rat
   return (
     {
       [MarketRateType.Borrow]: hasEstimatedNetBorrowApr({
-        totalBorrowApr: rates.borrowTotalApr,
         extraRewards,
         rebasingYieldApr: assets.collateral.rebasingYieldApr,
       }),

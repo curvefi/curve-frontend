@@ -27,11 +27,12 @@ type BorrowAprMetricProps = {
 
 export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
   const averageRatePeriod = AVERAGE_CATEGORIES[borrowRate.data?.averageCategory ?? 'llamalend.market.rate'].period
-  const showNetBorrowApr = hasEstimatedNetBorrowApr({
-    totalBorrowApr: borrowRate.data?.totalBorrowRate,
-    extraRewards: borrowRate.data?.extraRewards,
-    rebasingYieldApr: borrowRate.data?.rebasingYield,
-  })
+  const showNetBorrowApr =
+    borrowRate.data?.totalBorrowRate != null &&
+    hasEstimatedNetBorrowApr({
+      extraRewards: borrowRate.data.extraRewards,
+      rebasingYieldApr: borrowRate.data.rebasingYield,
+    })
   return (
     <Metric
       category="llamalend.marketHeader"

@@ -498,15 +498,14 @@ export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. n
 /** Second line under a supply APY with the net supply APY, labelled "Total", e.g. "Total 3.43%". */
 export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
 
-/** The estimated net borrow APR adds the collateral yield and borrow rewards to the borrow APR, so it only exists when the market has one of them. */
+/** Whether the market has extras (collateral yield or borrow rewards) that make up an estimated net borrow APR. */
 export const hasEstimatedNetBorrowApr = ({
-  totalBorrowApr,
   extraRewards,
   rebasingYieldApr,
-}: Pick<MarketBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
-  totalBorrowApr != null && (!!extraRewards?.length || rebasingYieldApr != null)
+}: Pick<MarketBorrowAprTooltipContentProps, 'extraRewards' | 'rebasingYieldApr'>) =>
+  !!extraRewards?.length || rebasingYieldApr != null
 
-/** The net supply APY adds incentives (CRV included), rewards and the borrowed token yield to the supply APY, so it only exists when the market has one of them. */
+/** Whether the market has extras (incentives with CRV, rewards or borrowed token yield) that make up a net supply APY. */
 export const hasNetSupplyRate = ({
   extraRewards,
   extraIncentives,
