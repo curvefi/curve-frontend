@@ -1,6 +1,5 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'storybook/internal/preview-api' // Intentionally, can't use React's useState: https://github.com/storybookjs/storybook/issues/29189
-import FormatColorFillIcon from '@mui/icons-material/FormatColorFill'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -85,8 +84,8 @@ export const Multiple: Story = {
           <UnderlineIcon />
         </ToggleButton>
 
-        <ToggleButton value="justify" aria-label="color" disabled>
-          <FormatColorFillIcon />
+        <ToggleButton value="justify" aria-label="justify" disabled>
+          <TextAlignJustifyIcon />
         </ToggleButton>
       </ToggleButtonGroup>
     )
