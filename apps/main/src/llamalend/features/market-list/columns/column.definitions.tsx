@@ -51,6 +51,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
       meta: {
         tooltip: { title: MARKET_TITLES[MarketColumnId.Assets], body: <CollateralBorrowHeaderTooltipContent /> },
       },
+      enableSorting: false,
     },
   ),
   columnHelper.accessor(getUserBorrowedUsd, {
@@ -156,6 +157,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
   columnHelper.accessor('rates.borrowApr', {
     id: MarketColumnId.BorrowChart,
     header: MARKET_TITLES[MarketColumnId.BorrowChart],
+    enableSorting: false,
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
   columnHelper.accessor<(row: LlamaMarketRow) => LlamaMarketRow['leverage'], LlamaMarketRow['leverage']>(
