@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getAddress, isAddressEqual } from 'viem'
+import { getAddress, isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -13,6 +13,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
+import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
 import { useParams } from '@ui/hooks/router'
@@ -22,10 +23,11 @@ import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 export const PagePool = () => {
   const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
+  const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const { poolIdOrAddress, network: blockchainId } = props
   const chainId = useChainId(blockchainId)
-
   const { data: network } = useNetworkByChain({ chainId })
+
   const lookup = useMemo(() => ({ curveApi, poolIdOrAddress, isHydrated }), [curveApi, poolIdOrAddress, isHydrated])
   const [lookupResult, setLookupResult] = useState<{ lookup: typeof lookup; notFound: boolean }>()
   const poolNotFound = lookupResult?.lookup === lookup && lookupResult.notFound
@@ -60,33 +62,48 @@ export const PagePool = () => {
     [blacklist, pool],
   )
 
-  return isBlacklisted ? (
-    <PageBlacklist
-      title={t`Blacklisted pool`}
-      description={[
-        t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`,
-        t`If you believe this pool has been incorrectly flagged, contact us.`,
-      ]}
-      navUrl={getPath(props, ROUTE.PAGE_POOLS)}
-      navTitle={t`Go back to pools`}
-      contactUrl={CURVE_SOCIALS.telegram.en}
-      contactTitle={t`Contact us`}
-    />
-  ) : (
-    isHydrated &&
-      (pool ? (
-        <PoolContextProvider network={network} pool={pool}>
-          <Transfer params={props} />
-        </PoolContextProvider>
-      ) : (
-        poolNotFound && (
-          <ErrorPage
-            title="404"
-            subtitle={t`Pool Not Found`}
-            continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
-            userAddress={curveApi?.signerAddress}
-          />
-        )
-      ))
+  if (isBlacklisted)
+    return (
+      <PageBlacklist
+        title={t`Blacklisted pool`}
+        description={[
+          t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`,
+          t`If you believe this pool has been incorrectly flagged, contact us.`,
+        ]}
+        navUrl={getPath(props, ROUTE.PAGE_POOLS)}
+        navTitle={t`Go back to pools`}
+        contactUrl={CURVE_SOCIALS.telegram.en}
+        contactTitle={t`Contact us`}
+      />
+    )
+
+  if (poolNotFound)
+    return (
+      <ErrorPage
+        title="404"
+        subtitle={t`Pool Not Found`}
+        continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
+        userAddress={curveApi?.signerAddress}
+      />
+    )
+
+  /**
+   * We're phasing out pool ids and redirect to pool address in URL, which we can only do after hydration.
+   * The URL updates before useParams, so rerenders can restart the redirect with the old pool id.
+   * Render null while navigating to let the address params update and prevent a redirect loop.
+   * Would also happen with programmatic navigate, so that wouldn't be a solution.
+   */
+  if (pool && !isAddress(poolIdOrAddress, { strict: false })) {
+    return isNavigating ? null : (
+      <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.address}`)} search replace resetScroll={false} />
+    )
+  }
+
+  return (
+    pool && (
+      <PoolContextProvider network={network} pool={pool}>
+        <Transfer params={props} />
+      </PoolContextProvider>
+    )
   )
 }
