@@ -5,8 +5,8 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { weiToEther } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
-import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -51,7 +51,7 @@ export const DetailInfoExpectedApy = ({
         >
           <StyledBox>
             {formatNumber(crvApr, 'percent.value')}
-            <Icon name="ArrowRight" size={16} className="svg-arrow" />
+            <ArrowForwardIcon sx={{ fontSize: 16 }} className="svg-arrow" />
             {formatNumber(newCrvApr.apr, 'percent.value')}
           </StyledBox>
         </DetailInfo>

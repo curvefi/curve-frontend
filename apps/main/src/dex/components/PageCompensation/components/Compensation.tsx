@@ -8,7 +8,6 @@ import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
@@ -17,6 +16,8 @@ import { Hex } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { notify } from '@ui/features/toast/Toast/notify'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { CopyIcon } from '@ui/icons/CopyIcon'
 import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 
@@ -106,10 +107,10 @@ export const Compensation = ({
             <strong>{token}</strong>{' '}
             <StyledExternalLink href={scanAddressPath(chainId, contractAddress)}>
               {shortenAddress(contractAddress)}
-              <Icon name="Launch" size={16} />
+              <ArrowTopRightIcon sx={{ fontSize: 16 }} />
             </StyledExternalLink>
             <StyledIconButton size="medium" onClick={() => void copyToClipboard(getAddress(contractAddress))}>
-              <Icon name="Copy" size={16} />
+              <CopyIcon sx={{ fontSize: 16 }} />
             </StyledIconButton>
           </div>
           {((formattedBalance && token === 'CRV') || vestedTotal > 0) && (

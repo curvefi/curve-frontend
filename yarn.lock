@@ -261,28 +261,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carbon/icon-helpers@npm:^10.83.0":
-  version: 10.83.0
-  resolution: "@carbon/icon-helpers@npm:10.83.0"
-  dependencies:
-    "@ibm/telemetry-js": "npm:^1.5.0"
-  checksum: 10c0/f2ea32eeef9ec567f42c32d837edde9cc7c52283e6e6e364c7b351af58cdec8ad631c4e1920264c8bb6153b7a20d235add28085aa1f23b10ba1d2285cf5bcbbc
-  languageName: node
-  linkType: hard
-
-"@carbon/icons-react@npm:11.89.0":
-  version: 11.89.0
-  resolution: "@carbon/icons-react@npm:11.89.0"
-  dependencies:
-    "@carbon/icon-helpers": "npm:^10.83.0"
-    "@ibm/telemetry-js": "npm:^1.5.0"
-    prop-types: "npm:^15.8.1"
-  peerDependencies:
-    react: ">=16"
-  checksum: 10c0/dbe9cc0423b8afcc6de2cadf52ced610d459909311ea4556e9b1c9508ab9aab5c2b0bc170f14bf6695fcf38eee953a8d53a5d12efa050fab889ffb425ea1083c
-  languageName: node
-  linkType: hard
-
 "@chromatic-com/storybook@npm:5.3.1":
   version: 5.3.1
   resolution: "@chromatic-com/storybook@npm:5.3.1"
@@ -596,7 +574,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/legacy-ui@workspace:packages/legacy-ui"
   dependencies:
-    "@carbon/icons-react": "npm:11.89.0"
     "@curvefi/evm-ui": "workspace:^"
     react-aria: "npm:3.52.1"
     react-stately: "npm:3.50.0"
@@ -1926,15 +1903,6 @@ __metadata:
   version: 0.4.3
   resolution: "@humanwhocodes/retry@npm:0.4.3"
   checksum: 10c0/3775bb30087d4440b3f7406d5a057777d90e4b9f435af488a4923ef249e93615fb78565a85f173a186a076c7706a81d0d57d563a2624e4de2c5c9c66c486ce42
-  languageName: node
-  linkType: hard
-
-"@ibm/telemetry-js@npm:^1.5.0":
-  version: 1.11.0
-  resolution: "@ibm/telemetry-js@npm:1.11.0"
-  bin:
-    ibmtelemetry: dist/collect.js
-  checksum: 10c0/d43bde7dc6cd23a87ac9904cf0a728854d433c0808094b333963448a13b4bcb1cda6140b0bda643079e60fddc126d8a3516e63675f32e81354680dccde47011e
   languageName: node
   linkType: hard
 

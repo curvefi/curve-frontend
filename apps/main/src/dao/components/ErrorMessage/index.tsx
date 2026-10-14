@@ -1,7 +1,7 @@
 import { MouseEvent } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
+import { ReloadIcon } from '@ui/icons/ReloadIcon'
 
 type Props = { message: string; onClick?: (e?: MouseEvent) => void }
 
@@ -10,7 +10,7 @@ export const ErrorMessage = ({ message, onClick }: Props) => (
     <Message>{message}</Message>
     {onClick && (
       <IconButton onClick={onClick} size="small">
-        <Icon name="Renew" size={16} />
+        <ReloadIcon sx={{ fontSize: 16 }} />
       </IconButton>
     )}
   </>

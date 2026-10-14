@@ -12,7 +12,6 @@ import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { Spinner, SpinnerWrapper } from '@legacy-ui/Spinner'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
@@ -21,6 +20,7 @@ import { Chain } from '@primitives/network.utils'
 import { maybes } from '@primitives/objects.utils'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useParams } from '@ui/hooks/router'
+import { CopyIcon } from '@ui/icons/CopyIcon'
 import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 import { BackButton } from '../BackButton'
@@ -112,7 +112,7 @@ export const Proposal = () => {
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
                       <StyledCopyButton size="medium" onClick={() => void copyToClipboard(proposal?.metadata ?? '')}>
                         {t`Raw IPFS`}
-                        <Icon name="Copy" size={16} />
+                        <CopyIcon sx={{ fontSize: 16 }} />
                       </StyledCopyButton>
                     </Tooltip>
                   </Box>

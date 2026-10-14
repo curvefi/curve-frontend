@@ -31,9 +31,9 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { Chip } from '@legacy-ui/Typography'
 import { scanAddressPath } from '@legacy-ui/utils'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = { blockchainId: string; chainId: ChainId }
@@ -48,9 +48,7 @@ export const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
   return (
     <CategoryColumn>
       <Box flex>
-        {validation.tokensInPool && (
-          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
-        )}
+        {validation.tokensInPool && <StyledCheckmark sx={{ fontSize: 16 }} />}
         <SummaryCategoryTitle>{t`Tokens In Pool:`}</SummaryCategoryTitle>
       </Box>
       <CategoryDataColumn>
@@ -210,7 +208,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
       </Box>
       <AddressLink href={scanAddressPath(chainId, token.address)}>
         {shortenAddress(token.address)}
-        <Icon name="Launch" size={16} aria-label={t`Link to address`} />
+        <ArrowTopRightIcon sx={{ fontSize: 16 }} />
       </AddressLink>
     </TokenRow>
   )
