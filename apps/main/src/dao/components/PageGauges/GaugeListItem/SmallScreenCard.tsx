@@ -8,11 +8,12 @@ import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { t } from '@ui/lib/i18n'
 import { VoteGaugeField } from '../GaugeVoting/VoteGaugeField'
 import { GaugeDetailsSm } from './GaugeDetailsSm'
@@ -76,7 +77,7 @@ export const SmallScreenCard = ({
           </Box>
         )}
         <StyledIconButton size="small">
-          {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+          <RotatableIcon icon={ChevronDownIcon} rotated={open} fontSize={16} />
         </StyledIconButton>
       </Box>
       {open && (

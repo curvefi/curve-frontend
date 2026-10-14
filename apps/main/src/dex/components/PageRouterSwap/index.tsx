@@ -1,5 +1,5 @@
 import { isEqual, noop } from 'lodash'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
@@ -29,7 +29,6 @@ import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useEstimateGasValue } from '@evm-ui/queries/gas-info.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
@@ -55,6 +54,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { logSuccess } from '@ui/lib/logging'
@@ -406,12 +406,14 @@ export const QuickSwap = ({
   const lastFetchTimeRef = useRef<number>(0)
   const fetchDataRef = useRef<() => void>(noop)
 
-  // Keep fetchDataRef always pointing to the latest fetchData logic
-  fetchDataRef.current = () => {
-    if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
-      updateFormValues({}, false, false, true)
+  // Refresh the callback after commit, before effects or events can trigger a fetch.
+  useLayoutEffect(() => {
+    fetchDataRef.current = () => {
+      if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
+        updateFormValues({}, false, false, true)
+      }
     }
-  }
+  }, [isReady, formStatus.formProcessing, formStatus.formTypeCompleted, updateFormValues])
 
   // Direct fetch for user-initiated actions (token changes, input changes)
   // Also resets timer to prevent redundant background fetch right after
@@ -567,8 +569,9 @@ export const QuickSwap = ({
         onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
         size="medium"
         testId="swap-tokens"
+        aria-label={t`Switch tokens`}
       >
-        <Icon name="ArrowsVertical" size={24} />
+        <ArrowsHorizontalIcon sx={{ fontSize: 24, rotate: '90deg' }} />
       </IconButton>
       {/* SWAP TO */}
       <DebouncedLargeTokenInput

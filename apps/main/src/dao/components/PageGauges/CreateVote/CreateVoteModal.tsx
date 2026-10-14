@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { zeroAddress } from 'viem'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
@@ -17,6 +15,8 @@ import { FormProvider } from '@ui/features/forms'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { usePinataJwt } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { EyeClosed } from '@ui/icons/EyeClosed'
+import { EyeOpen } from '@ui/icons/EyeOpen'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 import { useCreateVoteForm } from './useCreateVoteForm'
@@ -109,7 +109,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button color="ghost" size="small" onClick={() => setShowPinataJwt(!showPinataJwt)}>
-                        {showPinataJwt ? <VisibilityOff /> : <Visibility />}
+                        {showPinataJwt ? <EyeClosed /> : <EyeOpen />}
                       </Button>
                     </InputAdornment>
                   ),

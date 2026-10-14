@@ -1,4 +1,4 @@
-import { type ComponentProps, ReactNode, useCallback, useEffect, useState } from 'react'
+import { type ComponentProps, ReactNode, useCallback, useState } from 'react'
 import { css, type IStyledComponent, styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -8,7 +8,6 @@ import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
@@ -17,6 +16,8 @@ import { Hex } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { notify } from '@ui/features/toast/Toast/notify'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { CopyIcon } from '@ui/icons/CopyIcon'
 import { copyToClipboard } from '@ui/lib/clipboard'
 import { t } from '@ui/lib/i18n'
 
@@ -43,14 +44,21 @@ export const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const [error, setError] = useState('')
-  const [step, setStep] = useState('')
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+  const signerAddress = curve?.signerAddress
+  const [claimState, setClaimState] = useState({
+    signerAddress,
+    revision: 0,
+    error: '',
+    step: '',
+    txInfoBar: null as ReactNode,
+  })
+  const { error, step, txInfoBar, revision } = claimState
 
-  const handleCloseErrorClick = useCallback(() => {
-    setStep('')
-    setError('')
-  }, [])
+  if (claimState.signerAddress !== signerAddress) {
+    setClaimState({ signerAddress, revision: revision + 1, error: '', step: '', txInfoBar: null })
+  }
+
+  const handleCloseErrorClick = useCallback(() => setClaimState(current => ({ ...current, step: '', error: '' })), [])
 
   const handleClaimClick = useCallback(
     async (_: string, contract: EtherContract['contract'], balance: number) => {
@@ -59,33 +67,30 @@ export const Compensation = ({
       const { dismiss } = notify(notifyMessage, 'pending')
 
       try {
-        setStep('claiming')
+        setClaimState(current => ({ ...current, step: 'claiming' }))
         const hash = (await contract.claim()) as Hex
         await curvejsApi.helpers.waitForTransaction(hash, provider)
-        setStep('claimed')
         const txDescription = t`Claimed ${balance}`
         const txHash = scanTxPath(chainId, hash)
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={txHash} />)
-        if (typeof dismiss === 'function') dismiss()
+        // A revision also rejects stale results after switching from signer A to B and back to A.
+        setClaimState(current =>
+          current.revision === revision
+            ? { ...current, step: 'claimed', txInfoBar: <TxInfoBar description={txDescription} txHash={txHash} /> }
+            : current,
+        )
       } catch (error) {
         console.error(error)
-        setStep('error')
-        setError(getErrorMessage(error, 'error-step-claim'))
-        if (typeof dismiss === 'function') dismiss()
+        setClaimState(current =>
+          current.revision === revision
+            ? { ...current, step: 'error', error: getErrorMessage(error, 'error-step-claim') }
+            : current,
+        )
+      } finally {
+        dismiss()
       }
     },
-    [curve, chainId, provider],
+    [curve, chainId, provider, revision],
   )
-
-  // reset
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setError('')
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setStep('')
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setTxInfoBar(null)
-  }, [curve?.signerAddress])
 
   const formattedBalance =
     balance && formatNumber(balance, { minimumFractionDigits: 5, maximumFractionDigits: 5, abbreviate: false })
@@ -102,10 +107,10 @@ export const Compensation = ({
             <strong>{token}</strong>{' '}
             <StyledExternalLink href={scanAddressPath(chainId, contractAddress)}>
               {shortenAddress(contractAddress)}
-              <Icon name="Launch" size={16} />
+              <ArrowTopRightIcon sx={{ fontSize: 16 }} />
             </StyledExternalLink>
             <StyledIconButton size="medium" onClick={() => void copyToClipboard(getAddress(contractAddress))}>
-              <Icon name="Copy" size={16} />
+              <CopyIcon sx={{ fontSize: 16 }} />
             </StyledIconButton>
           </div>
           {((formattedBalance && token === 'CRV') || vestedTotal > 0) && (

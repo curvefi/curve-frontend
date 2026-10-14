@@ -1,13 +1,13 @@
 import { type ReactNode, useId } from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import type { Responsive } from '@ui/features/themes/basic-theme'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { MinusIcon } from '@ui/icons/MinusIcon'
+import { PlusIcon } from '@ui/icons/PlusIcon'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { applySxProps, borderStyle, type SxProps } from '@ui/lib/mui'
 
@@ -201,11 +201,11 @@ export const Accordion = ({
           {info}
 
           {indicator === 'chevron' ? (
-            <RotatableIcon icon={ExpandMoreIcon} rotated={isOpen} fontSize={headerIconFontSize[size]} />
+            <RotatableIcon icon={ChevronDownIcon} rotated={isOpen} fontSize={headerIconFontSize[size]} />
           ) : isOpen ? (
-            <RemoveIcon sx={indicatorIconSx} />
+            <MinusIcon sx={indicatorIconSx} />
           ) : (
-            <AddIcon sx={indicatorIconSx} />
+            <PlusIcon sx={indicatorIconSx} />
           )}
         </Stack>
       </ButtonBase>

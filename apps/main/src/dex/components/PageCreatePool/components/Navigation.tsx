@@ -4,7 +4,8 @@ import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
+import { CheckedIcon } from '@ui/icons/CheckedIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = {
@@ -22,9 +23,9 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
   return (
     <NavigationStyles>
       <ButtonStyles className={navigation === 0 ? 'active' : ''} nowrap size="small" onClick={() => setNavigation(0)}>
-        {validation.poolType && <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />}
+        {validation.poolType && <StyledCheckmark sx={{ fontSize: 16 }} />}
         <p className="button-text">{t`POOL TYPE`}</p>
-        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 1 ? 'active' : ''}
@@ -33,11 +34,9 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
         onClick={() => setNavigation(1)}
         disabled={!validation.poolType}
       >
-        {validation.poolType && validation.tokensInPool && (
-          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
-        )}
+        {validation.poolType && validation.tokensInPool && <StyledCheckmark sx={{ fontSize: 16 }} />}
         <p className="button-text">{t`TOKENS IN POOL`}</p>
-        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 2 ? 'active' : ''}
@@ -47,10 +46,10 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
         disabled={!validation.poolType || !validation.tokensInPool}
       >
         {validation.poolType && validation.tokensInPool && validation.parameters && (
-          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark sx={{ fontSize: 16 }} />
         )}
         <p className="button-text">{t`PARAMETERS`}</p>
-        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 3 ? 'active' : ''}
@@ -60,10 +59,10 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
         disabled={!validation.poolType || !validation.tokensInPool || !validation.parameters}
       >
         {checkFormReady(validation.poolType, validation.tokensInPool, validation.parameters, validation.poolInfo) && (
-          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark sx={{ fontSize: 16 }} />
         )}
         <p className="button-text">{t`POOL INFO`}</p>
-        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <ChevronRightIcon sx={{ fontSize: 16 }} className="navigation-icon" />
       </ButtonStyles>
       <SummaryContainer>
         <ConfirmModal smallScreen chainId={chainId} curve={curve} blockchainId={blockchainId} />
@@ -92,7 +91,7 @@ const SummaryContainer = styled.div`
   }
 `
 
-const StyledCheckmark = styled(Icon)`
+const StyledCheckmark = styled(CheckedIcon)`
   @media (min-width: 68.75rem) {
     display: none;
   }

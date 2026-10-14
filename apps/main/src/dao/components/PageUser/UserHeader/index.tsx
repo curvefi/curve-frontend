@@ -2,11 +2,12 @@ import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link'
 import { scanAddressPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { CopyIcon } from '@ui/icons/CopyIcon'
 import { copyToClipboard } from '@ui/lib/clipboard'
 
 export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; userEnsName?: string | null }) => (
@@ -19,10 +20,10 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
             <UserAddress>{getAddress(userAddress)}</UserAddress>{' '}
             <Box margin="0 0 0 var(--spacing-1)" flex>
               <StyledCopyButton size="small" onClick={() => void copyToClipboard(getAddress(userAddress))}>
-                <Icon name="Copy" size={16} />
+                <CopyIcon sx={{ fontSize: 16 }} />
               </StyledCopyButton>
               <StyledExternalLink size="small" href={scanAddressPath(Chain.Ethereum, userAddress)}>
-                <Icon name="Launch" size={16} />
+                <ArrowTopRightIcon sx={{ fontSize: 16 }} />
               </StyledExternalLink>
             </Box>
           </Box>
@@ -31,10 +32,10 @@ export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; 
       {!userEnsName && !TOP_HOLDERS[userAddress]?.title && (
         <Box flex margin="0 0 0 var(--spacing-1)">
           <StyledCopyButton size="small" onClick={() => void copyToClipboard(getAddress(userAddress))}>
-            <Icon name="Copy" size={16} />
+            <CopyIcon sx={{ fontSize: 16 }} />
           </StyledCopyButton>
           <StyledExternalLink size="small" href={scanAddressPath(Chain.Ethereum, userAddress)}>
-            <Icon name="Launch" size={16} />
+            <ArrowTopRightIcon sx={{ fontSize: 16 }} />
           </StyledExternalLink>
         </Box>
       )}

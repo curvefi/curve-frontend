@@ -1,4 +1,3 @@
-import AcUnitIcon from '@mui/icons-material/AcUnit'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -9,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Accordion } from '@ui/components/Accordion'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { LlamaIcon } from '@ui/icons/LlamaIcon'
 
 const meta: Meta<typeof Accordion> = {
   title: 'UI/Components/Accordion',
@@ -69,7 +69,7 @@ export const ExtraSmall: Story = {
 }
 
 export const WithIcon: Story = {
-  args: { icon: <AcUnitIcon color="primary" /> },
+  args: { icon: <LlamaIcon color="primary" /> },
   parameters: { docs: { description: { story: 'Accordion with an icon in the header' } } },
 }
 

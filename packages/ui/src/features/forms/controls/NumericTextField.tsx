@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js'
 import type { Property } from 'csstype'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
 import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { t } from '@ui/lib/i18n'
 
 const { MaxWidth } = SizesAndSpaces
@@ -137,18 +138,15 @@ export const NumericTextField = ({
   slotProps,
   ...props
 }: NumericTextFieldProps) => {
-  // Internal value that might be incomplete, like "4.".
-  const [inputValue, setInputValue] = useState(() => getFormattedDisplayValue(value, format))
-
   const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
   const [isFocused, setIsFocused] = useState(false)
 
-  // Update input value when value changes externally
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
-  }, [value, isFocused, format])
+  // Internal value that might be incomplete, like "4.".
+  const [inputValue, setInputValue] = useResettableState(
+    () => (isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format)),
+    [value, isFocused, format],
+  )
 
   return (
     <TextField

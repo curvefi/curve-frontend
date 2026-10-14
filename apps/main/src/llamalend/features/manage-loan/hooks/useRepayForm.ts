@@ -15,7 +15,8 @@ import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/qu
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
+import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
+import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -96,11 +97,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
-    onSubmit: onMutationSubmit,
+    onSubmit: repay,
     isPending: isRepaying,
     error: repayError,
   } = useRepayMutation({
@@ -113,13 +114,10 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const isControllerApproved = useRepayControllerApproval({ chainId, marketId, userAddress, ...values })
 
-  const { onSubmit, modal: delegationModal } = useControllerDelegation<RepayFormData>({
-    chainId,
-    userAddress,
-    marketId,
-    approval: q(isControllerApproved),
-    handleFormSubmit: form.handleSubmit,
-    onSubmit: onMutationSubmit,
+  const { onSubmit, delegationModal, ...formActions } = marketFormActions({
+    handleSubmit: form.handleSubmit,
+    delegation: useControllerDelegationAction({ chainId, userAddress, marketId, approval: q(isControllerApproved) }),
+    onConfirmed: repay,
   })
 
   useCallbackSync(useRepayPrices(params), onPricesUpdated)
@@ -127,20 +125,19 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { data: isAvailable } = useRepayIsAvailable(params)
   const { isFull, max } = useMaxRepayTokenValues({ market, borrowTokenAddress: borrowToken?.address, params, form })
 
-  const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
     form,
     values,
     params,
     isPending,
-    isLoading: !market || isControllerApproved.isLoading,
+    isLoading: !market || formActions.isLoading,
     isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     userAddress,
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit,
     borrowToken,
     collateralToken,
-    repayError: isControllerApproved.error ?? repayError,
+    repayError: formActions.error ?? repayError,
     isControllerApproved: q(isControllerApproved),
     delegationModal,
     isApproved: q(useRepayIsApproved(params)),

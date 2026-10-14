@@ -145,7 +145,6 @@ export function RepayLoanInfoList({
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
         ),
         // routeImage: useRepayRouteImage(params, isOpen),
-        collateralDelta: undefined,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}
       {...prevLoanState}

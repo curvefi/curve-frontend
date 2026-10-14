@@ -68,7 +68,7 @@ export const LoanFormTokenInput = <
   name,
   max,
   form: {
-    getValue,
+    values,
     update: updateForm,
     formState: { errors: formErrors, touchedFields },
   },
@@ -109,7 +109,7 @@ export const LoanFormTokenInput = <
   const onMax = max?.onMax
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = name in touchedFields ? (errors[name] ?? max?.error ?? relatedMaxFieldError) : balanceError
-  const value = getValue(name)
+  const value = values[name]
   const errorMessage = error?.message
 
   const onBalance = useCallback(

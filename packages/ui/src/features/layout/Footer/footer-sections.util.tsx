@@ -1,21 +1,21 @@
 import { ReactNode } from 'react'
-import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
-import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import YouTubeIcon from '@mui/icons-material/YouTube'
 import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 import { BrandAssetsIcon } from '@ui/icons/BrandAssetsIcon'
+import { BugIcon } from '@ui/icons/BugIcon'
 import { CrvHubIcon } from '@ui/icons/CrvHubIcon'
 import { DiscordIcon } from '@ui/icons/DiscordIcon'
 import { DocsIcon } from '@ui/icons/DocsIcon'
+import { GitHubIcon } from '@ui/icons/GitHubIcon'
 import { IntegrationsIcon } from '@ui/icons/IntegrationsIcon'
 import { LAFIcon } from '@ui/icons/LAFIcon'
 import { NewsIcon } from '@ui/icons/NewsIcon'
 import { RiskDisclaimersIcon } from '@ui/icons/RiskDisclaimersIcon'
+import { SecurityIcon } from '@ui/icons/SecurityIcon'
 import { TelegramCNIcon } from '@ui/icons/TelegramCNIcon'
 import { TelegramIcon } from '@ui/icons/TelegramIcon'
 import { TelegramRUIcon } from '@ui/icons/TelegramRUIcon'
 import { XIcon } from '@ui/icons/XIcon'
+import { YouTubeIcon } from '@ui/icons/YouTubeIcon'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS, EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
@@ -50,8 +50,8 @@ export const getFooterSections = (getInternalUrl: (page: typeof PAGE_LEGAL | typ
   {
     title: t`Security`,
     links: [
-      { label: t`Audits`, href: EXTERNAL_LINKS.docs.user.security.audits, icon: <BeenhereOutlinedIcon /> },
-      { label: t`Bug Bounty`, href: EXTERNAL_LINKS.docs.user.security.bugBounty, icon: <BugReportOutlinedIcon /> },
+      { label: t`Audits`, href: EXTERNAL_LINKS.docs.user.security.audits, icon: <SecurityIcon /> },
+      { label: t`Bug Bounty`, href: EXTERNAL_LINKS.docs.user.security.bugBounty, icon: <BugIcon /> },
       { label: t`Curve Monitor`, href: EXTERNAL_LINKS.monitoring.curveMonitor, icon: <LAFIcon /> },
       { label: t`CrvHub`, href: EXTERNAL_LINKS.monitoring.crvHub, icon: <CrvHubIcon /> },
     ],

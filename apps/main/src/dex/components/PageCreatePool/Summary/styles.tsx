@@ -1,10 +1,10 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon'
-import type { IconProps } from '@legacy-ui/Icon/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import type { ExternalLinkProps } from '@legacy-ui/Link/ExternalLink'
+import type { SvgIconProps } from '@mui/material/SvgIcon'
 import { TokenIcon, type TokenIconProps } from '@ui/components/TokenIcon'
+import { CheckedIcon } from '@ui/icons/CheckedIcon'
 
 type DivProps = ComponentPropsWithRef<'div'>
 type PProps = ComponentPropsWithRef<'p'>
@@ -86,7 +86,7 @@ export const SummaryDataPlaceholder: IStyledComponent<'web', PProps> = styled.p`
   }
 `
 
-export const StyledCheckmark: IStyledComponent<'web', IconProps> = styled(Icon)`
+export const StyledCheckmark: IStyledComponent<'web', SvgIconProps> = styled(CheckedIcon)`
   color: var(--primary-400);
   margin-right: var(--spacing-1);
 `
