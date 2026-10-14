@@ -8,6 +8,7 @@ import { range } from '@primitives/objects.utils'
 import type { ReactTable, RowData } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { ChevronLeftIcon } from '@ui/icons/ChevronLeftIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
 
 /**
  * A button component representing a specific page in pagination.
@@ -75,7 +76,7 @@ const NeighborButton = <TData extends RowData>({
       ? { 'data-testid': `btn-page-${type.substring(0, 4)}`, onClick: table[`${type}Page`] }
       : { disabled: true })}
   >
-    <ChevronLeftIcon {...(type === 'next' && { sx: { transform: 'rotate(180deg)' } })} />
+    {type === 'next' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
   </IconButton>
 )
 

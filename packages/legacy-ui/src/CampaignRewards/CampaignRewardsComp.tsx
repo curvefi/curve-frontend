@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { formatNumber } from '@primitives/number.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
+import { LockClosedIcon } from '@ui/icons/LockClosedIcon'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 type CampaignRewardsCompProps = {
@@ -67,6 +67,6 @@ const Multiplier = styled.span<{ highContrast?: boolean }>`
 `
 
 // note: $ prefix so prop is not passed to the svg
-const StyledIcon = styled(LockOutlinedIcon)<{ $highContrast?: boolean }>`
+const StyledIcon = styled(LockClosedIcon)<{ $highContrast?: boolean }>`
   color: ${({ $highContrast }) => ($highContrast ? 'var(--white)' : 'var(--page--text-color)')};
 `

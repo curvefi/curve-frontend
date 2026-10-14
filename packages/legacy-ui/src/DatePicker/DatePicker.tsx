@@ -35,8 +35,9 @@ import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
 import { IconButton } from '@legacy-ui/IconButton'
 import { InputProvider } from '@legacy-ui/InputComp'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined'
-import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { CalendarIcon } from '@ui/icons/CalendarIcon'
+import { ChevronLeftIcon } from '@ui/icons/ChevronLeftIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details
@@ -94,10 +95,10 @@ function Calendar<T extends DateValue>(props: AriaCalendarProps<T>) {
         <CalendarTitle>{title}</CalendarTitle>
         <Box flex>
           <Button {...prevButtonProps}>
-            <ChevronDownIcon sx={{ fontSize: 16, rotate: '90deg' }} />
+            <ChevronLeftIcon sx={{ fontSize: 16 }} />
           </Button>
           <Button {...nextButtonProps}>
-            <ChevronDownIcon sx={{ fontSize: 16, rotate: '-90deg' }} />
+            <ChevronRightIcon sx={{ fontSize: 16 }} />
           </Button>
         </Box>
       </CalendarHeader>
@@ -201,7 +202,7 @@ export function DatePicker<T extends DateValue>(
             <DateField {...dateFieldProps} state={dateFieldState} />
           </Box>
           <Button {...buttonProps} isDisabled={props.isDisabled}>
-            <CalendarTodayOutlinedIcon sx={{ fontSize: 24 }} />
+            <CalendarIcon sx={{ fontSize: 24 }} />
           </Button>
         </Box>
 
