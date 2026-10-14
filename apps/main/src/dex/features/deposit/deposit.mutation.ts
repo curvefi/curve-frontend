@@ -18,30 +18,30 @@ type DepositContext = TransactionContext & { pool: PoolTemplate; userAddress: Ad
 
 export const useDepositMutation = ({
   chainId,
-  poolId,
+  poolAddress,
   tokenCount,
   onReset,
 }: {
   chainId: number
-  poolId: string
+  poolAddress: Address
   tokenCount: number
   onReset: () => void
 }) => {
   const { address: userAddress } = useConnection()
   const config = useConfig()
   const { mutate, error, isPending } = useEvmMutation<DepositMutation, DepositContext>({
-    mutationKey: [{ name: 'deposit', chainId, poolId, userAddress }] as const,
-    validationParams: { chainId, poolId, userAddress },
+    mutationKey: [{ name: 'deposit', chainId, poolAddress, userAddress }] as const,
+    validationParams: { chainId, poolAddress, userAddress },
     buildContext: (_variables, baseContext) => ({
       ...baseContext,
-      pool: requireLib('curveApi').getPool(poolId),
+      pool: requireLib('curveApi').getPool(poolAddress),
       userAddress: assert(userAddress, 'Missing userAddress'),
     }),
     mutationFn: async ({ amounts, slippage, isWrapped, decimals }, { pool, userAddress }) => {
       await waitForApproval({
         isApproved: async () =>
           await fetchDepositIsApproved(
-            { chainId, poolId, userAddress, isWrapped, decimals, slippage, amounts },
+            { chainId, poolAddress, userAddress, isWrapped, decimals, slippage, amounts },
             { staleTime: 0 },
           ),
         onApprove: async () => (await pool[`${depositMethod(isWrapped)}Approve`](amounts)) as Hex[],
@@ -57,8 +57,8 @@ export const useDepositMutation = ({
     onSuccess: async (_data, _receipt, _variables, { userAddress, pool }) =>
       await Promise.allSettled([
         // todo: send hash to prices api
-        invalidatePoolInfo({ chainId, poolId }),
-        invalidateUserPoolInfo({ chainId, poolId, userAddress }),
+        invalidatePoolInfo({ chainId, poolAddress }),
+        invalidateUserPoolInfo({ chainId, poolAddress, userAddress }),
         invalidateTokenBalances(config, {
           chainId,
           userAddress,

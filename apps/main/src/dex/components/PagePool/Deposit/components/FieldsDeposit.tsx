@@ -72,9 +72,9 @@ export const FieldsDeposit = ({
     updatedMaxSlippage: string | null,
   ) => void
 }) => {
-  const { chainId, blockchainId, poolId, pool, isWrapped, setIsWrapped, tokens, tokenAddresses } = usePoolContext()
+  const { chainId, blockchainId, poolAddress, pool, isWrapped, setIsWrapped, tokens, tokenAddresses } = usePoolContext()
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
-  const { data: reserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
+  const { data: reserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = useCallback(

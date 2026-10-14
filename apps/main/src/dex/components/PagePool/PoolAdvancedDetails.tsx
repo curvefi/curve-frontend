@@ -38,7 +38,6 @@ export const PoolAdvancedDetails = () => {
   const {
     chainId,
     blockchainId,
-    poolId,
     poolAddress,
     pool,
     pool: { lpToken, gauge },
@@ -47,8 +46,8 @@ export const PoolAdvancedDetails = () => {
   } = usePoolContext()
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
-  const parameters = usePoolParameters({ chainId, poolId })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const parameters = usePoolParameters({ chainId, poolAddress })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
@@ -67,13 +66,13 @@ export const PoolAdvancedDetails = () => {
   const { priceOracle, priceScale, A, initial_A, initial_A_time, future_A, future_A_time } = parameters.data ?? {}
   const { assetTypes, basePool, coins, hasDonations, metapool, oracles, registry, vyperVersion } = metadata.data ?? {}
   const isFxSwap = hasDonations ?? false
-  const isEywaPool = chainId === +Chain.Fantom && poolId.startsWith('factory-eywa')
+  const isEywaPool = chainId === +Chain.Fantom && pool.id.startsWith('factory-eywa')
 
   return (
     <AdvancedDetails
       chainId={chainId}
       info={{
-        poolId,
+        poolId: pool.id,
         poolType: notFalsy(
           getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }) ?? '-',
           metapool && t`Metapool`,

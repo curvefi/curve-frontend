@@ -1,4 +1,5 @@
 import Portal from '@mui/material/Portal'
+import type { Address } from '@primitives/address.utils'
 import { Banner, BannerProps } from '@ui/features/banners/Banner'
 import { useDismissPoolBanner } from '@ui/features/storage/useLocalStorage'
 import { AlertType, PoolAlert } from '../types/main.types'
@@ -15,15 +16,15 @@ const alertTypeToBannerSeverity: Record<AlertType, BannerProps['severity']> = {
 export const PoolAlertBanner = ({
   banner,
   alertType,
-  poolId,
+  poolAddress,
   network,
 }: {
   banner: NonNullable<PoolAlert['banner']>
   alertType: AlertType
-  poolId: string
+  poolAddress: Address
   network: string
 }) => {
-  const [shouldShowBanner, dismissBanner] = useDismissPoolBanner(network, poolId)
+  const [shouldShowBanner, dismissBanner] = useDismissPoolBanner(network, poolAddress)
   const severity = alertTypeToBannerSeverity[alertType]
   return (
     shouldShowBanner && (

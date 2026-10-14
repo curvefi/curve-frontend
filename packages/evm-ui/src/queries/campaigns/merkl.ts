@@ -1,4 +1,5 @@
 import { capitalize, groupBy } from 'lodash'
+import { getAddress } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import type { Address } from '@primitives/address.utils'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
@@ -69,7 +70,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
         platformImageId: token.icon,
         dashboardLink: `https://app.merkl.xyz/opportunities/${network}/${opp.type}/${opp.identifier}`,
 
-        address: opp.explorerAddress.toLocaleLowerCase(),
+        address: getAddress(opp.explorerAddress),
         description: opp.description,
         steps: opp.howToSteps,
         lock: false, // Merkl doesn't offer 'locked' rewards.

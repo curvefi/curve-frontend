@@ -23,12 +23,12 @@ const { Spacing } = SizesAndSpaces
 
 export const TokenSelector = ({
   chainId,
-  poolId,
+  poolAddress,
   disabled,
   userAddress,
 }: {
   chainId: ChainId
-  poolId: string
+  poolAddress: Address
   disabled: boolean
   userAddress: Address | undefined
 }) => {
@@ -41,7 +41,7 @@ export const TokenSelector = ({
   const { data: network } = useNetworkByChain({ chainId })
   const [isOpen, openModal, closeModal] = useSwitch()
 
-  const { data: gaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
+  const { data: gaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress })
 
   const { data: filteredTokens = [] } = useMappedQuery(
     useTokens({ chainId }),

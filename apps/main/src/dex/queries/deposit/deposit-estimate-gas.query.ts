@@ -8,19 +8,19 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { useDepositIsApproved } from './deposit-approved.query'
 
 const { useQuery: useDepositApproveEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, amounts }: UserDepositParams) =>
-    ({ name: 'estimateGas.depositApprove', chainId, poolId, userAddress, isWrapped, amounts }) as const,
-  queryFn: async ({ poolId, isWrapped, amounts }: DepositQuery) =>
-    await requireLib('curveApi').getPool(poolId).estimateGas[`${depositMethod(isWrapped)}Approve`](amounts),
+  queryKey: ({ chainId, poolAddress, userAddress, isWrapped, amounts }: UserDepositParams) =>
+    ({ name: 'estimateGas.depositApprove', chainId, poolAddress, userAddress, isWrapped, amounts }) as const,
+  queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>
+    await requireLib('curveApi').getPool(poolAddress).estimateGas[`${depositMethod(isWrapped)}Approve`](amounts),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })
 
 const { useQuery: useDepositEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, slippage, amounts }: UserDepositParams) =>
-    ({ name: 'estimateGas.deposit', chainId, poolId, userAddress, isWrapped, slippage, amounts }) as const,
-  queryFn: async ({ poolId, isWrapped, slippage, amounts }: DepositQuery) =>
-    await requireLib('curveApi').getPool(poolId).estimateGas[depositMethod(isWrapped)](amounts, +slippage),
+  queryKey: ({ chainId, poolAddress, userAddress, isWrapped, slippage, amounts }: UserDepositParams) =>
+    ({ name: 'estimateGas.deposit', chainId, poolAddress, userAddress, isWrapped, slippage, amounts }) as const,
+  queryFn: async ({ poolAddress, isWrapped, slippage, amounts }: DepositQuery) =>
+    await requireLib('curveApi').getPool(poolAddress).estimateGas[depositMethod(isWrapped)](amounts, +slippage),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })

@@ -24,10 +24,10 @@ const {
   invalidate: invalidatePoolCurrencyReservesQuery,
 } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, isWrapped, useApi }: PoolCurrencyReservesParams) =>
-    ({ name: 'stats.currencyReserves', chainId, poolId, isWrapped, useApi }) as const,
-  queryFn: async ({ chainId, poolId, isWrapped }: PoolCurrencyReservesQuery) => {
-    const pool = requireLib('curveApi').getPool(poolId)
+  queryKey: ({ chainId, poolAddress, isWrapped, useApi }: PoolCurrencyReservesParams) =>
+    ({ name: 'stats.currencyReserves', chainId, poolAddress, isWrapped, useApi }) as const,
+  queryFn: async ({ chainId, poolAddress, isWrapped }: PoolCurrencyReservesQuery) => {
+    const pool = requireLib('curveApi').getPool(poolAddress)
     const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrapped })
 
     const [balances, usdRates] = await Promise.all([
@@ -50,7 +50,6 @@ const {
     const useUsdBalances = crTokens.every(cr => cr.balanceUsd)
 
     return {
-      poolId: pool.id,
       tokens: crTokens.map(cr => ({
         ...cr,
         percentShareInPool: isEmpty

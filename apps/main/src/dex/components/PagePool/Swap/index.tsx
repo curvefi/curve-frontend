@@ -63,7 +63,7 @@ export const Swap = ({
     blockchainId,
     chainId,
     userAddress: signerAddress,
-    poolId,
+    poolAddress,
     pool,
     api: curve,
     isWrapped,
@@ -141,7 +141,6 @@ export const Swap = ({
       void setFormValues(
         config,
         curve,
-        pool.id,
         pool,
         { isWrapped, ...updatedFormValues },
         isGetMaxFrom,
@@ -289,25 +288,25 @@ export const Swap = ({
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (poolAddress) {
       resetState(pool, isWrapped)
     }
-  }, [isWrapped, pool, poolId, resetState])
+  }, [isWrapped, pool, poolAddress, resetState])
 
   // get user balances
   useEffect(() => {
-    if (curve && poolId && haveSigner && (userFromBalance == null || userToBalance == null)) {
-      void fetchPoolTokenBalances(config, curve, poolId)
+    if (curve && poolAddress && haveSigner && (userFromBalance == null || userToBalance == null)) {
+      void fetchPoolTokenBalances(config, curve, poolAddress)
     }
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve])
+  }, [chainId, poolAddress, haveSigner, userFromBalance, userToBalance, config, curve])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // maxSlippage
   useEffect(() => {
@@ -339,7 +338,7 @@ export const Swap = ({
   }, [
     config,
     chainId,
-    poolId,
+    poolAddress,
     confirmedLoss,
     exchangeOutput?.modal,
     formEstGas,

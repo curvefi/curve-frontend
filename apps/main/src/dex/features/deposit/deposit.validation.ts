@@ -54,8 +54,8 @@ export const depositFormValidationSuite = createValidationSuite(
 )
 
 export const depositQueryValidationSuite = createValidationSuite(
-  ({ chainId, decimals, slippage, poolId, amounts }: DepositParams) => {
-    poolValidationGroup({ chainId, poolId })
+  ({ chainId, decimals, slippage, poolAddress, amounts }: DepositParams) => {
+    poolValidationGroup({ chainId, poolAddress })
     curveApiValidationGroup({ chainId }, { requireRpc: true })
     validateAmounts({ amounts, decimals })
     validateSlippage({ slippage })

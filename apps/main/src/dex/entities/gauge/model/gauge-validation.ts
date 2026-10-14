@@ -59,8 +59,8 @@ export const gaugeDepositRewardValidationSuite = createValidationSuite((data: De
   gaugeDepositRewardValidationGroup(data)
 })
 export const gaugeDistributorsValidationSuite = createValidationSuite(
-  ({ chainId, poolId, userAddress }: GaugeDistributorsParams) => {
-    curvePoolValidationGroup({ chainId, poolId })
+  ({ chainId, poolAddress, userAddress }: GaugeDistributorsParams) => {
+    curvePoolValidationGroup({ chainId, poolAddress })
     evmAddressValidationGroup({ evmAddress: userAddress })
   },
 )

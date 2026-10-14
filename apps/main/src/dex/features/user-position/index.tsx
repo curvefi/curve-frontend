@@ -16,10 +16,10 @@ const Content = ({ children }: { children: ReactNode }) => (
 )
 
 export const UserPosition = () => {
-  const { chainId, blockchainId, poolId, tokenAddresses } = usePoolContext()
+  const { chainId, blockchainId, poolAddress, tokenAddresses } = usePoolContext()
   const params = useMemo(
-    () => ({ blockchainId, chainId, poolId, tokenAddresses }),
-    [blockchainId, chainId, poolId, tokenAddresses],
+    () => ({ blockchainId, chainId, poolAddress, tokenAddresses }),
+    [blockchainId, chainId, poolAddress, tokenAddresses],
   )
   const liquidityDetails = useLiquidityDetails(params)
   return (

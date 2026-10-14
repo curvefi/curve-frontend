@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
+import { getAddress } from 'viem'
 import { getTokens } from '@/dex/pool.utils'
 import type { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -25,8 +26,7 @@ export const createPoolContextValue = ({
   blockchainId,
   userAddress,
   pool,
-  poolId: pool.id,
-  poolAddress: pool.address as Address, // not checksummed!
+  poolAddress: getAddress(pool.address),
   api,
   isWrapped,
   setIsWrapped,
