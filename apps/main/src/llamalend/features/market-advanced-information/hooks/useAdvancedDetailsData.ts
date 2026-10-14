@@ -118,7 +118,7 @@ export const useAdvancedDetailsData = ({
       mapQuery(apiMarket, ({ leverage }) => maybe(leverage, value => ({ value }))),
     ),
     maxReturnOnEquity: fallbackQ(
-      combineQueries([maxLeverage, snapshots], (leverage, { snapshots }) =>
+      combineQueries([maxLeverage, snapshots], (leverage, snapshots) =>
         maybe(snapshots.at(-1), ({ borrowApy, collateralToken }) =>
           maxReturnOnEquity(+leverage, collateralToken.rebasingYield, borrowApy),
         ),

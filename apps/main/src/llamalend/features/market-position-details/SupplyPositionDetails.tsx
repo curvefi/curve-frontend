@@ -76,7 +76,7 @@ export const SupplyPositionDetails = () => {
   const onChainRewards = useMarketVaultOnChainRewards(params)
   const snapshots = mapQuery(
     useLendingSnapshots({ blockchainId, contractAddress: controllerAddress, limit: rateWindow }),
-    ({ snapshots }) => ({
+    snapshots => ({
       rebasingYield: getLatestSnapshotValue(snapshots, snapshot => snapshot.borrowedToken.rebasingYield),
       supplyAverageMetrics: getSupplyApyAverageMetrics({ snapshots, daysBack: rateWindow }),
     }),
@@ -84,9 +84,9 @@ export const SupplyPositionDetails = () => {
 
   const supplyMetrics = combineQueries(
     [snapshots, useMarketRates(params), onChainRewards, userSupplyBoost],
-    ({ rebasingYield }, { rates }, { crvRates, rewardsApr }, userSupplyBoost) =>
+    ({ rebasingYield }, marketRatesData, { crvRates, rewardsApr }, userSupplyBoost) =>
       getSupplyApyMetrics({
-        supplyApy: toNumberOrNull(rates.lendApy),
+        supplyApy: toNumberOrNull(marketRatesData?.lendApy),
         rebasingYieldApy: rebasingYield,
         crvBoostApr: crvRates,
         extraIncentivesApy: sumOnChainExtraIncentivesApy(rewardsApr),

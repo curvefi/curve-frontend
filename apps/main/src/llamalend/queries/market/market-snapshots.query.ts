@@ -5,12 +5,12 @@ import type { SnapshotRange } from '@evm-ui/queries/validation/time-option-valid
 import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import type { Query } from '@ui/features/queries/util'
+import type { UseQueryResult } from '@tanstack/react-query'
 
 type SnapshotByMarketType = { [MarketType.Lend]: LendingSnapshot; [MarketType.Mint]: CrvUsdSnapshot }
 
-export type MarketSnapshots<TMarketType extends MarketType = MarketType> = TMarketType extends MarketType
-  ? { snapshots: SnapshotByMarketType[TMarketType][]; fetchedAt: string }
+type SnapshotsByMarketType<TMarketType extends MarketType> = TMarketType extends MarketType
+  ? SnapshotByMarketType[TMarketType][]
   : never
 
 export function useMarketSnapshots<TMarketType extends MarketType>({
@@ -25,7 +25,7 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
   range?: SnapshotRange
   controllerAddress: Address | undefined
   marketType: TMarketType
-}): Query<MarketSnapshots<TMarketType>> {
+}): UseQueryResult<SnapshotsByMarketType<TMarketType>> {
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
   const snapshotsByMarketType = {
@@ -37,7 +37,7 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
       enabled && marketType === MarketType.Mint,
     ),
-  } satisfies { [T in MarketType]: Query<MarketSnapshots<T>> }
+  } satisfies { [T in MarketType]: UseQueryResult<SnapshotByMarketType[T][]> }
 
-  return snapshotsByMarketType[marketType] as Query<MarketSnapshots<TMarketType>>
+  return snapshotsByMarketType[marketType] as UseQueryResult<SnapshotsByMarketType<TMarketType>>
 }

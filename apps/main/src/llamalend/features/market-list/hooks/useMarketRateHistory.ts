@@ -45,14 +45,14 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
   const { snapshots, isLoading, snapshotKey, error } = isLend
     ? {
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        snapshots: (showLendGraph && poolSnapshots?.snapshots) || null,
+        snapshots: (showLendGraph && poolSnapshots) || null,
         isLoading: !enabled || lendIsLoading,
         snapshotKey: RateKeys[type],
         error: poolError,
       }
     : {
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-        snapshots: (showMintGraph && mintSnapshots?.snapshots) || null,
+        snapshots: (showMintGraph && mintSnapshots) || null,
         isLoading: !enabled || mintIsLoading,
         snapshotKey: RateKeys[MarketRateType.Borrow],
         error: mintError,
@@ -79,9 +79,9 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
   const supplyRateMetrics = useMemo(
     () =>
       isLend && type === MarketRateType.Supply
-        ? getSupplyApyAverageMetrics({ snapshots: poolSnapshots?.snapshots, daysBack: rateWindow })
+        ? getSupplyApyAverageMetrics({ snapshots: poolSnapshots, daysBack: rateWindow })
         : null,
-    [rateWindow, isLend, poolSnapshots?.snapshots, type],
+    [rateWindow, isLend, poolSnapshots, type],
   )
 
   return {

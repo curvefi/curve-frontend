@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { type MarketSnapshots, useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
+import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
-import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
+import { MarketHistoricalRatesChart, type RateSnapshot } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
@@ -20,7 +20,10 @@ import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { buildBorrowRateBreakdown, buildSupplyRateBreakdown } from './market-rate-breakdown.utils'
 import { PointsCampaignsCard, RateBreakdownTable } from './MarketRateBreakdownCards'
 
-type HistoricalRatesTabProps = { timeOption: TimeOption; snapshots: QueryProp<MarketSnapshots> }
+type HistoricalRatesTabProps = {
+  timeOption: TimeOption
+  snapshots: QueryProp<RateSnapshot[]> & { dataUpdatedAt: number }
+}
 
 const MarketBorrowHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesTabProps) => {
   const {
@@ -98,9 +101,13 @@ const HISTORICAL_RATE_TABS = {
 export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateType }) => {
   const { marketType, controllerAddress, blockchainId } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
-  const snapshots = q(
-    useMarketSnapshots({ controllerAddress, marketType, blockchainId, range: { kind: 'timeRange', timeOption: '1Y' } }),
-  )
+  const snapshotsQuery = useMarketSnapshots({
+    controllerAddress,
+    marketType,
+    blockchainId,
+    range: { kind: 'timeRange', timeOption: '1Y' },
+  })
+  const snapshots = { ...q(snapshotsQuery), dataUpdatedAt: snapshotsQuery.dataUpdatedAt }
   const { types, defaultValue } = getMarketRateTypeTabConfig({ marketType, rateType })
   const { tab, tabs, onChange, content } = useTabs({
     menu: types.map(type => ({ ...HISTORICAL_RATE_TABS[type], value: type })),

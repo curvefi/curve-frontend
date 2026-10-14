@@ -39,12 +39,12 @@ export function ChartCrvUsdPrice() {
 
   const chartData = useMemo(
     () =>
-      llama(data?.prices)
+      llama(data)
         .map(x => ({ time: new Date(x.timestamp).getTime(), price: x.price }))
         .uniqWith((x, y) => x.time === y.time)
         .orderBy(c => c.time, 'asc')
         .value(),
-    [data?.prices],
+    [data],
   )
 
   const option = useMemo(
