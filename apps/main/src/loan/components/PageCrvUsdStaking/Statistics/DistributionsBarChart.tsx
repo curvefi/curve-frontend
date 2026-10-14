@@ -1,5 +1,5 @@
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
-import { EChartsBarChart } from '@evm-ui/shared/ui/Chart'
+import { EChartsBarChart } from '@evm-ui/shared/ui/Chart/EChartsBarChart'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'

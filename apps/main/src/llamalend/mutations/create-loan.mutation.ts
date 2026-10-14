@@ -8,7 +8,7 @@ import { fetchCreateLoanControllerApproval } from '@/llamalend/queries/create-lo
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { parseMutationRoute } from '@evm-ui/queries/router-api'
+import { parseMutationRoute } from '@evm-ui/queries/router-api/utils'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'

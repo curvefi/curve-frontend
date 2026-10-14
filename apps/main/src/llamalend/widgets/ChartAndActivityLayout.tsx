@@ -3,11 +3,6 @@ import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
-import {
-  LlammaActivityEventsTable,
-  type LlammaActivityProps,
-  LlammaActivityTradesTable,
-} from '@/llamalend/features/llamma-activity'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
@@ -39,6 +34,9 @@ import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
+import { LlammaActivityEventsTable } from '../features/llamma-activity/LlammaActivityEventsTable'
+import { LlammaActivityTradesTable } from '../features/llamma-activity/LlammaActivityTradesTable'
+import type { LlammaActivityProps } from '../features/llamma-activity/types'
 import type { FetchedBandsBalances } from '../queries/bands/bands-balances.query-helpers'
 import { useMarketOraclePrice } from '../queries/market/market-oracle-price.query'
 import { useMarketPrice } from '../queries/market/market-price.query'

@@ -76,7 +76,7 @@ export function queryFactory<
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
-  queryFn,
+  queryFn: query,
   queryKey,
   category,
   validationSuite,
@@ -96,13 +96,15 @@ export function queryFactory<
   keepPreviousData?: boolean
 }) {
   const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
+
+  const queryFn = async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
+    await runQuery(queryKey, query, disableLog)
+
   const getQueryOptions = (params: TParams, enabled = true) =>
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryOptions({
       ...QUERY_CATEGORIES[category],
       queryKey: internalKey(params),
-      queryFn: async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
-        await runQuery(queryKey, queryFn, disableLog),
+      queryFn,
       enabled:
         enabled &&
         isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)) &&

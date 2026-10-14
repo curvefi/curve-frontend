@@ -1,5 +1,9 @@
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
-import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
+import {
+  ChartTooltipDataRow,
+  ChartTooltipSeriesGroup,
+  ChartTooltipShell,
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'

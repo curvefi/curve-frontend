@@ -1,4 +1,5 @@
-import { MaxReturnOnEquity, SolvencyTooltip } from '@/llamalend/widgets/tooltips'
+import type { MaxReturnOnEquity } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
+import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
 import { MarketType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'

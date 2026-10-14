@@ -21,7 +21,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
 import { constQ, type Range } from '@ui/features/queries/util'
 import { ReleaseChannel } from '@ui/lib/env'
-import { BorrowPositionDetails } from './'
+import { BorrowPositionDetails } from './BorrowPositionDetails'
 
 const baseProps = {
   userBandsCollateralValue: 110.7,

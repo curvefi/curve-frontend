@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
@@ -14,21 +15,26 @@ type Queries = readonly Query<unknown>[]
 type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
+type QueriesDataInput<TQueries extends Queries> = { [K in keyof TQueries]: TQueries[K]['data'] }
 /** a query with non-nullable data */
 export type QueryWithData<TData> = Query<TData> & { data: NonNullable<TData> }
 
+const getQueriesData = <const TQueries extends Queries>(queries: TQueries) =>
+  queries.map(({ data }) => data) as QueriesDataInput<TQueries>
+
 const combineQueryData = <const TQueries extends Queries, TResult>(
-  queries: TQueries,
+  data: QueriesDataInput<TQueries>,
   selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
-) =>
-  queries.some(({ data }) => data === undefined)
-    ? undefined
-    : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>))
+) => (data.some(value => value === undefined) ? undefined : selector(...(data as QueriesData<TQueries>)))
 
 export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
   selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
-) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
+) =>
+  ({
+    data: combineQueryData<TQueries, TResult>(getQueriesData(queries), selector),
+    ...combineQueryState(...queries),
+  }) as QueryProp<TResult>
 
 /** Maps a query's data to another query, and combines the results into a single one. */
 export const combineSubQueries = <Q1, Q2, R>(
@@ -54,15 +60,13 @@ export const pickQuery = <TData>(
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
   selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
-) =>
-  ({
-    data: useMemo(
-      () => combineQueryData(queries, selector),
-      // eslint-disable-next-line @eslint-react/exhaustive-deps
-      [selector, ...queries.map(({ data }) => data)],
-    ),
+) => {
+  const data = useShallow(getQueriesData<TQueries>)(queries)
+  return {
+    data: useMemo(() => combineQueryData<TQueries, TResult>(data, selector), [data, selector]),
     ...combineQueryState(...queries),
-  }) as QueryProp<TResult>
+  } as QueryProp<TResult>
+}
 
 /** Keys individual queries without merging their data, loading, or error states. */
 export const combineQueriesToObject = <TData, K extends string = string>(results: Query<TData>[], keys: readonly K[]) =>

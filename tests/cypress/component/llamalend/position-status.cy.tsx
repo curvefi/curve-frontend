@@ -1,6 +1,6 @@
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
-import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { BorrowPositionDetails } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
 import { getIsUserCloseToSoftLiquidation, getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'

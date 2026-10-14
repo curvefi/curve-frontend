@@ -3,7 +3,7 @@ import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { parseMutationRoute } from '@evm-ui/queries/router-api'
+import { parseMutationRoute } from '@evm-ui/queries/router-api/utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type FieldsOf } from '@ui/lib/validation/types'

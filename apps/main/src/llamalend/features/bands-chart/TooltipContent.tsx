@@ -1,4 +1,4 @@
-import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart'
+import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { LegendBox } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { Box, Stack, Typography } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'

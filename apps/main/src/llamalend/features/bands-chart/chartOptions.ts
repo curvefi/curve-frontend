@@ -1,4 +1,4 @@
-import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart'
+import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { generateOracleReferenceLines, generateRangeBoundaryLines, type HorizontalLine } from './horizontalLines'

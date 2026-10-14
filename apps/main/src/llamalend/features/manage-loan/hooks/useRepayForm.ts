@@ -17,7 +17,7 @@ import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validat
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'

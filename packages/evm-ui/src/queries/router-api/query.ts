@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { test } from 'vest'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { createHash } from '@evm-ui/queries/router-api/router-api.utils'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'
@@ -13,8 +12,9 @@ import { decimal } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
-import type { RouteQueries, RouteQuery, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
-import { routerApiValidation } from './router-api.validation'
+import type { RouteQueries, RouteQuery, RouteResponse, RoutesParams, RoutesQuery } from './types'
+import { createHash } from './utils'
+import { routerApiValidation } from './validation'
 
 type RouteByIdQuery = { routeId: string }
 type RouteByIdParams = FieldsOf<RouteByIdQuery>
