@@ -48,7 +48,7 @@ export const DepositReward = () => {
 
   const form = useForm<DepositRewardFormValues>({ validation, defaultValues })
   const { errors, isValid, visibleErrors } = form.formState
-  const { rewardTokenId, amount, epoch } = form.watchValues()
+  const { rewardTokenId, amount, epoch } = form.values
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
 

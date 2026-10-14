@@ -134,7 +134,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, leverageProviders, ...values })
   const {
     onSubmit: onMutationSubmit,
@@ -183,7 +183,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
-  const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
     form,

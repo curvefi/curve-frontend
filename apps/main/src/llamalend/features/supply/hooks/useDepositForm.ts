@@ -28,8 +28,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
   const { borrowToken } = tokens
 
   const form = useForm<DepositForm>(formOptions)
-
-  const depositAmount = form.watchValue('depositAmount')
+  const { depositAmount } = form.values
   const [params, isDebouncing] = useFormDebounce(
     { chainId, marketId, userAddress, depositAmount } satisfies DepositParams<ChainId>,
     userDefaultValues,

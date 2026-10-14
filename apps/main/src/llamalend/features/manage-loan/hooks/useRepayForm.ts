@@ -96,7 +96,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   })
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
@@ -127,7 +127,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { data: isAvailable } = useRepayIsAvailable(params)
   const { isFull, max } = useMaxRepayTokenValues({ market, borrowTokenAddress: borrowToken?.address, params, form })
 
-  const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
     form,

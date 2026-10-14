@@ -31,8 +31,7 @@ export const BalancedDepositCheckbox = ({
   isConnected: boolean
   disabled: boolean
 }) => {
-  const { watchValues, update } = useFormContext<PoolForm>()
-  const values = watchValues()
+  const { values, update } = useFormContext<PoolForm>()
   const decimals = completeArray(values.decimals)
   const amounts = decimals?.map(
     (_, index) => values[(isConnected ? poolMaxAmountField : poolAmountField)(index)] ?? '0',
