@@ -101,10 +101,10 @@ const RATE_MODE_CONFIG = {
   },
 } satisfies Record<MarketRateType, RateModeConfig>
 
-const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: number, now: number) =>
+const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: number, now: Date) =>
   calculateAverageRates(ratePoints, days, { rate: ({ rate }) => rate }, now)?.rate
 
-const getAverageRates = (ratePoints: { rate: number; timestamp: number }[], now: number) => ({
+const getAverageRates = (ratePoints: { rate: number; timestamp: number }[], now: Date) => ({
   week: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.week, now),
   month: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.month, now),
   year: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.year, now),
@@ -121,7 +121,10 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
   } = useTheme()
 
   const marketRates = useMarketRates({ chainId, marketId })
-  const dataUpdatedAt = Math.max(snapshots.dataUpdatedAt, marketRates.dataUpdatedAt)
+  const dataUpdatedAt = useMemo(
+    () => new Date(Math.max(snapshots.dataUpdatedAt, marketRates.dataUpdatedAt)),
+    [snapshots.dataUpdatedAt, marketRates.dataUpdatedAt],
+  )
 
   const ratePoints = useMappedQuery(
     snapshots,
@@ -142,9 +145,9 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
   )
 
   const chartData = useMemo<RateChartPoint[]>(() => {
-    const cutoff = dataUpdatedAt - TIME_OPTION_MS[timeOption]
+    const cutoff = new Date(dataUpdatedAt.getTime() - TIME_OPTION_MS[timeOption])
     return addMovingAverages(
-      (ratePoints.data ?? []).filter(({ timestamp }) => timestamp >= cutoff),
+      (ratePoints.data ?? []).filter(({ timestamp }) => timestamp >= cutoff.getTime()),
       d => d.rate,
       d => d.timestamp,
     )

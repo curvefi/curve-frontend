@@ -21,15 +21,15 @@ export const AVERAGE_WINDOW_DAYS = {
 export function hasFullTimeWindow(
   snapshots: WithTimestamp[] | undefined,
   daysBack: number,
-  now = Date.now(),
+  now = new Date(),
   tolerance = TIME_FRAMES.DAY_MS,
 ) {
   const timestamps = (snapshots ?? []).map(snapshot => new Date(snapshot.timestamp).getTime()).filter(Number.isFinite)
 
   if (timestamps.length === 0) return false
 
-  const cutoff = now - daysBack * TIME_FRAMES.DAY_MS
-  return Math.min(...timestamps) <= cutoff + tolerance && Math.max(...timestamps) >= now - tolerance
+  const cutoff = now.getTime() - daysBack * TIME_FRAMES.DAY_MS
+  return Math.min(...timestamps) <= cutoff + tolerance && Math.max(...timestamps) >= now.getTime() - tolerance
 }
 
 /**
@@ -38,7 +38,7 @@ export function hasFullTimeWindow(
  * @param snapshots - Array of snapshot objects with timestamp
  * @param daysBack - Number of days to look back from today
  * @param extractors - Object where keys are result field names and values are functions to extract data from snapshots
- * @param now - Reference timestamp for the trailing window, defaulting to the current time
+ * @param now - Reference date for the trailing window, defaulting to the current time
  * @returns Object with averaged values or null if no data
  */
 export function calculateAverageRates<
@@ -48,7 +48,7 @@ export function calculateAverageRates<
   snapshots: T[] | undefined,
   daysBack: number,
   extractors: K,
-  now = Date.now(),
+  now = new Date(),
 ): { [P in keyof K]: number | null } | null {
   if (!snapshots) return null
 
