@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { skipWhen, test } from 'vest'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
-import { calculateMaximumBurn } from '@/stellar/lib/amounts'
+import { calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { isComplete } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
@@ -9,7 +9,7 @@ import {
   getSingleCoinWithdrawIndex,
   type WithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { decimalEqual, decimalMinus } from '@ui/lib/decimal'
+import { decimalEqual, decimalMinus, decimalRound } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
@@ -70,7 +70,9 @@ const validateMaximumBurn = ({
   })
   skipWhen(!isExactBurn, () => {
     test('maximumBurn', 'LP burn does not match the selected LP amount', () => {
-      enforce(maybes([maximumBurn, lpAmount], decimalEqual)).isTruthy()
+      enforce(
+        maybes([maximumBurn, lpAmount], (burn, amount) => decimalEqual(burn, decimalRound(amount, LP_TOKEN_DECIMALS))),
+      ).isTruthy()
     })
   })
 }
@@ -143,7 +145,7 @@ const validateWithdraw = ({
   })
   skipWhen(!isExactBurn, () => {
     test('expected', 'LP quote does not match the selected LP amount', () => {
-      enforce(decimalEqual(expected, lpAmount)).isTruthy()
+      enforce(decimalEqual(expected, decimalRound(lpAmount, LP_TOKEN_DECIMALS))).isTruthy()
     })
   })
   skipWhen(isExactBurn, () => {

@@ -14,6 +14,7 @@ export const { useQuery: useTokenUsdRate, getQueryOptions: getTokenUsdRateQueryO
     const { nativeCurrency: nativeCurrency, isTestnet } = STELLAR_NETWORKS[network]
     const { address: nativeAddress, symbol: nativeSymbol } = nativeCurrency
     const isNative = token === nativeAddress
+    if (isTestnet && !isNative) return 1 // our generated testnet pools use fake USD-based tokens
     const path = STELLAR_EXPERT_PATHS[isNative && isTestnet ? 'stellar' : network] // Use the mainnet XLM price as a display reference for native testnet XLM.
     const { _embedded } = await fetchJson<AssetPriceResponse>(
       `https://api.stellar.expert/explorer/${path}/asset/price?asset=${isNative ? nativeSymbol : token}`,
