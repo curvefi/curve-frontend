@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 // eslint-disable-next-line no-restricted-imports
-import { DefaultValues, useForm as _useForm } from 'react-hook-form'
+import { DefaultValues, useForm as _useForm, useWatch } from 'react-hook-form'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { ICreateResult } from '@hookform/resolvers/vest'
 import { notFalsy, recordEntries } from '@primitives/objects.utils'
@@ -29,7 +29,7 @@ export const useForm = <T extends FieldValues = FieldValues>({
     handleSubmit,
     trigger,
     reset,
-    watch,
+    control,
     getValues,
     setValue,
     setError,
@@ -46,13 +46,12 @@ export const useForm = <T extends FieldValues = FieldValues>({
   })
 
   return {
+    values: useWatch({ control }) as T, // defaultValues is T, so it should be safe to cast here.
     handleSubmit: handleSubmit as UseFormReturn<T>['handleSubmit'],
     reset: useCallback(
       (valuesToReset: FormUpdates<T>): void => reset({ ...getValues(), ...valuesToReset }),
       [getValues, reset],
     ),
-    watchValue: watch,
-    watchValues: watch,
     getValues,
     getValue: getValues,
     /**

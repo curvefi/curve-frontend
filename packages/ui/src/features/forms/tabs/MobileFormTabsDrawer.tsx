@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import { SwipeableDrawer } from '@ui/components/SwipeableDrawer/SwipeableDrawer'
 import type { TabOption } from '@ui/components/Tabs/TabsSwitcher'
 import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
-import { MUI_BUTTON_SIZE } from '@ui/features/themes/components/button'
+import { MUI_BUTTON_SIZE } from '@ui/features/themes/components/button/mui-button'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps } from '@ui/lib/mui'
 

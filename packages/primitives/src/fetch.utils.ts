@@ -1,5 +1,5 @@
 import { type Nullish, notFalsy } from './objects.utils'
-import { retry } from './promise.utils'
+import { anySignal, retry } from './promise.utils'
 
 const RETRIES = 2
 const RETRY_DELAY_MS = 500
@@ -42,7 +42,7 @@ async function requestJson<T>(url: string, { body, headers, signal }: RequestOpt
       body: JSON.stringify(body),
     },
     ...(body && { body: JSON.stringify(body) }),
-    signal: AbortSignal.any(notFalsy(signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS))),
+    signal: anySignal(notFalsy(signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS))),
   }).catch(error => {
     const { message } = error as Error
     if (message == 'Failed to fetch') throw new FetchError(0, `Cannot fetch ${url}`, message)

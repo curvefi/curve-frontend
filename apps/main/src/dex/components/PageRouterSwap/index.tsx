@@ -1,5 +1,5 @@
 import { isEqual, noop } from 'lodash'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
@@ -43,7 +43,7 @@ import type { RouterRouteResponse } from '@primitives/router.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
-import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/DebouncedLargeTokenInput'
 import { type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
@@ -406,12 +406,14 @@ export const QuickSwap = ({
   const lastFetchTimeRef = useRef<number>(0)
   const fetchDataRef = useRef<() => void>(noop)
 
-  // Keep fetchDataRef always pointing to the latest fetchData logic
-  fetchDataRef.current = () => {
-    if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
-      updateFormValues({}, false, false, true)
+  // Refresh the callback after commit, before effects or events can trigger a fetch.
+  useLayoutEffect(() => {
+    fetchDataRef.current = () => {
+      if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
+        updateFormValues({}, false, false, true)
+      }
     }
-  }
+  }, [isReady, formStatus.formProcessing, formStatus.formTypeCompleted, updateFormValues])
 
   // Direct fetch for user-initiated actions (token changes, input changes)
   // Also resets timer to prevent redundant background fetch right after

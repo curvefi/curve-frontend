@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { useScrvUsdDepositIsApproved } from '@/loan/entities/scrvusd-deposit-is-approved.query'
 import { useScrvUsdDepositMutation } from '@/loan/entities/scrvusd-deposit.mutation'
@@ -19,12 +19,9 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
     defaultValues: emptyDepositForm(),
     validation: scrvUsdDepositFormValidationSuite,
   })
-  const { depositAmount, maxDepositAmount, approveInfinite } = form.watchValues()
+  const { depositAmount, maxDepositAmount, approveInfinite } = form.values
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ chainId, userAddress, depositAmount, maxDepositAmount, approveInfinite }),
-      [chainId, userAddress, depositAmount, maxDepositAmount, approveInfinite],
-    ),
+    { chainId, userAddress, depositAmount, maxDepositAmount, approveInfinite },
     userDefaultValues,
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress })

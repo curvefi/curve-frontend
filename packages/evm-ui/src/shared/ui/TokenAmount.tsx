@@ -16,8 +16,8 @@ type TokenAmountProps = {
   amount: number | undefined
   amountUsd: number | Nullish
   blockchainId?: string
-  /** Token contract address used to render the token icon. */
-  tokenAddress?: Address
+  /** Token contract address used to render the token icon, or the addresses of a token pair. */
+  tokenAddress?: Address | Address[]
   amountLoading?: boolean
   usdLoading?: boolean
   tooltipTitle?: ReactNode

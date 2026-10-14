@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import { useScrvUsdWithdrawMutation } from '@/loan/entities/scrvusd-withdraw.mutation'
@@ -24,12 +23,9 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
     defaultValues: emptyWithdrawForm(),
     validation: scrvUsdWithdrawFormValidationSuite,
   })
-  const { maxWithdrawAmount, withdrawAmount, isFull } = form.watchValues()
+  const { maxWithdrawAmount, withdrawAmount, isFull } = form.values
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull }),
-      [chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull],
-    ),
+    { chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull },
     userDefaultValues,
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress })

@@ -1,4 +1,4 @@
-import { getHealthValueColor } from '@/llamalend/features/market-position-details'
+import { getHealthValueColor } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'

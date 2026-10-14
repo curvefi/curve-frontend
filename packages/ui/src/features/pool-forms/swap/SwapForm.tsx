@@ -12,8 +12,8 @@ import type { PoolFormProps } from '../pool-form.types'
 import { reverseSwap, type SwapFormValues } from './swap-form.utils'
 import { SwapTokenInput } from './SwapTokenInput'
 export type SwapFormProps = PoolFormProps<SwapFormValues> & {
-  inputAmount: QueryProp<Decimal | undefined>
-  outputAmount: QueryProp<Decimal | undefined>
+  inputAmount: QueryProp<Decimal>
+  outputAmount: QueryProp<Decimal>
 }
 
 const { Spacing } = SizesAndSpaces
@@ -38,7 +38,7 @@ export const SwapForm = ({
       <SwapTokenInput form={form} tokens={tokens} side="pay" balance={inputAmount} disabled={isPending} />
       <IconButton
         type="button"
-        disabled={isPending || !tokens.data}
+        disabled={isPending || !tokens}
         onClick={() => form.update(reverseSwap(form.getValues()))}
         data-testid="pool-swap-reverse"
         size="small"

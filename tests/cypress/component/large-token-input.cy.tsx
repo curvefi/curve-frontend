@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 
 // Mirrors a controlled form field updated by LargeTokenInput's callback.
 function TestComponent() {

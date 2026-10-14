@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { RouteQueries, RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteQueries, RouteResponse } from '@evm-ui/queries/router-api/types'
 import { RouteComparisonChip } from '@evm-ui/widgets/RouteProvider/RouteComparisonChip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'

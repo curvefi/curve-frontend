@@ -12,7 +12,7 @@ import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan
 import { useControllerDelegation } from '@/llamalend/widgets/action-card/hooks/useControllerDelegation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { RouteResponse } from '@evm-ui/queries/router-api'
+import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
@@ -87,41 +87,24 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   // Clear leverage state if the loaded market is not supported by the current provider
   useFormSync(form, { leverageEnabled: false, routeId: undefined }, isLeverageSupported === false)
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({
-        chainId,
-        marketId,
-        userAddress,
-        debt: values.debt,
-        maxDebt: values.maxDebt,
-        maxCollateral: values.maxCollateral,
-        range: values.range,
-        slippage: values.slippage,
-        leverageEnabled: values.leverageEnabled,
-        userCollateral: values.userCollateral,
-        userBorrowed: values.userBorrowed,
-        routeId: values.routeId,
-        leverageProviders,
-        slippageType: LEVERAGE,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        values.debt,
-        values.maxDebt,
-        values.maxCollateral,
-        values.range,
-        values.slippage,
-        values.leverageEnabled,
-        values.userCollateral,
-        values.userBorrowed,
-        values.routeId,
-        leverageProviders,
-      ],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      debt: values.debt,
+      maxDebt: values.maxDebt,
+      maxCollateral: values.maxCollateral,
+      range: values.range,
+      slippage: values.slippage,
+      leverageEnabled: values.leverageEnabled,
+      userCollateral: values.userCollateral,
+      userBorrowed: values.userBorrowed,
+      routeId: values.routeId,
+      leverageProviders,
+      slippageType: LEVERAGE,
+    },
     userDefaultValues,
   )
 
@@ -168,7 +151,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
-  const { formState } = form
   const collateralTokenAddress = collateralToken?.address
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)

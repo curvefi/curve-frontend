@@ -1,5 +1,5 @@
 import type { IChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LlamaApi } from '@evm-ui/features/connect-wallet'
+import type { LlamaApi } from '@evm-ui/features/connect-wallet/lib/types'
 import type { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { QueryProp } from '@ui/features/queries/util'

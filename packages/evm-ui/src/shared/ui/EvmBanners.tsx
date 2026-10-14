@@ -1,6 +1,6 @@
 import { useChainId } from 'wagmi'
-import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
-import { DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { isFailure, useCurve, useSwitchChain } from '@evm-ui/features/connect-wallet'
+import { DEPRECATED_CHAINS, DOWNGRADED_CHAINS, getChainName } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { type AppName } from '@evm-ui/shared/routes'
 import { Chain } from '@primitives/network.utils'
 import { InlineLink } from '@ui/components/InlineLink'

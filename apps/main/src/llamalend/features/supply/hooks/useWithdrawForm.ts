@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useMaxWithdrawTokenValues } from '@/llamalend/features/supply/hooks/useMaxWithdraw'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
@@ -28,19 +27,16 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
 
   const form = useForm<WithdrawForm>({ validation: withdrawFormValidationSuite, defaultValues: emptyWithdrawForm() })
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): WithdrawParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        withdrawAmount: values.withdrawAmount,
-        isFull: values.isFull,
-        userVaultShares: values.userVaultShares,
-      }),
-      [chainId, marketId, userAddress, values.withdrawAmount, values.isFull, values.userVaultShares],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      withdrawAmount: values.withdrawAmount,
+      isFull: values.isFull,
+      userVaultShares: values.userVaultShares,
+    } satisfies WithdrawParams<ChainId>,
     userDefaultValues,
   )
 
@@ -51,8 +47,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { net
     isPending: isWithdrawing,
     error: withdrawError,
   } = useWithdrawMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
-
-  const { formState } = form
 
   const isPending = formState.isSubmitting || isWithdrawing
 

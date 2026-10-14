@@ -1,9 +1,11 @@
 import { MarketTypeSuffix } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
-import { AvailableLiquidityTooltip, TooltipOptions, TotalCollateralTooltip } from '@/llamalend/widgets/tooltips'
 import type { MarketType } from '@evm-ui/types/market'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { t } from '@ui/lib/i18n'
+import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
+import { TooltipOptions } from './tooltips/tooltip.utils'
+import { TotalCollateralTooltip } from './tooltips/TotalCollateralTooltip'
 
 type MarketMetricProps = Pick<Parameters<typeof tokenMetric>[0], 'usdRate' | 'symbol' | 'value'> &
   Pick<MetricProps, 'category' | 'testId'>
