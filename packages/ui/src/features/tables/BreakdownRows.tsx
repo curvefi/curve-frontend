@@ -30,15 +30,16 @@ const BreakdownCell = <TData extends RowData>({
 
 export const BreakdownRows = <TData extends RowData, TItem>({
   row,
+  visibleCells,
   config: { getItems, getItemKey, cells },
   shouldStickFirstColumn,
 }: {
   row: Row<CurveTableFeatures, TData>
+  visibleCells: Cell<CurveTableFeatures, TData>[]
   config: RowBreakdownConfig<TData, TItem>
   shouldStickFirstColumn?: boolean
 }) => {
   const items = getItems(row.original)
-  const visibleCells = row.getVisibleCells()
   return (
     items.length > 1 &&
     items.map(item => (

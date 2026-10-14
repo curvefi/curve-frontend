@@ -1,8 +1,8 @@
 import { type ReactNode, useMemo } from 'react'
-import { LiquidityDetails } from '@/dex/features/user-position/liquidity-details'
 import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
 import Stack from '@mui/material/Stack'
 import { Tabs } from '@ui/components/Tabs/Tabs'
+import { LiquidityDetails } from '@ui/features/pools/liquidity-details/LiquidityDetails'
 import { t } from '@ui/lib/i18n'
 import { usePoolContext } from '../pool-context'
 
@@ -21,11 +21,11 @@ export const UserPosition = () => {
     () => ({ blockchainId, chainId, poolId, tokens, tokenAddresses }),
     [blockchainId, chainId, poolId, tokens, tokenAddresses],
   )
-  const { hasPosition } = useLiquidityDetails(params)
+  const liquidityDetails = useLiquidityDetails(params)
   return (
-    hasPosition && (
+    liquidityDetails.hasPosition && (
       <Stack>
-        <Tabs menu={menu} params={params} ContentWrapper={Content} />
+        <Tabs menu={menu} params={{ blockchainId, ...liquidityDetails }} ContentWrapper={Content} />
       </Stack>
     )
   )

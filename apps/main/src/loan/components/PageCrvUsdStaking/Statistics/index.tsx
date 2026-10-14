@@ -5,13 +5,10 @@ import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
 import type { ChainId } from '@/loan/types/loan.types'
 import { timeOptions } from '@evm-ui/queries/validation/time-option-validation'
-import {
-  ChartFooter,
-  ChartHeader,
-  type ChartSelections,
-  EvmChartStateWrapper,
-  type LegendItem,
-} from '@evm-ui/shared/ui/Chart'
+import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { Card, CardHeader, Stack } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'

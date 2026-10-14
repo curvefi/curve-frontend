@@ -1,5 +1,4 @@
 import { Children, type ReactNode } from 'react'
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { drawerClasses } from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 import { applySxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
@@ -41,7 +41,7 @@ export const TooltipValueLink = ({ children, href }: { children: ReactNode; href
     }}
   >
     {children}
-    <ArrowOutwardIcon className="arrow" />
+    <ArrowTopRightIcon className="arrow" />
   </Stack>
 )
 

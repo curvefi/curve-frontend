@@ -10,7 +10,7 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { fakeLoadingQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { LlammaActivityProps } from '..'
+import type { LlammaActivityProps } from '../types'
 
 export const useLlammaActivityEventsConfig = ({
   chainId,

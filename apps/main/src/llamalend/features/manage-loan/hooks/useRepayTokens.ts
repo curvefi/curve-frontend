@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import {
   canRepayFromStateCollateral,
@@ -61,7 +61,6 @@ export const useRepayTokens = ({
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const { market, leverageProviders } = useMarketContext()
-  const [token, setToken] = useState<RepayTokenOption | undefined>()
   const tokens = useMemo(
     () =>
       getRepayTokenOptions({
@@ -76,11 +75,13 @@ export const useRepayTokens = ({
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find(t => t.field === field)
-  useEffect(() => {
+  const [token, setToken] = useState(defaultToken)
+  const [previousDefaultToken, setPreviousDefaultToken] = useState(defaultToken)
+  if (!Object.is(previousDefaultToken, defaultToken)) {
+    setPreviousDefaultToken(defaultToken)
     // override the user's choice when we get to know they have a (non)-leveraged position
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (defaultToken) setToken(defaultToken)
-  }, [defaultToken])
+  }
   // Market or provider changes can remove a repayment source, so keep the selection within the current options.
   const selectedToken = tokens.find(({ field }) => field === token?.field) ?? tokens[0]
   return { tokens, token: selectedToken, onToken: setToken }

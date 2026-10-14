@@ -3,7 +3,7 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { RowData } from '@tanstack/react-table'
+import { Subscribe, type RowData } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import type { DataRowProps } from './DataRow'
@@ -19,25 +19,33 @@ export type ExpandedPanelConfig<TData extends RowData> = {
   Actions?: ExpandedPanelComponent<TData>
 }
 
+type ExpansionRowProps<TData extends RowData> = Pick<DataRowProps<TData>, 'table' | 'row'> & {
+  expandedPanel: ExpandedPanelConfig<TData>
+  colSpan: number
+}
+
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */
-export function ExpansionRow<TData extends RowData>({
+export const ExpansionRow = <TData extends RowData>(props: ExpansionRowProps<TData>) => (
+  <Subscribe source={props.row.table.atoms.expanded} selector={() => props.row.getIsExpanded()}>
+    {rowExpanded => <ExpansionRowContent {...props} rowExpanded={rowExpanded} />}
+  </Subscribe>
+)
+
+function ExpansionRowContent<TData extends RowData>({
   row,
   table,
   expandedPanel: { Body, Actions },
   colSpan,
-}: Pick<DataRowProps<TData>, 'table' | 'row'> & {
-  expandedPanel: NonNullable<DataRowProps<TData>['expandedPanel']>
-  colSpan: number
-}) {
-  const expanded = row.getIsExpanded()
+  rowExpanded,
+}: ExpansionRowProps<TData> & { rowExpanded: boolean }) {
   const [keepMounted, onEnter, onExited] = useSwitch(false)
   return (
-    (expanded || keepMounted) && (
-      <TableRow data-testid={expanded ? 'data-table-expansion-row' : undefined}>
+    (rowExpanded || keepMounted) && (
+      <TableRow data-testid={rowExpanded ? 'data-table-expansion-row' : undefined}>
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
-          <Collapse appear in={expanded} onEnter={onEnter} onExited={onExited}>
+          <Collapse appear in={rowExpanded} onEnter={onEnter} onExited={onExited}>
             <Stack direction="column" sx={{ gap: Spacing.md, paddingBlockStart: Spacing.md }}>
               <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
                 <Body row={row} table={table} />

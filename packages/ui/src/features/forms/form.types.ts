@@ -33,10 +33,9 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 
 /** The value returned by the useForm hook. */
 export type UseFormReturn<T extends FieldValues = FieldValues> = {
+  values: T
   handleSubmit: UseFormHandleSubmit<T>
   reset: (userDefaultValues: FormUpdates<T>) => void
-  watchValues: () => T
-  watchValue: <TField extends FieldPath<T>>(field: TField) => FieldPathValue<T, TField>
   getValues: () => T
   getValue: <TField extends FieldPath<T>>(field: TField) => FieldPathValue<T, TField>
   update: (updates: FormUpdates<T>, options?: { automated?: true }) => void

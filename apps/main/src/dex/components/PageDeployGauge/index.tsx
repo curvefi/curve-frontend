@@ -13,10 +13,12 @@ import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { BoxHeader, Box } from '@legacy-ui/Box'
 import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
-import { Icon } from '@legacy-ui/Icon/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Switch } from '@legacy-ui/Switch/Switch'
+import { ChevronLeftIcon } from '@ui/icons/ChevronLeftIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { t } from '@ui/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
@@ -90,11 +92,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                     <Box flex flexAlignItems="center">
                       <NavTitle>{t`Step 1`}</NavTitle>
                       <InfoButton size="small" onClick={() => overlayTriggerState.open()} ref={openButtonRef}>
-                        <Icon name="InformationSquare" size={16} />
+                        <InfoCircledIcon sx={{ fontSize: 16 }} />
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(1)}>
-                      <Icon name="ChevronRight" size={16} />
+                      <ChevronRightIcon sx={{ fontSize: 16 }} />
                     </StyledIconButton>
                   </>
                 ) : (
@@ -102,11 +104,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                     <Box flex flexAlignItems="center">
                       <NavTitle>{t`Step 2`}</NavTitle>
                       <InfoButton size="small" onClick={() => overlayTriggerState.open()} ref={openButtonRef}>
-                        <Icon name="InformationSquare" size={16} />
+                        <InfoCircledIcon sx={{ fontSize: 16 }} />
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(0)}>
-                      <Icon name="ChevronLeft" size={16} />
+                      <ChevronLeftIcon sx={{ fontSize: 16 }} />
                     </StyledIconButton>
                   </>
                 )}

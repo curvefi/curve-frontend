@@ -18,7 +18,7 @@ type DepositActionInfoListProps = {
 }
 
 export const DepositActionInfoList = ({ form, params, isSeed, slippageType }: DepositActionInfoListProps) => {
-  const slippage = form.watchValue('slippage')
+  const slippage = form.values.slippage
   const expected = useDepositExpected(params)
   return (
     <PoolActionInfoList

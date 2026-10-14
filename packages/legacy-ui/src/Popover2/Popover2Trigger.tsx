@@ -3,8 +3,9 @@ import { useOverlayTrigger } from 'react-aria'
 import type { OverlayTriggerProps } from 'react-stately'
 import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon/Icon'
 import { Popover2, Popover2Button } from '@legacy-ui/Popover2'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
+import { TriangleDown } from '@ui/icons/TriangleDown'
 import { PopoverProps } from './Popover2'
 import { Popover2ButtonProps } from './Popover2Button'
 import { DialogProps } from './Popover2Dialog'
@@ -35,7 +36,7 @@ export function Popover2Trigger({ label, children, showExpandIcon = false, ...pr
         {showExpandIcon ? (
           <ButtonWrapper>
             {label}
-            {triggerProps['aria-expanded'] ? <Icon size={16} name="CaretUp" /> : <Icon size={16} name="CaretDown" />}
+            <RotatableIcon icon={TriangleDown} rotated={!!triggerProps['aria-expanded']} fontSize={16} />
           </ButtonWrapper>
         ) : (
           label

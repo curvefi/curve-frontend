@@ -1,16 +1,16 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 // eslint-disable-next-line no-restricted-imports
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 
 type StoryProps = { title?: string }
 
 const AccordionStory = ({ title }: StoryProps) => (
   <Accordion>
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <AccordionSummary expandIcon={<ChevronDownIcon />}>
       <Typography>{title}</Typography>
     </AccordionSummary>
     <AccordionDetails>

@@ -41,7 +41,7 @@ export const useCreateVoteForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return {
     form,
-    values: form.watchValues(),
+    values: form.values,
     userAddress: useConnection().address,
     isPending,
     isDisabled: !formState.isValid || isPending,

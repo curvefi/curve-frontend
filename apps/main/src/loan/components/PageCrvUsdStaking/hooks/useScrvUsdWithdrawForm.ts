@@ -23,7 +23,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
     defaultValues: emptyWithdrawForm(),
     validation: scrvUsdWithdrawFormValidationSuite,
   })
-  const { maxWithdrawAmount, withdrawAmount, isFull } = form.watchValues()
+  const { maxWithdrawAmount, withdrawAmount, isFull } = form.values
   const [params, isDebouncing] = useFormDebounce(
     { chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull },
     userDefaultValues,

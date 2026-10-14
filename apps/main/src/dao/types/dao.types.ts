@@ -2,7 +2,7 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 
-export type { CurveApi } from '@evm-ui/features/connect-wallet'
+export type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
 
 export type ChainId = number

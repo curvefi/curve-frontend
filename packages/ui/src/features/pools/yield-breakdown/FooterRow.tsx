@@ -1,0 +1,44 @@
+import type { ReactNode } from 'react'
+import TableCell from '@mui/material/TableCell'
+import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
+import type { Column } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { t } from '@ui/lib/i18n'
+import { YieldBreakdownColumnId } from './columns/columns.enum'
+import type { YieldBreakdownRow } from './types'
+
+const { Spacing } = SizesAndSpaces
+
+type FooterRowProps = {
+  visibleColumns: Column<CurveTableFeatures, YieldBreakdownRow>[]
+  maxBoostTotal: number
+  total: number
+}
+
+type FooterCellProps = FooterRowProps & { columnId: YieldBreakdownColumnId }
+
+const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellProps) => ReactNode> = {
+  [YieldBreakdownColumnId.Source]: ({ columnId }: FooterCellProps) => (
+    <TableCell key={columnId} sx={{ paddingInline: Spacing.md }}>
+      <Typography variant="tableCellValueStrong">{t`Total APR`}</Typography>
+    </TableCell>
+  ),
+  [YieldBreakdownColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
+  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
+    <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
+      <Typography variant="tableCellValueStrong">{formatNumber(total, 'percent.rate')}</Typography>
+      {!!maxBoostTotal && maxBoostTotal != total && (
+        <Typography variant="tableCellSupport" color="textSecondary">
+          {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
+        </Typography>
+      )}
+    </TableCell>
+  ),
+}
+
+export const FooterRow = (props: FooterRowProps) =>
+  props.visibleColumns.map(({ id }) =>
+    footerCellByColumnId[id as YieldBreakdownColumnId]({ columnId: id as YieldBreakdownColumnId, ...props }),
+  )

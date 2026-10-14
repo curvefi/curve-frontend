@@ -3,8 +3,6 @@ import type { Chain as PricesChain } from '@curvefi/prices-api'
 import { createChainOptions, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { requireBlockchainId } from '@evm-ui/utils/network'
 import type { NetworkDef } from '@legacy-ui/utils'
-import { ArrowRight } from '@mui/icons-material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -18,6 +16,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { usePathname } from '@ui/hooks/router'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { TriangleRight } from '@ui/icons/TriangleRight'
 import { t } from '@ui/lib/i18n'
 import { applySxProps, type SxProps } from '@ui/lib/mui'
 
@@ -80,7 +79,6 @@ const SelectNetworkButton = ({
         <SelectNetworkValue blockchainId={requireBlockchainId(chainId)} />
       )
     }
-    IconComponent={KeyboardArrowDownIcon}
     sx={sx}
   />
 )
@@ -153,7 +151,7 @@ export const BridgeTargets = ({
       </ModalDialog>
 
       <Box sx={{ gridArea: GRID_AREAS.arrow, display: 'flex', alignItems: 'center', justifyItems: 'center' }}>
-        <ArrowRight />
+        <TriangleRight />
       </Box>
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />

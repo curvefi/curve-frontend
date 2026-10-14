@@ -10,8 +10,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { PartialRecord } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { FieldPath, FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
-import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
-import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
+import { LargeTokenInput, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { decimal } from '@ui/lib/decimal'
@@ -68,7 +68,7 @@ export const LoanFormTokenInput = <
   name,
   max,
   form: {
-    getValue,
+    values,
     update: updateForm,
     formState: { errors: formErrors, touchedFields },
   },
@@ -109,7 +109,7 @@ export const LoanFormTokenInput = <
   const onMax = max?.onMax
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = name in touchedFields ? (errors[name] ?? max?.error ?? relatedMaxFieldError) : balanceError
-  const value = getValue(name)
+  const value = values[name]
   const errorMessage = error?.message
 
   const onBalance = useCallback(

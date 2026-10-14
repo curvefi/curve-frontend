@@ -7,17 +7,17 @@ import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
-import type { IconProps } from '@legacy-ui/Icon/Icon'
 import { ExternalLink } from '@legacy-ui/Link'
 import { Chip } from '@legacy-ui/Typography'
 import { scanAddressPath } from '@legacy-ui/utils'
+import type { SvgIconProps } from '@mui/material/SvgIcon'
 import { formatDate } from '@primitives/date.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { t } from '@ui/lib/i18n'
 
-const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
+const StyledInformationSquare16: IStyledComponent<'web', SvgIconProps> = styled(InfoCircledIcon)`
   opacity: 0.4;
 
   &:hover {
@@ -102,7 +102,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
           >
             <h5>
               {formatNumber(emissions, { abbreviate: false })}
-              {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
+              {isSideChain && <StyledInformationSquare16 sx={{ fontSize: 16 }} className="svg-tooltip" />}
             </h5>
           </Chip>
           <h5>{formatDate(parseTimestamp(gaugeData.creation_date), 'long')}</h5>

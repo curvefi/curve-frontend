@@ -52,10 +52,9 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     validation: depositFormValidationSuite,
     defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false },
   })
-  const { formState, handleSubmit, update, watchValues, reset } = form
+  const { formState, handleSubmit, update, reset, values } = form
   const { connect, connectState, wallet } = useWallet()
 
-  const values = watchValues()
   const { isWrapped } = values
   const canDepositWrapped = hasWrapped(pool)
 

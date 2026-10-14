@@ -23,7 +23,7 @@ export const SlippageFormField = ({
   type,
   form: {
     update,
-    watchValue,
+    values,
     formState: { errors },
   },
   isActive,
@@ -33,7 +33,7 @@ export const SlippageFormField = ({
   form: UseFormReturn<SlippageSettingsFormData>
 }) => {
   const { title, helper, presets, min, max } = SLIPPAGE[type]
-  const value = watchValue(type)
+  const value = values[type]
   const [isCustom, setIsCustom] = useState(!presets.includes(value!))
   const error = errors[type]
   return (

@@ -4,8 +4,8 @@ import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 
 type Props = { row?: boolean; description?: string; className?: string; maxValue?: number } & AriaNumberFieldProps
 
@@ -21,7 +21,7 @@ export const NumberField = (props: Props) => {
       <Box flex flexAlignItems="center">
         {label && <label {...labelProps}>{label}</label>}
         {props.description && (
-          <StyledIconTooltip customIcon={<StyledIcon name="InformationSquare" size={16} />} placement="bottom">
+          <StyledIconTooltip customIcon={<StyledIcon sx={{ fontSize: 16 }} />} placement="bottom">
             {props.description}
           </StyledIconTooltip>
         )}
@@ -69,7 +69,7 @@ const StyledIconTooltip = styled(IconTooltip)`
   margin-top: auto;
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(InfoCircledIcon)`
   color: var(--box--primary--color);
   opacity: 0.4;
   margin-top: var(--spacing-2);

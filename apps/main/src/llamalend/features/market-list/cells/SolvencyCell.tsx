@@ -1,6 +1,6 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
+import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, objectKeys } from '@primitives/objects.utils'

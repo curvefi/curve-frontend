@@ -6,7 +6,6 @@ import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGa
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { Box } from '@legacy-ui/Box/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton/IconButton'
 import { InputProvider } from '@legacy-ui/InputComp/InputProvider'
 import { StyledInput } from '@legacy-ui/InputComp/styles'
@@ -14,6 +13,8 @@ import { Popover } from '@legacy-ui/Popover/Popover'
 import { Spinner } from '@legacy-ui/Spinner'
 import { SpinnerWrapper } from '@legacy-ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@legacy-ui/utils/responsive'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
+import { SearchIcon } from '@ui/icons/SearchIcon'
 import { RCEditClear } from '@ui/images'
 import { t } from '@ui/lib/i18n'
 
@@ -58,7 +59,7 @@ export const ComboBox = ({
               {showInpSearch && (
                 <Box grid gridColumnGap={1} gridTemplateColumns="1fr auto" margin="1.5rem 0.5rem 0 1rem">
                   <ComboBoxSearchInpWrapper id="inp-search">
-                    <Icon name="Search" size={24} aria-label="search icon" />
+                    <SearchIcon sx={{ fontSize: 24 }} />
                     <StyledInput
                       ref={inputRef}
                       id="select-inp"
@@ -94,8 +95,8 @@ export const ComboBox = ({
                       <RCEditClear className="svg-tooltip" />
                     </ComboBoxSearchInpClearBtn>
                   </ComboBoxSearchInpWrapper>
-                  <IconButton testId="search-close" opacity={1} padding={2} onClick={dialogClose}>
-                    <Icon name="Close" size={32} aria-label="Close" />
+                  <IconButton testId="search-close" opacity={1} padding={2} onClick={dialogClose} aria-label="Close">
+                    <Cross2Icon sx={{ fontSize: 32 }} />
                   </IconButton>
                 </Box>
               )}
