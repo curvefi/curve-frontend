@@ -66,7 +66,7 @@ export const MarketSupplyRateTooltipContent = ({
             {formatCappedRatePercent(supplyApy)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {averageSupplyApy == null ? 'N/A' : formatCappedRatePercent(averageSupplyApy)}
+            {formatCappedRatePercent(averageSupplyApy)}
           </TooltipItem>
         </TooltipItems>
 
@@ -102,7 +102,7 @@ export const MarketSupplyRateTooltipContent = ({
             {/* Historical boost data is only available at the market level, so user totals do not show an average. */}
             {boost.type === 'market' && (
               <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-                {totalAverageApy == null ? 'N/A' : formatCappedRatePercent(totalAverageApy)}
+                {formatCappedRatePercent(totalAverageApy)}
               </TooltipItem>
             )}
           </TooltipItems>
