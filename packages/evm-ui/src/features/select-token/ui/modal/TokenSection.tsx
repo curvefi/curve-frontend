@@ -1,6 +1,5 @@
 import { blacklist } from '@evm-ui/features/select-token/blacklist'
 import { shortenAddress } from '@evm-ui/utils'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -14,6 +13,7 @@ import type { QueryOrValue } from '@ui/features/queries/util'
 import type { TokenOption as Option } from '@ui/features/select-token/types'
 import { TokenOption } from '@ui/features/select-token/ui/modal/TokenOption'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
@@ -105,7 +105,7 @@ export const TokenSection = <T extends Option = Option>({
             variant="link"
             color="ghost"
             size="medium"
-            endIcon={<ExpandMoreIcon />}
+            endIcon={<ChevronDownIcon />}
             onClick={onShowAll}
             // Override variant button height to match menu list item height, so !important is required over '&'.
             sx={{ height: `${ButtonSize.md} !important` }}

@@ -8,15 +8,15 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
-import { MAINNET_CRV, MAINNET_CRV_ADDRESS } from '@evm-ui/utils/address'
+import { MAINNET_CRV, MAINNET_CRV_ADDRESS, shortenAddress } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
+import type { YieldBreakdownData, YieldBreakdownRow } from '@ui/features/pools/yield-breakdown/types'
 import { t } from '@ui/lib/i18n'
-import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
 
 export const useYieldBreakdown = ({
   chainId,
@@ -26,7 +26,7 @@ export const useYieldBreakdown = ({
   chainId: ChainId
   pool: PoolTemplate
   poolId: string
-}) => {
+}): YieldBreakdownData => {
   const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
   const poolAddress = pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
@@ -63,7 +63,8 @@ export const useYieldBreakdown = ({
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
-        address: MAINNET_CRV_ADDRESS,
+        address: getAddress(MAINNET_CRV_ADDRESS),
+        displayAddress: shortenAddress(MAINNET_CRV_ADDRESS),
         explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
         price: crvPrice,
         rate: unboostedCrvRate,
@@ -89,6 +90,7 @@ export const useYieldBreakdown = ({
       rows.push({
         source: { address, blockchainId: network?.blockchainId, iconPosition: 'left', primary: symbol },
         address,
+        displayAddress: shortenAddress(address),
         explorerUrl: scanTokenPath(chainId, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates[tokenAddress]?.data,
         rate,
@@ -105,7 +107,8 @@ export const useYieldBreakdown = ({
           iconPosition: 'left',
           primary: symbol,
         },
-        address: reward.address,
+        address: maybe(reward.address, getAddress),
+        displayAddress: maybe(reward.address, shortenAddress),
         explorerUrl: scanAddressPath(chainId, reward.address),
         price: reward.price,
         rate: reward.value,

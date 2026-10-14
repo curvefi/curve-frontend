@@ -1,6 +1,6 @@
 import { type MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
-import type { ReactTable, Row, RowData } from '@tanstack/react-table'
+import { Subscribe, type Cell, type ReactTable, type Row, type RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -52,15 +52,22 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export const DataRow = <TData extends RowData>({
+export const DataRow = <TData extends RowData>(props: DataRowProps<TData>) => (
+  <Subscribe source={props.row.table.atoms.columnVisibility} selector={() => props.row.getVisibleCells()}>
+    {visibleCells => <DataRowContent {...props} visibleCells={visibleCells} />}
+  </Subscribe>
+)
+
+const DataRowContent = <TData extends RowData>({
   table,
   row,
+  visibleCells,
   expandedPanel,
   rowBreakdown,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
   rowHeight = 'lg',
-}: DataRowProps<TData>) => {
+}: DataRowProps<TData> & { visibleCells: Cell<CurveTableFeatures, TData>[] }) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
@@ -71,7 +78,6 @@ export const DataRow = <TData extends RowData>({
     (e: MouseEvent<HTMLTableRowElement>) => href && onCellClick(e.target, href, push),
     [href, push],
   )
-  const visibleCells = row.getVisibleCells()
 
   return (
     <>
@@ -115,7 +121,7 @@ export const DataRow = <TData extends RowData>({
             <DataCell
               key={cell.id}
               cell={cell}
-              enableCollapse={hasExpansionRow}
+              showCollapseIcon={hasExpansionRow && index === visibleCells.length - 1}
               isSticky={!!shouldStickFirstColumn && !index}
             />
           ))}
@@ -123,7 +129,12 @@ export const DataRow = <TData extends RowData>({
       </InvertOnHover>
 
       {!isMobile && rowBreakdown && (
-        <BreakdownRows row={row} config={rowBreakdown} shouldStickFirstColumn={shouldStickFirstColumn} />
+        <BreakdownRows
+          row={row}
+          visibleCells={visibleCells}
+          config={rowBreakdown}
+          shouldStickFirstColumn={shouldStickFirstColumn}
+        />
       )}
 
       {hasExpansionRow && (

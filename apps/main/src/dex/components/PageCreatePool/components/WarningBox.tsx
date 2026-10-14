@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 
 type Props = { message: string; children?: ReactNode; informational?: boolean }
 
 export const WarningBox = ({ message, children, informational = false }: Props) => (
   <WarningBoxWrapper informational={informational}>
-    <StyledIcon name="InformationSquareFilled" size={24} aria-label="Information Icon" />
+    <StyledIcon sx={{ fontSize: 24 }} />
     <p>{message}</p>
     {children}
   </WarningBoxWrapper>
@@ -29,7 +29,7 @@ const WarningBoxWrapper = styled.div<{ informational: boolean }>`
   }
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(InfoCircledIcon)`
   min-width: 24px;
   min-height: 24px;
 `

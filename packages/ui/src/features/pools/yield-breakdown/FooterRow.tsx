@@ -6,8 +6,8 @@ import type { Column } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { YieldBreakdownRow } from './columns/columns.definitions'
 import { YieldBreakdownColumnId } from './columns/columns.enum'
+import type { YieldBreakdownRow } from './types'
 
 const { Spacing } = SizesAndSpaces
 

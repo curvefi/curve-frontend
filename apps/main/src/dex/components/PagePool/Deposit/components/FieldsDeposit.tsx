@@ -11,7 +11,6 @@ import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/po
 import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { Checkbox } from '@legacy-ui/Checkbox'
-import type { Address } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 import { Amount } from '../../utils'
 
@@ -113,7 +112,7 @@ export const FieldsDeposit = ({
   )
 
   const { address: userAddress } = useConnection()
-  const userPoolBalances = useTokenBalances({ chainId, userAddress, tokenAddresses: tokenAddresses as Address[] })
+  const userPoolBalances = useTokenBalances({ chainId, userAddress, tokenAddresses })
   const tokenCount = useMemo(() => countBy(tokens), [tokens])
 
   return (

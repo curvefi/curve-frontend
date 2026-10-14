@@ -35,7 +35,6 @@ import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import type { Address } from '@primitives/address.utils'
 import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
@@ -193,7 +192,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               () =>
                 zip(tokens, tokenAddresses)
                   .filter(([, address]) => address)
-                  .map(([symbol, address]) => constQ({ symbol, address: address as Address })),
+                  .map(([symbol, address]) => constQ({ symbol, address })),
               [tokenAddresses, tokens],
             )}
             pricesApiPoolData={pricesApiPoolData}
