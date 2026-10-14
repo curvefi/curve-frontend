@@ -1,5 +1,5 @@
 import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { hasNetSupplyRate } from '@/llamalend/llama.utils'
+import { formatNetSupplyRate, hasNetSupplyRate } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
@@ -7,8 +7,7 @@ import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
-import { formatCappedRatePercent, formatCappedRateValue } from '@ui/lib/rates.utils'
+import { formatCappedRateValue } from '@ui/lib/rates.utils'
 import { MarketSupplyRateTooltipContent } from '../tooltips/MarketSupplyRateTooltipContent'
 import { TooltipOptions } from '../tooltips/tooltip.utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
@@ -52,7 +51,7 @@ export const MetricsRow = ({
       value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       {...(showNetSupplyRate && {
-        notional: mapQuery(supplyRate, ({ totalMinBoost }) => t`${formatCappedRatePercent(totalMinBoost)} Total`),
+        notional: mapQuery(supplyRate, ({ totalMinBoost }) => formatNetSupplyRate(totalMinBoost)),
       })}
       valueTooltip={{
         title: SUPPLY_RATE_TITLE,
