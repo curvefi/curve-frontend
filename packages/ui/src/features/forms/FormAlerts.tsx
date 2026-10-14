@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
@@ -18,6 +17,7 @@ import { ErrorReportModal } from '@ui/features/report-error/ErrorReportModal'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
 import { t } from '@ui/lib/i18n'
 import { getPriceImpactSeverity, getPriceImpactPercent, type PriceImpact } from '@ui/lib/price-impact.util'
 
@@ -72,7 +72,7 @@ export const FormAlerts = <Field extends string>({
               data-testid="dismiss-loan-alert-error"
               onClick={() => setDismissedError(visibleError)}
             >
-              <CloseIcon />
+              <Cross2Icon />
             </IconButton>
           }
         >
