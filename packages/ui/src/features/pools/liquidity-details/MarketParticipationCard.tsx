@@ -9,7 +9,7 @@ import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import type { LiquidityDetailsData } from '../types'
+import type { LiquidityDetailsData } from './types'
 
 const { Spacing } = SizesAndSpaces
 
