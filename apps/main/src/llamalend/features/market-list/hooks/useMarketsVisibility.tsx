@@ -26,11 +26,14 @@ const FILTER_ONLY_COLUMNS = [
   MarketColumnId.UserEarnings, // hidden until we have a backend
 ]
 
-/** Borrow APR replaced the removed net borrow APR column, so it falls back to its new default visibility. */
+/** Rate columns whose saved visibility resets to the new defaults, since the net/total rates are now optional. */
+const RESET_VISIBILITY_COLUMNS = [MarketColumnId.BorrowRate, MarketColumnId.NetBorrowRate, MarketColumnId.NetSupplyRate]
+
 const resolveMarketActive = (
   preservedActive: boolean,
   currentOption: VisibilityGroup<MarketColumnId>['options'][number],
-) => (isEqual(currentOption.columns, [MarketColumnId.BorrowRate]) ? currentOption.active : preservedActive)
+) =>
+  RESET_VISIBILITY_COLUMNS.some(id => isEqual(currentOption.columns, [id])) ? currentOption.active : preservedActive
 
 const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
   version: 8,

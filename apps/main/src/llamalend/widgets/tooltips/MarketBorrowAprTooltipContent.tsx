@@ -36,54 +36,55 @@ export const MarketBorrowAprTooltipContent = ({
   rebasingYieldApr,
   collateralSymbol,
   isLoading,
-}: MarketBorrowAprTooltipContentProps) => (
-  <TooltipWrapper>
-    <TooltipDescription text={BORROW_APR_DESCRIPTION} />
+}: MarketBorrowAprTooltipContentProps) => {
+  const hasNetRate = hasEstimatedNetBorrowApr({ extraRewards, rebasingYieldApr })
+  return (
+    <TooltipWrapper>
+      <TooltipDescription text={BORROW_APR_DESCRIPTION} />
 
-    {hasEstimatedNetBorrowApr({ totalBorrowApr, extraRewards, rebasingYieldApr }) && (
-      <TooltipDescription text={NET_BORROW_APR_DESCRIPTION} />
-    )}
+      {hasNetRate && <TooltipDescription text={NET_BORROW_APR_DESCRIPTION} />}
 
-    <Stack>
-      <TooltipItems secondary>
-        <TooltipItem title={BORROW_RATE_TITLE}>{formatCappedRatePercent(borrowApr ?? 0)}</TooltipItem>
-        <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-          {averageApr == null ? 'N/A' : formatCappedRatePercent(averageApr)}
-        </TooltipItem>
-      </TooltipItems>
-
-      {!!extraRewards?.length && (
+      <Stack>
         <TooltipItems secondary>
-          <RewardsTooltipItems
-            title={t`Borrowing incentives`}
-            tooltipType="borrow"
-            extraRewards={extraRewards}
-            extraIncentives={[]}
-          />
-        </TooltipItems>
-      )}
-
-      {rebasingYieldApr != null && (
-        <TooltipItems secondary>
-          <TooltipItem title={COLLATERAL_YIELD_TITLE}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
-          {!!collateralSymbol && (
-            <TooltipItem variant="subItem" title={collateralSymbol}>
-              {formatCappedRatePercent(-rebasingYieldApr)}
-            </TooltipItem>
-          )}
-        </TooltipItems>
-      )}
-
-      {hasEstimatedNetBorrowApr({ totalBorrowApr, extraRewards, rebasingYieldApr }) && (
-        <TooltipItems>
-          <TooltipItem variant="primary" title={NET_BORROW_RATE_TITLE}>
-            {formatCappedRatePercent(totalBorrowApr)}
-          </TooltipItem>
+          <TooltipItem title={BORROW_RATE_TITLE}>{formatCappedRatePercent(borrowApr ?? 0)}</TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {totalAverageBorrowApr == null ? 'N/A' : formatCappedRatePercent(totalAverageBorrowApr)}
+            {averageApr == null ? 'N/A' : formatCappedRatePercent(averageApr)}
           </TooltipItem>
         </TooltipItems>
-      )}
-    </Stack>
-  </TooltipWrapper>
-)
+
+        {!!extraRewards?.length && (
+          <TooltipItems secondary>
+            <RewardsTooltipItems
+              title={t`Borrowing incentives`}
+              tooltipType="borrow"
+              extraRewards={extraRewards}
+              extraIncentives={[]}
+            />
+          </TooltipItems>
+        )}
+
+        {rebasingYieldApr != null && (
+          <TooltipItems secondary>
+            <TooltipItem title={COLLATERAL_YIELD_TITLE}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
+            {!!collateralSymbol && (
+              <TooltipItem variant="subItem" title={collateralSymbol}>
+                {formatCappedRatePercent(-rebasingYieldApr)}
+              </TooltipItem>
+            )}
+          </TooltipItems>
+        )}
+
+        {totalBorrowApr != null && hasNetRate && (
+          <TooltipItems>
+            <TooltipItem variant="primary" title={NET_BORROW_RATE_TITLE}>
+              {formatCappedRatePercent(totalBorrowApr)}
+            </TooltipItem>
+            <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+              {totalAverageBorrowApr == null ? 'N/A' : formatCappedRatePercent(totalAverageBorrowApr)}
+            </TooltipItem>
+          </TooltipItems>
+        )}
+      </Stack>
+    </TooltipWrapper>
+  )
+}

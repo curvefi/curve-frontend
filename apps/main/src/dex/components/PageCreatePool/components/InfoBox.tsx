@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = { link1?: { title: string; link: string }; link2?: { title: string; link: string } }
@@ -12,13 +12,13 @@ export const InfoBox = ({ link1, link2 }: Props) => (
     {link1 && (
       <LinkStyles link2 target="_blank" rel="noopener noreferrer" href={link1.link}>
         {t`${link1.title}`}
-        <Icon name="Launch" size={16} aria-label={t`Link to address`} />
+        <ArrowTopRightIcon sx={{ fontSize: 16 }} />
       </LinkStyles>
     )}
     {link2 && (
       <LinkStyles target="_blank" rel="noopener noreferrer" href={link2.link}>
         {t`${link2.title}`}
-        <Icon name="Launch" size={16} aria-label={t`Link to address`} />
+        <ArrowTopRightIcon sx={{ fontSize: 16 }} />
       </LinkStyles>
     )}
   </BoxStyles>

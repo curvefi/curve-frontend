@@ -1,14 +1,13 @@
 import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { formatNetSupplyRate, hasNetSupplyRate } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
-import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
-import { formatCappedRatePercent, formatCappedRateValue } from '@ui/lib/rates.utils'
+import { formatCappedRateValue } from '@ui/lib/rates.utils'
 import { MarketSupplyRateTooltipContent } from '../tooltips/MarketSupplyRateTooltipContent'
 import { TooltipOptions } from '../tooltips/tooltip.utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
@@ -34,6 +33,14 @@ export const MetricsRow = ({
 
   const borrowRateMetric = <BorrowAprMetric borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
 
+  const showNetSupplyRate =
+    supplyRate?.data?.totalMinBoost != null &&
+    hasNetSupplyRate({
+      extraRewards: supplyRate.data.extraRewards,
+      extraIncentives: supplyRate.data.extraIncentives,
+      rebasingYieldApy: supplyRate.data.rebasingYield,
+    })
+
   const supplyRateMetric = supplyRate && (
     <Metric
       category={METRIC_CATEGORY}
@@ -41,9 +48,9 @@ export const MetricsRow = ({
       label={SUPPLY_RATE_TITLE}
       value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
-      notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
-        maybe(totalMinBoost, value => t`Net ${formatCappedRatePercent(value)}`),
-      )}
+      {...(showNetSupplyRate && {
+        notional: mapQuery(supplyRate, ({ totalMinBoost }) => formatNetSupplyRate(totalMinBoost)),
+      })}
       valueTooltip={{
         title: SUPPLY_RATE_TITLE,
         body: (

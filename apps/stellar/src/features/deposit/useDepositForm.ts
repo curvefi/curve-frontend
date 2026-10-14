@@ -50,12 +50,11 @@ export function useDepositForm(poolParams: PoolQuery) {
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { formState, reset } = form
+  const { formState, reset, values } = form
 
   useFormSync(form, { decimals: decimalsData, supply: supply.data })
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues])
 
-  const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce<DepositFormQuery, PoolAmountField>(
     {
       ...values,

@@ -1,4 +1,3 @@
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { Select, type SelectProps } from '@ui/components/Select'
 import { Spinner } from '@ui/components/Spinner'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -48,6 +47,5 @@ export const TokenSelectButton = ({
         <Spinner useTheme={true} />
       )
     }
-    IconComponent={KeyboardArrowDownIcon}
   />
 )

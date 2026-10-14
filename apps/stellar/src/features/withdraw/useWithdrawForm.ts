@@ -86,10 +86,8 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { formState, reset } = form
+  const { formState, reset, values } = form
 
-  // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount' | 'maxWithdrawIndex'>(
     {
       ...values,

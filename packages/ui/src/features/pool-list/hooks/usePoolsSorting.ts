@@ -3,6 +3,7 @@ import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortFie
 import { recordEntries } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
+import { POOL_COLUMNS } from '../columns/column.definitions'
 import { POOL_TITLES } from '../columns/column.titles'
 import { PoolColumnId } from '../columns/columns.enum'
 import type { PoolsQueryUpdater } from '../filters/utils'
@@ -59,7 +60,7 @@ const getPoolsSortParams = ([{ id: sortField, desc }]: PoolsSorting): PoolsSortP
  */
 export const usePoolsSorting = (isLite: boolean, updateQueryAndResetPage: PoolsQueryUpdater) => {
   const defaultSort = useMemo<SortingState>(() => getDefaultPoolsSort(isLite), [isLite])
-  const [urlSorting] = useSortFromQueryString(defaultSort, { fieldName: SORT_QUERY_FIELD })
+  const [urlSorting] = useSortFromQueryString(defaultSort, { fieldName: SORT_QUERY_FIELD, columns: POOL_COLUMNS })
   const sorting = useMemo<PoolsSorting>(
     () => getPoolsSorting(urlSorting, defaultSort, isLite),
     [defaultSort, isLite, urlSorting],

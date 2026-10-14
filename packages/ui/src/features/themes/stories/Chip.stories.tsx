@@ -1,11 +1,11 @@
 import { useArgs } from 'storybook/preview-api'
 import { fn } from 'storybook/test'
-import CheckIcon from '@mui/icons-material/Check'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type SelectableChipProps, SelectableChip } from '@ui/components/SelectableChip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { CheckIcon } from '@ui/icons/CheckIcon'
 
 const { Spacing } = SizesAndSpaces
 

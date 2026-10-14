@@ -9,7 +9,7 @@ import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Stack from '@mui/material/Stack'
-import { notFalsy, recordValues } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import type { SortingState } from '@tanstack/react-table'
 import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { Spinner } from '@ui/components/Spinner'
@@ -58,9 +58,7 @@ export const Proposals = () => {
 
   const [pagination, onPaginationChange] = usePageFromQueryString(PROPOSALS_PAGE_SIZE)
 
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, {
-    sortableIds: new Set(recordValues(ProposalColumnId)),
-  })
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns })
   const globalFilterFn = useFuzzyFilterFn(tableQuery.data ?? EMPTY_PROPOSALS, search, [
     { name: 'id', getFn: proposal => String(proposal.id) },
     'proposer',

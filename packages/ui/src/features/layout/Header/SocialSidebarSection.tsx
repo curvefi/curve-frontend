@@ -1,6 +1,3 @@
-import TelegramIcon from '@mui/icons-material/Telegram'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import YouTubeIcon from '@mui/icons-material/YouTube'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
@@ -8,6 +5,9 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { DiscordIcon } from '@ui/icons/DiscordIcon'
 import { DodoIcon } from '@ui/icons/DodoIcon'
+import { TelegramIcon } from '@ui/icons/TelegramIcon'
+import { XIcon } from '@ui/icons/XIcon'
+import { YouTubeIcon } from '@ui/icons/YouTubeIcon'
 import { isChinese } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 import { SidebarSection } from './SidebarSection'
@@ -33,7 +33,7 @@ export const SocialSidebarSection = ({ title }: SocialSidebarSectionProps) => (
         href={isChinese() ? CURVE_SOCIALS.telegram.cn : CURVE_SOCIALS.telegram.en}
         icon={TelegramIcon}
       />
-      <SocialButton label="Twitter" href={CURVE_SOCIALS.twitter} icon={TwitterIcon} />
+      <SocialButton label="Twitter" href={CURVE_SOCIALS.twitter} icon={XIcon} />
       <SocialButton
         label="YouTube"
         href={isChinese() ? CURVE_SOCIALS.youtube.cn : CURVE_SOCIALS.youtube.en}

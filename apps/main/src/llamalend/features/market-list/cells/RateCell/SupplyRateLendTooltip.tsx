@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
@@ -63,7 +63,7 @@ export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) =>
   return (
     <Tooltip
       clickable
-      title={NET_SUPPLY_RATE_TITLE}
+      title={SUPPLY_RATE_TITLE}
       body={<LendRateTooltipContent isOpen={open} market={market} />}
       placement="top"
       open={open}

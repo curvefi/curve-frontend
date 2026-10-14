@@ -1,4 +1,5 @@
-import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { SUPPLY_RATE_TITLE, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { hasNetSupplyRate } from '@/llamalend/llama.utils'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -22,7 +23,7 @@ type SupplyBoost = {
   totalApy: number | Nullish
   totalAverageApy: number | Nullish
 }
-type MarketSupplyRateTooltipContentProps = {
+export type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | Nullish
   averageSupplyApy: number | Nullish
   periodLabel: string
@@ -56,7 +57,7 @@ export const MarketSupplyRateTooltipContent = ({
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`The net supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`}
+        text={t`The total supply rate is the estimated earnings related to your share of the pool. It varies according to the market, the monetary policy and the incentives.`}
       />
 
       <Stack>
@@ -93,9 +94,9 @@ export const MarketSupplyRateTooltipContent = ({
           </TooltipItems>
         )}
 
-        {totalApy != null && (hasIncentives || hasRebasingYield) && (
+        {totalApy != null && hasNetSupplyRate({ extraRewards, extraIncentives, rebasingYieldApy }) && (
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Net total APY`} loading={isLoading}>
+            <TooltipItem variant="primary" title={NET_SUPPLY_RATE_TITLE} loading={isLoading}>
               {formatCappedRatePercent(totalApy)}
             </TooltipItem>
             {/* Historical boost data is only available at the market level, so user totals do not show an average. */}

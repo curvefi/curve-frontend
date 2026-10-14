@@ -56,7 +56,7 @@ export const WithdrawForm = ({
       positionAmounts={maxAmounts}
       positionTooltip={t`Maximum withdrawal into this token`}
       maxAmounts={maxAmounts}
-      maxSelectedIndex={form.watchValue('maxWithdrawIndex')}
+      maxSelectedIndex={form.values.maxWithdrawIndex}
       onMax={index =>
         form.update({
           // Withdraw the full LP balance into the selected coin, clearing the other outputs and balanced mode.

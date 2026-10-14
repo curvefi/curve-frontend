@@ -20,16 +20,15 @@ const CollapseIcon = ({ isExpanded }: { isExpanded: boolean }) => (
 
 export const DataCell = <TData extends RowData>({
   cell,
-  enableCollapse,
+  showCollapseIcon,
   isSticky,
 }: {
   cell: Cell<CurveTableFeatures, TData>
-  enableCollapse: boolean
+  showCollapseIcon: boolean
   isSticky: boolean
 }) => {
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const showCollapseIcon = enableCollapse && row.getVisibleCells().at(-1)?.id === cell.id
   const [sx, wrapperSx] = useCellSx({ columnType: column.columnDef.meta?.type, showCollapseIcon, isSticky })
   return (
     <Typography
@@ -41,7 +40,7 @@ export const DataCell = <TData extends RowData>({
       {showCollapseIcon ? (
         <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>
           <Box sx={applySxProps({ flexGrow: 1 }, wrapperSx)}>{children}</Box>
-          <Subscribe source={row.table.atoms.expanded} selector={expanded => expanded === true || expanded[row.id]}>
+          <Subscribe source={row.table.atoms.expanded} selector={() => row.getIsExpanded()}>
             {isExpanded => <CollapseIcon isExpanded={isExpanded} />}
           </Subscribe>
         </Stack>

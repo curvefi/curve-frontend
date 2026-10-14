@@ -1,13 +1,13 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { shortenAddress } from '@evm-ui/utils'
-import AcUnitIcon from '@mui/icons-material/AcUnit'
-import WhatshotIcon from '@mui/icons-material/Whatshot'
 import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { ActionInfo, ActionInfoSize } from '@ui/features/forms/action-info/ActionInfo'
 import { q } from '@ui/features/queries/util'
+import { FireIcon } from '@ui/icons/FireIcon'
+import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { t } from '@ui/lib/i18n'
 
 const SIZES: ActionInfoSize[] = ['small', 'medium']
@@ -95,7 +95,7 @@ export const AllSizes: Story = {
         <ActionInfoStory
           key={size}
           {...args}
-          valueLeft={<WhatshotIcon fontSize={size === 'small' ? 'small' : 'medium'} color="error" />}
+          valueLeft={<FireIcon fontSize={size === 'small' ? 'small' : 'medium'} color="error" />}
           size={size}
         />
       ))}
@@ -126,12 +126,12 @@ export const CustomColors: Story = {
 
 export const WithValueDecorators: Story = {
   args: {
-    valueLeft: <WhatshotIcon color="error" />,
-    valueRight: <AcUnitIcon color="primary" />,
+    valueLeft: <FireIcon color="error" />,
+    valueRight: <LlamaIcon color="primary" />,
     value: '1,234.56',
     size: 'medium',
   },
-  parameters: { docs: { description: { story: 'Shows value with left and right decorators using MUI icons' } } },
+  parameters: { docs: { description: { story: 'Shows value with left and right decorators using icons' } } },
 }
 
 export const WithTooltip: Story = {

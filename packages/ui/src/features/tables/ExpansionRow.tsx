@@ -3,7 +3,7 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import type { RowData } from '@tanstack/react-table'
+import { Subscribe, type RowData } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { DataRowProps } from './DataRow'
 
@@ -18,21 +18,29 @@ export type ExpandedPanelConfig<TData extends RowData> = {
   Actions?: ExpandedPanelComponent<TData>
 }
 
+type ExpansionRowProps<TData extends RowData> = Pick<DataRowProps<TData>, 'table' | 'row'> & {
+  expandedPanel: ExpandedPanelConfig<TData>
+  colSpan: number
+}
+
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */
-export function ExpansionRow<TData extends RowData>({
+export const ExpansionRow = <TData extends RowData>(props: ExpansionRowProps<TData>) => (
+  <Subscribe source={props.row.table.atoms.expanded} selector={() => props.row.getIsExpanded()}>
+    {rowExpanded => <ExpansionRowContent {...props} rowExpanded={rowExpanded} />}
+  </Subscribe>
+)
+
+function ExpansionRowContent<TData extends RowData>({
   row,
   table,
   expandedPanel,
   colSpan,
-}: Pick<DataRowProps<TData>, 'table' | 'row'> & {
-  expandedPanel: NonNullable<DataRowProps<TData>['expandedPanel']>
-  colSpan: number
-}) {
-  const { render, onExited, expanded } = useRowExpansion(row)
+  rowExpanded,
+}: ExpansionRowProps<TData> & { rowExpanded: boolean }) {
+  const { render, onExited, expanded } = useRowExpansion(rowExpanded)
   const { Body, Actions } = expandedPanel
-
   return (
     render && (
       <TableRow data-testid={expanded ? 'data-table-expansion-row' : undefined}>
@@ -60,8 +68,7 @@ export function ExpansionRow<TData extends RowData>({
  *
  * It would be tidier to use a grid layout for the whole table
  */
-function useRowExpansion(row: { getIsExpanded: () => boolean }) {
-  const rowExpanded = row.getIsExpanded()
+function useRowExpansion(rowExpanded: boolean) {
   const [render, setRender] = useState(rowExpanded)
   const [expanded, setExpanded] = useState(false)
 

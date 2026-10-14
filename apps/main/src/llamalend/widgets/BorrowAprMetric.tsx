@@ -5,9 +5,8 @@ import type { Nullish } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
-import { formatCappedRatePercent, formatCappedRateValue } from '@ui/lib/rates.utils'
-import { hasEstimatedNetBorrowApr } from '../llama.utils'
+import { formatCappedRateValue } from '@ui/lib/rates.utils'
+import { formatEstimatedNetBorrowRate, hasEstimatedNetBorrowApr } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips/tooltip.utils'
 
 type BorrowRateMetric = {
@@ -28,11 +27,12 @@ type BorrowAprMetricProps = {
 
 export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
   const averageRatePeriod = AVERAGE_CATEGORIES[borrowRate.data?.averageCategory ?? 'llamalend.market.rate'].period
-  const showNetBorrowApr = hasEstimatedNetBorrowApr({
-    totalBorrowApr: borrowRate.data?.totalBorrowRate,
-    extraRewards: borrowRate.data?.extraRewards,
-    rebasingYieldApr: borrowRate.data?.rebasingYield,
-  })
+  const showNetBorrowApr =
+    borrowRate.data?.totalBorrowRate != null &&
+    hasEstimatedNetBorrowApr({
+      extraRewards: borrowRate.data.extraRewards,
+      rebasingYieldApr: borrowRate.data.rebasingYield,
+    })
   return (
     <Metric
       category="llamalend.marketHeader"
@@ -42,10 +42,7 @@ export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: Bor
       value={mapQuery(borrowRate, ({ rate }) => rate)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       {...(showNetBorrowApr && {
-        notional: mapQuery(
-          borrowRate,
-          ({ totalBorrowRate }) => t`Est. net ${formatCappedRatePercent(totalBorrowRate)}`,
-        ),
+        notional: mapQuery(borrowRate, ({ totalBorrowRate }) => formatEstimatedNetBorrowRate(totalBorrowRate)),
       })}
       valueTooltip={{
         title: BORROW_RATE_TITLE,

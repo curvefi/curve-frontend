@@ -13,7 +13,7 @@ type LeverageInfoFieldsOptions = {
   prevLeverageValue: Query<Decimal | null>
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
-  collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
+  collateralDelta?: Decimal // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
 export const getLeverageInfoFields = ({

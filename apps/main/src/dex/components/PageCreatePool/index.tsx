@@ -23,9 +23,10 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { Icon } from '@legacy-ui/Icon'
 import { Spinner } from '@legacy-ui/Spinner'
 import { useLayoutStore } from '@ui/features/layout/store'
+import { ChevronLeftIcon } from '@ui/icons/ChevronLeftIcon'
+import { ChevronRightIcon } from '@ui/icons/ChevronRightIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = { curve: CurveApi }
@@ -230,7 +231,7 @@ export const CreatePool = ({ curve }: Props) => {
               <NavButtonsBox>
                 {navigationIndex > 0 && (
                   <NavButtonStyles variant="icon-filled" onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                    <Icon name="ChevronLeft" size={24} aria-label={t`Chevron left`} /> {t`Previous`}
+                    <ChevronLeftIcon sx={{ fontSize: 24 }} /> {t`Previous`}
                   </NavButtonStyles>
                 )}
                 {navigationIndex < 3 && (
@@ -240,7 +241,7 @@ export const CreatePool = ({ curve }: Props) => {
                     onClick={() => setNavigationIndex(navigationIndex + 1)}
                     disabled={!isNavEnabled()}
                   >
-                    {t`Next`} <Icon name="ChevronRight" size={24} aria-label={t`Chevron right`} />
+                    {t`Next`} <ChevronRightIcon sx={{ fontSize: 24 }} />
                   </NavButtonStyles>
                 )}
                 {navigationIndex === 3 && (
@@ -265,7 +266,7 @@ export const CreatePool = ({ curve }: Props) => {
             <NavButtonsBoxFixed $navHeight={navHeight}>
               {navigationIndex > 0 && (
                 <NavButtonStyles variant="icon-filled" onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                  <Icon name="ChevronLeft" size={24} aria-label={t`Chevron left`} /> {t`Previous`}
+                  <ChevronLeftIcon sx={{ fontSize: 24 }} /> {t`Previous`}
                 </NavButtonStyles>
               )}
               {navigationIndex < 3 && (
@@ -275,7 +276,7 @@ export const CreatePool = ({ curve }: Props) => {
                   onClick={() => setNavigationIndex(navigationIndex + 1)}
                   disabled={!isNavEnabled()}
                 >
-                  {t`Next`} <Icon name="ChevronRight" size={24} aria-label={t`Chevron right`} />
+                  {t`Next`} <ChevronRightIcon sx={{ fontSize: 24 }} />
                 </NavButtonStyles>
               )}
               {navigationIndex === 3 && (

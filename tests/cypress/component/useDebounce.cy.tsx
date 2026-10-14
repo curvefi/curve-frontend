@@ -106,6 +106,37 @@ describe('useDebounce', () => {
     cy.clock()
   })
 
+  it('preserves edits with unchanged props and keeps pending callbacks through external resets', () => {
+    const callback = cy.stub().as('callback')
+    const render = (initialValue: string) => (
+      <UseDebounceTest initialValue={initialValue} debounceMs={300} callback={callback} />
+    )
+    cy.mount(render('initial')).then(({ rerender }) => {
+      cy.get('input').clear().type('draft')
+      cy.then(() => rerender(render('initial')))
+      cy.get('input').should('have.value', 'draft')
+      cy.then(() => rerender(render('reset')))
+      cy.get('input').should('have.value', 'reset')
+      cy.then(() => rerender(render('initial')))
+      cy.get('input').should('have.value', 'initial')
+      cy.get('@callback').should('not.have.been.called')
+      cy.tick(300)
+      cy.get('@callback').should('have.been.calledOnceWith', 'draft')
+      cy.get('input').should('have.value', 'initial')
+    })
+  })
+
+  it('cancels a pending callback when unmounted', () => {
+    const callback = cy.stub().as('callback')
+    cy.mount(<UseDebounceTest initialValue="" debounceMs={300} callback={callback} />).then(({ rerender }) => {
+      cy.get('input').type('draft')
+      cy.then(() => rerender(<div />))
+      cy.get('input').should('not.exist')
+      cy.tick(300)
+      cy.get('@callback').should('not.have.been.called')
+    })
+  })
+
   it('returns its initial value', () => {
     cy.mount(<UseDebounceTest initialValue="initial" debounceMs={300} callback={cy.stub()} />)
 

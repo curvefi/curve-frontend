@@ -43,11 +43,11 @@ export function LiquidityProviderInput({
   supply: QueryProp<Decimal>
   lpTokenDecimals: number
 }) {
-  const { update, formState, watchValues } = useFormContext<WithdrawFormValues>()
+  const { update, formState, values } = useFormContext<WithdrawFormValues>()
   const { errors, touchedFields } = formState
   const queryState = combineQueryState(balance, reserves, supply, ...(decimals ?? []))
   const error = (touchedFields.lpAmount ? (errors.lpAmount ?? errors.maxLpAmount) : undefined) ?? queryState.error
-  const { lpAmount, slippage } = watchValues()
+  const { lpAmount, slippage } = values
   const tokenCount = tokens?.length
   const decimalsData = useMemo(() => completeArray(decimals?.map(q => q.data)), [decimals])
 
