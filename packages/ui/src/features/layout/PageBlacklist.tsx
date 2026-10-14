@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
+import LinkMui from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { LlamaBox } from '@ui/components/LlamaBox'
 import { RouterLink } from '@ui/components/RouterLink'
@@ -13,11 +15,15 @@ export const PageBlacklist = ({
   description,
   navUrl,
   navTitle,
+  contactUrl,
+  contactTitle,
 }: {
   title: string
-  description: string
+  description: ReactNode
   navUrl: string
   navTitle: string
+  contactUrl: string
+  contactTitle: string
 }) => (
   <LlamaBox>
     <Stack sx={{ gap: Spacing.xs, maxWidth: MaxWidth.blacklistContent }}>
@@ -25,9 +31,22 @@ export const PageBlacklist = ({
         <AlertTitle>{title}</AlertTitle>
         {description}
       </Alert>
-      <Button component={RouterLink} href={navUrl} variant="contained" color="secondary">
-        {navTitle}
-      </Button>
+      <Stack direction="row" sx={{ gap: Spacing.xs }}>
+        <Button component={RouterLink} href={navUrl} variant="contained" color="secondary" sx={{ flex: 1 }}>
+          {navTitle}
+        </Button>
+        <Button
+          component={LinkMui}
+          href={contactUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="contained"
+          color="primary"
+          sx={{ flex: 1 }}
+        >
+          {contactTitle}
+        </Button>
+      </Stack>
     </Stack>
   </LlamaBox>
 )

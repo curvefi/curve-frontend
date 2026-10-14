@@ -17,6 +17,7 @@ import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
+import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 export const PagePool = () => {
   const { curveApi = null, isHydrated } = useCurve()
@@ -53,9 +54,17 @@ export const PagePool = () => {
   return isBlacklisted ? (
     <PageBlacklist
       title={t`Blacklisted pool`}
-      description={t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`}
+      description={
+        <>
+          {t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`}
+          <br />
+          {t`If you believe this pool has been incorrectly flagged, contact us.`}
+        </>
+      }
       navUrl={getPath(props, ROUTE.PAGE_POOLS)}
-      navTitle={t`Go to pool list`}
+      navTitle={t`Go back to pools`}
+      contactUrl={CURVE_SOCIALS.telegram.en}
+      contactTitle={t`Contact us`}
     />
   ) : (
     isHydrated &&
