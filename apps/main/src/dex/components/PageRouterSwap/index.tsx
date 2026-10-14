@@ -1,5 +1,5 @@
 import { isEqual, noop } from 'lodash'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
 import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
@@ -406,12 +406,14 @@ export const QuickSwap = ({
   const lastFetchTimeRef = useRef<number>(0)
   const fetchDataRef = useRef<() => void>(noop)
 
-  // Keep fetchDataRef always pointing to the latest fetchData logic
-  fetchDataRef.current = () => {
-    if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
-      updateFormValues({}, false, false, true)
+  // Refresh the callback after commit, before effects or events can trigger a fetch.
+  useLayoutEffect(() => {
+    fetchDataRef.current = () => {
+      if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
+        updateFormValues({}, false, false, true)
+      }
     }
-  }
+  }, [isReady, formStatus.formProcessing, formStatus.formTypeCompleted, updateFormValues])
 
   // Direct fetch for user-initiated actions (token changes, input changes)
   // Also resets timer to prevent redundant background fetch right after
