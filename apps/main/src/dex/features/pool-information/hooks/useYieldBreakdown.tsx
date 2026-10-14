@@ -15,8 +15,8 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
+import type { YieldBreakdownData, YieldBreakdownRow } from '@ui/features/pools/yield-breakdown/types'
 import { t } from '@ui/lib/i18n'
-import type { YieldBreakdownData, YieldBreakdownRow } from '../components/yield-breakdown/types'
 
 export const useYieldBreakdown = ({
   chainId,

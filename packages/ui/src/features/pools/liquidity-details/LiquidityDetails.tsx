@@ -1,9 +1,9 @@
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { BalancedWithdrawCard } from './components/BalancedWithdrawCard'
-import { MarketParticipationCard } from './components/MarketParticipationCard'
-import { Metrics } from './components/Metrics'
+import { BalancedWithdrawCard } from './BalancedWithdrawCard'
+import { Metrics } from './LiquidityDetailsMetrics'
+import { MarketParticipationCard } from './MarketParticipationCard'
 import type { LiquidityDetailsData } from './types'
 
 const { Spacing } = SizesAndSpaces

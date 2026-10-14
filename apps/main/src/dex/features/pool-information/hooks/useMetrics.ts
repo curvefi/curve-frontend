@@ -4,10 +4,10 @@ import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { DEFAULT_DECIMALS, maybe, maybes } from '@primitives/objects.utils'
+import type { PoolInformationMetricsProps } from '@ui/features/pools/PoolInformationMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { decimal, decimalPercent, fromWei } from '@ui/lib/decimal'
-import type { PoolInformationMetricsProps } from '../components/Metrics'
 
 export const useMetrics = ({
   chainId,

@@ -9,7 +9,7 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import type { BalancedWithdrawRow } from '../types'
+import type { BalancedWithdrawRow } from './types'
 
 const { Spacing } = SizesAndSpaces
 
