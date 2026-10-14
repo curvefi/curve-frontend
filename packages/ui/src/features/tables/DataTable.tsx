@@ -151,6 +151,7 @@ export const DataTable = <TData extends RowData>({
                       <HeaderCell
                         key={header.id}
                         header={header}
+                        canSort={table.getColumn(header.column.id)?.getCanSort()}
                         size={size}
                         isSticky={!index && shouldStickFirstColumn}
                         width={`calc(100% / ${columnCount})`}
