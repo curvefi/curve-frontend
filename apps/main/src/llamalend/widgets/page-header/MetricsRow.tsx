@@ -1,9 +1,9 @@
 import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { hasNetSupplyRate } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { AvailableLiquidityMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
-import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -36,6 +36,14 @@ export const MetricsRow = ({
 
   const borrowRateMetric = <BorrowAprMetric borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
 
+  const showNetSupplyRate =
+    !!supplyRate?.data &&
+    hasNetSupplyRate({
+      extraRewards: supplyRate.data.extraRewards,
+      extraIncentives: supplyRate.data.extraIncentives,
+      rebasingYieldApy: supplyRate.data.rebasingYield,
+    })
+
   const supplyRateMetric = supplyRate && (
     <Metric
       category={METRIC_CATEGORY}
@@ -43,9 +51,9 @@ export const MetricsRow = ({
       label={SUPPLY_RATE_TITLE}
       value={mapQuery(supplyRate, ({ supplyApy }) => supplyApy)}
       valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
-      notional={mapQuery(supplyRate, ({ totalMinBoost }) =>
-        maybe(totalMinBoost, value => t`${formatCappedRatePercent(value)} Total`),
-      )}
+      {...(showNetSupplyRate && {
+        notional: mapQuery(supplyRate, ({ totalMinBoost }) => t`${formatCappedRatePercent(totalMinBoost)} Total`),
+      })}
       valueTooltip={{
         title: SUPPLY_RATE_TITLE,
         body: (

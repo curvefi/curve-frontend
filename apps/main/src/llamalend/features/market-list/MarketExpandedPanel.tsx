@@ -24,6 +24,7 @@ import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
 import { MARKET_TITLES } from './columns/column.titles'
 import { MarketColumnId } from './columns/columns.enum'
+import { useHasNetRate } from './hooks/useHasNetRate'
 
 const { Spacing } = SizesAndSpaces
 
@@ -62,6 +63,7 @@ function useMobileGraphSize() {
 const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType }) => {
   const { tooltipComponent: Tooltip, title, rateKey, getSubRate } = ratesConfig[type]
   const rateValue = market.rates[rateKey] as number
+  const hasNetRate = useHasNetRate(market, type)
   return (
     rateValue != null && (
       <Grid size={6}>
@@ -77,7 +79,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
                 formatter: formatCappedRateValue,
                 disableTooltip: true,
               }}
-              notional={constQ(getSubRate(market.rates))}
+              {...(hasNetRate && { notional: constQ(getSubRate(market.rates)) })}
               icon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>

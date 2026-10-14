@@ -41,6 +41,7 @@ import { getMarketAssetsType } from './market-assets-type.utils'
 import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
 import type { MarketBorrowAprTooltipContentProps } from './widgets/tooltips/MarketBorrowAprTooltipContent'
+import type { MarketSupplyRateTooltipContentProps } from './widgets/tooltips/MarketSupplyRateTooltipContent'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -497,13 +498,21 @@ export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. n
 /** Second line under a supply APY with the net supply APY, labelled "Total", e.g. "Total 3.43%". */
 export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
 
-/** The estimated net borrow APR differs from the borrow APR only when there are extra rewards or collateral yield. */
+/** The estimated net borrow APR adds the collateral yield and borrow rewards to the borrow APR, so it only exists when the market has one of them. */
 export const hasEstimatedNetBorrowApr = ({
   totalBorrowApr,
   extraRewards,
   rebasingYieldApr,
 }: Pick<MarketBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
   totalBorrowApr != null && (!!extraRewards?.length || rebasingYieldApr != null)
+
+/** The net supply APY adds incentives (CRV included), rewards and the borrowed token yield to the supply APY, so it only exists when the market has one of them. */
+export const hasNetSupplyRate = ({
+  extraRewards,
+  extraIncentives,
+  rebasingYieldApy,
+}: Pick<MarketSupplyRateTooltipContentProps, 'extraRewards' | 'extraIncentives' | 'rebasingYieldApy'>) =>
+  !!extraRewards.length || !!extraIncentives.length || rebasingYieldApy != null
 
 /** Compute utilization percentage from available liquidity and total assets. */
 export const getUtilizationPercent = (available: Decimal | undefined, totalAssets: Decimal | undefined) => {

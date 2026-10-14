@@ -13,6 +13,7 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { MarketColumnId } from '../../columns/columns.enum'
+import { useHasNetRate } from '../../hooks/useHasNetRate'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
 import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
@@ -52,6 +53,7 @@ export const RateCell = <TValue extends number | null>({
   const Tooltip = TooltipComponents[rateType][market.type]
   const rate = getValue()
   const rewardsIcons = <RewardsIcons market={market} rateType={rateType} />
+  const hasNetRate = useHasNetRate(market, rateType)
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box sx={{ display: 'flex', justifyContent: 'end' }}>
@@ -61,8 +63,7 @@ export const RateCell = <TValue extends number | null>({
             {formatCappedRatePercent(rate)}
           </Typography>
 
-          {rate != null && getSubRate ? (
-            // the reward icons go next to the second line, to avoid a third line
+          {rate != null && getSubRate && hasNetRate ? (
             <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
               <Typography variant="tableCellSupport" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
                 {getSubRate(market)}
