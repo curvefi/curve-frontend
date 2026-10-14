@@ -6,9 +6,11 @@ import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId } from '@/dex/types/main.types'
+import { Chain } from '@primitives/network.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalPercent, decimalSum } from '@ui/lib/decimal'
+import type { LiquidityDetailsData } from '../types'
 
 export type UseLiquidityDetailsParams = {
   chainId: ChainId
@@ -17,7 +19,12 @@ export type UseLiquidityDetailsParams = {
   tokenAddresses: string[]
 }
 
-export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }: UseLiquidityDetailsParams) => {
+export const useLiquidityDetails = ({
+  chainId,
+  poolId,
+  tokens,
+  tokenAddresses,
+}: UseLiquidityDetailsParams): LiquidityDetailsData => {
   const { address: userAddress } = useConnection()
   const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
 
@@ -45,6 +52,8 @@ export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }:
 
   return {
     hasPosition,
+    // There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A.
+    showBoost: chainId === Number(Chain.Ethereum),
     marketParticipation: {
       stakedBalance: gaugeTokenBalance,
       stakedPercent,
@@ -56,5 +65,3 @@ export const useLiquidityDetails = ({ chainId, poolId, tokens, tokenAddresses }:
     rows: mapQuery(userBalances, () => withdrawRows),
   }
 }
-
-export type LiquidityDetailsData = ReturnType<typeof useLiquidityDetails>
