@@ -1,5 +1,6 @@
 import { styled } from 'styled-components'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
+import { VoteMarker } from '@/dao/components/VoteMarker'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
@@ -11,8 +12,6 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { CheckedIcon } from '@ui/icons/CheckedIcon'
-import { CrossCircleIcon } from '@ui/icons/CrossCircleIcon'
 import { t } from '@ui/lib/i18n'
 
 type Props = {
@@ -113,7 +112,8 @@ export const VoteDialog = ({
               {userProposalVotes?.[proposalKey] && votedFor && (
                 <VotedRow>
                   <VotedRowItem>
-                    <CheckedIcon sx={{ fontSize: 16, color: 'var(--chart-green)' }} /> {t`For`}
+                    <VoteMarker supports />
+                    {t`For`}
                   </VotedRowItem>
                   <VotedRowItem>
                     {formatNumber(userProposalVotes?.[proposalKey].voteFor, { abbreviate: false, fallback: '-' })}{' '}
@@ -127,7 +127,8 @@ export const VoteDialog = ({
               {userProposalVotes?.[proposalKey] && votedAgainst && (
                 <VotedRow>
                   <VotedRowItem>
-                    <CrossCircleIcon sx={{ fontSize: 16, color: 'var(--chart-red)' }} /> {t`Against`}
+                    <VoteMarker supports={false} />
+                    {t`Against`}
                   </VotedRowItem>
                   <VotedRowItem>
                     {formatNumber(userProposalVotes?.[proposalKey].voteAgainst, { abbreviate: false, fallback: '-' })}{' '}
