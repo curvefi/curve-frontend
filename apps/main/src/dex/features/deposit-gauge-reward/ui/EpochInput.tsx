@@ -11,8 +11,8 @@ import { TIME_FRAMES } from '@ui/lib/time'
 const { Spacing } = SizesAndSpaces
 
 export const EpochInput = ({ disabled }: { disabled: boolean }) => {
-  const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
-  const { epoch } = watchValues()
+  const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
+  const { epoch } = values
 
   const onEpochChange = useCallback(
     (epoch: string) => updateForm({ epoch: parseInt(epoch) * TIME_FRAMES.WEEK }),

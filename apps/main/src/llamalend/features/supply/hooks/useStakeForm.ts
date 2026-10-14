@@ -59,7 +59,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
 
   const form = useForm<StakeForm>({ validation: stakeFormValidationSuite, defaultValues: emptyStakeForm() })
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })
   const stakeShares = values.isFull ? maxStakeShares.data : convertedStakeShares.data
 
@@ -91,7 +91,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   useFormSync(form, { stakeShares })
 
   const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyAlert
-  const { formState } = form
   const isPending = formState.isSubmitting || isStaking
   return {
     form,

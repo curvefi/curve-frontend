@@ -73,7 +73,7 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
     defaultValues,
     validation: useMemo(() => resetFormValidationSuite(market), [market]),
   })
-  const values = form.watchValues()
+  const { values, formState } = form
   const [params, isDebouncing] = useResetParams({ chainId, marketId, userAddress, ...values })
 
   const userState = useUserState({ chainId, marketId, userAddress })
@@ -98,7 +98,6 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const { formState } = form
   const isPending = formState.isSubmitting || isResetting
 
   return {
