@@ -1,7 +1,8 @@
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp } from '@ui/features/queries/util'
 
-export type BalancedWithdrawRow = { address: string; symbol: string; amount: string | undefined }
+export type BalancedWithdrawRow = { address: Address; symbol: string | undefined; amount: Decimal | undefined }
 
 export type LiquidityDetailsData = {
   hasPosition: boolean
