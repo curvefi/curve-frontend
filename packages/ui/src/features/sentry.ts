@@ -37,9 +37,10 @@ export const initSentry = (applicationKey: string) =>
         behaviour: 'apply-tag-if-exclusively-contains-third-party-frames',
       }),
     ],
-    beforeSend: (event, hint) =>
-      isUserErrorReport(event) || (!event.tags?.third_party_code && !isIgnoredWalletError(hint.originalException))
-        ? withErrorMessage(event, hint.originalException)
+    beforeSend: (event, { originalException: error }) =>
+      isUserErrorReport(event) ||
+      (!event.tags?.third_party_code && !isIgnoredError(getErrorCode(error), getErrorMessage(event, error)))
+        ? withErrorMessage(event, error)
         : null,
     sendClientReports: false, // prevents client_report envelopes for dropped events
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
@@ -66,19 +67,55 @@ export const initSentry = (applicationKey: string) =>
 
 const isUserErrorReport = (event: Event) => event.extra?.userReport === true
 
-/** EIP-1193: user rejection (4001) and provider disconnected from all chains (4900). */
-const isIgnoredWalletError = (error: unknown) => isObjectLike(error) && (error.code === 4001 || error.code === 4900)
+const IGNORED_EXTENSION_MESSAGES = [
+  'Could not establish connection. Receiving end does not exist.',
+  'A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received',
+  'Extension context invalidated.',
+]
+
+const REJECTED_WALLET_MESSAGES = [
+  'Not Allowed',
+  'wallet must has at least one account',
+  'Request rejected',
+  'User rejected the request.',
+  'Permission denied, approve www.curve.finance in Frame to continue',
+  'Tx Signature: User denied transaction signature.',
+]
+
+const OPTIONAL_WALLET_METHOD_ERRORS = [
+  'the method wallet_revokePermissions does not exist/is not available',
+  "method [rabby:getProviderConfig] doesn't has corresponding handler",
+  "method [wallet_registerOnboarding] doesn't has corresponding handler",
+]
+
+/** Match original object messages here: Sentry's ignoreErrors runs before beforeSend. */
+const isIgnoredError = (code: number | undefined, message: string | undefined) =>
+  code === 4900 ||
+  (typeof message === 'string' &&
+    (IGNORED_EXTENSION_MESSAGES.includes(message) ||
+      (code === 4001 && REJECTED_WALLET_MESSAGES.includes(message)) ||
+      (code === -32601 && OPTIONAL_WALLET_METHOD_ERRORS.includes(message)) ||
+      (code === -32000 && message === 'Failed to fetch')))
+
+const getErrorCode = (error: unknown) =>
+  isObjectLike(error) && typeof error.code === 'number' ? error.code : undefined
+
+/** Prefer the original message; Sentry places the outer error after its causes. */
+const getErrorMessage = (event: ErrorEvent, error: unknown) =>
+  typeof error === 'string'
+    ? error
+    : isObjectLike(error) && typeof error.message === 'string'
+      ? error.message
+      : event.exception?.values?.at(-1)?.value
 
 /**
- * Wallets can throw invalid errors that arrive as "UnhandledRejection: Object captured as promise rejection with keys: ..."
- * This function updates the display message so we can see the error's message in Sentry.
+ * Some wallets reject with plain objects, so Sentry titles unrelated failures "Object captured as ...".
+ * Using the actual message lets us distinguish failures without opening each event's serialized data.
  */
 const withErrorMessage = (event: ErrorEvent, error: unknown) => {
-  const exception = event.exception?.values?.[0]
-  const message = isObjectLike(error) && error.message
-  if (exception?.value?.startsWith('Object captured as ') && typeof message === 'string' && message) {
-    exception.value = message
-  }
+  const exception = event.exception?.values?.at(-1)
+  const message = getErrorMessage(event, error)
+  if (exception?.value?.startsWith('Object captured as ') && message) exception.value = message
   return event
 }
 
