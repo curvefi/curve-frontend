@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -21,7 +20,7 @@ export type PoolCompositionRow = {
   marketShare: QueryProp<Amount>
   amount: QueryProp<Amount>
   amountUsd: QueryProp<Amount>
-  price?: number
+  price: QueryProp<number>
 }
 
 const columnHelper = createAppColumnHelper<PoolCompositionRow>()
@@ -52,7 +51,11 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography variant="tableCellValue">{formatNumber(getValue(), 'usd.precise')}</Typography>
+        <TokenInfo
+          icon={null}
+          iconPosition="right"
+          primary={mapQuery(getValue(), value => formatNumber(value, 'usd.precise'))}
+        />
       </InlineTableCell>
     ),
     enableSorting: false,

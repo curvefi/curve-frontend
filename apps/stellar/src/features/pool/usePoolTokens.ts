@@ -8,7 +8,7 @@ import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
-import { combineQueries } from '@ui/features/queries/combine'
+import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 
 const combine = <T>(results: Query<T>[]): QueryProp<T>[] => results.map(q)
@@ -38,7 +38,10 @@ export function usePoolTokens({
     ),
     combine: useCallback(
       // propagate every decimal loading state to the balances
-      (balances: Query<Decimal>[]) => zip(balances, decimals).map(qs => combineQueries(qs, balance => balance)),
+      (balances: Query<Decimal>[]) =>
+        zip(balances, decimals).map(([balance, decimals]) =>
+          q({ data: balance.data, ...combineQueryState(balance, decimals) }),
+        ),
       [decimals],
     ),
   })

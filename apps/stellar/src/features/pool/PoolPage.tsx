@@ -16,8 +16,10 @@ import { DepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
 import { WithdrawTab } from '../withdraw/WithdrawTab'
 import { PoolAdvancedDetails } from './PoolAdvancedDetails'
+import { useLitePool } from './useLitePool'
 import { usePoolComposition } from './usePoolComposition'
 import { usePoolTokens } from './usePoolTokens'
+import { UserPosition } from './UserPosition'
 
 const menu = [
   { value: 'deposit', label: t`Deposit`, component: DepositTab },
@@ -31,9 +33,10 @@ export const PoolPage = () => {
   const { address: account } = useWallet()
   const params = { network, pool }
   const config = usePoolConfig(params)
+  const { query: litePool } = useLitePool(params)
   const tokenAddresses = mapQuery(config, config => config.tokens)
-  const { tokens, symbols, decimalsData } = usePoolTokens({ network, account, tokenAddresses }) ?? {}
-  const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals: decimalsData })
+  const { tokens, symbols, decimals } = usePoolTokens({ network, account, tokenAddresses }) ?? {}
+  const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals })
 
   return (
     <DetailPageLayout
@@ -51,8 +54,9 @@ export const PoolPage = () => {
         content: <FormTabs menu={menu} params={{ network, pool }} defaultValue={defaultTab?.toString()} />,
       }}
     >
+      <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
       <PoolCompositionCard {...composition} />
-      <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} />
+      <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} litePool={litePool} />
     </DetailPageLayout>
   )
 }
