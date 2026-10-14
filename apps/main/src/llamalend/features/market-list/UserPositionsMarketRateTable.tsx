@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { t } from '@ui/lib/i18n'
-import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, MARKET_COLUMN_IDS } from './columns/column.constants'
+import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns/column.constants'
 import { MARKET_COLUMNS } from './columns/column.definitions'
 import { useMarketsVisibility } from './hooks/useMarketsVisibility'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
@@ -48,7 +48,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, {
     fieldName: sortQueryField,
-    sortableIds: MARKET_COLUMN_IDS,
+    columns: MARKET_COLUMNS,
   })
   const { columnVisibility } = useMarketsVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})

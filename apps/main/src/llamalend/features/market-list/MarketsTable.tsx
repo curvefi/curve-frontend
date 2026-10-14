@@ -15,7 +15,7 @@ import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { MarketsChips } from './chips/MarketsChips'
-import { DEFAULT_SORT, MARKET_COLUMN_IDS } from './columns/column.constants'
+import { DEFAULT_SORT } from './columns/column.constants'
 import { MARKET_COLUMNS } from './columns/column.definitions'
 import { MarketColumnId } from './columns/columns.enum'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
@@ -50,7 +50,7 @@ export const MarketsTable = ({
     { columns: MarketColumnId },
   )
   const globalFilterFn = useMarketsGlobalFilterFn(data, globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { sortableIds: MARKET_COLUMN_IDS })
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns: MARKET_COLUMNS })
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useMarketsVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
