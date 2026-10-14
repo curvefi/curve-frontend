@@ -6,6 +6,7 @@ import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId } from '@/dex/types/main.types'
+import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
@@ -16,7 +17,7 @@ export type UseLiquidityDetailsParams = {
   chainId: ChainId
   poolId: string | undefined
   tokens: string[]
-  tokenAddresses: string[]
+  tokenAddresses: Address[]
 }
 
 export const useLiquidityDetails = ({
@@ -42,11 +43,7 @@ export const useLiquidityDetails = ({
 
   const withdrawRows = useMemo(
     () =>
-      tokenAddresses.map((address, index) => ({
-        address,
-        amount: userBalances.data?.[index],
-        symbol: tokens[index] ?? '',
-      })),
+      tokenAddresses.map((address, index) => ({ address, amount: userBalances.data?.[index], symbol: tokens[index] })),
     [tokenAddresses, tokens, userBalances.data],
   )
 
