@@ -3,15 +3,15 @@ import { asAddress, type StellarContract } from '@/stellar/features/connect-wall
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
 import { useWithdrawPriceImpact } from '@/stellar/features/withdraw/useWithdrawPriceImpact'
-import { calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
-import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolParams, PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { withdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
+import { useWithdrawLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
 import { getWithdrawMaxAmountQueryOptions } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -19,10 +19,7 @@ import { useQueries } from '@tanstack/react-query'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
-import {
-  getSingleCoinWithdrawIndex,
-  type WithdrawFormValues,
-} from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
@@ -79,7 +76,12 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   const reserves = q(usePoolReserves({ ...poolParams, decimals: decimalsData }))
   const maxAmounts = useWithdrawMaxAmounts({ ...poolParams, tokenAddresses, decimals, lpBalance })
   const userDefaultValues = useMemo(
-    () => ({ ...maybe(tokenCount, getPoolDefaultValues), lpAmount: undefined, maxWithdrawIndex: undefined }),
+    () => ({
+      ...maybe(tokenCount, getPoolDefaultValues),
+      lpAmount: undefined,
+      maxWithdrawIndex: undefined,
+      isBalanced: false,
+    }),
     [tokenCount],
   )
   const form = useForm<WithdrawFormValues>({
@@ -88,7 +90,10 @@ export function useWithdrawForm(poolParams: PoolQuery) {
   })
   const { formState, reset, values } = form
 
-  const [params, isDebouncing] = useFormDebounce<WithdrawFormQuery, PoolAmountField | 'lpAmount' | 'maxWithdrawIndex'>(
+  const [params, isDebouncing] = useFormDebounce<
+    WithdrawFormQuery,
+    PoolAmountField | 'lpAmount' | 'maxWithdrawIndex' | 'isBalanced'
+  >(
     {
       ...values,
       network,
@@ -105,10 +110,7 @@ export function useWithdrawForm(poolParams: PoolQuery) {
     userDefaultValues,
   )
   const queryParams = { ...params, amounts: getPoolAmounts(params, params.tokenCount) }
-  const expectedLp = q(useExpectedLp({ ...queryParams, isDeposit: false }))
-  const maximumLp = mapQuery(expectedLp, value =>
-    getSingleCoinWithdrawIndex(queryParams) == null ? calculateMaximumBurn(value, params.slippage) : value,
-  )
+  const { expectedLp, maximumLp } = useWithdrawLp(queryParams)
   const priceImpact = useWithdrawPriceImpact(queryParams, expectedLp)
 
   useFormSync(form, {
