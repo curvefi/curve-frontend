@@ -8,10 +8,10 @@ import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
+import type { LiquidityDetailsData } from '@ui/features/pools/liquidity-details/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalPercent, decimalSum } from '@ui/lib/decimal'
-import type { LiquidityDetailsData } from '../types'
 
 export type UseLiquidityDetailsParams = {
   chainId: ChainId
