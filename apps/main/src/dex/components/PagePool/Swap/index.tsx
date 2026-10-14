@@ -119,7 +119,7 @@ export const Swap = ({
   const tokens = useMemo(
     () =>
       poolTokenAddresses.map<TokenOption>((address, index) => ({
-        address: address as Address, // not checksummed!
+        address, // not checksummed!
         symbol: poolTokens[index] || shortenAddress(address),
         chain: blockchainId,
       })),
