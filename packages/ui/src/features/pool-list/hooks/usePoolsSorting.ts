@@ -59,7 +59,7 @@ const getPoolsSortParams = ([{ id: sortField, desc }]: PoolsSorting): PoolsSortP
  */
 export const usePoolsSorting = (isLite: boolean, updateQueryAndResetPage: PoolsQueryUpdater) => {
   const defaultSort = useMemo<SortingState>(() => getDefaultPoolsSort(isLite), [isLite])
-  const [urlSorting] = useSortFromQueryString(defaultSort, SORT_QUERY_FIELD)
+  const [urlSorting] = useSortFromQueryString(defaultSort, { fieldName: SORT_QUERY_FIELD })
   const sorting = useMemo<PoolsSorting>(
     () => getPoolsSorting(urlSorting, defaultSort, isLite),
     [defaultSort, isLite, urlSorting],
