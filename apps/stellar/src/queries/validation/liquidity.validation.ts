@@ -13,6 +13,7 @@ export type QuoteQuery = PoolQuery & { amounts: (Decimal | undefined)[]; decimal
 export type QuoteParams = FieldsOf<DeepPartial<QuoteQuery>>
 export type ExpectedLpQuery = QuoteQuery & {
   isDeposit: boolean
+  isBalanced?: boolean
   maxAmounts?: (Decimal | undefined)[]
   lpAmount?: Decimal
   maxLpAmount?: Decimal
@@ -25,6 +26,13 @@ export const validateAmount = (field: string, amount: Decimal | Nullish, require
     enforce(required ? amount : amount || '0')
       .isDecimal({ decimal_digits: '0,' })
       .gte(0)
+  })
+}
+
+export const validateLpAmount = (lpAmount: Decimal | Nullish) => {
+  validateAmount('lpAmount', lpAmount)
+  test('lpAmount', 'Enter an LP amount', () => {
+    enforce(lpAmount).isDecimal().gt(0)
   })
 }
 
@@ -67,9 +75,10 @@ export const validateMaxAmounts = ({ amounts, maxAmounts }: Pick<ExpectedLpParam
 }
 
 export const quoteValidationSuite = createValidationSuite(
-  ({ pool, network, isDeposit, amounts, decimals, supply, maxAmounts }: ExpectedLpQuery) => {
+  ({ pool, network, isDeposit, isBalanced, amounts, decimals, supply, maxAmounts, lpAmount }: ExpectedLpQuery) => {
     validatePool({ pool, network })
     validateLiquidityInputs({ amounts, decimals, supply, isDeposit })
-    skipWhen(isDeposit, () => validateMaxAmounts({ amounts, maxAmounts }))
+    skipWhen(isDeposit || !!isBalanced, () => validateMaxAmounts({ amounts, maxAmounts }))
+    skipWhen(isDeposit || !isBalanced, () => validateLpAmount(lpAmount))
   },
 )

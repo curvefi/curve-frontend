@@ -30,6 +30,7 @@ export const {
     decimals,
     supply,
     isDeposit,
+    isBalanced,
     maxAmounts,
     lpAmount,
     maxLpAmount,
@@ -43,6 +44,7 @@ export const {
       decimals,
       supply,
       isDeposit,
+      isBalanced: isDeposit ? undefined : isBalanced,
       maxAmounts: isDeposit ? undefined : maxAmounts,
       lpAmount: isDeposit ? undefined : lpAmount,
       maxLpAmount: isDeposit ? undefined : maxLpAmount,
@@ -54,11 +56,12 @@ export const {
     amounts,
     decimals,
     isDeposit,
+    isBalanced,
     lpAmount,
     maxLpAmount,
     maxWithdrawIndex,
   }: ExpectedLpQuery): Promise<Decimal> => {
-    if (!isDeposit && getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }) != null) {
+    if (!isDeposit && (isBalanced || getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }) != null)) {
       return lpAmount!
     }
     const quote = fromWei(
