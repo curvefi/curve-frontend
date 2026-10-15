@@ -50,7 +50,7 @@ export const MarketsTable = ({
     { columns: MarketColumnId },
   )
   const globalFilterFn = useMarketsGlobalFilterFn(data, globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns: MARKET_COLUMNS })
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useMarketsVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
