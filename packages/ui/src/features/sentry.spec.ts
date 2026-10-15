@@ -1,7 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { type Event } from '@sentry/core'
-import { BrowserClient, defaultStackParser, eventFiltersIntegration, init } from '@sentry/react'
-import { initSentry } from './sentry'
+import {
+  BrowserClient,
+  defaultStackParser,
+  eventFiltersIntegration,
+  dedupeIntegration,
+  getCurrentScope,
+  init,
+} from '@sentry/react'
+import { captureUserReport, initSentry } from './sentry'
 
 vi.mock('@ui/lib/env', () => ({ IS_CYPRESS: true, IS_PREVIEW_HOST: false }))
 vi.mock('@sentry/react', async importOriginal => ({
@@ -14,19 +21,30 @@ const DISCONNECTED = { code: 4900, message: 'The provider is disconnected from a
 const WALLET_STACK =
   'Error: The provider is disconnected from all chains.\n at o (chrome-extension://acmacodkjbdgmoleebolmdjonilkdbch/background.js:4:8122317)'
 
-const capture = async (originalException: unknown, overrides: Event = {}) => {
+const createClient = () => {
   initSentry('curve-frontend')
-  const options = vi.mocked(init).mock.calls[0][0]
+  const options = vi.mocked(init).mock.calls.at(-1)![0]
   const send = vi.fn(() => Promise.resolve({ statusCode: 200 }))
   const sentEvent = vi.fn<(event: Event) => void>()
   const client = new BrowserClient({
     ...options,
-    integrations: [eventFiltersIntegration()],
+    integrations:
+      typeof options?.integrations === 'function'
+        ? options
+            .integrations([eventFiltersIntegration(), dedupeIntegration()])
+            .filter(integration => integration.name !== 'ThirdPartyErrorsFilter')
+        : [],
     stackParser: defaultStackParser,
     transport: () => ({ send, flush: () => Promise.resolve(true) }),
   })
   client.on('beforeSendEvent', sentEvent)
   client.init()
+  getCurrentScope().setClient(client)
+  return { client, send, sentEvent }
+}
+
+const capture = async (originalException: unknown, overrides: Event = {}) => {
+  const { client, send, sentEvent } = createClient()
   const value =
     originalException instanceof Error
       ? originalException.message
@@ -41,7 +59,11 @@ const capture = async (originalException: unknown, overrides: Event = {}) => {
   return { send, event: sentEvent.mock.calls[0]?.[0] }
 }
 
-afterEach(() => vi.clearAllMocks())
+afterEach(() => {
+  getCurrentScope().setTag('third_party_code', undefined)
+  getCurrentScope().setClient(undefined)
+  vi.clearAllMocks()
+})
 
 describe('Sentry events', () => {
   it.each([
@@ -76,6 +98,13 @@ describe('Sentry events', () => {
     { code: -32601, message: "method [rabby:getProviderConfig] doesn't has corresponding handler" },
     { code: -32601, message: "method [wallet_registerOnboarding] doesn't has corresponding handler" },
     { code: -32000, message: 'Failed to fetch' },
+    { code: -32601, message: 'Method not found' },
+    { code: -32603, message: 'Internal JSON-RPC error.' },
+    { code: -32603, message: 'Relay service: ClientOffline' },
+    { code: 3, message: 'execution reverted' },
+    { code: 3, message: 'execution reverted: Reserves too small' },
+    { code: 4100, message: '[Filtered]' },
+    { code: -32603, message: 'Failed to fetch' },
   ])('filters known optional wallet methods and provider fetch noise: %j', async error => {
     const { send } = await capture(error)
     expect(send).not.toHaveBeenCalled()
@@ -84,25 +113,21 @@ describe('Sentry events', () => {
   it.each([
     { code: 4001, message: 'this request method is not supported' },
     { code: 4001, message: 'Unexpected wallet failure' },
-    { code: -32601, message: 'Method not found' },
     { code: -32601, message: 'the method eth_sendTransaction does not exist/is not available' },
-    { code: -32603, message: 'Internal JSON-RPC error.' },
     { code: -32603, message: "Cannot read properties of undefined (reading 'sendMessage')" },
-    { code: -32603, message: 'Relay service: ClientOffline' },
-    { code: 3, message: 'execution reverted' },
-    { code: 3, message: 'execution reverted: Reserves too small' },
-    { code: 4100, message: '[Filtered]' },
-    { code: -32603, message: 'Failed to fetch' },
     { code: -32603, message: 'the method wallet_revokePermissions does not exist/is not available' },
     { message: 'Could not establish connection. Receiving end does not exist. Application failed.' },
     { message: 'Application failed', cause: DISCONNECTED },
+    { code: 4900, message: 'Unexpected application failure' },
+    { code: 4100, message: 'Unknown authorization bug' },
+    { message: 'Importing a module script failed.' },
   ])('retains application failures and errors without a precise noise match: %j', async error => {
     const { send, event } = await capture(error)
     expect(send).toHaveBeenCalledOnce()
     expect(event?.exception?.values?.[0]?.value).toBe(error.message)
   })
 
-  it('retains unsupported chain-switch failures captured by the mutation cache', async () => {
+  it('filters recognized unsupported chain-switch failures', async () => {
     const error = Object.assign(new Error('An error occurred when attempting to switch chain.'), {
       name: 'SwitchChainError',
       code: 4902,
@@ -112,7 +137,7 @@ describe('Sentry events', () => {
       },
     })
     const { send } = await capture(error, { extra: { mutationKey: ['switchChain'], variables: { chainId: 999 } } })
-    expect(send).toHaveBeenCalledOnce()
+    expect(send).not.toHaveBeenCalled()
   })
 
   it('retains application errors with an extension error as a nested cause', async () => {
@@ -194,6 +219,57 @@ describe('Sentry events', () => {
 
   it('filters events tagged as third-party code', async () => {
     const { send } = await capture(undefined, { tags: { third_party_code: true } })
+    expect(send).not.toHaveBeenCalled()
+  })
+})
+
+describe('explicit reports through SDK processors', () => {
+  it.each([
+    new Error('Failed to fetch'),
+    new Error('User rejected transaction'),
+    new Error('Script error.'), // SDK default EventFilters rule
+    new Error('Unexpected application failure'),
+    { code: 3, message: 'execution reverted: Reserves too small', data: '0x1234' },
+    { code: 4900, message: 'The provider is disconnected from all chains.', stack: WALLET_STACK },
+  ])('sends a manual report after the same object was automatically captured: %j', async error => {
+    const { client, send, sentEvent } = createClient()
+    client.captureException(error)
+    await client.flush()
+    send.mockClear()
+    sentEvent.mockClear()
+
+    getCurrentScope().setTag('third_party_code', true)
+    const body = { description: 'Please investigate', originalError: error }
+    await captureUserReport(error, body)
+    await client.flush()
+    expect(send).toHaveBeenCalledOnce()
+    const event = sentEvent.mock.calls[0][0]
+    expect(event.extra?.userReport).toBe(true)
+    expect(event.extra?.body).toMatchObject({ description: body.description })
+    expect(event.exception?.values?.at(-1)?.value).toBe(error.message)
+    if (error instanceof Error) expect(event.exception?.values?.at(-1)?.stacktrace?.frames?.length).toBeGreaterThan(0)
+    await client.close()
+  })
+
+  it('keeps automatic deduplication and filtering while bypassing them for reports', async () => {
+    const { client, send } = createClient()
+    const event = { message: 'Unexpected application failure' }
+    client.captureEvent({ message: 'Script error.' })
+    client.captureEvent(event)
+    client.captureEvent(event)
+    await client.flush()
+    expect(send).toHaveBeenCalledOnce()
+    await captureUserReport(event.message, {})
+    await client.flush()
+    expect(send).toHaveBeenCalledTimes(2)
+    client.captureEvent(event)
+    await client.close()
+    expect(send).toHaveBeenCalledTimes(2)
+  })
+
+  it('requires wallet context to suppress a module-loading error', async () => {
+    const error = new TypeError('Failed to fetch dynamically imported module: https://example.com/wallet.js')
+    const { send } = await capture(error, { extra: { mutationKey: ['connect'] } })
     expect(send).not.toHaveBeenCalled()
   })
 })

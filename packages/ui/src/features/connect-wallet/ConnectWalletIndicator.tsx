@@ -1,5 +1,8 @@
 import type { Address } from '@primitives/address.utils'
 import { ConnectWalletButton } from '@ui/features/connect-wallet/ConnectWalletButton'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
+import { notify } from '@ui/features/toast/Toast/notify'
+import { t } from '@ui/lib/i18n'
 import type { SxProps } from '@ui/lib/mui'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 
@@ -26,7 +29,11 @@ export const ConnectWalletIndicator = ({
     <ConnectedWalletLabel
       address={address}
       addressLabel={addressLabel}
-      onClick={() => void disconnect()}
+      onClick={() =>
+        void disconnect().catch(error =>
+          notify(t`Unable to disconnect wallet.` + ' ' + getErrorMessage(error), 'error'),
+        )
+      }
       loading={isConnecting}
       sx={sx}
     />

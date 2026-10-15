@@ -33,9 +33,13 @@ export const ErrorPage = ({
 }) => {
   const [resetClicked, setResetClicked] = useState(false)
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
-  const onRetry = useCallback(() => {
+  const onRetry = useCallback(async () => {
     queryClient.clear()
-    persister?.removeClient?.()
+    try {
+      await persister?.removeClient?.()
+    } catch (error) {
+      console.warn('Unable to clear saved query data:', error)
+    }
     if (resetError && !resetClicked) {
       setResetClicked(true)
       resetError()
@@ -63,7 +67,7 @@ export const ErrorPage = ({
           >{t`Continue`}</Button>
         ) : (
           <Button
-            onClick={onRetry}
+            onClick={() => void onRetry()}
             color="secondary"
             variant="contained"
             data-testid="retry-error-button"

@@ -1,14 +1,18 @@
-import { type ErrorEvent, type Event, type Extras, isObjectLike } from '@sentry/core'
+import { type ErrorEvent, type Event, type Extras, type Integration, isObjectLike } from '@sentry/core'
 import {
   addBreadcrumb as addSentryBreadcrumb,
+  type BrowserOptions,
   captureException,
   captureMessage,
+  getClient,
+  getCurrentScope,
   init,
   setTag,
   setUser as setSentryUser,
   thirdPartyErrorFilterIntegration,
   withScope,
 } from '@sentry/react'
+import { isModuleLoadError, isUnsupportedChainError } from '@ui/features/errors/errors.util'
 import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui/lib/env'
 
 export const SENTRY_DSN =
@@ -25,47 +29,52 @@ const ENVIRONMENT = IS_CYPRESS
         : window.location.hostname // e.g. localhost
 
 /** Initialize Sentry error reporting */
-export const initSentry = (applicationKey: string) =>
+export const initSentry = (applicationKey: string, transport?: BrowserOptions['transport']) =>
   ENVIRONMENT !== 'localhost' &&
   init({
     dsn: SENTRY_DSN,
+    ...(transport && { transport }),
     environment: ENVIRONMENT,
     integrations: integrations => [
-      ...integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
+      ...integrations.filter(i => i.name !== 'BrowserSession').map(preserveUserReports), // we don't use session tracking
       thirdPartyErrorFilterIntegration({
         filterKeys: [applicationKey],
         behaviour: 'apply-tag-if-exclusively-contains-third-party-frames',
       }),
     ],
     beforeSend: (event, { originalException: error }) =>
-      isUserErrorReport(event) ||
-      (!event.tags?.third_party_code && !isIgnoredError(getErrorCode(error), getErrorMessage(event, error)))
+      isUserErrorReport(event) || (!event.tags?.third_party_code && !isExpectedExternalError(event, error))
         ? withErrorMessage(event, error)
         : null,
     sendClientReports: false, // prevents client_report envelopes for dropped events
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
-    // Filter out noise
-    ignoreErrors: [
-      // Network errors that are expected
-      'Network request failed',
-      'Failed to fetch',
-      'Load failed',
-      // User-initiated navigation
-      'AbortError',
-      // Wallet connection issues (often user-initiated)
-      'User rejected',
-      'User denied',
-      'SwitchChainNotSupportedError',
-      // Browser wallet extensions may throw internal module errors — not caused by app code
-      'not found rainbowkit',
-      // CefSharp's embedded browser cannot find a .NET object called from JavaScript.
-      'Object Not Found Matching Id:',
-      // Browser translation/extension DOM mutations can break React reconciliation
-      "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
-    ],
   })
 
 const isUserErrorReport = (event: Event) => event.extra?.userReport === true
+
+/** Keep SDK defaults for automatic events, but never filter or deduplicate an explicit report. */
+const preserveUserReports = (integration: Integration): Integration =>
+  integration.processEvent && ['EventFilters', 'Dedupe'].includes(integration.name)
+    ? {
+        ...integration,
+        processEvent: (event, hint, client) =>
+          isUserErrorReport(event) ? event : integration.processEvent!(event, hint, client),
+      }
+    : integration
+
+// Application rules belong here rather than ignoreErrors, which runs before the manual-report bypass.
+const EXPECTED_EXTERNAL_MESSAGES = [
+  'Network request failed',
+  'Failed to fetch',
+  'Load failed',
+  'AbortError',
+  'User rejected',
+  'User denied',
+  'SwitchChainNotSupportedError',
+  'not found rainbowkit',
+  'Object Not Found Matching Id:',
+  "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
+]
 
 const IGNORED_EXTENSION_MESSAGES = [
   'Could not establish connection. Receiving end does not exist.',
@@ -88,20 +97,51 @@ const OPTIONAL_WALLET_METHOD_ERRORS = [
   "method [wallet_registerOnboarding] doesn't has corresponding handler",
 ]
 
-/** Match original object messages here: Sentry's ignoreErrors runs before beforeSend. */
-const isIgnoredError = (code: number | undefined, message: string | undefined) =>
-  code === 4900 ||
-  (typeof message === 'string' &&
-    (IGNORED_EXTENSION_MESSAGES.includes(message) ||
-      (code === 4001 && REJECTED_WALLET_MESSAGES.includes(message)) ||
-      (code === -32601 && OPTIONAL_WALLET_METHOD_ERRORS.includes(message)) ||
-      (code === -32000 && message === 'Failed to fetch')))
+/** Reporting policy for recognized operational failures; codes alone do not identify a wallet. */
+const isExpectedExternalError = (event: ErrorEvent, error: unknown) => {
+  const code = getErrorCode(error)
+  const message = getErrorMessage(event, error)
+  const exception = event.exception?.values?.at(-1)
+  const type = isObjectLike(error) && typeof error.name === 'string' ? error.name : exception?.type
+  const mutationKey = event.extra?.mutationKey
+  const isWalletOperation =
+    Array.isArray(mutationKey) &&
+    typeof mutationKey[0] === 'string' &&
+    ['connect', 'reconnect', 'switchChain'].includes(mutationKey[0])
+
+  return (
+    isUnsupportedChainError(error) ||
+    type === 'SwitchChainNotSupportedError' ||
+    (type === 'SwitchChainError' &&
+      Boolean(event.exception?.values?.some(e => isUnsupportedChainError({ name: e.type, message: e.value })))) ||
+    (isWalletOperation && isModuleLoadError(error ?? { message })) ||
+    (typeof message === 'string' &&
+      (EXPECTED_EXTERNAL_MESSAGES.some(pattern => message.includes(pattern)) ||
+        IGNORED_EXTENSION_MESSAGES.includes(message) ||
+        (code === 4001 && REJECTED_WALLET_MESSAGES.includes(message)) ||
+        (code === -32601 && (message === 'Method not found' || OPTIONAL_WALLET_METHOD_ERRORS.includes(message))) ||
+        (code === -32603 && ['Internal JSON-RPC error.', 'Relay service: ClientOffline'].includes(message)) ||
+        (code === 3 && /^execution reverted(?::.*)?$/.test(message)) ||
+        ((code === 4100 || type === 'UnauthorizedProviderError') &&
+          ['[Filtered]', 'The requested account and/or method has not been authorized by the user.'].includes(
+            message,
+          )) ||
+        ((code === 4900 || type === 'ProviderDisconnectedError') &&
+          [
+            'The provider is disconnected from all chains.',
+            'Message channel disconnected',
+            'The Provider is disconnected from all chains.',
+          ].includes(message)) ||
+        ((code === 4901 || type === 'ChainDisconnectedError') &&
+          message === 'The Provider is not connected to the requested chain.')))
+  )
+}
 
 const getErrorCode = (error: unknown) =>
   isObjectLike(error) && typeof error.code === 'number' ? error.code : undefined
 
 /** Prefer the original message; Sentry places the outer error after its causes. */
-const getErrorMessage = (event: ErrorEvent, error: unknown) =>
+const getErrorMessage = (event: Event, error: unknown) =>
   typeof error === 'string'
     ? error
     : isObjectLike(error) && typeof error.message === 'string'
@@ -112,11 +152,28 @@ const getErrorMessage = (event: ErrorEvent, error: unknown) =>
  * Some wallets reject with plain objects, so Sentry titles unrelated failures "Object captured as ...".
  * Using the actual message lets us distinguish failures without opening each event's serialized data.
  */
-const withErrorMessage = (event: ErrorEvent, error: unknown) => {
+const withErrorMessage = <T extends Event>(event: T, error: unknown) => {
   const exception = event.exception?.values?.at(-1)
   const message = getErrorMessage(event, error)
   if (exception?.value?.startsWith('Object captured as ') && message) exception.value = message
   return event
+}
+
+/** Build a new event so an earlier automatic capture cannot mark this report as already captured. */
+export const captureUserReport = async (error: unknown, body: Extras) => {
+  const client = getClient()
+  if (!client) throw new Error('Error reporting is unavailable. Please refresh the page and try again.')
+  const scope = getCurrentScope().clone()
+  const event =
+    error == null || typeof error === 'string'
+      ? { message: error ?? 'Error Report' }
+      : await client.eventFromException(error)
+
+  return client.captureEvent(
+    { ...withErrorMessage(event, error), extra: { ...event.extra, body, userReport: true } },
+    {},
+    scope,
+  )
 }
 
 /**

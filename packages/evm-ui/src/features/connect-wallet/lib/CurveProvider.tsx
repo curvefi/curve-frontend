@@ -59,9 +59,8 @@ export const CurveProvider = <App extends AppName>({
     if (isFocused) {
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConnectState(LOADING)
-      switchChain({ chainId: network.chainId }).catch(e => {
-        console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
-        setConnectState(FAILURE)
+      void switchChain({ chainId: network.chainId }).then(chain => {
+        if (!chain) setConnectState(FAILURE)
       })
     }
   }, [isFocused, isInitialized, walletChainId, network, onChainUnavailable, switchChain, wallet])

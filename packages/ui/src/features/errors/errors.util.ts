@@ -1,5 +1,24 @@
 import { t } from '@ui/lib/i18n'
 
+/** Check the browser failure itself and the cause preserved by wallet error formatting. */
+export const isModuleLoadError = (error: unknown): boolean =>
+  [error, (error as Error | undefined)?.cause].some(error =>
+    /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module|Loading (?:CSS )?chunk .+ failed/i.test(
+      typeof error === 'string' ? error : ((error as Error | undefined)?.message ?? ''),
+    ),
+  )
+
+/** Wagmi's unsupported-switch error, or the provider response wrapped by Viem. */
+export const isUnsupportedChainError = (error: unknown): boolean => {
+  const outer = error as Error | undefined
+  const provider = outer?.name === 'SwitchChainError' ? (outer.cause as Error | undefined) : outer
+  return (
+    outer?.name === 'SwitchChainNotSupportedError' ||
+    (provider?.name === 'Provider.UnsupportedMethodError' &&
+      /^wallet_switchEthereumChain::chainId 0x[\da-f]+ not supported$/i.test(provider.message))
+  )
+}
+
 type CustomError = { data?: { message: string }; code?: string } & Error
 
 /**

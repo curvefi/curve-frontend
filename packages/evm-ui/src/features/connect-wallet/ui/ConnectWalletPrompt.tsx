@@ -1,7 +1,7 @@
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { ConnectWalletButton } from '@ui/features/connect-wallet/ConnectWalletButton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { CURVE_LOGO_URL, getBackgroundUrl } from '@ui/lib/resource.constants'
@@ -44,16 +44,7 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
         </Stack>
         <Stack spacing={3} sx={{ alignItems: 'center' }}>
           <Typography variant="bodyMRegular">{description}</Typography>
-          <Button
-            size="large"
-            color="primary"
-            onClick={() => void connect()}
-            loading={isConnecting}
-            loadingPosition="start"
-            data-testid={`btn-connect-prompt${isConnecting ? '-loading' : ''}`}
-          >
-            {isConnecting ? t`Connecting` : t`Connect`}
-          </Button>
+          <ConnectWalletButton size="large" isConnecting={isConnecting} isConnected={false} connect={connect} />
         </Stack>
       </Stack>
     </Stack>

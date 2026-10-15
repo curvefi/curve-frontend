@@ -20,6 +20,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
+import { handleWithdrawError } from '../handleWithdrawError'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
@@ -63,13 +64,18 @@ export const FormUnstake = ({ seed }: TransferProps) => {
     async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
+      try {
+        const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
-        const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
+          const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
+          setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        }
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
       }
-      if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepUnstake, chainId],
   )
