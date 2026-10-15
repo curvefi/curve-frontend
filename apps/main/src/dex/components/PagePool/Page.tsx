@@ -26,24 +26,33 @@ export const PagePool = () => {
   const chainId = useChainId(blockchainId)
 
   const { data: network } = useNetworkByChain({ chainId })
-  const [poolNotFound, setPoolNotFound] = useState<boolean>()
+  const lookup = useMemo(() => ({ curveApi, poolIdOrAddress, isHydrated }), [curveApi, poolIdOrAddress, isHydrated])
+  const [lookupResult, setLookupResult] = useState<{ lookup: typeof lookup; notFound: boolean }>()
+  const poolNotFound = lookupResult?.lookup === lookup && lookupResult.notFound
 
   // Whether there's a pool depends on if the given curve api is hydrated or not.
   const pool = useMemo(
     () => maybe(curveApi, curveApi => tryGetPool(poolIdOrAddress, curveApi)),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [curveApi, poolIdOrAddress, isHydrated, poolNotFound],
+    [curveApi, poolIdOrAddress, isHydrated, lookupResult],
   )
 
   useEffect(() => {
+    const { curveApi, poolIdOrAddress, isHydrated } = lookup
+    let cancelled = false
     if (!pool && poolIdOrAddress && curveApi && isHydrated) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Reset the previous lookup while checking this pool.
-      setPoolNotFound(undefined)
       fetchNewPools(curveApi)
-        .then(() => setPoolNotFound(!tryGetPool(poolIdOrAddress, curveApi)))
-        .catch(() => setPoolNotFound(true))
+        .then(() => {
+          if (!cancelled) setLookupResult({ lookup, notFound: !tryGetPool(poolIdOrAddress, curveApi) })
+        })
+        .catch(() => {
+          if (!cancelled) setLookupResult({ lookup, notFound: true })
+        })
     }
-  }, [curveApi, isHydrated, pool, poolIdOrAddress])
+    return () => {
+      cancelled = true
+    }
+  }, [lookup, pool])
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
