@@ -36,6 +36,7 @@ export const BuyCollateralLink = ({
             : `${getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_SWAP)}?to=${token.address}`
         }
         label={t`Get ${token.symbol}`}
+        data-testid="buy-collateral-link"
       />
     )
   )
