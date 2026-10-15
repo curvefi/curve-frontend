@@ -35,7 +35,7 @@ export const UserEquityCell = ({ row }: CellContext<CurveTableFeatures, LlamaMar
         result &&
         pnl != null && (
           <Tooltip
-            title={t`PnL (ROE)`}
+            title={t`PNL (ROE %)`}
             body={
               <Typography variant="bodySRegular" data-testid="user-position-equity-pnl-debt">
                 {t`In ${borrowed.symbol}:`} {pnlText(Number(result.pnl), borrowed.symbol, result.percent)}
