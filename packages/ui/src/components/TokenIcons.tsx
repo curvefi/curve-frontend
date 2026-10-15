@@ -1,10 +1,9 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
-import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
+import { getTokenOrPairSymbol, type TokenOrPair } from '@ui/lib/tokens'
 import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
@@ -39,17 +38,13 @@ const STACK_ICON_SIZE = {
   '4xl': '3xl',
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
-type IconToken = { symbol?: string | null; address: Address }
-
-/** A token, or the pair of tokens it is made of (e.g. the coins of an LP token) */
-export type TokenOrPair = IconToken | [IconToken, IconToken]
-
 /** Merges a token pair into the addresses, symbol and key of a single icon */
 const toIconToken = (token: TokenOrPair) => {
-  if (!Array.isArray(token)) return { ...token, symbol: token?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL, key: token.address }
+  const symbol = getTokenOrPairSymbol(token)
+  if (!Array.isArray(token)) return { ...token, symbol, key: token.address }
   const [first, second] = token
   const address = [first.address, second.address]
-  return { address, symbol: getTokenPairUnit([first.symbol, second.symbol]), key: address.join('-') }
+  return { address, symbol, key: address.join('-') }
 }
 
 export type TokenIconsProps = {

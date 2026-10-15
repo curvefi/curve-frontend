@@ -3,8 +3,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenIcons, type TokenOrPair } from '@ui/components/TokenIcons'
+import { TokenIcons } from '@ui/components/TokenIcons'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { TokenOrPair } from '@ui/lib/tokens'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,3 +1,4 @@
+import type { Address } from '@primitives/address.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import type { NumberFormatCategory } from '@primitives/number.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -11,6 +12,17 @@ type TokenSymbols = TokenSymbol | TokenPair
 /** Formats a token pair as a unit, e.g. ['wstETH', 'crvUSD'] becomes 'wstETH/crvUSD'. */
 export const getTokenPairUnit = ([first, second]: TokenPair) =>
   first && second ? `${first}/${second}` : UNAVAILABLE_TOKEN_SYMBOL
+
+type IconToken = { symbol?: TokenSymbol; address: Address }
+
+/** A token, or the pair of tokens it is made of (e.g. the coins of an LP token) */
+export type TokenOrPair = IconToken | [IconToken, IconToken]
+
+/** Returns the symbol of a token, or of a token pair as a unit, e.g. 'reUSD/sfrxUSD'. */
+export const getTokenOrPairSymbol = (token: TokenOrPair) =>
+  Array.isArray(token)
+    ? getTokenPairUnit([token[0].symbol, token[1].symbol])
+    : (token.symbol ?? UNAVAILABLE_TOKEN_SYMBOL)
 
 const isTokenPair = (symbols: TokenSymbols): symbols is TokenPair => Array.isArray(symbols)
 
