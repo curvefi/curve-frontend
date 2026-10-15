@@ -1,7 +1,5 @@
-import { identity } from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useShallow } from 'zustand/react/shallow'
 import { usePoolTokens } from '@/dex/features/pool/usePoolTokens'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
@@ -54,10 +52,9 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     validation: depositFormValidationSuite,
     defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false },
   })
-  const { formState, handleSubmit, update, watchValues, reset } = form
+  const { formState, handleSubmit, update, reset, values } = form
   const { connect, connectState, wallet } = useWallet()
 
-  const values = useShallow(identity<DepositFormValues>)(watchValues()) // Dynamic field names prevent destructuring dependencies; useShallow keeps the values stable between actual changes.
   const { isWrapped } = values
   const canDepositWrapped = hasWrapped(pool)
 
@@ -81,10 +78,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   }, [canDepositWrapped, update, isSeed.data])
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      () => ({ ...values, chainId, poolId, decimals, userAddress }),
-      [chainId, poolId, values, decimals, userAddress],
-    ),
+    { ...values, chainId, poolId, decimals, userAddress },
     userDefaultValues,
   )
 

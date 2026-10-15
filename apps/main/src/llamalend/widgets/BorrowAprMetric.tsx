@@ -8,7 +8,7 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { formatCappedRateValue } from '@ui/lib/rates.utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
-import { TooltipOptions as defaultTooltipOptions } from './tooltips'
+import { TooltipOptions as defaultTooltipOptions } from './tooltips/tooltip.utils'
 
 type BorrowRateMetric = {
   rate: number | Nullish

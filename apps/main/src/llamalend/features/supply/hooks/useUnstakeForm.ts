@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
@@ -52,7 +51,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
 
   const form = useForm<UnstakeForm>({ validation: unstakeFormValidationSuite, defaultValues: emptyUnstakeForm() })
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const convertedUnstakeShares = useUnstakeAssetsToShares({
     chainId,
     marketId,
@@ -62,17 +61,14 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
   const unstakeShares = values.isFull ? maxUnstakeShares.data : convertedUnstakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): UnstakeFormParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        unstakeAssets: values.unstakeAssets,
-        unstakeShares,
-        isFull: values.isFull,
-      }),
-      [chainId, marketId, unstakeShares, userAddress, values.isFull, values.unstakeAssets],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      unstakeAssets: values.unstakeAssets,
+      unstakeShares,
+      isFull: values.isFull,
+    } satisfies UnstakeFormParams<ChainId>,
     userDefaultValues,
   )
 
@@ -81,8 +77,6 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     isPending: isUnstaking,
     error: unstakeError,
   } = useUnstakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
-
-  const { formState } = form
 
   useFormSync(form, { maxUnstakeAssets: maxUnstakeAssets.data })
   useFormSync(form, { unstakeShares })

@@ -22,7 +22,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  address: Address
+  address: Address | Address[]
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size

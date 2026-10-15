@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
@@ -9,7 +8,8 @@ import {
   depositFormValidationSuite,
   DepositParams,
 } from '@/llamalend/queries/validation/supply.validation'
-import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
+import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
+import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useForm } from '@ui/features/forms'
 import { q } from '@ui/features/queries/util'
@@ -29,36 +29,25 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
   const { borrowToken } = tokens
 
   const form = useForm<DepositForm>(formOptions)
-
-  const depositAmount = form.watchValue('depositAmount')
+  const { depositAmount } = form.values
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): DepositParams<ChainId> => ({ chainId, marketId, userAddress, depositAmount }),
-      [chainId, marketId, userAddress, depositAmount],
-    ),
+    { chainId, marketId, userAddress, depositAmount } satisfies DepositParams<ChainId>,
     userDefaultValues,
   )
 
   const {
-    onSubmit: onMutationSubmit,
+    onSubmit: deposit,
     isPending: isDepositing,
     error: depositError,
   } = useDepositMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
 
-  const {
-    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
-    solvencyDisabledAlert,
-    onSubmit,
-    modal: solvencyModal,
-  } = useFormLowSolvency({
-    controllerAddress,
-    marketType,
-    chainId,
-    onSubmit: onMutationSubmit,
-    handleFormSubmit: form.handleSubmit,
+  const { onSubmit, solvencyModal, solvencyAlert, ...formActions } = marketFormActions({
+    handleSubmit: form.handleSubmit,
+    lowSolvency: useLowSolvencyAction({ controllerAddress, marketType, chainId }),
+    onConfirmed: deposit,
   })
 
-  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
+  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyAlert
   const { formState } = form
 
   const isPending = formState.isSubmitting || isDepositing
@@ -66,12 +55,12 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     form,
     params,
     isPending,
-    isLoading: isPending || !marketId || isSolvencyLoading,
+    isLoading: isPending || !marketId || formActions.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     userAddress,
     borrowToken,
-    error: depositError ?? solvencyError,
+    error: formActions.error ?? depositError,
     max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }),
     isApproved: q(useDepositIsApproved(params)),
     formErrors: formState.visibleErrors,

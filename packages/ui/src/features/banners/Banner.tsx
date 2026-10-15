@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import CloseIcon from '@mui/icons-material/Close'
 import { type SxProps, type Theme } from '@mui/material'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
@@ -9,6 +8,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
 import { ExclamationTriangleIcon } from '@ui/icons/ExclamationTriangleIcon'
 import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
@@ -134,7 +134,7 @@ export const Banner = ({
               </Button>
             ) : (
               <IconButton onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].action }}>
-                <CloseIcon />
+                <Cross2Icon />
               </IconButton>
             ))}
         </Stack>

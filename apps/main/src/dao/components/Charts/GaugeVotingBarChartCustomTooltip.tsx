@@ -1,5 +1,9 @@
 import type { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
+import {
+  ChartTooltipDataRow,
+  ChartTooltipSeriesGroup,
+  ChartTooltipShell,
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'

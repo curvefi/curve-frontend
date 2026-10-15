@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import type { AlertBoxProps } from '@legacy-ui/AlertBox/types'
 import { Box } from '@legacy-ui/Box'
-import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { Cross2Icon } from '@ui/icons/Cross2Icon'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
+import { RotatableIcon } from '@ui/icons/RotatableIcon'
 
 export const AlertBox = ({
   className,
@@ -14,21 +17,14 @@ export const AlertBox = ({
   handleBtnClose,
   ...props
 }: AlertBoxProps) => {
-  const [enabledHeightToggle, setEnabledHeightToggle] = useState(false)
+  const enabledHeightToggle = typeof children === 'string' && children.length > 200
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
     alertType === '' ? null : (
-      <StyledIcon className={handleBtnClose == null ? '' : 'extra-margin'} name="InformationSquareFilled" size={24} />
+      <StyledIcon sx={{ fontSize: 24 }} className={handleBtnClose == null ? '' : 'extra-margin'} />
     )
 
   const alertContentRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof children === 'string' && children.length > 200) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setEnabledHeightToggle(true)
-    }
-  }, [children])
 
   const cutAlert = useMemo(() => {
     if (typeof children === 'string' && children.length > 200 && limitHeight) {
@@ -62,7 +58,7 @@ export const AlertBox = ({
             </Content>
             {handleBtnClose !== undefined && (
               <IconButton size="small" onClick={handleBtnClose}>
-                <Icon name="Close" size={24} />
+                <Cross2Icon sx={{ fontSize: 24 }} />
               </IconButton>
             )}
           </ContentWrapper>
@@ -72,7 +68,7 @@ export const AlertBox = ({
             <ButtonContainer>
               <AdjustHeightButton onClick={() => setShowFullHeight(!showFullHeight)}>
                 {showFullHeight ? 'Minimize' : 'Expand'}
-                {showFullHeight ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+                <RotatableIcon icon={ChevronDownIcon} rotated={showFullHeight} fontSize={16} />
               </AdjustHeightButton>
             </ButtonContainer>
           </AdjustHeightWrapper>
@@ -135,7 +131,7 @@ const Wrapper = styled(Box)<Pick<AlertBoxProps, 'alertType'> & { enabledHeightTo
   }}
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(InfoCircledIcon)`
   &.extra-margin {
     margin-top: 0.2rem;
   }

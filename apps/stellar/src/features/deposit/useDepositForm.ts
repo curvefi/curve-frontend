@@ -1,6 +1,4 @@
-import { identity } from 'lodash'
 import { useEffect, useMemo } from 'react'
-import { useShallow } from 'zustand/react/shallow'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { useDepositPriceImpact } from '@/stellar/features/deposit/useDepositPriceImpact'
@@ -42,8 +40,8 @@ export function useDepositForm(poolParams: PoolQuery) {
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses })
-  const reserves = usePoolReserves({ ...poolParams, decimals: decimals.data })
+  const { tokens, decimalsData, maxAmounts } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
+  const reserves = usePoolReserves({ ...poolParams, decimals: decimalsData })
   const userDefaultValues = useMemo(
     () => ({ ...maybe(tokenCount, getPoolDefaultValues), isBalanced: false }),
     [tokenCount],
@@ -52,28 +50,23 @@ export function useDepositForm(poolParams: PoolQuery) {
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { formState, reset } = form
+  const { formState, reset, values } = form
 
-  useFormSync(form, { decimals: decimals.data, supply: supply.data })
-  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues]) // cannot useFormSync with a flexible number of fields
+  useFormSync(form, { decimals: decimalsData, supply: supply.data })
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues])
 
-  // Dynamic field names prevent destructuring dependencies; keep the values stable between actual changes.
-  const values = useShallow(identity<DepositForm>)(form.watchValues())
   const [params, isDebouncing] = useFormDebounce<DepositFormQuery, PoolAmountField>(
-    useMemo(
-      () => ({
-        ...values,
-        network,
-        pool,
-        account,
-        tokenCount,
-        decimals: decimals.data,
-        slippage: values.slippage,
-        supply: supply.data,
-        maxAmounts: maxAmounts.map(q => q.data),
-      }),
-      [values, network, pool, account, tokenCount, decimals.data, supply.data, maxAmounts],
-    ),
+    {
+      ...values,
+      network,
+      pool,
+      account,
+      tokenCount,
+      decimals: decimalsData,
+      slippage: values.slippage,
+      supply: supply.data,
+      maxAmounts: maxAmounts?.map(q => q.data),
+    },
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
@@ -104,7 +97,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     inputsDisabled: isPending,
     isDisabled:
       isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact, isSeed.data !== true),
-    isLoading: isPending || priceImpact.isLoading,
+    isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error: depositError,

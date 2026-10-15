@@ -11,7 +11,8 @@ import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
-import { HelperMessage, LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput'
+import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
+import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { q } from '@ui/features/queries/util'
 import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
@@ -30,8 +31,8 @@ export const AmountTokenInput = ({
   blockchainId: NetworkEnum
   disabled: boolean
 }) => {
-  const { update: updateForm, formState, watchValues } = useFormContext<DepositRewardFormValues>()
-  const { rewardTokenId, amount } = watchValues()
+  const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
+  const { rewardTokenId, amount } = values
   const { amount: amountError, rewardTokenId: rewardTokenIdError } = fromEntries(formState.visibleErrors)
   const error = amountError ?? rewardTokenIdError
 

@@ -73,8 +73,8 @@ function check500Error({ context }: ErrorReportBody, exception: SentryException 
   expect(actualName).to.equal(expectedName)
   expect(actualMessage).to.contain(expectedMessage)
   if (Cypress.isBrowser('firefox')) {
-    // Firefox stack frames use source names in dev but only bundled TokenIcon chunk names in preview/CI builds.
-    expect(stack).to.match(/TokenIcon(?:\.tsx|-.*\.js)/)
+    // Firefox stack frames only contain source or chunk names. The error is thrown by the LP token lookup in llama.utils.
+    expect(stack).to.match(/llama\.utils/)
   } else {
     expect(stack).to.contain(expectedName)
     expect(stack).to.contain(expectedMessage)

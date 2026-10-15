@@ -1,6 +1,6 @@
 import { TEST_ADDRESS, TEST_TX_HASH } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { createStub, createTransactionStub } from '@cy/support/helpers/llamalend/test-stub.utils'
-import type { CurveApi } from '@evm-ui/features/connect-wallet'
+import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { dayjs } from '@evm-ui/utils/dayjs'
 
 const CHAIN_ID = 1

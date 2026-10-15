@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
@@ -13,7 +12,8 @@ import {
   stakeFormValidationSuite,
   userSupplyVaultAssetsValidationSuite,
 } from '@/llamalend/queries/validation/supply.validation'
-import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
+import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
+import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -59,62 +59,51 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
 
   const form = useForm<StakeForm>({ validation: stakeFormValidationSuite, defaultValues: emptyStakeForm() })
 
-  const values = form.watchValues()
+  const { values, formState } = form
   const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })
   const stakeShares = values.isFull ? maxStakeShares.data : convertedStakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): StakeFormParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        stakeAssets: values.stakeAssets,
-        stakeShares,
-        isFull: values.isFull,
-      }),
-      [chainId, marketId, stakeShares, userAddress, values.isFull, values.stakeAssets],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      stakeAssets: values.stakeAssets,
+      stakeShares,
+      isFull: values.isFull,
+    } satisfies StakeFormParams<ChainId>,
     userDefaultValues,
   )
 
   const {
-    onSubmit: submitStake,
+    onSubmit: stake,
     isPending: isStaking,
     error: stakeError,
   } = useStakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
 
-  const {
-    solvency: { isLoading: isSolvencyLoading, error: solvencyError },
-    solvencyDisabledAlert,
-    onSubmit,
-    modal: solvencyModal,
-  } = useFormLowSolvency({
-    controllerAddress,
-    marketType: MarketType.Lend,
-    chainId,
-    onSubmit: submitStake,
-    handleFormSubmit: form.handleSubmit,
+  const { onSubmit, solvencyModal, solvencyAlert, ...formActions } = marketFormActions({
+    handleSubmit: form.handleSubmit,
+    lowSolvency: useLowSolvencyAction({ controllerAddress, marketType: MarketType.Lend, chainId }),
+    onConfirmed: stake,
   })
 
   useFormSync(form, { maxStakeAssets: maxStakeAssets.data })
   useFormSync(form, { stakeShares })
 
-  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
-  const { formState } = form
+  const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyAlert
   const isPending = formState.isSubmitting || isStaking
   return {
     form,
     values,
     params,
     isPending,
-    isLoading: isPending || !marketId || isSolvencyLoading,
+    isLoading: isPending || !marketId || formActions.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     userAddress,
     borrowToken,
     collateralToken,
-    error: stakeError ?? solvencyError,
+    error: formActions.error ?? stakeError,
     max: maxStakeAssets,
     isApproved: q(useStakeIsApproved(params)),
     hasGauge: marketHasGauge,

@@ -67,7 +67,7 @@ export const useRefuelForm = ({
 
   return {
     form,
-    values: form.watchValues(),
+    values: form.values,
     tokenA: {
       address: coinA?.address,
       symbol: coinA?.symbol,

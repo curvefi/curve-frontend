@@ -1,5 +1,9 @@
 import type { RateCurveChartPoint } from '@/llamalend/widgets/MarketRateCurveChart'
-import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
+import {
+  ChartTooltipSeriesGroup,
+  ChartTooltipSeriesRow,
+  ChartTooltipShell,
+} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'

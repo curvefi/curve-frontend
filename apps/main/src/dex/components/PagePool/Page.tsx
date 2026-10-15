@@ -17,6 +17,7 @@ import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
+import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 export const PagePool = () => {
   const { curveApi = null, isHydrated } = useCurve()
@@ -25,24 +26,33 @@ export const PagePool = () => {
   const chainId = useChainId(blockchainId)
 
   const { data: network } = useNetworkByChain({ chainId })
-  const [poolNotFound, setPoolNotFound] = useState<boolean>()
+  const lookup = useMemo(() => ({ curveApi, poolIdOrAddress, isHydrated }), [curveApi, poolIdOrAddress, isHydrated])
+  const [lookupResult, setLookupResult] = useState<{ lookup: typeof lookup; notFound: boolean }>()
+  const poolNotFound = lookupResult?.lookup === lookup && lookupResult.notFound
 
   // Whether there's a pool depends on if the given curve api is hydrated or not.
   const pool = useMemo(
     () => maybe(curveApi, curveApi => tryGetPool(poolIdOrAddress, curveApi)),
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [curveApi, poolIdOrAddress, isHydrated, poolNotFound],
+    [curveApi, poolIdOrAddress, isHydrated, lookupResult],
   )
 
   useEffect(() => {
+    const { curveApi, poolIdOrAddress, isHydrated } = lookup
+    let cancelled = false
     if (!pool && poolIdOrAddress && curveApi && isHydrated) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Reset the previous lookup while checking this pool.
-      setPoolNotFound(undefined)
       fetchNewPools(curveApi)
-        .then(() => setPoolNotFound(!tryGetPool(poolIdOrAddress, curveApi)))
-        .catch(() => setPoolNotFound(true))
+        .then(() => {
+          if (!cancelled) setLookupResult({ lookup, notFound: !tryGetPool(poolIdOrAddress, curveApi) })
+        })
+        .catch(() => {
+          if (!cancelled) setLookupResult({ lookup, notFound: true })
+        })
     }
-  }, [curveApi, isHydrated, pool, poolIdOrAddress])
+    return () => {
+      cancelled = true
+    }
+  }, [lookup, pool])
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
@@ -53,9 +63,14 @@ export const PagePool = () => {
   return isBlacklisted ? (
     <PageBlacklist
       title={t`Blacklisted pool`}
-      description={t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`}
+      description={[
+        t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`,
+        t`If you believe this pool has been incorrectly flagged, contact us.`,
+      ]}
       navUrl={getPath(props, ROUTE.PAGE_POOLS)}
-      navTitle={t`Go to pool list`}
+      navTitle={t`Go back to pools`}
+      contactUrl={CURVE_SOCIALS.telegram.en}
+      contactTitle={t`Contact us`}
     />
   ) : (
     isHydrated &&

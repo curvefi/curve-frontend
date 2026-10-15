@@ -1,7 +1,5 @@
 import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
 import { maybe, type PartialRecord } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
@@ -10,6 +8,8 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { useShowTestNets } from '@ui/features/storage/useLocalStorage'
 import { showToast } from '@ui/features/toast/Toast/toast.util'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { ArrowLeft } from '@ui/icons/ArrowLeft'
+import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
 import { t } from '@ui/lib/i18n'
 import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
@@ -66,7 +66,7 @@ export const ChainSwitcher = <TApp extends string>({
     <>
       <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
         {blockchainId && <ChainSwitcherIcon blockchainId={blockchainId} />}
-        {Object.values(options).length > 1 && <KeyboardArrowDownIcon />}
+        {Object.values(options).length > 1 && <ChevronDownIcon />}
       </IconButton>
       {isOpen != null && (
         <ModalDialog
@@ -76,7 +76,7 @@ export const ChainSwitcher = <TApp extends string>({
           titleAction={
             isSettingsOpen && (
               <IconButton onClick={closeSettings} size="extraSmall">
-                <ArrowBackIcon />
+                <ArrowLeft />
               </IconButton>
             )
           }

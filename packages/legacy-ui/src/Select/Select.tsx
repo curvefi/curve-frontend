@@ -3,10 +3,10 @@ import { type AriaSelectOptions, HiddenSelect, useSelect, type AriaSelectProps }
 import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 import { useSelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon/Icon'
 import { SelectBtn } from '@legacy-ui/Select/SelectBtn'
 import { SelectModal } from '@legacy-ui/Select/SelectModal'
 import { SelectModalFull } from '@legacy-ui/Select/SelectModalFull'
+import { TriangleDown } from '@ui/icons/TriangleDown'
 
 function getIsFullScreen() {
   const classList = document?.body?.classList
@@ -57,15 +57,7 @@ export function Select<T extends object>({
           buttonRef={buttonRef}
         >
           {noLabelChange ? title : state.selectedItem ? props.selectedItemLabel || state.selectedItem.rendered : title}
-          {!onSelectionDelete && (
-            <StyledIcon
-              name="CaretDown"
-              $hideIcon={!selectListIsGreaterThanOne}
-              size={16}
-              aria-hidden="true"
-              aria-label="select"
-            />
-          )}
+          {!onSelectionDelete && <StyledIcon $hideIcon={!selectListIsGreaterThanOne} sx={{ fontSize: 16 }} />}
         </SelectBtn>
       </InnerWrapper>
       {state.isOpen && (
@@ -109,7 +101,7 @@ const InnerWrapper = styled.div`
   height: 100%;
 `
 
-const StyledIcon = styled(Icon)<{ $hideIcon: boolean }>`
+const StyledIcon = styled(TriangleDown)<{ $hideIcon: boolean }>`
   margin-left: 0.25rem;
   ${({ $hideIcon }) => {
     if ($hideIcon) {

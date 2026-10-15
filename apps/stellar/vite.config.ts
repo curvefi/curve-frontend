@@ -49,7 +49,7 @@ export default defineConfig(({ command }) => ({
         })
       : []),
   ],
-  optimizeDeps: { include: ['@mui/material', '@mui/icons-material'] },
+  optimizeDeps: { include: ['@mui/material'] },
   resolve: {
     alias: [
       { find: '@/stellar', replacement: resolve(__dirname, './src') },

@@ -1,4 +1,3 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatDate, formatTime } from '@primitives/date.utils'
@@ -6,6 +5,7 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TABLE_SECONDARY_TEXT_CLASS } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 
 const { Spacing } = SizesAndSpaces
 
@@ -34,7 +34,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
         <Typography variant="tableCellSupport" className={TABLE_SECONDARY_TEXT_CLASS}>
           {formatTime(timestamp, { precise: !isMobile })}
         </Typography>
-        {clickable && <ArrowOutwardIcon className={TABLE_SECONDARY_TEXT_CLASS} sx={{ flexShrink: 0, fontSize: 20 }} />}
+        {clickable && <ArrowTopRightIcon className={TABLE_SECONDARY_TEXT_CLASS} sx={{ flexShrink: 0, fontSize: 20 }} />}
       </Stack>
     </InlineTableCell>
   )

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
@@ -9,10 +8,11 @@ import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
-import { IconButtonIconSize } from '@ui/features/themes/components/button'
+import { IconButtonIconSize } from '@ui/features/themes/components/button/mui-icon-button'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
 import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
+import { ArrowRightIcon } from '@ui/icons/ArrowRightIcon'
 import { applySxProps } from '@ui/lib/mui'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
@@ -182,7 +182,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
               {value}
             </Typography>
             {value != null && (
-              <ArrowForwardIcon
+              <ArrowRightIcon
                 sx={{ color: t => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
               />
             )}

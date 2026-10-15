@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link'
 import { TooltipButton } from '@legacy-ui/Tooltip/TooltipButton'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 
 type ExternalLinkIconButtonProps = { href?: string; tooltip: string; children?: ReactNode }
 
@@ -16,7 +16,7 @@ export const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLink
       customIcon={
         <StyledExternalLink href={href}>
           {children}
-          <Icon name="Launch" size={16} />
+          <ArrowTopRightIcon sx={{ fontSize: 16 }} />
         </StyledExternalLink>
       }
     />

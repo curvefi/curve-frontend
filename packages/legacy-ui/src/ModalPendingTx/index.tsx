@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
 import { shortenHash } from '@evm-ui/utils/address'
-import { Icon } from '@legacy-ui/Icon'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { Spinner } from '@legacy-ui/Spinner'
+import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 
 type Props = { transactionHash: string; txLink: string; pendingMessage: string }
 
@@ -13,7 +13,7 @@ export const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Prop
       <StyledPendingSpinner isDisabled size={24} />
       <Transaction variant="contained" href={txLink}>
         <p>Transaction: {shortenHash(transactionHash)}</p>
-        <StyledIcon name="Launch" size={16} />
+        <StyledIcon sx={{ fontSize: 16 }} />
       </Transaction>
     </PendingWrapper>
   </PendingContainer>
@@ -57,7 +57,7 @@ const Transaction = styled(ExternalLink)`
   }
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(ArrowTopRightIcon)`
   margin: auto 0 auto var(--spacing-1);
   color: var(--page--text-color);
 `

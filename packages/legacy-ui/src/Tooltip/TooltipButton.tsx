@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useState } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@legacy-ui/Icon'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import { breakpoints } from '@legacy-ui/utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { InfoCircledIcon } from '@ui/icons/InfoCircledIcon'
 
 export type IconStyles = { $svgTop?: string }
 
@@ -91,9 +91,7 @@ export function TooltipButton({
     >
       <StyledTooltipButton {...(as ? { as } : {})}>
         <Button className={`${className} tooltip-button`} onClick={onClick}>
-          {showIcon || customIcon
-            ? (customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />)
-            : children}
+          {showIcon || customIcon ? (customIcon ?? <StyledIcon {...iconStyles} sx={{ fontSize: 16 }} />) : children}
         </Button>
       </StyledTooltipButton>
     </Tooltip>
@@ -130,7 +128,7 @@ const Button = styled.span`
   }
 `
 
-const StyledIcon = styled(Icon)<IconStyles>`
+const StyledIcon = styled(InfoCircledIcon)<IconStyles>`
   position: relative;
   top: ${({ $svgTop }) => $svgTop || `0.2rem`};
 `

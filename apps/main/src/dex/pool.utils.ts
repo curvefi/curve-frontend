@@ -1,6 +1,7 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { getLib, requireLib } from '@evm-ui/features/connect-wallet'
 import { shortenAddress } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { maybes, type Nullish } from '@primitives/objects.utils'
 
 const WRAPPED_ONLY_POOL_IDS = ['pax', 'busd', 'y']
@@ -25,12 +26,15 @@ export const tryGetPool = (poolIdOrAddress: PoolTemplate | string | Nullish, lib
 export const isWrappedOnly = (pool: PoolTemplate) => WRAPPED_ONLY_POOL_IDS.includes(pool.id)
 export const hasWrapped = (pool: PoolTemplate) => isWrappedOnly(pool) || !(pool?.isPlain || pool?.isFake)
 
-export const getTokens = (pool: PoolTemplate, { wrapped }: { wrapped: boolean }) => ({
+export const getTokens = (
+  { underlyingCoinAddresses, underlyingCoins, wrappedCoinAddresses, wrappedCoins }: PoolTemplate,
+  { wrapped }: { wrapped: boolean },
+) => ({
   tokens: wrapped
-    ? pool.wrappedCoins.map((token, idx) => token || shortenAddress(pool.wrappedCoinAddresses[idx]))
-    : pool.underlyingCoins.map((token, idx) => token || shortenAddress(pool.underlyingCoinAddresses[idx])),
-  tokenAddresses: wrapped ? pool.wrappedCoinAddresses : pool.underlyingCoinAddresses,
-  tokenAddressesAll: wrapped
-    ? pool.wrappedCoinAddresses
-    : [...pool.underlyingCoinAddresses, ...pool.wrappedCoinAddresses],
+    ? wrappedCoins.map((token, idx) => token || shortenAddress(wrappedCoinAddresses[idx]))
+    : underlyingCoins.map((token, idx) => token || shortenAddress(underlyingCoinAddresses[idx])),
+  tokenAddresses: (wrapped ? wrappedCoinAddresses : underlyingCoinAddresses) as Address[],
+  tokenAddressesAll: (wrapped
+    ? wrappedCoinAddresses
+    : [...underlyingCoinAddresses, ...wrappedCoinAddresses]) as Address[],
 })

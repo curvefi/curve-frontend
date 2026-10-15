@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
@@ -37,19 +36,16 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<CollateralForm>(formOptions)
 
-  const values = form.watchValues()
+  const { values, formState } = form
 
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(
-      (): CollateralParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        userCollateral: values.userCollateral,
-        maxCollateral: values.maxCollateral,
-      }),
-      [chainId, marketId, userAddress, values.userCollateral, values.maxCollateral],
-    ),
+    {
+      chainId,
+      marketId,
+      userAddress,
+      userCollateral: values.userCollateral,
+      maxCollateral: values.maxCollateral,
+    } satisfies CollateralParams<ChainId>,
     userDefaultValues,
   )
 
@@ -60,7 +56,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const { formState } = form
   useCallbackSync(useAddCollateralPrices(params), onPricesUpdated)
 
   useFormSync(form, { maxCollateral: maxCollateral.data })
