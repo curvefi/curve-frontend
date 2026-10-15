@@ -1,18 +1,15 @@
 import { getUserPositionPnl } from '@/llamalend/features/market-list/user-position.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { signedAmount } from '@/llamalend/widgets/pnl.utils'
+import { formatRoePercent, pnlColor, signedAmount } from '@/llamalend/widgets/pnl.utils'
 import { PnlInDebtToken } from '@/llamalend/widgets/PnlLine'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { PositionMetricCell } from './PositionMetricCell'
-
-const color = (value: number) => (value > 0 ? 'success' : value < 0 ? 'error' : 'textSecondary')
 
 /** PNL in the collateral token with its ROE % below. Hover shows the debt-token value. Sorts by ROE %. */
 export const UserPnlCell = ({ row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
@@ -35,8 +32,8 @@ export const UserPnlCell = ({ row }: CellContext<CurveTableFeatures, LlamaMarket
           valueTestId="user-position-pnl-value"
           support={
             percent != null && (
-              <Typography variant="bodySRegular" color={color(percent)} data-testid="user-position-roe-percent">
-                {`${percent > 0 ? '+' : ''}${formatNumber(percent, { abbreviate: false, decimals: 2 })}%`}
+              <Typography variant="bodySRegular" color={pnlColor(percent)} data-testid="user-position-roe-percent">
+                {formatRoePercent(percent)}
               </Typography>
             )
           }

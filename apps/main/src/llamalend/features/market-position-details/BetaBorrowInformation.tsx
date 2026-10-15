@@ -15,10 +15,12 @@ import {
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
-import { signedAmount } from '@/llamalend/widgets/pnl.utils'
+import { formatRoePercent, pnlColor, signedAmount } from '@/llamalend/widgets/pnl.utils'
 import { PnlInDebtToken } from '@/llamalend/widgets/PnlLine'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
@@ -109,11 +111,28 @@ export const BetaBorrowInformation = ({
             unit: { symbol: collateralSymbol, position: 'suffix' },
             formatter: value => signedAmount(Number(value)),
           }}
-          change={maybe(view.pnl.data?.percentCollateral, Number)}
-          notional={detailsOpen && <NotionalText text={pnlUsd} testId="position-pnl-usd" />}
+          // ROE % sits on the support line at all times, like the positions table PNL column.
+          notional={maybe(view.pnl.data?.percentCollateral, percent => (
+            <Typography
+              variant="highlightXsNotional"
+              color={pnlColor(Number(percent))}
+              data-testid="position-roe-percent"
+            >
+              {formatRoePercent(Number(percent))}
+            </Typography>
+          ))}
           valueTooltip={maybe(view.pnl.data, pnl => ({
             title: t`PNL (ROE %)`,
-            body: <PnlInDebtToken pnl={pnl} borrowSymbol={borrowSymbol} />,
+            body: (
+              <Stack>
+                <PnlInDebtToken pnl={pnl} borrowSymbol={borrowSymbol} />
+                {pnlUsd && (
+                  <Typography variant="bodySRegular">
+                    {t`In USD:`} {pnlUsd}
+                  </Typography>
+                )}
+              </Stack>
+            ),
             placement: 'top' as const,
             arrow: false,
           }))}
