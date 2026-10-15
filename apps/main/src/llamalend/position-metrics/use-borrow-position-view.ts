@@ -21,6 +21,7 @@ import {
   type PositionStatus,
 } from '@/llamalend/features/market-position-details/position-status.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
+import { getMaxPositionLeverage } from '@/llamalend/max-leverage.utils'
 import { usePositionHistory } from '@/llamalend/position-metrics/zap-debt-share'
 import { positionPnl, type PositionPnl } from '@/llamalend/position-metrics/zap-debt-share.utils'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
@@ -78,6 +79,8 @@ export type BorrowPositionView = {
   borrowUsdRate: ReturnType<typeof useTokenUsdRate>
   leverage: QueryProp<Decimal | undefined>
   openingLeverage: QueryProp<Decimal | undefined>
+  /** Market max leverage, the same figure as the positions table. */
+  maxLeverage: number | undefined
   roe: QueryProp<CardRoe | undefined>
   priceUnit: string
   bands: Range<number> | undefined
@@ -87,7 +90,7 @@ export type BorrowPositionView = {
 }
 
 export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionView => {
-  const { blockchainId, controllerAddress, marketType, chainId, tokens } = useMarketContext()
+  const { blockchainId, controllerAddress, marketType, chainId, tokens, apiMarket } = useMarketContext()
   const assetsType = getMarketAssetsType(chainId, controllerAddress)
   const oracle = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
@@ -186,6 +189,7 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     borrowUsdRate,
     leverage: keepDisplayedValue(leverageValue),
     openingLeverage: keepDisplayedValue(mapQuery(history, ({ openingLeverage }) => openingLeverage)),
+    maxLeverage: maybe(apiMarket.data, getMaxPositionLeverage),
     roe: keepDisplayedValue(roe),
     priceUnit,
     bands: userBands.data,

@@ -260,14 +260,17 @@ export const collateralTooltip = ({
   convertedShare,
   collateralSymbol,
   convertedSymbol,
+  amounts,
 }: {
   collateralShare?: string
   convertedShare?: string
   collateralSymbol?: string
   convertedSymbol?: string
+  /** Token quantities, e.g. "1.2 wstETH + 300 crvUSD". */
+  amounts?: string
 } = {}) => ({
   ...tooltipChrome,
-  title: t`Collateral value`,
+  title: t`Collateral`,
   body: (
     <TooltipWrapper>
       <TooltipDescription
@@ -282,6 +285,13 @@ export const collateralTooltip = ({
           <TooltipItem title={t`Converted assets`} variant="independent">
             {convertedShare}
             {convertedSymbol}
+          </TooltipItem>
+        </TooltipItems>
+      )}
+      {amounts && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Amounts`} variant="independent">
+            {amounts}
           </TooltipItem>
         </TooltipItems>
       )}
@@ -331,7 +341,7 @@ export const debtTooltip = ({ usdValue }: { usdValue?: string } = {}) => ({
   ),
 })
 
-export const leverageTooltip = () => ({
+export const leverageTooltip = ({ openedAt }: { openedAt?: string } = {}) => ({
   ...tooltipChrome,
   title: t`Leverage`,
   body: (
@@ -340,8 +350,15 @@ export const leverageTooltip = () => ({
         text={t`Collateral exposure divided by the equity at risk. Only debt looped back into collateral through Curve's leverage counts, so borrowing to your wallet reads 1×. Loops you build by hand, borrowing and depositing again yourself, count as wallet borrows and read lower than their real leverage.`}
       />
       <TooltipDescription
-        text={t`Unlike an exchange's leverage setting, this number moves with price: it rises when collateral falls and drops when collateral gains. Opened at shows the leverage of the borrow that opened the position.`}
+        text={t`Unlike an exchange's leverage setting, this number moves with price: it rises when collateral falls and drops when collateral gains. Max is the market's highest leverage at max LTV.`}
       />
+      {openedAt && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Opened at`} variant="independent">
+            {openedAt}
+          </TooltipItem>
+        </TooltipItems>
+      )}
       <Calculation>
         <LeverageEquation />
       </Calculation>

@@ -1,11 +1,12 @@
 import { ESTIMATED_LEVERAGED_APR_TITLE } from '@/llamalend/constants'
 import {
   formatBandSpan,
-  formatCompositionLabels,
   formatPriceDistanceHeadline,
   formatPriceDistanceDescription,
+  formatRangeLabel,
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
+import { formatYieldMultiplier } from '@/llamalend/features/market-position-details/position-roe.utils'
 import {
   equityTooltip,
   leverageTooltip,
@@ -14,7 +15,7 @@ import {
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
-import { pnlText } from '@/llamalend/widgets/pnl.utils'
+import { signedAmount } from '@/llamalend/widgets/pnl.utils'
 import { PnlInDebtToken } from '@/llamalend/widgets/PnlLine'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
@@ -29,7 +30,8 @@ import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { NotionalText } from './NotionalText'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
-const OPENING_LEVERAGE_FORMAT = { abbreviate: false, maximumSignificantDigits: 3, unit: 'multiplier' } as const
+// Same format as the positions table leverage cell.
+const LEVERAGE_FORMAT = { abbreviate: false, maximumSignificantDigits: 3, unit: 'multiplier' } as const
 
 export const BetaBorrowInformation = ({
   view,
@@ -42,11 +44,16 @@ export const BetaBorrowInformation = ({
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
   const collateralSymbol = collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
   // Notionals add a second line to each metric, so they only show with More details open.
+  // Each one repeats the support line of the matching positions table column.
   const [detailsOpen] = usePositionDetailsOpen()
-  const converted = formatCompositionLabels(view.composition)?.borrowed
+  const prices = view.userPrices.data
   const equityUsd = maybes([view.equity.data, view.borrowUsdRate.data], (amount, rate) =>
     formatNumber(decimalMultiply(amount, rate), 'usd.notional'),
   )
+  const pnlUsd = maybes([view.pnl.data?.pnl, view.borrowUsdRate.data], (pnl, rate) => {
+    const usd = Number(decimalMultiply(pnl, rate))
+    return `${usd > 0 ? '+' : usd < 0 ? '-' : ''}${formatNumber(Math.abs(usd), 'usd.notional')}`
+  })
   const roe = view.roe.data
   const multiplier = roe?.status === 'value' ? roe.multiplier : undefined
   return (
@@ -65,11 +72,10 @@ export const BetaBorrowInformation = ({
           valueOptions={{ abbreviate: false }}
           sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
           notional={
-            detailsOpen &&
-            view.distance.data?.location === 'inside' && (
+            detailsOpen && (
               <NotionalText
-                text={converted && t`${converted} converted to ${borrowSymbol}`}
-                testId="range-converted-share"
+                text={maybe(prices, ([lower, upper]) => formatRangeLabel(upper, lower, view.priceUnit))}
+                testId="range-prices"
               />
             )
           }
@@ -101,17 +107,10 @@ export const BetaBorrowInformation = ({
           value={mapQuery(view.pnl, pnl => maybe(pnl?.pnlCollateral, Number))}
           valueOptions={{
             unit: { symbol: collateralSymbol, position: 'suffix' },
-            formatter: value => `${Number(value) > 0 ? '+' : ''}${formatNumber(value, { abbreviate: true })}`,
+            formatter: value => signedAmount(Number(value)),
           }}
           change={maybe(view.pnl.data?.percentCollateral, Number)}
-          notional={
-            detailsOpen && (
-              <NotionalText
-                text={maybe(view.pnl.data, pnl => pnlText(Number(pnl.pnl), borrowSymbol, pnl.percent))}
-                testId="position-pnl-debt"
-              />
-            )
-          }
+          notional={detailsOpen && <NotionalText text={pnlUsd} testId="position-pnl-usd" />}
           valueTooltip={maybe(view.pnl.data, pnl => ({
             title: t`PNL (ROE %)`,
             body: <PnlInDebtToken pnl={pnl} borrowSymbol={borrowSymbol} />,
@@ -127,15 +126,14 @@ export const BetaBorrowInformation = ({
           testId="position-leverage"
           value={view.leverage}
           valueOptions={{ unit: 'multiplier' }}
-          valueTooltip={leverageTooltip()}
+          valueTooltip={leverageTooltip({
+            openedAt: maybe(view.openingLeverage.data, opening => formatNumber(opening, LEVERAGE_FORMAT)),
+          })}
           notional={
             detailsOpen && (
               <NotionalText
-                text={maybe(
-                  view.openingLeverage.data,
-                  opening => t`Opened at ${formatNumber(opening, OPENING_LEVERAGE_FORMAT)}`,
-                )}
-                testId="position-opening-leverage"
+                text={maybe(view.maxLeverage, max => t`Max ${formatNumber(max, LEVERAGE_FORMAT)}`)}
+                testId="position-max-leverage"
               />
             )
           }
@@ -167,6 +165,11 @@ export const BetaBorrowInformation = ({
                   ? formatNumber(multiplier.kind === 'zero' ? 0 : multiplier.value, 'multiplier')
                   : undefined,
             })}
+            notional={
+              detailsOpen && (
+                <NotionalText text={maybe(multiplier, formatYieldMultiplier)} testId="position-yield-multiplier" />
+              )
+            }
           />
         </Box>
       )}

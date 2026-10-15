@@ -41,7 +41,7 @@ const BETA_ONLY_COLUMNS = [
 ]
 
 const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 11,
+  version: 12,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
@@ -82,10 +82,9 @@ const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
   }
   const visible = MARKET_COLUMNS.filter(
     column =>
-      (variant === MarketRateType.Borrow ||
-        variant === MarketRateType.Supply ||
-        !POSITION_TABLE_ONLY_COLUMNS.includes(column.id as (typeof POSITION_TABLE_ONLY_COLUMNS)[number])) &&
-      (variant !== MarketRateType.Borrow || column.id !== MarketColumnId.UserLtv),
+      variant === MarketRateType.Borrow ||
+      variant === MarketRateType.Supply ||
+      !POSITION_TABLE_ONLY_COLUMNS.includes(column.id as (typeof POSITION_TABLE_ONLY_COLUMNS)[number]),
   )
   return orderColumns(
     visible.map(column => {
@@ -93,6 +92,8 @@ const columnsForVariant = (variant: MarketColumnVariant, beta: boolean) => {
         return { ...column, header: POSITION_COLUMN_LABELS.totalDebt }
       if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserCollateral)
         return { ...column, header: POSITION_COLUMN_LABELS.collateralValue }
+      if (variant === MarketRateType.Borrow && column.id === MarketColumnId.UserLtv)
+        return { ...column, header: POSITION_COLUMN_LABELS.ltv }
       if (column.id === MarketColumnId.UserReturnOnEquity) return { ...column, header: BETA_ROE_TITLES.position }
       if (column.id === MarketColumnId.MaxReturnOnEquity)
         return {
@@ -159,12 +160,7 @@ export const useMarketsVisibility = (title: string, sorting: SortingState, varia
         ? DEFAULT_SORT_SUPPLY
         : DEFAULT_SORT
   const tableSorting =
-    (!beta && sorting.some(({ id }) => BETA_ONLY_COLUMNS.includes(id as MarketColumnId))) ||
-    (beta &&
-      variant === MarketRateType.Borrow &&
-      sorting.some(({ id }) => (id as MarketColumnId) === MarketColumnId.UserLtv))
-      ? defaultSort
-      : sorting
+    !beta && sorting.some(({ id }) => BETA_ONLY_COLUMNS.includes(id as MarketColumnId)) ? defaultSort : sorting
   const sortField = (tableSorting.length ? tableSorting : defaultSort)[0].id as MarketColumnId
   const options = useMemo(() => getMarketsColumnOptions(beta), [beta])
   const columns = useMemo(() => columnsForVariant(variant, beta), [beta, variant])

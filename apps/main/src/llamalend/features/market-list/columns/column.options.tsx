@@ -226,6 +226,7 @@ const borrowPositionColumnOptions = (): VisibilityGroup<MarketColumnId>[] => [
     options: [
       option(MarketColumnId.UserLeverage, false),
       option(MarketColumnId.UserCollateral, false, POSITION_COLUMN_LABELS.collateralValue),
+      option(MarketColumnId.UserLtv, false, POSITION_COLUMN_LABELS.ltv),
       option(MarketColumnId.UserReturnOnEquity, false, BETA_ROE_TITLES.position),
       option(MarketColumnId.UserDistanceToRange, false),
       option(MarketColumnId.UserBandCount, false),
@@ -255,6 +256,7 @@ export const BORROW_POSITION_COLUMN_ORDER = [
   MarketColumnId.UserPnl,
   MarketColumnId.UserBorrowed,
   MarketColumnId.UserCollateral,
+  MarketColumnId.UserLtv,
   MarketColumnId.BorrowRate,
   MarketColumnId.UserHealth,
   MarketColumnId.UserLiquidationBuffer,

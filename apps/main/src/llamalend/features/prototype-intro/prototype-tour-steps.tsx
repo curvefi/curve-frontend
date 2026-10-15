@@ -188,7 +188,7 @@ const positionSteps = (): TourStep[] | undefined => {
         content: (
           <Comparison
             before={t`The column was Borrow Amount, and the table also showed loan-to-value (LTV).`}
-            after={t`The column is Total debt and stays visible by default. It shows current debt in the debt token, including accrued interest. LTV is no longer a Borrowing table column.`}
+            after={t`The column is Total debt and stays visible by default. It shows current debt in the debt token, including accrued interest. LTV ratio is an optional column, matching the position card.`}
           />
         ),
       },
@@ -196,11 +196,11 @@ const positionSteps = (): TourStep[] | undefined => {
     ...notFalsy(
       visible(collateral) && {
         element: withinSelector('borrow-positions-table', 'data-table-cell-userCollateral'),
-        title: t`Collateral value`,
+        title: t`Collateral`,
         content: (
           <Comparison
             before={t`The column was labeled Collateral Amount.`}
-            after={t`It is labeled Collateral value and stays visible beside Total debt. The row shows the position's collateral value and token amount.`}
+            after={t`It is labeled Collateral, like the position card, and stays visible beside Total debt. The row shows the position's collateral value and token amount.`}
           />
         ),
       },
@@ -451,12 +451,12 @@ const borrowSteps = (assetsType: MarketAssetsType | undefined): TourStep[] | und
     ...notFalsy(
       visible(collateral) && {
         element: withinSelector('beta-position-card', 'position-collateral-value'),
-        title: t`Collateral value`,
+        title: t`Collateral`,
         content: (
           <Stack spacing={1}>
             <Comparison
               before={t`Collateral value showed a total with token amounts beneath it.`}
-              after={t`The same total now has a composition bar for remaining collateral and converted borrowed assets. A zero total is unavailable, not 100% cash.`}
+              after={t`The same total now has a composition bar for remaining collateral and converted borrowed assets, with its USD value beneath and token amounts in the tooltip. A zero total is unavailable, not 100% cash.`}
             />
             <MathBlock>
               <CollateralEquations />

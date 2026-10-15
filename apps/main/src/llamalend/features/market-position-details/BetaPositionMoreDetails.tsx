@@ -1,6 +1,5 @@
 import {
   formatCompositionLabels,
-  formatRangeLabel,
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { collateralTooltip, debtTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
@@ -13,10 +12,11 @@ import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { combineQueries } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
 import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { decimalMultiply } from '@ui/lib/decimal'
+import { decimalMultiply, decimalPercent } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { NotionalText } from './NotionalText'
@@ -42,7 +42,19 @@ export const BetaPositionMoreDetails = ({
   const debtUsdValue = maybes([view.debt.data, view.borrowUsdRate.data], (debt, rate) =>
     formatNumber(decimalMultiply(debt, rate), 'usd.notional'),
   )
-  const prices = view.userPrices.data
+  const collateralUsdValue = maybes([view.collateral.data, view.borrowUsdRate.data], (value, rate) =>
+    formatNumber(decimalMultiply(value, rate), 'usd.notional'),
+  )
+  const amounts = maybe(view.amounts.data, ({ collateral, stablecoin }) =>
+    formatCollateralNotional(
+      { value: collateral, symbol: collateralToken?.symbol },
+      { value: stablecoin, symbol: borrowToken?.symbol },
+    ),
+  )
+  // Debt over collateral value, both in the borrowed token, like the positions table LTV.
+  const ltv = combineQueries([view.debt, view.collateral], (debt, collateral) =>
+    maybes([debt, collateral], (debt, collateral) => (+collateral ? decimalPercent(debt, collateral) : undefined)),
+  )
   return (
     <Collapse in={open} data-testid="position-more-details">
       <MetricsGrid
@@ -51,10 +63,7 @@ export const BetaPositionMoreDetails = ({
           paddingBlockEnd: Spacing.md,
           alignItems: 'start',
           gridTemplateColumns: POSITION_CARD_COLUMNS,
-          gridTemplateAreas: {
-            mobile: '"collateral" "bands" "debt" "prices"',
-            tablet: '"collateral debt prices bands"',
-          },
+          gridTemplateAreas: { mobile: '"collateral" "debt" "ltv" "bands"', tablet: '"collateral debt ltv bands"' },
           columnGap: POSITION_CARD_COLUMN_GAP,
           rowGap: Spacing.xs,
         }}
@@ -62,21 +71,11 @@ export const BetaPositionMoreDetails = ({
         <Box sx={{ gridArea: 'collateral' }}>
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Collateral value`}
+            label={t`Collateral`}
             testId="position-collateral-value"
             value={view.collateral}
             valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
-            notional={
-              <NotionalText
-                text={maybe(view.amounts.data, ({ collateral, stablecoin }) =>
-                  formatCollateralNotional(
-                    { value: collateral, symbol: collateralToken?.symbol },
-                    { value: stablecoin, symbol: borrowToken?.symbol },
-                  ),
-                )}
-                testId="position-collateral-amounts"
-              />
-            }
+            notional={<NotionalText text={collateralUsdValue} testId="position-collateral-usd" />}
             valueAdornment={
               compositionLabels &&
               shares && (
@@ -101,6 +100,7 @@ export const BetaPositionMoreDetails = ({
               convertedShare: compositionLabels ? compositionLabels.borrowed : undefined,
               collateralSymbol: collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL,
               convertedSymbol: borrowSymbol,
+              amounts,
             })}
           />
         </Box>
@@ -113,18 +113,14 @@ export const BetaPositionMoreDetails = ({
             notional={<NotionalText text={debtUsdValue} testId="position-debt-usd" />}
             valueTooltip={debtTooltip({ usdValue: debtUsdValue })}
           />
-        </Box>{' '}
-        <Box sx={{ gridArea: 'prices' }}>
+        </Box>
+        <Box sx={{ gridArea: 'ltv' }}>
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Liquidation range`}
-            testId="position-liquidation-range-prices"
-            value={q({
-              data: prices ? formatRangeLabel(prices[1], prices[0], view.priceUnit) : undefined,
-              isLoading: view.userPrices.isLoading,
-              error: view.userPrices.error,
-            })}
-            valueOptions={{ abbreviate: false }}
+            label={t`LTV ratio`}
+            testId="position-ltv"
+            value={ltv}
+            valueOptions={{ unit: 'percentage' }}
           />
         </Box>
         <Box sx={{ gridArea: 'bands' }}>

@@ -1,5 +1,6 @@
 import { HealthBar } from '@/llamalend/features/market-position-details'
 import {
+  bufferAmount,
   formatOracleHealth,
   formatBufferPercent,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
@@ -15,8 +16,9 @@ import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { requireChainId } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Badge } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -25,6 +27,7 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import { getUserPositionOracleHealth, getUserPositionStatus } from '../user-position.utils'
 import { ErrorCell } from './ErrorCell'
 import { PositionMetricCell } from './PositionMetricCell'
@@ -89,11 +92,23 @@ export const LiquidationBufferCell = ({
   const buffer = getValue()
   const theme = useTheme()
   const value = decimal(buffer)
+  const debt = decimal(row.original.positionQueries.stats.data?.borrowed)
+  // Same amount as the position card's buffer notional.
+  const amount = maybes([value, debt], (percent, debt) =>
+    formatToken(bufferAmount(debt, percent), row.original.assets.borrowed.symbol),
+  )
   return (
     <PositionMetricCell
       error={error}
       hasData={value != undefined}
       value={maybe(value, formatBufferPercent)}
+      support={
+        amount && (
+          <Typography variant="bodySRegular" color="textSecondary" data-testid="user-position-buffer-amount">
+            {amount}
+          </Typography>
+        )
+      }
       valueSx={{
         color: isCriticalBuffer(
           value,
