@@ -175,10 +175,8 @@ export const getUserPositionPnl = (row: LlamaMarketRow) => {
   const pnl = decimalMinus(amounts.equity, history.netInvested)
   const walletDebt = decimalMinus(amounts.debt, loopedDebt(amounts.debt, history.zapShare))
   const ownCapital = decimalSum(history.netInvested, walletDebt)
-  const equityCollateral = decimalDiv(amounts.equity, amounts.oracle)
   return {
     pnl,
-    pnlCollateral: equityCollateral && decimalMinus(equityCollateral, history.netInvestedCollateral),
     percent:
       ownCapital && decimalGreaterThan(ownCapital, '0')
         ? decimalMultiply(decimalDiv(pnl, ownCapital), '100')

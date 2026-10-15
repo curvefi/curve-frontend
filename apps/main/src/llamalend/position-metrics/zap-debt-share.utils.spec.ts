@@ -3,7 +3,7 @@ import { loopedDebt, loopedLeverage } from '@/llamalend/features/market-position
 import type { UserCollateralEvents as MintCollateralEvents } from '@curvefi/prices-api/crvusd'
 import type { UserCollateralEvents as LendCollateralEvents } from '@curvefi/prices-api/lending'
 import { decimal } from '@ui/lib/decimal'
-import { lendZapDebtShare, mintZapDebtShare, netInvested, netInvestedCollateral } from './zap-debt-share.utils'
+import { lendZapDebtShare, mintZapDebtShare, netInvested } from './zap-debt-share.utils'
 
 const d = (value: string | number) => decimal(value)!
 const lev = (collateral: number, price: number, stablecoin: number, debt: number, share: number) =>
@@ -79,16 +79,5 @@ describe('net invested', () => {
 
   it('starts over after the position closes', () => {
     expect(+netInvested([flow(10, 3000, 15000), flow(-10, 2000, -15000), flow(5, 2000, 1000)])).toBeCloseTo(9000, 6)
-  })
-})
-
-describe('net invested in collateral', () => {
-  it('counts a loop as the own collateral and a wallet borrow as collateral taken out', () => {
-    expect(+netInvestedCollateral([{ collateralChange: 30, oraclePrice: 3000, loanChange: 60000 }])).toBeCloseTo(10, 8)
-    const plain = [
-      { collateralChange: 10, oraclePrice: 3000, loanChange: 0.0001 },
-      { collateralChange: 0, oraclePrice: 3000, loanChange: 15000 },
-    ]
-    expect(+netInvestedCollateral(plain)).toBeCloseTo(5, 6)
   })
 })
