@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkParams, UserParams } from '@/stellar/queries/query-types'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
@@ -8,7 +8,7 @@ import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
-import { combineQueryState } from '@ui/features/queries/combine'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 
 const combine = <T>(results: Query<T>[]): QueryProp<T>[] => results.map(q)
@@ -36,14 +36,8 @@ export function usePoolTokens({
     queries: zip(addresses, decimals).map(([token, decimals]) =>
       getTokenBalanceQueryOptions({ network, token, account, decimals: decimals.data }),
     ),
-    combine: useCallback(
-      // propagate every decimal loading state to the balances
-      (balances: Query<Decimal>[]) =>
-        zip(balances, decimals).map(([balance, decimals]) =>
-          q({ data: balance.data, ...combineQueryState(balance, decimals) }),
-        ),
-      [decimals],
-    ),
+    // propagate each decimal loading state to the balances
+    combine: (balances: Query<Decimal>[]) => zip(balances, decimals).map(qs => combineQueries(qs, balance => balance)),
   })
   const tokens = useMemo(
     () =>

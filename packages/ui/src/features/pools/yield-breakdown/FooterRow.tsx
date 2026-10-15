@@ -30,7 +30,7 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
     </TableCell>
   ),
   [YieldBreakdownColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
+  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal: { data: maxBoostTotal }, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <WithSkeleton loading={total.isLoading}>
         {total.error ? (
@@ -39,9 +39,9 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
           <Typography variant="tableCellValueStrong">{formatNumber(total.data, 'percent.rate')}</Typography>
         )}
       </WithSkeleton>
-      {!!maxBoostTotal.data && maxBoostTotal.data != total.data && (
+      {!!maxBoostTotal && maxBoostTotal != total.data && (
         <Typography variant="tableCellSupport" color="textSecondary">
-          {t`Max boost ${formatNumber(maxBoostTotal.data, 'percent.rate')}`}
+          {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
         </Typography>
       )}
     </TableCell>

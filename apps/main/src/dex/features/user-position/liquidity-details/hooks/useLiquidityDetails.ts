@@ -28,10 +28,13 @@ export const useLiquidityDetails = ({
   const hasPosition = Number(lpTokenBalance.data) > 0 || Number(gaugeTokenBalance.data) > 0
   const queryParams = { chainId, poolId, userAddress }
 
+  // There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A.
+  const showBoost = chainId === Number(Chain.Ethereum)
+
   const userBalances = useUserPoolBalancesQuery(queryParams, hasPosition)
   const userLiquidityUsd = useUserPoolLiquidityUsdQuery(queryParams, hasPosition)
   const userShare = useUserPoolShareQuery(queryParams, hasPosition)
-  const userBoost = useUserPoolBoostQuery(queryParams, hasPosition)
+  const userBoost = useUserPoolBoostQuery(queryParams, hasPosition && showBoost)
 
   const lpTokenTotal = combineQueries([lpTokenBalance, gaugeTokenBalance], decimalSum)
   const stakedPercent = combineQueries([gaugeTokenBalance, lpTokenTotal], decimalPercent)
@@ -39,8 +42,6 @@ export const useLiquidityDetails = ({
 
   return {
     hasPosition,
-    // There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A.
-    showBoost: chainId === Number(Chain.Ethereum),
     marketParticipation: {
       stakedBalance: gaugeTokenBalance,
       stakedPercent,
@@ -48,7 +49,7 @@ export const useLiquidityDetails = ({
       unstakedPercent,
       userLpShare: mapQuery(userShare, ({ lpShare }) => lpShare),
     },
-    metrics: { boost: q(userBoost), lpTokenTotal, positionValue: q(userLiquidityUsd) },
+    metrics: { ...(showBoost && { boost: q(userBoost) }), lpTokenTotal, positionValue: q(userLiquidityUsd) },
     rows: mapQuery(userBalances, balances =>
       zip(tokenAddresses, balances).map(([address, amount]) => ({
         address,

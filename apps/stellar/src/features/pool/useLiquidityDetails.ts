@@ -13,7 +13,7 @@ import { maybe } from '@primitives/objects.utils'
 import { scaleReserves } from '@ui/features/pool-forms/balanced-amounts.utils'
 import type { LiquidityDetailsData } from '@ui/features/pools/liquidity-details/types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { DISABLED_Q, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMultiply, decimalPercent } from '@ui/lib/decimal'
 import { usePoolTokens } from './usePoolTokens'
 
@@ -45,13 +45,8 @@ export const useLiquidityDetails = (
 
   return {
     hasPosition: !!account && !!balance.data && decimalGreaterThan(balance.data, '0'),
-    showBoost: false,
-    metrics: { lpTokenTotal: q(balance), boost: DISABLED_Q, positionValue: fallbackQ(lpValue, underlyingValue) },
-    marketParticipation: {
-      userLpShare: combineQueries([balance, supply], (balance, supply) =>
-        decimalGreaterThan(supply, '0') ? decimalPercent(balance, supply) : undefined,
-      ),
-    },
+    metrics: { lpTokenTotal: q(balance), positionValue: fallbackQ(lpValue, underlyingValue) },
+    marketParticipation: { userLpShare: combineQueries([balance, supply], decimalPercent) },
     rows: mapQuery(tokenAddresses, addresses =>
       maybe(symbols, symbols =>
         zip(addresses, symbols).map(([address, symbol], index) => ({

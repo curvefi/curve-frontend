@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import type { LitePool } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
@@ -19,14 +18,15 @@ const Content = ({ children }: { children: ReactNode }) => (
 export const UserPosition = ({
   litePool,
   totalUsd,
-  ...params
+  network,
+  pool,
 }: PoolQuery & { litePool: QueryProp<LitePool | null>; totalUsd: QueryProp<Decimal> }) => {
-  const { address } = useWallet()
-  const details = useLiquidityDetails(params, litePool, totalUsd)
-  const balance = details.metrics.lpTokenTotal
-  return address && (details.hasPosition || balance.isLoading || balance.error) ? (
-    <Stack>
-      <Tabs menu={menu} params={{ blockchainId: params.network, ...details }} ContentWrapper={Content} />
-    </Stack>
-  ) : null
+  const details = useLiquidityDetails({ network, pool }, litePool, totalUsd)
+  return (
+    details.hasPosition && (
+      <Stack>
+        <Tabs menu={menu} params={{ blockchainId: network, ...details }} ContentWrapper={Content} />
+      </Stack>
+    )
+  )
 }

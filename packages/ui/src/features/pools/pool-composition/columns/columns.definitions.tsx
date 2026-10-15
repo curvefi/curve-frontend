@@ -51,11 +51,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <TokenInfo
-          icon={null}
-          iconPosition="right"
-          primary={mapQuery(getValue(), value => formatNumber(value, 'usd.precise'))}
-        />
+        <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'usd.precise'))} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -66,11 +62,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo
-          icon={null}
-          iconPosition="right"
-          primary={mapQuery(getValue(), value => formatNumber(value, 'percent.rate'))}
-        />
+        <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'percent.rate'))} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -96,7 +88,6 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
             {/** Needed for tooltip to work for whatever reason */}
             <Box>
               <TokenInfo
-                icon={null}
                 iconPosition="right"
                 primary={mapQuery(getValue(), value => formatNumber(value, 'token.compact'))}
                 secondary={mapQuery(row.original.amountUsd, value => formatNumber(value, 'usd.notional'))}

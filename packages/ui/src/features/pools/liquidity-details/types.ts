@@ -6,11 +6,10 @@ export type BalancedWithdrawRow = { address: Address; symbol: QueryProp<string>;
 
 export type LiquidityDetailsData = {
   hasPosition: boolean
-  showBoost: boolean
   metrics: {
     positionValue: QueryProp<Decimal | null>
     lpTokenTotal: QueryProp<Decimal>
-    boost: QueryProp<Decimal | null>
+    boost?: QueryProp<Decimal | null>
   }
   marketParticipation: {
     userLpShare: QueryProp<string>
