@@ -21,7 +21,7 @@ import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
-import { decimal, decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
+import { decimal, decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -163,15 +163,24 @@ export const getUserPositionEquityUsd = (row: LlamaMarketRow) =>
     (amount, rate) => Number(amount) * rate,
   )
 
-/** Equity change since opening, net of deposits, withdrawals, wallet borrows and repays. Percent is of net capital. */
+/**
+ * Equity change since opening, net of deposits, withdrawals, wallet borrows and repays.
+ * The percent is of own capital: net capital plus the debt sent to the wallet, the same base as looped leverage,
+ * so a 1× plain borrow returns the collateral's price move, like a 1× CEX position.
+ */
 export const getUserPositionPnl = (row: LlamaMarketRow) => {
-  const equityAmount = getUserPositionEquity(row)
-  const invested = row.positionQueries.history.data?.netInvested
-  if (equityAmount == undefined || invested == undefined) return undefined
-  const pnl = decimalMinus(equityAmount, invested)
+  const amounts = readBorrowAmounts(row)
+  const history = row.positionQueries.history.data
+  if (!amounts || !history) return undefined
+  const pnl = decimalMinus(amounts.equity, history.netInvested)
+  const walletDebt = decimalMinus(amounts.debt, loopedDebt(amounts.debt, history.zapShare))
+  const ownCapital = decimalSum(history.netInvested, walletDebt)
   return {
     pnl,
-    percent: decimalGreaterThan(invested, '0') ? decimalMultiply(decimalDiv(pnl, invested), '100') : undefined,
+    percent:
+      ownCapital && decimalGreaterThan(ownCapital, '0')
+        ? decimalMultiply(decimalDiv(pnl, ownCapital), '100')
+        : undefined,
   }
 }
 
