@@ -24,7 +24,7 @@ import {
 
 export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
-export type StellarTransaction<T = bigint> = contract.AssembledTransaction<T>
+export type StellarTransaction<T = unknown> = contract.AssembledTransaction<T>
 export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, 'hash'> & { hash: StellarHex }
 
 const TRANSACTION_SUBMISSION_RETRIES = 3

@@ -21,6 +21,7 @@ type WithdrawQuery = PoolQuery & UserQuery & WithdrawMutation
 
 export type WithdrawSimulationQuery = QuoteQuery &
   UserQuery & {
+    isBalanced: boolean
     lpAmount: Decimal
     maxLpAmount: Decimal
     maxWithdrawIndex: number | undefined
