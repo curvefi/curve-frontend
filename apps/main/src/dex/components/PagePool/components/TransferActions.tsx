@@ -18,6 +18,7 @@ export const TransferActions = ({
   const {
     chainId,
     userAddress: signerAddress,
+    pool,
     poolAddress: { data: poolAddress },
     isWrapped,
     tokenAddressesAll: { data: tokenAddressesAll },
@@ -36,7 +37,13 @@ export const TransferActions = ({
 
   const isLoading =
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    loading || currencyReserves.isLoading || !isHydrated || !seed.loaded || seed.isSeed == null || walletBalancesLoading
+    loading ||
+    pool.isLoading ||
+    currencyReserves.isLoading ||
+    !isHydrated ||
+    !seed.loaded ||
+    seed.isSeed == null ||
+    walletBalancesLoading
 
   return (
     <>
