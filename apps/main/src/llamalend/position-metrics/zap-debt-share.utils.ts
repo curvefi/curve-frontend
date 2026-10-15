@@ -41,3 +41,37 @@ export const mintZapDebtShare = ({
   totalBorrowed,
 }: MintCollateralEvents): Decimal =>
   share(BigNumber(totalDepositUsdValue).minus(totalDepositFromUserUsdValue), BigNumber(totalBorrowed))
+
+type CashFlowEvent = { loanChange: number; collateralChange: number; oraclePrice: number }
+
+/**
+ * Net capital in the open position, in the debt token: collateral added at its oracle price minus debt taken out.
+ * Debt the zap swaps into collateral cancels against that collateral, so only swap costs remain. Borrows to the wallet
+ * count as withdrawals and repays as deposits. Events are oldest first; the running debt reaching zero closes a position.
+ */
+export const netInvested = (events: readonly CashFlowEvent[]): Decimal => {
+  let invested = BigNumber(0)
+  let running = BigNumber(0)
+  for (const { loanChange, collateralChange, oraclePrice } of events) {
+    running = running.plus(loanChange)
+    if (running.lte(0)) {
+      invested = BigNumber(0)
+      running = BigNumber(0)
+      continue
+    }
+    invested = invested.plus(BigNumber(collateralChange).times(oraclePrice)).minus(loanChange)
+  }
+  return decimal(invested.toFixed()) ?? ZERO
+}
+
+export type PositionHistory = { zapShare: Decimal; netInvested: Decimal }
+
+export const lendPositionHistory = (data: LendCollateralEvents): PositionHistory => ({
+  zapShare: lendZapDebtShare(data),
+  netInvested: netInvested(data.events),
+})
+
+export const mintPositionHistory = (data: MintCollateralEvents): PositionHistory => ({
+  zapShare: mintZapDebtShare(data),
+  netInvested: netInvested(data.events),
+})

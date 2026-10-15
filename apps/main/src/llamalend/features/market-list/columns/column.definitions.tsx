@@ -1,5 +1,5 @@
 import {
-  exposureTooltip,
+  equityTooltip,
   leverageTooltip,
   roeTooltip,
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
@@ -23,7 +23,7 @@ import {
   MaxLeverageCell,
   MaxReturnOnEquityCell,
   UserLeverageCell,
-  UserExposureCell,
+  UserEquityCell,
   UserLiquidationRangeCell,
   UserDistanceToRangeCell,
   UserBandCountCell,
@@ -50,7 +50,7 @@ import {
   getHealthColumnSortValue,
   getUserPositionBuffer,
   getUserPositionLeverage,
-  getUserPositionExposureUsd,
+  getUserPositionEquityUsd,
   getUserPositionRangeUpper,
   getUserPositionDistance,
   getUserPositionBandCount,
@@ -176,11 +176,11 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric', tooltip: leverageTooltip() },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getUserPositionExposureUsd, {
-    id: MarketColumnId.UserExposure,
-    header: MARKET_TITLES[MarketColumnId.UserExposure],
-    cell: UserExposureCell,
-    meta: { type: 'numeric', tooltip: exposureTooltip() },
+  columnHelper.accessor(getUserPositionEquityUsd, {
+    id: MarketColumnId.UserEquity,
+    header: MARKET_TITLES[MarketColumnId.UserEquity],
+    cell: UserEquityCell,
+    meta: { type: 'numeric', tooltip: equityTooltip() },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {

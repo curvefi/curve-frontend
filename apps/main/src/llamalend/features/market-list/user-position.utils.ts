@@ -21,7 +21,7 @@ import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
+import { decimal, decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -148,17 +148,32 @@ export const getUserPositionRoe = (row: LlamaMarketRow) =>
 /** Same looped leverage as the position card. Undefined until the zap debt share loads. */
 export const getUserPositionLeverage = (row: LlamaMarketRow) => {
   const amounts = readBorrowAmounts(row)
-  const share = row.positionQueries.zapShare.data
+  const share = row.positionQueries.history.data?.zapShare
   if (!amounts || share == undefined) return undefined
   return maybe(leverage(amounts.tokenValue, equity(amounts.assets, loopedDebt(amounts.debt, share))), Number)
 }
 
-/**
- * Collateral the position holds, valued at the oracle in the debt token. Converted borrowed tokens are cash, not exposure.
- * Sorting converts to USD so markets with different debt tokens compare.
- */
-export const getUserPositionExposureUsd = ({ positionQueries: { stats, prices } }: LlamaMarketRow) =>
-  maybes([stats.data, prices.borrowed.data], (data, rate) => data.collateral * data.oraclePrice * rate)
+/** What the position returns if closed now, in the debt token: collateral at the oracle plus converted, minus debt. */
+export const getUserPositionEquity = (row: LlamaMarketRow) => readBorrowAmounts(row)?.equity
+
+/** Equity in USD, so markets with different debt tokens sort together. */
+export const getUserPositionEquityUsd = (row: LlamaMarketRow) =>
+  maybes(
+    [getUserPositionEquity(row), row.positionQueries.prices.borrowed.data],
+    (amount, rate) => Number(amount) * rate,
+  )
+
+/** Equity change since opening, net of deposits, withdrawals, wallet borrows and repays. Percent is of net capital. */
+export const getUserPositionPnl = (row: LlamaMarketRow) => {
+  const equityAmount = getUserPositionEquity(row)
+  const invested = row.positionQueries.history.data?.netInvested
+  if (equityAmount == undefined || invested == undefined) return undefined
+  const pnl = decimalMinus(equityAmount, invested)
+  return {
+    pnl,
+    percent: decimalGreaterThan(invested, '0') ? decimalMultiply(decimalDiv(pnl, invested), '100') : undefined,
+  }
+}
 
 /** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */
 export const getHealthColumnSortValue = (row: LlamaMarketRow) =>

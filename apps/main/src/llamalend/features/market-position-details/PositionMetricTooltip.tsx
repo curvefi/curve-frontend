@@ -347,15 +347,18 @@ export const leverageTooltip = () => ({
   ),
 })
 
-export const exposureTooltip = () => ({
+export const equityTooltip = () => ({
   ...tooltipChrome,
-  title: t`Exposure`,
+  title: t`Equity`,
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Value of the collateral the position holds, in the debt token at the oracle price. Its price moves are your gains and losses. Borrowed tokens from soft liquidation are excluded.`}
+        text={t`What this position returns if you close it now, in the debt token: collateral at the oracle price plus converted borrowed tokens, minus debt. Borrowed tokens already in your wallet are not included.`}
       />
-      <TooltipFooter>{t`Leverage is exposure divided by the equity at risk.`}</TooltipFooter>
+      <TooltipDescription
+        text={t`PnL is the change in equity since you opened, after deposits, withdrawals, borrows to your wallet and repays. The percentage is of the capital still in the position.`}
+      />
+      <TooltipFooter>{t`Excludes price impact you would pay to close.`}</TooltipFooter>
     </TooltipWrapper>
   ),
 })

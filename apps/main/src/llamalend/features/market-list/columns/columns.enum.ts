@@ -12,7 +12,7 @@ export enum MarketColumnId {
   UserLtv = 'userLtv',
   UserReturnOnEquity = 'userRoe',
   UserLeverage = 'userLeverage',
-  UserExposure = 'userExposure',
+  UserEquity = 'userEquity',
   UserEarnings = 'userEarnings', // only for lend markets
   UserSupplyShare = 'userSupplyShare', // supply positions only
   SupplyIncentivesApr = 'supplyIncentivesApr', // supply positions only

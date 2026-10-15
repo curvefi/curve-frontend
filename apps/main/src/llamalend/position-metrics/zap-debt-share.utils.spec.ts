@@ -3,7 +3,7 @@ import { loopedDebt, loopedLeverage } from '@/llamalend/features/market-position
 import type { UserCollateralEvents as MintCollateralEvents } from '@curvefi/prices-api/crvusd'
 import type { UserCollateralEvents as LendCollateralEvents } from '@curvefi/prices-api/lending'
 import { decimal } from '@ui/lib/decimal'
-import { lendZapDebtShare, mintZapDebtShare } from './zap-debt-share.utils'
+import { lendZapDebtShare, mintZapDebtShare, netInvested } from './zap-debt-share.utils'
 
 const d = (value: string | number) => decimal(value)!
 const lev = (collateral: number, price: number, stablecoin: number, debt: number, share: number) =>
@@ -57,5 +57,27 @@ describe('zap debt share', () => {
     expect(+mintZapDebtShare(totals(40000, 30000, 15000))).toBeCloseTo(2 / 3, 8)
     expect(+mintZapDebtShare(totals(30000, 30000, 15000))).toBe(0)
     expect(+mintZapDebtShare(totals(90000, 30000, 50000))).toBe(1)
+  })
+})
+
+describe('net invested', () => {
+  const flow = (collateralChange: number, oraclePrice: number, loanChange: number) => ({
+    collateralChange,
+    oraclePrice,
+    loanChange,
+  })
+
+  it('nets zap debt against the collateral it bought', () => {
+    // 10 ETH own + 20 ETH bought with 60k at 3,000: 30k of own capital.
+    expect(+netInvested([flow(30, 3000, 60000)])).toBeCloseTo(30000, 6)
+  })
+
+  it('counts wallet borrows as withdrawals and repays as deposits', () => {
+    const events = [flow(10, 3000, 0.0001), flow(0, 3000, 15000), flow(0, 3100, -5000)]
+    expect(+netInvested(events)).toBeCloseTo(30000 - 15000.0001 + 5000, 6)
+  })
+
+  it('starts over after the position closes', () => {
+    expect(+netInvested([flow(10, 3000, 15000), flow(-10, 2000, -15000), flow(5, 2000, 1000)])).toBeCloseTo(9000, 6)
   })
 })

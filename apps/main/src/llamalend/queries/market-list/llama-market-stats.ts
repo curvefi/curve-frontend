@@ -3,7 +3,11 @@ import { useMemo } from 'react'
 import { getUserCrvUsdCollateralEventsOptions } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
 import { getUserLendCollateralEventsOptions } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
-import { lendZapDebtShare, mintZapDebtShare } from '@/llamalend/position-metrics/zap-debt-share.utils'
+import {
+  lendPositionHistory,
+  mintPositionHistory,
+  type PositionHistory,
+} from '@/llamalend/position-metrics/zap-debt-share.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
@@ -70,8 +74,8 @@ type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
   risk: PositionRiskQueries
-  /** Share of the debt borrowed through the leverage zap. Beta only. */
-  zapShare: QueryProp<Decimal>
+  /** Zap debt share and net capital from the user's loan events. Beta only. */
+  history: QueryProp<PositionHistory>
 }
 
 const EMPTY_RISK: PositionRiskQueries = { oracle: DISABLED_Q, prices: DISABLED_Q, fullHealth: DISABLED_Q, beta: false }
@@ -80,7 +84,7 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
   risk: EMPTY_RISK,
-  zapShare: DISABLED_Q,
+  history: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -169,14 +173,14 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
       () => zapEntries.lend.map(({ params }) => getUserLendCollateralEventsOptions(params)),
       [zapEntries],
     ),
-    combine: results => results.map(result => mapQuery(q(result), lendZapDebtShare)),
+    combine: results => results.map(result => mapQuery(q(result), lendPositionHistory)),
   })
   const mintZapQueries = useQueries({
     queries: useMemo(
       () => zapEntries.mint.map(({ params }) => getUserCrvUsdCollateralEventsOptions(params)),
       [zapEntries],
     ),
-    combine: results => results.map(result => mapQuery(q(result), mintZapDebtShare)),
+    combine: results => results.map(result => mapQuery(q(result), mintPositionHistory)),
   })
 
   return useMemo(() => {
@@ -199,7 +203,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
       }),
     )
 
-    const zapByMarket = new Map<LlamaMarket, QueryProp<Decimal>>([
+    const zapByMarket = new Map<LlamaMarket, QueryProp<PositionHistory>>([
       ...zapEntries.lend.map(({ market }, index) => [market, lendZapQueries[index] ?? DISABLED_Q] as const),
       ...zapEntries.mint.map(({ market }, index) => [market, mintZapQueries[index] ?? DISABLED_Q] as const),
     ])
@@ -219,7 +223,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             collateral: getPriceQuery(market.chain, market.assets.collateral.address),
           },
           risk: { ...(riskByMarket.get(market) ?? EMPTY_RISK), beta },
-          zapShare: zapByMarket.get(market) ?? DISABLED_Q,
+          history: zapByMarket.get(market) ?? DISABLED_Q,
         },
       }
     })
