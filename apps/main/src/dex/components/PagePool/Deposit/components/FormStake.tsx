@@ -162,7 +162,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [pool])
+  }, [poolAddress])
 
   // curve state change
   useEffect(() => {
