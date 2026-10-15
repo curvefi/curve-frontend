@@ -113,6 +113,13 @@ export const compositionShares = (collateralAssets: Decimal, totalAssets: Decima
   return { collateralExact, collateralLabel: d(collateralLabel.toFixed(4)), borrowedLabel: d(borrowedLabel.toFixed(4)) }
 }
 
+/** Collateral and converted shares as display percentages. */
+export const formatCompositionLabels = (shares: ReturnType<typeof compositionShares>) =>
+  shares && {
+    collateral: formatNumber(shares.collateralLabel, 'percent.rate'),
+    borrowed: formatNumber(shares.borrowedLabel, 'percent.rate'),
+  }
+
 /** Any value above 1 must not collapse to the boundary label 1.00. */
 export const formatOracleHealth = (health: Decimal): string => {
   if (!decimalGreaterThan(health, d(1))) return '1.00'

@@ -14,14 +14,15 @@ import { listedPositionRoe } from '@/llamalend/features/market-position-details/
 import { resolvePositionStatus } from '@/llamalend/features/market-position-details/position-status.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
+import { positionPnl } from '@/llamalend/position-metrics/zap-debt-share.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { sumCampaignsApr } from '@/llamalend/rates.utils'
 import { requireChainId } from '@evm-ui/utils'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
-import { decimal, decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -163,36 +164,12 @@ export const getUserPositionEquityUsd = (row: LlamaMarketRow) =>
     (amount, rate) => Number(amount) * rate,
   )
 
-const percentOf = (part: Decimal | undefined, base: Decimal | undefined) =>
-  part != undefined && base != undefined && decimalGreaterThan(base, '0')
-    ? decimalMultiply(decimalDiv(part, base), '100')
-    : undefined
-
-/**
- * Equity change since opening, net of deposits, withdrawals, wallet borrows and repays, in the collateral token and in
- * the debt token. Each percent is ROE: PnL over own capital, which is net capital plus the debt sent to the wallet, the
- * same base as looped leverage. In the debt token a 1× plain borrow returns the collateral's price move, like a 1× CEX
- * position. The collateral token converts every flow at the oracle price of its day, like ETH-in vs ETH-out trackers.
- */
+/** PNL (ROE %) in the collateral and debt tokens, the same formula as the position card. */
 export const getUserPositionPnl = (row: LlamaMarketRow) => {
   const amounts = readBorrowAmounts(row)
   const history = row.positionQueries.history.data
   if (!amounts || !history) return undefined
-  const walletShare = decimalMinus('1', history.zapShare)
-  const pnl = decimalMinus(amounts.equity, history.netInvested)
-  const ownCapital = decimalSum(history.netInvested, decimalMultiply(amounts.debt, walletShare))
-  const equityCollateral = decimalDiv(amounts.equity, amounts.oracle)
-  const pnlCollateral = equityCollateral && decimalMinus(equityCollateral, history.netInvestedCollateral)
-  const ownCapitalCollateral = decimalSum(
-    history.netInvestedCollateral,
-    decimalMultiply(history.borrowedCollateral, walletShare),
-  )
-  return {
-    pnl,
-    percent: percentOf(pnl, ownCapital),
-    pnlCollateral,
-    percentCollateral: percentOf(pnlCollateral, ownCapitalCollateral),
-  }
+  return positionPnl({ equity: amounts.equity, debt: amounts.debt, oraclePrice: amounts.oracle, history })
 }
 
 /** Leverage of the borrow that opened the position, in the same units as the current leverage. */

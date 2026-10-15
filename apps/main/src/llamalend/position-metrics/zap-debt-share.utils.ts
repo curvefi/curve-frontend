@@ -2,7 +2,15 @@ import { BigNumber } from 'bignumber.js'
 import type { UserCollateralEvents as MintCollateralEvents } from '@curvefi/prices-api/crvusd'
 import type { UserCollateralEvents as LendCollateralEvents } from '@curvefi/prices-api/lending'
 import type { Decimal } from '@primitives/decimal.utils'
-import { ZERO, decimal } from '@ui/lib/decimal'
+import {
+  ZERO,
+  decimal,
+  decimalDiv,
+  decimalGreaterThan,
+  decimalMinus,
+  decimalMultiply,
+  decimalSum,
+} from '@ui/lib/decimal'
 
 const share = (part: BigNumber, total: BigNumber): Decimal =>
   total.gt(0) ? (decimal(BigNumber.min(BigNumber.max(part.div(total), 0), 1).toFixed()) ?? ZERO) : ZERO
@@ -126,3 +134,45 @@ export const mintPositionHistory = (data: MintCollateralEvents): PositionHistory
   const zapShare = mintZapDebtShare(data)
   return positionHistory(data.events, zapShare, () => zapShare)
 }
+
+const percentOf = (part: Decimal | undefined, base: Decimal | undefined) =>
+  part != undefined && base != undefined && decimalGreaterThan(base, '0')
+    ? decimalMultiply(decimalDiv(part, base), '100')
+    : undefined
+
+/**
+ * Equity change since opening, net of deposits, withdrawals, wallet borrows and repays, in the collateral token and in
+ * the debt token. Each percent is ROE: PnL over own capital, which is net capital plus the debt sent to the wallet, the
+ * same base as looped leverage. In the debt token a 1× plain borrow returns the collateral's price move, like a 1× CEX
+ * position. The collateral token converts every flow at the oracle price of its day, like ETH-in vs ETH-out trackers.
+ */
+export const positionPnl = ({
+  equity,
+  debt,
+  oraclePrice,
+  history,
+}: {
+  equity: Decimal
+  debt: Decimal
+  oraclePrice: Decimal
+  history: PositionHistory
+}) => {
+  const walletShare = decimalMinus('1', history.zapShare)
+  const pnl = decimalMinus(equity, history.netInvested)
+  const ownCapital = decimalSum(history.netInvested, decimalMultiply(debt, walletShare))
+  const pnlCollateral = decimalGreaterThan(oraclePrice, '0')
+    ? decimalMinus(decimalDiv(equity, oraclePrice), history.netInvestedCollateral)
+    : undefined
+  const ownCapitalCollateral = decimalSum(
+    history.netInvestedCollateral,
+    decimalMultiply(history.borrowedCollateral, walletShare),
+  )
+  return {
+    pnl,
+    percent: percentOf(pnl, ownCapital),
+    pnlCollateral,
+    percentCollateral: percentOf(pnlCollateral, ownCapitalCollateral),
+  }
+}
+
+export type PositionPnl = ReturnType<typeof positionPnl>

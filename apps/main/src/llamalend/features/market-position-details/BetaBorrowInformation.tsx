@@ -1,28 +1,28 @@
 import { ESTIMATED_LEVERAGED_APR_TITLE } from '@/llamalend/constants'
 import {
   formatBandSpan,
+  formatCompositionLabels,
   formatPriceDistanceHeadline,
   formatPriceDistanceDescription,
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import {
-  collateralTooltip,
-  debtTooltip,
+  equityTooltip,
   leverageTooltip,
   rangeTooltip,
   roeTooltip,
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import { isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
+import { PnlLine } from '@/llamalend/widgets/PnlLine'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 
@@ -39,16 +39,7 @@ export const BetaBorrowInformation = ({
   const theme = useTheme()
   const isMobile = useIsMobile()
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
-  const shares = view.composition
-  const compositionLabels = shares
-    ? {
-        collateral: formatNumber(shares.collateralLabel, 'percent.rate'),
-        borrowed: formatNumber(shares.borrowedLabel, 'percent.rate'),
-      }
-    : undefined
-  const debtUsdValue = maybes([view.debt.data, view.borrowUsdRate.data], (debt, rate) =>
-    formatNumber(decimalMultiply(debt, rate), 'usd.notional'),
-  )
+  const compositionLabels = formatCompositionLabels(view.composition)
   const roe = view.roe.data
   const multiplier = roe?.status === 'value' ? roe.multiplier : undefined
   return (
@@ -66,6 +57,14 @@ export const BetaBorrowInformation = ({
           value={mapQuery(view.distance, formatPriceDistanceHeadline)}
           valueOptions={{ abbreviate: false }}
           sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
+          notional={
+            view.distance.data?.location === 'inside' &&
+            compositionLabels && (
+              <Typography variant="highlightXsNotional" color="textTertiary" data-testid="range-converted-share">
+                {t`${compositionLabels.borrowed} converted to ${borrowSymbol}`}
+              </Typography>
+            )
+          }
           valueTooltip={rangeTooltip({
             pair: view.priceUnit,
             upper: view.userPrices.data ? formatNumber(view.userPrices.data[1], { abbreviate: true }) : undefined,
@@ -75,47 +74,23 @@ export const BetaBorrowInformation = ({
           })}
         />
       </Box>
-      <Box sx={{ gridArea: 'collateral' }}>
+      <Box sx={{ gridArea: 'equity' }}>
         <Metric
           category={METRIC_CATEGORY}
-          label={t`Collateral value`}
-          testId="position-collateral-value"
-          value={view.collateral}
+          label={t`Equity`}
+          testId="position-equity"
+          value={view.equity}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
-          valueAdornment={
-            compositionLabels &&
-            shares && (
-              <Box
-                data-testid="collateral-composition"
-                role="img"
-                aria-label={t`Collateral composition: ${compositionLabels.collateral} ${collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}, ${compositionLabels.borrowed} ${borrowSymbol}`}
-                sx={{
-                  width: 16,
-                  height: 16,
-                  flexShrink: 0,
-                  alignSelf: 'center',
-                  ml: 1,
-                  borderRadius: '50%',
-                  background: `conic-gradient(${theme.design.Layer.Feedback.Success} 0% ${shares.collateralLabel}%, ${theme.design.Layer.Feedback.Warning} ${shares.collateralLabel}% 100%)`,
-                }}
-              />
-            )
-          }
-          valueTooltip={collateralTooltip({
-            collateralShare: compositionLabels ? compositionLabels.collateral : undefined,
-            convertedShare: compositionLabels ? compositionLabels.borrowed : undefined,
-            collateralSymbol: collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL,
-            convertedSymbol: borrowSymbol,
-          })}
-        />
-      </Box>
-      <Box sx={{ gridArea: 'debt' }}>
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Total debt`}
-          value={view.debt}
-          valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
-          valueTooltip={debtTooltip({ usdValue: debtUsdValue })}
+          valueTooltip={equityTooltip()}
+          notional={maybe(view.pnl.data, pnl => (
+            <PnlLine
+              pnl={pnl}
+              collateralSymbol={collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}
+              borrowSymbol={borrowSymbol}
+              variant="highlightXsNotional"
+              testId="position-pnl"
+            />
+          ))}
         />
       </Box>
       <Box sx={{ gridArea: 'leverage' }}>

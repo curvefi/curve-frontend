@@ -110,12 +110,12 @@ describe('Beta position card', () => {
     cy.get('[data-testid="position-status"]').should('contain.text', 'Above range')
     cy.get('[data-testid="liquidation-range-value"]').should('contain.text', '−')
     cy.get('[data-testid="health-details-liquidation-buffer-metric-value"]').should('contain.text', 'of debt')
-    cy.get('[data-testid="position-collateral-value"]').should('be.visible')
+    cy.get('[data-testid="position-equity"]').should('be.visible')
   })
 
   it('renders metrics while the range is loading', () => {
     cy.mount(<PositionDetailsTest {...baseProps} oraclePrice={1} userPrices={undefined} />)
     cy.get('[data-testid="beta-position-card"]').should('be.visible')
-    cy.get('[data-testid="position-collateral-value"]').should('be.visible')
+    cy.get('[data-testid="position-equity"]').should('be.visible')
   })
 })

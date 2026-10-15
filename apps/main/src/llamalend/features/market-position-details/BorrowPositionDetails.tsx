@@ -1,5 +1,7 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { BetaBorrowInformation } from '@/llamalend/features/market-position-details/BetaBorrowInformation'
+import { BetaPositionMoreDetails } from '@/llamalend/features/market-position-details/BetaPositionMoreDetails'
+import { BetaRangeNote } from '@/llamalend/features/market-position-details/BetaRangeNote'
 import { BorrowInformation } from '@/llamalend/features/market-position-details/BorrowInformation'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { useBorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
@@ -10,13 +12,15 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { BetaHealthDetails } from './health/BetaHealthDetails'
 import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-const HEALTH_LEAD_AREAS = `"health range debt leverage" "health buffer collateral roe"`
-const MOBILE_HEALTH_AREAS = `"health range" "health buffer" "leverage leverage" "debt debt" "collateral collateral" "roe roe"`
+// Risk on the first row, the position's result on the second. Secondary metrics fold under More details.
+const HEALTH_LEAD_AREAS = `"health range buffer" "equity leverage roe"`
+const MOBILE_HEALTH_AREAS = `"health range" "buffer buffer" "equity equity" "leverage roe"`
 
 export const BorrowPositionDetails = () =>
   useNewLlamalendHealth() ? <BetaBorrowPositionDetails /> : <LegacyBorrowPositionDetails />
@@ -26,7 +30,7 @@ const BetaBorrowPositionDetails = () => {
   const view = useBorrowPositionView({ chainId, marketId, userAddress })
   const { provenance, refreshFailed } = view
   return (
-    <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
+    <Stack sx={{ padding: Spacing.md, gap: Spacing.sm }}>
       <MetricsGrid
         data-testid="beta-position-card"
         sx={{
@@ -38,6 +42,12 @@ const BetaBorrowPositionDetails = () => {
         <BetaHealthDetails view={view} borrowSymbol={tokens.borrowToken?.symbol ?? ''} />
         <BetaBorrowInformation view={view} tokens={tokens} />
       </MetricsGrid>
+      <BetaRangeNote
+        view={view}
+        collateralSymbol={tokens.collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}
+        borrowSymbol={tokens.borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}
+      />
+      <BetaPositionMoreDetails view={view} tokens={tokens} />
       {refreshFailed && (
         <Alert data-testid="position-update-failed" variant="outlined" severity="warning">
           <Typography variant="bodyXsRegular">

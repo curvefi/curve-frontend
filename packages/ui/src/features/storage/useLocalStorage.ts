@@ -78,6 +78,9 @@ export const useFavoriteMarkets = () => {
 
 export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-visible', false)
 
+/** Whether the borrow position card shows its secondary metrics. */
+export const usePositionDetailsOpen = () => useLocalStorage<boolean>('position-details-open', false)
+
 /**
  * Returns a tuple containing a boolean indicating whether the banner should be shown, and a function to dismiss the banner.
  * Do NOT export this hook, as it directly exposes local storage keys!

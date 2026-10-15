@@ -22,6 +22,7 @@ import {
 } from '@/llamalend/features/market-position-details/position-status.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { usePositionHistory } from '@/llamalend/position-metrics/zap-debt-share'
+import { positionPnl, type PositionPnl } from '@/llamalend/position-metrics/zap-debt-share.utils'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import { useUserState } from '@/llamalend/queries/user'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
@@ -31,6 +32,7 @@ import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { MarketAssetsType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { getTokenPairUnit } from '@ui/lib/tokens'
@@ -69,6 +71,8 @@ export type BorrowPositionView = {
   collateral: QueryProp<Decimal | undefined>
   composition: ReturnType<typeof compositionShares>
   debt: QueryProp<Decimal | undefined>
+  equity: QueryProp<Decimal | undefined>
+  pnl: QueryProp<PositionPnl | undefined>
   borrowUsdRate: ReturnType<typeof useTokenUsdRate>
   leverage: QueryProp<Decimal | undefined>
   openingLeverage: QueryProp<Decimal | undefined>
@@ -117,6 +121,11 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     collateralTokenValue(state.collateral, price),
   )
   const equityValue = combineQueries([collateral, userState], (assets, state) => equity(assets, state.debt))
+  const pnl = combineQueries([equityValue, userState, oracle, history], (equityAmount, state, price, positionHistory) =>
+    maybe(equityAmount, amount =>
+      positionPnl({ equity: amount, debt: state.debt, oraclePrice: price, history: positionHistory }),
+    ),
+  )
   // Leverage counts only looped debt, so borrowed tokens sent to the wallet don't read as leverage.
   const leverageValue = combineQueries(
     [collateralAssets, collateral, userState, zapShare],
@@ -169,6 +178,8 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     collateral: keepDisplayedValue(collateral),
     composition: composition.data,
     debt: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
+    equity: keepDisplayedValue(equityValue),
+    pnl: keepDisplayedValue(pnl),
     borrowUsdRate,
     leverage: keepDisplayedValue(leverageValue),
     openingLeverage: keepDisplayedValue(mapQuery(history, ({ openingLeverage }) => openingLeverage)),
