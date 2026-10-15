@@ -1,6 +1,5 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { tokenMetric } from '@/llamalend/llama.utils'
+import { formatEstimatedNetBorrowRate, formatNetSupplyRate, tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils/average-categories'
@@ -23,6 +22,9 @@ import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import type { RateTooltipProps } from './cells/RateCell/RateCell'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
+import { MARKET_TITLES } from './columns/column.titles'
+import { MarketColumnId } from './columns/columns.enum'
+import { useHasNetRate } from './hooks/useHasNetRate'
 
 const { Spacing } = SizesAndSpaces
 
@@ -31,14 +33,25 @@ const POSITION_METRIC_CATEGORY = 'llamalend.marketListPosition'
 
 const ratesConfig: Record<
   MarketRateType,
-  { tooltipComponent: FunctionComponent<RateTooltipProps>; title: string; rateKey: keyof LlamaMarket['rates'] }
+  {
+    tooltipComponent: FunctionComponent<RateTooltipProps>
+    title: string
+    rateKey: keyof LlamaMarket['rates']
+    getSubRate: (rates: LlamaMarket['rates']) => string
+  }
 > = {
   [MarketRateType.Supply]: {
     tooltipComponent: SupplyRateLendTooltip,
-    title: NET_SUPPLY_RATE_TITLE,
-    rateKey: 'lendTotalApyMinBoosted',
+    title: MARKET_TITLES[MarketColumnId.SupplyRate],
+    rateKey: 'lendApy',
+    getSubRate: ({ lendTotalApyMinBoosted }) => formatNetSupplyRate(lendTotalApyMinBoosted),
   },
-  [MarketRateType.Borrow]: { tooltipComponent: BorrowRateTooltip, title: t`Borrow APR`, rateKey: 'borrowApr' },
+  [MarketRateType.Borrow]: {
+    tooltipComponent: BorrowRateTooltip,
+    title: MARKET_TITLES[MarketColumnId.BorrowRate],
+    rateKey: 'borrowApr',
+    getSubRate: ({ borrowTotalApr }) => formatEstimatedNetBorrowRate(borrowTotalApr),
+  },
 }
 
 function useMobileGraphSize() {
@@ -48,8 +61,9 @@ function useMobileGraphSize() {
 }
 
 const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType }) => {
-  const { tooltipComponent: Tooltip, title, rateKey } = ratesConfig[type]
+  const { tooltipComponent: Tooltip, title, rateKey, getSubRate } = ratesConfig[type]
   const rateValue = market.rates[rateKey] as number
+  const hasNetRate = useHasNetRate(market, type)
   return (
     rateValue != null && (
       <Grid size={6}>
@@ -65,6 +79,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
                 formatter: formatCappedRateValue,
                 disableTooltip: true,
               }}
+              {...(hasNetRate && { notional: constQ(getSubRate(market.rates)) })}
               icon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>
@@ -110,21 +125,21 @@ export const MarketExpandedPanel = ({
           {leverage && (
             <Metric
               category={EXPANDED_DETAILS_METRIC_CATEGORY}
-              label={t`Leverage`}
+              label={MARKET_TITLES[MarketColumnId.MaxLeverage]}
               value={leverage}
               valueOptions={{ unit: 'multiplier' }}
             />
           )}
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Utilization`}
+            label={MARKET_TITLES[MarketColumnId.UtilizationPercent]}
             value={utilizationPercent}
             valueOptions={{ unit: 'percentage' }}
             testId="metric-utilizationPercent"
           />
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Available Liquidity`}
+            label={MARKET_TITLES[MarketColumnId.LiquidityUsd]}
             {...tokenMetric({
               value: liquidity,
               symbol: assets.borrowed.symbol,
@@ -146,7 +161,7 @@ export const MarketExpandedPanel = ({
             {lendingPosition && (
               <Metric
                 category={POSITION_METRIC_CATEGORY}
-                label={t`Earnings`}
+                label={MARKET_TITLES[MarketColumnId.UserEarnings]}
                 value={lendingPosition.earnings}
                 valueOptions={{ unit: 'dollar' }}
               />
@@ -154,7 +169,7 @@ export const MarketExpandedPanel = ({
             {lendingPosition && (
               <Metric
                 category={POSITION_METRIC_CATEGORY}
-                label={t`Supplied Amount`}
+                label={MARKET_TITLES[MarketColumnId.UserDeposited]}
                 value={lendingPosition.supplied}
                 valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
               />

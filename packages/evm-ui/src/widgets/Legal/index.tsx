@@ -1,4 +1,4 @@
-import { type ComponentType, useEffect, useMemo, useState } from 'react'
+import { type ComponentType, useMemo } from 'react'
 import type { AppName } from '@evm-ui/shared/routes'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -79,13 +79,6 @@ const menu: TabItem<LegalTab, LegalTabsParams>[] = [
   },
 ]
 
-function useAfterHydration(result: string) {
-  const [value, setValue] = useState<string>()
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setValue(result), [result]) // only after hydration, otherwise test may click too fast
-  return value
-}
-
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams<{ network: string }>()
   const searchParams = useSearchParams()
@@ -107,7 +100,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         marginBlockEnd: Spacing.xxl,
       }}
     >
-      <Stack sx={{ maxWidth: MaxWidth.disclaimer, width: '100%' }} data-testid={useAfterHydration('legal-page')}>
+      <Stack sx={{ maxWidth: MaxWidth.disclaimer, width: '100%' }} data-testid="legal-page">
         <Stack sx={{ gap: Spacing.md }}>
           <LastUpdated />
           <TabsSwitcher variant="contained" value={tab.value} options={tabs} testIdPrefix="legal-tab" />

@@ -48,17 +48,12 @@ export function useIntersectionObserver(elementRef: RefObject<Element | null>, o
   const updateEntry = useCallback((entries: IntersectionObserverEntry[]) => setEntry(entries[entries.length - 1]), [])
 
   useEffect(() => {
-    // show node if IO not supported
-    if (!window.IntersectionObserver) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setEntry({ isIntersecting: true })
-      return
-    }
+    if (!window.IntersectionObserver) return
 
     const node = elementRef?.current
     if (frozen || !node) return
     return observeNode(node, updateEntry, { threshold, root, rootMargin })
   }, [elementRef, root, rootMargin, frozen, updateEntry, threshold])
 
-  return entry
+  return window.IntersectionObserver ? entry : { isIntersecting: true }
 }

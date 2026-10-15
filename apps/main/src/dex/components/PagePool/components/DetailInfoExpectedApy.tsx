@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { usePoolTotalStaked } from '@/dex/queries/pool-total-staked.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -22,19 +22,14 @@ export const DetailInfoExpectedApy = ({
   const { data: staked } = usePoolTotalStaked({ chainId: pool.curve.chainId, poolId: pool.id })
   const { gaugeTotalSupply } = staked ?? {}
 
-  const [newCrvApr, setNewCrvApr] = useState<{ ratio: number; apr: number } | null>(null)
-
-  useEffect(() => {
+  const newCrvApr = useMemo(() => {
     if (crvApr && gaugeTotalSupply && Number(gaugeTotalSupply) > 0 && Number(lpTokenAmount) > 0) {
       const gaugeTotalSupplyInEther = weiToEther(Number(gaugeTotalSupply))
       const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupplyInEther
       const newCrvApr = (gaugeTotalSupplyInEther / newGaugeTotalLocked) * crvApr
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setNewCrvApr({ ratio: crvApr / newCrvApr, apr: newCrvApr })
-    } else {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setNewCrvApr(null)
+      return { ratio: crvApr / newCrvApr, apr: newCrvApr }
     }
+    return null
   }, [crvApr, gaugeTotalSupply, lpTokenAmount])
 
   return (

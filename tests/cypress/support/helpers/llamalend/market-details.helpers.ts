@@ -150,11 +150,11 @@ const shouldLoadBorrowDetails = ({
   })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
   if (hasApi) {
-    getActionValue('market-net-borrow-apr', 'llamalend.rates').should('match', DECIMAL_REGEX)
+    getActionValue('market-borrow-apr', 'llamalend.rates').should('match', DECIMAL_REGEX)
     shouldShowCanvas('market-price-chart', 'mock.prices.charts')
     shouldLoadHistoricalBorrowRateChart(snapshots)
   } else {
-    getActionInfo('market-net-borrow-apr', 'llamalend.rates').should('not.exist')
+    getActionInfo('market-borrow-apr', 'llamalend.rates').should('not.exist')
   }
   shouldLoadMarketDetails()
 }
@@ -203,12 +203,12 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   shouldLoadRateBreakdown('supply', hasApi)
   getActionValue('market-total-liquidity', 'llamalend.liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
-    getActionValue('market-net-supply-apy', 'llamalend.rates').should('match', DECIMAL_REGEX)
+    getActionValue('market-supply-apy', 'llamalend.rates').should('match', DECIMAL_REGEX)
     shouldLoadHistoricalSupplyRateChart()
     shouldShowCanvas('interest-rate-utilization-chart', 'prices.charts')
     shouldLoadLendMarketActivity(MarketRateType.Supply)
   } else {
-    getActionInfo('market-net-supply-apy', 'llamalend.rates').should('not.exist')
+    getActionInfo('market-supply-apy', 'llamalend.rates').should('not.exist')
   }
   clickTab('historical-rate-tab', MarketRateType.Borrow)
   shouldLoadRateBreakdown('borrow', hasApi)

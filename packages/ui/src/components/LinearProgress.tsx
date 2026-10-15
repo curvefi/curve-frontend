@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react'
 import MuiLinearProgress from '@mui/material/LinearProgress'
-import { type Theme } from '@mui/material/styles'
+import { keyframes, type Theme } from '@mui/material/styles'
 
 const SIZE_MAPPING = { small: 4, medium: 8, large: 16 }
+const enter = keyframes`
+  from { scale: 0 1; }
+  to { scale: 1 1; }
+`
 
 export const LinearProgress = ({
   percent,
@@ -12,15 +15,18 @@ export const LinearProgress = ({
   percent: number
   size: keyof typeof SIZE_MAPPING
   barColor?: string | ((t: Theme) => string)
-}) => {
-  const [value, setValue] = useState(0)
-  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
-  return (
-    <MuiLinearProgress
-      sx={{ height: SIZE_MAPPING[size], '& .MuiLinearProgress-bar': { backgroundColor: barColor } }}
-      value={value}
-      variant="determinate"
-    />
-  )
-}
+}) => (
+  <MuiLinearProgress
+    sx={{
+      height: SIZE_MAPPING[size],
+      '& .MuiLinearProgress-bar': {
+        backgroundColor: barColor,
+        transformOrigin: t => (t.direction === 'rtl' ? 'right' : 'left'),
+        animation: `${enter} 0.4s linear`,
+        '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+      },
+    }}
+    value={percent}
+    variant="determinate"
+  />
+)

@@ -18,13 +18,13 @@ type RewardsTooltipItemsProps = {
   boostedApr?: number | Nullish
   extraRewards: CampaignRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
-  extraIncentives: ExtraIncentive[]
+  extraIncentives?: ExtraIncentive[]
 }
 
 export const RewardsTooltipItems = ({
   title,
   extraRewards,
-  extraIncentives,
+  extraIncentives = [],
   tooltipType,
 }: RewardsTooltipItemsProps) => {
   const totalExtraPercentage =
