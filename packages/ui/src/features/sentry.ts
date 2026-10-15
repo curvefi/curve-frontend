@@ -1,18 +1,15 @@
-import { type ErrorEvent, type Event, type Extras, type Integration, isObjectLike } from '@sentry/core'
+import { assert } from '@primitives/objects.utils'
+import { type Event, type Extras, type Integration, isObjectLike } from '@sentry/core'
 import {
   addBreadcrumb as addSentryBreadcrumb,
   type BrowserOptions,
-  captureException,
-  captureMessage,
   getClient,
   getCurrentScope,
   init,
   setTag,
   setUser as setSentryUser,
   thirdPartyErrorFilterIntegration,
-  withScope,
 } from '@sentry/react'
-import { isModuleLoadError, isUnsupportedChainError } from '@ui/features/errors/errors.util'
 import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui/lib/env'
 
 export const SENTRY_DSN =
@@ -43,7 +40,8 @@ export const initSentry = (applicationKey: string, transport?: BrowserOptions['t
       }),
     ],
     beforeSend: (event, { originalException: error }) =>
-      isUserErrorReport(event) || (!event.tags?.third_party_code && !isExpectedExternalError(event, error))
+      isUserErrorReport(event) ||
+      (!event.tags?.third_party_code && !isExpectedExternalError(getErrorMessage(event, error)))
         ? withErrorMessage(event, error)
         : null,
     sendClientReports: false, // prevents client_report envelopes for dropped events
@@ -68,10 +66,6 @@ const EXPECTED_EXTERNAL_MESSAGES = [
   'Failed to fetch',
   'Load failed',
   'AbortError',
-  'User rejected',
-  'User denied',
-  'SwitchChainNotSupportedError',
-  'not found rainbowkit',
   'Object Not Found Matching Id:',
   "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
 ]
@@ -82,63 +76,11 @@ const IGNORED_EXTENSION_MESSAGES = [
   'Extension context invalidated.',
 ]
 
-const REJECTED_WALLET_MESSAGES = [
-  'Not Allowed',
-  'wallet must has at least one account',
-  'Request rejected',
-  'User rejected the request.',
-  'Permission denied, approve www.curve.finance in Frame to continue',
-  'Tx Signature: User denied transaction signature.',
-]
-
-const OPTIONAL_WALLET_METHOD_ERRORS = [
-  'the method wallet_revokePermissions does not exist/is not available',
-  "method [rabby:getProviderConfig] doesn't has corresponding handler",
-  "method [wallet_registerOnboarding] doesn't has corresponding handler",
-]
-
-/** Reporting policy for recognized operational failures; codes alone do not identify a wallet. */
-const isExpectedExternalError = (event: ErrorEvent, error: unknown) => {
-  const code = getErrorCode(error)
-  const message = getErrorMessage(event, error)
-  const exception = event.exception?.values?.at(-1)
-  const type = isObjectLike(error) && typeof error.name === 'string' ? error.name : exception?.type
-  const mutationKey = event.extra?.mutationKey
-  const isWalletOperation =
-    Array.isArray(mutationKey) &&
-    typeof mutationKey[0] === 'string' &&
-    ['connect', 'reconnect', 'switchChain'].includes(mutationKey[0])
-
-  return (
-    isUnsupportedChainError(error) ||
-    type === 'SwitchChainNotSupportedError' ||
-    (type === 'SwitchChainError' &&
-      Boolean(event.exception?.values?.some(e => isUnsupportedChainError({ name: e.type, message: e.value })))) ||
-    (isWalletOperation && isModuleLoadError(error ?? { message })) ||
-    (typeof message === 'string' &&
-      (EXPECTED_EXTERNAL_MESSAGES.some(pattern => message.includes(pattern)) ||
-        IGNORED_EXTENSION_MESSAGES.includes(message) ||
-        (code === 4001 && REJECTED_WALLET_MESSAGES.includes(message)) ||
-        (code === -32601 && (message === 'Method not found' || OPTIONAL_WALLET_METHOD_ERRORS.includes(message))) ||
-        (code === -32603 && ['Internal JSON-RPC error.', 'Relay service: ClientOffline'].includes(message)) ||
-        (code === 3 && /^execution reverted(?::.*)?$/.test(message)) ||
-        ((code === 4100 || type === 'UnauthorizedProviderError') &&
-          ['[Filtered]', 'The requested account and/or method has not been authorized by the user.'].includes(
-            message,
-          )) ||
-        ((code === 4900 || type === 'ProviderDisconnectedError') &&
-          [
-            'The provider is disconnected from all chains.',
-            'Message channel disconnected',
-            'The Provider is disconnected from all chains.',
-          ].includes(message)) ||
-        ((code === 4901 || type === 'ChainDisconnectedError') &&
-          message === 'The Provider is not connected to the requested chain.')))
-  )
-}
-
-const getErrorCode = (error: unknown) =>
-  isObjectLike(error) && typeof error.code === 'number' ? error.code : undefined
+/** Wallet and transaction failures are handled at their call sites; report any that still escape. */
+const isExpectedExternalError = (message: string | undefined) =>
+  typeof message === 'string' &&
+  (EXPECTED_EXTERNAL_MESSAGES.some(pattern => message.includes(pattern)) ||
+    IGNORED_EXTENSION_MESSAGES.includes(message))
 
 /** Prefer the original message; Sentry places the outer error after its causes. */
 const getErrorMessage = (event: Event, error: unknown) =>
@@ -161,8 +103,7 @@ const withErrorMessage = <T extends Event>(event: T, error: unknown) => {
 
 /** Build a new event so an earlier automatic capture cannot mark this report as already captured. */
 export const captureUserReport = async (error: unknown, body: Extras) => {
-  const client = getClient()
-  if (!client) throw new Error('Error reporting is unavailable. Please refresh the page and try again.')
+  const client = assert(getClient(), 'Error reporting is unavailable. Please refresh the page and try again.')
   const scope = getCurrentScope().clone()
   const event =
     error == null || typeof error === 'string'
@@ -175,28 +116,6 @@ export const captureUserReport = async (error: unknown, body: Extras) => {
     scope,
   )
 }
-
-/**
- * Capture an error manually with optional context.
- */
-export const captureError = (error: Error, context?: Extras) =>
-  context
-    ? withScope(scope => {
-        scope.setExtras(context)
-        captureException(error)
-      })
-    : captureException(error)
-
-/**
- * Capture an error manually with optional context.
- */
-export const captureString = (message: string, context?: Extras) =>
-  context
-    ? withScope(scope => {
-        scope.setExtras(context)
-        captureMessage(message)
-      })
-    : captureMessage(message)
 
 /**
  * Set user context for error reports.

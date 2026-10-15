@@ -75,9 +75,27 @@ describe('Sentry events', () => {
     { code: 4001, message: 'Permission denied, approve www.curve.finance in Frame to continue' },
     { code: 4001, message: 'Tx Signature: User denied transaction signature.' },
     Object.assign(new Error('Request rejected'), { code: 4001 }),
-  ])('filters wallet error $code: $message', async error => {
-    const { send } = await capture(error)
-    expect(send).not.toHaveBeenCalled()
+    { code: -32601, message: 'the method wallet_revokePermissions does not exist/is not available' },
+    { code: -32601, message: "method [rabby:getProviderConfig] doesn't has corresponding handler" },
+    { code: -32601, message: "method [wallet_registerOnboarding] doesn't has corresponding handler" },
+    { code: -32601, message: 'Method not found' },
+    { code: -32603, message: 'Internal JSON-RPC error.' },
+    { code: -32603, message: 'Relay service: ClientOffline' },
+    { code: 3, message: 'execution reverted' },
+    { code: 3, message: 'execution reverted: Reserves too small' },
+    { code: 4100, message: '[Filtered]' },
+    { code: 4901, message: 'The Provider is not connected to the requested chain.' },
+    {
+      name: 'UnauthorizedProviderError',
+      message: 'The requested account and/or method has not been authorized by the user.',
+    },
+    { name: 'ProviderDisconnectedError', message: 'The Provider is disconnected from all chains.' },
+    { name: 'ChainDisconnectedError', message: 'The Provider is not connected to the requested chain.' },
+    new Error('not found rainbowkit'),
+  ])('retains wallet and RPC failures that reach Sentry: $message', async error => {
+    const { send, event } = await capture(error)
+    expect(send).toHaveBeenCalledOnce()
+    expect(event?.exception?.values?.at(-1)?.value).toBe(error.message)
   })
 
   it.each([
@@ -94,18 +112,9 @@ describe('Sentry events', () => {
   })
 
   it.each([
-    { code: -32601, message: 'the method wallet_revokePermissions does not exist/is not available' },
-    { code: -32601, message: "method [rabby:getProviderConfig] doesn't has corresponding handler" },
-    { code: -32601, message: "method [wallet_registerOnboarding] doesn't has corresponding handler" },
     { code: -32000, message: 'Failed to fetch' },
-    { code: -32601, message: 'Method not found' },
-    { code: -32603, message: 'Internal JSON-RPC error.' },
-    { code: -32603, message: 'Relay service: ClientOffline' },
-    { code: 3, message: 'execution reverted' },
-    { code: 3, message: 'execution reverted: Reserves too small' },
-    { code: 4100, message: '[Filtered]' },
     { code: -32603, message: 'Failed to fetch' },
-  ])('filters known optional wallet methods and provider fetch noise: %j', async error => {
+  ])('filters network failures: %j', async error => {
     const { send } = await capture(error)
     expect(send).not.toHaveBeenCalled()
   })
@@ -127,17 +136,19 @@ describe('Sentry events', () => {
     expect(event?.exception?.values?.[0]?.value).toBe(error.message)
   })
 
-  it('filters recognized unsupported chain-switch failures', async () => {
-    const error = Object.assign(new Error('An error occurred when attempting to switch chain.'), {
+  it.each([
+    Object.assign(new Error('Connector does not support switching chains.'), { name: 'SwitchChainNotSupportedError' }),
+    Object.assign(new Error('An error occurred when attempting to switch chain.'), {
       name: 'SwitchChainError',
       code: 4902,
       cause: {
         name: 'Provider.UnsupportedMethodError',
         message: 'wallet_switchEthereumChain::chainId 0x3e7 not supported',
       },
-    })
-    const { send } = await capture(error, { extra: { mutationKey: ['switchChain'], variables: { chainId: 999 } } })
-    expect(send).not.toHaveBeenCalled()
+    }),
+  ])('retains chain-switch failures that reach Sentry: $name', async error => {
+    const { send } = await capture(error)
+    expect(send).toHaveBeenCalledOnce()
   })
 
   it('retains application errors with an extension error as a nested cause', async () => {
@@ -267,9 +278,9 @@ describe('explicit reports through SDK processors', () => {
     expect(send).toHaveBeenCalledTimes(2)
   })
 
-  it('requires wallet context to suppress a module-loading error', async () => {
-    const error = new TypeError('Failed to fetch dynamically imported module: https://example.com/wallet.js')
+  it('retains module-loading errors even with wallet metadata', async () => {
+    const error = new TypeError('Importing a module script failed.')
     const { send } = await capture(error, { extra: { mutationKey: ['connect'] } })
-    expect(send).not.toHaveBeenCalled()
+    expect(send).toHaveBeenCalledOnce()
   })
 })
