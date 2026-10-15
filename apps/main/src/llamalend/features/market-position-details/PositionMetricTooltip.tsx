@@ -336,7 +336,9 @@ export const leverageTooltip = () => ({
   title: t`Leverage`,
   body: (
     <TooltipWrapper>
-      <TooltipDescription text={t`Remaining collateral exposure divided by net position value (assets minus debt).`} />
+      <TooltipDescription
+        text={t`Collateral exposure divided by the equity at risk. Only debt looped back into collateral through leverage counts, so borrowing to your wallet reads 1×.`}
+      />
       <Calculation>
         <LeverageEquation />
       </Calculation>
@@ -350,14 +352,14 @@ export const LeverageEquation = () => (
     <Equation>
       {t`Leverage`}
       {' = '}
-      <Fraction numerator="collateral × price" denominator="collateral × price + converted − debt" />
+      <Fraction numerator="collateral × price" denominator="collateral × price + converted − looped debt" />
     </Equation>
     <FormulaTerms
       terms={[
         t`collateral = remaining collateral quantity`,
         t`price = oracle price`,
         t`converted = converted borrowed assets`,
-        t`debt = current debt`,
+        t`looped debt = share of current debt borrowed through leverage`,
       ]}
     />
   </>

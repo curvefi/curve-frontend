@@ -85,17 +85,24 @@ export const equity = (assets: Decimal, debt: Decimal): Decimal => decimalMinus(
 export const leverage = (collateralValueAmount: Decimal, equityAmount: Decimal): Decimal | undefined =>
   decimalGreaterThan(equityAmount, ZERO) ? decimalDiv(collateralValueAmount, equityAmount) : undefined
 
-/** Card leverage: collateral token value divided by equity. Not the SDK deposit multiple. */
-export const equityLeverage = (
+/**
+ * Looped leverage: collateral exposure over the equity the user put at risk.
+ * Only debt the leverage zap turned into collateral counts. Borrowed tokens sent to the wallet left the position,
+ * so a plain borrow reads 1×, while a full loop reads like CEX effective leverage.
+ */
+export const loopedLeverage = (
   collateralQuantity: Decimal,
   oraclePrice: Decimal,
   stablecoin: Decimal,
-  debt: Decimal,
+  loopedDebt: Decimal,
 ): Decimal | undefined => {
   const tokenValue = collateralTokenValue(collateralQuantity, oraclePrice)
   const assets = collateralValue(collateralQuantity, oraclePrice, stablecoin)
-  return leverage(tokenValue, equity(assets, debt))
+  return leverage(tokenValue, equity(assets, loopedDebt))
 }
+
+/** Part of the debt borrowed through the leverage zap. Interest and repays are split pro rata. */
+export const loopedDebt = (debt: Decimal, zapDebtShare: Decimal): Decimal => decimalMultiply(debt, zapDebtShare)
 
 /** Labels sum to 100 at 4dp. `collateralExact` stays unrounded for sorting. */
 export const compositionShares = (collateralAssets: Decimal, totalAssets: Decimal) => {

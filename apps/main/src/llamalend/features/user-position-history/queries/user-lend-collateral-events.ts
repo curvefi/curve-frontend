@@ -7,16 +7,19 @@ import { userCollateralEventsValidationSuite } from './validation/user-collatera
 type UserLendCollateralEventsQuery = UserQuery & ContractQuery
 type UserLendCollateralEventsParams = FieldsOf<UserLendCollateralEventsQuery>
 
-export const { useQuery: useUserLendCollateralEventsQuery, invalidate: invalidateUserLendCollateralEventsQuery } =
-  queryFactory({
-    queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) =>
-      ['userLendCollateralEvents', { blockchainId }, { userAddress }, { contractAddress }, 'v1'] as const,
-    queryFn: ({
-      blockchainId,
-      contractAddress,
-      userAddress,
-    }: UserLendCollateralEventsQuery): Promise<UserCollateralEvents> =>
-      getUserMarketCollateralEvents(userAddress, blockchainId, contractAddress),
-    category: 'llamalend.user',
-    validationSuite: userCollateralEventsValidationSuite,
-  })
+export const {
+  useQuery: useUserLendCollateralEventsQuery,
+  invalidate: invalidateUserLendCollateralEventsQuery,
+  getQueryOptions: getUserLendCollateralEventsOptions,
+} = queryFactory({
+  queryKey: ({ blockchainId, userAddress, contractAddress }: UserLendCollateralEventsParams) =>
+    ['userLendCollateralEvents', { blockchainId }, { userAddress }, { contractAddress }, 'v1'] as const,
+  queryFn: ({
+    blockchainId,
+    contractAddress,
+    userAddress,
+  }: UserLendCollateralEventsQuery): Promise<UserCollateralEvents> =>
+    getUserMarketCollateralEvents(userAddress, blockchainId, contractAddress),
+  category: 'llamalend.user',
+  validationSuite: userCollateralEventsValidationSuite,
+})

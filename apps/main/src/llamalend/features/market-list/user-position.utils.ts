@@ -5,6 +5,7 @@ import {
   compositionShares,
   equity,
   leverage,
+  loopedDebt,
   inclusiveBandCount,
   oracleHealth,
   priceDistance,
@@ -144,11 +145,12 @@ export const getUserPositionRoeResult = (row: LlamaMarketRow) => {
 export const getUserPositionRoe = (row: LlamaMarketRow) =>
   maybe(getUserPositionRoeResult(row), result => Number(result.aprPercent))
 
-/** Uses the position card's collateral exposure over equity formula. */
+/** Same looped leverage as the position card. Undefined until the zap debt share loads. */
 export const getUserPositionLeverage = (row: LlamaMarketRow) => {
   const amounts = readBorrowAmounts(row)
-  if (!amounts) return undefined
-  return maybe(leverage(amounts.tokenValue, amounts.equity), value => Number(value))
+  const share = row.positionQueries.zapShare.data
+  if (!amounts || share == undefined) return undefined
+  return maybe(leverage(amounts.tokenValue, equity(amounts.assets, loopedDebt(amounts.debt, share))), Number)
 }
 
 /** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */

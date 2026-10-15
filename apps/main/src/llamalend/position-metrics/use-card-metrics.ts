@@ -3,12 +3,11 @@ import {
   collateralTokenValue,
   collateralValue,
   equity,
-  equityLeverage,
+  loopedDebt,
+  loopedLeverage,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import {
-  cardPositionRoe,
-  snapshotRebasingAprs,
-} from '@/llamalend/features/market-position-details/position-roe.utils'
+import { cardPositionRoe, snapshotRebasingAprs } from '@/llamalend/features/market-position-details/position-roe.utils'
+import { useZapDebtShare } from '@/llamalend/position-metrics/zap-debt-share'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import { useUserState } from '@/llamalend/queries/user'
@@ -21,12 +20,22 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
 
-/** Current card leverage, collateral value over equity. */
+/** Zap debt share of the current user's position in the market in context. */
+function usePositionZapDebtShare(params: UserMarketParams, enabled: boolean) {
+  const { blockchainId, controllerAddress, marketType } = useMarketContext()
+  return useZapDebtShare(
+    { blockchainId, contractAddress: controllerAddress, userAddress: params.userAddress, marketType },
+    enabled,
+  )
+}
+
+/** Current card leverage: collateral value over equity, counting only looped debt. */
 export function useCardLeverage(params: UserMarketParams, enabled = true) {
   const state = useUserState(params, enabled)
   const oracle = useMarketOraclePrice(params, enabled)
-  return combineQueries([state, oracle], (user, price) =>
-    equityLeverage(user.collateral, price, user.stablecoin, user.debt),
+  const zapShare = usePositionZapDebtShare(params, enabled)
+  return combineQueries([state, oracle, zapShare], (user, price, share) =>
+    loopedLeverage(user.collateral, price, user.stablecoin, loopedDebt(user.debt, share)),
   )
 }
 
@@ -39,22 +48,27 @@ export function useBorrowMoreCardLeverage(params: BorrowMoreParams, enabled = tr
   const state = useUserState(params, enabled && beta)
   const oracle = useMarketOraclePrice(params, enabled && beta)
   const expected = useBorrowMoreExpectedCollateral(params, enabled && beta && !!params.leverageEnabled)
+  const zapShare = usePositionZapDebtShare(params, enabled && beta)
   const current = useCardLeverage(params, enabled && beta)
+  // Leveraged borrow-more loops its new debt into collateral; a plain borrow sends it to the wallet.
   const added = (
     collateral: Decimal,
     user: { collateral: Decimal; stablecoin: Decimal; debt: Decimal },
     price: Decimal,
+    share: Decimal,
   ) => {
     const quantity = decimalSum(user.collateral, collateral)
-    const debt = decimalSum(user.debt, params.debt ?? '0')
-    if (quantity == undefined || debt == undefined) return undefined
-    return equityLeverage(quantity, price, user.stablecoin, debt)
+    const looped = params.leverageEnabled
+      ? decimalSum(loopedDebt(user.debt, share), params.debt ?? '0')
+      : loopedDebt(user.debt, share)
+    if (quantity == undefined || looped == undefined) return undefined
+    return loopedLeverage(quantity, price, user.stablecoin, looped)
   }
-  const plainPreview = combineQueries([state, oracle], (user, price) =>
-    added(params.userCollateral ?? '0', user, price),
+  const plainPreview = combineQueries([state, oracle, zapShare], (user, price, share) =>
+    added(params.userCollateral ?? '0', user, price, share),
   )
-  const leveragedPreview = combineQueries([state, oracle, expected], (user, price, addedCollateral) =>
-    added(addedCollateral.totalCollateral, user, price),
+  const leveragedPreview = combineQueries([state, oracle, expected, zapShare], (user, price, addedCollateral, share) =>
+    added(addedCollateral.totalCollateral, user, price, share),
   )
   const preview = params.leverageEnabled ? leveragedPreview : plainPreview
   const hasAddedSize =

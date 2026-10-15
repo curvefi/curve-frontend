@@ -1,6 +1,9 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
+import { getUserCrvUsdCollateralEventsOptions } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
+import { getUserLendCollateralEventsOptions } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
+import { lendZapDebtShare, mintZapDebtShare } from '@/llamalend/position-metrics/zap-debt-share.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
@@ -67,6 +70,8 @@ type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
   risk: PositionRiskQueries
+  /** Share of the debt borrowed through the leverage zap. Beta only. */
+  zapShare: QueryProp<Decimal>
 }
 
 const EMPTY_RISK: PositionRiskQueries = { oracle: DISABLED_Q, prices: DISABLED_Q, fullHealth: DISABLED_Q, beta: false }
@@ -75,6 +80,7 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
   risk: EMPTY_RISK,
+  zapShare: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -147,6 +153,31 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     queries: useMemo(() => riskEntries.map(entry => entry.options), [riskEntries]),
     combine: results => results.map(result => q<PositionRisk>(result)),
   })
+  const zapEntries = useMemo(() => {
+    const markets = beta && userAddress ? borrowMarkets : []
+    const toEntry = (market: LlamaMarket) => ({
+      market,
+      params: { blockchainId: market.chain, contractAddress: market.controllerAddress, userAddress },
+    })
+    return {
+      lend: markets.filter(({ type }) => type === MarketType.Lend).map(toEntry),
+      mint: markets.filter(({ type }) => type === MarketType.Mint).map(toEntry),
+    }
+  }, [beta, borrowMarkets, userAddress])
+  const lendZapQueries = useQueries({
+    queries: useMemo(
+      () => zapEntries.lend.map(({ params }) => getUserLendCollateralEventsOptions(params)),
+      [zapEntries],
+    ),
+    combine: results => results.map(result => mapQuery(q(result), lendZapDebtShare)),
+  })
+  const mintZapQueries = useQueries({
+    queries: useMemo(
+      () => zapEntries.mint.map(({ params }) => getUserCrvUsdCollateralEventsOptions(params)),
+      [zapEntries],
+    ),
+    combine: results => results.map(result => mapQuery(q(result), mintZapDebtShare)),
+  })
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
@@ -168,6 +199,11 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
       }),
     )
 
+    const zapByMarket = new Map<LlamaMarket, QueryProp<Decimal>>([
+      ...zapEntries.lend.map(({ market }, index) => [market, lendZapQueries[index] ?? DISABLED_Q] as const),
+      ...zapEntries.mint.map(({ market }, index) => [market, mintZapQueries[index] ?? DISABLED_Q] as const),
+    ])
+
     const getPriceQuery = (chain: Chain, tokenAddress: Address) =>
       pricesByToken.get(getTokenPriceKey({ chainId: requireChainId(chain), tokenAddress })) ?? DISABLED_Q
 
@@ -183,8 +219,21 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             collateral: getPriceQuery(market.chain, market.assets.collateral.address),
           },
           risk: { ...(riskByMarket.get(market) ?? EMPTY_RISK), beta },
+          zapShare: zapByMarket.get(market) ?? DISABLED_Q,
         },
       }
     })
-  }, [beta, markets, riskEntries, riskQueries, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [
+    beta,
+    markets,
+    riskEntries,
+    riskQueries,
+    statsEntries,
+    statsQueries,
+    tokenPriceEntries,
+    tokenPriceQueries,
+    zapEntries,
+    lendZapQueries,
+    mintZapQueries,
+  ])
 }

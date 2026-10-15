@@ -6,16 +6,22 @@ import {
   compositionShares,
   equity,
   leverage,
+  loopedDebt,
   oracleHealth,
   priceDistance,
   type PriceDistance,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
-import { cardPositionRoe, snapshotRebasingAprs, type CardRoe } from '@/llamalend/features/market-position-details/position-roe.utils'
+import {
+  cardPositionRoe,
+  snapshotRebasingAprs,
+  type CardRoe,
+} from '@/llamalend/features/market-position-details/position-roe.utils'
 import {
   resolvePositionStatus,
   type PositionStatus,
 } from '@/llamalend/features/market-position-details/position-status.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
+import { useZapDebtShare } from '@/llamalend/position-metrics/zap-debt-share'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import { useUserState } from '@/llamalend/queries/user'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
@@ -30,7 +36,7 @@ import { mapQuery, q, type Query, type QueryProp, type Range } from '@ui/feature
 import { getTokenPairUnit } from '@ui/lib/tokens'
 
 /** A failed refetch keeps the previous payload instead of replacing it with an error icon. */
-const keepDisplayedValue = <T,>(query: Query<T>) =>
+const keepDisplayedValue = <T>(query: Query<T>) =>
   q(query.data != null && query.error != null ? { data: query.data, isLoading: query.isLoading, error: null } : query)
 
 type TimedQuery = { dataUpdatedAt: number }
@@ -88,6 +94,12 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     marketType,
     range: { kind: 'limit', limit: 1 },
   })
+  const zapShare = useZapDebtShare({
+    blockchainId,
+    contractAddress: controllerAddress,
+    userAddress: params.userAddress,
+    marketType,
+  })
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: tokens.borrowToken?.address })
   const priceUnit = getTokenPairUnit([tokens.collateralToken?.symbol, tokens.borrowToken?.symbol])
   const health = combineQueries([oracle, userPrices], (price, prices) =>
@@ -103,10 +115,14 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     collateralTokenValue(state.collateral, price),
   )
   const equityValue = combineQueries([collateral, userState], (assets, state) => equity(assets, state.debt))
-  const leverageValue = combineQueries([collateralAssets, equityValue], (tokenValue, equityAmount) =>
-    leverage(tokenValue, equityAmount),
+  // Leverage counts only looped debt, so borrowed tokens sent to the wallet don't read as leverage.
+  const leverageValue = combineQueries(
+    [collateralAssets, collateral, userState, zapShare],
+    (tokenValue, assets, state, share) => leverage(tokenValue, equity(assets, loopedDebt(state.debt, share))),
   )
-  const composition = combineQueries([collateralAssets, collateral], (assets, total) => compositionShares(assets, total))
+  const composition = combineQueries([collateralAssets, collateral], (assets, total) =>
+    compositionShares(assets, total),
+  )
   const distance = combineQueries([oracle, userPrices], (price, prices) =>
     prices ? priceDistance(price, prices[1], prices[0]) : undefined,
   )
