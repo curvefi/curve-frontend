@@ -24,6 +24,7 @@ import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import { useMarketContext } from '../../market-context'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
+import { BuyCollateralLink } from './BuyCollateralLink'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { HighLiquidationRiskAlert } from './HighLiquidationRiskAlert'
 import { LeverageInput } from './LeverageInput'
@@ -175,6 +176,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
+      <BuyCollateralLink blockchainId={network.blockchainId} token={collateralToken} />
       <LowSolvencyActionModal {...solvencyModal} action="borrow" tokenSymbol={collateralToken?.symbol} />
       <LeverageDelegationModal {...delegationModal} />
       <FormAlerts
