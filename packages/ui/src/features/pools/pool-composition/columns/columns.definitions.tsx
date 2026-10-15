@@ -50,7 +50,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     id: PoolCompositionColumnId.Price,
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
-      <InlineTableCell>
+      <InlineTableCell sx={{ alignItems: 'end' }}>
         <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'usd.precise'))} />
       </InlineTableCell>
     ),

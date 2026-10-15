@@ -26,11 +26,13 @@ export const YieldBreakdown = ({ maxBoostTotal, total, rows: rowsProp }: YieldBr
           category="detail"
           table={table}
           footerRow={
-            <FooterRow
-              visibleColumns={table.getVisibleLeafColumns()}
-              maxBoostTotal={toQuery(maxBoostTotal)}
-              total={toQuery(total)}
-            />
+            rows.data.length > 1 && (
+              <FooterRow
+                visibleColumns={table.getVisibleLeafColumns()}
+                maxBoostTotal={toQuery(maxBoostTotal)}
+                total={toQuery(total)}
+              />
+            )
           }
         />
       </Card>
