@@ -153,6 +153,13 @@ export const getUserPositionLeverage = (row: LlamaMarketRow) => {
   return maybe(leverage(amounts.tokenValue, equity(amounts.assets, loopedDebt(amounts.debt, share))), Number)
 }
 
+/**
+ * Collateral the position holds, valued at the oracle in the debt token. Converted borrowed tokens are cash, not exposure.
+ * Sorting converts to USD so markets with different debt tokens compare.
+ */
+export const getUserPositionExposureUsd = ({ positionQueries: { stats, prices } }: LlamaMarketRow) =>
+  maybes([stats.data, prices.borrowed.data], (data, rate) => data.collateral * data.oraclePrice * rate)
+
 /** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */
 export const getHealthColumnSortValue = (row: LlamaMarketRow) =>
   row.positionQueries.risk.beta ? getUserPositionOracleHealth(row) : getUserPositionHealth(row)

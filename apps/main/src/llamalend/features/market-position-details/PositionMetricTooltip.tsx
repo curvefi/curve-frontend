@@ -347,6 +347,19 @@ export const leverageTooltip = () => ({
   ),
 })
 
+export const exposureTooltip = () => ({
+  ...tooltipChrome,
+  title: t`Exposure`,
+  body: (
+    <TooltipWrapper>
+      <TooltipDescription
+        text={t`Value of the collateral the position holds, in the debt token at the oracle price. Its price moves are your gains and losses. Borrowed tokens from soft liquidation are excluded.`}
+      />
+      <TooltipFooter>{t`Leverage is exposure divided by the equity at risk.`}</TooltipFooter>
+    </TooltipWrapper>
+  ),
+})
+
 export const LeverageEquation = () => (
   <>
     <Equation>

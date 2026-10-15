@@ -41,7 +41,7 @@ const BETA_ONLY_COLUMNS = [
 ]
 
 const betaMigration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 7,
+  version: 8,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
