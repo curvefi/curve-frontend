@@ -10,7 +10,8 @@ import {
   checkSupplyAlert,
 } from './supply.helpers'
 
-export const submitStakeForm = (isMocked = false) => submitSupplyForm('stake', 'Stake successful!', isMocked)
+export const submitStakeForm = (isMocked = false) =>
+  submitSupplyForm('stake', { message: 'Stake successful!', approvalMessage: 'Approved stake' }, isMocked)
 
 export const readStakeAvailableAssets = (isMocked = false) =>
   getSupplyInputBalanceValueAttr('stake', isMocked)

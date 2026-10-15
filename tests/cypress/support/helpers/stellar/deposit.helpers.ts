@@ -14,6 +14,7 @@ import {
   TEST_NETWORK,
 } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -105,8 +106,11 @@ export const checkDepositBalances = ({ coins, lp }: PoolState) => {
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
   getActionValue('pool-deposit-expected-lp', 'stellar.simulation').should(value => expect(+value!).to.be.greaterThan(0))
-  depositSubmit().click(TIMEOUTS['ui.interaction'])
-  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should('contain.text', 'Deposit confirmed')
+  submitAndExpectToast(
+    () => depositSubmit().click(TIMEOUTS['ui.interaction']),
+    { message: 'Deposit confirmed' },
+    'stellar.confirmation',
+  )
   coins.forEach(({ address }) => {
     poolInput(address).find('input').should('have.value', '')
   })
