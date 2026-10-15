@@ -199,7 +199,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
           )}
 
           {suffix && (
-            <Typography variant={fontVariantUnit} color="textSecondary">
+            <Typography variant={fontVariantUnit} color="textSecondary" sx={{ marginInlineStart: Spacing.xxs }}>
               {suffix}
             </Typography>
           )}
@@ -210,6 +210,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
           variant={MetricChangeSize[size]}
           color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}
         >
+          {change > 0 && '+'}
           {formatChange(change)}%
         </Typography>
       )}
