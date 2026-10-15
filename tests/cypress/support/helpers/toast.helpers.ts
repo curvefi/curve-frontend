@@ -9,7 +9,11 @@ const expectToast = (
   timeoutCategory: TimeoutCategory,
 ) =>
   cy
-    .get('[data-testid="toast-success"], [data-testid="toast-error"]', TIMEOUTS[timeoutCategory])
+    // Approvals emit their own success toasts before the transaction outcome and can remain visible alongside it.
+    .get(
+      '[data-testid="toast-success"]:not(:contains("Approved ")), [data-testid="toast-error"]',
+      TIMEOUTS[timeoutCategory],
+    )
     .should('be.visible')
     // Once an outcome appears, fail immediately if its type or message is unexpected.
     .filter(`[data-testid="toast-${type}"]`, { timeout: 0 })
