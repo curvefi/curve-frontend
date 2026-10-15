@@ -16,6 +16,7 @@ import { isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
@@ -26,6 +27,7 @@ import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
+const OPENING_LEVERAGE_FORMAT = { abbreviate: false, maximumSignificantDigits: 3, unit: 'multiplier' } as const
 
 export const BetaBorrowInformation = ({
   view,
@@ -125,6 +127,11 @@ export const BetaBorrowInformation = ({
             value={view.leverage}
             valueOptions={{ unit: 'multiplier' }}
             valueTooltip={leverageTooltip()}
+            notional={maybe(view.openingLeverage.data, opening => (
+              <Typography variant="highlightXsNotional" color="textTertiary" data-testid="position-opening-leverage">
+                {t`Opened at`} {formatNumber(opening, OPENING_LEVERAGE_FORMAT)}
+              </Typography>
+            ))}
           />
         )}
       </Box>

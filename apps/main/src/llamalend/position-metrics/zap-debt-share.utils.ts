@@ -44,34 +44,85 @@ export const mintZapDebtShare = ({
 
 type CashFlowEvent = { loanChange: number; collateralChange: number; oraclePrice: number }
 
-/**
- * Net capital in the open position, in the debt token: collateral added at its oracle price minus debt taken out.
- * Debt the zap swaps into collateral cancels against that collateral, so only swap costs remain. Borrows to the wallet
- * count as withdrawals and repays as deposits. Events are oldest first; the running debt reaching zero closes a position.
- */
-export const netInvested = (events: readonly CashFlowEvent[]): Decimal => {
-  let invested = BigNumber(0)
+/** Events of the open position only. Events are oldest first; the running debt reaching zero closes a position. */
+const openPositionEvents = <T extends CashFlowEvent>(events: readonly T[]): T[] => {
+  let start = 0
   let running = BigNumber(0)
-  for (const { loanChange, collateralChange, oraclePrice } of events) {
+  events.forEach(({ loanChange }, index) => {
     running = running.plus(loanChange)
     if (running.lte(0)) {
-      invested = BigNumber(0)
+      start = index + 1
       running = BigNumber(0)
-      continue
     }
-    invested = invested.plus(BigNumber(collateralChange).times(oraclePrice)).minus(loanChange)
-  }
-  return decimal(invested.toFixed()) ?? ZERO
+  })
+  return events.slice(start)
 }
 
-export type PositionHistory = { zapShare: Decimal; netInvested: Decimal }
+const sum = (events: readonly CashFlowEvent[], value: (event: CashFlowEvent) => BigNumber): Decimal =>
+  decimal(events.reduce((total, event) => total.plus(value(event)), BigNumber(0)).toFixed()) ?? ZERO
 
-export const lendPositionHistory = (data: LendCollateralEvents): PositionHistory => ({
-  zapShare: lendZapDebtShare(data),
-  netInvested: netInvested(data.events),
+/**
+ * Net capital in the open position, in the debt token: collateral added at its oracle price on the day it moved minus
+ * debt taken out. Debt the zap swaps into collateral cancels against that collateral, so only swap costs remain. Borrows
+ * to the wallet count as withdrawals and repays as deposits.
+ */
+export const netInvested = (events: readonly CashFlowEvent[]): Decimal =>
+  sum(openPositionEvents(events), ({ collateralChange, oraclePrice, loanChange }) =>
+    BigNumber(collateralChange).times(oraclePrice).minus(loanChange),
+  )
+
+/** Debt converted to the collateral token at the oracle price on the day it moved. */
+const debtInCollateral = ({ loanChange, oraclePrice }: CashFlowEvent) =>
+  oraclePrice > 0 ? BigNumber(loanChange).div(oraclePrice) : BigNumber(0)
+
+/** Net capital in the collateral token, like ETH-in vs ETH-out trackers. */
+export const netInvestedCollateral = (events: readonly CashFlowEvent[]): Decimal =>
+  sum(openPositionEvents(events), event => BigNumber(event.collateralChange).minus(debtInCollateral(event)))
+
+/** Debt taken out of the open position, in the collateral token. */
+export const borrowedCollateral = (events: readonly CashFlowEvent[]): Decimal =>
+  sum(openPositionEvents(events), debtInCollateral)
+
+/**
+ * Leverage of the borrow that opened the position, in the same units as the current leverage: collateral value over
+ * that value minus the debt looped back into collateral. `loopedShare` is the part of that borrow the zap swapped.
+ */
+export const openingLeverage = <T extends CashFlowEvent>(
+  events: readonly T[],
+  loopedShare: (event: T) => BigNumber.Value,
+): Decimal | undefined => {
+  const [first] = openPositionEvents(events)
+  if (!first) return undefined
+  const value = BigNumber(first.collateralChange).times(first.oraclePrice)
+  const ownCapital = value.minus(BigNumber(first.loanChange).times(loopedShare(first)))
+  return value.gt(0) && ownCapital.gt(0) ? decimal(value.div(ownCapital).toFixed()) : undefined
+}
+
+export type PositionHistory = {
+  zapShare: Decimal
+  netInvested: Decimal
+  netInvestedCollateral: Decimal
+  borrowedCollateral: Decimal
+  openingLeverage: Decimal | undefined
+}
+
+const positionHistory = <T extends CashFlowEvent>(
+  events: readonly T[],
+  zapShare: Decimal,
+  loopedShare: (event: T) => BigNumber.Value,
+): PositionHistory => ({
+  zapShare,
+  netInvested: netInvested(events),
+  netInvestedCollateral: netInvestedCollateral(events),
+  borrowedCollateral: borrowedCollateral(events),
+  openingLeverage: openingLeverage(events, loopedShare),
 })
 
-export const mintPositionHistory = (data: MintCollateralEvents): PositionHistory => ({
-  zapShare: mintZapDebtShare(data),
-  netInvested: netInvested(data.events),
-})
+export const lendPositionHistory = (data: LendCollateralEvents): PositionHistory =>
+  positionHistory(data.events, lendZapDebtShare(data), ({ leverage }) => (leverage ? 1 : 0))
+
+/** Mint events carry no zap marker, so the opening borrow uses the position's estimated share. */
+export const mintPositionHistory = (data: MintCollateralEvents): PositionHistory => {
+  const zapShare = mintZapDebtShare(data)
+  return positionHistory(data.events, zapShare, () => zapShare)
+}

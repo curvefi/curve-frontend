@@ -21,7 +21,7 @@ import {
   type PositionStatus,
 } from '@/llamalend/features/market-position-details/position-status.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
-import { useZapDebtShare } from '@/llamalend/position-metrics/zap-debt-share'
+import { usePositionHistory } from '@/llamalend/position-metrics/zap-debt-share'
 import { useMarketOraclePrice, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import { useUserState } from '@/llamalend/queries/user'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
@@ -71,6 +71,7 @@ export type BorrowPositionView = {
   debt: QueryProp<Decimal | undefined>
   borrowUsdRate: ReturnType<typeof useTokenUsdRate>
   leverage: QueryProp<Decimal | undefined>
+  openingLeverage: QueryProp<Decimal | undefined>
   roe: QueryProp<CardRoe | undefined>
   priceUnit: string
   bands: Range<number> | undefined
@@ -94,12 +95,13 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     marketType,
     range: { kind: 'limit', limit: 1 },
   })
-  const zapShare = useZapDebtShare({
+  const history = usePositionHistory({
     blockchainId,
     contractAddress: controllerAddress,
     userAddress: params.userAddress,
     marketType,
   })
+  const zapShare = mapQuery(history, ({ zapShare }) => zapShare)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: tokens.borrowToken?.address })
   const priceUnit = getTokenPairUnit([tokens.collateralToken?.symbol, tokens.borrowToken?.symbol])
   const health = combineQueries([oracle, userPrices], (price, prices) =>
@@ -169,6 +171,7 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     debt: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
     borrowUsdRate,
     leverage: keepDisplayedValue(leverageValue),
+    openingLeverage: keepDisplayedValue(mapQuery(history, ({ openingLeverage }) => openingLeverage)),
     roe: keepDisplayedValue(roe),
     priceUnit,
     bands: userBands.data,

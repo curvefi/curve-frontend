@@ -1,3 +1,4 @@
+import { getUserPositionOpeningLeverage } from '@/llamalend/features/market-list/user-position.utils'
 import { getMaxPositionLeverage } from '@/llamalend/max-leverage.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import Typography from '@mui/material/Typography'
@@ -17,6 +18,8 @@ export const UserLeverageCell = ({
   const stats = row.original.positionQueries.stats
   const value = getValue()
   const maxLeverage = getMaxPositionLeverage(row.original)
+  // Beta loads position history: show the leverage the position opened at, like a CEX leverage setting.
+  const openingLeverage = getUserPositionOpeningLeverage(row.original)
   return (
     <PositionMetricCell
       error={stats.error}
@@ -24,10 +27,16 @@ export const UserLeverageCell = ({
       value={maybe(value, amount => formatNumber(amount, leverageFormat))}
       valueTestId="user-position-leverage-value"
       support={
-        maxLeverage != null && (
-          <Typography variant="bodySRegular" color="textSecondary" data-testid="user-position-max-leverage">
-            {t`Max`} {formatNumber(maxLeverage, leverageFormat)}
+        openingLeverage != null ? (
+          <Typography variant="bodySRegular" color="textSecondary" data-testid="user-position-opening-leverage">
+            {t`Opened at`} {formatNumber(openingLeverage, leverageFormat)}
           </Typography>
+        ) : (
+          maxLeverage != null && (
+            <Typography variant="bodySRegular" color="textSecondary" data-testid="user-position-max-leverage">
+              {t`Max`} {formatNumber(maxLeverage, leverageFormat)}
+            </Typography>
+          )
         )
       }
     />

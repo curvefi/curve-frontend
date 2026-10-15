@@ -17,7 +17,7 @@ import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { sumCampaignsApr } from '@/llamalend/rates.utils'
 import { requireChainId } from '@evm-ui/utils'
-import type { Amount } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
@@ -163,26 +163,41 @@ export const getUserPositionEquityUsd = (row: LlamaMarketRow) =>
     (amount, rate) => Number(amount) * rate,
   )
 
+const percentOf = (part: Decimal | undefined, base: Decimal | undefined) =>
+  part != undefined && base != undefined && decimalGreaterThan(base, '0')
+    ? decimalMultiply(decimalDiv(part, base), '100')
+    : undefined
+
 /**
- * Equity change since opening, net of deposits, withdrawals, wallet borrows and repays.
- * The percent is of own capital: net capital plus the debt sent to the wallet, the same base as looped leverage,
- * so a 1× plain borrow returns the collateral's price move, like a 1× CEX position.
+ * Equity change since opening, net of deposits, withdrawals, wallet borrows and repays, in the collateral token and in
+ * the debt token. Each percent is ROE: PnL over own capital, which is net capital plus the debt sent to the wallet, the
+ * same base as looped leverage. In the debt token a 1× plain borrow returns the collateral's price move, like a 1× CEX
+ * position. The collateral token converts every flow at the oracle price of its day, like ETH-in vs ETH-out trackers.
  */
 export const getUserPositionPnl = (row: LlamaMarketRow) => {
   const amounts = readBorrowAmounts(row)
   const history = row.positionQueries.history.data
   if (!amounts || !history) return undefined
+  const walletShare = decimalMinus('1', history.zapShare)
   const pnl = decimalMinus(amounts.equity, history.netInvested)
-  const walletDebt = decimalMinus(amounts.debt, loopedDebt(amounts.debt, history.zapShare))
-  const ownCapital = decimalSum(history.netInvested, walletDebt)
+  const ownCapital = decimalSum(history.netInvested, decimalMultiply(amounts.debt, walletShare))
+  const equityCollateral = decimalDiv(amounts.equity, amounts.oracle)
+  const pnlCollateral = equityCollateral && decimalMinus(equityCollateral, history.netInvestedCollateral)
+  const ownCapitalCollateral = decimalSum(
+    history.netInvestedCollateral,
+    decimalMultiply(history.borrowedCollateral, walletShare),
+  )
   return {
     pnl,
-    percent:
-      ownCapital && decimalGreaterThan(ownCapital, '0')
-        ? decimalMultiply(decimalDiv(pnl, ownCapital), '100')
-        : undefined,
+    percent: percentOf(pnl, ownCapital),
+    pnlCollateral,
+    percentCollateral: percentOf(pnlCollateral, ownCapitalCollateral),
   }
 }
+
+/** Leverage of the borrow that opened the position, in the same units as the current leverage. */
+export const getUserPositionOpeningLeverage = (row: LlamaMarketRow) =>
+  maybe(row.positionQueries.history.data?.openingLeverage, Number)
 
 /** Beta sorts by the oracle ratio and leaves unknowns last. Flag-off keeps the old percentage. */
 export const getHealthColumnSortValue = (row: LlamaMarketRow) =>

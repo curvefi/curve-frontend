@@ -339,6 +339,9 @@ export const leverageTooltip = () => ({
       <TooltipDescription
         text={t`Collateral exposure divided by the equity at risk. Only debt looped back into collateral through Curve's leverage counts, so borrowing to your wallet reads 1×. Loops you build by hand, borrowing and depositing again yourself, count as wallet borrows and read lower than their real leverage.`}
       />
+      <TooltipDescription
+        text={t`Unlike an exchange's leverage setting, this number moves with price: it rises when collateral falls and drops when collateral gains. Opened at shows the leverage of the borrow that opened the position.`}
+      />
       <Calculation>
         <LeverageEquation />
       </Calculation>
@@ -356,7 +359,10 @@ export const equityTooltip = () => ({
         text={t`What this position returns if you close it now, in the debt token: collateral at the oracle price plus converted borrowed tokens, minus debt. Borrowed tokens already in your wallet are not included.`}
       />
       <TooltipDescription
-        text={t`PnL is the change in equity since you opened, after deposits, withdrawals, borrows to your wallet and repays. The percentage is of your own capital, the same base leverage uses.`}
+        text={t`PnL is the change in equity since you opened, after deposits, withdrawals, borrows to your wallet and repays. It counts in the collateral token, with each of those converted at the oracle price of its day. Hover it for the debt-token value.`}
+      />
+      <TooltipDescription
+        text={t`The percentage is ROE, like on an exchange: PnL divided by your own capital, the same base leverage uses.`}
       />
       <TooltipFooter>{t`Excludes price impact you would pay to close.`}</TooltipFooter>
     </TooltipWrapper>

@@ -3,7 +3,14 @@ import { loopedDebt, loopedLeverage } from '@/llamalend/features/market-position
 import type { UserCollateralEvents as MintCollateralEvents } from '@curvefi/prices-api/crvusd'
 import type { UserCollateralEvents as LendCollateralEvents } from '@curvefi/prices-api/lending'
 import { decimal } from '@ui/lib/decimal'
-import { lendZapDebtShare, mintZapDebtShare, netInvested } from './zap-debt-share.utils'
+import {
+  borrowedCollateral,
+  lendZapDebtShare,
+  mintZapDebtShare,
+  netInvested,
+  netInvestedCollateral,
+  openingLeverage,
+} from './zap-debt-share.utils'
 
 const d = (value: string | number) => decimal(value)!
 const lev = (collateral: number, price: number, stablecoin: number, debt: number, share: number) =>
@@ -79,5 +86,54 @@ describe('net invested', () => {
 
   it('starts over after the position closes', () => {
     expect(+netInvested([flow(10, 3000, 15000), flow(-10, 2000, -15000), flow(5, 2000, 1000)])).toBeCloseTo(9000, 6)
+  })
+})
+
+describe('net invested in collateral', () => {
+  it('counts a loop as the own collateral and a wallet borrow as collateral taken out', () => {
+    expect(+netInvestedCollateral([{ collateralChange: 30, oraclePrice: 3000, loanChange: 60000 }])).toBeCloseTo(10, 8)
+    const plain = [
+      { collateralChange: 10, oraclePrice: 3000, loanChange: 0.0001 },
+      { collateralChange: 0, oraclePrice: 3000, loanChange: 15000 },
+    ]
+    expect(+netInvestedCollateral(plain)).toBeCloseTo(5, 6)
+  })
+})
+
+describe('borrowed in collateral', () => {
+  it('converts each borrow at its own oracle price', () => {
+    const events = [
+      { collateralChange: 10, oraclePrice: 3000, loanChange: 15000 },
+      { collateralChange: 0, oraclePrice: 2500, loanChange: 5000 },
+    ]
+    expect(+borrowedCollateral(events)).toBeCloseTo(7, 8)
+  })
+})
+
+describe('opening leverage', () => {
+  const opening = (collateralChange: number, loanChange: number, zap: boolean) => ({
+    collateralChange,
+    oraclePrice: 3000,
+    loanChange,
+    zap,
+  })
+  const looped = ({ zap }: { zap: boolean }) => (zap ? 1 : 0)
+
+  it('reads the leverage the position opened at', () => {
+    // 10 ETH own + 20 ETH bought with 60k at 3,000.
+    expect(+openingLeverage([opening(30, 60000, true), opening(0, 5000, false)], looped)!).toBeCloseTo(3, 8)
+  })
+
+  it('reads 1× when the opening borrow went to the wallet', () => {
+    expect(+openingLeverage([opening(10, 15000, false)], looped)!).toBe(1)
+  })
+
+  it('uses the borrow that opened the current position', () => {
+    const events = [opening(30, 60000, true), opening(-30, -60000, true), opening(20, 30000, true)]
+    expect(+openingLeverage(events, looped)!).toBeCloseTo(2, 8)
+  })
+
+  it('is undefined with no open position', () => {
+    expect(openingLeverage([], looped)).toBeUndefined()
   })
 })
