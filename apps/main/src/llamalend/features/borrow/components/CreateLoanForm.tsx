@@ -176,7 +176,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </EvmFormButton>
-      <BuyCollateralLink blockchainId={network.blockchainId} token={collateralToken} />
+      <BuyCollateralLink chainId={chainId} blockchainId={network.blockchainId} token={collateralToken} />
       <LowSolvencyActionModal {...solvencyModal} action="borrow" tokenSymbol={collateralToken?.symbol} />
       <LeverageDelegationModal {...delegationModal} />
       <FormAlerts
