@@ -1,3 +1,4 @@
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
@@ -10,15 +11,19 @@ import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 const { Spacing } = SizesAndSpaces
 
-export const LlamaMonitorBotButton = () =>
-  useIsMobile() ? (
+/** Icon only on mobile, and in the Beta position card header next to its details toggle. */
+export const LlamaMonitorBotButton = () => {
+  const isMobile = useIsMobile()
+  const beta = useNewLlamalendHealth()
+  return isMobile || beta ? (
     <IconButton
       href={CURVE_SOCIALS.telegram.llamalendMonitorBot}
       target="_blank"
       rel="noreferrer noopener"
       component={Link}
       size="extraSmall"
-      sx={{ marginInlineEnd: Spacing.lg }}
+      aria-label={t`Get alerts`}
+      sx={beta ? undefined : { marginInlineEnd: Spacing.lg }}
     >
       <BellRingingIcon />
     </IconButton>
@@ -43,3 +48,4 @@ export const LlamaMonitorBotButton = () =>
       {t`Get alerts`}
     </Button>
   )
+}

@@ -1,7 +1,6 @@
 import { ESTIMATED_LEVERAGED_APR_TITLE } from '@/llamalend/constants'
 import {
   formatBandSpan,
-  formatCompositionLabels,
   formatPriceDistanceHeadline,
   formatPriceDistanceDescription,
   inclusiveBandCount,
@@ -12,22 +11,19 @@ import {
   rangeTooltip,
   roeTooltip,
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
-import { isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
-import { PnlLine } from '@/llamalend/widgets/PnlLine'
+import { PnlInDebtToken } from '@/llamalend/widgets/PnlLine'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
-const OPENING_LEVERAGE_FORMAT = { abbreviate: false, maximumSignificantDigits: 3, unit: 'multiplier' } as const
 
 export const BetaBorrowInformation = ({
   view,
@@ -37,9 +33,8 @@ export const BetaBorrowInformation = ({
   tokens: MarketTokensOrEmpty
 }) => {
   const theme = useTheme()
-  const isMobile = useIsMobile()
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
-  const compositionLabels = formatCompositionLabels(view.composition)
+  const collateralSymbol = collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
   const roe = view.roe.data
   const multiplier = roe?.status === 'value' ? roe.multiplier : undefined
   return (
@@ -57,14 +52,6 @@ export const BetaBorrowInformation = ({
           value={mapQuery(view.distance, formatPriceDistanceHeadline)}
           valueOptions={{ abbreviate: false }}
           sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
-          notional={
-            view.distance.data?.location === 'inside' &&
-            compositionLabels && (
-              <Typography variant="highlightXsNotional" color="textTertiary" data-testid="range-converted-share">
-                {t`${compositionLabels.borrowed} converted to ${borrowSymbol}`}
-              </Typography>
-            )
-          }
           valueTooltip={rangeTooltip({
             pair: view.priceUnit,
             upper: view.userPrices.data ? formatNumber(view.userPrices.data[1], { abbreviate: true }) : undefined,
@@ -82,33 +69,36 @@ export const BetaBorrowInformation = ({
           value={view.equity}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
           valueTooltip={equityTooltip()}
-          notional={maybe(view.pnl.data, pnl => (
-            <PnlLine
-              pnl={pnl}
-              collateralSymbol={collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}
-              borrowSymbol={borrowSymbol}
-              variant="highlightXsNotional"
-              testId="position-pnl"
-            />
-          ))}
+        />
+      </Box>
+      <Box sx={{ gridArea: 'pnl' }}>
+        <Metric
+          category={METRIC_CATEGORY}
+          label={t`PNL (ROE %)`}
+          testId="position-pnl"
+          value={mapQuery(view.pnl, pnl => maybe(pnl?.pnlCollateral, Number))}
+          valueOptions={{
+            unit: { symbol: collateralSymbol, position: 'suffix' },
+            formatter: value => `${Number(value) > 0 ? '+' : ''}${formatNumber(value, { abbreviate: true })}`,
+          }}
+          change={maybe(view.pnl.data?.percentCollateral, Number)}
+          valueTooltip={maybe(view.pnl.data, pnl => ({
+            title: t`PNL (ROE %)`,
+            body: <PnlInDebtToken pnl={pnl} borrowSymbol={borrowSymbol} />,
+            placement: 'top' as const,
+            arrow: false,
+          }))}
         />
       </Box>
       <Box sx={{ gridArea: 'leverage' }}>
-        {(isMobile || isPositionLeveraged(view.leverage.data)) && (
-          <Metric
-            category="llamalend.positionCardTop"
-            label={t`Leverage`}
-            testId="position-leverage"
-            value={view.leverage}
-            valueOptions={{ unit: 'multiplier' }}
-            valueTooltip={leverageTooltip()}
-            notional={maybe(view.openingLeverage.data, opening => (
-              <Typography variant="highlightXsNotional" color="textTertiary" data-testid="position-opening-leverage">
-                {t`Opened at`} {formatNumber(opening, OPENING_LEVERAGE_FORMAT)}
-              </Typography>
-            ))}
-          />
-        )}
+        <Metric
+          category={METRIC_CATEGORY}
+          label={t`Leverage`}
+          testId="position-leverage"
+          value={view.leverage}
+          valueOptions={{ unit: 'multiplier' }}
+          valueTooltip={leverageTooltip()}
+        />
       </Box>
       {roe?.status !== 'hidden' && (
         <Box sx={{ gridArea: 'roe' }}>
@@ -125,7 +115,7 @@ export const BetaBorrowInformation = ({
                   : view.roe.error,
             })}
             valueOptions={{
-              unit: { symbol: '% APR', position: 'suffix' },
+              unit: 'percentage',
               ...(roe?.status === 'value' && roe.multiplier.kind === 'negative'
                 ? { color: theme.design.Text.TextColors.Feedback.Error }
                 : {}),

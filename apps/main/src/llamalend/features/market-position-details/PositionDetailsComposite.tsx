@@ -9,6 +9,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { BorrowPositionDetails } from './BorrowPositionDetails'
 import { MarketEmptyPosition } from './MarketEmptyPosition'
 import { PositionDetailsCard } from './PositionDetailsCard'
+import { PositionDetailsToggle } from './PositionDetailsToggle'
 import { SupplyPositionDetails } from './SupplyPositionDetails'
 
 type PositionEvents = {
@@ -49,6 +50,7 @@ export const PositionDetailsComposite = <T extends MarketRateType>({
       hasPosition={hasPosition}
       hasEvents={hasEvents}
       headerAction={type === MarketRateType.Borrow && <LlamaMonitorBotButton />}
+      positionAction={type === MarketRateType.Borrow && hasPosition && <PositionDetailsToggle />}
       activity={renderActivity(events)}
     >
       {hasPosition ? <Details /> : <MarketEmptyPosition type={type} />}

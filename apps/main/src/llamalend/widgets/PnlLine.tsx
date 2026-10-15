@@ -10,6 +10,13 @@ const signed = (value: number) => `${value > 0 ? '+' : ''}${formatNumber(value, 
 const pnlText = (pnl: number, symbol: string, percent: Decimal | undefined) =>
   `${signed(pnl)} ${symbol}${percent == undefined ? '' : ` (${signed(Number(percent))}%)`}`
 
+/** PNL (ROE %) in the debt token, for tooltips. */
+export const PnlInDebtToken = ({ pnl, borrowSymbol }: { pnl: PositionPnl; borrowSymbol: string }) => (
+  <Typography variant="bodySRegular">
+    {t`In ${borrowSymbol}:`} {pnlText(Number(pnl.pnl), borrowSymbol, pnl.percent)}
+  </Typography>
+)
+
 /** PNL (ROE %) in the collateral token, like Summer.fi, DeFi Saver and Kamino, with the debt-token value on hover. */
 export const PnlLine = ({
   pnl,
@@ -27,15 +34,7 @@ export const PnlLine = ({
   if (pnl.pnlCollateral == undefined) return null
   const value = Number(pnl.pnlCollateral)
   return (
-    <Tooltip
-      title={t`PNL (ROE %)`}
-      body={
-        <Typography variant="bodySRegular" data-testid={testId && `${testId}-debt`}>
-          {t`In ${borrowSymbol}:`} {pnlText(Number(pnl.pnl), borrowSymbol, pnl.percent)}
-        </Typography>
-      }
-      placement="top"
-    >
+    <Tooltip title={t`PNL (ROE %)`} body={<PnlInDebtToken pnl={pnl} borrowSymbol={borrowSymbol} />} placement="top">
       <Typography
         variant={variant}
         color={value > 0 ? 'success' : value < 0 ? 'error' : 'textSecondary'}

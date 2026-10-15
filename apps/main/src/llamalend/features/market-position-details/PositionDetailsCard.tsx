@@ -12,6 +12,8 @@ type PositionDetailsCardProps = {
   hasPosition: boolean | undefined
   hasEvents: boolean
   headerAction?: ReactNode
+  /** Header action shown only on the position tab. */
+  positionAction?: ReactNode
 }
 
 const POSITION_TABS: Record<MarketRateType, string> = {
@@ -20,7 +22,7 @@ const POSITION_TABS: Record<MarketRateType, string> = {
 }
 
 export const PositionDetailsCard = (props: PositionDetailsCardProps) => {
-  const { type, headerAction } = props
+  const { type, headerAction, positionAction } = props
   const menu = useMemo(
     () => [
       {
@@ -44,7 +46,10 @@ export const PositionDetailsCard = (props: PositionDetailsCardProps) => {
     <Stack>
       <Stack direction="row" sx={{ alignItems: 'end', justifyContent: 'space-between', width: '100%' }}>
         <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
-        {headerAction}
+        <Stack direction="row" sx={{ alignItems: 'center' }}>
+          {headerAction}
+          {tab.value === POSITION_TABS[type] && positionAction}
+        </Stack>
       </Stack>
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
     </Stack>
