@@ -51,6 +51,7 @@ const oneLendingPool = (
     version,
     controller: oneAddress(),
     vault: oneAddress(),
+    gauge_address: oneOf(null, oneAddress()),
     llamma: oneAddress(),
     policy: oneAddress(),
     oracle: oneAddress(),
