@@ -1,6 +1,7 @@
 import { createPublicClient, erc20Abi, formatUnits, http, type Address } from 'viem'
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { CRVUSD_DECIMALS } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalCompare, decimalMinus } from '@ui/lib/decimal'
@@ -154,10 +155,11 @@ export const submitScrvUsdDepositForm = () => {
   cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['evm.allowance']).should(button =>
     expect(button.text()).to.be.oneOf(['Approve & Deposit', 'Deposit']),
   )
-  cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['ui.interaction']).click()
-  return cy
-    .get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation'])
-    .contains('Deposit successful!', TIMEOUTS['evm.confirmation'])
+  return submitAndExpectToast(
+    () => cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['ui.interaction']).click(),
+    { message: 'Deposit successful!' },
+    'evm.confirmation',
+  )
 }
 
 export const submitScrvUsdWithdrawForm = (expectedButtonText: 'Withdraw' | 'Redeem') => {
@@ -165,10 +167,11 @@ export const submitScrvUsdWithdrawForm = (expectedButtonText: 'Withdraw' | 'Rede
     'have.text',
     expectedButtonText,
   )
-  cy.get('[data-testid="scrvusd-withdraw-submit-button"]', TIMEOUTS['ui.interaction']).click()
-  return cy
-    .get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation'])
-    .contains('Withdraw successful!', TIMEOUTS['evm.confirmation'])
+  return submitAndExpectToast(
+    () => cy.get('[data-testid="scrvusd-withdraw-submit-button"]', TIMEOUTS['ui.interaction']).click(),
+    { message: 'Withdraw successful!' },
+    'evm.confirmation',
+  )
 }
 
 export const selectMaxScrvUsdWithdraw = () =>

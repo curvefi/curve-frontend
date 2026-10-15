@@ -1,5 +1,6 @@
 import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
@@ -116,12 +117,12 @@ export const touchSupplyInput = (type: SupplyFormType) => {
   blurSupplyInput(type)
 }
 
-export const submitSupplyForm = (type: SupplyActionType, successMessage: string, isMocked = false) => {
-  cy.get(`[data-testid="supply-${type}-submit-button"]`).click(TIMEOUTS['ui.interaction'])
-  return cy
-    .get('[data-testid="toast-success"]', TIMEOUTS[getTimeoutCategory('evm.confirmation', isMocked)])
-    .contains(successMessage, TIMEOUTS[getTimeoutCategory('evm.confirmation', isMocked)])
-}
+export const submitSupplyForm = (type: SupplyActionType, successMessage: string, isMocked = false) =>
+  submitAndExpectToast(
+    () => cy.get(`[data-testid="supply-${type}-submit-button"]`).click(TIMEOUTS['ui.interaction']),
+    { message: successMessage },
+    getTimeoutCategory('evm.confirmation', isMocked),
+  )
 
 export const checkSupplySubmitButtonText = (type: SupplyFormType, buttonText: string, isMocked = false) =>
   cy

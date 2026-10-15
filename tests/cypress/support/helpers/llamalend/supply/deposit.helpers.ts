@@ -1,4 +1,5 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -22,14 +23,16 @@ export const submitDepositForm = ({
   return submitSupplyForm('deposit', 'Deposit successful!', isMocked)
 }
 
-const confirmLowSolvencyDepositForm = (isMocked = false) => {
-  cy.get('[data-testid="supply-deposit-submit-button"]').click(TIMEOUTS['ui.interaction'])
-  cy.get('[data-testid="low-solvency-action-checkbox"]').click()
-  cy.get('[data-testid="low-solvency-action-submit-button"]').click()
-  return cy
-    .get('[data-testid="toast-success"]', TIMEOUTS[getTimeoutCategory('evm.confirmation', isMocked)])
-    .contains('Deposit successful!', TIMEOUTS[getTimeoutCategory('evm.confirmation', isMocked)])
-}
+const confirmLowSolvencyDepositForm = (isMocked = false) =>
+  submitAndExpectToast(
+    () => {
+      cy.get('[data-testid="supply-deposit-submit-button"]').click(TIMEOUTS['ui.interaction'])
+      cy.get('[data-testid="low-solvency-action-checkbox"]').click()
+      cy.get('[data-testid="low-solvency-action-submit-button"]').click()
+    },
+    { message: 'Deposit successful!' },
+    getTimeoutCategory('evm.confirmation', isMocked),
+  )
 
 /**
  * Fill in the deposit form with the specified amount.

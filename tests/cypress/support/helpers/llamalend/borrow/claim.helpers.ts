@@ -1,4 +1,5 @@
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -85,10 +86,10 @@ export function checkBorrowClaimDetailsLoaded({ hasCrvRewards }: { hasCrvRewards
 }
 
 export const submitBorrowClaim = () => {
-  getBorrowClaimSubmitButton().click(TIMEOUTS['ui.interaction'])
-  cy.get('[data-testid="toast-success"]', TIMEOUTS['mock.evm.confirmation']).contains(
-    'Claimed rewards!',
-    TIMEOUTS['mock.evm.confirmation'],
+  submitAndExpectToast(
+    () => getBorrowClaimSubmitButton().click(TIMEOUTS['ui.interaction']),
+    { message: 'Claimed rewards!' },
+    'mock.evm.confirmation',
   )
   return cy.get('[data-testid="loan-alert-error"]').should('not.exist')
 }

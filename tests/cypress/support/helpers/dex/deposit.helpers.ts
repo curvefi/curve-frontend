@@ -1,5 +1,6 @@
 import { type Address, createPublicClient, erc20Abi, formatUnits, http, parseUnits } from 'viem'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -87,8 +88,7 @@ export const submitPoolDepositAndCheck = ({
     )
 
   return cy.then(TIMEOUTS['evm.balances'], readBalances).then(before => {
-    poolDepositSubmit().click()
-    cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should('contain.text', 'Deposit successful!')
+    submitAndExpectToast(() => poolDepositSubmit().click(), { message: 'Deposit successful!' }, 'evm.confirmation')
     coins.forEach(({ address }) => {
       poolDepositInput(address).should('have.value', '')
     })
