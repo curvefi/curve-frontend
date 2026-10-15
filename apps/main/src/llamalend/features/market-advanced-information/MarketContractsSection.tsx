@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress } from 'viem'
 import {
   getAddressOrPair,
   getAmmAddress,
@@ -10,6 +10,7 @@ import {
   getVaultAddress,
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketBorrowGaugeAddress } from '@/llamalend/queries/market/market-borrow-gauge-address.query'
 import { useMarketOracleAddress } from '@/llamalend/queries/market/market-oracle-address.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,12 +38,10 @@ import { MarketIdRow } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
-/** Either `address` (for a link) or `fallbackValue` (e.g. gauge = zeroAddress) is provided, not both */
 type AddressItem = {
   key: string
   label: ReactNode
-  address?: Address
-  fallbackValue?: ReactNode
+  address: Address | undefined
   labelTooltip?: ActionInfoProps['labelTooltip']
 }
 
@@ -53,10 +52,10 @@ type MarketContractsProps = {
   apiMarket: QueryProp<LlamaMarket>
 }
 
-const GaugeLabel = () => (
+const GaugeLabel = ({ type }: { type: 'supply' | 'borrow' }) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     <Typography variant="bodyMRegular" color="textSecondary">
-      {t`Gauge`}
+      {{ supply: 'Supply', borrow: 'Borrow' }[type] + ' gauge'}
     </Typography>
     <Badge size="extraSmall" color="active" label={t`Active`} />
   </Stack>
@@ -136,10 +135,15 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
     chainId,
     marketId: market?.id,
   })
+  const { data: onChainBorrowGaugeAddress, isLoading: borrowGaugeAddressIsLoading } = useMarketBorrowGaugeAddress({
+    chainId,
+    marketId: market?.id,
+  })
 
   const hasContractData = !!market || !!apiMarket.data
-  const contractsLoading = !hasContractData || (!!market && oracleAddressIsLoading)
-  const gaugeAddress = getGaugeAddress(market)
+  const contractsLoading = !hasContractData || (!!market && (oracleAddressIsLoading || borrowGaugeAddressIsLoading))
+  const supplyGaugeAddress = getGaugeAddress(market, apiMarket.data)
+  const borrowGaugeAddress = market ? onChainBorrowGaugeAddress : null // todo: the prices API should return the borrow gauge
   const vaultAddress = getVaultAddress(market, apiMarket.data) ?? undefined
   const monetaryPolicyAddress = getMonetaryPolicy(market, apiMarket.data)
   const oracleAddress = market ? onChainOracleAddress : apiMarket.data?.oracleAddress
@@ -161,10 +165,8 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       },
       address: monetaryPolicyAddress,
     },
-    gaugeAddress &&
-      (gaugeAddress === zeroAddress
-        ? { key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }
-        : { key: 'gauge', label: <GaugeLabel />, address: gaugeAddress }),
+    supplyGaugeAddress && { key: 'supply-gauge', label: <GaugeLabel type="supply" />, address: supplyGaugeAddress },
+    borrowGaugeAddress && { key: 'borrow-gauge', label: <GaugeLabel type="borrow" />, address: borrowGaugeAddress },
   )
 
   return (
@@ -182,27 +184,17 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
           <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">
             <Stack spacing={Spacing.sm}>
               <Stack>
-                {infraAddressItems.map(({ key, label, labelTooltip, address, fallbackValue }) =>
-                  fallbackValue != null ? (
-                    <ActionInfo
-                      key={key}
-                      testId={`market-contract-${key}`}
-                      label={label}
-                      labelTooltip={labelTooltip}
-                      value={fallbackValue}
-                    />
-                  ) : (
-                    <AddressActionInfo
-                      key={key}
-                      testId={`market-contract-${key}`}
-                      chainId={chainId}
-                      title={label}
-                      labelTooltip={labelTooltip}
-                      address={address}
-                      display={evmAddressDisplay}
-                    />
-                  ),
-                )}
+                {infraAddressItems.map(({ key, label, labelTooltip, address }) => (
+                  <AddressActionInfo
+                    key={key}
+                    testId={`market-contract-${key}`}
+                    chainId={chainId}
+                    title={label}
+                    labelTooltip={labelTooltip}
+                    address={address}
+                    display={evmAddressDisplay}
+                  />
+                ))}
               </Stack>
               <MarketIdRow chainId={chainId} marketId={market?.id ?? apiMarket.data?.controllerAddress} />
             </Stack>

@@ -51,6 +51,7 @@ export type LlamaMarket = {
   ammAddress: Address
   controllerAddress: Address
   vaultAddress: Address | null
+  supplyGaugeAddress: Address | null
   assets: Assets
   version: MarketVersion
   minBand?: number
@@ -118,6 +119,7 @@ const convertLendingVault = (
     totalDebt,
     totalDebtUsd,
     vault,
+    gaugeAddress: supplyGaugeAddress,
     llamma,
     collateralToken,
     borrowedToken,
@@ -174,6 +176,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
+    supplyGaugeAddress,
     version: toMarketVersion(version),
     assets: {
       borrowed: { ...borrowedToken, blockchainId, balance: totalDebt, balanceUsd: totalDebtUsd },
@@ -293,6 +296,7 @@ const convertMintMarket = (
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
+    supplyGaugeAddress: null,
     // todo: the market's version should come from the backend directly like for the lend markets (not supported yet)
     version: [collateralSymbol, stablecoinToken.symbol].some(symbol => symbol.toLowerCase().includes('llv2'))
       ? MarketVersion.v2

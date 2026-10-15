@@ -56,7 +56,7 @@ export const createMarketContextValue = <ChainId extends IChainId>({
     leverageProviders: getMarketLeverageProviders(chainId, controllerAddress, releaseChannel),
     tokens: (getTokens(marketQuery.data, apiMarket.data) ?? {}) as MarketTokensOrEmpty,
     vaultToken: getVaultToken(marketQuery.data, apiMarket.data),
-    gaugeAddress: getGaugeAddress(marketQuery.data),
+    gaugeAddress: getGaugeAddress(marketQuery.data, apiMarket.data),
     bands: (getMarketBandRange(marketQuery.data, apiMarket.data) ?? {}) as BandRangeOrEmpty,
     crvTokenAddress: getCrvTokenAddress(marketQuery.data),
   }
