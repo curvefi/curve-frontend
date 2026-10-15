@@ -38,6 +38,7 @@ export const TransferActions = ({
   const isLoading =
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     loading ||
+    pool.data == null ||
     pool.isLoading ||
     currencyReserves.isLoading ||
     !isHydrated ||
