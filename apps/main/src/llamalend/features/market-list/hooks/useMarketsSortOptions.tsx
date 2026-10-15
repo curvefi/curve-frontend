@@ -1,36 +1,38 @@
-import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { t } from '@ui/lib/i18n'
+import { notFalsyArray } from '@primitives/objects.utils'
+import { MARKET_TITLES } from '../columns/column.titles'
 import { MarketColumnId } from '../columns/columns.enum'
 
-type Option<T = string> = { id: T; label: ReactNode }
+const USER_SORT_COLUMNS = [
+  MarketColumnId.UserHealth,
+  MarketColumnId.UserBorrowed,
+  MarketColumnId.UserCollateral,
+  MarketColumnId.UserLtv,
+  MarketColumnId.UserDeposited,
+  MarketColumnId.UserBoostMultiplier,
+]
+
+const MARKET_SORT_COLUMNS = [
+  MarketColumnId.BorrowRate,
+  MarketColumnId.NetBorrowRate,
+  MarketColumnId.CollateralYield,
+  MarketColumnId.SupplyRate,
+  MarketColumnId.NetSupplyRate,
+  MarketColumnId.Tvl,
+  MarketColumnId.MaxLtv,
+  MarketColumnId.MaxLeverage,
+  MarketColumnId.MaxReturnOnEquity,
+  MarketColumnId.UtilizationPercent,
+  MarketColumnId.LiquidityUsd,
+  MarketColumnId.TotalCollateralUsd,
+  MarketColumnId.TotalDebt,
+]
 
 /** Creates a list of select options for sorting the Llama Market table (used for mobile only) */
 export const useMarketsSortOptions = () => {
   const { isConnected } = useConnection()
-  return [
-    { id: MarketColumnId.Assets, label: t`Collateral` },
-    ...(isConnected
-      ? [
-          { id: MarketColumnId.UserHealth, label: t`Health` },
-          { id: MarketColumnId.UserBorrowed, label: t`Borrow Amount` },
-          { id: MarketColumnId.UserCollateral, label: t`Collateral Amount` },
-          { id: MarketColumnId.UserLtv, label: t`LTV` },
-          { id: MarketColumnId.UserDeposited, label: t`Supplied Amount` },
-          { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },
-        ]
-      : []),
-    { id: MarketColumnId.NetBorrowRate, label: t`Net borrow APR` },
-    { id: MarketColumnId.BorrowRate, label: t`Borrow APR` },
-    { id: MarketColumnId.LendRate, label: NET_SUPPLY_RATE_TITLE },
-    { id: MarketColumnId.Tvl, label: t`Total Value Locked` },
-    { id: MarketColumnId.MaxLtv, label: t`Max LTV` },
-    { id: MarketColumnId.MaxLeverage, label: t`Max leverage` },
-    { id: MarketColumnId.MaxReturnOnEquity, label: t`Max RoE` },
-    { id: MarketColumnId.UtilizationPercent, label: t`Utilization` },
-    { id: MarketColumnId.LiquidityUsd, label: t`Available Liquidity` },
-    { id: MarketColumnId.TotalCollateralUsd, label: t`Total Collateral` },
-    { id: MarketColumnId.TotalDebt, label: t`Total Debt` },
-  ] satisfies Option<MarketColumnId>[]
+  return notFalsyArray([MarketColumnId.Assets], isConnected && USER_SORT_COLUMNS, MARKET_SORT_COLUMNS).map(id => ({
+    id,
+    label: MARKET_TITLES[id],
+  }))
 }

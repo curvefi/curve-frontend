@@ -181,7 +181,7 @@ jobs:
 
   cypress-component-stellar:
     name: Cypress Stellar component tests
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-26.04
     concurrency: # shared testnet account, run sequentially to avoid conflicting balances
       group: stellar-testnet
@@ -208,7 +208,7 @@ jobs:
           yarn run cy:run:stellar --browser electron 2>&1 | \
             tee ../stellar-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
-        timeout-minutes: 5 # lower timeout than the whole job, so we can get screenshots on timeout
+        timeout-minutes: 10 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test

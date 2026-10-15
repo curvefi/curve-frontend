@@ -1,5 +1,6 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
+import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import type { MarketSnapshotsQuery } from '@/llamalend/queries/market/market-snapshots.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
@@ -80,7 +81,7 @@ const RATE_MODE_CONFIG = {
     currentRateLabel: t`Current APR`,
     averageRateLabels: { week: t`1W average APR`, month: t`1M average APR`, year: t`1Y average APR` },
     series: [
-      { key: 'rate', label: t`Borrow APR` },
+      { key: 'rate', label: BORROW_RATE_TITLE },
       { key: 'movingAverage', label: t`7-day MA APR`, dash: CHART_LINE_DASH_PATTERNS.tight },
       { key: 'totalAverage', label: t`Average APR`, dash: CHART_LINE_DASH_PATTERNS.regular },
     ],
@@ -92,7 +93,7 @@ const RATE_MODE_CONFIG = {
     currentRateLabel: t`Current APY`,
     averageRateLabels: { week: t`1W average APY`, month: t`1M average APY`, year: t`1Y average APY` },
     series: [
-      { key: 'rate', label: t`Supply APY` },
+      { key: 'rate', label: SUPPLY_RATE_TITLE },
       { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
       { key: 'totalAverage', label: t`Average APY`, dash: CHART_LINE_DASH_PATTERNS.regular },
     ],

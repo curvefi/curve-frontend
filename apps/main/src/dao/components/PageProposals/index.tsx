@@ -58,7 +58,7 @@ export const Proposals = () => {
 
   const [pagination, onPaginationChange] = usePageFromQueryString(PROPOSALS_PAGE_SIZE)
 
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns })
   const globalFilterFn = useFuzzyFilterFn(tableQuery.data ?? EMPTY_PROPOSALS, search, [
     { name: 'id', getFn: proposal => String(proposal.id) },
     'proposer',

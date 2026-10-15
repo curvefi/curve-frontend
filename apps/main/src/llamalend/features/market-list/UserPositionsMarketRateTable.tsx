@@ -46,7 +46,10 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
-  const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
+  const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, {
+    fieldName: sortQueryField,
+    columns: MARKET_COLUMNS,
+  })
   const { columnVisibility } = useMarketsVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})
 

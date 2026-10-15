@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
@@ -18,7 +18,7 @@ const TooltipContent = () => (
 )
 
 export const SupplyRateMintTooltip = () => (
-  <Tooltip clickable title={NET_SUPPLY_RATE_TITLE} body={<TooltipContent />} placement="top" mobileDrawer>
+  <Tooltip clickable title={SUPPLY_RATE_TITLE} body={<TooltipContent />} placement="top" mobileDrawer>
     <Typography variant="tableCellValueStrong" color="textPrimary" sx={{ width: '100%' }}>
       -
     </Typography>

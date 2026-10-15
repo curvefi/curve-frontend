@@ -1,4 +1,4 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { NET_SUPPLY_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -72,7 +72,7 @@ export const SupplyActionInfoList = ({
         <Stack>
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
-              label={t`Supply APY`}
+              label={SUPPLY_RATE_TITLE}
               value={mapQuery(prevSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               futureValue={mapQuery(supplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
