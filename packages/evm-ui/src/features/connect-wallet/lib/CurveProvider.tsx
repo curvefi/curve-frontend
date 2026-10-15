@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { useChainId, useConfig } from 'wagmi'
 import { CurveContext, useWagmiWallet } from '@evm-ui/features/connect-wallet/lib/CurveContext'
 import {
@@ -13,6 +13,7 @@ import type { AppName } from '@evm-ui/shared/routes'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { useIsDocumentFocused } from '@ui/features/layout/utils'
 import { useReleaseChannel } from '@ui/features/storage/useLocalStorage'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { useSwitchChain } from './useSwitchChain'
 import { globalLibs, isWalletMatching } from './utils'
 import { getChainName } from './wagmi/chains'
@@ -39,7 +40,6 @@ export const CurveProvider = <App extends AppName>({
   hydrate?: HydratorMap
   children: ReactNode
 }) => {
-  const [connectState, setConnectState] = useState<ConnectState>(LOADING)
   const walletChainId = useChainId()
   const switchChain = useSwitchChain()
   const { wallet, provider, isInitialized } = useWagmiWallet()
@@ -48,6 +48,13 @@ export const CurveProvider = <App extends AppName>({
   const libKey = AppLibs[app]
   const config = useConfig()
   const [releaseChannel] = useReleaseChannel()
+  const [connectState, setConnectState] = useResettableState<ConnectState>(LOADING, [
+    network,
+    wallet,
+    walletChainId,
+    isFocused && network?.chainId !== walletChainId,
+  ])
+
   useEffect(() => {
     /**
      * Checks the wallet chain if the network changes or the wallet is connected to a different chain.
@@ -57,13 +64,11 @@ export const CurveProvider = <App extends AppName>({
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setConnectState(LOADING)
       void switchChain({ chainId: network.chainId }).then(chain => {
         if (!chain) setConnectState(FAILURE)
       })
     }
-  }, [isFocused, isInitialized, walletChainId, network, onChainUnavailable, switchChain, wallet])
+  }, [isFocused, isInitialized, walletChainId, network, onChainUnavailable, switchChain, wallet, setConnectState])
 
   useEffect(() => {
     if (!isInitialized) return // wait for wagmi to auto-reconnect
@@ -119,7 +124,7 @@ export const CurveProvider = <App extends AppName>({
     }
     void initLib()
     return () => abort.abort()
-  }, [app, config, hydrate, isInitialized, libKey, network, wallet, walletChainId, releaseChannel])
+  }, [app, config, hydrate, isInitialized, libKey, network, wallet, walletChainId, releaseChannel, setConnectState])
 
   // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)

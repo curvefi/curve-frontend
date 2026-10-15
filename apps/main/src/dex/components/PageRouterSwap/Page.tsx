@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { QuickSwap } from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -28,14 +28,17 @@ export const PageRouterSwap = () => {
 
   const { data: network } = useNetworkByChain({ chainId })
 
-  const [loaded, setLoaded] = useState(false)
-
   const hasRouter = curveApi?.hasRouter()
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
 
   const { data: tokens } = useTokens({ chainId })
+  const hasValidTokens =
+    !!getToken(tokens, paramsFromAddress) &&
+    !!getToken(tokens, paramsToAddress) &&
+    paramsFromAddress !== paramsToAddress
+  const loaded = !isConnecting && !!chainId && !!hasRouter && hasValidTokens
 
   const searchedParams = useMemo(
     () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
@@ -54,38 +57,18 @@ export const PageRouterSwap = () => {
 
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setLoaded(false)
     if (!isConnecting && chainId && hasRouter != null) {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
       }
 
-      if (tokens) {
-        const fromToken = getToken(tokens, paramsFromAddress)
-        const toToken = getToken(tokens, paramsToAddress)
-        if (!fromToken || !toToken || paramsToAddress === paramsFromAddress) {
-          const { fromAddress, toAddress } = network?.swap ?? {}
-          if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
-        } else {
-          // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-          setLoaded(true)
-        }
+      if (tokens && !hasValidTokens) {
+        const { fromAddress, toAddress } = network?.swap ?? {}
+        if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
       }
     }
-  }, [
-    isConnecting,
-    hasRouter,
-    paramsFromAddress,
-    paramsToAddress,
-    chainId,
-    tokens,
-    network.swap,
-    push,
-    props,
-    redirect,
-  ])
+  }, [isConnecting, hasRouter, hasValidTokens, chainId, tokens, network.swap, push, props, redirect])
   return (
     <Card
       size="small"

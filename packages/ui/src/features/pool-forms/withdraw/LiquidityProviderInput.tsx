@@ -7,9 +7,10 @@ import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/Lar
 import { scaleReserves } from '@ui/features/pool-forms/balanced-amounts.utils'
 import { getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
-import { getWithdrawLpBudget, type WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type QueryProp } from '@ui/features/queries/util'
+import { decimalRound } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const getBalancedAmountUpdates = (
@@ -17,12 +18,10 @@ const getBalancedAmountUpdates = (
   decimals: number[] | undefined,
   reserves: Decimal[] | undefined,
   supply: Decimal | undefined,
-  slippage: Decimal,
   lpTokenDecimals: number,
 ) =>
   maybes([lpAmount, decimals, reserves, supply], (lpAmount, decimals, reserves, supply) => {
-    const lpBudget = getWithdrawLpBudget(lpAmount, slippage, lpTokenDecimals)
-    const scaledValues = scaleReserves(reserves, decimals, lpBudget, supply)
+    const scaledValues = scaleReserves(reserves, decimals, decimalRound(lpAmount, lpTokenDecimals), supply)
     return fromEntries(scaledValues.map((amount, index) => [poolAmountField(index), amount]))
   })
 
@@ -47,7 +46,7 @@ export function LiquidityProviderInput({
   const { errors, touchedFields } = formState
   const queryState = combineQueryState(balance, reserves, supply, ...(decimals ?? []))
   const error = (touchedFields.lpAmount ? (errors.lpAmount ?? errors.maxLpAmount) : undefined) ?? queryState.error
-  const { lpAmount, slippage } = values
+  const { lpAmount } = values
   const tokenCount = tokens?.length
   const decimalsData = useMemo(() => completeArray(decimals?.map(q => q.data)), [decimals])
 
@@ -55,11 +54,12 @@ export function LiquidityProviderInput({
     (lpAmount: Decimal | undefined) =>
       update({
         lpAmount,
+        isBalanced: true,
         maxWithdrawIndex: undefined,
-        ...(getBalancedAmountUpdates(lpAmount, decimalsData, reserves.data, supply.data, slippage, lpTokenDecimals) ??
+        ...(getBalancedAmountUpdates(lpAmount, decimalsData, reserves.data, supply.data, lpTokenDecimals) ??
           getPoolDefaultValues(tokenCount ?? 0)),
       }),
-    [update, decimalsData, reserves.data, supply.data, slippage, lpTokenDecimals, tokenCount],
+    [update, decimalsData, reserves.data, supply.data, lpTokenDecimals, tokenCount],
   )
 
   return (

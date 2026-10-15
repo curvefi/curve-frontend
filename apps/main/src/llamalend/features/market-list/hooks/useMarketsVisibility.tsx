@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { mapRecord } from '@primitives/objects.utils'
@@ -25,10 +26,21 @@ const FILTER_ONLY_COLUMNS = [
   MarketColumnId.UserEarnings, // hidden until we have a backend
 ]
 
+/** Rate columns whose saved visibility resets to the new defaults, since the net/total rates are now optional. */
+const RESET_VISIBILITY_COLUMNS = [MarketColumnId.BorrowRate, MarketColumnId.NetBorrowRate, MarketColumnId.NetSupplyRate]
+
+const resolveMarketActive = (
+  preservedActive: boolean,
+  currentOption: VisibilityGroup<MarketColumnId>['options'][number],
+) =>
+  RESET_VISIBILITY_COLUMNS.some(id => isEqual(currentOption.columns, [id])) ? currentOption.active : preservedActive
+
 const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
-  version: 7,
+  version: 8,
   migrate: (oldValue, initialValue) =>
-    mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
+    mapRecord(initialValue, (variant, currentGroups) =>
+      preserveVisibilityChoices(oldValue[variant], currentGroups, resolveMarketActive),
+    ),
 }
 
 export const getMarketsColumnVariant = (

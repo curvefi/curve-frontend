@@ -1,10 +1,11 @@
-import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { type FunctionComponent } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { Subscribe, type RowData } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useSwitch } from '@ui/hooks/useSwitch'
 import type { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
@@ -35,17 +36,16 @@ export const ExpansionRow = <TData extends RowData>(props: ExpansionRowProps<TDa
 function ExpansionRowContent<TData extends RowData>({
   row,
   table,
-  expandedPanel,
+  expandedPanel: { Body, Actions },
   colSpan,
   rowExpanded,
 }: ExpansionRowProps<TData> & { rowExpanded: boolean }) {
-  const { render, onExited, expanded } = useRowExpansion(rowExpanded)
-  const { Body, Actions } = expandedPanel
+  const [keepMounted, onEnter, onExited] = useSwitch(false)
   return (
-    render && (
-      <TableRow data-testid={expanded ? 'data-table-expansion-row' : undefined}>
+    (rowExpanded || keepMounted) && (
+      <TableRow data-testid={rowExpanded ? 'data-table-expansion-row' : undefined}>
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
-          <Collapse in={expanded} onExited={onExited}>
+          <Collapse appear in={rowExpanded} onEnter={onEnter} onExited={onExited}>
             <Stack direction="column" sx={{ gap: Spacing.md, paddingBlockStart: Spacing.md }}>
               <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
                 <Body row={row} table={table} />
@@ -57,35 +57,4 @@ function ExpansionRowContent<TData extends RowData>({
       </TableRow>
     )
   )
-}
-
-/**
- * Hook to manage the expansion of a row.
- *
- * We use an effect so that the animation is triggered just after mount,
- * we need some magic to avoid rendering the row at all when hidden
- * (it's apparently hard to render a table row with height 0 in a browser-compatible way).
- *
- * It would be tidier to use a grid layout for the whole table
- */
-function useRowExpansion(rowExpanded: boolean) {
-  const [render, setRender] = useState(rowExpanded)
-  const [expanded, setExpanded] = useState(false)
-
-  useEffect(() => {
-    if (rowExpanded) {
-      if (!render) {
-        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-        setRender(true)
-      } else if (!expanded) {
-        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-        setExpanded(true)
-      }
-    } else if (expanded) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-      setExpanded(false)
-    }
-  }, [expanded, render, rowExpanded])
-  const onExited = useCallback(() => setRender(false), [])
-  return { render, onExited, expanded }
 }

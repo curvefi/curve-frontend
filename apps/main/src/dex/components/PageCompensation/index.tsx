@@ -1,7 +1,7 @@
 import { Contract, ContractRunner, Interface } from 'ethers'
 import type { InterfaceAbi } from 'ethers'
 import lodash from 'lodash'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { Compensations } from '@/dex/components/PageCompensation/components/Compensations'
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
@@ -9,6 +9,30 @@ import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { Decimal } from '@primitives/decimal.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
+import { decimalDiv, decimalMultiply } from '@ui/lib/decimal'
+
+const getVestedAmount = async (
+  vestAddress: string,
+  iface: Interface,
+  { contract, contractAddress, token, poolId }: EtherContract,
+  signerAddress: string,
+  signer: ContractRunner,
+) => {
+  if (token === 'CRV') {
+    try {
+      const vestContract = new Contract(vestAddress, iface.format(), signer)
+      const [unvested, fractions, totalFraction] = (await Promise.all([
+        vestContract.lockedOf(contractAddress),
+        contract.fractions(signerAddress),
+        contract.total_fraction(),
+      ])) as [Decimal, Decimal, Decimal]
+      return { poolId, amount: +decimalDiv(decimalMultiply(decimalDiv(unvested, '1e18'), fractions), totalFraction) }
+    } catch (error) {
+      console.error(`Unable to get remaining vested for ${poolId}'s ${token}`, error)
+    }
+  }
+  return { poolId, amount: 0 }
+}
 
 export const FormCompensation = ({
   chainId,
@@ -23,57 +47,42 @@ export const FormCompensation = ({
 }) => {
   const { signerAddress } = curve ?? {}
 
-  const [error, setError] = useState('')
-  const [balances, setBalances] = useState<Balances>({})
-  const [vestedTotals, setVestedTotals] = useState<VestedTotals>({})
+  const request = useMemo(() => ({ signerAddress, contracts, provider }), [signerAddress, contracts, provider])
+  const [result, setResult] = useState<{
+    request: typeof request
+    error: string
+    balances: Balances
+    vestedTotals: VestedTotals
+  }>({ request, error: '', balances: {}, vestedTotals: {} })
+
+  if (result.request !== request) {
+    setResult({ request, error: '', balances: {}, vestedTotals: {} })
+  }
+  const { error, balances, vestedTotals } = result
 
   const groupedContracts = useMemo(() => lodash.groupBy(contracts, c => c.poolId), [contracts])
 
-  const getBalances = useCallback(async (signerAddress: string, contracts: EtherContract[]) => {
-    try {
-      setError('')
-      const balances = await Promise.all(contracts.map(c => c.contract.balanceOf(signerAddress)))
-      const mappedBalances = contracts.map(({ poolId }, idx) => ({ poolId, balance: Number(balances[idx]) / 1e18 }))
-      const groupedBalances = lodash.groupBy(mappedBalances, ({ poolId }) => poolId)
-      setBalances(groupedBalances)
-    } catch (error) {
-      console.error(error)
-      setError(getErrorMessage(error, 'error'))
+  useEffect(() => {
+    const { signerAddress, contracts, provider } = request
+    if (!signerAddress) return
+    let cancelled = false
+    const update = (patch: Partial<Omit<typeof result, 'request'>>) => {
+      if (!cancelled) setResult(current => (current.request === request ? { ...current, ...patch } : current))
     }
-  }, [])
 
-  const getVestedAmount = useCallback(
-    async (
-      vestAddress: string,
-      iface: Interface,
-      etherContract: EtherContract,
-      idx: number,
-      signerAddress: string,
-      signer: ContractRunner,
-    ) => {
-      const { contractAddress, token, poolId } = etherContract
-      const defaultVestedTotal = { poolId, amount: 0 }
-      if (token === 'CRV') {
-        try {
-          const vestContract = new Contract(vestAddress, iface.format(), signer)
-          const unvested = (await vestContract.lockedOf(contractAddress)) as Decimal
-          const fractions = (await contracts[idx].contract.fractions(signerAddress)) as Decimal
-          const totalFraction = (await contracts[idx].contract.total_fraction()) as Decimal
-
-          return { poolId, amount: ((Number(unvested) / 1e18) * Number(fractions)) / Number(totalFraction) }
-        } catch (error) {
-          console.error(`Unable to get remaining vested for ${poolId}'s ${token}`, error)
-          return defaultVestedTotal
-        }
-      } else {
-        return defaultVestedTotal
+    const getBalances = async () => {
+      try {
+        const balances = await Promise.all(contracts.map(c => c.contract.balanceOf(signerAddress)))
+        const mappedBalances = contracts.map(({ poolId }, idx) => ({ poolId, balance: Number(balances[idx]) / 1e18 }))
+        update({ balances: lodash.groupBy(mappedBalances, ({ poolId }) => poolId) })
+      } catch (error) {
+        if (cancelled) return
+        console.error(error)
+        update({ error: getErrorMessage(error, 'error') })
       }
-    },
-    [contracts],
-  )
+    }
 
-  const getVestContract = useCallback(
-    async (signerAddress: string, contracts: EtherContract[]) => {
+    const getVestContract = async () => {
       try {
         const signer = await provider.getSigner()
         const vestAddresses = await Promise.all(contracts.map(c => c.contract.vest()))
@@ -81,31 +90,20 @@ export const FormCompensation = ({
         const iface = new Interface(abi as InterfaceAbi)
         const vestedTotals = await Promise.all(
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-          vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),
+          vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], signerAddress, signer)),
         )
-        setVestedTotals(lodash.groupBy(vestedTotals, ({ poolId }) => poolId))
+        update({ vestedTotals: lodash.groupBy(vestedTotals, ({ poolId }) => poolId) })
       } catch (error) {
-        console.error(error)
+        if (!cancelled) console.error(error)
       }
-    },
-    [getVestedAmount, provider],
-  )
-
-  useEffect(() => {
-    // reset state
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setError('')
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setBalances({})
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setVestedTotals({})
-
-    if (signerAddress) {
-      void getBalances(signerAddress, contracts)
-      void getVestContract(signerAddress, contracts)
     }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [signerAddress])
+
+    void getBalances()
+    void getVestContract()
+    return () => {
+      cancelled = true
+    }
+  }, [request])
 
   return (
     <Box grid gridRowGap={2}>

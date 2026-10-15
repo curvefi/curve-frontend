@@ -25,9 +25,9 @@ export const useMarketResetPosition = useStableChannel
 export const useNewLlamalendHealth = useBetaChannel
 
 /** New llamaLend market detail page layout preview */
-export const useNewLlamaMarketDetailPage = useBetaChannel
+export const useNewLlamaMarketDetailPage = useStableChannel
 
 /** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
-export const useMarketMobileFormDrawer = useBetaChannel
+export const useMarketMobileFormDrawer = useStableChannel
 
 export const useNewPoolForms = useBetaChannel

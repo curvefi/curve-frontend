@@ -35,11 +35,13 @@ import { QueryProp, toQuery } from '@ui/features/queries/util'
 import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
+import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
 import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
-import type { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import type { MarketBorrowAprTooltipContentProps } from './widgets/tooltips/MarketBorrowAprTooltipContent'
+import type { MarketSupplyRateTooltipContentProps } from './widgets/tooltips/MarketSupplyRateTooltipContent'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -490,13 +492,24 @@ export const formatCollateralNotional = (
     borrow?.value && +borrow?.value && borrow.symbol && formatToken(borrow.value, borrow.symbol),
   ).join(' + ')
 
-/** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */
-export const getBorrowRateTooltipTitle = ({
-  totalBorrowApr,
+export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. net ${formatCappedRatePercent(rate)}`
+
+export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
+
+/** Whether the market has extras (collateral yield or borrow rewards) that make up an estimated net borrow APR. */
+export const hasEstimatedNetBorrowApr = ({
   extraRewards,
   rebasingYieldApr,
-}: Pick<MarketNetBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
-  totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) ? t`Net borrow APR` : t`Borrow APR`
+}: Pick<MarketBorrowAprTooltipContentProps, 'extraRewards' | 'rebasingYieldApr'>) =>
+  !!extraRewards?.length || rebasingYieldApr != null
+
+/** Whether the market has extras (incentives with CRV, rewards or borrowed token yield) that make up a net supply APY. */
+export const hasNetSupplyRate = ({
+  extraRewards,
+  extraIncentives,
+  rebasingYieldApy,
+}: Pick<MarketSupplyRateTooltipContentProps, 'extraRewards' | 'extraIncentives' | 'rebasingYieldApy'>) =>
+  !!extraRewards.length || !!extraIncentives.length || rebasingYieldApy != null
 
 /** Compute utilization percentage from available liquidity and total assets. */
 export const getUtilizationPercent = (available: Decimal | undefined, totalAssets: Decimal | undefined) => {

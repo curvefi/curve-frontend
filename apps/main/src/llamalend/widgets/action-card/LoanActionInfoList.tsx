@@ -1,3 +1,4 @@
+import { BORROW_RATE_TITLE } from '@/llamalend/constants'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
@@ -120,7 +121,7 @@ export const LoanActionInfoList = ({
         <Stack>
           {(rates ?? prevRates) && (
             <ActionInfo
-              label={t`Borrow APR`}
+              label={BORROW_RATE_TITLE}
               value={mapQuery(prevRates ?? DISABLED_Q, data => maybe(data?.borrowApr, formatCappedRatePercent))}
               futureValue={mapQuery(rates ?? DISABLED_Q, data => maybe(data?.borrowApr, formatCappedRatePercent))}
               size="small"

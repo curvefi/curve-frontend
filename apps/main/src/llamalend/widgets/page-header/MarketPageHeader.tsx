@@ -4,7 +4,7 @@ import { getTokenOrPair } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
-import { MarketType, MarketRateType } from '@evm-ui/types/market'
+import { MarketType } from '@evm-ui/types/market'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { Badge } from '@ui/components/Badge'
@@ -23,7 +23,7 @@ import { MetricsRow } from './MetricsRow'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; rateType: MarketRateType }) => {
+export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   const { address: userAddress } = useConnection()
   const {
     chainId,
@@ -52,7 +52,6 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
       marketType={marketType}
       collateral={collateralToken}
       borrowToken={borrowToken}
-      rateType={rateType}
     />
   )
 

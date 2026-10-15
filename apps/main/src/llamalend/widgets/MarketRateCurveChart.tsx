@@ -1,5 +1,6 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
+import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { getUtilizationPercent } from '@/llamalend/llama.utils'
 import { TotalDebtMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
@@ -39,8 +40,8 @@ export type RateCurveChartPoint = { utilization: number; borrowApr: number; supp
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
 const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
-  { key: 'borrowApr', label: t`Borrow APR` },
-  { key: 'supplyApy', label: t`Supply APY`, dash: CHART_LINE_DASH_PATTERNS.wide },
+  { key: 'borrowApr', label: BORROW_RATE_TITLE },
+  { key: 'supplyApy', label: SUPPLY_RATE_TITLE, dash: CHART_LINE_DASH_PATTERNS.wide },
 ]
 
 const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>

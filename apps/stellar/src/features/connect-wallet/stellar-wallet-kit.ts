@@ -24,13 +24,14 @@ import {
 
 export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
-export type StellarTransaction<T = bigint> = contract.AssembledTransaction<T>
+export type StellarTransaction<T = unknown> = contract.AssembledTransaction<T>
 export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, 'hash'> & { hash: StellarHex }
 
 const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
 const MAX_INCLUSION_FEE = 50_000n // 0.005 XLM ≈ $0.0011 at the time of writing; resource fees are separate.
+const MIN_RESOURCE_FEE_BUFFER = MAX_INCLUSION_FEE // headroom for TTL renewal after simulation.
 
 export const initWallet = (onError: (error: Error) => void) => {
   const modules = defaultModules()
@@ -83,10 +84,11 @@ const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TEST
 export function getStellarTransactionFees<T>(transaction: StellarTransaction<T>) {
   const { transactionData } = transaction.simulationData
   const resourceFee = transactionData.resourceFee
-  // Add our 20% application headroom for rent changes between simulation and execution.
-  // BigInt division truncates: adding denominator - 1 (99) rounds up to a whole stroop.
-  // For example, 40,837 * 1.20 = 49,004.4 becomes 49,005 stroops.
-  const bufferedResourceFee = (resourceFee * (100n + RESOURCE_FEE_BUFFER_PERCENT) + 99n) / 100n
+  // TTL renewal can become necessary after simulation, even when simulated rent is zero.
+  // Round the 20% buffer up to a whole stroop and reserve at least the minimum headroom.
+  const proportionalBuffer = (resourceFee * RESOURCE_FEE_BUFFER_PERCENT + 99n) / 100n
+  const bufferedResourceFee =
+    resourceFee + (proportionalBuffer > MIN_RESOURCE_FEE_BUFFER ? proportionalBuffer : MIN_RESOURCE_FEE_BUFFER)
   // The SDK fee option is inclusion-only. Its built.fee includes resources and is mutated by sign().
   const inclusionFee = BigInt(transaction.options.fee ?? BASE_FEE)
   const sorobanData = new SorobanDataBuilder(transactionData).setResourceFee(bufferedResourceFee).build()

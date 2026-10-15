@@ -20,10 +20,13 @@ import { RateCell } from '../cells/RateCell/RateCell'
 import { SolvencyCell } from '../cells/SolvencyCell'
 import { TvlCell } from '../cells/TvlCell'
 import { UtilizationCell } from '../cells/UtilizationCell'
+import { BorrowAprHeaderTooltipContent } from '../header-tooltips/BorrowAprHeaderTooltipContent'
 import { CollateralBorrowHeaderTooltipContent } from '../header-tooltips/CollateralBorrowHeaderTooltipContent'
-import { LendRateHeaderTooltipContent } from '../header-tooltips/LendRateHeaderTooltipContent'
 import { LiquidityUsdHeaderTooltipContent } from '../header-tooltips/LiquidityUsdHeaderTooltipContent'
-import { NetBorrowAprHeaderTooltipContent } from '../header-tooltips/NetBorrowAprHeaderTooltipContent'
+import {
+  SupplyRateHeaderTooltipContent,
+  NetSupplyRateHeaderTooltipContent,
+} from '../header-tooltips/SupplyRateHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationHeaderTooltipContent'
 import {
@@ -48,6 +51,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
       meta: {
         tooltip: { title: MARKET_TITLES[MarketColumnId.Assets], body: <CollateralBorrowHeaderTooltipContent /> },
       },
+      enableSorting: false,
     },
   ),
   columnHelper.accessor(getUserBorrowedUsd, {
@@ -90,7 +94,11 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.BorrowRate,
     header: MARKET_TITLES[MarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', unit: 'percentage' },
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.BorrowRate], body: <BorrowAprHeaderTooltipContent /> },
+    },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
@@ -100,8 +108,16 @@ export const MARKET_COLUMNS = columnHelper.columns([
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <NetBorrowAprHeaderTooltipContent /> },
+      unit: 'percentage',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.NetBorrowRate], body: <BorrowAprHeaderTooltipContent /> },
     },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(({ assets }) => assets.collateral.rebasingYieldApr ?? undefined, {
+    id: MarketColumnId.CollateralYield,
+    header: MARKET_TITLES[MarketColumnId.CollateralYield],
+    cell: PercentCell,
+    meta: { type: 'numeric', unit: 'percentage' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {
@@ -118,19 +134,30 @@ export const MARKET_COLUMNS = columnHelper.columns([
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
-    id: MarketColumnId.LendRate,
-    header: MARKET_TITLES[MarketColumnId.LendRate],
+  columnHelper.accessor('rates.lendApy', {
+    id: MarketColumnId.SupplyRate,
+    header: MARKET_TITLES[MarketColumnId.SupplyRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: { title: MARKET_TITLES[MarketColumnId.LendRate], body: <LendRateHeaderTooltipContent /> },
+      tooltip: { title: MARKET_TITLES[MarketColumnId.SupplyRate], body: <SupplyRateHeaderTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
+    id: MarketColumnId.NetSupplyRate,
+    header: MARKET_TITLES[MarketColumnId.NetSupplyRate],
+    cell: RateCell,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.NetSupplyRate], body: <NetSupplyRateHeaderTooltipContent /> },
     },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrowApr', {
     id: MarketColumnId.BorrowChart,
     header: MARKET_TITLES[MarketColumnId.BorrowChart],
+    enableSorting: false,
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
   columnHelper.accessor<(row: LlamaMarketRow) => LlamaMarketRow['leverage'], LlamaMarketRow['leverage']>(
