@@ -8,7 +8,12 @@ export const getCollateralInput = (testId: 'add-collateral-input' | 'remove-coll
   cy.get(`[data-testid="${testId}"] input[type="text"]`, TIMEOUTS['ui.render']).first()
 
 export const submitCollateralAddForm = (isMocked = false) =>
-  submitLoanForm({ form: 'add-collateral', message: 'Collateral added', isMocked })
+  submitLoanForm({
+    form: 'add-collateral',
+    message: 'Collateral added',
+    approvalMessage: 'Approved collateral addition',
+    isMocked,
+  })
 
 export const submitCollateralRemoveForm = (isMocked = false) =>
   submitLoanForm({ form: 'remove-collateral', message: 'Collateral removed', isMocked })

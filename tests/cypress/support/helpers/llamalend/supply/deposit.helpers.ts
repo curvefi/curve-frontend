@@ -20,7 +20,7 @@ export const submitDepositForm = ({
   if (solvencyPercent <= SOLVENCY_THRESHOLDS.solvent && solvencyPercent > SOLVENCY_THRESHOLDS.low) {
     return confirmLowSolvencyDepositForm(isMocked)
   }
-  return submitSupplyForm('deposit', 'Deposit successful!', isMocked)
+  return submitSupplyForm('deposit', { message: 'Deposit successful!', approvalMessage: 'Approved deposit' }, isMocked)
 }
 
 const confirmLowSolvencyDepositForm = (isMocked = false) =>
@@ -30,7 +30,7 @@ const confirmLowSolvencyDepositForm = (isMocked = false) =>
       cy.get('[data-testid="low-solvency-action-checkbox"]').click()
       cy.get('[data-testid="low-solvency-action-submit-button"]').click()
     },
-    { message: 'Deposit successful!' },
+    { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
     getTimeoutCategory('evm.confirmation', isMocked),
   )
 

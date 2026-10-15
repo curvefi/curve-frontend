@@ -88,7 +88,11 @@ export const submitPoolDepositAndCheck = ({
     )
 
   return cy.then(TIMEOUTS['evm.balances'], readBalances).then(before => {
-    submitAndExpectToast(() => poolDepositSubmit().click(), { message: 'Deposit successful!' }, 'evm.confirmation')
+    submitAndExpectToast(
+      () => poolDepositSubmit().click(),
+      { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
+      'evm.confirmation',
+    )
     coins.forEach(({ address }) => {
       poolDepositInput(address).should('have.value', '')
     })

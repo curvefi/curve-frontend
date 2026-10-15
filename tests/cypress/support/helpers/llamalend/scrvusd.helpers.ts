@@ -157,7 +157,7 @@ export const submitScrvUsdDepositForm = () => {
   )
   return submitAndExpectToast(
     () => cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['ui.interaction']).click(),
-    { message: 'Deposit successful!' },
+    { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
     'evm.confirmation',
   )
 }

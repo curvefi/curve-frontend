@@ -177,7 +177,7 @@ describe('Gauge Management (RPC)', () => {
         cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
         submitAndExpectToast(
           () => cy.get('[data-testid="deposit-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
-          { message: 'Deposited reward token' },
+          { message: 'Deposited reward token', approvalMessage: 'Approved deposit reward' },
           'evm.confirmation',
         )
         expectErc20BalanceChange({
