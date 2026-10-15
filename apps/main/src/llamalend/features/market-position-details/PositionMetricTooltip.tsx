@@ -356,7 +356,7 @@ export const equityTooltip = () => ({
         text={t`What this position returns if you close it now, in the debt token: collateral at the oracle price plus converted borrowed tokens, minus debt. Borrowed tokens already in your wallet are not included.`}
       />
       <TooltipDescription
-        text={t`PnL is the change in equity since you opened, after deposits, withdrawals, borrows to your wallet and repays. The percentage is of your own capital, the same base leverage uses.`}
+        text={t`PnL is the change in equity since you opened, after deposits, withdrawals, borrows to your wallet and repays. The percentage is of your own capital, the same base leverage uses. The second line counts PnL in the collateral token, with every deposit, borrow and repay converted at the oracle price of its day.`}
       />
       <TooltipFooter>{t`Excludes price impact you would pay to close.`}</TooltipFooter>
     </TooltipWrapper>

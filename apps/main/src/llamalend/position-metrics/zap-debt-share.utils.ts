@@ -45,33 +45,47 @@ export const mintZapDebtShare = ({
 type CashFlowEvent = { loanChange: number; collateralChange: number; oraclePrice: number }
 
 /**
- * Net capital in the open position, in the debt token: collateral added at its oracle price minus debt taken out.
- * Debt the zap swaps into collateral cancels against that collateral, so only swap costs remain. Borrows to the wallet
- * count as withdrawals and repays as deposits. Events are oldest first; the running debt reaching zero closes a position.
+ * Net capital in the open position, valued per event: collateral added minus debt taken out. Debt the zap swaps into
+ * collateral cancels against that collateral, so only swap costs remain. Borrows to the wallet count as withdrawals and
+ * repays as deposits. Events are oldest first; the running debt reaching zero closes a position.
  */
-export const netInvested = (events: readonly CashFlowEvent[]): Decimal => {
+const sumOpenPosition = (events: readonly CashFlowEvent[], value: (event: CashFlowEvent) => BigNumber): Decimal => {
   let invested = BigNumber(0)
   let running = BigNumber(0)
-  for (const { loanChange, collateralChange, oraclePrice } of events) {
-    running = running.plus(loanChange)
+  for (const event of events) {
+    running = running.plus(event.loanChange)
     if (running.lte(0)) {
       invested = BigNumber(0)
       running = BigNumber(0)
       continue
     }
-    invested = invested.plus(BigNumber(collateralChange).times(oraclePrice)).minus(loanChange)
+    invested = invested.plus(value(event))
   }
   return decimal(invested.toFixed()) ?? ZERO
 }
 
-export type PositionHistory = { zapShare: Decimal; netInvested: Decimal }
+/** In the debt token, collateral at its oracle price on the day it moved. */
+export const netInvested = (events: readonly CashFlowEvent[]): Decimal =>
+  sumOpenPosition(events, ({ collateralChange, oraclePrice, loanChange }) =>
+    BigNumber(collateralChange).times(oraclePrice).minus(loanChange),
+  )
+
+/** In the collateral token, debt converted at the oracle price on the day it moved, like ETH-in vs ETH-out trackers. */
+export const netInvestedCollateral = (events: readonly CashFlowEvent[]): Decimal =>
+  sumOpenPosition(events, ({ collateralChange, oraclePrice, loanChange }) =>
+    oraclePrice > 0 ? BigNumber(collateralChange).minus(BigNumber(loanChange).div(oraclePrice)) : BigNumber(0),
+  )
+
+export type PositionHistory = { zapShare: Decimal; netInvested: Decimal; netInvestedCollateral: Decimal }
 
 export const lendPositionHistory = (data: LendCollateralEvents): PositionHistory => ({
   zapShare: lendZapDebtShare(data),
   netInvested: netInvested(data.events),
+  netInvestedCollateral: netInvestedCollateral(data.events),
 })
 
 export const mintPositionHistory = (data: MintCollateralEvents): PositionHistory => ({
   zapShare: mintZapDebtShare(data),
   netInvested: netInvested(data.events),
+  netInvestedCollateral: netInvestedCollateral(data.events),
 })
