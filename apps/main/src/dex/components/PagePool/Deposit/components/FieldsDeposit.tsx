@@ -6,7 +6,7 @@ import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -163,7 +163,7 @@ export const FieldsDeposit = ({
       {hasWrapped(pool) && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(pool)}
+            isDisabled={isDisabled}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
               if (pool) {

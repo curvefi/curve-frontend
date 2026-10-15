@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { usePoolTokens } from '@/dex/features/pool/usePoolTokens'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { hasWrapped } from '@/dex/pool.utils'
 import { useDepositPriceImpact } from '@/dex/queries/deposit/deposit-bonus.query'
 import { useSeedAmounts } from '@/dex/queries/deposit/deposit-seed-amounts.query'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
@@ -101,7 +101,6 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     reserves: mapQuery(reserves, reserves => reserves.tokens.map(t => t.balance)),
     isSeed,
     canDepositWrapped,
-    isWrappedOnly: isWrappedOnly(pool),
     // Unfortunately, curve.js requires a wallet. Seed deposit derives amounts from the first.
     inputsDisabled: !wallet || isPending || (isSeed.data !== false && ('first-only' as const)),
     tokens,

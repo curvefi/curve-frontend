@@ -18,7 +18,7 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -436,7 +436,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
         {hasWrapped(pool) && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(pool)}
+            isDisabled={isDisabled}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
               const wrapped = getTokens(pool, { wrapped: nextIsWrapped })

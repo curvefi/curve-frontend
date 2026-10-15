@@ -14,7 +14,7 @@ import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/componen
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -493,7 +493,7 @@ export const Swap = ({
         {hasWrapped(pool) && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || isWrappedOnly(pool)}
+              isDisabled={isDisabled}
               isSelected={isWrapped}
               onChange={nextIsWrapped => {
                 if (pool) {
