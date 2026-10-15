@@ -9,6 +9,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { Address } from '@primitives/address.utils'
 import { zip } from '@primitives/array.utils'
 import { Chain } from '@primitives/network.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { LiquidityDetailsData } from '@ui/features/pools/liquidity-details/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, toQuery } from '@ui/features/queries/util'
@@ -16,8 +17,8 @@ import { decimalPercent, decimalSum } from '@ui/lib/decimal'
 
 export type UseLiquidityDetailsParams = {
   chainId: ChainId
-  poolAddress: Address | undefined
-  tokenAddresses: Address[]
+  poolAddress: Address | Nullish
+  tokenAddresses: Address[] | Nullish
 }
 
 export const useLiquidityDetails = ({
@@ -55,7 +56,7 @@ export const useLiquidityDetails = ({
     },
     metrics: { ...(showBoost && { boost: q(userBoost) }), lpTokenTotal, positionValue: q(userLiquidityUsd) },
     rows: mapQuery(userBalances, balances =>
-      zip(tokenAddresses, balances).map(([address, amount]) => ({
+      zip(tokenAddresses ?? [], balances).map(([address, amount]) => ({
         address,
         symbol: mapQuery(tokens, tokens => getToken(tokens, address)?.symbol),
         amount: toQuery(amount, userBalances),

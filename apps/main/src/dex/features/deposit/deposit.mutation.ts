@@ -8,7 +8,7 @@ import { invalidateTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { type TransactionContext, useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
-import { assert } from '@primitives/objects.utils'
+import { assert, type Nullish } from '@primitives/objects.utils'
 import { depositMethod, getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { t } from '@ui/lib/i18n'
 import { depositQueryValidationSuite } from './deposit.validation'
@@ -23,7 +23,7 @@ export const useDepositMutation = ({
   onReset,
 }: {
   chainId: number
-  poolAddress: Address
+  poolAddress: Address | Nullish
   tokenCount: number
   onReset: () => void
 }) => {
@@ -34,7 +34,7 @@ export const useDepositMutation = ({
     validationParams: { chainId, poolAddress, userAddress },
     buildContext: (_variables, baseContext) => ({
       ...baseContext,
-      pool: requireLib('curveApi').getPool(poolAddress),
+      pool: requireLib('curveApi').getPool(poolAddress!),
       userAddress: assert(userAddress, 'Missing userAddress'),
     }),
     mutationFn: async ({ amounts, slippage, isWrapped, decimals }, { pool, userAddress }) => {

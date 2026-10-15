@@ -11,13 +11,13 @@ import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, type Nullish } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
-type UsePoolActivityProps = { chainId: ChainId; poolAddress: Address }
+type UsePoolActivityProps = { chainId: ChainId; poolAddress: Address | Nullish }
 
 /**
  * Hook to manage pool activity events data for the ActivityTable component.

@@ -41,7 +41,10 @@ const defaultValues = {
 } as const
 
 export const DepositReward = () => {
-  const { chainId, poolAddress } = usePoolContext()
+  const {
+    chainId,
+    poolAddress: { data: poolAddress },
+  } = usePoolContext()
   const { data: networks } = useNetworks()
   const network = networks[chainId]
   const { address: userAddress } = useConnection()

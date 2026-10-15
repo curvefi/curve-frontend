@@ -19,7 +19,11 @@ import { useYieldBreakdown } from './hooks/useYieldBreakdown'
 type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
 
 export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformation) => {
-  const { chainId, poolAddress, tokenAddressesAll } = usePoolContext()
+  const {
+    chainId,
+    poolAddress: { data: poolAddress },
+    tokenAddressesAll: { data: tokenAddressesAll },
+  } = usePoolContext()
   return (
     <Stack sx={stackedCardHeadersSx}>
       <Card size="small">

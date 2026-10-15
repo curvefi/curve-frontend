@@ -40,10 +40,18 @@ function useForceSeedAmounts(
 }
 
 export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
-  const { chainId, poolAddress, pool, isWrapped: initialWrapped, setIsWrapped, blockchainId, api } = usePoolContext()
+  const {
+    chainId,
+    poolAddress: { data: poolAddress },
+    pool: { data: pool },
+    isWrapped: initialWrapped,
+    setIsWrapped,
+    blockchainId,
+    api,
+  } = usePoolContext()
   const { address: userAddress } = useConnection()
   const nativeToken = api?.getNetworkConstants().NATIVE_TOKEN
-  const initialTokenCount = (initialWrapped ? pool.wrappedCoins : pool.underlyingCoins).length
+  const initialTokenCount = (initialWrapped ? pool?.wrappedCoins : pool?.underlyingCoins)?.length ?? 0
   const userDefaultValues = useMemo(
     () => getDepositDefaults(initialTokenCount, initialWrapped, maxSlippage),
     [initialTokenCount, initialWrapped, maxSlippage],

@@ -2,7 +2,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import { isComplete } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, notFalsyArray } from '@primitives/objects.utils'
+import { fromEntries, notFalsyArray, type Nullish } from '@primitives/objects.utils'
 import { type ErrorKey, type FormUpdates } from '@ui/features/forms'
 import { Form } from '@ui/features/forms/components/Form'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
@@ -21,7 +21,7 @@ export type DepositFormProps<TValues extends PoolDepositForm = PoolDepositForm> 
   form: { update: (updates: FormUpdates<PoolDepositForm>) => void }
   reserves: QueryProp<Decimal[]>
   isSeed: QueryProp<boolean>
-  canDepositWrapped?: boolean
+  canDepositWrapped?: boolean | Nullish
   inputsDisabled: PoolTokenDisabled
   maxAmounts: QueryProp<Decimal>[] | undefined
 }

@@ -4,7 +4,10 @@ import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerCom
 import { t } from '@ui/lib/i18n'
 
 export const CampaignRewardsBanner = () => {
-  const { blockchainId, poolAddress } = usePoolContext()
+  const {
+    blockchainId,
+    poolAddress: { data: poolAddress },
+  } = usePoolContext()
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: poolAddress })
 
   const message = campaigns.some(campaign => campaign.tags.includes('points'))

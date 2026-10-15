@@ -15,7 +15,13 @@ export const TransferActions = ({
   seed,
   loading,
 }: { loading?: boolean; children: ReactNode } & Pick<TransferProps, 'seed'>) => {
-  const { chainId, userAddress: signerAddress, poolAddress, isWrapped, tokenAddressesAll } = usePoolContext()
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress: { data: poolAddress },
+    isWrapped,
+    tokenAddressesAll: { data: tokenAddressesAll },
+  } = usePoolContext()
 
   const alert = useTokenAlert(tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()

@@ -39,7 +39,7 @@ import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { constQ } from '@ui/features/queries/util'
+import { constQ, mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
@@ -120,16 +120,18 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const {
     chainId,
     blockchainId,
-    poolAddress,
-    pool,
+    poolAddress: poolAddressQuery,
+    poolAddress: { data: poolAddress },
+    pool: poolQuery,
+    pool: { data: pool },
     api: curve,
     isWrapped,
     setIsWrapped,
-    tokens,
-    tokenAddresses,
+    tokens: { data: tokens },
+    tokenAddresses: { data: tokenAddresses },
   } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: pool.hasVyperVulnerability() })
+  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: pool?.hasVyperVulnerability() })
   const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool) ?? 'stable'])
@@ -170,7 +172,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   return (
     <>
-      {poolAlert?.banner && (
+      {poolAlert?.banner && poolAddress && (
         <PoolAlertBanner
           alertType={poolAlert.alertType}
           banner={poolAlert.banner}
@@ -183,12 +185,12 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <PoolPageHeader
             chainId={chainId}
             blockchainId={blockchainId}
-            poolAddress={poolAddress}
+            poolAddress={poolAddressQuery}
             // for now the page only renders when pool data has already loaded, it's not lazy yet.
-            title={constQ(pool.name)}
+            title={mapQuery(poolQuery, pool => pool.name)}
             tokens={useMemo(
               () =>
-                zip(tokens, tokenAddresses)
+                zip(tokens ?? [], tokenAddresses ?? [])
                   .filter(([, address]) => address)
                   .map(([symbol, address]) => constQ({ symbol, address })),
               [tokenAddresses, tokens],

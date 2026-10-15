@@ -9,6 +9,7 @@ import { TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -77,7 +78,7 @@ export const OhlcAndActivityComp = ({
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolAddress: Address
+  poolAddress: Address | Nullish
   pricesApiPoolData: Pool
 }) => {
   const chart = useOhlcChartState({ chainId, pricesApiPoolData })

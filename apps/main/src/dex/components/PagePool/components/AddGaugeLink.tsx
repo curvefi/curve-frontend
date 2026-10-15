@@ -15,7 +15,11 @@ import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export const AddGaugeLink = () => {
-  const { chainId, pool, tokens } = usePoolContext()
+  const {
+    chainId,
+    pool: { data: pool },
+    tokens: { data: tokens },
+  } = usePoolContext()
   const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
   const setSidechainGauge = useStore(state => state.deployGauge.setSidechainGauge)
   const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
@@ -25,6 +29,7 @@ export const AddGaugeLink = () => {
   const deployGaugePath = getPath(params, `/deploy-gauge`)
 
   const handleClick = () => {
+    if (!pool || !tokens) return
     if (chainId === 1) {
       setSidechainGauge(false)
       setPoolAddress(pool.address)
@@ -47,7 +52,7 @@ export const AddGaugeLink = () => {
   }
 
   return (
-    <Button component={RouterLink} href={deployGaugePath} onClick={handleClick}>
+    <Button component={RouterLink} href={deployGaugePath} disabled={!pool || !tokens} onClick={handleClick}>
       {t`Add Gauge`}
     </Button>
   )

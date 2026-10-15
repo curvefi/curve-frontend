@@ -4,7 +4,7 @@ import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import type { Address } from '@primitives/address.utils'
-import { DEFAULT_DECIMALS, maybe, maybes } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS, maybe, maybes, type Nullish } from '@primitives/objects.utils'
 import type { PoolInformationMetricsProps } from '@ui/features/pools/PoolInformationMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
@@ -16,7 +16,7 @@ export const useMetrics = ({
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolAddress: Address
+  poolAddress: Address | Nullish
   pricesApiPoolData?: PricesApiPool
 }): PoolInformationMetricsProps => {
   const staked = usePoolTotalStaked({ chainId, poolAddress })

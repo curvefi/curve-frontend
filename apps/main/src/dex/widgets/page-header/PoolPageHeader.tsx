@@ -10,7 +10,7 @@ import { amount } from '@ui/lib/decimal'
 export const PoolPageHeader = ({
   chainId,
   blockchainId,
-  poolAddress,
+  poolAddress: { data: poolAddress },
   title,
   tokens,
   pricesApiPoolData,
@@ -18,7 +18,7 @@ export const PoolPageHeader = ({
 }: {
   chainId: number
   blockchainId: string
-  poolAddress: Address
+  poolAddress: QueryProp<Address>
   title: QueryProp<string>
   tokens: QueryProp<{ symbol: string | undefined; address: Address }>[] | undefined
   pricesApiPoolData: PricesApiPool | undefined

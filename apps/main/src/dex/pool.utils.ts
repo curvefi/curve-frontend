@@ -21,7 +21,7 @@ export const tryGetPool = (poolIdOrAddress: PoolTemplate | string | Nullish, lib
         }
       })
 
-export const hasWrapped = (pool: PoolTemplate) => !(pool?.isPlain || pool?.isFake)
+export const hasWrapped = (pool: PoolTemplate | Nullish) => pool && !(pool?.isPlain || pool?.isFake)
 
 export const getTokens = (
   { underlyingCoinAddresses, underlyingCoins, wrappedCoinAddresses, wrappedCoins }: PoolTemplate,

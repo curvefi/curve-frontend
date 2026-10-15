@@ -4,8 +4,9 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId } from '@/dex/types/main.types'
 import { getPointsCampaignRows } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
+import type { Nullish } from '@primitives/objects.utils'
 
-export const usePointsCampaigns = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: Address }) => {
+export const usePointsCampaigns = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: Address | Nullish }) => {
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 

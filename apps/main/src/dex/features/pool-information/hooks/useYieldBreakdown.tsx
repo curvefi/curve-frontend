@@ -10,7 +10,7 @@ import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rat
 import { MAINNET_CRV, MAINNET_CRV_ADDRESS, shortenAddress } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe, maybes, type Nullish } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
@@ -22,7 +22,7 @@ export const useYieldBreakdown = ({
   poolAddress,
 }: {
   chainId: ChainId
-  poolAddress: Address
+  poolAddress: Address | Nullish
 }): YieldBreakdownData => {
   const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const { data: network } = useNetworkByChain({ chainId })

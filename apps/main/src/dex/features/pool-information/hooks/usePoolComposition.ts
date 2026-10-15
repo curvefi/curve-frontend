@@ -8,7 +8,7 @@ import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { shortenAddress } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { zip } from '@primitives/array.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, type Nullish } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
 import { constQ, q } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
@@ -22,10 +22,10 @@ export const usePoolComposition = ({
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolAddress: Address
+  poolAddress: Address | Nullish
   isWrapped: boolean
-  tokens: string[]
-  tokenAddresses: string[]
+  tokens: string[] | Nullish
+  tokenAddresses: string[] | Nullish
   pricesApiPoolData?: PricesApiPool
 }) => {
   const { data: network } = useNetworkByChain({ chainId })
@@ -37,7 +37,7 @@ export const usePoolComposition = ({
 
   // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
   const reserves = usePricesApiReserves
-    ? tokenAddresses.map((tokenAddress, index) => {
+    ? (tokenAddresses ?? []).map((tokenAddress, index) => {
         const balance = pricesApiPoolData?.balances[index]
         const balanceUsd = pricesApiPoolData?.balancesUsd[index]
 
@@ -51,7 +51,7 @@ export const usePoolComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = zip(tokens, tokenAddresses).map(([symbol, tokenAddress]) => {
+  const rows: PoolCompositionRow[] = zip(tokens ?? [], tokenAddresses ?? []).map(([symbol, tokenAddress]) => {
     const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
     return {

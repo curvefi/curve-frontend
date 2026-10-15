@@ -17,11 +17,12 @@ import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import type { Nullish } from '@primitives/objects.utils'
+import { maybe, type Nullish } from '@primitives/objects.utils'
 import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
 import { queryFactory } from '@ui/features/queries/factory'
+import { mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
@@ -57,14 +58,14 @@ const { useQuery: usePoolQuery } = queryFactory({
 })
 
 export const PagePool = () => {
-  const { curveApi = null, isHydrated } = useCurve()
+  const { curveApi } = useCurve()
   const props = useParams<PoolUrlParams>()
   const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const { poolIdOrAddress, network: blockchainId } = props
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const { data: pool } = useHydratedQuery(usePoolQuery, {
+  const pool = useHydratedQuery(usePoolQuery, {
     chainId,
     poolIdOrAddress,
     // The query returns a pool tied to a specific curve-js instance, which gets recreated on user address change.
@@ -73,12 +74,11 @@ export const PagePool = () => {
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
-    () => pool && blacklist?.some(badPool => isAddressEqual(badPool, getAddress(pool.address))),
-    [blacklist, pool],
+    () =>
+      maybe(pool.data?.address, address => blacklist?.some(badPool => isAddressEqual(badPool, getAddress(address)))) ??
+      false,
+    [blacklist, pool.data?.address],
   )
-
-  // In a future PR we'll remove this check and make everything a query with skeletons and such.
-  if (!isHydrated) return null
 
   if (isBlacklisted)
     return (
@@ -96,7 +96,7 @@ export const PagePool = () => {
     )
 
   // Strict check with null as `undefined` means unresolved; null means 'doesn't exist'.
-  if (pool === null)
+  if (pool.data === null)
     return (
       <ErrorPage
         title="404"
@@ -112,17 +112,16 @@ export const PagePool = () => {
    * Render null while navigating to let the address params update and prevent a redirect loop.
    * Would also happen with programmatic navigate, so that wouldn't be a solution.
    */
-  if (pool && !isAddress(poolIdOrAddress, { strict: false })) {
+  if (pool.data && !isAddress(poolIdOrAddress, { strict: false })) {
     return isNavigating ? null : (
-      <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.address}`)} search replace resetScroll={false} />
+      <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.data.address}`)} search replace resetScroll={false} />
     )
   }
 
   return (
-    pool && (
-      <PoolContextProvider network={network} pool={pool}>
-        <Transfer params={props} />
-      </PoolContextProvider>
-    )
+    // Typescript is not smart enough to narrow the type of pool to exclude `null`
+    <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)}>
+      <Transfer params={props} />
+    </PoolContextProvider>
   )
 }

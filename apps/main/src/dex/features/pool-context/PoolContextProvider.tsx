@@ -2,6 +2,7 @@ import { type ReactNode, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCurve } from '@evm-ui/features/connect-wallet'
+import type { QueryProp } from '@ui/features/queries/util'
 import { PoolContext } from './PoolContext'
 import { createPoolContextValue } from './PoolContextValue'
 
@@ -12,7 +13,7 @@ export const PoolContextProvider = ({
 }: {
   children: ReactNode
   network: { chainId: number; blockchainId: string }
-  pool: PoolTemplate
+  pool: QueryProp<PoolTemplate>
 }) => {
   const { address: userAddress } = useConnection()
   const { curveApi: api = null } = useCurve()

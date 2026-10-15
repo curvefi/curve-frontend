@@ -22,7 +22,7 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, type Nullish } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery } from '@ui/features/queries/util'
@@ -49,7 +49,7 @@ export const PoolHistoricalBaseRateChart = ({
   poolAddress,
 }: {
   blockchainId: string
-  poolAddress: Address
+  poolAddress: Address | Nullish
 }) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(() => SERIES_CONFIG.map(({ key }) => key))
