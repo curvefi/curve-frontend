@@ -190,7 +190,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             title={mapQuery(poolQuery, pool => pool.name)}
             tokens={useMemo(
               () =>
-                zip(tokens ?? [], tokenAddresses ?? [])
+                tokens &&
+                tokenAddresses &&
+                zip(tokens, tokenAddresses)
                   .filter(([, address]) => address)
                   .map(([symbol, address]) => constQ({ symbol, address })),
               [tokenAddresses, tokens],
