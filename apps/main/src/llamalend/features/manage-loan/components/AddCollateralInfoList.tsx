@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useCardLeverage, useCardLeverageAfter } from '@/llamalend/position-metrics/use-card-metrics'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
@@ -13,6 +14,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
@@ -40,6 +42,15 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
+  const beta = useNewLlamalendHealth()
+  const sdkLeverage = useUserCurrentLeverage(params, isOpen)
+  const sdkFutureLeverage = useAddCollateralFutureLeverage(params, isOpen)
+  const cardLeverage = useCardLeverage(params, isOpen && beta)
+  const cardFutureLeverage = useCardLeverageAfter(
+    params,
+    { collateralDelta: userCollateral, debtAfter: prevDebt },
+    isOpen,
+  )
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -68,8 +79,8 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       {...getLeverageInfoFields({
         leverageEnabled: false,
-        leverageValue: useAddCollateralFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        leverageValue: beta ? cardFutureLeverage : sdkFutureLeverage,
+        prevLeverageValue: beta ? q(cardLeverage) : sdkLeverage,
         prevCollateral,
         leverageTotalCollateral: prevCollateral,
         collateralDelta: userCollateral,

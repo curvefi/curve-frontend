@@ -16,12 +16,13 @@ import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
 
 /** Zap debt share of the current user's position in the market in context. */
-function usePositionZapDebtShare(params: UserMarketParams, enabled: boolean) {
+export function usePositionZapDebtShare(params: UserMarketParams, enabled: boolean) {
   const { blockchainId, controllerAddress, marketType } = useMarketContext()
   return useZapDebtShare(
     { blockchainId, contractAddress: controllerAddress, userAddress: params.userAddress, marketType },
@@ -75,6 +76,31 @@ export function useBorrowMoreCardLeverage(params: BorrowMoreParams, enabled = tr
     (params.userCollateral != null && params.userCollateral !== '0') || (params.debt != null && params.debt !== '0')
   if (!beta) return DISABLED_Q
   return hasAddedSize && preview.data != null ? preview : current
+}
+
+/**
+ * Card leverage after an action that changes collateral or debt without looping new debt (repay, add or remove collateral).
+ * The existing zap share applies pro rata to the remaining debt. Repay withdraws the soft-liquidation cash to repay debt.
+ */
+export function useCardLeverageAfter(
+  params: UserMarketParams,
+  {
+    collateralDelta,
+    debtAfter,
+    clearsStablecoin = false,
+  }: { collateralDelta: Decimal | Nullish; debtAfter: QueryProp<Decimal | null>; clearsStablecoin?: boolean },
+  enabled = true,
+): QueryProp<Decimal | null> {
+  const beta = useNewLlamalendHealth()
+  const state = useUserState(params, enabled && beta)
+  const oracle = useMarketOraclePrice(params, enabled && beta)
+  const zapShare = usePositionZapDebtShare(params, enabled && beta)
+  const after = combineQueries([state, oracle, zapShare, debtAfter], (user, price, share, debt) => {
+    const collateral = decimalSum(user.collateral, collateralDelta ?? '0')
+    if (debt == null || collateral == undefined) return null
+    return loopedLeverage(collateral, price, clearsStablecoin ? '0' : user.stablecoin, loopedDebt(debt, share)) ?? null
+  })
+  return beta ? after : DISABLED_Q
 }
 
 /** Current return on equity, same balance formula as the position card. */

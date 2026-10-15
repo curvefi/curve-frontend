@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
+import { useCardLeverage, useCardLeverageAfter } from '@/llamalend/position-metrics/use-card-metrics'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
@@ -14,6 +15,7 @@ import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -97,12 +99,25 @@ export function RepayLoanInfoList({
   prevPrices?: QueryProp<Range<Decimal> | null>
 }) {
   const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
+  const beta = useNewLlamalendHealth()
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
     { params, showLeverage, prevDebt },
     { isFull, userBorrowed: params.userBorrowed ?? undefined },
     isOpen,
+  )
+  const sdkLeverage = useUserCurrentLeverage(params, isOpen)
+  const sdkFutureLeverage = useRepayFutureLeverage(params, isOpen)
+  const cardLeverage = useCardLeverage(params, isOpen && beta)
+  const cardFutureLeverage = useCardLeverageAfter(
+    params,
+    {
+      collateralDelta: params.stateCollateral && decimalNegate(params.stateCollateral),
+      debtAfter: debt,
+      clearsStablecoin: true,
+    },
+    isOpen && !isFull,
   )
 
   return (
@@ -136,8 +151,8 @@ export function RepayLoanInfoList({
       {...getLeverageInfoFields({
         // we need to use the leverage implementations to do any swap. deleverage implementation cannot show the expected values
         leverageEnabled: showLeverage,
-        leverageValue: useRepayFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        leverageValue: beta ? (isFull ? constQ('0') : cardFutureLeverage) : sdkFutureLeverage,
+        prevLeverageValue: beta ? q(cardLeverage) : sdkLeverage,
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(params.stateCollateral ?? '0')),
