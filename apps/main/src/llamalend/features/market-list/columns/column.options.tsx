@@ -252,6 +252,7 @@ const supplyPositionColumnOptions = (): VisibilityGroup<MarketColumnId>[] => [
 export const BORROW_POSITION_COLUMN_ORDER = [
   MarketColumnId.Assets,
   MarketColumnId.UserEquity,
+  MarketColumnId.UserPnl,
   MarketColumnId.UserBorrowed,
   MarketColumnId.UserCollateral,
   MarketColumnId.BorrowRate,
@@ -280,6 +281,7 @@ export const SUPPLY_POSITION_COLUMN_ORDER = [
 /** Columns that belong on a position table, not the markets list. */
 export const POSITION_TABLE_ONLY_COLUMNS = [
   MarketColumnId.UserEquity,
+  MarketColumnId.UserPnl,
   MarketColumnId.UserDistanceToRange,
   MarketColumnId.UserBandCount,
   MarketColumnId.UserCollateralComposition,

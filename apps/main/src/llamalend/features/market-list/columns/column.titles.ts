@@ -26,6 +26,7 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserReturnOnEquity]: t`RoE`,
   [MarketColumnId.UserLeverage]: t`Leverage`,
   [MarketColumnId.UserEquity]: t`Equity`,
+  [MarketColumnId.UserPnl]: t`PNL (ROE %)`,
   [MarketColumnId.UserBoostMultiplier]: t`Boost`,
   [MarketColumnId.UserEarnings]: t`Interest earned`,
   [MarketColumnId.UserSupplyShare]: t`% of supply`,

@@ -1,5 +1,6 @@
 import {
   equityTooltip,
+  pnlTooltip,
   leverageTooltip,
   roeTooltip,
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
@@ -24,6 +25,7 @@ import {
   MaxReturnOnEquityCell,
   UserLeverageCell,
   UserEquityCell,
+  UserPnlCell,
   UserLiquidationRangeCell,
   UserDistanceToRangeCell,
   UserBandCountCell,
@@ -51,6 +53,7 @@ import {
   getUserPositionBuffer,
   getUserPositionLeverage,
   getUserPositionEquityUsd,
+  getUserPositionRoePercent,
   getUserPositionRangeUpper,
   getUserPositionDistance,
   getUserPositionBandCount,
@@ -181,6 +184,13 @@ export const MARKET_COLUMNS = columnHelper.columns([
     header: MARKET_TITLES[MarketColumnId.UserEquity],
     cell: UserEquityCell,
     meta: { type: 'numeric', tooltip: equityTooltip() },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPositionRoePercent, {
+    id: MarketColumnId.UserPnl,
+    header: MARKET_TITLES[MarketColumnId.UserPnl],
+    cell: UserPnlCell,
+    meta: { type: 'numeric', tooltip: pnlTooltip() },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionLtv, {

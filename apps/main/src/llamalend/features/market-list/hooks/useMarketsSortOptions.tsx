@@ -24,6 +24,7 @@ export const useMarketsSortOptions = () => {
           { id: MarketColumnId.UserLtv, label: t`LTV` },
           ...notFalsy(beta && { id: MarketColumnId.UserLeverage, label: t`Leverage` }),
           ...notFalsy(beta && { id: MarketColumnId.UserEquity, label: t`Equity` }),
+          ...notFalsy(beta && { id: MarketColumnId.UserPnl, label: t`PNL (ROE %)` }),
           { id: MarketColumnId.UserEarnings, label: t`Interest earned` },
           { id: MarketColumnId.UserDeposited, label: beta ? t`Amount supplied` : t`Supplied Amount` },
           { id: MarketColumnId.UserBoostMultiplier, label: t`Boost` },

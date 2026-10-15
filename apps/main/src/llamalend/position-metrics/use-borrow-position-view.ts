@@ -71,6 +71,8 @@ export type BorrowPositionView = {
   collateral: QueryProp<Decimal | undefined>
   composition: ReturnType<typeof compositionShares>
   debt: QueryProp<Decimal | undefined>
+  /** Collateral and converted borrowed-token quantities. */
+  amounts: QueryProp<{ collateral: Decimal; stablecoin: Decimal } | undefined>
   equity: QueryProp<Decimal | undefined>
   pnl: QueryProp<PositionPnl | undefined>
   borrowUsdRate: ReturnType<typeof useTokenUsdRate>
@@ -178,6 +180,7 @@ export const useBorrowPositionView = (params: UserMarketParams): BorrowPositionV
     collateral: keepDisplayedValue(collateral),
     composition: composition.data,
     debt: keepDisplayedValue(mapQuery(userState, ({ debt }) => debt)),
+    amounts: keepDisplayedValue(mapQuery(userState, ({ collateral, stablecoin }) => ({ collateral, stablecoin }))),
     equity: keepDisplayedValue(equityValue),
     pnl: keepDisplayedValue(pnl),
     borrowUsdRate,

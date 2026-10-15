@@ -352,12 +352,22 @@ export const leverageTooltip = () => ({
 
 export const equityTooltip = () => ({
   ...tooltipChrome,
-  title: t`Equity and PNL (ROE %)`,
+  title: t`Equity`,
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`What this position returns if you close it now, in the debt token: collateral at the oracle price plus converted borrowed tokens, minus debt. Borrowed tokens already in your wallet are not included.`}
+        text={t`What this position returns if you close it now: collateral at the oracle price plus converted borrowed tokens, minus debt. Borrowed tokens already in your wallet are not included.`}
       />
+      <TooltipFooter>{t`Excludes price impact you would pay to close.`}</TooltipFooter>
+    </TooltipWrapper>
+  ),
+})
+
+export const pnlTooltip = () => ({
+  ...tooltipChrome,
+  title: t`PNL (ROE %)`,
+  body: (
+    <TooltipWrapper>
       <TooltipDescription
         text={t`PNL is the change in equity since you opened, after deposits, withdrawals, borrows to your wallet and repays. It counts in the collateral token, with each of those converted at the oracle price of its day. Hover it for the debt-token value.`}
       />

@@ -4,13 +4,13 @@ import {
   inclusiveBandCount,
 } from '@/llamalend/features/market-position-details/position-metrics.utils'
 import { collateralTooltip, debtTooltip } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { q } from '@ui/features/queries/util'
@@ -19,6 +19,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
+import { NotionalText } from './NotionalText'
 import { POSITION_CARD_COLUMN_GAP, POSITION_CARD_COLUMNS } from './position-card.layout'
 
 const { Spacing } = SizesAndSpaces
@@ -65,6 +66,17 @@ export const BetaPositionMoreDetails = ({
             testId="position-collateral-value"
             value={view.collateral}
             valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
+            notional={
+              <NotionalText
+                text={maybe(view.amounts.data, ({ collateral, stablecoin }) =>
+                  formatCollateralNotional(
+                    { value: collateral, symbol: collateralToken?.symbol },
+                    { value: stablecoin, symbol: borrowToken?.symbol },
+                  ),
+                )}
+                testId="position-collateral-amounts"
+              />
+            }
             valueAdornment={
               compositionLabels &&
               shares && (
@@ -98,6 +110,7 @@ export const BetaPositionMoreDetails = ({
             label={t`Total debt`}
             value={view.debt}
             valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
+            notional={<NotionalText text={debtUsdValue} testId="position-debt-usd" />}
             valueTooltip={debtTooltip({ usdValue: debtUsdValue })}
           />
         </Box>{' '}

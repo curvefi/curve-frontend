@@ -24,7 +24,7 @@ export const PositionDetailsToggle = () => {
       {icon}
     </IconButton>
   ) : (
-    <Button color="ghost" size="extraSmall" endIcon={icon} {...common}>
+    <Button color="ghost" size="extraSmall" endIcon={icon} sx={{ textWrapMode: 'nowrap', flexShrink: 0 }} {...common}>
       {label}
     </Button>
   )

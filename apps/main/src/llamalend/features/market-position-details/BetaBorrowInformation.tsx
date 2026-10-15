@@ -1,6 +1,7 @@
 import { ESTIMATED_LEVERAGED_APR_TITLE } from '@/llamalend/constants'
 import {
   formatBandSpan,
+  formatCompositionLabels,
   formatPriceDistanceHeadline,
   formatPriceDistanceDescription,
   inclusiveBandCount,
@@ -13,17 +14,22 @@ import {
 } from '@/llamalend/features/market-position-details/PositionMetricTooltip'
 import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { BorrowPositionView } from '@/llamalend/position-metrics/use-borrow-position-view'
+import { pnlText } from '@/llamalend/widgets/pnl.utils'
 import { PnlInDebtToken } from '@/llamalend/widgets/PnlLine'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
+import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
+import { NotionalText } from './NotionalText'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
+const OPENING_LEVERAGE_FORMAT = { abbreviate: false, maximumSignificantDigits: 3, unit: 'multiplier' } as const
 
 export const BetaBorrowInformation = ({
   view,
@@ -35,6 +41,12 @@ export const BetaBorrowInformation = ({
   const theme = useTheme()
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
   const collateralSymbol = collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
+  // Notionals add a second line to each metric, so they only show with More details open.
+  const [detailsOpen] = usePositionDetailsOpen()
+  const converted = formatCompositionLabels(view.composition)?.borrowed
+  const equityUsd = maybes([view.equity.data, view.borrowUsdRate.data], (amount, rate) =>
+    formatNumber(decimalMultiply(amount, rate), 'usd.notional'),
+  )
   const roe = view.roe.data
   const multiplier = roe?.status === 'value' ? roe.multiplier : undefined
   return (
@@ -52,6 +64,15 @@ export const BetaBorrowInformation = ({
           value={mapQuery(view.distance, formatPriceDistanceHeadline)}
           valueOptions={{ abbreviate: false }}
           sx={{ whiteSpace: { mobile: 'normal', tablet: 'nowrap' } }}
+          notional={
+            detailsOpen &&
+            view.distance.data?.location === 'inside' && (
+              <NotionalText
+                text={converted && t`${converted} converted to ${borrowSymbol}`}
+                testId="range-converted-share"
+              />
+            )
+          }
           valueTooltip={rangeTooltip({
             pair: view.priceUnit,
             upper: view.userPrices.data ? formatNumber(view.userPrices.data[1], { abbreviate: true }) : undefined,
@@ -69,6 +90,7 @@ export const BetaBorrowInformation = ({
           value={view.equity}
           valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
           valueTooltip={equityTooltip()}
+          notional={detailsOpen && <NotionalText text={equityUsd} testId="position-equity-usd" />}
         />
       </Box>
       <Box sx={{ gridArea: 'pnl' }}>
@@ -82,6 +104,14 @@ export const BetaBorrowInformation = ({
             formatter: value => `${Number(value) > 0 ? '+' : ''}${formatNumber(value, { abbreviate: true })}`,
           }}
           change={maybe(view.pnl.data?.percentCollateral, Number)}
+          notional={
+            detailsOpen && (
+              <NotionalText
+                text={maybe(view.pnl.data, pnl => pnlText(Number(pnl.pnl), borrowSymbol, pnl.percent))}
+                testId="position-pnl-debt"
+              />
+            )
+          }
           valueTooltip={maybe(view.pnl.data, pnl => ({
             title: t`PNL (ROE %)`,
             body: <PnlInDebtToken pnl={pnl} borrowSymbol={borrowSymbol} />,
@@ -98,6 +128,17 @@ export const BetaBorrowInformation = ({
           value={view.leverage}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={leverageTooltip()}
+          notional={
+            detailsOpen && (
+              <NotionalText
+                text={maybe(
+                  view.openingLeverage.data,
+                  opening => t`Opened at ${formatNumber(opening, OPENING_LEVERAGE_FORMAT)}`,
+                )}
+                testId="position-opening-leverage"
+              />
+            )
+          }
         />
       </Box>
       {roe?.status !== 'hidden' && (

@@ -172,6 +172,10 @@ export const getUserPositionPnl = (row: LlamaMarketRow) => {
   return positionPnl({ equity: amounts.equity, debt: amounts.debt, oraclePrice: amounts.oracle, history })
 }
 
+/** ROE percent in the collateral token, used to sort the PNL column. */
+export const getUserPositionRoePercent = (row: LlamaMarketRow) =>
+  maybe(getUserPositionPnl(row)?.percentCollateral, Number)
+
 /** Leverage of the borrow that opened the position, in the same units as the current leverage. */
 export const getUserPositionOpeningLeverage = (row: LlamaMarketRow) =>
   maybe(row.positionQueries.history.data?.openingLeverage, Number)

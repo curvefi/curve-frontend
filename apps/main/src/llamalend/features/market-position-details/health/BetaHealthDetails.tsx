@@ -18,15 +18,19 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
+import { maybe } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
 import { Tooltip } from '@ui/components/Tooltip'
+import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { NotionalText } from '../NotionalText'
 
 export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPositionView; borrowSymbol: string }) => {
   const theme = useTheme()
+  const [detailsOpen] = usePositionDetailsOpen()
   const assetsThresholds = view.assetsType ? PROVISIONAL_POSITION_THRESHOLDS[view.assetsType] : undefined
   const healthFeedback = getRangeHealthFeedback(view.health.data, view.assetsType)
   const bufferIsRed = isCriticalBuffer(view.fullHealth.data, view.assetsType)
@@ -89,6 +93,17 @@ export const BetaHealthDetails = ({ view, borrowSymbol }: { view: BorrowPosition
               return parsed == undefined ? '' : formatSignedPercent(parsed)
             },
           }}
+          notional={
+            detailsOpen && (
+              <NotionalText
+                text={maybe(
+                  view.buffer.data,
+                  amount => `${formatNumber(amount, { abbreviate: true })} ${borrowSymbol}`,
+                )}
+                testId="liquidation-buffer-amount"
+              />
+            )
+          }
           valueTooltip={bufferTooltip({
             criticalBuffer: formatNumber(assetsThresholds?.criticalBufferPercent ?? '0', 'percent.rate'),
             amount: view.buffer.data != null ? formatNumber(view.buffer.data, 'token.balance') : t`Unavailable`,
