@@ -337,7 +337,7 @@ export const leverageTooltip = () => ({
   body: (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Collateral exposure divided by the equity at risk. Only debt looped back into collateral through leverage counts, so borrowing to your wallet reads 1×.`}
+        text={t`Collateral exposure divided by the equity at risk. Only debt looped back into collateral through Curve's leverage counts, so borrowing to your wallet reads 1×. Loops you build by hand, borrowing and depositing again yourself, count as wallet borrows and read lower than their real leverage.`}
       />
       <Calculation>
         <LeverageEquation />
