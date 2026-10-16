@@ -1,12 +1,12 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
+import { reactCompiler } from '../react-compiler.config'
 
 export default defineConfig({
   cacheDir: resolve(__dirname, '../.cache/vite/tests'),
-  plugins: [react(), babel({ presets: [reactCompilerPreset({ compilationMode: 'annotation' })] }), svgr()],
+  plugins: [react(), reactCompiler(), svgr()],
   resolve: {
     alias: [
       { find: '@cy', replacement: resolve(__dirname, './cypress') },

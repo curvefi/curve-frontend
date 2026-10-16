@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/refs -- Legacy code will be deleted. */
+
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { Loader } from '@legacy-ui/Loader'

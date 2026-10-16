@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import react from '@vitejs/plugin-react'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import svgr from 'vite-plugin-svgr'
 import { vercel } from 'vite-plugin-vercel/vite'
+import { reactCompiler } from '../../react-compiler.config'
 
 const {
   SENTRY_AUTH_TOKEN,
@@ -24,7 +24,7 @@ export default defineConfig(({ command }) => ({
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-stellar'),
   plugins: [
     react(),
-    babel({ presets: [reactCompilerPreset({ compilationMode: 'annotation' })] }),
+    reactCompiler(),
     svgr(),
     ...(isVercelDeployment
       ? [
