@@ -6,12 +6,12 @@ import { decimal } from '@ui/lib/decimal'
 
 export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUserPoolLiquidityUsdQuery } = queryFactory(
   {
-    queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-      ({ name: 'userLiquidityUSD', chainId, poolId, userAddress }) as const,
+    queryKey: ({ chainId, poolAddress, userAddress }: UserPoolParams) =>
+      ({ name: 'userLiquidityUSD', chainId, poolAddress, userAddress }) as const,
     category: 'dex.user',
-    queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>
+    queryFn: async ({ poolAddress, userAddress }: UserPoolQuery) =>
       requireLib('curveApi')
-        .getPool(poolId)
+        .getPool(poolAddress)
         .userLiquidityUSD(userAddress)
         .catch(() => 'NaN') // todo: remove, this is gross
         .then(x => decimal(x) ?? null),

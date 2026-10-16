@@ -44,8 +44,8 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     chainId,
     blockchainId,
     userAddress: signerAddress,
-    poolId,
     pool,
+    poolAddress,
     api: curve,
     isWrapped,
     setIsWrapped,
@@ -71,7 +71,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const haveSigner = !!signerAddress
 
   const { address: userAddress } = useConnection()
-  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
+  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })
 
   const config = useConfig()
 
@@ -85,7 +85,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         'WITHDRAW',
         config,
         curve,
-        poolId,
+        pool.id,
         pool,
         { isWrapped, ...updatedFormValues },
         null,
@@ -93,7 +93,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, isWrapped, pool, poolId, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, pool, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -221,19 +221,19 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (poolAddress) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [poolAddress])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({}, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // max Slippage
   useEffect(() => {
@@ -266,7 +266,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   }, [
     config,
     chainId,
-    poolId,
+    poolAddress,
     signerAddress,
     formValues,
     formStatus,

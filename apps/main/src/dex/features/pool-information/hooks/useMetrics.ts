@@ -3,6 +3,7 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
+import type { Address } from '@primitives/address.utils'
 import { DEFAULT_DECIMALS, maybe, maybes } from '@primitives/objects.utils'
 import type { PoolInformationMetricsProps } from '@ui/features/pools/PoolInformationMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
@@ -11,21 +12,21 @@ import { decimal, decimalPercent, fromWei } from '@ui/lib/decimal'
 
 export const useMetrics = ({
   chainId,
-  poolId,
+  poolAddress,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolId: string
+  poolAddress: Address
   pricesApiPoolData?: PricesApiPool
 }): PoolInformationMetricsProps => {
-  const staked = usePoolTotalStaked({ chainId, poolId })
+  const staked = usePoolTotalStaked({ chainId, poolAddress })
   return {
     gaugeTotalSupply: mapQuery(staked, data =>
       maybe(decimal(data.gaugeTotalSupply), supply => fromWei(supply, DEFAULT_DECIMALS)),
     ),
     totalStakedPercent: mapQuery(staked, data => decimal(data.totalStakedPercent)),
     liquidityUtilization: fallbackQ(
-      combineQueries([usePoolVolume({ chainId, poolId }), usePoolTvl({ chainId, poolId })], decimalPercent),
+      combineQueries([usePoolVolume({ chainId, poolAddress }), usePoolTvl({ chainId, poolAddress })], decimalPercent),
       constQ(maybes([pricesApiPoolData?.tradingVolume24h, pricesApiPoolData?.tvlUsd].map(decimal), decimalPercent)),
     ),
   }

@@ -7,9 +7,9 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: usePoolGaugeStatusQuery, invalidate: invalidatePoolGaugeStatus } = queryFactory({
   category: 'dex.gauge',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'pool.gaugeStatus', chainId, poolId }) as const,
-  queryFn: async ({ poolId }: PoolQuery) =>
-    ((await requireLib('curveApi').getPool(poolId).gaugeStatus()) as IGaugesDataFromApi['gaugeStatus']) ?? null,
+  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'pool.gaugeStatus', chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) =>
+    ((await requireLib('curveApi').getPool(poolAddress).gaugeStatus()) as IGaugesDataFromApi['gaugeStatus']) ?? null,
   validationSuite: curvePoolValidationSuite,
 })
 

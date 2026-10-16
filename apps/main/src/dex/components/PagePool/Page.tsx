@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { test } from 'vest'
 import { getAddress, isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
@@ -13,8 +14,10 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
-import type { PoolQuery, UserPoolParams } from '@evm-ui/queries/query-types'
-import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
+import type { UserChainParams } from '@evm-ui/queries/query-types'
+import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
+import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
+import type { Nullish } from '@primitives/objects.utils'
 import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
@@ -22,23 +25,33 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
+import { enforce } from '@ui/lib/validation/enforce-extension'
+import { createValidationSuite } from '@ui/lib/validation/lib'
+
+type PoolLookupParams = UserChainParams & { poolIdOrAddress: Nullish | string }
 
 const { useQuery: usePoolQuery } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-    ({ name: 'pool.lookup', chainId, poolId, userAddress }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => {
+  queryKey: ({ chainId, poolIdOrAddress, userAddress }: PoolLookupParams) =>
+    ({ name: 'pool.lookup', chainId, poolIdOrAddress, userAddress }) as const,
+  queryFn: async ({ poolIdOrAddress }: { poolIdOrAddress: string }) => {
     const curveApi = requireLib('curveApi')
-    const pool = tryGetPool(poolId, curveApi)
+    const pool = tryGetPool(poolIdOrAddress, curveApi)
     if (pool) return pool
 
     try {
       await fetchNewPools(curveApi)
-      return tryGetPool(poolId, curveApi) ?? null
+      return tryGetPool(poolIdOrAddress, curveApi) ?? null
     } catch {
       return null
     }
   },
-  validationSuite: curvePoolValidationSuite,
+  validationSuite: createValidationSuite(({ chainId, poolIdOrAddress }: PoolLookupParams) => {
+    chainValidationGroup({ chainId })
+    curveApiValidationGroup({ chainId })
+    test('poolIdOrAddress', () => {
+      enforce(poolIdOrAddress).message('Pool ID or address is required').isNotEmpty()
+    })
+  }),
   category: 'global.no-persist',
   disableLog: true, // Pool instances have circular references that cannot be serialized by the query logger used in Cypress.
 })
@@ -53,7 +66,7 @@ export const PagePool = () => {
 
   const { data: pool } = useHydratedQuery(usePoolQuery, {
     chainId,
-    poolId: poolIdOrAddress,
+    poolIdOrAddress,
     // The query returns a pool tied to a specific curve-js instance, which gets recreated on user address change.
     userAddress: curveApi?.signerAddress || undefined,
   })

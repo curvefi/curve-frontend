@@ -41,7 +41,7 @@ describe('Pool Deposit (RPC)', () => {
   const pool = oneOf(...DEPOSIT_TEST_POOLS)
 
   const TestWrapper = () => (
-    <PoolTestCase vnet={getVirtualNetwork()} account={privateKey} chainId={CHAIN_ID} poolId={pool.id}>
+    <PoolTestCase vnet={getVirtualNetwork()} account={privateKey} chainId={CHAIN_ID} poolAddress={pool.address}>
       <DepositTab
         maxSlippage="0.5"
         poolAlert={null}

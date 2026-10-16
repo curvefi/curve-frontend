@@ -40,7 +40,7 @@ function useForceSeedAmounts(
 }
 
 export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
-  const { chainId, poolId, pool, isWrapped: initialWrapped, setIsWrapped, blockchainId, api } = usePoolContext()
+  const { chainId, poolAddress, pool, isWrapped: initialWrapped, setIsWrapped, blockchainId, api } = usePoolContext()
   const { address: userAddress } = useConnection()
   const nativeToken = api?.getNetworkConstants().NATIVE_TOKEN
   const initialTokenCount = (initialWrapped ? pool.wrappedCoins : pool.underlyingCoins).length
@@ -65,7 +65,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     userAddress,
     isWrapped,
   })
-  const reserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
+  const reserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const isSeed = mapQuery(reserves, reserves => !Number(reserves.total))
   useFormSync(form, { decimals })
 
@@ -78,7 +78,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   }, [canDepositWrapped, update, isSeed.data])
 
   const [params, isDebouncing] = useFormDebounce(
-    { ...values, chainId, poolId, decimals, userAddress },
+    { ...values, chainId, poolAddress, decimals, userAddress },
     userDefaultValues,
   )
 
@@ -90,7 +90,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     onSubmit: submitMutation,
     isPending: isDepositing,
     error,
-  } = useDepositMutation({ chainId, poolId, tokenCount, onReset: () => reset(userDefaultValues) })
+  } = useDepositMutation({ chainId, poolAddress, tokenCount, onReset: () => reset(userDefaultValues) })
 
   const isPending = formState.isSubmitting || isDepositing
   const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isLoading

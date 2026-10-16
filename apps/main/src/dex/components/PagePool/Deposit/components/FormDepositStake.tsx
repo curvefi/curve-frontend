@@ -40,8 +40,16 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps) => {
-  const { chainId, blockchainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const {
+    chainId,
+    blockchainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool,
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -51,7 +59,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   )
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolId })
+  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolAddress })
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
@@ -200,19 +208,19 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (poolAddress) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [poolAddress])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // max Slippage
   useEffect(() => {
@@ -240,7 +248,16 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus, slippage.isHighSlippage, slippageConfirmed, maxSlippage])
+  }, [
+    chainId,
+    poolAddress,
+    signerAddress,
+    formValues,
+    formStatus,
+    slippage.isHighSlippage,
+    slippageConfirmed,
+    maxSlippage,
+  ])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const disableForm = !seed.loaded || formStatus.formProcessing

@@ -1,5 +1,5 @@
 import { sum } from 'lodash'
-import { getAddress } from 'viem'
+import { getAddress, type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { ChainId } from '@/dex/types/main.types'
@@ -15,21 +15,21 @@ import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
   chainId,
-  poolId,
+  poolAddress,
   isWrapped,
   tokens,
   tokenAddresses,
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolId: string
+  poolAddress: Address
   isWrapped: boolean
   tokens: string[]
   tokenAddresses: string[]
   pricesApiPoolData?: PricesApiPool
 }) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
 
   // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !isLiteChain(chainId)

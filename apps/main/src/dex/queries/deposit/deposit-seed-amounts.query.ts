@@ -5,10 +5,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useSeedAmounts } = queryFactory({
-  queryKey: ({ chainId, poolId, isWrapped, amounts }: DepositParams) =>
-    ({ name: 'depositSeedAmounts', chainId, poolId, isWrapped, amounts }) as const,
-  queryFn: async ({ poolId, isWrapped, amounts }: DepositQuery) =>
-    (await requireLib('curveApi').getPool(poolId).getSeedAmounts(amounts[0], !isWrapped)) as Decimal[],
+  queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
+    ({ name: 'depositSeedAmounts', chainId, poolAddress, isWrapped, amounts }) as const,
+  queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>
+    (await requireLib('curveApi').getPool(poolAddress).getSeedAmounts(amounts[0], !isWrapped)) as Decimal[],
   category: 'dex.pool',
   validationSuite: depositQueryValidationSuite,
 })

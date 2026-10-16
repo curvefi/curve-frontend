@@ -48,7 +48,6 @@ function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
 
 const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi: boolean) => {
   const resp = {
-    poolId: p.id,
     base: { day: '0', week: '0' },
     other: [] as RewardOther[],
     crv: [0, 0],
@@ -134,10 +133,10 @@ type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
 
 const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQuery } = queryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolId, useApi }: PoolRewardsApyParams) =>
-    ({ name: 'rewardsApy', chainId, poolId, useApi }) as const,
-  queryFn: async ({ chainId, poolId, useApi }: PoolRewardsApyQuery) => {
-    const pool = requireLib('curveApi').getPool(poolId)
+  queryKey: ({ chainId, poolAddress, useApi }: PoolRewardsApyParams) =>
+    ({ name: 'rewardsApy', chainId, poolAddress, useApi }) as const,
+  queryFn: async ({ chainId, poolAddress, useApi }: PoolRewardsApyQuery) => {
+    const pool = requireLib('curveApi').getPool(poolAddress)
     const networks = await fetchNetworks()
     return await poolAllRewardsApy(networks[chainId], pool, useApi)
   },
