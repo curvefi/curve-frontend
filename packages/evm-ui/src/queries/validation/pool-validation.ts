@@ -5,12 +5,12 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'
 import { curveApiValidationGroup } from './curve-api-validation'
 
-export const poolValidationGroup = ({ chainId, poolId }: PoolParams) =>
+export const poolValidationGroup = ({ chainId, poolAddress }: PoolParams) =>
   group('poolValidation', () => {
     chainValidationGroup({ chainId })
 
-    test('poolId', () => {
-      enforce(poolId).message('Pool ID is required').isNotEmpty()
+    test('poolAddress', () => {
+      enforce(poolAddress).message('Pool address is required').isNotEmpty()
     })
   })
 

@@ -22,24 +22,24 @@ import { t } from '@ui/lib/i18n'
 
 type GaugeRewardMutationOptions = GaugeQuery & { onReset: () => void }
 
-export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
+export const useAddRewardToken = ({ chainId, poolAddress, onReset }: GaugeRewardMutationOptions) => {
   const { data: tokens } = useTokens({ chainId })
   const { address: userAddress } = useConnection()
   const getRewardTokenSymbol = ({ rewardTokenId }: AddRewardMutation) => getToken(tokens, rewardTokenId)?.symbol ?? ''
 
   const { mutate, error, isPending } = useEvmMutation<AddRewardMutation>({
-    mutationKey: [{ chainId, poolId, name: 'addRewardToken' }] as const,
+    mutationKey: [{ chainId, poolAddress, name: 'addRewardToken' }] as const,
     mutationFn: async ({ rewardTokenId, distributorId }) => ({
-      hash: (await getGauge(poolId).addReward(rewardTokenId, distributorId)) as Hex,
+      hash: (await getGauge(poolAddress).addReward(rewardTokenId, distributorId)) as Hex,
     }),
     validationSuite: gaugeAddRewardValidationSuite,
-    validationParams: { chainId, poolId },
+    validationParams: { chainId, poolAddress },
     pendingMessage: mutation => t`Adding reward token ${getRewardTokenSymbol(mutation)}`,
     successMessage: mutation => t`Added reward token ${getRewardTokenSymbol(mutation)}`,
     onSuccess: () =>
       Promise.all([
-        invalidateGaugeDistributors({ chainId, poolId, userAddress }),
-        invalidateDepositRewardAvailable({ chainId, poolId }),
+        invalidateGaugeDistributors({ chainId, poolAddress, userAddress }),
+        invalidateDepositRewardAvailable({ chainId, poolAddress }),
       ]),
     onReset,
   })
@@ -49,29 +49,32 @@ export const useAddRewardToken = ({ chainId, poolId, onReset }: GaugeRewardMutat
   return { onSubmit, mutate, error, isPending }
 }
 
-export const useDepositReward = ({ chainId, poolId, onReset }: GaugeRewardMutationOptions) => {
+export const useDepositReward = ({ chainId, poolAddress, onReset }: GaugeRewardMutationOptions) => {
   const { data: tokens } = useTokens({ chainId })
   const config = useConfig()
   const getRewardTokenSymbol = ({ rewardTokenId }: DepositRewardMutation) =>
     getToken(tokens, rewardTokenId)?.symbol ?? ''
 
   const { mutate, error, isPending } = useEvmMutation<DepositRewardMutation>({
-    mutationKey: [{ chainId, poolId, name: 'depositReward' }] as const,
+    mutationKey: [{ chainId, poolAddress, name: 'depositReward' }] as const,
     mutationFn: async ({ amount, rewardTokenId, epoch, userBalance }) => {
       await waitForApproval({
         isApproved: async () =>
-          await fetchDepositRewardIsApproved({ chainId, poolId, amount, rewardTokenId, userBalance }, { staleTime: 0 }),
-        onApprove: async () => (await getGauge(poolId).depositRewardApprove(rewardTokenId, amount)) as Hex[],
+          await fetchDepositRewardIsApproved(
+            { chainId, poolAddress, amount, rewardTokenId, userBalance },
+            { staleTime: 0 },
+          ),
+        onApprove: async () => (await getGauge(poolAddress).depositRewardApprove(rewardTokenId, amount)) as Hex[],
         message: t`Approved deposit reward`,
         config,
       })
-      return { hash: (await getGauge(poolId).depositReward(rewardTokenId, amount, epoch)) as Hex }
+      return { hash: (await getGauge(poolAddress).depositReward(rewardTokenId, amount, epoch)) as Hex }
     },
     validationSuite: gaugeDepositRewardValidationSuite,
-    validationParams: { chainId, poolId },
+    validationParams: { chainId, poolAddress },
     pendingMessage: mutation => t`Depositing reward token ${getRewardTokenSymbol(mutation)}`,
     successMessage: mutation => t`Deposited reward token ${getRewardTokenSymbol(mutation)}`,
-    onSuccess: () => invalidateDepositRewardAvailable({ chainId, poolId }),
+    onSuccess: () => invalidateDepositRewardAvailable({ chainId, poolAddress }),
     onReset,
   })
 

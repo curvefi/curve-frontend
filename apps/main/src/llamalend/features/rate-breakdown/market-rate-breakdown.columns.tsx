@@ -53,7 +53,6 @@ const rateColumns = (rateHeader: string) =>
       cell: ({ getValue, row }) => (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <TokenInfo
-            icon={null}
             iconPosition="right"
             primary={formatNumber(getValue(), 'percent.rate')}
             secondary={maybe(row.original.maxBoostRate, maxBoostRate =>

@@ -4,11 +4,12 @@ import { usePoolA } from '@/stellar/queries/pool/pool-a.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolVirtualPrice } from '@/stellar/queries/pool/pool-virtual-price.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
+import type { LitePool } from '@curvefi/prices-api/pools'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { constQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -21,12 +22,12 @@ export const PoolAdvancedDetails = ({
   network,
   pool,
   tokens,
-}: PoolQuery & { tokens: QueryProp<PoolToken>[] | undefined }) => {
+  litePool,
+}: PoolQuery & { tokens: QueryProp<PoolToken>[] | undefined; litePool: QueryProp<LitePool | null> }) => {
   const currentDate = useCurrentDate()
   const params = { network, pool }
   const a = usePoolA(params)
   const config = usePoolConfig(params)
-
   const {
     future_a,
     future_a_time,
@@ -42,7 +43,13 @@ export const PoolAdvancedDetails = ({
   return (
     <AdvancedDetails
       chainId={STELLAR_NETWORKS[network].chainId}
-      info={{ poolType: t`Stableswap` }}
+      info={{
+        poolType: fallbackQ(
+          mapQuery(litePool, pool => notFalsy(t`Stableswap`, pool?.isMetaPool && t`Metapool`).join(', ')),
+          constQ(t`Stableswap`),
+        ),
+        poolId: mapQuery(litePool, pool => pool?.id),
+      }}
       contracts={{ poolAddress: asAddress(pool), lpTokenAddress: asAddress(pool) }}
       prices={{ tokenSymbols, tokenAddresses: tokenAddresses?.map(asAddress) }}
       parameters={{

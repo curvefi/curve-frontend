@@ -306,8 +306,17 @@ export const getVaultAddress = <T extends MarketTemplate | Nullish>(
     m => m.vaultAddress,
   )
 
-export const getGaugeAddress = (market: MarketTemplate | Nullish): Address | undefined =>
-  isLendMarket(market) && market.addresses.gauge !== zeroAddress ? (market.addresses.gauge as Address) : undefined
+export const getGaugeAddress = <T extends MarketTemplate | Nullish>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address | null> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market =>
+      isLendMarket(market) && market.addresses.gauge !== zeroAddress ? (market.addresses.gauge as Address) : null,
+    m => m.supplyGaugeAddress,
+  )
 
 export const getVaultToken = <T extends MarketTemplate | Nullish>(
   market: T,

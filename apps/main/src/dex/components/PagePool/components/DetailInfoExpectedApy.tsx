@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { getAddress } from 'viem'
 import { usePoolTotalStaked } from '@/dex/queries/pool-total-staked.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { weiToEther } from '@evm-ui/utils'
@@ -19,7 +20,7 @@ export const DetailInfoExpectedApy = ({
   lpTokenAmount: string
   pool: PoolTemplate
 }) => {
-  const { data: staked } = usePoolTotalStaked({ chainId: pool.curve.chainId, poolId: pool.id })
+  const { data: staked } = usePoolTotalStaked({ chainId: pool.curve.chainId, poolAddress: getAddress(pool.address) })
   const { gaugeTotalSupply } = staked ?? {}
 
   const newCrvApr = useMemo(() => {

@@ -6,7 +6,6 @@ import type { PoolRow } from '../types'
 
 export const DepositsCell = ({ pool: { userPosition } }: { pool: PoolRow }) => (
   <TokenInfo
-    icon={null}
     iconPosition="right"
     primary={maybe(userPosition, p => mapQuery(p.depositsUsd, value => formatNumber(value, 'usd.precise')))}
     secondary={maybe(userPosition, p => `${formatNumber(p.lpBalance, 'token.balance')} LP`)}

@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { getAddress } from 'viem'
 import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
@@ -353,7 +354,7 @@ export const createPoolWithdrawSlice = (
           return curvejsApi.poolWithdraw.unstakeEstGas(activeKey, chainId, pool, formValues.stakedLpToken)
         }
         if (formType !== 'WITHDRAW') return
-        const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, pool.id)
+        const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, getAddress(pool.address))
         if (+formValues.lpToken <= 0 || +lpTokenBalance < +formValues.lpToken) return
 
         const { withdrawEstGasApproval, withdrawImbalanceEstGasApproval, withdrawOneCoinEstGasApproval } =
@@ -466,7 +467,11 @@ export const createPoolWithdrawSlice = (
           cFormStatus.formTypeCompleted = 'WITHDRAW'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)]).catch(error =>
             notify(
               t`Transaction succeeded, but balances could not be refreshed.` + ' ' + getErrorMessage(error),
@@ -501,7 +506,11 @@ export const createPoolWithdrawSlice = (
           cFormStatus.formTypeCompleted = 'UNSTAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)]).catch(error =>
             notify(
               t`Transaction succeeded, but balances could not be refreshed.` + ' ' + getErrorMessage(error),
@@ -542,7 +551,11 @@ export const createPoolWithdrawSlice = (
           const storedFormValues = get()[SLICE_KEY].formValues
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(storedFormValues) })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 

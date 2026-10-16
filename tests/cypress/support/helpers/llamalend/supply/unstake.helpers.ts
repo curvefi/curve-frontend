@@ -8,7 +8,8 @@ import {
   writeSupplyInput,
 } from './supply.helpers'
 
-export const submitUnstakeForm = (isMocked = false) => submitSupplyForm('unstake', 'Unstake successful!', isMocked)
+export const submitUnstakeForm = (isMocked = false) =>
+  submitSupplyForm('unstake', { message: 'Unstake successful!' }, isMocked)
 
 export const readUnstakeAvailableAssets = (isMocked = false) =>
   getSupplyInputBalanceValueAttr('unstake', isMocked)

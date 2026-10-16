@@ -24,6 +24,7 @@ import {
   type TenderlyWagmiConfigFromVNet,
 } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
@@ -154,9 +155,11 @@ describe('Gauge Management (RPC)', () => {
     cy.get(`[data-testid="token-option-${REWARD_TOKEN_ADDRESS.toLowerCase()}"]`).click()
     cy.get('[data-testid="add-reward-distributor-input"]').clear()
     cy.get('[data-testid="add-reward-distributor-input"]').type(REWARD_DISTRIBUTOR_ADDRESS)
-    cy.get('[data-testid="add-reward-submit-button"]', TIMEOUTS['ui.interaction']).click()
-
-    cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should('be.visible')
+    submitAndExpectToast(
+      () => cy.get('[data-testid="add-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
+      { message: `Added reward token ${REWARD_TOKEN_SYMBOL}` },
+      'evm.confirmation',
+    )
     expectGaugeRewardDistributor({
       publicRpcUrl,
       gaugeAddress: GAUGE_ADDRESS,
@@ -172,9 +175,11 @@ describe('Gauge Management (RPC)', () => {
 
         cy.get('[data-testid="deposit-amount"]', TIMEOUTS['ui.render']).should('be.visible')
         cy.get('[data-testid="deposit-amount"] input[type="text"]').type(DEPOSIT_REWARD_AMOUNT)
-        cy.get('[data-testid="deposit-reward-submit-button"]', TIMEOUTS['ui.interaction']).click()
-
-        cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should('be.visible')
+        submitAndExpectToast(
+          () => cy.get('[data-testid="deposit-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
+          { message: 'Deposited reward token', approvalMessage: 'Approved deposit reward' },
+          'evm.confirmation',
+        )
         expectErc20BalanceChange({
           publicRpcUrl,
           tokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,

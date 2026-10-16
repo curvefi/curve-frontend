@@ -32,7 +32,12 @@ export function checkClosePositionDetailsLoaded({ debt, isMocked = false }: { de
 }
 
 export const submitClosePositionForm = (isMocked = false) =>
-  submitLoanForm({ form: 'close-position', message: 'Position closed successfully!', isMocked })
+  submitLoanForm({
+    form: 'close-position',
+    message: 'Position closed successfully!',
+    approvalMessage: 'Approved closing position',
+    isMocked,
+  })
 
 export function checkResetPositionInputsLoaded({ convertedBorrowed }: { convertedBorrowed: Decimal }) {
   getResetPositionConvertedInput().should('have.value', convertedBorrowed)
@@ -75,4 +80,4 @@ export const checkResetPositionWalletAmount = ({ amount }: { amount: Decimal }) 
   getResetPositionWalletInput().should('have.value', amount)
 
 export const submitResetPositionForm = ({ message, isMocked = false }: { message: string; isMocked?: boolean }) =>
-  submitLoanForm({ form: 'reset-position', message, isMocked })
+  submitLoanForm({ form: 'reset-position', message, approvalMessage: 'Approved reset', isMocked })

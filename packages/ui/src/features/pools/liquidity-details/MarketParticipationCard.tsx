@@ -3,7 +3,6 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -25,16 +24,22 @@ export const MarketParticipationCard = ({
         label={t`Your share of pool`}
         value={mapQuery(userLpShare, data => formatNumber(amount(data), 'percent.value'))}
       />
-      <ActionInfo
-        label={t`LP tokens staked`}
-        value={mapQuery(stakedBalance, balance => formatNumber(amount(balance), 'token.balance'))}
-        valueRight={maybe(stakedPercent.data, value => `(${formatNumber(value, 'percent.value')})`)}
-      />
-      <ActionInfo
-        label={t`LP tokens unstaked`}
-        value={mapQuery(unstakedBalance, balance => formatNumber(amount(balance), 'token.balance'))}
-        valueRight={maybe(unstakedPercent.data, value => `(${formatNumber(value, 'percent.value')})`)}
-      />
+      {stakedBalance && (
+        <ActionInfo
+          label={t`LP tokens staked`}
+          value={mapQuery(stakedBalance, balance => formatNumber(amount(balance), 'token.balance'))}
+          valueRight={stakedPercent && mapQuery(stakedPercent, value => `(${formatNumber(value, 'percent.value')})`)}
+        />
+      )}
+      {unstakedBalance && (
+        <ActionInfo
+          label={t`LP tokens unstaked`}
+          value={mapQuery(unstakedBalance, balance => formatNumber(amount(balance), 'token.balance'))}
+          valueRight={
+            unstakedPercent && mapQuery(unstakedPercent, value => `(${formatNumber(value, 'percent.value')})`)
+          }
+        />
+      )}
     </CardContent>
   </Card>
 )

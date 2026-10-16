@@ -29,6 +29,7 @@ const market = z
     version: z.number(),
     controller: address,
     vault: address,
+    gauge_address: address.nullable(),
     llamma: address,
     policy: address,
     oracle: address,

@@ -5,13 +5,13 @@ import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-valida
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
-const getPoolTvlFromLib = async ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
-  (await requireLib('curveApi').getPool(poolId).stats.totalLiquidity()) as Decimal
+const getPoolTvlFromLib = async ({ poolAddress }: Pick<PoolQuery, 'poolAddress'>) =>
+  (await requireLib('curveApi').getPool(poolAddress).stats.totalLiquidity()) as Decimal
 
 const { useQuery: usePoolTvlQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'stats.tvl', chainId, poolId }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => await getPoolTvlFromLib({ poolId }),
+  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'stats.tvl', chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) => await getPoolTvlFromLib({ poolAddress }),
   validationSuite: curvePoolValidationSuite,
 })
 

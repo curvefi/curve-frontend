@@ -113,6 +113,7 @@ export const seedLendMarketSolvencyQueries = ({
       totalDebt: 20,
       totalDebtUsd: 20,
       vault: vaultAddress,
+      gaugeAddress: null,
       llamma: oneAddress(),
       collateralToken: {
         symbol: market.collateral_token.symbol,

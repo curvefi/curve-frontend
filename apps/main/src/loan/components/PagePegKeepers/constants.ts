@@ -11,7 +11,6 @@ export const PEG_KEEPERS = [
     token: 'USDC',
     poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-crvusd-0/deposit`),
     pool: {
-      id: 'factory-crvusd-0',
       name: 'crvUSD/USDC',
       address: '0x4dece678ceceb27446b35c672dc7d61f30bad69e',
       underlyingCoins: ['USDC', 'crvUSD'],
@@ -23,7 +22,6 @@ export const PEG_KEEPERS = [
     token: 'USDT',
     poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-crvusd-1/deposit`),
     pool: {
-      id: 'factory-crvusd-1',
       name: 'crvUSD/USDT',
       address: '0x390f3595bca2df7d23783dfd126427cceb997bf4',
       underlyingCoins: ['USDT', 'crvUSD'],
@@ -35,7 +33,6 @@ export const PEG_KEEPERS = [
     token: 'pyUSD',
     poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-42/deposit`),
     pool: {
-      id: 'factory-stable-ng-42',
       name: 'crvUSD/pyUSD',
       address: '0x625e92624bc2d88619accc1788365a69767f6200',
       underlyingCoins: ['PYUSD', 'crvUSD'],
@@ -47,7 +44,6 @@ export const PEG_KEEPERS = [
     token: 'frxUSD',
     poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-510/deposit`),
     pool: {
-      id: 'factory-stable-ng-510',
       name: 'crvUSD/frxUSD',
       address: '0x13e12bb0e6a2f1a3d6901a59a9d585e89a6243e1',
       underlyingCoins: ['frxUSD', 'crvUSD'],

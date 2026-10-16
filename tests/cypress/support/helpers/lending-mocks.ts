@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
@@ -51,6 +52,7 @@ const oneLendingPool = (
     version,
     controller: oneAddress(),
     vault: oneAddress(),
+    gauge_address: oneOf(null, oneAddress()),
     llamma: oneAddress(),
     policy: oneAddress(),
     oracle: oneAddress(),
@@ -96,7 +98,7 @@ const oneLendingPool = (
 
 export const HIGH_TVL_ADDRESS = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 export const HIGH_UTILIZATION_ADDRESS = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
-const REWARDS_TEST_ADDRESS = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
+const REWARDS_TEST_ADDRESS = getAddress('0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 
 function oneLendingVaultResponse(blockchainId: Chain): GetMarketsResponse {
   const count = oneInt(15, 20)

@@ -19,9 +19,10 @@ export function usePoolComposition({
 }: PoolQuery & {
   tokenAddresses: QueryProp<StellarContract[]>
   symbols: QueryProp<string>[] | undefined
-  decimals: (number | undefined)[] | undefined
+  decimals: QueryProp<number>[] | undefined
 }) {
-  const reserves = usePoolReserves({ network, pool, decimals })
+  const reservesQuery = usePoolReserves({ network, pool, decimals: decimals?.map(q => q.data) })
+  const reserves = q({ data: reservesQuery.data, ...combineQueryState(reservesQuery, ...(decimals ?? [])) })
   const prices = useQueries({
     queries: tokenAddresses.data?.map(token => getTokenUsdRateQueryOptions({ network, token })) ?? [],
   })
@@ -29,19 +30,25 @@ export function usePoolComposition({
   const amountsUsd = maybe(reserves.data, amounts =>
     zip(amounts, prices).map(([amount, price]) => combineQueries([toQuery(amount, reserves), price], decimalMultiply)),
   )
-  const totalUsd = combineQueries([reserves, ...(amountsUsd ?? [])], (_, ...amounts) => decimalSum(...amounts))
+  const totalUsd = q({
+    data: maybe(amountsUsd, amounts => combineQueries(amounts, decimalSum).data),
+    ...combineQueryState(tokenAddresses, reserves, ...(amountsUsd ?? [])),
+  })
 
   const rows = q({
     data: maybes([tokenAddresses.data, symbols, reserves.data, amountsUsd], (addresses, symbols, amounts, amountsUsd) =>
-      zip(addresses, symbols, amounts, amountsUsd).map(([address, symbol, amount, amountUsd]): PoolCompositionRow => ({
-        source: { address: asAddress(address), blockchainId: network, iconPosition: 'left', primary: symbol },
-        displayAddress: shortenAddress(address),
-        amount: toQuery(amount, reserves),
-        amountUsd,
-        marketShare: combineQueries([amountUsd, totalUsd], decimalPercent),
-      })),
+      zip(addresses, symbols, amounts, amountsUsd, prices).map(
+        ([address, symbol, amount, amountUsd, price]): PoolCompositionRow => ({
+          source: { address: asAddress(address), blockchainId: network, iconPosition: 'left', primary: symbol },
+          displayAddress: shortenAddress(address),
+          amount: toQuery(amount, reserves),
+          price: q(price),
+          amountUsd,
+          marketShare: combineQueries([amountUsd, totalUsd], decimalPercent),
+        }),
+      ),
     ),
-    ...combineQueryState(tokenAddresses, reserves, totalUsd, ...(symbols ?? [])),
+    ...combineQueryState(tokenAddresses, reserves),
   })
 
   return { totalUsd, rows }

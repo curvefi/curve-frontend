@@ -23,7 +23,7 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
+  const { chainId, userAddress: signerAddress, poolAddress, pool, api: curve, isWrapped } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -49,7 +49,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
         'UNSTAKE',
         config,
         curve,
-        poolId,
+        pool.id,
         pool,
         { isWrapped, ...updatedFormValues },
         null,
@@ -57,7 +57,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
         '',
       )
     },
-    [config, curve, isWrapped, pool, poolId, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, pool, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
@@ -118,19 +118,19 @@ export const FormUnstake = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (poolAddress) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [poolAddress])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({})
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, seed.isSeed, signerAddress])
+  }, [chainId, poolAddress, seed.isSeed, signerAddress])
 
   // steps
   useEffect(() => {
@@ -140,12 +140,12 @@ export const FormUnstake = ({ seed }: TransferProps) => {
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
+  }, [chainId, poolAddress, signerAddress, formValues, formStatus])
 
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
-  const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
+  const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })
 
   return (
     <FormContent>

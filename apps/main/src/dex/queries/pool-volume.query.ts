@@ -8,8 +8,9 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'stats.volume', chainId, poolId }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => (await requireLib('curveApi').getPool(poolId).stats.volume()) as Decimal,
+  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'stats.volume', chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) =>
+    (await requireLib('curveApi').getPool(poolAddress).stats.volume()) as Decimal,
   validationSuite: curvePoolValidationSuite,
 })
 
