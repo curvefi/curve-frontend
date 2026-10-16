@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 import { useConnect, useConnectors, type Connector } from 'wagmi'
 import { ConnectorAlreadyConnectedError } from 'wagmi'
 import { useGlobalState } from '@evm-ui/hooks/useGlobalState'
@@ -15,8 +15,10 @@ export const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { wallet, provider, connectState } = useCurve()
   const connectors = useConnectors()
-  state.wallet = wallet ?? null
-  state.provider = provider ?? null
+  useLayoutEffect(() => {
+    state.wallet = wallet ?? null
+    state.provider = provider ?? null
+  }, [wallet, provider])
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
   const { mutateAsync: connectAsync } = useConnect()
