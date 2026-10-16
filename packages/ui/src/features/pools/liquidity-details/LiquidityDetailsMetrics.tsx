@@ -12,10 +12,7 @@ const { Spacing } = SizesAndSpaces
 const METRIC_GRID_SIZE = { mobile: 6, desktop: 3 } as const
 const METRIC_CATEGORY = 'dex.userLiquidityDetails'
 
-export const Metrics = ({
-  showBoost,
-  metrics: { boost, lpTokenTotal, positionValue },
-}: Pick<LiquidityDetailsData, 'showBoost' | 'metrics'>) => (
+export const Metrics = ({ boost, lpTokenTotal, positionValue }: LiquidityDetailsData['metrics']) => (
   <Grid container spacing={Spacing.md}>
     <Grid size={METRIC_GRID_SIZE}>
       <Metric
@@ -27,15 +24,15 @@ export const Metrics = ({
       />
     </Grid>
 
-    <Grid size={METRIC_GRID_SIZE}>
-      {showBoost && (
+    {boost && (
+      <Grid size={METRIC_GRID_SIZE}>
         <Metric
           category={METRIC_CATEGORY}
           label={t`veCRV Boost`}
           value={boost}
           valueOptions={{ unit: 'multiplier', abbreviate: false }}
         />
-      )}
-    </Grid>
+      </Grid>
+    )}
   </Grid>
 )

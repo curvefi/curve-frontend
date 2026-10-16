@@ -15,7 +15,7 @@ import { dayjs } from '@evm-ui/utils/dayjs'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
 import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { amount, decimal } from '@ui/lib/decimal'
@@ -74,9 +74,11 @@ export const PoolAdvancedDetails = () => {
       chainId={chainId}
       info={{
         poolId,
-        poolType: getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
-        isMetapool: metapool,
-        isBasePool: basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)),
+        poolType: notFalsy(
+          getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }) ?? '-',
+          metapool && t`Metapool`,
+          basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) && t`Basepool`,
+        ).join(', '),
         basePoolAddress: maybe(basePool, getAddress),
         registryAddress: maybe(registry, getAddress),
         vyperVersion,

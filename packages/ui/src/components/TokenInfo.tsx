@@ -31,7 +31,7 @@ export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
 }
 
 type TokenInfoCustomIconProps = TokenInfoBaseProps & {
-  icon: ReactNode
+  icon?: ReactNode
   address?: never
   blockchainId?: never
   showChainIcon?: never

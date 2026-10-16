@@ -8,6 +8,7 @@ import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/sup
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { setVirtualNetworkClockToFork } from '@cy/support/helpers/tenderly/vnet-clock'
 import { fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { CurveProvider } from '@evm-ui/features/connect-wallet'
 
@@ -47,10 +48,10 @@ describe('FormClaimFees (RPC)', () => {
     })
 
     Object.keys(REWARDS).forEach(token => {
-      cy.get(`[data-testid="claim-fees-${token}"]`).find('button').should('be.enabled').click()
-      cy.get('[data-testid="toast-success"]', TIMEOUTS['evm.confirmation']).should(
-        'contain.text',
-        `${token} fees have been claimed and sent to your wallet.`,
+      submitAndExpectToast(
+        () => cy.get(`[data-testid="claim-fees-${token}"] button`).click(),
+        { message: `${token} fees have been claimed and sent to your wallet.` },
+        'evm.confirmation',
       )
       cy.get(`[data-testid="claim-fees-${token}"]`).within(() => {
         cy.contains(/^0$/).should('be.visible')
