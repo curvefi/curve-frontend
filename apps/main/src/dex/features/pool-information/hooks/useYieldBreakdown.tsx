@@ -22,8 +22,6 @@ import { t } from '@ui/lib/i18n'
 export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: QueryProp<Address> }) => {
   const { data: network } = useNetworkByChain({ chainId })
 
-  const gaugeIsKilled = dependentQuery(poolAddress, usePoolIsGaugeKilled({ chainId, poolAddress: poolAddress.data }))
-
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
   const rewards = dependentQuery(poolAddress, usePoolRewardsApy({ chainId, poolAddress: poolAddress.data }))
   const campaigns = dependentQuery(
@@ -45,7 +43,8 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
 
-  const crvAprs = gaugeIsKilled ? undefined : rewards.data?.crv
+  const gaugeIsKilled = usePoolIsGaugeKilled({ chainId, poolAddress: poolAddress.data })
+  const crvAprs = gaugeIsKilled.data ? undefined : rewards.data?.crv
   const [unboostedCrvRate, maxBoostCrvRate] = [crvAprs?.[0], crvAprs?.[1]]
   const crvRateRange = useMemo(
     () => maybes([unboostedCrvRate, maxBoostCrvRate], (unboostedRate, maximumRate) => ({ unboostedRate, maximumRate })),
