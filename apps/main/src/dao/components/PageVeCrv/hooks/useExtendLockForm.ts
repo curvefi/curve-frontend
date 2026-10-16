@@ -59,10 +59,8 @@ export const useExtendLockForm = ({ chainId }: { chainId: number }) => {
 
   const [params, isDebouncing] = useFormDebounce({ chainId, userAddress, days: values.days }, userDefaultValues)
 
-  const updateUnlockDate = (unlockDate: DateValue) => {
-    if (!currentUnlockUtcTime) return
-    update(getUnlockDateUpdate(unlockDate, currentUnlockUtcTime))
-  }
+  const updateUnlockDate = (unlockDate: DateValue) =>
+    currentUnlockUtcTime && update(getUnlockDateUpdate(unlockDate, currentUnlockUtcTime))
 
   const {
     onSubmit: onSubmitExtend,

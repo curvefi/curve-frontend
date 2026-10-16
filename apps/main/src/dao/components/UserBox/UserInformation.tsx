@@ -25,17 +25,17 @@ type Props = {
 export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
   const { address: userAddress } = useConnection()
   const { data: userEns } = useEnsName({ address: userAddress })
-  const { data: userVeCrv, dataUpdatedAt } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {
-      const { startTimestamp, endTimestamp } = activeProposal
-      const currentTimestamp = dataUpdatedAt / 1000
+      const { startTimestamp, endTimestamp, dataUpdatedAt } = activeProposal
+      const timestamp = dataUpdatedAt / 1000
       const halfwayDate = (startTimestamp + endTimestamp) / 2
 
-      if (currentTimestamp >= halfwayDate && currentTimestamp <= endTimestamp) {
+      if (timestamp >= halfwayDate && timestamp <= endTimestamp) {
         const totalDuration = endTimestamp - startTimestamp
-        const elapsedDuration = currentTimestamp - halfwayDate
+        const elapsedDuration = timestamp - halfwayDate
         const decayFactor = elapsedDuration / (totalDuration / 2)
         const decayedValue = votingPower.value * (1 - decayFactor)
         return { decaying: true, value: decayedValue }
@@ -43,7 +43,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
     }
 
     return { decaying: false, value: votingPower?.value ?? 0 }
-  }, [activeProposal, votingPower, dataUpdatedAt])
+  }, [activeProposal, votingPower])
 
   return (
     <Box flex flexColumn flexGap="var(--spacing-2)">

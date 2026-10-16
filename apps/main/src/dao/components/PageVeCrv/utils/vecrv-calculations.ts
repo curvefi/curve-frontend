@@ -18,8 +18,7 @@ export const calcUnlockTime = ({
   curveApi: CurveApi | undefined
   days: number | undefined
   unlockTime: number | undefined
-}) =>
-  maybes([curveApi, days], (curveApi, days) => (days ? curveApi.boosting.calcUnlockTime(days, unlockTime) : undefined))
+}) => (days ? curveApi?.boosting.calcUnlockTime(days, unlockTime) : undefined)
 
 /** Returns the estimated veCRV for an amount and unlock timestamp. */
 export const calculateVeCrv = ({

@@ -83,7 +83,7 @@ export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-
 const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Banner = 'Monthly') => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
   const expirationTime = Duration.Banner[frequency]
-  const date = useCurrentDate('1h')
+  const date = useCurrentDate('1h') // minimum frequency is 1 day, so check every 1h while the window is open.
   const shouldShowBanner = dismissedAt == null || date.getTime() - dismissedAt >= expirationTime
 
   const dismissBanner = useCallback(() => setDismissedAt(Date.now()), [setDismissedAt])

@@ -61,9 +61,6 @@ export const FieldDatePicker = ({
   const { curveApi } = useCurve()
   const { address: userAddress } = useConnection()
   const currentLock = useLockerLockedAmountAndUnlockTime({ chainId, userAddress }, !noCurrentLock)
-  const isDisabled = [disabled, isMax, !curveApi, !minUtcDate, !maxUtcDate, !noCurrentLock && !currentLock.data].some(
-    Boolean,
-  )
 
   // Only add durations that fit the maximum veCRV lock window.
   const quickActions = useMemo(
@@ -82,7 +79,9 @@ export const FieldDatePicker = ({
         {...rest}
         granularity="day"
         inputProviderProps={{ grid: true, gridRowGap: 1, id, hasError: !!utcDateError, showError: !!userAddress }}
-        isDisabled={isDisabled}
+        isDisabled={[disabled, isMax, !curveApi, !minUtcDate, !maxUtcDate, !noCurrentLock && !currentLock.data].some(
+          Boolean,
+        )}
         isDateUnavailable={isDateUnavailable}
         label={t`Select unlock date`}
         minValue={minUtcDate && toCalendarDate(minUtcDate)}
@@ -114,7 +113,6 @@ export const FieldDatePicker = ({
                     fillWidth
                     testId={`${id}-modal-quick-action-${index}`}
                     itemsInRow={itemsInThisRow}
-                    disabled={isDisabled}
                     onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
                   >
                     {label}
@@ -153,7 +151,6 @@ export const FieldDatePicker = ({
                 variant="outlined"
                 testId={`${id}-inline-quick-action-${index}`}
                 itemsInRow={itemsInThisRow}
-                disabled={isDisabled}
                 onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
               >
                 {label}
