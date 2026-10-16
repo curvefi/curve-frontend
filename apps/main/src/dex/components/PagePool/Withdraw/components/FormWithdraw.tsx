@@ -41,7 +41,7 @@ import { t } from '@ui/lib/i18n'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
 /** Terminal handler for unexpected failures outside the legacy API wrappers. */
-const handleWithdrawError = (activeKey: string, exception: unknown) => {
+export const handleWithdrawError = (activeKey: string, exception: unknown) => {
   const { activeKey: currentKey, formStatus, setStateByKey } = useStore.getState().poolWithdraw
   if (currentKey === activeKey) {
     const error = getErrorMessage(exception, 'error-step-withdraw')

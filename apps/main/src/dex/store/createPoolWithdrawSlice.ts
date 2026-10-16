@@ -354,35 +354,18 @@ export const createPoolWithdrawSlice = (
         }
         if (formType !== 'WITHDRAW') return
         const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, pool.id)
-        if (!(+formValues.lpToken > 0 && +lpTokenBalance >= +formValues.lpToken)) return
+        if (+formValues.lpToken <= 0 || +lpTokenBalance < +formValues.lpToken) return
 
-        return formValues.selected === 'lpToken'
-          ? curvejsApi.poolWithdraw.withdrawEstGasApproval(
-              activeKey,
-              chainId,
-              pool,
-              formValues.isWrapped,
-              formValues.lpToken,
-              maxSlippage,
-            )
-          : formValues.selected === 'imbalance'
-            ? curvejsApi.poolWithdraw.withdrawImbalanceEstGasApproval(
-                activeKey,
-                chainId,
-                pool,
-                formValues.isWrapped,
-                parseAmountsForAPI(formValues.amounts),
-                maxSlippage,
-              )
-            : curvejsApi.poolWithdraw.withdrawOneCoinEstGasApproval(
-                activeKey,
-                chainId,
-                pool,
-                formValues.isWrapped,
-                formValues.lpToken,
-                formValues.selectedTokenAddress,
-                maxSlippage,
-              )
+        const { withdrawEstGasApproval, withdrawImbalanceEstGasApproval, withdrawOneCoinEstGasApproval } =
+          curvejsApi.poolWithdraw
+        const args = [activeKey, chainId, pool, formValues.isWrapped] as const
+        return {
+          token: () =>
+            withdrawOneCoinEstGasApproval(...args, formValues.lpToken, formValues.selectedTokenAddress, maxSlippage),
+          lpToken: () => withdrawEstGasApproval(...args, formValues.lpToken, maxSlippage),
+          imbalance: () =>
+            withdrawImbalanceEstGasApproval(...args, parseAmountsForAPI(formValues.amounts), maxSlippage),
+        }[formValues.selected || 'token']()
       }
       const resp: FnStepEstGasApprovalResponse | undefined = await estimateGas().catch(
         (error): FnStepEstGasApprovalResponse => ({
@@ -421,20 +404,16 @@ export const createPoolWithdrawSlice = (
         formProcessing: true,
         step: 'APPROVAL',
       })
-      const { amounts, lpToken, selected } = formValues
-      const resp: FnStepApproveResponse | undefined =
-        selected === 'token'
-          ? await curvejsApi.poolWithdraw.withdrawOneCoinApprove(activeKey, provider, pool, lpToken)
-          : selected === 'lpToken'
-            ? await curvejsApi.poolWithdraw.withdrawApprove(activeKey, provider, pool, lpToken)
-            : selected === 'imbalance'
-              ? await curvejsApi.poolWithdraw.withdrawImbalanceApprove(
-                  activeKey,
-                  provider,
-                  pool,
-                  parseAmountsForAPI(amounts),
-                )
-              : undefined
+
+      const { withdrawApprove, withdrawImbalanceApprove, withdrawOneCoinApprove } = curvejsApi.poolWithdraw
+      const args = [activeKey, provider, pool] as const
+      const resp: FnStepApproveResponse | undefined = await {
+        token: () => withdrawOneCoinApprove(...args, formValues.lpToken),
+        lpToken: () => withdrawApprove(...args, formValues.lpToken),
+        imbalance: () => withdrawImbalanceApprove(...args, parseAmountsForAPI(formValues.amounts)),
+        '': () => Promise.resolve(undefined),
+      }[formValues.selected]()
+
       if (resp?.activeKey === get()[SLICE_KEY].activeKey) {
         const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.step = ''

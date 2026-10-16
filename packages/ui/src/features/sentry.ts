@@ -21,9 +21,7 @@ const ENVIRONMENT = IS_CYPRESS
     ? 'preview'
     : window.location.hostname === `www.${TLD}`
       ? 'production'
-      : window.location.hostname.includes(`.${TLD}`)
-        ? window.location.hostname.replace(`.${TLD}`, '')
-        : window.location.hostname // e.g. localhost
+      : window.location.hostname.replace(`.${TLD}`, '') // subdomain or hostname, e.g. localhost
 
 /** Initialize Sentry error reporting */
 export const initSentry = (applicationKey: string, transport?: BrowserOptions['transport']) =>
@@ -78,7 +76,7 @@ const IGNORED_EXTENSION_MESSAGES = [
 
 /** Wallet and transaction failures are handled at their call sites; report any that still escape. */
 const isExpectedExternalError = (message: string | undefined) =>
-  typeof message === 'string' &&
+  !!message &&
   (EXPECTED_EXTERNAL_MESSAGES.some(pattern => message.includes(pattern)) ||
     IGNORED_EXTENSION_MESSAGES.includes(message))
 
