@@ -26,7 +26,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
     values: form.values,
     onSubmit: form.handleSubmit(async formData => {
       try {
-        const body = {
+        await captureUserReport(error, {
           formData,
           url: window.location.href,
           context: {
@@ -43,9 +43,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
                     ),
                   ),
           },
-        }
-        console.info(`Submitting error report:`, body)
-        await captureUserReport(error, body)
+        })
         onClose()
       } catch (e) {
         console.warn(e)

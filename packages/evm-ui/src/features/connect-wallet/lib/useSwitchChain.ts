@@ -16,16 +16,9 @@ const showSwitchChainError = (error: unknown) =>
 export const useSwitchChain = () => {
   const { mutateAsync } = useWagmiSwitchChain()
   return useCallback(
-    async (...args: Parameters<typeof mutateAsync>) => {
-      try {
-        return await mutateAsync(...args)
-      } catch (error) {
-        showSwitchChainError(error)
-        // Button handlers discard this promise. Resolve after showing the error to avoid an unhandled rejection;
-        // CurveProvider uses the missing chain to set its connection state to FAILURE.
-        return undefined
-      }
-    },
+    async (...args: Parameters<typeof mutateAsync>) =>
+      // Button handlers discard this promise. Resolve after showing the error to avoid an unhandled rejection;
+      await mutateAsync(...args).catch(error => showSwitchChainError(error)),
     [mutateAsync],
   )
 }

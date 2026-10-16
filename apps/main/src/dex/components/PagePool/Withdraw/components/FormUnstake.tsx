@@ -6,6 +6,7 @@ import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
+import { handleWithdrawError } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
@@ -20,7 +21,6 @@ import { scanTxPath } from '@legacy-ui/utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
-import { handleWithdrawError } from '../handleWithdrawError'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
   const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()

@@ -32,13 +32,22 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { mediaQueries } from '@legacy-ui/utils/responsive'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { constQ } from '@ui/features/queries/util'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
-import { handleWithdrawError } from '../handleWithdrawError'
+
+/** Terminal handler for unexpected failures outside the legacy API wrappers. */
+const handleWithdrawError = (activeKey: string, exception: unknown) => {
+  const { activeKey: currentKey, formStatus, setStateByKey } = useStore.getState().poolWithdraw
+  if (currentKey === activeKey) {
+    const error = getErrorMessage(exception, 'error-step-withdraw')
+    setStateByKey('formStatus', { ...formStatus, formProcessing: false, step: '', error })
+  }
+}
 
 export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const {

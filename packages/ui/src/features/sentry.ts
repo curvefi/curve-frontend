@@ -110,6 +110,7 @@ export const captureUserReport = async (error: unknown, body: Extras) => {
       ? { message: error ?? 'Error Report' }
       : await client.eventFromException(error)
 
+  console.info(`Submitting error report:`, body)
   return client.captureEvent(
     { ...withErrorMessage(event, error), extra: { ...event.extra, body, userReport: true } },
     {},

@@ -35,11 +35,7 @@ export const ErrorPage = ({
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
   const onRetry = useCallback(async () => {
     queryClient.clear()
-    try {
-      await persister?.removeClient?.()
-    } catch (error) {
-      console.warn('Unable to clear saved query data:', error)
-    }
+    await Promise.resolve(persister?.removeClient?.()).catch(e => console.warn('Unable to clear saved query data:', e))
     if (resetError && !resetClicked) {
       setResetClicked(true)
       resetError()

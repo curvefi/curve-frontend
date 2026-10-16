@@ -31,7 +31,7 @@ export const ConnectWalletIndicator = ({
       addressLabel={addressLabel}
       onClick={() =>
         void disconnect().catch(error =>
-          notify(t`Unable to disconnect wallet.` + ' ' + getErrorMessage(error), 'error'),
+          notify(`${t`Unable to disconnect wallet.`} ${getErrorMessage(error)}`, 'error'),
         )
       }
       loading={isConnecting}

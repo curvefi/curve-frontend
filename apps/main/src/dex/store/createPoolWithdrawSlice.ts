@@ -3,8 +3,7 @@ import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
-import { type Amount, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
-import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
+import { type Amount, DEFAULT_SLIPPAGE, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -465,36 +464,16 @@ export const createPoolWithdrawSlice = (
         formProcessing: true,
         step: 'WITHDRAW',
       })
-      const resp: FnStepResponse | undefined =
-        formValues.selected === 'token'
-          ? await curvejsApi.poolWithdraw.withdrawOneCoin(
-              activeKey,
-              provider,
-              pool,
-              formValues.isWrapped,
-              formValues.lpToken,
-              formValues.selectedTokenAddress,
-              maxSlippage,
-            )
-          : formValues.selected === 'lpToken'
-            ? await curvejsApi.poolWithdraw.withdraw(
-                activeKey,
-                provider,
-                pool,
-                formValues.isWrapped,
-                formValues.lpToken,
-                maxSlippage,
-              )
-            : formValues.selected === 'imbalance'
-              ? await curvejsApi.poolWithdraw.withdrawImbalance(
-                  activeKey,
-                  provider,
-                  pool,
-                  formValues.isWrapped,
-                  parseAmountsForAPI(formValues.amounts),
-                  maxSlippage,
-                )
-              : undefined
+
+      const { withdraw, withdrawImbalance, withdrawOneCoin } = curvejsApi.poolWithdraw
+      const args = [activeKey, provider, pool, formValues.isWrapped] as const
+      const resp: FnStepResponse | undefined = await {
+        token: () => withdrawOneCoin(...args, formValues.lpToken, formValues.selectedTokenAddress, maxSlippage),
+        lpToken: () => withdraw(...args, formValues.lpToken, maxSlippage),
+        imbalance: () => withdrawImbalance(...args, parseAmountsForAPI(formValues.amounts), maxSlippage),
+        '': () => Promise.resolve(undefined),
+      }[formValues.selected]?.()
+
       if (resp?.activeKey === get()[SLICE_KEY].activeKey) {
         const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
