@@ -1,8 +1,12 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
+import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Column } from '@tanstack/react-table'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
+import type { QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -13,8 +17,8 @@ const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
   visibleColumns: Column<CurveTableFeatures, YieldBreakdownRow>[]
-  maxBoostTotal: number
-  total: number
+  maxBoostTotal: QueryProp<number | undefined>
+  total: QueryProp<Amount | undefined>
 }
 
 type FooterCellProps = FooterRowProps & { columnId: YieldBreakdownColumnId }
@@ -26,10 +30,16 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
     </TableCell>
   ),
   [YieldBreakdownColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
+  [YieldBreakdownColumnId.Rate]: ({ columnId, maxBoostTotal: { data: maxBoostTotal }, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-      <Typography variant="tableCellValueStrong">{formatNumber(total, 'percent.rate')}</Typography>
-      {!!maxBoostTotal && maxBoostTotal != total && (
+      <WithSkeleton loading={total.isLoading}>
+        {total.error ? (
+          <ErrorIconButton error={total.error} size="small" />
+        ) : (
+          <Typography variant="tableCellValueStrong">{formatNumber(total.data, 'percent.rate')}</Typography>
+        )}
+      </WithSkeleton>
+      {!!maxBoostTotal && maxBoostTotal != total.data && (
         <Typography variant="tableCellSupport" color="textSecondary">
           {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
         </Typography>

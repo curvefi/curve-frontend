@@ -66,7 +66,7 @@ export const usePoolComposition = ({
       marketShare: constQ(maybe(reserve?.percentShareInPool, x => +x)),
       amount: constQ(reserve?.balance),
       amountUsd: constQ(reserve?.balanceUsd),
-      price: reserve?.usdRate,
+      price: constQ(reserve?.usdRate),
     }
   })
 

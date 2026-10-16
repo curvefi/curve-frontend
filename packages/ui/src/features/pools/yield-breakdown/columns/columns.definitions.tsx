@@ -60,7 +60,6 @@ export const YIELD_BREAKDOWN_COLUMNS = columnHelper.columns([
           {/** Needed for tooltip to work for whatever reason */}
           <Box>
             <TokenInfo
-              icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}
               secondary={maybe(row.original.maxBoostRate, value => t`Max boost ${formatNumber(value, 'percent.rate')}`)}
