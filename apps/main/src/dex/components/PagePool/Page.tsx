@@ -1,76 +1,36 @@
 import { useMemo } from 'react'
-import { test } from 'vest'
 import { getAddress, isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
-import { fetchNewPools } from '@/dex/lib/curvejs'
-import { tryGetPool } from '@/dex/pool.utils'
+import { usePoolLookup } from '@/dex/queries/pool-lookup.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
-import type { UserChainParams } from '@evm-ui/queries/query-types'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import { maybe, type Nullish } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { queryFactory } from '@ui/features/queries/factory'
-import { mapQuery } from '@ui/features/queries/util'
+import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
-import { enforce } from '@ui/lib/validation/enforce-extension'
-import { createValidationSuite } from '@ui/lib/validation/lib'
-
-type PoolLookupParams = UserChainParams & { poolIdOrAddress: Nullish | string }
-
-const { useQuery: usePoolQuery } = queryFactory({
-  queryKey: ({ chainId, poolIdOrAddress, userAddress }: PoolLookupParams) =>
-    ({ name: 'pool.lookup', chainId, poolIdOrAddress, userAddress }) as const,
-  queryFn: async ({ poolIdOrAddress }: { poolIdOrAddress: string }) => {
-    const curveApi = requireLib('curveApi')
-    const pool = tryGetPool(poolIdOrAddress, curveApi)
-    if (pool) return pool
-
-    try {
-      await fetchNewPools(curveApi)
-      return tryGetPool(poolIdOrAddress, curveApi) ?? null
-    } catch {
-      return null
-    }
-  },
-  validationSuite: createValidationSuite(({ chainId, poolIdOrAddress }: PoolLookupParams) => {
-    chainValidationGroup({ chainId })
-    curveApiValidationGroup({ chainId })
-    test('poolIdOrAddress', () => {
-      enforce(poolIdOrAddress).message('Pool ID or address is required').isNotEmpty()
-    })
-  }),
-  category: 'global.no-persist',
-  disableLog: true, // Pool instances have circular references that cannot be serialized by the query logger used in Cypress.
-})
 
 export const PagePool = () => {
-  const { curveApi } = useCurve()
+  const { curveApi, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
   const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const { poolIdOrAddress, network: blockchainId } = props
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const pool = useHydratedQuery(usePoolQuery, {
-    chainId,
-    poolIdOrAddress,
-    // The query returns a pool tied to a specific curve-js instance, which gets recreated on user address change.
-    userAddress: curveApi?.signerAddress || undefined,
-  })
+  const lookup = useHydratedQuery(usePoolLookup, { chainId, poolIdOrAddress })
+  const pool = isHydrated ? lookup : fakeLoadingQ(undefined)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
