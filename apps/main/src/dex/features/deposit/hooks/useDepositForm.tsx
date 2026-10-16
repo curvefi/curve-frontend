@@ -43,7 +43,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const {
     chainId,
     poolAddress: { data: poolAddress },
-    pool: { data: pool },
+    pool: { data: pool, isLoading: isPoolLoading },
     isWrapped: initialWrapped,
     setIsWrapped,
     blockchainId,
@@ -119,8 +119,9 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     userAddress,
     onSubmit: handleSubmit(submitMutation),
     isPending,
-    isLoading: isPending || priceImpact.isLoading || isDerivingSeedAmounts,
+    isLoading: isPoolLoading || isPending || priceImpact.isLoading || isDerivingSeedAmounts,
     isDisabled:
+      pool == null ||
       !formState.isValid ||
       isPending ||
       isDebouncing ||
