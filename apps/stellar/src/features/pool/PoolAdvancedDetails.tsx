@@ -43,6 +43,7 @@ export const PoolAdvancedDetails = ({
   return (
     <AdvancedDetails
       chainId={STELLAR_NETWORKS[network].chainId}
+      isLoading={false} // TODO: properly implement?
       info={{
         poolType: fallbackQ(
           mapQuery(litePool, pool => notFalsy(t`Stableswap`, pool?.isMetaPool && t`Metapool`).join(', ')),

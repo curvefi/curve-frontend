@@ -39,7 +39,7 @@ export const PoolAdvancedDetails = () => {
     chainId,
     blockchainId,
     poolAddress: { data: poolAddress },
-    pool: { data: pool },
+    pool: { data: pool, isLoading: poolIsLoading },
     pool: { data: { lpToken, gauge } = {} },
     tokens: { data: tokens },
     tokenAddresses: { data: tokenAddresses },
@@ -49,6 +49,7 @@ export const PoolAdvancedDetails = () => {
   const parameters = usePoolParameters({ chainId, poolAddress })
   const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
+
   const {
     priceOracle: priceOracleApi,
     priceScale: priceScaleApi,
@@ -71,6 +72,7 @@ export const PoolAdvancedDetails = () => {
   return (
     <AdvancedDetails
       chainId={chainId}
+      isLoading={poolIsLoading}
       info={{
         poolId: pool?.id,
         poolType: notFalsy(
