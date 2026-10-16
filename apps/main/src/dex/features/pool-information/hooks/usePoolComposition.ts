@@ -11,7 +11,7 @@ import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
 import { combineQueries, dependentQuery } from '@ui/features/queries/combine'
-import { constQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
