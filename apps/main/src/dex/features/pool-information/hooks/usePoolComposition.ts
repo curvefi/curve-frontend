@@ -8,9 +8,10 @@ import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { shortenAddress } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import { zip } from '@primitives/array.utils'
-import { maybe, type Nullish } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
-import { constQ, q } from '@ui/features/queries/util'
+import { combineQueries, dependentQuery } from '@ui/features/queries/combine'
+import { constQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
@@ -22,58 +23,74 @@ export const usePoolComposition = ({
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolAddress: Address | Nullish
+  poolAddress: QueryProp<Address>
   isWrapped: boolean
-  tokens: string[] | Nullish
-  tokenAddresses: string[] | Nullish
-  pricesApiPoolData?: PricesApiPool
+  tokens: QueryProp<string[]>
+  tokenAddresses: QueryProp<string[]>
+  pricesApiPoolData: QueryProp<PricesApiPool>
 }) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
+
+  const currencyReserves = dependentQuery(
+    poolAddress,
+    usePoolCurrencyReserves({ chainId, poolAddress: poolAddress.data, isWrapped }),
+  )
 
   // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
-  const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !isLiteChain(chainId)
-  const pricesApiTotalUsd = sum(pricesApiPoolData?.balancesUsd)
+  const pricesApiTotalUsd = mapQuery(pricesApiPoolData, pool => sum(pool.balancesUsd))
+  const currencyReservesTotalUsd = mapQuery(currencyReserves, reserves => reserves.totalUsd)
 
-  // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
-  const reserves = usePricesApiReserves
-    ? (tokenAddresses ?? []).map((tokenAddress, index) => {
-        const balance = pricesApiPoolData?.balances[index]
-        const balanceUsd = pricesApiPoolData?.balancesUsd[index]
+  const usePricesApiReserves = mapQuery(
+    currencyReserves,
+    reserves => isNaN(Number(reserves.total)) && !isLiteChain(chainId),
+  )
 
-        return {
-          tokenAddress,
-          balance,
-          balanceUsd,
-          percentShareInPool: pricesApiTotalUsd ? ((balanceUsd ?? 0) / pricesApiTotalUsd) * 100 : undefined,
-          usdRate: balance ? (balanceUsd ?? 0) / balance : 0,
-        }
-      })
-    : currencyReserves?.tokens
+  const reserves = combineQueries(
+    [currencyReserves, pricesApiPoolData, pricesApiTotalUsd, tokenAddresses, usePricesApiReserves],
+    (currencyReserves, pool, total, tokenAddresses, usePricesApiReserves) =>
+      // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
+      usePricesApiReserves
+        ? tokenAddresses.map((tokenAddress, index) => {
+            const balance = pool?.balances[index]
+            const balanceUsd = pool?.balancesUsd[index]
 
-  const rows: PoolCompositionRow[] = zip(tokens ?? [], tokenAddresses ?? []).map(([symbol, tokenAddress]) => {
-    const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
+            return {
+              tokenAddress,
+              balance,
+              balanceUsd,
+              percentShareInPool: total ? ((balanceUsd ?? 0) / total) * 100 : undefined,
+              usdRate: balance ? (balanceUsd ?? 0) / balance : 0,
+            }
+          })
+        : currencyReserves?.tokens,
+  )
 
-    return {
-      source: {
-        address: getAddress(tokenAddress),
-        blockchainId: network.blockchainId,
-        iconPosition: 'left' as const,
-        primary: symbol,
-      },
-      displayAddress: shortenAddress(tokenAddress),
-      explorerUrl: scanTokenPath(chainId, tokenAddress),
-      marketShare: constQ(maybe(reserve?.percentShareInPool, x => +x)),
-      amount: constQ(reserve?.balance),
-      amountUsd: constQ(reserve?.balanceUsd),
-      price: constQ(reserve?.usdRate),
-    }
-  })
+  const rows = combineQueries([reserves, tokens, tokenAddresses], (reserves, tokens, tokenAddresses) =>
+    zip(tokens, tokenAddresses).map<PoolCompositionRow>(([symbol, tokenAddress]) => {
+      const reserve = reserves.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
-  const totalUsd = decimal(usePricesApiReserves ? pricesApiTotalUsd : currencyReserves?.totalUsd)
+      return {
+        source: {
+          address: getAddress(tokenAddress),
+          blockchainId: network.blockchainId,
+          iconPosition: 'left' as const,
+          primary: symbol,
+        },
+        displayAddress: shortenAddress(tokenAddress),
+        explorerUrl: scanTokenPath(chainId, tokenAddress),
+        marketShare: constQ(maybe(reserve?.percentShareInPool, x => +x)),
+        amount: constQ(reserve?.balance),
+        amountUsd: constQ(reserve?.balanceUsd),
+        price: constQ(reserve?.usdRate),
+      }
+    }),
+  )
 
-  // this isn't a proper loading check, but we need a bigger refactor for that later on
-  const isLoading = usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves
-  const error = null // TODO: correctly handle error and loading state
-  return { rows: q({ data: rows, isLoading, error }), totalUsd: q({ data: totalUsd, isLoading, error }) }
+  const totalUsd = combineQueries(
+    [usePricesApiReserves, pricesApiTotalUsd, currencyReservesTotalUsd],
+    (usePricesApiReserves, pricesApiTotalUsd, currencyReservesTotalUsd) =>
+      decimal(usePricesApiReserves ? pricesApiTotalUsd : currencyReservesTotalUsd),
+  )
+
+  return { rows, totalUsd }
 }

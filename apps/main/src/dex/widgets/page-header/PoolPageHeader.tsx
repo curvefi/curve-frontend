@@ -5,7 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, fallbackQ, type QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { amount } from '@ui/lib/decimal'
 
 export const PoolPageHeader = ({
@@ -21,8 +21,8 @@ export const PoolPageHeader = ({
   blockchainId: string
   poolAddress: QueryProp<Address>
   title: QueryProp<string>
-  tokens: QueryProp<{ symbol: string | undefined; address: Address }>[] | undefined
-  pricesApiPoolData: PricesApiPool | undefined
+  tokens: QueryProp<{ symbol: string; address: Address }>[] | undefined
+  pricesApiPoolData: QueryProp<PricesApiPool>
   backHref: string
 }) => {
   const tvl = usePoolTvl({ chainId, poolAddress: poolAddress.data })
@@ -38,11 +38,11 @@ export const PoolPageHeader = ({
         <PoolHeaderMetrics
           tvl={fallbackQ(
             combineQueries([poolAddress, tvl], (_, data) => amount(data)),
-            constQ(amount(pricesApiPoolData?.tvlUsd)),
+            mapQuery(pricesApiPoolData, pool => amount(pool.tvlUsd)),
           )}
           volume24h={fallbackQ(
             combineQueries([poolAddress, volume], (_, data) => amount(data)),
-            constQ(amount(pricesApiPoolData?.tradingVolume24h)),
+            mapQuery(pricesApiPoolData, pool => amount(pool.tradingVolume24h)),
           )}
         />
       }

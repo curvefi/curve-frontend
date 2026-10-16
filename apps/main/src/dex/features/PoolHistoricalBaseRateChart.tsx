@@ -22,10 +22,11 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, type Nullish } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import { mapQuery } from '@ui/features/queries/util'
+import { dependentQuery } from '@ui/features/queries/combine'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -49,19 +50,22 @@ export const PoolHistoricalBaseRateChart = ({
   poolAddress,
 }: {
   blockchainId: string
-  poolAddress: Address | Nullish
+  poolAddress: QueryProp<Address>
 }) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(() => SERIES_CONFIG.map(({ key }) => key))
 
   const [end] = useState(() => Math.floor(Date.now() / 1000))
-  const snapshots = usePoolSnapshots({
-    blockchainId: blockchainId as Chain,
+  const snapshots = dependentQuery(
     poolAddress,
-    start: end - TIME_OPTION_MS[timeOption] / 1000,
-    end,
-    unit: 'day',
-  })
+    usePoolSnapshots({
+      blockchainId: blockchainId as Chain,
+      poolAddress: poolAddress.data,
+      start: end - TIME_OPTION_MS[timeOption] / 1000,
+      end,
+      unit: 'day',
+    }),
+  )
 
   const ratePoints = mapQuery(snapshots, snapshots =>
     snapshots
@@ -74,7 +78,7 @@ export const PoolHistoricalBaseRateChart = ({
   )
 
   // Current metric values are based on pool list data to avoid mismatches, and is also updated more frequently than snapshots
-  const currentPool = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
+  const currentPool = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress: poolAddress.data })
 
   const {
     design: { Color },

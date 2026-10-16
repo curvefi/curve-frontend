@@ -6,10 +6,7 @@ import { t } from '@ui/lib/i18n'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 
 export const PointsCampaigns = () => {
-  const {
-    chainId,
-    poolAddress: { data: poolAddress },
-  } = usePoolContext()
+  const { chainId, poolAddress } = usePoolContext()
   const { rows } = usePointsCampaigns({ chainId, poolAddress })
 
   return (

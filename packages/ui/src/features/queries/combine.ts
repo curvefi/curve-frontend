@@ -36,6 +36,10 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>
 
+/** Includes loading/error state of upstream queries as the final query awaits those inputs (and thus is disabled in the meantime) */
+export const dependentQuery = <T>(...queries: [Query<unknown>, ...Query<unknown>[], Query<T>]) =>
+  combineQueries(queries, (...data) => data.at(-1) as T)
+
 /** Maps a query's data to another query, and combines the results into a single one. */
 export const combineSubQueries = <Q1, Q2, R>(
   query: Query<Q1[]>,

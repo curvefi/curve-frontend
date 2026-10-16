@@ -10,11 +10,12 @@ import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rat
 import { MAINNET_CRV, MAINNET_CRV_ADDRESS, shortenAddress } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
-import { maybe, maybes, type Nullish } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
 import type { YieldBreakdownData, YieldBreakdownRow } from '@ui/features/pools/yield-breakdown/types'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 export const useYieldBreakdown = ({
@@ -22,15 +23,15 @@ export const useYieldBreakdown = ({
   poolAddress,
 }: {
   chainId: ChainId
-  poolAddress: Address | Nullish
+  poolAddress: QueryProp<Address>
 }): YieldBreakdownData => {
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress: poolAddress.data })
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
-  const { data: rewards } = usePoolRewardsApy({ chainId, poolAddress })
+  const { data: rewards } = usePoolRewardsApy({ chainId, poolAddress: poolAddress.data })
 
-  const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
+  const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress.data })
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = useMemo(
@@ -52,7 +53,7 @@ export const useYieldBreakdown = ({
   )
 
   // Construct all yield rows imperatively rather than functional to improve readability
-  const rows: YieldBreakdownRow[] = useMemo(() => {
+  const rows = useMemo(() => {
     const rows: YieldBreakdownRow[] = []
 
     if (rewards?.crv?.some(Boolean)) {
