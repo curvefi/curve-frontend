@@ -41,9 +41,9 @@ export const ErrorMessage = ({
             label: t`Reload`,
             startIcon: <ReloadIcon />,
             onClick: () => {
-              void Promise.resolve()
-                .then(refreshData)
-                .catch(error => notify(getErrorMessage(error, t`Unable to reload data. Please try again.`), 'error'))
+              void Promise.resolve(refreshData()).catch(error =>
+                notify(getErrorMessage(error, t`Unable to reload data. Please try again.`), 'error'),
+              )
             },
           },
         })}
