@@ -107,7 +107,7 @@ export const MultiSelectFilter = <TColumnId extends string>({
           data-testid={`menu-${id}`}
           open={isOpen}
           onClose={close}
-          anchorEl={selectRef.current}
+          anchorEl={() => selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{
             list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } },

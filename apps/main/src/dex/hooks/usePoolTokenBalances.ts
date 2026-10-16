@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { Config } from 'wagmi'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { fetchTokenBalance, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
@@ -12,16 +13,17 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
 
+const getAddresses = ({ underlyingCoinAddresses, wrappedCoinAddresses }: PoolTemplate) =>
+  notFalsyArray(wrappedCoinAddresses, underlyingCoinAddresses) as Address[]
+
 /** Fetch pool token balances and expose their combined loading/error state. */
 export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params) {
   const { curveApi, isHydrated } = useCurve()
-  const { underlyingCoinAddresses, wrappedCoinAddresses } =
-    useMemo(() => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined), [curveApi, isHydrated, poolId]) ?? {}
-
-  const balances = useTokenBalances(
-    { chainId, userAddress, tokenAddresses: notFalsyArray(wrappedCoinAddresses, underlyingCoinAddresses) as Address[] },
-    isHydrated,
+  const tokenAddresses = useMemo(
+    () => (isHydrated && poolId ? getAddresses(curveApi!.getPool(poolId)) : undefined),
+    [curveApi, isHydrated, poolId],
   )
+  const balances = useTokenBalances({ chainId, userAddress, tokenAddresses }, isHydrated)
   return useMemo(() => combineQueryState(...recordValues(balances)), [balances])
 }
 

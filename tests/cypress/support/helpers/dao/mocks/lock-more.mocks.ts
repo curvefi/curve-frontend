@@ -7,6 +7,7 @@ import {
   createTransactionStub,
 } from '@cy/support/helpers/llamalend/test-stub.utils'
 import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
+import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 
 const CHAIN_ID = 1
 
@@ -35,6 +36,7 @@ export const createLockMoreScenario = ({
       estimateGas: { approve: estimateApprove, increaseAmount: estimateIncreaseAmount },
     },
   } as unknown as CurveApi
+  globalLibs.set('curveApi', curve)
 
   return {
     curve,

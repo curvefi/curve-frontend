@@ -10,6 +10,7 @@ import {
   useLockerLockedAmountAndUnlockTime,
   useLockerVeCrv,
 } from '@/dao/entities/locker-vecrv-info'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
@@ -23,6 +24,7 @@ const defaultValues: IncreaseLockFormValues = { lockedAmount: undefined, maxLock
 const userDefaultValues = { lockedAmount: undefined }
 
 export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
+  const { curveApi } = useCurve()
   const form = useForm<IncreaseLockFormValues>({ defaultValues, validation: increaseLockFormValidationSuite })
   const { update, values } = form
   const { address: userAddress } = useConnection()
@@ -62,6 +64,7 @@ export const useIncreaseLockForm = ({ chainId }: { chainId: number }) => {
     currentVeCrv,
     futureVeCrv: mapQuery(currentLock, ({ lockedAmount, unlockTime }) =>
       calculateVeCrv({
+        curveApi,
         lockedAmount: maybes([values.lockedAmount, lockedAmount], decimalSum),
         unlockTime: Math.floor(unlockTime / MILLISECONDS_PER_SECOND),
       }),

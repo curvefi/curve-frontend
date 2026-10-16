@@ -4,6 +4,7 @@ import { useConnection } from 'wagmi'
 import { isDateUnavailable, isQuickActionInRange } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/utils/dayjs'
 import { VECRV_MAX_LOCK_YEARS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
@@ -57,8 +58,12 @@ export const FieldDatePicker = ({
   handleQuickActionClick: (value: number | undefined, unit: dayjs.ManipulateType | undefined) => dayjs.Dayjs
 }) => {
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
+  const { curveApi } = useCurve()
   const { address: userAddress } = useConnection()
   const currentLock = useLockerLockedAmountAndUnlockTime({ chainId, userAddress }, !noCurrentLock)
+  const isDisabled = [disabled, isMax, !curveApi, !minUtcDate, !maxUtcDate, !noCurrentLock && !currentLock.data].some(
+    Boolean,
+  )
 
   // Only add durations that fit the maximum veCRV lock window.
   const quickActions = useMemo(
@@ -77,7 +82,7 @@ export const FieldDatePicker = ({
         {...rest}
         granularity="day"
         inputProviderProps={{ grid: true, gridRowGap: 1, id, hasError: !!utcDateError, showError: !!userAddress }}
-        isDisabled={[disabled, isMax, !minUtcDate, !maxUtcDate, !noCurrentLock && !currentLock.data].some(Boolean)}
+        isDisabled={isDisabled}
         isDateUnavailable={isDateUnavailable}
         label={t`Select unlock date`}
         minValue={minUtcDate && toCalendarDate(minUtcDate)}
@@ -109,6 +114,7 @@ export const FieldDatePicker = ({
                     fillWidth
                     testId={`${id}-modal-quick-action-${index}`}
                     itemsInRow={itemsInThisRow}
+                    disabled={isDisabled}
                     onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
                   >
                     {label}
@@ -147,6 +153,7 @@ export const FieldDatePicker = ({
                 variant="outlined"
                 testId={`${id}-inline-quick-action-${index}`}
                 itemsInRow={itemsInThisRow}
+                disabled={isDisabled}
                 onClick={() => setQuickActionValue(handleQuickActionClick(value, unit))}
               >
                 {label}
