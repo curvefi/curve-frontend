@@ -1,5 +1,6 @@
 import memoizee from 'memoizee'
 import { useCallback } from 'react'
+import { getAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
@@ -105,7 +106,7 @@ export const useCampaignsByAddress = ({
 }: { address: Address | Nullish } & UseCampaignsOptions) => {
   const query = useMappedQuery(
     useCampaigns({ blockchainId, enabled: Boolean(address) }),
-    useCallback(campaigns => address && campaigns[address], [address]),
+    useCallback(campaigns => address && campaigns[getAddress(address)], [address]),
   )
 
   // TODO: Temporarily map undefined data to [], needs a proper fix

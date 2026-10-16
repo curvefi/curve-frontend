@@ -5,10 +5,10 @@ import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useDepositIsApproved, fetchQuery: fetchDepositIsApproved } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, isWrapped, amounts }: UserDepositParams) =>
-    ({ name: 'depositIsApproved', chainId, poolId, userAddress, isWrapped, amounts }) as const,
-  queryFn: async ({ poolId, isWrapped, amounts }: DepositQuery) =>
-    await requireLib('curveApi').getPool(poolId)[`${depositMethod(isWrapped)}IsApproved`](amounts),
+  queryKey: ({ chainId, poolAddress, userAddress, isWrapped, amounts }: UserDepositParams) =>
+    ({ name: 'depositIsApproved', chainId, poolAddress, userAddress, isWrapped, amounts }) as const,
+  queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>
+    await requireLib('curveApi').getPool(poolAddress)[`${depositMethod(isWrapped)}IsApproved`](amounts),
   category: 'dex.pool',
   validationSuite: userDepositParamsValidationSuite,
 })

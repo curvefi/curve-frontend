@@ -99,8 +99,8 @@ export const useDismissFantomRetirementBanner = () => useDismissBanner('fantom-c
 export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
 export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-dismissed')
 
-export const useDismissPoolBanner = (network: string, poolId: string) =>
-  useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
+export const useDismissPoolBanner = (network: string, poolAddress: Address) =>
+  useDismissBanner(['pool-alert-banner-dismissed', network, poolAddress].join('-'), 'Daily')
 
 export const useDismissMaintenanceModal = (dateISO: string | undefined) =>
   useLocalStorage<string | null>(`maintenance-modal-${dateISO}`, null)

@@ -17,19 +17,19 @@ const getAddresses = ({ underlyingCoinAddresses, wrappedCoinAddresses }: PoolTem
   notFalsyArray(wrappedCoinAddresses, underlyingCoinAddresses) as Address[]
 
 /** Fetch pool token balances and expose their combined loading/error state. */
-export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params) {
+export function usePoolTokenBalances({ chainId, userAddress, poolAddress }: Params) {
   const { curveApi, isHydrated } = useCurve()
   const tokenAddresses = useMemo(
-    () => (isHydrated && poolId ? getAddresses(curveApi!.getPool(poolId)) : undefined),
-    [curveApi, isHydrated, poolId],
+    () => (isHydrated && poolAddress ? getAddresses(curveApi!.getPool(poolAddress)) : undefined),
+    [curveApi, isHydrated, poolAddress],
   )
   const balances = useTokenBalances({ chainId, userAddress, tokenAddresses }, isHydrated)
   return useMemo(() => combineQueryState(...recordValues(balances)), [balances])
 }
 
 /** Temporary imperative function for some zustand slices to fetch all pool token balances */
-export const fetchPoolTokenBalances = async (config: Config, curve: CurveApi, poolId: string) => {
-  const { wrappedCoinAddresses, underlyingCoinAddresses } = curve.getPool(poolId)
+export const fetchPoolTokenBalances = async (config: Config, curve: CurveApi, poolAddress: Address) => {
+  const { wrappedCoinAddresses, underlyingCoinAddresses } = curve.getPool(poolAddress)
   const chainId = curve.chainId
   const userAddress = curve.signerAddress
 

@@ -7,7 +7,7 @@ export type UserQuery<T = Address> = { userAddress: T }
 export type ChainNameQuery<T = Chain> = { blockchainId: T }
 
 export type ContractQuery<T = Chain> = ChainNameQuery<T> & { contractAddress: Address }
-export type PoolQuery<T = number> = ChainQuery<T> & { poolId: string }
+export type PoolQuery<T = number> = ChainQuery<T> & { poolAddress: Address }
 export type UserChainQuery<TChain = number, TAddress = Address> = ChainQuery<TChain> & UserQuery<TAddress>
 export type UserPoolQuery<TChain = number, TUser = Address> = PoolQuery<TChain> & UserQuery<TUser>
 export type GaugeQuery<T = number> = PoolQuery<T>

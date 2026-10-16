@@ -57,7 +57,7 @@ export const ManagePool = () => {
           <PoolPageHeader
             chainId={chainId}
             blockchainId={blockchainId}
-            poolIdOrAddress={poolAddress}
+            poolAddress={poolAddress}
             title={mapQuery(pool, pool => pool.name)}
             tokens={pool.data?.coins.map(constQ)}
             backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}

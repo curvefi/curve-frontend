@@ -5,7 +5,6 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId } from '@/dex/types/main.types'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV, MAINNET_CRV_ADDRESS, shortenAddress } from '@evm-ui/utils/address'
@@ -20,19 +19,16 @@ import { t } from '@ui/lib/i18n'
 
 export const useYieldBreakdown = ({
   chainId,
-  pool,
-  poolId,
+  poolAddress,
 }: {
   chainId: ChainId
-  pool: PoolTemplate
-  poolId: string
+  poolAddress: Address
 }): YieldBreakdownData => {
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
-  const poolAddress = pool.address as Address
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
-  const { data: rewards } = usePoolRewardsApy({ chainId, poolId })
+  const { data: rewards } = usePoolRewardsApy({ chainId, poolAddress })
 
   const { data: campaigns } = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 
