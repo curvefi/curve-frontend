@@ -77,7 +77,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const isSeed = mapQuery(reserves, reserves => !Number(reserves.total))
   useFormSync(form, { decimals })
   // Apply the resolved pool's default without replacing a user's slippage choice.
-  useFormSync(form, { slippage: maxSlippage }, pool != null && !form.isTouched('slippage'))
+  useFormSync(form, { slippage: maxSlippage }, pool && !form.isTouched('slippage'))
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
