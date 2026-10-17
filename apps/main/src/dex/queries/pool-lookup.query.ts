@@ -41,6 +41,6 @@ export const { useQuery: usePoolLookup } = queryFactory({
   disableLog: true, // Pool instances have circular references that cannot be serialized by the query logger used in Cypress.
 })
 
-// We don't use the reset provided by queryFactory as that's for one specific pool only.
-// We want to reset all as a user might have navigated between pools and have more than one in the TanStack cache linked to an old one curve-js instance.
-export const resetPoolLookups = () => queryClient.resetQueries({ queryKey: [{ name: NAME }] })
+// We don't use the invalidate provided by queryFactory as that's for one specific pool only.
+// We want to invalidate all, as a user might have navigated between pools and have more than one in the TanStack cache linked to an old one curve-js instance.
+export const invalidatePoolLookups = () => queryClient.invalidateQueries({ queryKey: [{ name: NAME }] })
