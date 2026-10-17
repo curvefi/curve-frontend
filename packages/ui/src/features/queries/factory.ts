@@ -117,6 +117,7 @@ export function queryFactory<
         placeholderData:
           typeof keepPreviousData === 'function'
             ? (prevData, prevQuery) =>
+                // We use query keys by passing a single object as the first and only item in the query key array, hence queryKey[0].
                 prevQuery && keepPreviousData(prevQuery.queryKey[0], queryKey(params)) ? prevData : undefined
             : keepPreviousDataTanstack,
       }),
