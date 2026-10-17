@@ -34,7 +34,7 @@ export const seedPoolAndTransferMostLpToIssuer = async (
 ) => {
   await seedTestPool(pool, config)
   const { lp } = await fetchWithdrawState(pool, config)
-  const { issuer, deployer } = config
+  const { issuer, deployer, coins } = config
   const amount = decimalMultiply(lp.balance, ratio)
   await sendStellarTransaction(
     await simulateContractCall<void>(
@@ -44,6 +44,7 @@ export const seedPoolAndTransferMostLpToIssuer = async (
       [deployer.address, issuer.address, BigInt(toWei(amount, LP_TOKEN_DECIMALS))],
       deployer.address,
     ),
+    coins.length,
   )
 }
 

@@ -42,7 +42,7 @@ export const seedTestPool = async (pool: StellarContract, { coins, deployer: { a
     [account, amounts, 0n, account],
     account,
   )
-  return sendStellarTransaction(transaction)
+  return sendStellarTransaction(transaction, coins.length)
 }
 
 const fetchDepositPreview = async (pool: StellarContract, { coins, lp, supply }: PoolState, amounts: PoolAmounts) => {

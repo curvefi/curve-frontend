@@ -30,8 +30,8 @@ export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, '
 const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
-const MAX_INCLUSION_FEE = 50_000n // 0.005 XLM ≈ $0.0011 at the time of writing; resource fees are separate.
-const MIN_RESOURCE_FEE_BUFFER = MAX_INCLUSION_FEE // headroom for TTL renewal after simulation.
+const MAX_INCLUSION_FEE = 100_000n // 0.01 XLM ≈ $0.0018 at the time of writing; resource fees are separate.
+const MIN_RESOURCE_FEE_BUFFER_PER_TOKEN = MAX_INCLUSION_FEE // headroom for TTL renewal after simulation.
 
 export const initWallet = (onError: (error: Error) => void) => {
   const modules = defaultModules()
@@ -81,14 +81,15 @@ const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
 const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
 
 /** Prepare the fee budget without mutating the SDK's original simulation or built transaction. */
-export function getStellarTransactionFees<T>(transaction: StellarTransaction<T>) {
+export function getStellarTransactionFees<T>(transaction: StellarTransaction<T>, tokenCount: number) {
   const { transactionData } = transaction.simulationData
   const resourceFee = transactionData.resourceFee
   // TTL renewal can become necessary after simulation, even when simulated rent is zero.
   // Round the 20% buffer up to a whole stroop and reserve at least the minimum headroom.
   const proportionalBuffer = (resourceFee * RESOURCE_FEE_BUFFER_PERCENT + 99n) / 100n
+  const minResourceFeeBuffer = MIN_RESOURCE_FEE_BUFFER_PER_TOKEN * BigInt(tokenCount)
   const bufferedResourceFee =
-    resourceFee + (proportionalBuffer > MIN_RESOURCE_FEE_BUFFER ? proportionalBuffer : MIN_RESOURCE_FEE_BUFFER)
+    resourceFee + (proportionalBuffer > minResourceFeeBuffer ? proportionalBuffer : minResourceFeeBuffer)
   // The SDK fee option is inclusion-only. Its built.fee includes resources and is mutated by sign().
   const inclusionFee = BigInt(transaction.options.fee ?? BASE_FEE)
   const sorobanData = new SorobanDataBuilder(transactionData).setResourceFee(bufferedResourceFee).build()
@@ -141,10 +142,11 @@ const fixResourceFee = <T>(
 
 export async function sendStellarTransaction<T>(
   transaction: StellarTransaction<T>,
+  tokenCount: number,
   signTransaction: contract.SignTransaction = StellarWalletsKit.signTransaction.bind(StellarWalletsKit),
 ) {
   // Capture the budget once, before SDK sign() rebuilds its transaction; retries reuse it.
-  const { sorobanData, inclusionFee } = getStellarTransactionFees(transaction)
+  const { sorobanData, inclusionFee } = getStellarTransactionFees(transaction, tokenCount)
   const sent = await retry(
     () =>
       transaction.signAndSend({
