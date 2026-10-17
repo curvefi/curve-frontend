@@ -151,7 +151,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolAddress])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
