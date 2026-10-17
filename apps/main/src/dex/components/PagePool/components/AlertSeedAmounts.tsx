@@ -10,7 +10,9 @@ import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
-  const { pool } = usePoolContext()
+  const {
+    pool: { data: pool },
+  } = usePoolContext()
   const [seedAmounts, setSeedAmounts] = useState<string[]>([])
 
   const { isSeed, loaded } = seed

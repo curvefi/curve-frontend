@@ -2,7 +2,7 @@ import { isAddress, type Address } from 'viem'
 import { getPools } from '@curvefi/prices-api/pools'
 import type { ChainNameParams, ChainNameQuery } from '@evm-ui/queries/query-types'
 import { pricesApiChainValidationSuite } from '@evm-ui/queries/validation/prices-chain-validation'
-import { fromEntries, maybe } from '@primitives/objects.utils'
+import { fromEntries, maybe, type Nullish } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 
@@ -16,10 +16,7 @@ const { useQuery: usePoolsPricesApi } = queryFactory({
   category: 'dex.pools',
 })
 
-export const usePoolPricesApi = ({
-  blockchainId,
-  poolAddress,
-}: ChainNameParams & { poolAddress: string | undefined }) =>
+export const usePoolPricesApi = ({ blockchainId, poolAddress }: ChainNameParams & { poolAddress: string | Nullish }) =>
   mapQuery(usePoolsPricesApi({ blockchainId }, isAddress(poolAddress as Address, { strict: false })), pools =>
     maybe(poolAddress, poolAddress => pools[poolAddress.toLowerCase()]),
   )

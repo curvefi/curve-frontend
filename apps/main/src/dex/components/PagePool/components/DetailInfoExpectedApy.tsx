@@ -8,19 +8,23 @@ import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@primitives/number.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import { ArrowRightIcon } from '@ui/icons/ArrowRightIcon'
 import { t } from '@ui/lib/i18n'
 
 export const DetailInfoExpectedApy = ({
   crvApr,
   lpTokenAmount,
-  pool,
+  pool: { data: pool },
 }: {
   crvApr: number | undefined
   lpTokenAmount: string
-  pool: PoolTemplate
+  pool: QueryProp<PoolTemplate>
 }) => {
-  const { data: staked } = usePoolTotalStaked({ chainId: pool.curve.chainId, poolAddress: getAddress(pool.address) })
+  const { data: staked } = usePoolTotalStaked({
+    chainId: pool?.curve.chainId,
+    poolAddress: pool && getAddress(pool.address),
+  })
   const { gaugeTotalSupply } = staked ?? {}
 
   const newCrvApr = useMemo(() => {

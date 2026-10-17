@@ -32,6 +32,7 @@ import { Chain } from '@primitives/network.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
+import { constQ } from '@ui/features/queries/util'
 
 const POOL_ADDRESS = '0x159a866f13f3931e256946ad7d921d18acbc599f'
 const GAUGE_ADDRESS = '0x456ba8aa2aa07c26a6b5d5a6a029ab754fb851c2'
@@ -62,7 +63,7 @@ function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   return isPending || !isHydrated || pool == null ? (
     <Loading />
   ) : (
-    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} pool={pool}>
+    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} pool={constQ(pool)} poolAddress={POOL_ADDRESS}>
       <Form />
     </PoolContextProvider>
   )

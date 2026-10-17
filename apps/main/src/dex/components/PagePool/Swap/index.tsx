@@ -14,7 +14,7 @@ import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/componen
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -32,6 +32,7 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
+import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
@@ -40,7 +41,6 @@ import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
 import { q, toQuery } from '@ui/features/queries/util'
-import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { notify } from '@ui/features/toast/Toast/notify'
@@ -64,12 +64,12 @@ export const Swap = ({
     chainId,
     userAddress: signerAddress,
     poolAddress,
-    pool,
+    pool: { data: pool },
     api: curve,
     isWrapped,
     setIsWrapped,
-    tokens: poolTokens,
-    tokenAddresses: poolTokenAddresses,
+    tokens: { data: poolTokens },
+    tokenAddresses: { data: poolTokenAddresses },
   } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
@@ -118,9 +118,9 @@ export const Swap = ({
 
   const tokens = useMemo(
     () =>
-      poolTokenAddresses.map<TokenOption>((address, index) => ({
+      zip(poolTokenAddresses ?? [], poolTokens ?? []).map(([address, poolToken]) => ({
         address, // not checksummed!
-        symbol: poolTokens[index] || shortenAddress(address),
+        symbol: poolToken || shortenAddress(address),
         chain: blockchainId,
       })),
     [poolTokenAddresses, poolTokens, blockchainId],
@@ -288,10 +288,11 @@ export const Swap = ({
   }, [])
 
   useEffect(() => {
-    if (poolAddress) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
-  }, [isWrapped, pool, poolAddress, resetState])
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [isWrapped, pool?.address, resetState])
 
   // get user balances
   useEffect(() => {
@@ -493,10 +494,10 @@ export const Swap = ({
         {hasWrapped(pool) && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || isWrappedOnly(pool)}
+              isDisabled={isDisabled}
               isSelected={isWrapped}
               onChange={nextIsWrapped => {
-                if (pool) {
+                if (pool && poolTokenAddresses) {
                   const fromIdx = poolTokenAddresses.findIndex(a => a === formValues.fromAddress)
                   const toIdx = poolTokenAddresses.findIndex(a => a === formValues.toAddress)
                   const wrapped = getTokens(pool, { wrapped: nextIsWrapped })

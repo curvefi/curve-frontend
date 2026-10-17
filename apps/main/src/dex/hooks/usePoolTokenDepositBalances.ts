@@ -7,6 +7,7 @@ import { fetchTokenBalance, useTokenBalance } from '@evm-ui/hooks/useTokenBalanc
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { q } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { tryGetPool } from '../pool.utils'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
@@ -15,7 +16,7 @@ type Params = FieldsOf<Query>
 export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress }: Params, enabled = true) {
   const { curveApi, isHydrated } = useCurve()
   const pool = useMemo(
-    () => (isHydrated && poolAddress ? curveApi!.getPool(poolAddress) : undefined),
+    () => (isHydrated && poolAddress ? tryGetPool(poolAddress, curveApi) : undefined),
     [curveApi, isHydrated, poolAddress],
   )
 

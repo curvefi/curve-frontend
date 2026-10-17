@@ -22,7 +22,14 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolAddress, pool, api: curve, isWrapped } = usePoolContext()
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -42,6 +49,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
@@ -112,11 +120,11 @@ export const FormUnstake = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolAddress) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolAddress])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
