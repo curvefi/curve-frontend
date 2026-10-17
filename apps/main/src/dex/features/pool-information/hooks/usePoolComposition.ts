@@ -10,7 +10,7 @@ import { scanTokenPath } from '@legacy-ui/utils'
 import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
-import { combineQueries, dependentQuery } from '@ui/features/queries/combine'
+import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
@@ -23,7 +23,7 @@ export const usePoolComposition = ({
   pricesApiPoolData,
 }: {
   chainId: ChainId
-  poolAddress: QueryProp<Address>
+  poolAddress: Address
   isWrapped: boolean
   tokens: QueryProp<string[]>
   tokenAddresses: QueryProp<string[]>
@@ -31,10 +31,7 @@ export const usePoolComposition = ({
 }) => {
   const { data: network } = useNetworkByChain({ chainId })
 
-  const currencyReserves = dependentQuery(
-    poolAddress,
-    usePoolCurrencyReserves({ chainId, poolAddress: poolAddress.data, isWrapped }),
-  )
+  const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
 
   // currencyReserves.total is NaN when no wallet is connected.
   const useCurrencyReserves = mapQuery(

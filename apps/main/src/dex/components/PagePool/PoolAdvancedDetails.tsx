@@ -38,7 +38,7 @@ export const PoolAdvancedDetails = () => {
   const {
     chainId,
     blockchainId,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: { data: pool, isLoading: poolIsLoading },
     pool: { data: { lpToken, gauge } = {} },
     tokens: { data: tokens },

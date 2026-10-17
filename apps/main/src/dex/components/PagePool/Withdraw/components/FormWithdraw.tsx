@@ -46,7 +46,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     blockchainId,
     userAddress: signerAddress,
     pool: { data: pool },
-    poolAddress: { data: poolAddress },
+    poolAddress,
     api: curve,
     isWrapped,
     setIsWrapped,

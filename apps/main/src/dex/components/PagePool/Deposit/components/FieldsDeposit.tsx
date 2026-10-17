@@ -76,7 +76,7 @@ export const FieldsDeposit = ({
   const {
     chainId,
     blockchainId,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: { data: pool },
     isWrapped,
     setIsWrapped,

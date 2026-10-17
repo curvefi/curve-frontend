@@ -27,7 +27,7 @@ function PoolTest({ chainId, poolAddress, children }: PoolDepositTestProps) {
   return isPending || !pool ? (
     <Loading />
   ) : (
-    <PoolContextProvider network={defaultNetworks[chainId]} pool={constQ(pool)}>
+    <PoolContextProvider network={defaultNetworks[chainId]} pool={constQ(pool)} poolAddress={poolAddress}>
       {children}
     </PoolContextProvider>
   )

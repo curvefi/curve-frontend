@@ -19,7 +19,7 @@ export const TransferActions = ({
     chainId,
     userAddress: signerAddress,
     pool,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     isWrapped,
     tokenAddressesAll: { data: tokenAddressesAll },
   } = usePoolContext()

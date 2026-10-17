@@ -15,19 +15,16 @@ import { RewardIcon } from '@ui/components/RewardIcon'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
 import type { YieldBreakdownRow } from '@ui/features/pools/yield-breakdown/types'
-import { dependentQuery, useCombinedQueries } from '@ui/features/queries/combine'
-import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { useCombinedQueries } from '@ui/features/queries/combine'
+import { mapQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: QueryProp<Address> }) => {
+export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: Address }) => {
   const { data: network } = useNetworkByChain({ chainId })
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
-  const rewards = dependentQuery(poolAddress, usePoolRewardsApy({ chainId, poolAddress: poolAddress.data }))
-  const campaigns = dependentQuery(
-    poolAddress,
-    useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress.data }),
-  )
+  const rewards = usePoolRewardsApy({ chainId, poolAddress })
+  const campaigns = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = mapQuery(
@@ -43,7 +40,7 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
 
-  const gaugeIsKilled = usePoolIsGaugeKilled({ chainId, poolAddress: poolAddress.data })
+  const gaugeIsKilled = usePoolIsGaugeKilled({ chainId, poolAddress })
   const crvAprs = gaugeIsKilled.data ? undefined : rewards.data?.crv
   const [unboostedCrvRate, maxBoostCrvRate] = [crvAprs?.[0], crvAprs?.[1]]
   const crvRateRange = useMemo(

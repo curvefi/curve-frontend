@@ -66,22 +66,28 @@ export const PagePool = () => {
       />
     )
 
+  const poolAddress = isAddress(poolIdOrAddress, { strict: false }) ? getAddress(poolIdOrAddress) : undefined
+
   /**
    * We're phasing out pool ids and redirect to pool address in URL, which we can only do after hydration.
    * The URL updates before useParams, so rerenders can restart the redirect with the old pool id.
    * Render null while navigating to let the address params update and prevent a redirect loop.
    * Would also happen with programmatic navigate, so that wouldn't be a solution.
    */
-  if (pool.data && !isAddress(poolIdOrAddress, { strict: false })) {
+  if (pool.data && !poolAddress) {
     return isNavigating ? null : (
       <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.data.address}`)} search replace resetScroll={false} />
     )
   }
 
+  // Render null without a pool address, which is only expected during redirects from legacy pool ids.
+  // Handling this rare case added too much complexity in an earlier attempt.
   return (
-    // Typescript is not smart enough to narrow the type of pool to exclude `null`
-    <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)}>
-      <Transfer params={props} />
-    </PoolContextProvider>
+    poolAddress && (
+      // Typescript is not smart enough to narrow the type of pool to exclude `null`
+      <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)} poolAddress={poolAddress}>
+        <Transfer params={props} />
+      </PoolContextProvider>
+    )
   )
 }

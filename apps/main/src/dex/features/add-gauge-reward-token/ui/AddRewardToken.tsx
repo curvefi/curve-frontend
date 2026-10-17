@@ -24,10 +24,7 @@ const { Spacing } = SizesAndSpaces
 const validation = createValidationSuite((data: AddRewardParams) => gaugeAddRewardValidationGroup(data))
 
 export const AddRewardToken = () => {
-  const {
-    chainId,
-    poolAddress: { data: poolAddress },
-  } = usePoolContext()
+  const { chainId, poolAddress } = usePoolContext()
   const { address: userAddress } = useConnection()
   const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress })
   const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({

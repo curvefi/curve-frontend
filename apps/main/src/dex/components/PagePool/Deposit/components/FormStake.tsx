@@ -34,7 +34,7 @@ export const FormStake = ({ seed }: TransferProps) => {
   const {
     chainId,
     userAddress: signerAddress,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: poolQuery,
     pool: { data: pool },
     api: curve,

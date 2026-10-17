@@ -63,7 +63,7 @@ function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   return isPending || !isHydrated || pool == null ? (
     <Loading />
   ) : (
-    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} pool={constQ(pool)}>
+    <PoolContextProvider network={defaultNetworks[CHAIN_ID]} pool={constQ(pool)} poolAddress={POOL_ADDRESS}>
       <Form />
     </PoolContextProvider>
   )

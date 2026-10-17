@@ -38,7 +38,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
   const {
     chainId,
     userAddress: signerAddress,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: poolQuery,
     pool: { data: pool },
     api: curve,

@@ -40,7 +40,7 @@ import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { combineQueries, dependentQuery } from '@ui/features/queries/combine'
+import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
@@ -133,7 +133,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const poolAlert = usePoolAlert({
     blockchainId,
-    poolAddress: poolAddress.data,
+    poolAddress,
     hasVyperVulnerability: pool.data?.hasVyperVulnerability(),
   })
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool.data) ?? 'stable'])
@@ -141,14 +141,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { state } = useLocation()
   const defaultTab = (state as PoolRouteState).defaultTab
 
-  const currencyReserves = dependentQuery(
-    poolAddress,
-    usePoolCurrencyReserves({ chainId, poolAddress: poolAddress.data, isWrapped }),
-  )
-  const pricesApiPoolData = dependentQuery(
-    poolAddress,
-    usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress: poolAddress.data }),
-  )
+  const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
+  const pricesApiPoolData = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
   const currentSeed = mapQuery(
     fallbackQ(
@@ -170,12 +164,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [currentSeed.data, pool.data, setIsWrapped])
 
   const { signerAddress } = curve ?? {}
-  const { data: gaugeManager } = useGaugeManager({ chainId, poolAddress: poolAddress.data })
-  const { data: rewardDistributors } = useGaugeRewardsDistributors({
-    chainId,
-    poolAddress: poolAddress.data,
-    userAddress: signerAddress,
-  })
+  const { data: gaugeManager } = useGaugeManager({ chainId, poolAddress })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress: signerAddress })
 
   const tabParams = useMemo(
     () => ({
@@ -193,12 +183,12 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   return (
     <>
-      {poolAlert?.banner && poolAddress.data && (
+      {poolAlert?.banner && (
         <PoolAlertBanner
           alertType={poolAlert.alertType}
           banner={poolAlert.banner}
           network={blockchainId}
-          poolAddress={poolAddress.data}
+          poolAddress={poolAddress}
         />
       )}
       <DetailPageLayout

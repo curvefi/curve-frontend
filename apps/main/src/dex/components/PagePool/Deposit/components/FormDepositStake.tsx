@@ -44,7 +44,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
     chainId,
     blockchainId,
     userAddress: signerAddress,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: poolQuery,
     pool: { data: pool },
     api: curve,

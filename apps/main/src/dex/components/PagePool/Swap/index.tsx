@@ -63,7 +63,7 @@ export const Swap = ({
     blockchainId,
     chainId,
     userAddress: signerAddress,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: { data: pool },
     api: curve,
     isWrapped,

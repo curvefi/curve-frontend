@@ -25,7 +25,7 @@ export const FormUnstake = ({ seed }: TransferProps) => {
   const {
     chainId,
     userAddress: signerAddress,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: { data: pool },
     api: curve,
     isWrapped,

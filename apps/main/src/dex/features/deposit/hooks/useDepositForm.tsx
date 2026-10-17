@@ -42,7 +42,7 @@ function useForceSeedAmounts(
 export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const {
     chainId,
-    poolAddress: { data: poolAddress },
+    poolAddress,
     pool: { data: pool, isLoading: isPoolLoading },
     isWrapped: initialWrapped,
     setIsWrapped,
