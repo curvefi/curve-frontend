@@ -49,7 +49,6 @@ export const PoolAdvancedDetails = () => {
   const parameters = usePoolParameters({ chainId, poolAddress })
   const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
-
   const {
     priceOracle: priceOracleApi,
     priceScale: priceScaleApi,
@@ -76,10 +75,9 @@ export const PoolAdvancedDetails = () => {
       info={{
         poolId: pool?.id,
         poolType: notFalsy(
-          (pool &&
-            tokens &&
-            getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length })) ??
-            '-',
+          maybes([pool, tokens], (pool, tokens) =>
+            getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
+          ) ?? '-',
           metapool && t`Metapool`,
           poolAddress &&
             basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) &&
