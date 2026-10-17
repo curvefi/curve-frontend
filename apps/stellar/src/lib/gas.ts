@@ -12,16 +12,12 @@ import { mapQuery, type Query } from '@ui/features/queries/util'
 import { decimalMultiply, fromWei } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
 
-export function useGasEstimation(
-  params: NetworkQuery & { decimals: (number | undefined)[] | undefined },
-  simulation: Query<StellarTransaction>,
-) {
+export function useGasEstimation(params: NetworkQuery, simulation: Query<StellarTransaction>) {
   const { nativeCurrency } = STELLAR_NETWORKS[params.network]
   const { decimals, symbol: nativeSymbol, address: token } = nativeCurrency
   const { data: usdPrice } = useTokenUsdRate({ ...params, token })
-  return mapQuery(simulation, (transaction): TxGasInfo | undefined => {
-    if (!params.decimals) return undefined
-    const { fee } = getStellarTransactionFees(transaction, params.decimals.length)
+  return mapQuery(simulation, (transaction): TxGasInfo => {
+    const { fee } = getStellarTransactionFees(transaction)
     const estGasCost = fromWei(fee, decimals)
     return {
       estGasCost,

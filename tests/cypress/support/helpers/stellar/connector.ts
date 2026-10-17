@@ -72,7 +72,6 @@ const fundTestWallet = async (
     const toMint = BigInt(toWei(shortfall, decimals))
     await sendStellarTransaction(
       await simulateContractCall<void>(TEST_NETWORK, token, 'mint', [deployer.address, toMint], issuer.address),
-      coins.length,
       contract.basicNodeSigner(Keypair.fromSecret(issuer.secret), Networks.TESTNET).signTransaction,
     )
   }
@@ -102,6 +101,6 @@ export const deployTestPool = async (config: TestnetConfig) => {
     methods: [],
     oracles: [],
   })
-  const { result } = await sendStellarTransaction(transaction, coins.length)
+  const { result } = await sendStellarTransaction(transaction)
   return result.unwrap()
 }

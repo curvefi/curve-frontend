@@ -15,7 +15,7 @@ import { t } from '@ui/lib/i18n'
 export type TransactionContext = { account: NonNullable<ReturnType<typeof useWallet>['address']> }
 
 export type StellarMutationOptions<
-  TVariables extends { decimals: number[] },
+  TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
 > = Omit<
   TransactionMutationOptions<TVariables, TContext, StellarTransactionResponse>,
@@ -31,7 +31,7 @@ export type StellarMutationOptions<
 
 /** Stellar transaction mutations with preparation and wallet submission. */
 export function useStellarMutation<
-  TVariables extends { decimals: number[] },
+  TVariables extends object,
   TContext extends TransactionContext = TransactionContext,
 >({
   buildContext,
@@ -56,7 +56,7 @@ export function useStellarMutation<
         pendingMessage(variables, context),
       )
       const { response } = await withPendingToast(
-        sendStellarTransaction(transaction, variables.decimals.length),
+        sendStellarTransaction(transaction),
         confirmingMessage(variables, context),
       )
       return response
