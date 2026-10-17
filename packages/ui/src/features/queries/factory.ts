@@ -5,7 +5,7 @@ import { FetchError } from '@primitives/fetch.utils'
 import { isEmpty, notFalsy, type Nullish } from '@primitives/objects.utils'
 import {
   type DefaultError,
-  keepPreviousData,
+  keepPreviousData as keepPreviousDataTanstack,
   type QueryExecuteOptions,
   QueryFunctionContext,
   queryOptions,
@@ -82,7 +82,7 @@ export function queryFactory<
   validationSuite,
   dependencies,
   disableLog,
-  keepPreviousData: shouldKeepPreviousData,
+  keepPreviousData,
   ...options
 }: {
   queryKey: (params: TParams) => TKey
@@ -93,7 +93,7 @@ export function queryFactory<
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
-  keepPreviousData?: boolean
+  keepPreviousData?: boolean | ((previous: TKey, current: TKey) => boolean)
 }) {
   const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
 
@@ -101,7 +101,7 @@ export function queryFactory<
     await runQuery(queryKey, query, disableLog)
 
   const getQueryOptions = (params: TParams, enabled = true) =>
-    queryOptions({
+    queryOptions<TData, DefaultError, TData, InternalQueryKey<TKey>>({
       ...QUERY_CATEGORIES[category],
       queryKey: internalKey(params),
       queryFn,
@@ -113,7 +113,14 @@ export function queryFactory<
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
         !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
         failureCount < 3,
-      ...(shouldKeepPreviousData && { placeholderData: keepPreviousData }),
+      ...(keepPreviousData && {
+        placeholderData:
+          typeof keepPreviousData === 'function'
+            ? (prevData, prevQuery) =>
+                // We use query keys by passing a single object as the first and only item in the query key array, hence queryKey[0].
+                prevQuery && keepPreviousData(prevQuery.queryKey[0], queryKey(params)) ? prevData : undefined
+            : keepPreviousDataTanstack,
+      }),
       ...options,
     })
 
