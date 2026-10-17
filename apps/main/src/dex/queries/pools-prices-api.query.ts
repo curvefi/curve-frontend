@@ -16,10 +16,11 @@ const { useQuery: usePoolsPricesApi } = queryFactory({
   category: 'dex.pools',
 })
 
-export const usePoolPricesApi = ({
-  blockchainId,
-  poolAddress,
-}: ChainNameParams & { poolAddress: string | undefined }) =>
-  mapQuery(usePoolsPricesApi({ blockchainId }, isAddress(poolAddress as Address, { strict: false })), pools =>
-    maybe(poolAddress, poolAddress => pools[poolAddress.toLowerCase()]),
+export const usePoolPricesApi = (
+  { blockchainId, poolAddress }: ChainNameParams & { poolAddress: string | undefined },
+  enabled = true,
+) =>
+  mapQuery(
+    usePoolsPricesApi({ blockchainId }, enabled && isAddress(poolAddress as Address, { strict: false })),
+    pools => maybe(poolAddress, poolAddress => pools[poolAddress.toLowerCase()]),
   )
