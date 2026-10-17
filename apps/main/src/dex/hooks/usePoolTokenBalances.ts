@@ -8,6 +8,7 @@ import type { Address } from '@primitives/address.utils'
 import { notFalsyArray, recordValues } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { tryGetPool } from '../pool.utils'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
@@ -17,7 +18,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolAddress }: Para
   const { curveApi, isHydrated } = useCurve()
   const { underlyingCoinAddresses, wrappedCoinAddresses } =
     useMemo(
-      () => (isHydrated && poolAddress ? curveApi!.getPool(poolAddress) : undefined),
+      () => (isHydrated && poolAddress ? tryGetPool(poolAddress, curveApi) : undefined),
       [curveApi, isHydrated, poolAddress],
     ) ?? {}
 
