@@ -22,6 +22,9 @@ const layoutProps = { getParentRoute: () => dexLayoutRoute }
 const LEGACY_POOLS: Record<string, string> = {
   '0x80466c64868e1ab14a1ddf27a676c3fcbe638fe5': 'tricrypto',
   '0xe7a24ef0c5e95ffb0f6684b813a78f2a3ad7d171': 'linkusd',
+  // We're phasing out pool ids but whatever, can't hurt I guess.
+  tricrypto: 'tricrypto',
+  linkusd: 'linkusd',
 }
 
 export const dexRoutes = dexLayoutRoute.addChildren([
