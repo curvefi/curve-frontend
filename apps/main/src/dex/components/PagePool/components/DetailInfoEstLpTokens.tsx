@@ -4,7 +4,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@primitives/number.utils'
-import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import type { QueryProp } from '@ui/features/queries/util'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -18,9 +18,9 @@ export const DetailInfoEstLpTokens = ({
   maxSlippage: string
   pool: QueryProp<PoolTemplate>
 }) => {
-  const referenceAsset = mapQuery(pool, pool => pool.referenceAsset)
-  const showTooltip = referenceAsset.data && referenceAsset.data !== 'CRYPTO'
-  const parsedVirtualPrice = formatToken(amount(formLpTokenExpected.virtualPrice), referenceAsset.data, 'amount')
+  const referenceAsset = pool.data?.referenceAsset
+  const showTooltip = referenceAsset && referenceAsset !== 'CRYPTO'
+  const parsedVirtualPrice = formatToken(amount(formLpTokenExpected.virtualPrice), referenceAsset, 'amount')
 
   // min lp tokens received including slippage
   const lpTokensExpectedWithSlippage = useMemo(() => {
