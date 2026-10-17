@@ -70,6 +70,7 @@ export const { useQuery: usePoolList } = queryFactory({
   },
   validationSuite: chainValidationSuite,
   category: 'dex.pools',
+  // We want this to prevent a layout shift with skeleton rows when navigating pages.
   keepPreviousData: true,
 })
 
