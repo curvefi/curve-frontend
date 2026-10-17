@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be deleted. */
+
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'

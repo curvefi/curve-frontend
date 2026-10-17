@@ -1,16 +1,16 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
+import { reactCompiler } from '../react-compiler.config'
 
 const rootDir = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   cacheDir: resolve(rootDir, '../.cache/vite/storybook'),
   build: { sourcemap: true },
-  plugins: [react(), babel({ presets: [reactCompilerPreset({ compilationMode: 'annotation' })] }), svgr()],
+  plugins: [react(), reactCompiler(), svgr()],
   resolve: {
     alias: {
       '@/stellar': resolve(rootDir, '../apps/stellar/src'),

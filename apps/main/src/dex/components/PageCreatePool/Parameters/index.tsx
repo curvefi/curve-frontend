@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be rewritten. */
+
 import { BigNumber } from 'bignumber.js'
 import { useState, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
