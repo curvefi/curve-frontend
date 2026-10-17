@@ -10,7 +10,7 @@ import { t } from '@ui/lib/i18n'
 
 export type ContractsProps = {
   chainId: number
-  poolAddress: Address | Nullish
+  poolAddress: Address
   lpTokenAddress: Address | Nullish
   gaugeAddress?: Address
   gaugeIsKilled?: boolean | null

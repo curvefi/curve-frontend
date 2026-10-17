@@ -10,7 +10,7 @@ import { TokenList } from '@evm-ui/features/select-token/ui/modal/TokenList'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { maybe, notFalsy, objectKeys, recordEntries, type Nullish } from '@primitives/objects.utils'
+import { maybe, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { TokenOption } from '@ui/features/select-token/types'
@@ -28,7 +28,7 @@ export const TokenSelector = ({
   userAddress,
 }: {
   chainId: ChainId
-  poolAddress: Address | Nullish
+  poolAddress: Address
   disabled: boolean
   userAddress: Address | undefined
 }) => {

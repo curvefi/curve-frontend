@@ -10,7 +10,7 @@ import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { fromEntries, maybe, maybes, recordEntries, type Nullish } from '@primitives/objects.utils'
+import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
 import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
@@ -28,7 +28,7 @@ export const AmountTokenInput = ({
   disabled,
 }: {
   chainId: ChainId
-  poolAddress: Address | Nullish
+  poolAddress: Address
   blockchainId: NetworkEnum
   disabled: boolean
 }) => {
