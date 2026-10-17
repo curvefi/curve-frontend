@@ -36,34 +36,32 @@ export const usePoolComposition = ({
     usePoolCurrencyReserves({ chainId, poolAddress: poolAddress.data, isWrapped }),
   )
 
-  // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
+  // currencyReserves.total is NaN when no wallet is connected.
+  const useCurrencyReserves = mapQuery(
+    currencyReserves,
+    reserves => !isNaN(Number(reserves.total)) || isLiteChain(chainId),
+  )
+
   const pricesApiTotalUsd = mapQuery(pricesApiPoolData, pool => sum(pool.balancesUsd))
   const currencyReservesTotalUsd = mapQuery(currencyReserves, reserves => reserves.totalUsd)
 
-  const usePricesApiReserves = mapQuery(
-    currencyReserves,
-    reserves => isNaN(Number(reserves.total)) && !isLiteChain(chainId),
-  )
+  const reserves = useCurrencyReserves.data
+    ? mapQuery(currencyReserves, reserves => reserves.tokens)
+    : combineQueries([pricesApiPoolData, pricesApiTotalUsd, tokenAddresses], (pool, total, tokenAddresses) =>
+        // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
+        tokenAddresses.map((tokenAddress, index) => {
+          const balance = pool?.balances[index]
+          const balanceUsd = pool?.balancesUsd[index]
 
-  const reserves = combineQueries(
-    [currencyReserves, pricesApiPoolData, pricesApiTotalUsd, tokenAddresses, usePricesApiReserves],
-    (currencyReserves, pool, total, tokenAddresses, usePricesApiReserves) =>
-      // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
-      usePricesApiReserves
-        ? tokenAddresses.map((tokenAddress, index) => {
-            const balance = pool?.balances[index]
-            const balanceUsd = pool?.balancesUsd[index]
-
-            return {
-              tokenAddress,
-              balance,
-              balanceUsd,
-              percentShareInPool: total ? ((balanceUsd ?? 0) / total) * 100 : undefined,
-              usdRate: balance ? (balanceUsd ?? 0) / balance : 0,
-            }
-          })
-        : currencyReserves?.tokens,
-  )
+          return {
+            tokenAddress,
+            balance,
+            balanceUsd,
+            percentShareInPool: total ? ((balanceUsd ?? 0) / total) * 100 : undefined,
+            usdRate: balance ? (balanceUsd ?? 0) / balance : 0,
+          }
+        }),
+      )
 
   const rows = combineQueries([reserves, tokens, tokenAddresses], (reserves, tokens, tokenAddresses) =>
     zip(tokens, tokenAddresses).map<PoolCompositionRow>(([symbol, tokenAddress]) => {
@@ -86,11 +84,9 @@ export const usePoolComposition = ({
     }),
   )
 
-  const totalUsd = combineQueries(
-    [usePricesApiReserves, pricesApiTotalUsd, currencyReservesTotalUsd],
-    (usePricesApiReserves, pricesApiTotalUsd, currencyReservesTotalUsd) =>
-      decimal(usePricesApiReserves ? pricesApiTotalUsd : currencyReservesTotalUsd),
-  )
+  const totalUsd = useCurrencyReserves.data
+    ? currencyReservesTotalUsd
+    : mapQuery(pricesApiTotalUsd, totalUsd => decimal(totalUsd))
 
   return { rows, totalUsd }
 }
