@@ -90,10 +90,10 @@ export const submitDepositAndCheck = (state: PoolState, amounts: PoolAmounts) =>
     .then(projected => {
       submitDepositForm(state)
       getActionValue('pool-deposit-current-lp', 'stellar.read').should('equal', projected)
-      state.coins.forEach(({ address, symbol, balance }) => {
+      state.coins.map(({ address, symbol, balance }) =>
         poolInput(address)
           .find('[data-testid="balance-value"]')
-          .should('have.attr', 'data-value', decimalMinus(balance, amounts[symbol]))
-      })
+          .should('have.attr', 'data-value', decimalMinus(balance, amounts[symbol])),
+      )
     })
 }

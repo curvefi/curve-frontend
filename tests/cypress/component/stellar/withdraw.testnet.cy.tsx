@@ -83,7 +83,7 @@ describe('Stellar testnet withdraw', () => {
       mountWithdraw()
       withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
       withdrawLpInput().find('input').should('have.value', state.lp.balance)
-      state.coins.forEach(({ address, decimals }, index) => {
+      state.coins.map(({ address, decimals }, index) =>
         poolInput(address)
           .find('input')
           .should(input =>
@@ -91,8 +91,8 @@ describe('Stellar testnet withdraw', () => {
               (+state.reserves[index] * +state.lp.balance) / +state.supply,
               10 ** -decimals,
             ),
-          )
-      })
+          ),
+      )
       checkWithdrawDetail('expected-lp', state.lp.balance)
       checkWithdrawDetail('maximum-lp', state.lp.balance)
       checkWithdrawDetail('projected-lp', '0')
@@ -102,11 +102,11 @@ describe('Stellar testnet withdraw', () => {
       const editedAmount = oneDecimal(balancedOutput * 0.1, balancedOutput * 0.2, decimals)
       readPoolAmounts(state.coins).then(amounts => {
         writePoolAmount(address, editedAmount)
-        state.coins.forEach((coin, index) => {
+        state.coins.map((coin, index) =>
           poolInput(coin.address)
             .find('input')
-            .should('have.value', coin.address === address ? editedAmount : amounts[index])
-        })
+            .should('have.value', coin.address === address ? editedAmount : amounts[index]),
+        )
       })
       withdrawLpInput().find('input').should('have.value', state.lp.balance)
       withdrawSubmit().should('be.enabled')
@@ -156,9 +156,9 @@ describe('Stellar testnet withdraw', () => {
       // Recovery: correcting the amount clears errors and enables withdrawal.
       writePoolAmount(coin.address, correctedOutput)
       withdrawLpInput().find('[data-testid="helper-message-error"]').should('not.exist')
-      state.coins.forEach(({ address }) => {
-        poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist')
-      })
+      state.coins.map(({ address }) =>
+        poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist'),
+      )
       cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
       checkPartialWithdrawQuote(state, lpBudget)
       checkEstimatedTxCost({ category: 'stellar.simulation' })
@@ -199,9 +199,7 @@ describe('Stellar testnet withdraw', () => {
           .find('input')
           .type(oneDecimal(+SLIPPAGE.stable.presets[1], +SLIPPAGE.stable.max))
         cy.get('[data-testid="slippage-save-button"]').click()
-        state.coins.forEach(({ address }, index) => {
-          poolInput(address).find('input').should('have.value', amounts[index])
-        })
+        state.coins.map(({ address }, index) => poolInput(address).find('input').should('have.value', amounts[index]))
         checkWithdrawDetail('expected-lp', lpAmount)
         checkWithdrawDetail('maximum-lp', lpAmount)
         checkWithdrawDetail('projected-lp', remainingLp)
