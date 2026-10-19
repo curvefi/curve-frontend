@@ -3,6 +3,7 @@ import type { Config } from 'wagmi'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
+import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import { fetchTokenBalance, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import type { Address } from '@primitives/address.utils'
@@ -23,7 +24,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolAddress }: Para
     () => (isHydrated && poolAddress ? getAddresses(curveApi!.getPool(poolAddress)) : undefined),
     [curveApi, isHydrated, poolAddress],
   )
-  const balances = useTokenBalances({ chainId, userAddress, tokenAddresses }, isHydrated)
+  const balances = useHydratedQuery(useTokenBalances, { chainId, userAddress, tokenAddresses })
   return useMemo(() => combineQueryState(...recordValues(balances)), [balances])
 }
 

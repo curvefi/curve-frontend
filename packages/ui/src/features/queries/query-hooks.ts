@@ -1,3 +1,5 @@
+import { zip } from '@primitives/array.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import {
   type DefaultError,
   hashKey,
@@ -40,10 +42,10 @@ export function useQuery<
 }
 
 /** Observe prerequisites and enable each query independently. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Match TanStack's heterogeneous query tuple constraint.
-export function useQueries<T extends any[], TCombinedResult = QueriesResults<T>>(
+export function useQueries<T extends unknown[], TCombinedResult = QueriesResults<T>>(
   {
     queries,
+    subscribed,
     ...options
   }: {
     queries:
@@ -56,21 +58,22 @@ export function useQueries<T extends any[], TCombinedResult = QueriesResults<T>>
 ) {
   const queryOptions = queries as readonly QueryOptions[]
   const dependencies = queryOptions.map(({ dependencies = () => [] }) => dependencies())
-  const keys = dependencies.flat()
+  const keys = dependencies.flat() // TanStack observes a flat query list; keep the groups above to check each query's prerequisites separately.
   const ready = useTanstackQueries(
     {
       queries: keys.map(key => ({ queryKey: [key], enabled: false })),
-      combine: results => Object.fromEntries(results.map(({ data }, i) => [hashKey([keys[i]]), data !== undefined])),
-      subscribed: options.subscribed,
+      combine: results => fromEntries(zip(keys, results).map(([key, q]) => [hashKey([key]), q.data !== undefined])),
+      subscribed,
     },
     client,
   )
   return useTanstackQueries<T, TCombinedResult>(
     {
       ...options,
-      queries: queryOptions.map((query, i) => ({
+      subscribed,
+      queries: zip(queryOptions, dependencies).map(([{ enabled = true, ...query }, dependencies]) => ({
         ...query,
-        enabled: dependencies[i].every(key => ready[hashKey([key])]) && (query.enabled ?? true),
+        enabled: enabled && dependencies.every(key => ready[hashKey([key])]),
       })) as QueriesOptions<T>,
     },
     client,

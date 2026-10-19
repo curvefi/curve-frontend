@@ -7,6 +7,7 @@ import { uniqAddresses } from '@evm-ui/utils'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS } from '@primitives/units.util'
+import type { QueriesOptions } from '@tanstack/react-query'
 import { combineQueriesToObject } from '@ui/features/queries/combine'
 import { QUERY_CATEGORIES } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
@@ -176,7 +177,7 @@ export function useTokenBalances(
            * `updatedAt` despite the balance still being zero. We only want re-renders when balances actually change.
            */
           notifyOnChangeProps: ['data', 'error'] as const,
-        })) as Parameters<typeof useQueries>[0]['queries'],
+        })) as QueriesOptions<[ReturnType<typeof getTokenBalanceQueryOptions>]>[0][],
       [config, chainId, userAddress, uniqueAddresses, isEnabled],
     ),
     combine: useCallback(
