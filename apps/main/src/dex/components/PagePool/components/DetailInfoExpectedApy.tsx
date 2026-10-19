@@ -8,6 +8,7 @@ import { Box } from '@legacy-ui/Box'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@primitives/number.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { QueryProp } from '@ui/features/queries/util'
 import { ArrowRightIcon } from '@ui/icons/ArrowRightIcon'
 import { t } from '@ui/lib/i18n'
@@ -23,7 +24,7 @@ export const DetailInfoExpectedApy = ({
 }) => {
   const { data: staked } = usePoolTotalStaked({
     chainId: pool?.curve.chainId,
-    poolAddress: pool && getAddress(pool.address),
+    poolAddress: maybe(pool?.address, getAddress),
   })
   const { gaugeTotalSupply } = staked ?? {}
 
