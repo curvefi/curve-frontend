@@ -35,6 +35,7 @@ import type { Address } from '@primitives/address.utils'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { maybes } from '@primitives/objects.utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/DebouncedLargeTokenInput'
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
@@ -118,11 +119,13 @@ export const Swap = ({
 
   const tokens = useMemo(
     () =>
-      zip(poolTokenAddresses ?? [], poolTokens ?? []).map(([address, poolToken]) => ({
-        address, // not checksummed!
-        symbol: poolToken || shortenAddress(address),
-        chain: blockchainId,
-      })),
+      maybes([poolTokenAddresses, poolTokens], (poolTokenAddresses, poolTokens) =>
+        zip(poolTokenAddresses, poolTokens).map(([address, poolToken]) => ({
+          address, // not checksummed!
+          symbol: poolToken || shortenAddress(address),
+          chain: blockchainId,
+        })),
+      ) ?? [],
     [poolTokenAddresses, poolTokens, blockchainId],
   )
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
