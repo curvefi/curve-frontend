@@ -56,7 +56,7 @@ export const AddGaugeLink = () => {
       component={RouterLink}
       href={deployGaugePath}
       disabled={!pool || !tokens}
-      loading={!isPoolLoading || !isTokensLoading}
+      loading={isPoolLoading || isTokensLoading}
       onClick={handleClick}
     >
       {t`Add Gauge`}
