@@ -29,13 +29,13 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {
-      const { startTimestamp, endTimestamp } = activeProposal
-      const currentDate = Date.now() / 1000
+      const { startTimestamp, endTimestamp, dataUpdatedAt } = activeProposal
+      const timestamp = dataUpdatedAt / 1000
       const halfwayDate = (startTimestamp + endTimestamp) / 2
 
-      if (currentDate >= halfwayDate && currentDate <= endTimestamp) {
+      if (timestamp >= halfwayDate && timestamp <= endTimestamp) {
         const totalDuration = endTimestamp - startTimestamp
-        const elapsedDuration = currentDate - halfwayDate
+        const elapsedDuration = timestamp - halfwayDate
         const decayFactor = elapsedDuration / (totalDuration / 2)
         const decayedValue = votingPower.value * (1 - decayFactor)
         return { decaying: true, value: decayedValue }

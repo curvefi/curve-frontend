@@ -6,6 +6,7 @@ import tanstack from '@tanstack/eslint-plugin-query'
 import prettier from 'eslint-config-prettier'
 import { importX } from 'eslint-plugin-import-x'
 import noOnlyTests from 'eslint-plugin-no-only-tests'
+import reactHooks from 'eslint-plugin-react-hooks'
 import { reactRefresh } from 'eslint-plugin-react-refresh'
 import storybook from 'eslint-plugin-storybook'
 import unusedImports from 'eslint-plugin-unused-imports'
@@ -51,6 +52,28 @@ const config = [
   importX.flatConfigs.recommended,
   importX.flatConfigs.typescript,
   ...storybook.configs['flat/recommended'],
+
+  // The existing @eslint-react preset already enforces rules-of-hooks and exhaustive-deps.
+  {
+    plugins: { 'react-hooks': reactHooks },
+    rules: Object.fromEntries(
+      Object.entries(reactHooks.configs.flat.recommended.rules).filter(
+        // disable duplicate checks cause these already run through the existing @eslint-react preset
+        ([rule]) => !['react-hooks/rules-of-hooks', 'react-hooks/exhaustive-deps'].includes(rule),
+      ),
+    ),
+    // skip compiler checks for legacy code.
+    ignores: [
+      'apps/main/src/dex/components/PageCompensation/**',
+      'apps/main/src/dex/components/PageCreatePool/**',
+      'apps/main/src/dex/components/PagePool/components/AlertSeedAmounts.tsx',
+      'apps/main/src/dex/components/PagePool/{Deposit,Swap,Withdraw}/**',
+      'apps/main/src/dex/components/PageRouterSwap/**',
+      'apps/main/src/{dao,dex}/store/create*Slice.ts',
+      'packages/legacy-ui/src/InputComp/InputLabel.tsx',
+      'packages/legacy-ui/src/Tooltip/TooltipButton.tsx',
+    ],
+  },
 
   // Project-wide rules + plugins
   {
