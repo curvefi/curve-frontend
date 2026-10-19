@@ -17,8 +17,8 @@ import { t } from '@ui/lib/i18n'
 export const AddGaugeLink = () => {
   const {
     chainId,
-    pool: { data: pool },
-    tokens: { data: tokens },
+    pool: { data: pool, isLoading: isPoolLoading },
+    tokens: { data: tokens, isLoading: isTokensLoading },
   } = usePoolContext()
   const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
   const setSidechainGauge = useStore(state => state.deployGauge.setSidechainGauge)
@@ -52,7 +52,13 @@ export const AddGaugeLink = () => {
   }
 
   return (
-    <Button component={RouterLink} href={deployGaugePath} disabled={!pool || !tokens} onClick={handleClick}>
+    <Button
+      component={RouterLink}
+      href={deployGaugePath}
+      disabled={!pool || !tokens}
+      loading={!isPoolLoading || !isTokensLoading}
+      onClick={handleClick}
+    >
       {t`Add Gauge`}
     </Button>
   )
