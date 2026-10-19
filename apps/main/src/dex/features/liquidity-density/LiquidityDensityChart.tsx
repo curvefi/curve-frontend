@@ -51,18 +51,18 @@ export const LiquidityDensityChart = ({
 }: LiquidityDensityChartProps) => {
   const { isConnected } = useConnection()
   const theme = useTheme()
-  const { Chart } = theme.design
+  const { Chart, Color } = theme.design
   const { spot, low, high, samples } = profile ?? {}
   const priceLabel = t`${outputSymbol} per ${inputSymbol}`
   const liquidityLabel = t`Liquidity in 1% range in ${unit === 'dollar' ? 'USD' : getUnitOptions(unit)?.symbol || UNAVAILABLE_TOKEN_SYMBOL}`
   const markers = useMemo(
     () =>
       notFalsy<LiquidityPriceMarker>(
-        oraclePrice && { label: t`Internal price oracle`, value: oraclePrice, color: Chart.Lines[6] },
+        oraclePrice && { label: t`Internal price oracle`, value: oraclePrice, color: Color.Primary[500] },
         centerPrice && {
           label: t`Center of liquidity`,
           value: centerPrice,
-          color: Chart.Lines[3],
+          color: Color.Tertiary[400],
           dash: CHART_LINE_DASH_PATTERNS.regular,
         },
         spot && {
@@ -73,7 +73,7 @@ export const LiquidityDensityChart = ({
           showPrice: true,
         },
       ),
-    [Chart.Lines, centerPrice, oraclePrice, spot],
+    [Chart.Lines, Color.Primary, Color.Tertiary, centerPrice, oraclePrice, spot],
   )
 
   const containerRef = useRef<HTMLDivElement>(null)

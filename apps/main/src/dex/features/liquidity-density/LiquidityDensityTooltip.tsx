@@ -2,6 +2,7 @@ import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart/chart.utils'
 import {
   ChartTooltipDataRow,
   ChartTooltipSeriesGroup,
+  ChartTooltipSeriesRow,
   ChartTooltipShell,
 } from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
 import { formatNumber } from '@primitives/number.utils'
@@ -34,12 +35,13 @@ export const LiquidityDensityTooltip = ({ sample, spot, priceLabel, unit, marker
         label={t`From current price`}
         value={formatNumber((sample.price / (spot ?? sample.price) - 1) * 100, 'percent.rate')}
       />
-      {markers.map(({ label, value, color }) => (
-        <ChartTooltipDataRow
+      {markers.map(({ label, value, color, dash }) => (
+        <ChartTooltipSeriesRow
           key={label}
           label={label}
           value={formatChartAxisNumber(value, { abbreviateFrom: false, useGrouping: true, significantDigits: 8 })}
-          valueColor={color}
+          lineColor={color}
+          dash={dash}
         />
       ))}
     </ChartTooltipSeriesGroup>
