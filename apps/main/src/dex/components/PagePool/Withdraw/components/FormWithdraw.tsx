@@ -367,7 +367,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             <Radio aria-label="Withdraw as balanced amounts" value="lpToken">
               {t`Balanced`}
             </Radio>
-            {pool && !pool.isCrypto && (
+            {pool?.isCrypto === false && (
               <Radio aria-label="Custom withdraw" value="imbalance">
                 {t`Custom`}
               </Radio>
