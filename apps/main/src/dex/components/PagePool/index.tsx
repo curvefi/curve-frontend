@@ -121,7 +121,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const {
     chainId,
     blockchainId,
-    poolId,
     poolAddress,
     pool,
     api: curve,
@@ -132,13 +131,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   } = usePoolContext()
 
   const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: pool.hasVyperVulnerability() })
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
+  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool) ?? 'stable'])
 
   const { signerAddress } = curve ?? {}
-  const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
-  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress: signerAddress })
+  const { data: gaugeManager } = useGaugeManager({ chainId, poolAddress })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress: signerAddress })
 
   const { state } = useLocation()
   const defaultTab = (state as PoolRouteState).defaultTab
@@ -177,7 +176,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           alertType={poolAlert.alertType}
           banner={poolAlert.banner}
           network={blockchainId}
-          poolId={poolId}
+          poolAddress={poolAddress}
         />
       )}
       <DetailPageLayout
@@ -185,7 +184,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <PoolPageHeader
             chainId={chainId}
             blockchainId={blockchainId}
-            poolIdOrAddress={poolId}
+            poolAddress={poolAddress}
             // for now the page only renders when pool data has already loaded, it's not lazy yet.
             title={constQ(pool.name)}
             tokens={useMemo(

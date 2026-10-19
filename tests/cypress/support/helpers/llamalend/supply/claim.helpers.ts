@@ -21,7 +21,7 @@ const GAUGE_ABI = parseAbi([
 ])
 
 const submitClaimForm = (type: SupplyActionType, isMocked = false) =>
-  submitSupplyForm(type, 'Claimed rewards!', isMocked)
+  submitSupplyForm(type, { message: 'Claimed rewards!' }, isMocked)
 
 const getClaimSubmitButton = (type: ClaimRewardType, isMocked = false) =>
   cy.get(

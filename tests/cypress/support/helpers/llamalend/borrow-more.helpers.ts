@@ -90,4 +90,10 @@ export const submitBorrowMoreForm = ({
   controllerApproved = true,
   isMocked = false,
 }: { controllerApproved?: boolean; isMocked?: boolean } = {}) =>
-  submitLoanForm({ form: 'borrow-more', message: 'Borrowed more!', approveDelegation: !controllerApproved, isMocked })
+  submitLoanForm({
+    form: 'borrow-more',
+    message: 'Borrowed more!',
+    approvalMessage: 'Approved borrow more',
+    approveDelegation: !controllerApproved,
+    isMocked,
+  })

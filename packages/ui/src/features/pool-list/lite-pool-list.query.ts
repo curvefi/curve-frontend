@@ -8,7 +8,11 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 type ChainQuery = { chainId: number }
 type ChainParams = FieldsOf<ChainQuery>
 
-export const { useQuery: useLitePoolList, queryKey: getLitePoolListQueryKey } = queryFactory({
+export const {
+  useQuery: useLitePoolList,
+  queryKey: getLitePoolListQueryKey,
+  invalidate: invalidateLitePoolList,
+} = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ({ name: 'listLitePools', chainId }) as const,
   queryFn: (params: ChainQuery) => listLitePools(params),
   validationSuite: createValidationSuite(({ chainId }: ChainQuery) =>

@@ -6,10 +6,10 @@ import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useDepositExpected } = queryFactory({
-  queryKey: ({ chainId, poolId, isWrapped, amounts }: DepositParams) =>
-    ({ name: 'depositExpected', chainId, poolId, isWrapped, amounts }) as const,
-  queryFn: async ({ poolId, isWrapped, amounts }: DepositQuery) =>
-    (await requireLib('curveApi').getPool(poolId)[`${depositMethod(isWrapped)}Expected`](amounts)) as Decimal,
+  queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
+    ({ name: 'depositExpected', chainId, poolAddress, isWrapped, amounts }) as const,
+  queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>
+    (await requireLib('curveApi').getPool(poolAddress)[`${depositMethod(isWrapped)}Expected`](amounts)) as Decimal,
   category: 'dex.pool',
   validationSuite: depositQueryValidationSuite,
 })

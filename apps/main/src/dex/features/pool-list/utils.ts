@@ -38,7 +38,7 @@ export const enrichPoolRow = (
   campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
   userPosition: PoolRow['userPosition'],
 ): PoolRow => {
-  const campaigns = campaignsByAddress?.[pool.address.toLowerCase()]
+  const campaigns = campaignsByAddress?.[getAddress(pool.address)]
   return {
     ...pool,
     ...getPoolRates(pool, campaigns),

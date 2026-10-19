@@ -12,6 +12,7 @@ import {
   TEST_NETWORK,
 } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -100,10 +101,10 @@ export const checkPartialWithdrawQuote = ({ lp }: PoolState, lpBudget: Decimal) 
 }
 
 export const submitWithdrawForm = ({ coins }: PoolState) => {
-  withdrawSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should(
-    'contain.text',
-    'Withdrawal confirmed',
+  submitAndExpectToast(
+    () => withdrawSubmit().should('be.enabled').click(),
+    { message: 'Withdrawal confirmed' },
+    'stellar.confirmation',
   )
   withdrawLpInput().find('input').should('have.value', '')
   coins.forEach(({ address }) => {

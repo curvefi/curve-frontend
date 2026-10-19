@@ -1,6 +1,6 @@
 import { Contract, Interface } from 'ethers'
 import { cloneDeep } from 'lodash'
-import { ethAddress } from 'viem'
+import { ethAddress, getAddress } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
@@ -53,7 +53,7 @@ export type PoolSwapSlice = {
     fetchIgnoreExchangeRateCheck: (pool: PoolTemplate) => Promise<boolean>
     fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<void>
     fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<string>
-    setFormValues: (config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
+    setFormValues: (config: Config, curve: CurveApi | null, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
     fetchEstGasApproval: (activeKey: string, chainId: ChainId, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
@@ -160,7 +160,7 @@ export const createPoolSwapSlice = (
 
         if (curve.signerAddress) {
           // validate fromAmount
-          const userPoolBalances = await fetchPoolTokenBalances(config, curve, pool.id)
+          const userPoolBalances = await fetchPoolTokenBalances(config, curve, getAddress(pool.address))
           const userFromBalance = userPoolBalances[cFormValues.fromAddress]
           cFormValues.fromError = +userFromBalance >= +cFormValues.fromAmount ? '' : 'too-much'
 
@@ -187,7 +187,7 @@ export const createPoolSwapSlice = (
       maxSlippage: string,
     ) => {
       // stored values
-      const userPoolBalances = await fetchPoolTokenBalances(config, curve, pool.id)
+      const userPoolBalances = await fetchPoolTokenBalances(config, curve, getAddress(pool.address))
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
       const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId: curve.chainId })
 
@@ -219,7 +219,7 @@ export const createPoolSwapSlice = (
 
       return fromAmount
     },
-    setFormValues: async (config, curve, poolId, pool, updatedFormValues, isGetMaxFrom, isSeed, maxSlippage) => {
+    setFormValues: async (config, curve, pool, updatedFormValues, isGetMaxFrom, isSeed, maxSlippage) => {
       // stored values
       const storedActiveKey = get()[SLICE_KEY].activeKey
       const storedFormStatus = get()[SLICE_KEY].formStatus
@@ -269,7 +269,7 @@ export const createPoolSwapSlice = (
       if (+cFormValues.toAmount > 0 && !cFormValues.isFrom) {
         const currencyReserve = await fetchPoolCurrencyReserves({
           chainId: curve.chainId,
-          poolId,
+          poolAddress: getAddress(pool.address),
           isWrapped: cFormValues.isWrapped,
           useApi: !curve.signerAddress,
         })
@@ -413,7 +413,11 @@ export const createPoolSwapSlice = (
             formValues: cFormValues,
           })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
         return resp

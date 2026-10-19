@@ -24,10 +24,13 @@ const { Spacing } = SizesAndSpaces
 const validation = createValidationSuite((data: AddRewardParams) => gaugeAddRewardValidationGroup(data))
 
 export const AddRewardToken = () => {
-  const { chainId, poolId } = usePoolContext()
+  const { chainId, poolAddress } = usePoolContext()
   const { address: userAddress } = useConnection()
-  const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress })
-  const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({ chainId, poolId })
+  const { isLoading: isLoadingDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress })
+  const { data: isRewardsAvailable, isLoading: isLoadingRewards } = useIsDepositRewardAvailable({
+    chainId,
+    poolAddress,
+  })
 
   const form = useForm<AddRewardFormValues>({
     validation,
@@ -38,7 +41,7 @@ export const AddRewardToken = () => {
 
   useFormSync(form, { distributorId: userAddress }, !!userAddress && !form.isTouched('distributorId'))
 
-  const gas = useAddRewardTokenEstimateGas({ chainId, poolId, ...form.values }, isValid)
+  const gas = useAddRewardTokenEstimateGas({ chainId, poolAddress, ...form.values }, isValid)
 
   const {
     onSubmit,
@@ -46,7 +49,7 @@ export const AddRewardToken = () => {
     isPending: isPendingAddRewardToken,
   } = useAddRewardToken({
     chainId,
-    poolId,
+    poolAddress,
     onReset: () => form.reset({ rewardTokenId: undefined }), // keep distributor in case of adding multiple rewards
   })
 
@@ -57,7 +60,7 @@ export const AddRewardToken = () => {
     <Form {...form} onSubmit={handleSubmit(onSubmit)} footer={<ActionInfoGasEstimate gas={q(gas)} />}>
       <Stack sx={{ gap: Spacing.sm }}>
         <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.sm }}>
-          <TokenSelector chainId={chainId} poolId={poolId} userAddress={userAddress} disabled={isDisabled} />
+          <TokenSelector chainId={chainId} poolAddress={poolAddress} userAddress={userAddress} disabled={isDisabled} />
           <DistributorInput disabled={isDisabled} />
         </Stack>
         <EvmFormButton

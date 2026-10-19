@@ -5,8 +5,8 @@ import { queryFactory } from '@ui/features/queries/factory'
 
 const { useQuery: usePoolIsGaugeKilledQuery, invalidate: invalidatePoolIsGaugeKilled } = queryFactory({
   category: 'dex.gauge',
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'pool.isGaugeKilled', chainId, poolId }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => await requireLib('curveApi').getPool(poolId).isGaugeKilled(),
+  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'pool.isGaugeKilled', chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) => await requireLib('curveApi').getPool(poolAddress).isGaugeKilled(),
   validationSuite: curvePoolValidationSuite,
 })
 

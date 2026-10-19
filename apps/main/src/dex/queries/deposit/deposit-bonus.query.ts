@@ -8,10 +8,10 @@ import { mapQuery } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 
 export const { useQuery: useDepositBonus } = queryFactory({
-  queryKey: ({ chainId, poolId, isWrapped, amounts }: DepositParams) =>
-    ({ name: 'depositBonus', chainId, poolId, isWrapped, amounts }) as const,
-  queryFn: async ({ poolId, isWrapped, amounts }: DepositQuery) =>
-    (await requireLib('curveApi').getPool(poolId)[`${depositMethod(isWrapped)}Bonus`](amounts)) as Decimal,
+  queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
+    ({ name: 'depositBonus', chainId, poolAddress, isWrapped, amounts }) as const,
+  queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>
+    (await requireLib('curveApi').getPool(poolAddress)[`${depositMethod(isWrapped)}Bonus`](amounts)) as Decimal,
   category: 'dex.pool',
   validationSuite: depositQueryValidationSuite,
 })

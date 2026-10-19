@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { ethAddress, type Address } from 'viem'
+import { getAddress } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type {
@@ -300,7 +301,7 @@ export const createPoolDepositSlice = (
 
           if (signerAddress) {
             // validate input amounts with wallet
-            const balances = await fetchPoolTokenBalances(config, curve, pool.id)
+            const balances = await fetchPoolTokenBalances(config, curve, getAddress(pool.address))
             const amountsError = getAmountsError(cFormValues.amounts, balances)
 
             if (amountsError) {
@@ -321,7 +322,7 @@ export const createPoolDepositSlice = (
       } else if (formType === 'STAKE') {
         if (!!signerAddress && +cFormValues.lpToken > 0) {
           // validate lpToken balances
-          const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, pool.id)
+          const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, getAddress(pool.address))
           const lpTokenError = +cFormValues.lpToken > +lpTokenBalance ? 'lpToken-too-much' : ''
 
           if (lpTokenError) {
@@ -448,7 +449,11 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'DEPOSIT'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
@@ -486,7 +491,11 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
@@ -550,7 +559,11 @@ export const createPoolDepositSlice = (
           cFormStatus.formTypeCompleted = 'STAKE'
           get()[SLICE_KEY].setStateByKeys({ formStatus: cFormStatus, formValues: resetFormValues(formValues) })
 
-          const params = { chainId: curve.chainId, poolId: pool.id, userAddress: curve.signerAddress }
+          const params = {
+            chainId: curve.chainId,
+            poolAddress: getAddress(pool.address),
+            userAddress: curve.signerAddress,
+          }
           await Promise.all([invalidateUserPoolInfo(params), invalidatePoolInfo(params)])
         }
 
