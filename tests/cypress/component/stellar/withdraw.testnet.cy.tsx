@@ -3,7 +3,6 @@ import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
 import { oneDecimal, oneInt, oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
-import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
 import {
   checkPoolInputError,
   poolInput,
@@ -73,7 +72,8 @@ describe('Stellar testnet withdraw', () => {
   })
 
   describe('seeded pool', () => {
-    beforeEach(() =>
+    // Reuse liquidity across tests; the full withdrawal must remain last.
+    before(() =>
       cy
         .then(TIMEOUTS['stellar.seedPool'], () => seedPoolAndTransferMostLpToIssuer(pool, testnetConfig))
         .then(refreshState),
@@ -162,35 +162,15 @@ describe('Stellar testnet withdraw', () => {
       cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
       checkPartialWithdrawQuote(state, lpBudget)
       checkEstimatedTxCost({ category: 'stellar.simulation' })
-      submitWithdrawAndCheck(state)
+      submitWithdrawAndCheck(state).then(refreshState)
     })
 
-    it('withdraws the full LP balance into one coin without leaving LP dust', () => {
-      const coin = oneOf(...state.coins)
-      cy.log(`Withdraw Max into ${coin.symbol}`)
+    it('withdraws a partial LP amount independently of slippage', () => {
       mountWithdraw()
-      selectWithdrawMax(state, coin)
-      writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.05, coin.decimals))
-      withdrawLpInput().find('input').should('have.value', state.lp.balance)
-      checkPartialWithdrawQuote(state, state.lp.balance)
-      selectWithdrawMax(state, coin)
-      submitWithdrawAndCheck(state)
-    })
-  })
-
-  describe('balanced withdrawal', () => {
-    beforeEach(() => cy.then(TIMEOUTS['stellar.seedPool'], () => seedTestPool(pool, testnetConfig)).then(refreshState))
-
-    it('withdraws the selected LP amount independently of slippage', () => {
-      mountWithdraw()
-      const lpAmount = oneOf(
-        state.lp.balance,
-        oneDecimal(+state.lp.balance * 0.1, +state.lp.balance * 0.9, state.lp.decimals),
-      )
+      const lpAmount = oneDecimal(+state.lp.balance * 0.1, +state.lp.balance * 0.9, state.lp.decimals)
       const remainingLp = decimalMinus(state.lp.balance, lpAmount)
       cy.log(`Withdraw balanced ${lpAmount} LP; remaining ${remainingLp}`)
-      if (lpAmount === state.lp.balance) withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
-      else writeWithdrawLp(lpAmount)
+      writeWithdrawLp(lpAmount)
       checkWithdrawDetail('expected-lp', lpAmount)
       readPoolAmounts(state.coins).then(amounts => {
         cy.get('[data-testid="slippage-settings-button"]').click()
@@ -205,7 +185,20 @@ describe('Stellar testnet withdraw', () => {
         checkWithdrawDetail('projected-lp', remainingLp)
         submitWithdrawAndCheck(state)
         withdrawLpInput().find('[data-testid="balance-value"]').should('have.attr', 'data-value', remainingLp)
+        refreshState()
       })
+    })
+
+    it('withdraws the full LP balance into one coin without leaving LP dust', () => {
+      const coin = oneOf(...state.coins)
+      cy.log(`Withdraw Max into ${coin.symbol}`)
+      mountWithdraw()
+      selectWithdrawMax(state, coin)
+      writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.05, coin.decimals))
+      withdrawLpInput().find('input').should('have.value', state.lp.balance)
+      checkPartialWithdrawQuote(state, state.lp.balance)
+      selectWithdrawMax(state, coin)
+      submitWithdrawAndCheck(state)
     })
   })
 })
