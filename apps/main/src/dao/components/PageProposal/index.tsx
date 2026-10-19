@@ -42,6 +42,7 @@ export const Proposal = () => {
     data: proposalsMapper,
     isLoading: proposalsListLoading,
     isSuccess: proposalsListSuccess,
+    dataUpdatedAt,
   } = useProposalsMapperQuery({})
   const {
     data: pricesProposal,
@@ -57,9 +58,14 @@ export const Proposal = () => {
   const activeProposal = useMemo(
     () =>
       proposal?.status === 'Active'
-        ? { active: true, startTimestamp: proposal?.timestamp, endTimestamp: proposal?.timestamp + 604800 }
+        ? {
+            active: true,
+            startTimestamp: proposal?.timestamp,
+            endTimestamp: proposal?.timestamp + 604800,
+            dataUpdatedAt,
+          }
         : undefined,
-    [proposal?.status, proposal?.timestamp],
+    [proposal?.status, proposal?.timestamp, dataUpdatedAt],
   )
 
   const block = proposal?.block ?? pricesProposal?.block
@@ -164,7 +170,12 @@ export const Proposal = () => {
               snapshotVotingPower
               activeProposal={
                 proposal?.status === 'Active'
-                  ? { active: true, startTimestamp: proposal?.timestamp, endTimestamp: proposal?.timestamp + 604800 }
+                  ? {
+                      active: true,
+                      startTimestamp: proposal?.timestamp,
+                      endTimestamp: proposal?.timestamp + 604800,
+                      dataUpdatedAt,
+                    }
                   : undefined
               }
             >

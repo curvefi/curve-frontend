@@ -25,7 +25,7 @@ export type GaugeVote = { user: string; weight: number; block_number: number; ti
 export type GaugeVotesMapper = Record<string, { fetchingState: FetchingState; votes: GaugeVote[] }>
 
 export type SnapshotVotingPower = { value: number; blockNumber: number }
-export type ActiveProposal = { active: boolean; startTimestamp: number; endTimestamp: number }
+export type ActiveProposal = { active: boolean; startTimestamp: number; endTimestamp: number; dataUpdatedAt: number }
 
 export type UserGaugeVoteWeight = {
   title?: string
