@@ -1,6 +1,5 @@
-import { useCallback } from 'react'
 import type { Chain as PricesChain } from '@curvefi/prices-api'
-import { createChainOptions, getCurrentNetwork } from '@evm-ui/shared/routes'
+import { createChainOptions, getCurrentNetwork, getInternalUrl } from '@evm-ui/shared/routes'
 import { requireBlockchainId } from '@evm-ui/utils/network'
 import type { NetworkDef } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
@@ -92,7 +91,7 @@ export type BridgeTargetsProps = {
   disabled: boolean
   loading: boolean
   /** Callback invoked when the user picks a new source network. Not really used in prod, as the ChainList component itself will update the URL. */
-  onNetworkSelected?: (network: NetworkDef) => void
+  onNetworkSelected?: (chainId: number) => void
 }
 
 /**
@@ -137,16 +136,13 @@ export const BridgeTargets = ({
         {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
-          options={createChainOptions(networks, 'bridge')}
+          options={createChainOptions(networks, blockchainId => getInternalUrl('bridge', blockchainId))}
           selectedNetworkId={getCurrentNetwork(usePathname())}
           tvls={tvls}
-          onNetwork={useCallback(
-            (network: NetworkDef) => {
-              closeFrom()
-              onNetworkSelected?.(network)
-            },
-            [closeFrom, onNetworkSelected],
-          )}
+          onNetwork={chainId => {
+            closeFrom()
+            onNetworkSelected?.(chainId)
+          }}
         />
       </ModalDialog>
 

@@ -18,6 +18,7 @@ import { getHeaderBorder } from './utils'
 const { Spacing } = SizesAndSpaces
 
 export const DesktopHeader = <TApp extends string>({
+  networkSwitch,
   currentMenu,
   currentNetwork,
   supportedNetworks,
@@ -50,6 +51,7 @@ export const DesktopHeader = <TApp extends string>({
         <Box sx={{ display: 'flex', marginLeft: 2, justifyContent: 'flex-end', gap: 3, alignItems: 'center' }}>
           <UserProfile {...connectWalletProps} />
           <ChainSwitcher
+            networkSwitch={networkSwitch}
             supportedNetworks={supportedNetworks}
             currentNetwork={currentNetwork}
             currentMenu={currentMenu}

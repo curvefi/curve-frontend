@@ -1,21 +1,27 @@
 import lodash from 'lodash'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
+import Badge from '@mui/material/Badge'
 import IconButton from '@mui/material/IconButton'
 import { maybe, type PartialRecord } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { ModalSettingsButton } from '@ui/components/ModalSettingsButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { useShowTestNets } from '@ui/features/storage/useLocalStorage'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { showToast } from '@ui/features/toast/Toast/toast.util'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ArrowLeft } from '@ui/icons/ArrowLeft'
-import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
+import { LockClosedIcon } from '@ui/icons/LockClosedIcon'
 import { t } from '@ui/lib/i18n'
 import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
+import type { NetworkSwitchPolicy } from './util'
+
+const { IconSize } = SizesAndSpaces
 
 export type ChainSwitcherProps<TApp extends string> = {
+  networkSwitch: NetworkSwitchPolicy
   supportedNetworks: ChainListOption[]
   currentMenu: TApp
   currentNetwork: ChainListOption | undefined
@@ -31,6 +37,7 @@ const getTvl =
       : (maybe(tvls, tvls => tvls[id]) ?? 0)
 
 export const ChainSwitcher = <TApp extends string>({
+  networkSwitch,
   supportedNetworks,
   currentMenu,
   currentNetwork,
@@ -41,32 +48,53 @@ export const ChainSwitcher = <TApp extends string>({
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
   const [showTestnets, setShowTestnets] = useShowTestNets()
-  useEffect(() => () => close(), [blockchainId, close]) // close on chain change
 
-  const options: ChainListOption[] = useMemo(
-    () =>
-      lodash.orderBy(
-        supportedNetworks.filter(n => !hideChains?.[currentMenu]?.includes(n.chainId)),
-        [getTvl(tvls.data), 'name'],
-        ['desc', 'asc'],
-      ),
-    [currentMenu, hideChains, supportedNetworks, tvls.data],
+  const isLocked = networkSwitch.type === 'locked'
+  const onClick = isLocked
+    ? () =>
+        showToast({
+          title: networkSwitch.toastTitle?.() ?? t`Network switching unavailable`,
+          severity: 'warning',
+          testId: 'alert-eth-only',
+        })
+    : toggle
+
+  useEffect(
+    () => () => {
+      close()
+      closeSettings()
+    },
+    [blockchainId, networkSwitch.type, close, closeSettings],
   )
 
-  const onClick =
-    options.length > 1
-      ? toggle
-      : () =>
-          showToast({
-            title: t`This application is only available on the Ethereum Mainnet`,
-            severity: 'warning',
-            testId: 'alert-eth-only',
-          })
+  const options = lodash.orderBy(
+    supportedNetworks.filter(n => !hideChains?.[currentMenu]?.includes(n.chainId)),
+    [getTvl(tvls.data), 'name'],
+    ['desc', 'asc'],
+  )
+
   return (
     <>
-      <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
-        {blockchainId && <ChainSwitcherIcon blockchainId={blockchainId} />}
-        {Object.values(options).length > 1 && <ChevronDownIcon />}
+      <IconButton size="small" onClick={onClick} data-testid="btn-change-chain" title={currentNetwork?.name}>
+        {blockchainId && (
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            invisible={!isLocked}
+            badgeContent={<LockClosedIcon data-testid="network-lock" />}
+            sx={{
+              '& .MuiBadge-badge': {
+                backgroundColor: 'background.paper',
+                color: 'text.secondary',
+                width: IconSize.sm,
+                height: IconSize.sm,
+                '& svg': { width: IconSize.xs, height: IconSize.xs },
+              },
+            }}
+          >
+            <ChainSwitcherIcon blockchainId={blockchainId} />
+          </Badge>
+        )}
       </IconButton>
       {isOpen != null && (
         <ModalDialog
@@ -85,7 +113,13 @@ export const ChainSwitcher = <TApp extends string>({
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList showTestnets={showTestnets} options={options} tvls={tvls} selectedNetworkId={blockchainId} />
+            <ChainList
+              showTestnets={showTestnets}
+              options={options}
+              tvls={tvls}
+              selectedNetworkId={blockchainId}
+              onNetwork={close}
+            />
           )}
         </ModalDialog>
       )}

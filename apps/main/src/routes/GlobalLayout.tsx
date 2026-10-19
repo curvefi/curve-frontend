@@ -1,11 +1,9 @@
 import { type ReactNode } from 'react'
 import { useConnection, useEnsName } from 'wagmi'
-import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
 import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
-import { networks as crvusdNetworks } from '@/loan/networks'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
@@ -24,13 +22,14 @@ import { shortenAddress } from '@evm-ui/utils'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
+import { useLocation, useMatches } from '@tanstack/react-router'
 import { Footer } from '@ui/features/layout/Footer'
 import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.util'
 import { Header } from '@ui/features/layout/Header'
 import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
 import { PageLayout } from '@ui/features/layout/PageLayout'
+import { getNetworkSwitchHref } from '@ui/features/layout/switch-chain/util'
 import type { Maintenance } from '@ui/features/maintenance/hooks/useMaintenance'
-import { usePathname } from '@ui/hooks/router'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>
   [
@@ -55,17 +54,6 @@ const APP_TO_MENU = {
   bridge: 'bridge',
   analytics: 'analytics',
 } as const satisfies Record<AppName, AppMenuOption>
-
-const getSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
-  ({
-    dao: daoNetworks,
-    crvusd: crvusdNetworks,
-    lend: lendNetworks,
-    llamalend: lendNetworks,
-    dex: allNetworks,
-    bridge: allNetworks,
-    analytics: allNetworks,
-  })[app]
 
 const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   dex: 'pool',
@@ -103,10 +91,18 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   const { address, isConnecting, isConnected } = useConnection()
   const addressLabel = useEnsName({ address }).data ?? maybe(address, shortenAddress)
   const { blockchainId, chainId } = network
+  const location = useLocation()
 
   const currentMenu = APP_TO_MENU[currentApp]
-  const routeContext = { blockchainId, pathname: usePathname() }
+  const routeContext = { blockchainId, pathname: location.pathname }
   const formatUrl = (page: string) => getInternalUrl(currentApp, blockchainId, page)
+
+  const networkSwitch = useMatches().findLast(match => match.staticData.networkSwitch)?.staticData.networkSwitch ?? {
+    type: 'same-page',
+  }
+  const supportedNetworks = createChainOptions(currentApp === 'lend' ? lendNetworks : networks, targetBlockchainId =>
+    getNetworkSwitchHref(location, targetBlockchainId, networkSwitch),
+  )
 
   return (
     <PageLayout
@@ -121,9 +117,10 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
               isConnected={isConnected}
             />
           }
-          currentNetwork={createChainOption(network, currentApp)}
+          currentNetwork={createChainOption(network, location.href)}
           currentMenu={currentMenu}
-          supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}
+          supportedNetworks={supportedNetworks}
+          networkSwitch={networkSwitch}
           appStats={useAppStats(currentApp, network)}
           pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
           links={resolveLinks(routeContext)}

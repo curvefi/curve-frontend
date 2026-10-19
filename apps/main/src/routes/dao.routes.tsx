@@ -1,5 +1,6 @@
 import type { GaugeUrlParams, ProposalUrlParams, UserUrlParams } from '@/dao/types/dao.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { ETHEREUM_ONLY_NETWORK_SWITCH } from '@ui/features/layout/switch-chain/util'
 import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
@@ -13,7 +14,12 @@ const PageProposal = lazyRouteComponent(() => import('@/dao/components/PagePropo
 const PageUser = lazyRouteComponent(() => import('@/dao/components/PageUser'), 'User')
 const PageVeCrv = lazyRouteComponent(() => import('@/dao/components/PageVeCrv'), 'VeCrv')
 
-const daoLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'dao', component: DaoLayout })
+const daoLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'dao',
+  component: DaoLayout,
+  staticData: { networkSwitch: ETHEREUM_ONLY_NETWORK_SWITCH },
+})
 
 const layoutProps = { getParentRoute: () => daoLayoutRoute }
 

@@ -28,6 +28,7 @@ const HIDE_SCROLLBAR = {
 const PADDING_BLOCK = 3
 
 export const MobileHeader = <TApp extends string>({
+  networkSwitch,
   currentMenu,
   pages,
   appStats,
@@ -69,6 +70,7 @@ export const MobileHeader = <TApp extends string>({
       {banners}
       <Toolbar sx={t => ({ paddingBlock: PADDING_BLOCK, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar
+          networkSwitch={networkSwitch}
           supportedNetworks={supportedNetworks}
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
