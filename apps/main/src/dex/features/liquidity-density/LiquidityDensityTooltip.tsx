@@ -22,7 +22,7 @@ type LiquidityDensityTooltipProps = {
 export const LiquidityDensityTooltip = ({ sample, spot, priceLabel, unit, markers }: LiquidityDensityTooltipProps) => (
   <ChartTooltipShell
     testId="liquidity-density-tooltip"
-    title={`${formatChartAxisNumber(sample.price, { abbreviateFrom: false, useGrouping: true, significantDigits: 8 })} ${priceLabel}`}
+    title={`${formatNumber(sample.price, 'token.precise')} ${priceLabel}`}
   >
     <ChartTooltipSeriesGroup>
       <ChartTooltipDataRow
@@ -39,7 +39,7 @@ export const LiquidityDensityTooltip = ({ sample, spot, priceLabel, unit, marker
         <ChartTooltipSeriesRow
           key={label}
           label={label}
-          value={formatChartAxisNumber(value, { abbreviateFrom: false, useGrouping: true, significantDigits: 8 })}
+          value={formatNumber(value, 'token.precise')}
           lineColor={color}
           dash={dash}
         />

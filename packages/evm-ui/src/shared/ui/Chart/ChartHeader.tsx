@@ -118,7 +118,6 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
             ))}
           {timeOption && (
             <ChartSelect
-              uppercase
               options={timeOption.options}
               activeOption={timeOption.activeOption}
               setActiveOption={timeOption.setActiveOption}

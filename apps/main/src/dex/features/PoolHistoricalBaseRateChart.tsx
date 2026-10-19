@@ -110,7 +110,6 @@ export const PoolHistoricalBaseRateChart = ({
         title={t`Historical Base Rate`}
         action={
           <ChartSelect
-            uppercase
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}

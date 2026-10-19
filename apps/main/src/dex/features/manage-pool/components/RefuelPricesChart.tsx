@@ -183,7 +183,6 @@ export const RefuelPricesChart = ({
       action={
         <>
           <ChartSelect
-            uppercase
             options={PERIODS}
             activeOption={period}
             setActiveOption={setPeriod}

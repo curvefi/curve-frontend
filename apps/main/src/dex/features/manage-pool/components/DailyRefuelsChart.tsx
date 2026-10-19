@@ -110,13 +110,7 @@ export const DailyRefuelsChart = ({ blockchainId, poolAddress }: { blockchainId:
       testId="refuel-daily-refuels-chart"
       action={
         <>
-          <ChartSelect
-            uppercase
-            options={PERIODS}
-            activeOption={period}
-            setActiveOption={setPeriod}
-            isLoading={loading}
-          />
+          <ChartSelect options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           {fullscreen && (
             <ButtonExport
               filename="refuel_daily_donations"

@@ -11,7 +11,6 @@ export type ChartSelectOptions<TOption extends string = string> = {
 
 type ChartSelectProps<TOption extends string> = ChartSelectOptions<TOption> & {
   isLoading?: boolean
-  uppercase?: boolean
   inputProps?: SelectProps['inputProps']
 }
 
@@ -20,15 +19,12 @@ export const ChartSelect = <TOption extends string = string>({
   activeOption,
   setActiveOption,
   isLoading = false,
-  uppercase = false,
   inputProps,
 }: ChartSelectProps<TOption>) => (
   <Select
     variant="ghost"
     value={activeOption}
-    onChange={event => {
-      if (event.target.value != null) setActiveOption(event.target.value as TOption)
-    }}
+    onChange={event => setActiveOption(event.target.value as TOption)}
     size="tiny"
     sx={{ alignSelf: 'center' }}
     disabled={isLoading}
@@ -38,15 +34,12 @@ export const ChartSelect = <TOption extends string = string>({
       transformOrigin: { vertical: 'top', horizontal: 'right' },
     }}
   >
-    {options.map(option => {
-      const { value, label } = typeof option === 'string' ? { value: option, label: option } : option
-      return (
+    {options
+      .map(option => (typeof option === 'string' ? { value: option, label: option.toUpperCase() } : option))
+      .map(({ value, label }) => (
         <MenuItem value={value} key={value}>
-          <Typography variant="bodySBold" sx={{ textTransform: uppercase ? 'uppercase' : 'none' }}>
-            {label}
-          </Typography>
+          <Typography variant="bodySBold">{label}</Typography>
         </MenuItem>
-      )
-    })}
+      ))}
   </Select>
 )

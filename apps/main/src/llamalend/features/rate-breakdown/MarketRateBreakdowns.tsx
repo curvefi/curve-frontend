@@ -122,7 +122,6 @@ export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateTy
           testIdPrefix="historical-rate-tab"
         />
         <ChartSelect<TimeOption>
-          uppercase
           options={timeOptions}
           activeOption={timeOption}
           setActiveOption={setTimeOption}

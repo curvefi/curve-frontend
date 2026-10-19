@@ -126,13 +126,7 @@ export const ReservesCompositionChart = ({
       testId="refuel-reserves-composition-chart"
       action={
         <>
-          <ChartSelect
-            uppercase
-            options={PERIODS}
-            activeOption={period}
-            setActiveOption={setPeriod}
-            isLoading={loading}
-          />
+          <ChartSelect options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           {fullscreen && (
             <ButtonExport
               filename="refuel_reserves_composition"

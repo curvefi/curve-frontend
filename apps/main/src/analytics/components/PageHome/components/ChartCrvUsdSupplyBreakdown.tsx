@@ -139,13 +139,7 @@ export function ChartCrvUsdSupplyBreakdown() {
       onCloseFullscreen={closeFullscreen}
       action={
         <>
-          <ChartSelect
-            uppercase
-            options={PERIODS}
-            activeOption={period}
-            setActiveOption={setPeriod}
-            isLoading={loading}
-          />
+          <ChartSelect options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           <ButtonExport
             filename="crvusd_supply"
             data={{

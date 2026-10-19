@@ -2,9 +2,11 @@ import type { EChartsOption } from 'echarts'
 import { useMemo } from 'react'
 import { CHART_LINE_WIDTHS, formatChartAxisNumber } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { useTheme } from '@mui/material/styles'
+import { formatNumber } from '@primitives/number.utils'
 import type { Unit } from '@primitives/units.util'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useBreakpoint } from '@ui/hooks/useBreakpoints'
 import type { LiquidityPriceMarker } from '../LiquidityDensityChart'
 
 const { FontSize, LineHeight, Spacing, BorderWidth } = SizesAndSpaces
@@ -25,17 +27,21 @@ export const useLiquidityDensityChartOption = ({
   tooltipFormatter: (params: unknown) => HTMLElement | string
 }): EChartsOption => {
   const theme = useTheme()
+  const breakpoint = useBreakpoint()
   return useMemo(() => {
     const {
       palette,
       design: { Chart, Color, Text },
-      typography: { bodyXsRegular, htmlFontSize },
+      typography: {
+        bodyXsRegular: { fontFamily },
+        htmlFontSize,
+      },
     } = theme
     const px = (value: `${number}rem`) => Number.parseFloat(value) * htmlFontSize
     const textStyle = {
-      fontFamily: bodyXsRegular.fontFamily as string,
-      fontSize: px(FontSize.xs.desktop),
-      lineHeight: px(LineHeight.xs.desktop),
+      fontFamily: fontFamily as string,
+      fontSize: px(FontSize.xs[breakpoint]),
+      lineHeight: px(LineHeight.xs[breakpoint]),
       color: Text.TextColors.Tertiary,
     }
     const gridLine = { color: Color.Neutral[200], width: px(BorderWidth.thin) }
@@ -46,9 +52,9 @@ export const useLiquidityDensityChartOption = ({
       textStyle,
       grid: {
         left: 0,
-        right: px(Spacing.xs.desktop),
-        top: px(Spacing.sm.desktop),
-        bottom: px(Spacing.xs.desktop),
+        right: px(Spacing.xs[breakpoint]),
+        top: px(Spacing.sm[breakpoint]),
+        bottom: px(Spacing.xs[breakpoint]),
         outerBoundsMode: 'same',
         outerBoundsContain: 'all',
       },
@@ -58,7 +64,7 @@ export const useLiquidityDensityChartOption = ({
         max: high,
         name: priceLabel,
         nameLocation: 'middle',
-        nameGap: px(Spacing.sm.desktop),
+        nameGap: px(Spacing.sm[breakpoint]),
         nameMoveOverlap: true,
         nameTextStyle: { ...textStyle, color: Text.TextColors.Secondary },
         axisLine: { show: false },
@@ -77,7 +83,7 @@ export const useLiquidityDensityChartOption = ({
         min: 0,
         name: liquidityLabel,
         nameLocation: 'middle',
-        nameGap: px(Spacing.sm.desktop),
+        nameGap: px(Spacing.sm[breakpoint]),
         nameMoveOverlap: true,
         nameTextStyle: { ...textStyle, color: Text.TextColors.Secondary },
         axisLine: { show: false },
@@ -140,16 +146,12 @@ export const useLiquidityDensityChartOption = ({
                 lineStyle: { color, width: CHART_LINE_WIDTHS.referenceLine, type: dash ?? 'solid' },
                 label: {
                   show: !!showPrice,
-                  formatter: formatChartAxisNumber(value, {
-                    abbreviateFrom: false,
-                    useGrouping: true,
-                    significantDigits: 8,
-                  }),
+                  formatter: formatNumber(value, 'token.precise'),
                   position: 'start',
                   ...textStyle,
                   color: palette.getContrastText(color),
                   backgroundColor: color,
-                  padding: [px(Spacing['3xs'].desktop), px(Spacing.xxs.desktop)],
+                  padding: [px(Spacing['3xs'][breakpoint]), px(Spacing.xxs[breakpoint])],
                   distance: 0,
                 },
               })),
@@ -157,5 +159,5 @@ export const useLiquidityDensityChartOption = ({
         },
       ],
     }
-  }, [liquidityLabel, markers, priceLabel, profile, theme, tooltipFormatter, unit])
+  }, [liquidityLabel, markers, priceLabel, profile, theme, tooltipFormatter, unit, breakpoint])
 }

@@ -11,7 +11,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { getUnitOptions, type Unit } from '@primitives/units.util'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -52,9 +52,9 @@ export const LiquidityDensityChart = ({
   const { isConnected } = useConnection()
   const theme = useTheme()
   const { Chart, Color } = theme.design
-  const { spot, low, high, samples } = profile ?? {}
+  const { spot, samples } = profile ?? {}
   const priceLabel = t`${outputSymbol} per ${inputSymbol}`
-  const liquidityLabel = t`Liquidity in 1% range in ${unit === 'dollar' ? 'USD' : getUnitOptions(unit)?.symbol || UNAVAILABLE_TOKEN_SYMBOL}`
+  const liquidityLabel = t`Liquidity in 1% range in ${unit === 'dollar' ? 'USD' : getUnitOptions(unit)?.symbol.trim() || UNAVAILABLE_TOKEN_SYMBOL}`
   const markers = useMemo(
     () =>
       notFalsy<LiquidityPriceMarker>(
@@ -94,7 +94,7 @@ export const LiquidityDensityChart = ({
             isLoading={isLoading}
             error={error}
             errorMessage={t`Unable to fetch liquidity distribution.`}
-            isEmpty={!samples?.length || low == null || high == null}
+            isEmpty={maybe(samples, s => !s.length)}
             {...(isConnected
               ? {
                   emptyMessage: t`Liquidity distribution is unavailable for this pool.`,

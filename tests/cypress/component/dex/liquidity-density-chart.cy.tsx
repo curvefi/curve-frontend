@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { getInstanceByDom, type ECharts } from 'echarts'
+import { escapeRegExp } from 'lodash'
 import {
   LiquidityDensityChart,
   type LiquidityDensityChartProps,
@@ -18,7 +19,7 @@ import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const tokenProfile = liquidityProfile(cryptoCurve, [1, 0], { points: 48 })!
-const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75)!
+const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75)
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
 const stableProfile = liquidityProfile(stableCurve, [1, 0], { points: 48 })!
 const chartProps: LiquidityDensityChartProps = {
@@ -43,7 +44,7 @@ const mountChart = ({
   ...props
 }: Partial<LiquidityDensityChartProps> & { theme?: keyof typeof themes } = {}) =>
   cy.mount(
-    <ComponentTestWrapper config={mockedWagmiConfig}>
+    <ComponentTestWrapper config={mockedWagmiConfig} autoConnect={false}>
       <ThemeProvider theme={theme}>
         <LiquidityDensityChart {...chartProps} {...props} />
       </ThemeProvider>
@@ -95,7 +96,13 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
   it(`renders density on both sides of spot using the ${THEME} palette`, () => {
     mountChart({ theme: THEME })
     cy.get('[data-testid="liquidity-density-title"]').should('be.visible').and('have.text', 'Liquidity distribution')
-    ;['Internal price oracle', 'Center of liquidity', 'Current price', 'WBTC', 'USDC'].forEach(label => {
+    ;[
+      'Internal price oracle',
+      'Center of liquidity',
+      'Current price',
+      chartProps.inputSymbol,
+      chartProps.outputSymbol,
+    ].forEach(label => {
       cy.get(LEGEND).should('be.visible').and('contain.text', label)
     })
     getChart().should(chart => {
@@ -104,11 +111,11 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
       expect(pixelAt(chart, left.price, left.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[1]))
       expect(pixelAt(chart, right.price, right.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[2]))
       // Reference markers must remain inside the plot, in the same price coordinate system as the bars.
-      ;[chartProps.oraclePrice!, chartProps.centerPrice!, usdProfile.spot].forEach(price => {
-        expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(true)
-      })
+      ;[chartProps.oraclePrice!, chartProps.centerPrice!, usdProfile.spot].forEach(price =>
+        expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(true),
+      )
       expectAxisTitleVisible(chart, 'Liquidity in 1% range in USD')
-      expectAxisTitleVisible(chart, 'USDC per WBTC')
+      expectAxisTitleVisible(chart, `${chartProps.outputSymbol} per ${chartProps.inputSymbol}`)
     })
     cy.get(CHART).should($chart => expect($chart[0].getBoundingClientRect().right).to.be.at.most(VIEWPORT_WIDTH))
   })
@@ -139,24 +146,24 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
   })
 
   it('labels unavailable USD valuation in token units', () => {
-    mountChart({ profile: tokenProfile, unit: { symbol: ' WBTC', position: 'suffix' } })
+    const symbol = ` ${chartProps.inputSymbol}`
+    const tokenTick = new RegExp(`^\\d[\\d.,]*${escapeRegExp(symbol)}$`)
+    mountChart({ profile: tokenProfile, unit: { symbol, position: 'suffix' } })
     getChart().should(chart => {
-      expectAxisTitleVisible(chart, 'Liquidity in 1% range in WBTC')
+      expectAxisTitleVisible(chart, `Liquidity in 1% range in ${chartProps.inputSymbol}`)
       const hasTokenTick = chart
         .getZr()
         .storage.getDisplayList()
         .some(
           element =>
-            'text' in element.style &&
-            typeof element.style.text === 'string' &&
-            /^\d[\d.,]* WBTC$/.test(element.style.text),
+            'text' in element.style && typeof element.style.text === 'string' && tokenTick.test(element.style.text),
         )
       expect(hasTokenTick, 'Y-axis ticks include the token unit').to.be.true
     })
     getChart().then(chart => hoverSample(chart, tokenProfile.samples[10]))
     cy.get('[data-testid="liquidity-density-tooltip-depth"]')
       .should('be.visible')
-      .and('contain.text', ' WBTC')
+      .and('contain.text', symbol)
       .and('not.contain.text', '$')
   })
 
@@ -175,16 +182,29 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
     })
   })
 
-  it('handles loading, unavailable data, and query errors without drawing a chart', () => {
+  it('shows loading without drawing a chart', () => {
     mountChart({ profile: undefined, isLoading: true })
     cy.get(PLOT).find('[role="progressbar"]').should('be.visible')
     cy.get(PLOT).find('canvas').should('not.exist')
+  })
+
+  it('renders a chart without an empty state while samples are missing', () => {
     mountChart({ profile: undefined })
+    cy.get(PLOT).find('canvas').should('be.visible')
+    cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('not.exist')
+    cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
+  })
+
+  it('requests a wallet connection when samples are empty', () => {
+    mountChart({ profile: { ...usdProfile, samples: [] } })
     cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
     cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
     cy.get(PLOT).find('canvas').should('not.exist')
+  })
+
+  it('shows query errors without drawing a chart', () => {
     mountChart({ profile: undefined, error: new Error('RPC unavailable') })
-    cy.get(PLOT).should('be.visible').and('contain.text', 'Unable to fetch liquidity distribution.')
+    cy.get(PLOT).find('[data-testid="chart-error"]').should('be.visible')
     cy.get(PLOT).find('canvas').should('not.exist')
   })
 })

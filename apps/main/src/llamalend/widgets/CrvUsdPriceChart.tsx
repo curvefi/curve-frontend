@@ -133,7 +133,6 @@ export const CrvUsdPriceChart = () => {
         title={t`Historical crvUSD Peg`}
         action={
           <ChartSelect
-            uppercase
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}

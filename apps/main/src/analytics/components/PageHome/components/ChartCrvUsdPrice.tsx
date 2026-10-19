@@ -76,13 +76,7 @@ export function ChartCrvUsdPrice() {
       onCloseFullscreen={closeFullscreen}
       action={
         <>
-          <ChartSelect
-            uppercase
-            options={PERIODS}
-            activeOption={period}
-            setActiveOption={setPeriod}
-            isLoading={loading}
-          />
+          <ChartSelect options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           <ButtonExport
             filename="crvusd_price"
             data={{ price: chartData.map(x => ({ time: x.time, value: x.price })) }}

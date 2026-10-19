@@ -1,9 +1,9 @@
 import { isEqual } from 'lodash'
 import { useMemo, useState } from 'react'
 import { usePoolContext } from '@/dex/features/pool-context'
-import type { Chain } from '@curvefi/prices-api'
+import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
 import { t } from '@ui/lib/i18n'
@@ -21,16 +21,14 @@ export const PoolLiquidityDensityChart = () => {
   const pairs = useMemo(
     () =>
       coins.flatMap((inputSymbol, inputCoin) =>
-        coins.flatMap((outputSymbol, outputCoin) =>
-          notFalsy(
-            inputCoin !== outputCoin && {
-              key: `${inputCoin}:${outputCoin}`,
-              pair: [inputCoin, outputCoin] satisfies LiquidityPair,
-              inputSymbol,
-              outputSymbol,
-            },
-          ),
-        ),
+        coins
+          .map((outputSymbol, outputCoin) => ({
+            key: `${inputCoin}:${outputCoin}`,
+            pair: [inputCoin, outputCoin] satisfies LiquidityPair,
+            inputSymbol,
+            outputSymbol,
+          }))
+          .filter(({ pair: [inputCoin, outputCoin] }) => inputCoin !== outputCoin),
       ),
     [coins],
   )
@@ -38,14 +36,17 @@ export const PoolLiquidityDensityChart = () => {
 
   const {
     profile: { data, error, isLoading },
-    inputTokenUsdPrice,
-  } = usePoolLiquidityDensity({ chainId, blockchainId: blockchainId as Chain, poolAddress }, pair, PROFILE_OPTIONS)
-  const usdPrice = inputTokenUsdPrice.data
-  const valuedProfile = useMemo(() => data && usdPrice && valueLiquidityProfile(data, usdPrice), [data, usdPrice])
+    inputTokenUsdPrice: { data: usdPrice },
+  } = usePoolLiquidityDensity(
+    { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
+    pair,
+    PROFILE_OPTIONS,
+  )
+  const valuedProfile = useMemo(() => maybes([data, usdPrice], valueLiquidityProfile), [data, usdPrice])
 
   return (
     <LiquidityDensityChart
-      profile={valuedProfile || data}
+      profile={valuedProfile ?? data}
       inputSymbol={inputSymbol}
       outputSymbol={outputSymbol}
       unit={valuedProfile ? 'dollar' : { symbol: ` ${inputSymbol}`, position: 'suffix' }}
@@ -61,10 +62,10 @@ export const PoolLiquidityDensityChart = () => {
           }))}
           activeOption={key}
           inputProps={{ 'aria-label': t`Liquidity pair` }}
-          setActiveOption={selectedKey =>
+          setActiveOption={key =>
             maybe(
-              pairs.find(({ key }) => key === selectedKey),
-              ({ pair }) => setSelectedPair(pair),
+              pairs.find(p => p.key === key),
+              p => setSelectedPair(p.pair),
             )
           }
         />

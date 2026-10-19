@@ -238,7 +238,6 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
         action={
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <ChartSelect
-              uppercase
               options={TIME_OPTIONS}
               activeOption={chart.ohlcChartProps.timeOption}
               setActiveOption={chart.setTimeOption}
