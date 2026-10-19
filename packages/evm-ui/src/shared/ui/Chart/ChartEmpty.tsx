@@ -6,10 +6,18 @@ import { EmptyStateEvmCard } from '../EmptyStateEvmCard'
 
 const { Spacing } = SizesAndSpaces
 
-type ChartEmptyProps = { height: number; message?: ReactNode }
-
-export const ChartEmpty = ({ height, message }: ChartEmptyProps) => (
+export const ChartEmpty = ({
+  height,
+  title = t`No chart data found`,
+  message,
+  testId,
+}: {
+  height: number
+  title?: ReactNode
+  message?: ReactNode
+  testId?: string
+}) => (
   <Stack sx={{ alignItems: 'center', justifyContent: 'center', padding: Spacing.md, minHeight: height }}>
-    <EmptyStateEvmCard title={t`No chart data found`} description={message} />
+    <EmptyStateEvmCard title={title} description={message} testId={testId} />
   </Stack>
 )

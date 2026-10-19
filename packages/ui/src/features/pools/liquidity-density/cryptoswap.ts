@@ -1,8 +1,11 @@
 import { sum } from 'lodash'
 import { maybe, range } from '@primitives/objects.utils'
-import { isPositiveFinite, SOLVER_ITERATIONS, SOLVER_TOLERANCE } from './curve'
+import { SOLVER_ITERATIONS, SOLVER_TOLERANCE } from './constants'
+import { isPositiveFinite } from './curve'
 import { converge, iterate, product } from './math'
 
+const INVARIANT_SEARCH_TOLERANCE = 1e-9
+const INVARIANT_BRACKET_GROWTH_FACTOR = 2
 const solverSteps = range(SOLVER_ITERATIONS)
 const bracketSteps = range(SOLVER_ITERATIONS + 1)
 
@@ -82,13 +85,13 @@ export const cryptoInvariant = (
     return value
   }
   const lower = bracketSteps
-    .map(step => total / n / 2 ** step)
+    .map(step => total / n / INVARIANT_BRACKET_GROWTH_FACTOR ** step)
     .find(d => {
       const value = residual(d)
       return value == null || value > 0
     })
   const upper = bracketSteps
-    .map(step => total * n * 2 ** step)
+    .map(step => total * n * INVARIANT_BRACKET_GROWTH_FACTOR ** step)
     .find(d => {
       const value = residual(d)
       return value == null || value < 0
@@ -106,7 +109,9 @@ export const cryptoInvariant = (
       const middle = (low + high) / 2
       return maybe(residual(middle), (value): readonly [number, number] => (value > 0 ? [middle, high] : [low, middle]))
     },
-    ([low, high]) => high - low <= high * 1e-9,
+    ([low, high]) => high - low <= high * INVARIANT_SEARCH_TOLERANCE,
   )
-  return maybe(bounds, ([low, high]) => (high - low <= high * 1e-9 ? (low + high) / 2 : undefined)) // CryptoSwap invariant did not converge if undefined
+  return maybe(bounds, ([low, high]) =>
+    high - low <= high * INVARIANT_SEARCH_TOLERANCE ? (low + high) / 2 : undefined,
+  ) // CryptoSwap invariant did not converge if undefined
 }

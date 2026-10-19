@@ -9,6 +9,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 type ChartFooterProps<T extends string> = {
+  testId?: string
   legendSets: LegendItem[]
   description?: string
   toggleOptions?: readonly T[]
@@ -17,6 +18,7 @@ type ChartFooterProps<T extends string> = {
 }
 
 export const ChartFooter = <T extends string>({
+  testId,
   legendSets,
   description,
   toggleOptions,
@@ -26,7 +28,7 @@ export const ChartFooter = <T extends string>({
   const hasToggle = !!toggleOptions?.length
 
   return (
-    <Stack sx={{ gap: Spacing.sm }}>
+    <Stack data-testid={testId} sx={{ gap: Spacing.sm }}>
       <Stack
         direction="row"
         sx={{

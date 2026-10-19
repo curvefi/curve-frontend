@@ -3,15 +3,14 @@ import { maybe, range } from '@primitives/objects.utils'
 import { iterate } from './math'
 import type { LiquidityCurve, LiquidityPair } from './types'
 
-export const SOLVER_ITERATIONS = 255
-export const SOLVER_TOLERANCE = 1e-14
-
 // flet-curve-demo/src/curve/liquidity.py: Curve, _walk, balance_at_price, peak_price.
 // Reference commit: 5831c2416080e27c9c7018c281c48e21cae9beeb.
-const MAX_STEPS = 200
-const MAX_REACH = 1e9
-const TOLERANCE = 1e-9
-const searchSteps = range(MAX_STEPS)
+const PRICE_SEARCH_ITERATIONS = 200
+const MAX_BALANCE_SEARCH_FACTOR = 1e9
+const PRICE_SEARCH_TOLERANCE = 1e-9
+const PRICE_DIFFERENCE_STEP_RATIO = 1e-7
+const BRACKET_GROWTH_FACTOR = 2
+const searchSteps = range(PRICE_SEARCH_ITERATIONS)
 
 export const isPositiveFinite = (value: number | undefined): value is number =>
   value != null && Number.isFinite(value) && value > 0
@@ -46,7 +45,7 @@ const balanceAt = ({ solve, xp }: LiquidityCurve, [inputCoin, outputCoin]: Liqui
 const priceAt = (curve: LiquidityCurve, pair: LiquidityPair, x: number) => {
   const { scale } = curve
   const [inputCoin, outputCoin] = pair
-  const step = x * 1e-7
+  const step = x * PRICE_DIFFERENCE_STEP_RATIO
   if (!isPositiveFinite(step)) return undefined // Difference step must be finite and positive
   const outputBefore = balanceAt(curve, pair, x - step)
   const outputAfter = balanceAt(curve, pair, x + step)
@@ -67,15 +66,15 @@ export const spotPrice = (curve: LiquidityCurve, pair: LiquidityPair) => {
 
 const bracketPrice = (priceOf: (x: number) => number | undefined, start: number, target: number, grow: boolean) => {
   const result = iterate<{ x: number; step: number; bracket?: readonly [number, number] } | undefined>(
-    { x: start, step: 2 },
+    { x: start, step: BRACKET_GROWTH_FACTOR },
     searchSteps,
     ({ x, step }) => {
       const trial = grow ? x * step : x / step
-      if (trial > start * MAX_REACH || trial < start / MAX_REACH) return undefined
+      if (trial > start * MAX_BALANCE_SEARCH_FACTOR || trial < start / MAX_BALANCE_SEARCH_FACTOR) return undefined
       const price = priceOf(trial)
       if (price == null) {
         const nextStep = 1 + (step - 1) / 2
-        return nextStep < 1 + TOLERANCE ? undefined : { x, step: nextStep }
+        return nextStep < 1 + PRICE_SEARCH_TOLERANCE ? undefined : { x, step: nextStep }
       }
       if (grow ? price <= target : price >= target) {
         return { x, step, bracket: grow ? [x, trial] : [trial, x] }
@@ -106,9 +105,9 @@ export const balanceAtPrice = (curve: LiquidityCurve, pair: LiquidityPair, targe
       const price = priceOf(middle)
       return price != null && price > target ? [middle, high] : [low, middle]
     },
-    ([low, high]) => high - low <= high * TOLERANCE,
+    ([low, high]) => high - low <= high * PRICE_SEARCH_TOLERANCE,
   )
-  return high - low <= high * TOLERANCE ? (low + high) / 2 : undefined // Price inversion did not converge
+  return high - low <= high * PRICE_SEARCH_TOLERANCE ? (low + high) / 2 : undefined // Price inversion did not converge
 }
 
 /** Price where the selected balances are equal in invariant coordinates. */
@@ -122,26 +121,28 @@ export const peakPrice = (curve: LiquidityCurve, pair: LiquidityPair) => {
   if (hereGap == null) return undefined
   if (hereGap === 0) return priceAt(curve, pair, here)
   const end = searchSteps
-    .map(step => (hereGap > 0 ? here / 2 ** (step + 1) : here * 2 ** (step + 1)))
+    .map(step =>
+      hereGap > 0 ? here / BRACKET_GROWTH_FACTOR ** (step + 1) : here * BRACKET_GROWTH_FACTOR ** (step + 1),
+    )
     .find(x => {
-      if (x < here / MAX_REACH || x > here * MAX_REACH) return true
+      if (x < here / MAX_BALANCE_SEARCH_FACTOR || x > here * MAX_BALANCE_SEARCH_FACTOR) return true
       const value = gap(x)
       return value == null || (hereGap > 0 ? value <= 0 : value >= 0)
     })
   if (end == null) return undefined // Could not locate the balanced price
-  if (end < here / MAX_REACH) return undefined // No balance point below the pool
-  if (end > here * MAX_REACH) return undefined // No balance point above the pool
+  if (end < here / MAX_BALANCE_SEARCH_FACTOR) return undefined // No balance point below the pool
+  if (end > here * MAX_BALANCE_SEARCH_FACTOR) return undefined // No balance point above the pool
   if (gap(end) == null) return undefined
   const bounds = iterate<readonly [number, number] | undefined>(
-    hereGap > 0 ? [end, end * 2] : [end / 2, end],
+    hereGap > 0 ? [end, end * BRACKET_GROWTH_FACTOR] : [end / BRACKET_GROWTH_FACTOR, end],
     searchSteps,
     ([low, high]) => {
       const middle = (low + high) / 2
       return maybe(gap(middle), (value): readonly [number, number] => (value > 0 ? [low, middle] : [middle, high]))
     },
-    ([low, high]) => high - low <= high * TOLERANCE,
+    ([low, high]) => high - low <= high * PRICE_SEARCH_TOLERANCE,
   )
   return maybe(bounds, ([low, high]) =>
-    high - low <= high * TOLERANCE ? priceAt(curve, pair, (low + high) / 2) : undefined,
+    high - low <= high * PRICE_SEARCH_TOLERANCE ? priceAt(curve, pair, (low + high) / 2) : undefined,
   ) // Could not locate the balanced price if undefined
 }

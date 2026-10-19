@@ -1,6 +1,7 @@
 import { sum } from 'lodash'
 import { range } from '@primitives/objects.utils'
-import { curveCoordinates, isPositiveFinite, SOLVER_ITERATIONS, SOLVER_TOLERANCE } from './curve'
+import { MIN_RELATIVE_PRICE_WIDTH, SOLVER_ITERATIONS, SOLVER_TOLERANCE } from './constants'
+import { curveCoordinates, isPositiveFinite } from './curve'
 import { converge, productOfRatios } from './math'
 import type { LiquidityCurve } from './types'
 
@@ -66,7 +67,7 @@ export const createStableSwapCurve = (
   return {
     xp,
     scale,
-    seed: Math.max(1 / amplification, 2e-4),
+    seed: Math.max(1 / amplification, MIN_RELATIVE_PRICE_WIDTH),
     solve: (state, outputCoin) => stableBalance(state, amplification, d, outputCoin),
   }
 }
