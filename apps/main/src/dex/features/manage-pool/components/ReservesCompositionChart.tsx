@@ -9,8 +9,8 @@ import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, mapRecord } from '@primitives/objects.utils'
@@ -126,7 +126,13 @@ export const ReservesCompositionChart = ({
       testId="refuel-reserves-composition-chart"
       action={
         <>
-          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
+          <ChartSelect
+            uppercase
+            options={PERIODS}
+            activeOption={period}
+            setActiveOption={setPeriod}
+            isLoading={loading}
+          />
           {fullscreen && (
             <ButtonExport
               filename="refuel_reserves_composition"

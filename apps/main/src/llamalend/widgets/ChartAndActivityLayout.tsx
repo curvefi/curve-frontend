@@ -12,8 +12,8 @@ import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/can
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
@@ -237,7 +237,8 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
         }
         action={
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-            <SelectTimeOption
+            <ChartSelect
+              uppercase
               options={TIME_OPTIONS}
               activeOption={chart.ohlcChartProps.timeOption}
               setActiveOption={chart.setTimeOption}

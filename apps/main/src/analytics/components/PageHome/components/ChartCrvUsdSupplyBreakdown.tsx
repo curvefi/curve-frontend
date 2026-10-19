@@ -6,8 +6,8 @@ import { createChartOptions, createPalette, createTooltip, timeToCategory } from
 import { DAYS, type Period } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries, mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -139,7 +139,13 @@ export function ChartCrvUsdSupplyBreakdown() {
       onCloseFullscreen={closeFullscreen}
       action={
         <>
-          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
+          <ChartSelect
+            uppercase
+            options={PERIODS}
+            activeOption={period}
+            setActiveOption={setPeriod}
+            isLoading={loading}
+          />
           <ButtonExport
             filename="crvusd_supply"
             data={{

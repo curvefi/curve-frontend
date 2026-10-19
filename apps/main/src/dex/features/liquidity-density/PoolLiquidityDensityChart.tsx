@@ -2,9 +2,8 @@ import { isEqual } from 'lodash'
 import { useMemo, useState } from 'react'
 import { usePoolContext } from '@/dex/features/pool-context'
 import type { Chain } from '@curvefi/prices-api'
-import MenuItem from '@mui/material/MenuItem'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import { maybe, notFalsy } from '@primitives/objects.utils'
-import { Select } from '@ui/components/Select'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
 import { t } from '@ui/lib/i18n'
@@ -55,21 +54,20 @@ export const PoolLiquidityDensityChart = () => {
       isLoading={isLoading}
       error={error}
       action={
-        <Select
-          size="tiny"
-          value={key}
+        <ChartSelect
+          options={pairs.map(({ key, inputSymbol, outputSymbol }) => ({
+            value: key,
+            label: `${inputSymbol} / ${outputSymbol}`,
+          }))}
+          activeOption={key}
           inputProps={{ 'aria-label': t`Liquidity pair` }}
-          onChange={event =>
+          setActiveOption={selectedKey =>
             maybe(
-              pairs.find(({ key }) => key === event.target.value),
+              pairs.find(({ key }) => key === selectedKey),
               ({ pair }) => setSelectedPair(pair),
             )
           }
-        >
-          {pairs.map(({ key, inputSymbol, outputSymbol }) => (
-            <MenuItem key={key} value={key}>{`${inputSymbol} / ${outputSymbol}`}</MenuItem>
-          ))}
-        </Select>
+        />
       }
     />
   )
