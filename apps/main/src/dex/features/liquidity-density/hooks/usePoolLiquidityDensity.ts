@@ -3,7 +3,6 @@ import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { ChainNameQuery, PoolQuery } from '@evm-ui/queries/query-types'
-import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { LiquidityPair, LiquidityProfileOptions } from '@ui/features/pools/liquidity-density/types'
 import { useCombinedQueries } from '@ui/features/queries/combine'
@@ -18,7 +17,7 @@ import {
 import { usePoolLiquidityQuote } from '../queries/pool-liquidity-quote.query'
 import { usePoolLiquidityState } from '../queries/pool-liquidity-state.query'
 
-type PoolLiquidityParams = FieldsOf<PoolQuery & ChainNameQuery & { poolAddress: Address }>
+type PoolLiquidityParams = FieldsOf<PoolQuery & ChainNameQuery>
 
 /** Data and calculations only. Pair indices refer to the pool's wrapped coins, including metapool LP tokens. */
 export const usePoolLiquidityDensity = (

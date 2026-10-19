@@ -23,9 +23,9 @@ const readOptionalParameter = async (contract: Contract, name: 'D' | 'A_precise'
 }
 
 const { useQuery: usePoolLiquidityStateQuery } = queryFactory({
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'pool.liquidityState', chainId, poolId }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => {
-    const pool = requireLib('curveApi').getPool(poolId)
+  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'pool.liquidityState', chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) => {
+    const pool = requireLib('curveApi').getPool(poolAddress)
     const {
       address,
       curve: { provider },

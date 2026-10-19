@@ -207,7 +207,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             {pricesApiPoolData && (
               <OhlcAndActivityComp chainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
             )}
-            <PoolLiquidityDensityChart key={`${chainId}:${poolId}`} />
+            <PoolLiquidityDensityChart key={`${chainId}:${poolAddress}`} />
             <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
           </>
         )}

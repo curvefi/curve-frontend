@@ -15,10 +15,10 @@ type PoolLiquidityQuoteQuery = PoolQuery & { inputCoin: number; outputCoin: numb
 type PoolLiquidityQuoteParams = FieldsOf<PoolLiquidityQuoteQuery>
 
 const { useQuery: usePoolLiquidityQuoteQuery } = queryFactory({
-  queryKey: ({ chainId, poolId, inputCoin, outputCoin, inputAmount }: PoolLiquidityQuoteParams) =>
-    ({ name: 'pool.liquidityQuote', chainId, poolId, inputCoin, outputCoin, inputAmount }) as const,
-  queryFn: async ({ poolId, inputCoin, outputCoin, inputAmount }: PoolLiquidityQuoteQuery) => {
-    const pool = requireLib('curveApi').getPool(poolId)
+  queryKey: ({ chainId, poolAddress, inputCoin, outputCoin, inputAmount }: PoolLiquidityQuoteParams) =>
+    ({ name: 'pool.liquidityQuote', chainId, poolAddress, inputCoin, outputCoin, inputAmount }) as const,
+  queryFn: async ({ poolAddress, inputCoin, outputCoin, inputAmount }: PoolLiquidityQuoteQuery) => {
+    const pool = requireLib('curveApi').getPool(poolAddress)
     const {
       wrappedCoins: { length: coinCount },
     } = pool

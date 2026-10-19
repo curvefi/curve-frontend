@@ -14,7 +14,7 @@ import { LiquidityDensityChart } from './LiquidityDensityChart'
 const PROFILE_OPTIONS = { points: 48 }
 
 export const PoolLiquidityDensityChart = () => {
-  const { chainId, blockchainId, poolId, poolAddress, pool } = usePoolContext()
+  const { chainId, blockchainId, poolAddress, pool } = usePoolContext()
   // Default to pricing the second wrapped coin in the first.
   const [selectedPair, setSelectedPair] = useState<LiquidityPair>([1, 0])
   // Density uses wrapped balances even when the pool form is showing underlying coins.
@@ -40,11 +40,7 @@ export const PoolLiquidityDensityChart = () => {
   const {
     profile: { data, error, isLoading },
     inputTokenUsdPrice,
-  } = usePoolLiquidityDensity(
-    { chainId, blockchainId: blockchainId as Chain, poolId, poolAddress },
-    pair,
-    PROFILE_OPTIONS,
-  )
+  } = usePoolLiquidityDensity({ chainId, blockchainId: blockchainId as Chain, poolAddress }, pair, PROFILE_OPTIONS)
   const usdPrice = inputTokenUsdPrice.data
   const valuedProfile = useMemo(() => data && usdPrice && valueLiquidityProfile(data, usdPrice), [data, usdPrice])
 
