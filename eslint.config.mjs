@@ -238,6 +238,23 @@ const config = [
 
   // Override (replaces legacy `overrides`)
   {
+    ignores: ['packages/ui/src/features/queries/query-hooks.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@tanstack/react-query',
+              importNames: ['useQuery', 'useQueries', 'UseQueryOptions'],
+              message: 'Import useQuery, useQueries and QueryOptions from @ui/features/queries/query-hooks instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.stories.{ts,tsx,mts}', 'storybook/**/*.{ts,tsx,mts}'],
     languageOptions: {
       // Stories are excluded from app/package projects and checked by Storybook.
