@@ -33,7 +33,7 @@ export const usePoolComposition = ({
 
   const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
 
-  // currencyReserves.total is NaN when no wallet is connected.
+  // TODO: currencyReserves.total is NaN when no wallet is connected, but that should be handled inside usePoolCurrencyReserves.
   const useCurrencyReserves = mapQuery(
     currencyReserves,
     reserves => !isNaN(Number(reserves.total)) || isLiteChain(chainId),
