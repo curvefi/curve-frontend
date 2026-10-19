@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkParams, UserParams } from '@/stellar/queries/query-types'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
@@ -36,11 +36,8 @@ export function usePoolTokens({
     queries: zip(addresses, decimals).map(([token, decimals]) =>
       getTokenBalanceQueryOptions({ network, token, account, decimals: decimals.data }),
     ),
-    combine: useCallback(
-      // propagate every decimal loading state to the balances
-      (balances: Query<Decimal>[]) => zip(balances, decimals).map(qs => combineQueries(qs, balance => balance)),
-      [decimals],
-    ),
+    // propagate each decimal loading state to the balances
+    combine: (balances: Query<Decimal>[]) => zip(balances, decimals).map(qs => combineQueries(qs, balance => balance)),
   })
   const tokens = useMemo(
     () =>

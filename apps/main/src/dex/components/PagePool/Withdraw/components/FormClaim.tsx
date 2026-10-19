@@ -29,9 +29,9 @@ import { amount as toAmount } from '@ui/lib/decimal'
 import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
-  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolId })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const { chainId, userAddress: signerAddress, poolAddress, pool, api: curve, isWrapped } = usePoolContext()
+  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolAddress })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -139,19 +139,19 @@ export const FormClaim = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (poolAddress) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [poolAddress])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues()
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // fetch claimable
   useEffect(() => {
@@ -159,7 +159,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
       void fetchClaimable(activeKey, chainId, pool)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolAddress, signerAddress])
 
   // steps
   useEffect(() => {

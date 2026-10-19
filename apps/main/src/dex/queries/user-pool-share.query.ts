@@ -4,10 +4,10 @@ import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-va
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useUserPoolShareQuery, invalidate: invalidateUserPoolShareQuery } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-    ({ name: 'userShare', chainId, poolId, userAddress }) as const,
+  queryKey: ({ chainId, poolAddress, userAddress }: UserPoolParams) =>
+    ({ name: 'userShare', chainId, poolAddress, userAddress }) as const,
   category: 'dex.user',
-  queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>
-    requireLib('curveApi').getPool(poolId).userShare(userAddress),
+  queryFn: async ({ poolAddress, userAddress }: UserPoolQuery) =>
+    requireLib('curveApi').getPool(poolAddress).userShare(userAddress),
   validationSuite: userPoolValidationSuite,
 })

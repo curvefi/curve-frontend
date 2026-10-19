@@ -7,7 +7,8 @@ import {
   writeSupplyInput,
 } from './supply.helpers'
 
-export const submitWithdrawForm = (isMocked = false) => submitSupplyForm('withdraw', 'Withdraw successful!', isMocked)
+export const submitWithdrawForm = (isMocked = false) =>
+  submitSupplyForm('withdraw', { message: 'Withdraw successful!' }, isMocked)
 
 /**
  * Fill in the withdraw form with the specified amount.

@@ -1,5 +1,6 @@
 import { getActionValue, DECIMAL_REGEX } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { PoolState } from '@cy/support/helpers/stellar/pool.helpers'
+import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -71,8 +72,11 @@ export const checkSwapDetails = (
 }
 
 export const submitSwapForm = () => {
-  swapSubmit().should('be.enabled').click()
-  cy.get('[data-testid="toast-success"]', TIMEOUTS['stellar.confirmation']).should('contain.text', 'Swap confirmed')
+  submitAndExpectToast(
+    () => swapSubmit().should('be.enabled').click(),
+    { message: 'Swap confirmed' },
+    'stellar.confirmation',
+  )
   cyMap(SWAP_SIDES, side => swapAmountInput(side).should('have.value', ''))
   swapSubmit().should('be.disabled')
 }

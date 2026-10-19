@@ -17,7 +17,7 @@ type Props = PegKeeperType & { testId?: string; sx?: SxProps }
 export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => {
   const {
     address,
-    pool: { id: poolId, name: poolName, address: poolAddress, underlyingCoins, underlyingCoinAddresses },
+    pool: { name: poolName, address: poolAddress, underlyingCoins, underlyingCoinAddresses },
   } = pegkeeper
 
   const { rate, debt, debtCeiling, estCallerProfit, rebalance, isRebalancing } = usePegkeeper(pegkeeper)
@@ -36,7 +36,6 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
         <PegKeeperAdvancedDetails
           address={address}
           estCallerProfit={estCallerProfit}
-          poolId={poolId}
           poolName={poolName}
           poolAddress={poolAddress}
           testId={testId}

@@ -4,8 +4,9 @@ import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-valida
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: usePoolParameters, invalidate: invalidatePoolParameters } = queryFactory({
-  queryKey: ({ chainId, poolId }: PoolParams) => ({ name: 'pool.stats.parameters', chainId, poolId }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => await requireLib('curveApi').getPool(poolId).stats.parameters(),
+  queryKey: ({ chainId, poolAddress }: PoolParams) =>
+    ({ name: 'pool.stats.parameters', chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) => await requireLib('curveApi').getPool(poolAddress).stats.parameters(),
   validationSuite: curvePoolValidationSuite,
   category: 'dex.poolParams',
 })

@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -21,7 +20,7 @@ export type PoolCompositionRow = {
   marketShare: QueryProp<Amount>
   amount: QueryProp<Amount>
   amountUsd: QueryProp<Amount>
-  price?: number
+  price: QueryProp<number>
 }
 
 const columnHelper = createAppColumnHelper<PoolCompositionRow>()
@@ -51,8 +50,8 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     id: PoolCompositionColumnId.Price,
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
-      <InlineTableCell>
-        <Typography variant="tableCellValue">{formatNumber(getValue(), 'usd.precise')}</Typography>
+      <InlineTableCell sx={{ alignItems: 'end' }}>
+        <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'usd.precise'))} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -63,11 +62,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo
-          icon={null}
-          iconPosition="right"
-          primary={mapQuery(getValue(), value => formatNumber(value, 'percent.rate'))}
-        />
+        <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'percent.rate'))} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -93,7 +88,6 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
             {/** Needed for tooltip to work for whatever reason */}
             <Box>
               <TokenInfo
-                icon={null}
                 iconPosition="right"
                 primary={mapQuery(getValue(), value => formatNumber(value, 'token.compact'))}
                 secondary={mapQuery(row.original.amountUsd, value => formatNumber(value, 'usd.notional'))}

@@ -19,7 +19,6 @@ type Props = {
   address: PegKeeper['address']
   estCallerProfit: PegKeeperDetails['estCallerProfit']
   poolName: Pool['name']
-  poolId: Pool['id']
   poolAddress: Pool['address']
   testId?: string
 }
@@ -27,7 +26,6 @@ type Props = {
 export const PegKeeperAdvancedDetails = ({
   address,
   estCallerProfit,
-  poolId,
   poolName,
   poolAddress,
   testId = 'pegkeeper',
@@ -38,7 +36,7 @@ export const PegKeeperAdvancedDetails = ({
       value={shortenAddress(poolAddress, { digits: 2 })}
       valueTooltip={
         <ExternalLink
-          href={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolId}/deposit`)}
+          href={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
           label={t`View pool`}
         />
       }

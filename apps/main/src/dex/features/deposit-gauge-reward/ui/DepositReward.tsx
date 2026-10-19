@@ -41,7 +41,7 @@ const defaultValues = {
 } as const
 
 export const DepositReward = () => {
-  const { chainId, poolId } = usePoolContext()
+  const { chainId, poolAddress } = usePoolContext()
   const { data: networks } = useNetworks()
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
@@ -53,7 +53,7 @@ export const DepositReward = () => {
   const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId })
 
   const [params, isDebouncing] = useFormDebounce(
-    { chainId, poolId, rewardTokenId, amount, epoch, userBalance },
+    { chainId, poolAddress, rewardTokenId, amount, epoch, userBalance },
     userDefaultValues,
   )
 
@@ -64,7 +64,7 @@ export const DepositReward = () => {
     onSubmit,
     error: depositRewardError,
     isPending: isPendingDepositReward,
-  } = useDepositReward({ chainId, poolId, onReset: () => form.reset(defaultValues) })
+  } = useDepositReward({ chainId, poolAddress, onReset: () => form.reset(defaultValues) })
 
   const isPending = form.formState.isSubmitting || isPendingDepositReward
   const isLoading = isPending || isLoadingApproved
@@ -88,7 +88,12 @@ export const DepositReward = () => {
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <AmountTokenInput chainId={chainId} poolId={poolId} blockchainId={network.blockchainId} disabled={isPending} />
+        <AmountTokenInput
+          chainId={chainId}
+          poolAddress={poolAddress}
+          blockchainId={network.blockchainId}
+          disabled={isPending}
+        />
         <EpochInput disabled={isPending} />
         <EvmFormButton
           pending={isPending}

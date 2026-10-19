@@ -1,4 +1,5 @@
 import { groupBy, inRange } from 'lodash'
+import { getAddress } from 'viem'
 import { mapRecord } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -19,7 +20,7 @@ const REWARDS = groupBy(
 
       // Pool specific properties
       ...pool,
-      address: pool.address.toLocaleLowerCase(),
+      address: getAddress(pool.address),
       description: pool.description !== 'null' ? pool.description : campaign.description,
       lock: pool.lock === 'true',
       // Remove possible 'x' suffix and convert to number if numeric, otherwise keep as symbol string

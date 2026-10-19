@@ -15,7 +15,7 @@ import { dayjs } from '@evm-ui/utils/dayjs'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
 import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { amount, decimal } from '@ui/lib/decimal'
@@ -38,7 +38,6 @@ export const PoolAdvancedDetails = () => {
   const {
     chainId,
     blockchainId,
-    poolId,
     poolAddress,
     pool,
     pool: { lpToken, gauge },
@@ -47,8 +46,8 @@ export const PoolAdvancedDetails = () => {
   } = usePoolContext()
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
-  const parameters = usePoolParameters({ chainId, poolId })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const parameters = usePoolParameters({ chainId, poolAddress })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
@@ -67,16 +66,18 @@ export const PoolAdvancedDetails = () => {
   const { priceOracle, priceScale, A, initial_A, initial_A_time, future_A, future_A_time } = parameters.data ?? {}
   const { assetTypes, basePool, coins, hasDonations, metapool, oracles, registry, vyperVersion } = metadata.data ?? {}
   const isFxSwap = hasDonations ?? false
-  const isEywaPool = chainId === +Chain.Fantom && poolId.startsWith('factory-eywa')
+  const isEywaPool = chainId === +Chain.Fantom && pool.id.startsWith('factory-eywa')
 
   return (
     <AdvancedDetails
       chainId={chainId}
       info={{
-        poolId,
-        poolType: getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
-        isMetapool: metapool,
-        isBasePool: basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)),
+        poolId: pool.id,
+        poolType: notFalsy(
+          getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }) ?? '-',
+          metapool && t`Metapool`,
+          basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) && t`Basepool`,
+        ).join(', '),
         basePoolAddress: maybe(basePool, getAddress),
         registryAddress: maybe(registry, getAddress),
         vyperVersion,

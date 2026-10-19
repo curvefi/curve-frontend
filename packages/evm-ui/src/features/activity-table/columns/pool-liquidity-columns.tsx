@@ -61,7 +61,6 @@ export const createPoolLiquidityColumns = ({ blockchainId, poolTokens }: CreateP
           return (
             <InlineTableCell sx={{ alignItems: 'end' }}>
               <TokenInfo
-                icon={null}
                 iconPosition="right"
                 // 0 is a valid value returned by the prices api, but our convention is to show - rather than zero.
                 primary={amount === 0 ? '-' : formatNumber(displayAmount, 'token.amount')}
