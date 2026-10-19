@@ -30,8 +30,8 @@ export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, '
 const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
-const MAX_INCLUSION_FEE = 50_000n // 0.005 XLM ≈ $0.0011 at the time of writing; resource fees are separate.
-const MIN_RESOURCE_FEE_BUFFER = MAX_INCLUSION_FEE // headroom for TTL renewal after simulation.
+const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
+const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 60_000n // ≈ $0.0011 at the time of writing; TTL renewal headroom.
 
 export const initWallet = (onError: (error: Error) => void) => {
   const modules = defaultModules()
@@ -80,15 +80,26 @@ const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
 
 const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
 
+/**
+ * Reserve TTL renewal headroom in stroops for each contract data/code entry in the footprint.
+ * Renewal may become necessary after simulation, even when simulated rent is zero.
+ */
+const getMinResourceFeeBuffer = ({ readOnly, readWrite }: xdr.LedgerFootprint) => {
+  const expiringEntryCount = [...readOnly, ...readWrite].filter(e =>
+    ['contractData', 'contractCode'].includes(e.type),
+  ).length
+  return MIN_RESOURCE_FEE_BUFFER_PER_ENTRY * BigInt(expiringEntryCount)
+}
+
 /** Prepare the fee budget without mutating the SDK's original simulation or built transaction. */
 export function getStellarTransactionFees<T>(transaction: StellarTransaction<T>) {
   const { transactionData } = transaction.simulationData
   const resourceFee = transactionData.resourceFee
-  // TTL renewal can become necessary after simulation, even when simulated rent is zero.
-  // Round the 20% buffer up to a whole stroop and reserve at least the minimum headroom.
+  // Round the proportional buffer up to a whole stroop and apply at least the per-entry minimum.
   const proportionalBuffer = (resourceFee * RESOURCE_FEE_BUFFER_PERCENT + 99n) / 100n
+  const minResourceFeeBuffer = getMinResourceFeeBuffer(transactionData.resources.footprint)
   const bufferedResourceFee =
-    resourceFee + (proportionalBuffer > MIN_RESOURCE_FEE_BUFFER ? proportionalBuffer : MIN_RESOURCE_FEE_BUFFER)
+    resourceFee + (proportionalBuffer > minResourceFeeBuffer ? proportionalBuffer : minResourceFeeBuffer)
   // The SDK fee option is inclusion-only. Its built.fee includes resources and is mutated by sign().
   const inclusionFee = BigInt(transaction.options.fee ?? BASE_FEE)
   const sorobanData = new SorobanDataBuilder(transactionData).setResourceFee(bufferedResourceFee).build()
