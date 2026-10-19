@@ -5,7 +5,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 // eslint-disable-next-line no-restricted-imports -- Server-side fee selection requires the controller mapping.
 import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
-import { assert } from '@primitives/objects.utils'
 import type { ExternalRouteProvider } from '@primitives/router.utils'
 import type { RoutesQuery } from './routes/routes.schemas'
 
@@ -36,10 +35,13 @@ export const getRouterFee = (
   const feeReceiver = ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId]
   if (!feeReceiver) return
 
-  const assetsType = assert(
-    controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
-    `A supported controllerAddress is required for ${provider} on chain ${chainId}`,
-  )
+  const assetsType = controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)]
+  if (!assetsType) {
+    // Fastify replies with the error's statusCode, so an unsupported market is a client error instead of a 500
+    throw Object.assign(new Error(`A supported controllerAddress is required for ${provider} on chain ${chainId}`), {
+      statusCode: 400,
+    })
+  }
   return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }
 }
 
