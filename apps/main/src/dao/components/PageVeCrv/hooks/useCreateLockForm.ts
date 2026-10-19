@@ -14,10 +14,11 @@ import {
   getUnlockDateUpdate,
 } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { invalidateVeCrvQueries, useLockerCrv } from '@/dao/entities/locker-vecrv-info'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { dayjs } from '@evm-ui/utils/dayjs'
 import type { DateValue } from '@internationalized/date'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { constQ } from '@ui/features/queries/util'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
@@ -32,6 +33,7 @@ const defaultValues: CreateLockFormValues = {
 const userDefaultValues = { lockedAmount: undefined, days: 0 }
 
 export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
+  const { curveApi } = useCurve()
   const form = useForm<CreateLockFormValues>({ defaultValues, validation: createLockFormValidationSuite })
   const { update, values } = form
   const { address: userAddress } = useConnection()
@@ -71,11 +73,15 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     minUtcDate,
     maxUtcDate,
     futureVeCrv: constQ(
-      calculateVeCrv({ lockedAmount: values.lockedAmount, unlockTime: maybe(values.utcDate, getDateValueTimestamp) }),
+      calculateVeCrv({
+        curveApi,
+        lockedAmount: values.lockedAmount,
+        unlockTime: maybe(values.utcDate, getDateValueTimestamp),
+      }),
     ),
     effectiveUnlockDateLabel: getEffectiveUnlockDateLabel({
       selectedDate: values.utcDate,
-      unlockTime: calcUnlockTime({ days: values.days, unlockTime: undefined }),
+      unlockTime: calcUnlockTime({ curveApi, days: values.days, unlockTime: undefined }),
     }),
     isApproved: isApproved.data,
     isPending,
@@ -87,11 +93,17 @@ export const useCreateLockForm = ({ chainId }: { chainId: number }) => {
     updateUnlockDate,
     selectQuickDate: useCallback(
       (value: number | undefined, unit: dayjs.ManipulateType | undefined) => {
-        const { utcDate, quickActionValue, days } = getCreateQuickDateUpdate({ currentUtcDay, maxUtcDate, value, unit })
+        const { utcDate, quickActionValue, days } = getCreateQuickDateUpdate({
+          curveApi: assert(curveApi, 'Curve API is required to select an unlock date'),
+          currentUtcDay,
+          maxUtcDate,
+          value,
+          unit,
+        })
         update({ utcDate, days })
         return quickActionValue
       },
-      [currentUtcDay, maxUtcDate, update],
+      [curveApi, currentUtcDay, maxUtcDate, update],
     ),
   }
 }

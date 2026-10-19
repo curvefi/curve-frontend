@@ -1,5 +1,5 @@
 import { toCalendarDate } from '@/dao/utils/utilsDates'
-import { requireLib } from '@evm-ui/features/connect-wallet'
+import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { dayjs } from '@evm-ui/utils/dayjs'
 import { VECRV_MAX_LOCK_DAYS } from '@evm-ui/utils/vecrv'
 import type { DateValue } from '@internationalized/date'
@@ -10,19 +10,28 @@ import { decimal } from '@ui/lib/decimal'
 import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 
 /** Returns the Curve API rounded unlock timestamp for a lock duration. */
-export const calcUnlockTime = ({ days, unlockTime }: { days: number | undefined; unlockTime: number | undefined }) =>
-  maybe(days, days => (days ? requireLib('curveApi').boosting.calcUnlockTime(days, unlockTime) : undefined))
+export const calcUnlockTime = ({
+  curveApi,
+  days,
+  unlockTime,
+}: {
+  curveApi: CurveApi | undefined
+  days: number | undefined
+  unlockTime: number | undefined
+}) => (days ? curveApi?.boosting.calcUnlockTime(days, unlockTime) : undefined)
 
 /** Returns the estimated veCRV for an amount and unlock timestamp. */
 export const calculateVeCrv = ({
+  curveApi,
   lockedAmount,
   unlockTime,
 }: {
+  curveApi: CurveApi | undefined
   lockedAmount: Decimal | undefined
   unlockTime: number | undefined
 }) =>
-  maybes([lockedAmount, unlockTime], (lockedAmount, unlockTime) =>
-    decimal(requireLib('curveApi').boosting.calculateVeCrv(lockedAmount, unlockTime)),
+  maybes([curveApi, lockedAmount, unlockTime], (curveApi, lockedAmount, unlockTime) =>
+    decimal(curveApi.boosting.calculateVeCrv(lockedAmount, unlockTime)),
   )
 
 /** Builds the current, minimum, and maximum UTC dates for creating a lock. */
@@ -45,11 +54,13 @@ export const getUnlockDateUpdate = (unlockDate: DateValue, baseUtcDate: dayjs.Da
 
 /** Builds the create-lock form update from a quick action. */
 export const getCreateQuickDateUpdate = ({
+  curveApi,
   currentUtcDay,
   maxUtcDate,
   unit,
   value,
 }: {
+  curveApi: CurveApi
   currentUtcDay: dayjs.Dayjs
   maxUtcDate: dayjs.Dayjs
   unit: dayjs.ManipulateType | undefined
@@ -57,13 +68,14 @@ export const getCreateQuickDateUpdate = ({
 }) => {
   const targetDate = value && unit ? dayjs.utc().add(value, unit) : maxUtcDate
   const days = targetDate.diff(currentUtcDay, 'd')
-  const unlockTime = calcUnlockTime({ days, unlockTime: undefined })
+  const unlockTime = calcUnlockTime({ curveApi, days, unlockTime: undefined })
   const utcDate = dayjs.utc(unlockTime)
   return { utcDate: toCalendarDate(utcDate), quickActionValue: utcDate, days }
 }
 
 /** Builds the extend-lock form update from a quick action. */
 export const getExtendQuickDateUpdate = ({
+  curveApi,
   currentDate,
   currentUnlockTime,
   currentUnlockUtcTime,
@@ -71,6 +83,7 @@ export const getExtendQuickDateUpdate = ({
   unit,
   value,
 }: {
+  curveApi: CurveApi
   currentDate: Date
   currentUnlockTime: number | undefined
   currentUnlockUtcTime: dayjs.Dayjs | Nullish
@@ -85,7 +98,7 @@ export const getExtendQuickDateUpdate = ({
 
   const targetDate = value && unit ? currentUnlockUtcTime.add(value, unit) : maxUtcDate
   const days = targetDate.diff(currentUnlockUtcTime, 'd')
-  const unlockTime = calcUnlockTime({ days, unlockTime: currentUnlockTime })
+  const unlockTime = calcUnlockTime({ curveApi, days, unlockTime: currentUnlockTime })
   const utcDate = dayjs.utc(unlockTime)
   return { utcDate: toCalendarDate(utcDate), quickActionValue: utcDate, days }
 }

@@ -99,7 +99,7 @@ export const PoolsTable = ({
     ...(isLite && { globalFilterFn }),
   })
 
-  const hasActiveFilters = !!table.state.columnFilters.length || !!table.state.globalFilter
+  const hasActiveFilters = !!table.state.columnFilters.length
 
   return (
     <Stack>
@@ -117,7 +117,7 @@ export const PoolsTable = ({
         table={table}
         anchorRef={anchorRef}
         emptyState={{
-          ...(hasActiveFilters
+          ...(hasActiveFilters || table.state.globalFilter
             ? {
                 title: t`Can't find what you're looking for?`,
                 description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
