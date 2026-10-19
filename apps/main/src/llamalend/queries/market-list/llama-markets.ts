@@ -200,8 +200,8 @@ const convertLendingVault = (
     solvencyPercent,
     badDebtUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
-    liquidity: totalAssets - totalDebt,
-    liquidityUsd: totalAssetsUsd - totalDebtUsd,
+    liquidity: Math.max(0, totalAssets - totalDebt),
+    liquidityUsd: Math.max(0, totalAssetsUsd - totalDebtUsd),
     totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
     // TVL = collateral converted to borrow token + collateral + unborrowed supplied assets.
