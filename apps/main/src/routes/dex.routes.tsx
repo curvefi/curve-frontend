@@ -1,6 +1,7 @@
 import type { PoolAddressParams, PoolUrlParams } from '@/dex/types/main.types'
-import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
+import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 
@@ -16,6 +17,15 @@ const PageRouterSwap = lazyRouteComponent(() => import('@/dex/components/PageRou
 const dexLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'dex', component: DexLayout })
 
 const layoutProps = { getParentRoute: () => dexLayoutRoute }
+
+// Temporary fallback until these legacy pools are supported in the current UI.
+const LEGACY_POOLS: Record<string, string> = {
+  '0x80466c64868e1ab14a1ddf27a676c3fcbe638fe5': 'tricrypto',
+  '0xe7a24ef0c5e95ffb0f6684b813a78f2a3ad7d171': 'linkusd',
+  // We're phasing out pool ids but whatever, can't hurt I guess.
+  tricrypto: 'tricrypto',
+  linkusd: 'linkusd',
+}
 
 export const dexRoutes = dexLayoutRoute.addChildren([
   ...createSharedRoutes('dex', layoutProps),
@@ -50,6 +60,12 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools/$poolIdOrAddress',
+    loader: ({ params: { network, poolIdOrAddress } }: { params: PoolUrlParams }) => {
+      if (network !== 'ethereum') return
+      const legacyPoolId = LEGACY_POOLS[poolIdOrAddress.toLowerCase()]
+      if (legacyPoolId)
+        redirect({ href: `${EXTERNAL_LINKS.curve.classic}${legacyPoolId}/withdraw`, replace: true, throw: true })
+    },
     component: PagePool,
     head: ({ params: { poolIdOrAddress } }: { params: PoolUrlParams }) => ({
       meta: [{ title: `Curve - Pool - ${poolIdOrAddress} - Curve` }],
