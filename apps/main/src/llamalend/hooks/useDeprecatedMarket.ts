@@ -23,6 +23,6 @@ export const useDeprecatedMarket = ({
           recordEntries(DEPRECATED_LLAMAS[marketType][blockchainId] ?? {}).find(([address]) =>
             isAddressEqual(address, controllerAddress),
           )?.[1],
-      ),
+      ) ?? null,
     [blockchainId, controllerAddress, marketType],
-  ) ?? null
+  )
