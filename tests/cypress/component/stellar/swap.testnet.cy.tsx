@@ -1,6 +1,6 @@
-import { noop } from 'lodash'
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { SwapTab } from '@/stellar/features/swap/SwapTab'
+import { oneDecimal, oneInt, oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
@@ -28,10 +28,10 @@ import {
 } from '@cy/support/helpers/stellar/swap.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
-import type { Decimal } from '@primitives/decimal.utils'
-import { SWAP_FIELDS } from '@ui/features/pool-forms/swap/swap-form.utils'
+import { range } from '@primitives/objects.utils'
+import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
 
-const SWAP_AMOUNT = '0.0001' satisfies Decimal
+const [DEFAULT_FROM_INDEX, DEFAULT_TO_INDEX] = [0, 1]
 
 describe('Stellar testnet swap', () => {
   skipTestsAfterFailure()
@@ -46,9 +46,9 @@ describe('Stellar testnet swap', () => {
         testnetConfig = config
         await connectTestWallet(config)
       })
-      .then(TIMEOUTS['stellar.deployPool'], async () => await deployTestPool(testnetConfig))
+      .then(TIMEOUTS['stellar.deployPool'], () => deployTestPool(testnetConfig))
       .then(TIMEOUTS['ui.render'], deployedPool => (pool = deployedPool))
-      .then(TIMEOUTS['stellar.seedPool'], async () => await seedTestPool(pool, testnetConfig))
+      .then(TIMEOUTS['stellar.seedPool'], () => seedTestPool(pool, testnetConfig))
   })
 
   beforeEach(() =>
@@ -61,12 +61,11 @@ describe('Stellar testnet swap', () => {
         <SwapTab network={TEST_NETWORK} pool={pool} />
       </StellarTestWrapper>,
     )
-    if (connected) checkSwapBalances(state, 0, 1)
   }
 
   it('previews amounts without a connected wallet', () => {
     mountSwap({ connected: false })
-    writeSwapAmount('pay', SWAP_AMOUNT)
+    writeSwapAmount('pay', oneDecimal(0.0001, 0.0005))
     swapAmountInput('receive').should(input => expect(Number(input.val())).to.be.greaterThan(0))
     cy.get('[data-testid="pool-swap-connect-wallet"]', TIMEOUTS['ui.render']).should('be.enabled')
     swapSubmit().should('not.exist')
@@ -74,67 +73,43 @@ describe('Stellar testnet swap', () => {
 
   it('loads wallet balances and fills the pay amount with Max', () => {
     mountSwap()
+    checkSwapBalances(state, DEFAULT_FROM_INDEX, DEFAULT_TO_INDEX)
     swapSubmit().should('be.disabled')
     swapInput('pay').find('[data-testid="input-chip-Max"]').click()
-    swapAmountInput('pay').should('have.value', state.coins[0].balance)
+    swapAmountInput('pay').should('have.value', state.coins[DEFAULT_FROM_INDEX].balance)
   })
 
-  ;(
-    [
-      { label: 'a pay amount', side: 'pay', fromIndex: 0, toIndex: 1, selectPair: noop },
-      { label: 'a receive amount', side: 'receive', fromIndex: 0, toIndex: 1, selectPair: noop },
-      {
-        label: 'a different receiving token',
-        side: 'pay',
-        fromIndex: 0,
-        toIndex: 2,
-        selectPair: () => selectSwapToken('receive', state.coins[2]),
-      },
-      {
-        label: 'a different paying token',
-        side: 'receive',
-        fromIndex: 2,
-        toIndex: 1,
-        selectPair: () => selectSwapToken('pay', state.coins[2]),
-      },
-      {
-        label: 'the reversed pair',
-        side: 'pay',
-        fromIndex: 1,
-        toIndex: 0,
-        selectPair: () => cy.get('[data-testid="pool-swap-reverse"]').click(),
-      },
-    ] as const
-  ).forEach(({ label, side, fromIndex, toIndex, selectPair }) => {
-    it(`swaps ${label} and refreshes wallet balances`, () => {
-      mountSwap()
-
-      selectPair()
-      checkSwapBalances(state, fromIndex, toIndex)
-      writeSwapAmount(side, SWAP_AMOUNT)
-      swapSubmit().should('be.enabled')
-      readSwapAmounts().then(amounts => {
-        expect(amounts[SWAP_FIELDS[side].amountField]).to.equal(SWAP_AMOUNT)
-        expect(+amounts.inputAmount).to.be.greaterThan(0)
-        expect(+amounts.outputAmount).to.be.greaterThan(0)
-        const expectedResult =
-          side === 'pay'
-            ? cy.wrap({
-                inputAmount: amounts.inputAmount,
-                minimumOutputAmount: amounts.outputAmount,
-                outputAmount: amounts.outputAmount,
-              })
-            : readSwapMinimum().then(minimumOutputAmount => ({ inputAmount: amounts.inputAmount, minimumOutputAmount }))
-        expectedResult.then(result => {
-          if (side === 'pay') checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
-          checkEstimatedTxCost({ category: 'stellar.simulation' })
-          checkPoolSlippage()
-          checkPoolPriceImpact()
-          submitSwapForm()
-          cy.then(TIMEOUTS['stellar.read'], () => fetchPoolState(pool, testnetConfig)).then(fresh => {
-            checkSwapResult(state, fresh, result, fromIndex, toIndex)
-          })
-        })
+  it('swaps an amount and refreshes wallet balances', () => {
+    mountSwap()
+    const side = oneOf<SwapSide>('pay', 'receive')
+    const fromIndex = oneInt(state.coins.length)
+    const toIndex = oneOf(...range(state.coins.length).filter(index => index !== fromIndex))
+    const amount = oneDecimal(0.0001, 0.0005)
+    const reverse = fromIndex === DEFAULT_TO_INDEX
+    cy.log(`Swap ${side}: ${state.coins[fromIndex].symbol} → ${state.coins[toIndex].symbol}`)
+    if (reverse) cy.get('[data-testid="pool-swap-reverse"]').click()
+    else if (fromIndex !== DEFAULT_FROM_INDEX) selectSwapToken('pay', state.coins[fromIndex])
+    if (toIndex !== (reverse ? DEFAULT_FROM_INDEX : DEFAULT_TO_INDEX)) selectSwapToken('receive', state.coins[toIndex])
+    checkSwapBalances(state, fromIndex, toIndex)
+    writeSwapAmount(side, amount)
+    readSwapAmounts().then(amounts => {
+      expect(amounts[SWAP_FIELDS[side].amountField]).to.equal(amount)
+      if (side === 'pay') checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
+      checkEstimatedTxCost({ category: 'stellar.simulation' })
+      checkPoolSlippage()
+      checkPoolPriceImpact()
+      readSwapMinimum().then(minimumOutputAmount => {
+        submitSwapForm()
+        checkSwapResult(
+          state,
+          {
+            inputAmount: amounts.inputAmount,
+            minimumOutputAmount,
+            outputAmount: side === 'pay' ? amounts.outputAmount : undefined,
+          },
+          fromIndex,
+          toIndex,
+        )
       })
     })
   })

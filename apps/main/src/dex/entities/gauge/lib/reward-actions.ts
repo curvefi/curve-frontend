@@ -14,13 +14,13 @@ import type { AddRewardMutation, DepositRewardMutation } from '@/dex/entities/ga
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { getToken, useTokens } from '@/dex/queries/tokens.query'
-import type { GaugeQuery } from '@evm-ui/queries/query-types'
+import type { GaugeParams } from '@evm-ui/queries/query-types'
 import { useEvmMutation } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
 
-type GaugeRewardMutationOptions = GaugeQuery & { onReset: () => void }
+type GaugeRewardMutationOptions = GaugeParams & { onReset: () => void }
 
 export const useAddRewardToken = ({ chainId, poolAddress, onReset }: GaugeRewardMutationOptions) => {
   const { data: tokens } = useTokens({ chainId })
@@ -30,7 +30,7 @@ export const useAddRewardToken = ({ chainId, poolAddress, onReset }: GaugeReward
   const { mutate, error, isPending } = useEvmMutation<AddRewardMutation>({
     mutationKey: [{ chainId, poolAddress, name: 'addRewardToken' }] as const,
     mutationFn: async ({ rewardTokenId, distributorId }) => ({
-      hash: (await getGauge(poolAddress).addReward(rewardTokenId, distributorId)) as Hex,
+      hash: (await getGauge(poolAddress!).addReward(rewardTokenId, distributorId)) as Hex,
     }),
     validationSuite: gaugeAddRewardValidationSuite,
     validationParams: { chainId, poolAddress },
@@ -64,11 +64,11 @@ export const useDepositReward = ({ chainId, poolAddress, onReset }: GaugeRewardM
             { chainId, poolAddress, amount, rewardTokenId, userBalance },
             { staleTime: 0 },
           ),
-        onApprove: async () => (await getGauge(poolAddress).depositRewardApprove(rewardTokenId, amount)) as Hex[],
+        onApprove: async () => (await getGauge(poolAddress!).depositRewardApprove(rewardTokenId, amount)) as Hex[],
         message: t`Approved deposit reward`,
         config,
       })
-      return { hash: (await getGauge(poolAddress).depositReward(rewardTokenId, amount, epoch)) as Hex }
+      return { hash: (await getGauge(poolAddress!).depositReward(rewardTokenId, amount, epoch)) as Hex }
     },
     validationSuite: gaugeDepositRewardValidationSuite,
     validationParams: { chainId, poolAddress },

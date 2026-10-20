@@ -101,6 +101,9 @@ export function useFormDebounce<T extends object, TDefaultKey extends keyof T>(
 
   const isDebouncing = !isEqual(debouncedValue, valuesToDebounce)
 
+  // when calling reset(userDefaultValues), ignore the debounce and apply immediately.
+  if (isDebouncing && isEqual(valuesToDebounce, userDefaultValues)) setDebouncedValue(valuesToDebounce)
+
   const value = useShallow((values: T) => ({ ...values, ...debouncedValue }))(values)
 
   return [value, isDebouncing] as const

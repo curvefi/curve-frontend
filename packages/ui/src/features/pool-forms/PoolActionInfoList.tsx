@@ -18,7 +18,7 @@ type PoolActionInfoListProps = {
   slippage: Decimal
   onSlippageChange: (slippage: Decimal) => void
   userAddress: Address | undefined
-  slippageType: SlippageType
+  slippageType: SlippageType | undefined
   expectedLp?: QueryProp<Decimal>
   expectedLpLabel?: string
   expectedLpTestId?: string
@@ -95,7 +95,7 @@ export const PoolActionInfoList = ({
     )}
     <SlippageToleranceActionInfo
       maxSlippage={slippage}
-      onChanged={slippage => onSlippageChange(slippage[slippageType])}
+      onChanged={slippage => slippageType && onSlippageChange(slippage[slippageType])}
       type={slippageType}
       userAddress={userAddress}
       size="small"

@@ -8,7 +8,6 @@ import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -71,15 +70,8 @@ const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
 )
 
-export const OhlcAndActivityComp = ({
-  chainId,
-  poolAddress,
-  pricesApiPoolData,
-}: {
-  chainId: ChainId
-  poolAddress: Address
-  pricesApiPoolData: Pool
-}) => {
+export const OhlcAndActivityComp = ({ chainId, pricesApiPoolData }: { chainId: ChainId; pricesApiPoolData: Pool }) => {
+  const poolAddress = pricesApiPoolData.address
   const chart = useOhlcChartState({ chainId, pricesApiPoolData })
   const liquidityTable = usePoolActivityEventsConfig({ chainId, poolAddress })
   const tradesTable = usePoolActivityTradesConfig({ chainId, poolAddress })

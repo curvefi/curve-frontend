@@ -29,7 +29,14 @@ import { amount as toAmount } from '@ui/lib/decimal'
 import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolAddress, pool, api: curve, isWrapped } = usePoolContext()
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
   const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolAddress })
   const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
@@ -55,11 +62,12 @@ export const FormClaim = ({ seed }: TransferProps) => {
   const config = useConfig()
 
   const updateFormValues = useCallback(() => {
+    if (!pool) return
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setTxInfoBar(null)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, pool?.id, pool, { isWrapped }, null, seed.isSeed, '')
+    void setFormValues('CLAIM', config, curve, pool.id, pool, { isWrapped }, null, seed.isSeed, '')
   }, [config, curve, isWrapped, pool, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
@@ -139,11 +147,11 @@ export const FormClaim = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolAddress) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolAddress])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
