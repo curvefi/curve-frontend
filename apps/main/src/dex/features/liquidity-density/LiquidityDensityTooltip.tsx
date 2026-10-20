@@ -8,12 +8,12 @@ import { formatNumber } from '@primitives/number.utils'
 import type { LiquiditySample } from '@ui/features/pools/liquidity-density/types'
 import { t } from '@ui/lib/i18n'
 
-type LiquidityDensityTooltipProps = { sample: LiquiditySample; spot?: number; priceLabel: string }
+type LiquidityDensityTooltipProps = { sample: LiquiditySample; spot?: number; inputSymbol: string }
 
-export const LiquidityDensityTooltip = ({ sample, spot, priceLabel }: LiquidityDensityTooltipProps) => (
+export const LiquidityDensityTooltip = ({ sample, spot, inputSymbol }: LiquidityDensityTooltipProps) => (
   <ChartTooltipShell
     testId="liquidity-density-tooltip"
-    title={`${formatNumber(sample.price, 'token.precise')} ${priceLabel}`}
+    title={t`${formatNumber(sample.price, 'usd.precise')} per ${inputSymbol}`}
   >
     <ChartTooltipSeriesGroup>
       <ChartTooltipDataRow

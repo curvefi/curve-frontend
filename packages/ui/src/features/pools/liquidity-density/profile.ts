@@ -104,11 +104,20 @@ export const liquidityProfile = (curve: LiquidityCurve, pair: LiquidityPair): Li
   )
 }
 
-/** Convert density to USD (or another fixed denomination) without solving the curve again. */
+/** Convert density and pair prices to USD without solving the curve again. */
 export const valueLiquidityProfile = (
-  { samples, ...profile }: LiquidityProfile,
-  inputTokenPrice: number,
+  { samples, pair, low, high, spot }: LiquidityProfile,
+  inputTokenUsdPrice: number,
+  outputTokenUsdPrice: number,
 ): LiquidityProfile => ({
-  ...profile,
-  samples: samples.map(({ depth, ...sample }) => ({ ...sample, depth: depth * inputTokenPrice })),
+  pair,
+  low: low * outputTokenUsdPrice,
+  high: high * outputTokenUsdPrice,
+  spot: spot * outputTokenUsdPrice,
+  samples: samples.map(({ price, depth, low, high }) => ({
+    price: price * outputTokenUsdPrice,
+    depth: depth * inputTokenUsdPrice,
+    low: low * outputTokenUsdPrice,
+    high: high * outputTokenUsdPrice,
+  })),
 })

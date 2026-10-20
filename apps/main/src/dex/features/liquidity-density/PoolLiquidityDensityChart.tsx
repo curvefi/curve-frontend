@@ -6,8 +6,8 @@ import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import { maybe } from '@primitives/objects.utils'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
-import { useCombinedQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
+import { mapQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
@@ -39,16 +39,21 @@ export const PoolLiquidityDensityChart = () => {
     pool,
     pair,
   )
-  const valuedProfile = useCombinedQueries([profile, inputTokenUsdPrice], valueLiquidityProfile)
+  const valuedProfile = useCombinedQueries([profile, inputTokenUsdPrice, outputTokenUsdPrice], valueLiquidityProfile)
 
   return (
     <LiquidityDensityChart
       profile={valuedProfile}
       inputSymbol={inputSymbol}
       outputSymbol={outputSymbol}
-      outputTokenUsdPrice={q(outputTokenUsdPrice)}
-      oraclePrice={mapQuery(profile, data => data?.oraclePrice)}
-      centerPrice={mapQuery(profile, data => data?.centerPrice)}
+      oraclePrice={combineQueries(
+        [mapQuery(profile, data => data?.oraclePrice), outputTokenUsdPrice],
+        (price, usdRate) => price * usdRate,
+      )}
+      centerPrice={combineQueries(
+        [mapQuery(profile, data => data?.centerPrice), outputTokenUsdPrice],
+        (price, usdRate) => price * usdRate,
+      )}
       action={
         <ChartSelect
           options={pairs.map(({ key, inputSymbol, outputSymbol }) => ({

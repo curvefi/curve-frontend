@@ -72,7 +72,7 @@ export const useLiquidityDensityChartOption = ({
           hideOverlap: true,
           showMinLabel: false,
           showMaxLabel: false,
-          formatter: (value: number) => formatChartAxisNumber(value),
+          formatter: (value: number) => formatChartAxisNumber(value, { unit: 'dollar' }),
         },
       },
       yAxis: {

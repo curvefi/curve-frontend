@@ -19,15 +19,14 @@ import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const tokenProfile = liquidityProfile(cryptoCurve, [1, 0])!
-const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75)
+const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75, 1)
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
-const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1)
+const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1, 1)
 const loadingQuery = { ...constQ(undefined), isLoading: true }
 const chartProps: LiquidityDensityChartProps = {
   profile: constQ(usdProfile),
   inputSymbol: 'WBTC',
   outputSymbol: 'USDC',
-  outputTokenUsdPrice: constQ(1),
   oraclePrice: constQ(109_500),
   centerPrice: constQ(peakPrice(cryptoCurve, [1, 0])),
   action: null,
@@ -155,10 +154,14 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
     cy.get(TOOLTIP).should('be.visible')
   })
 
-  it('values price metrics in USD and measures deviation from the liquidity center', () => {
+  it('renders prices in USD and measures deviation from the liquidity center', () => {
     const outputTokenUsdPrice = 0.98
     const centerPrice = usdProfile.spot / 1.0245
-    mountChart({ outputTokenUsdPrice: constQ(outputTokenUsdPrice), centerPrice: constQ(centerPrice) })
+    mountChart({
+      profile: constQ(valueLiquidityProfile(tokenProfile, 111_124.75, outputTokenUsdPrice)),
+      centerPrice: constQ(centerPrice * outputTokenUsdPrice),
+      oraclePrice: constQ(chartProps.oraclePrice.data! * outputTokenUsdPrice),
+    })
     ;[
       { key: 'current-price', price: usdProfile.spot },
       { key: 'center-price', price: centerPrice },
@@ -172,6 +175,15 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
     })
     cy.get('[data-testid="liquidity-density-deviation-value"]').should($value => {
       expect(Number($value.attr('data-value'))).to.be.closeTo(2.45, 1e-10)
+    })
+    getChart().should(chart => {
+      const { min, max } = (chart.getOption().xAxis as { min: number; max: number }[])[0]
+      expect(min).to.equal(tokenProfile.low * outputTokenUsdPrice)
+      expect(max).to.equal(tokenProfile.high * outputTokenUsdPrice)
+      const sample = usdProfile.samples.find(sample => sample.high < usdProfile.spot)!
+      expect(pixelAt(chart, sample.price * outputTokenUsdPrice, sample.depth / 2)).to.deep.equal(
+        rgba(themes.light.design.Chart.Lines[7]),
+      )
     })
   })
 

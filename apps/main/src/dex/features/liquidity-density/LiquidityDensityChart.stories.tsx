@@ -14,8 +14,9 @@ import { LiquidityDensityChart } from './LiquidityDensityChart'
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const cryptoProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
-const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1)
+const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1, 1)
 const loadingQuery = { ...constQ(undefined), isLoading: true }
+const missingUsdRateQuery = { ...constQ(undefined), error: new globalThis.Error('Unable to load token USD rate') }
 const queryClient = new QueryClient()
 const wagmiConfig = createConfig({
   chains: [mainnet],
@@ -38,10 +39,9 @@ const meta = {
   ],
   parameters: { layout: 'fullscreen' },
   args: {
-    profile: constQ(valueLiquidityProfile(cryptoProfile, 111_124.75)),
+    profile: constQ(valueLiquidityProfile(cryptoProfile, 111_124.75, 1)),
     inputSymbol: 'WBTC',
     outputSymbol: 'USDC',
-    outputTokenUsdPrice: constQ(1),
     centerPrice: constQ(peakPrice(cryptoCurve, [1, 0])),
     oraclePrice: constQ(109_500),
     action: null,
@@ -63,14 +63,22 @@ export const StableSwap: Story = {
   },
 }
 
-export const DepeggedQuote: Story = { args: { outputTokenUsdPrice: constQ(0.98) } }
+export const DepeggedQuote: Story = {
+  args: {
+    profile: constQ(valueLiquidityProfile(cryptoProfile, 111_124.75, 0.98)),
+    centerPrice: constQ(peakPrice(cryptoCurve, [1, 0])! * 0.98),
+    oraclePrice: constQ(109_500 * 0.98),
+  },
+}
 
-export const LoadingUsdRate: Story = { args: { outputTokenUsdPrice: loadingQuery } }
+export const LoadingUsdRate: Story = {
+  args: { profile: loadingQuery, centerPrice: loadingQuery, oraclePrice: loadingQuery },
+}
 
 export const LoadingOracle: Story = { args: { oraclePrice: loadingQuery } }
 
 export const MissingUsdRate: Story = {
-  args: { outputTokenUsdPrice: { ...constQ(undefined), error: new globalThis.Error('Unable to load token USD rate') } },
+  args: { profile: missingUsdRateQuery, centerPrice: missingUsdRateQuery, oraclePrice: missingUsdRateQuery },
 }
 
 export const MissingIntervals: Story = {

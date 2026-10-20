@@ -10,8 +10,8 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
 import { Metric } from '@ui/components/Metric'
+import { formatCategory } from '@ui/components/metric.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries } from '@ui/features/queries/combine'
@@ -35,11 +35,11 @@ export type LiquidityPriceMarker = {
 }
 
 export type LiquidityDensityChartProps = {
+  /** Density, sampled prices, range bounds and spot are valued in USD. */
   profile: QueryProp<LiquidityProfile>
   inputSymbol: string
   outputSymbol: string
-  /** USD price of the output token, used to value the pair-denominated price metrics. */
-  outputTokenUsdPrice: QueryProp<number>
+  /** Reference prices in USD per input token. */
   oraclePrice: QueryProp<number>
   centerPrice: QueryProp<number>
   action: ReactNode
@@ -49,7 +49,6 @@ export const LiquidityDensityChart = ({
   profile,
   inputSymbol,
   outputSymbol,
-  outputTokenUsdPrice,
   oraclePrice,
   centerPrice,
   action,
@@ -61,7 +60,7 @@ export const LiquidityDensityChart = ({
   const theme = useTheme()
   const { Chart, Color, Layer } = theme.design
   const { spot, samples } = profileData ?? {}
-  const priceLabel = t`${outputSymbol} per ${inputSymbol}`
+  const priceLabel = t`USD per ${inputSymbol}`
   const liquidityLabel = t`Liquidity in 1% range in USD`
   const markers = useMemo(
     (): LiquidityPriceMarker[] => [
@@ -122,29 +121,26 @@ export const LiquidityDensityChart = ({
           label={t`Current price deviation`}
           labelTooltip={{ title: t`Absolute percentage distance of the current price from the center of liquidity.` }}
           value={deviation}
-          valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'percent.value') }}
+          valueOptions={formatCategory('percent.value')}
           testId="liquidity-density-deviation"
         />
-        {markers.map(({ key, label, value, color, dash }) => {
-          const usdValue = combineQueries([value, outputTokenUsdPrice], (price, usdRate) => price * usdRate)
-          return (
-            <Metric
-              key={key}
-              category="dex.liquidityDensity"
-              label={label}
-              value={usdValue}
-              valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'usd.notional') }}
-              icon={
-                usdValue.data != null && (
-                  <Box component="span" sx={{ alignSelf: 'center', display: 'flex' }}>
-                    <LegendLine color={color} dash={dash} />
-                  </Box>
-                )
-              }
-              testId={`liquidity-density-${key}`}
-            />
-          )
-        })}
+        {markers.map(({ key, label, value, color, dash }) => (
+          <Metric
+            key={key}
+            category="dex.liquidityDensity"
+            label={label}
+            value={value}
+            valueOptions={formatCategory('usd.precise')}
+            icon={
+              value.data != null && (
+                <Box component="span" sx={{ alignSelf: 'center', display: 'flex' }}>
+                  <LegendLine color={color} dash={dash} />
+                </Box>
+              )
+            }
+            testId={`liquidity-density-${key}`}
+          />
+        ))}
       </MetricsGrid>
       <Box
         ref={containerRef}
@@ -176,7 +172,7 @@ export const LiquidityDensityChart = ({
               priceLabel,
               liquidityLabel,
               tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
-                <LiquidityDensityTooltip sample={sample} spot={spot} priceLabel={priceLabel} />
+                <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
               )),
             })}
             notMerge
