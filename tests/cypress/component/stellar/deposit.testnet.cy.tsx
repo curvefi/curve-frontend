@@ -94,7 +94,7 @@ describe('Stellar testnet deposit', () => {
     poolInput(coin.address).find('input').should('have.value', coin.balance)
     writePoolAmount(coin.address, amounts[coin.symbol])
     submitDepositAndCheck(state, amounts)
-    cy.get('[data-testid="pool-deposit-seed-alert"]').should('not.exist')
+    cy.get('[data-testid="pool-deposit-seed-alert"]', TIMEOUTS['stellar.read']).should('not.exist')
   })
 
   it('previews disconnected amounts', () => {
