@@ -2,6 +2,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
@@ -10,7 +11,7 @@ import { t } from '@ui/lib/i18n'
 export type ContractsProps = {
   chainId: number
   poolAddress: Address
-  lpTokenAddress: Address
+  lpTokenAddress: Address | Nullish
   gaugeAddress?: Address
   gaugeIsKilled?: boolean | null
   hasGauge?: boolean

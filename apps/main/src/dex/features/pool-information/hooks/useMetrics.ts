@@ -7,7 +7,7 @@ import type { Address } from '@primitives/address.utils'
 import { DEFAULT_DECIMALS, maybe, maybes } from '@primitives/objects.utils'
 import type { PoolInformationMetricsProps } from '@ui/features/pools/PoolInformationMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimal, decimalPercent, fromWei } from '@ui/lib/decimal'
 
 export const useMetrics = ({
@@ -17,9 +17,10 @@ export const useMetrics = ({
 }: {
   chainId: ChainId
   poolAddress: Address
-  pricesApiPoolData?: PricesApiPool
+  pricesApiPoolData: QueryProp<PricesApiPool>
 }): PoolInformationMetricsProps => {
   const staked = usePoolTotalStaked({ chainId, poolAddress })
+
   return {
     gaugeTotalSupply: mapQuery(staked, data =>
       maybe(decimal(data.gaugeTotalSupply), supply => fromWei(supply, DEFAULT_DECIMALS)),
@@ -27,7 +28,7 @@ export const useMetrics = ({
     totalStakedPercent: mapQuery(staked, data => decimal(data.totalStakedPercent)),
     liquidityUtilization: fallbackQ(
       combineQueries([usePoolVolume({ chainId, poolAddress }), usePoolTvl({ chainId, poolAddress })], decimalPercent),
-      constQ(maybes([pricesApiPoolData?.tradingVolume24h, pricesApiPoolData?.tvlUsd].map(decimal), decimalPercent)),
+      mapQuery(pricesApiPoolData, pool => maybes([pool.tradingVolume24h, pool.tvlUsd].map(decimal), decimalPercent)),
     ),
   }
 }

@@ -39,7 +39,15 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolAddress, pool, api: curve, isWrapped } = usePoolContext()
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: poolQuery,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -71,6 +79,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
       loadMaxAmount: LoadMaxAmount | null,
       updatedMaxSlippage: string | null,
     ) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -79,7 +88,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
         'DEPOSIT',
         config,
         curve,
-        pool?.id,
+        pool.id,
         pool,
         { isWrapped, ...updatedFormValues },
         loadMaxAmount,
@@ -199,11 +208,11 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
   }, [])
 
   useEffect(() => {
-    if (poolAddress) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolAddress])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
@@ -241,7 +250,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [
     curve?.chainId,
-    pool?.id,
+    pool,
     signerAddress,
     formValues,
     formStatus,
@@ -274,7 +283,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
       />
 
       <div>
-        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={pool} />
+        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={poolQuery} />
 
         <DetailInfoSlippage {...slippage} />
 

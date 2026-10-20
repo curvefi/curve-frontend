@@ -49,7 +49,8 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
     blockchainId,
     userAddress: signerAddress,
     poolAddress,
-    pool,
+    pool: poolQuery,
+    pool: { data: pool },
     api: curve,
     isWrapped,
   } = usePoolContext()
@@ -84,6 +85,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       loadMaxAmount: LoadMaxAmount | null,
       updatedMaxSlippage: string | null,
     ) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -212,11 +214,11 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   }, [])
 
   useEffect(() => {
-    if (poolAddress) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolAddress])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
@@ -288,9 +290,13 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       />
 
       <div>
-        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={pool} />
+        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={poolQuery} />
 
-        <DetailInfoExpectedApy lpTokenAmount={formLpTokenExpected.expected} pool={pool} crvApr={rewardsApy?.crv?.[0]} />
+        <DetailInfoExpectedApy
+          lpTokenAmount={formLpTokenExpected.expected}
+          pool={poolQuery}
+          crvApr={rewardsApy?.crv?.[0]}
+        />
 
         <DetailInfoSlippage {...slippage} />
 

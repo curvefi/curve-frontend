@@ -23,7 +23,7 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -37,6 +37,7 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { mediaQueries } from '@legacy-ui/utils/responsive'
+import { zip } from '@primitives/array.utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { constQ } from '@ui/features/queries/util'
@@ -49,13 +50,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     chainId,
     blockchainId,
     userAddress: signerAddress,
-    pool,
+    pool: { data: pool },
     poolAddress,
     api: curve,
     isWrapped,
     setIsWrapped,
-    tokens,
-    tokenAddresses: poolTokenAddresses,
+    tokens: { data: tokens },
+    tokenAddresses: { data: poolTokenAddresses },
   } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
@@ -82,6 +83,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -236,11 +238,11 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolAddress) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolAddress])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
@@ -356,6 +358,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             isDisabled={isDisabled}
             value={formValues.selected}
             onChange={selected => {
+              if (!tokens || !poolTokenAddresses) return
               if (selected === 'token') {
                 updateFormValues(
                   {
@@ -379,7 +382,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             <Radio aria-label="Withdraw as balanced amounts" value="lpToken">
               {t`Balanced`}
             </Radio>
-            {!pool.isCrypto && (
+            {pool?.isCrypto === false && (
               <Radio aria-label="Custom withdraw" value="imbalance">
                 {t`Custom`}
               </Radio>
@@ -396,8 +399,8 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                   blockchainId={blockchainId}
                   loading={slippage.loading}
                   selectedTokenAddress={formValues.selectedTokenAddress}
-                  tokens={tokens}
-                  tokenAddresses={poolTokenAddresses}
+                  tokens={tokens ?? []}
+                  tokenAddresses={poolTokenAddresses ?? []}
                   handleChanged={({ token, tokenAddress }) => {
                     updateFormValues(
                       { selectedToken: token, selectedTokenAddress: tokenAddress },
@@ -414,16 +417,15 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                   amounts={formValues.amounts}
                   blockchainId={blockchainId}
                   loading={slippage.loading}
-                  tokens={tokens}
-                  tokenAddresses={poolTokenAddresses}
+                  tokens={tokens ?? []}
+                  tokenAddresses={poolTokenAddresses ?? []}
                 />
               )}
 
               {/* Custom */}
               <Box grid gridRowGap="narrow">
                 {formValues.selected === 'imbalance' &&
-                  tokens.map((token, idx) => {
-                    const tokenAddress = poolTokenAddresses[idx]
+                  zip(tokens ?? [], poolTokenAddresses ?? []).map(([token, tokenAddress], idx) => {
                     const amount = formValues.amounts[idx]
                     return (
                       <FieldToken
@@ -451,9 +453,10 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
         {hasWrapped(pool) && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(pool)}
+            isDisabled={isDisabled}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
+              if (!pool) return
               const wrapped = getTokens(pool, { wrapped: nextIsWrapped })
               setIsWrapped(nextIsWrapped)
               const cFormValues = lodash.cloneDeep(formValues)
