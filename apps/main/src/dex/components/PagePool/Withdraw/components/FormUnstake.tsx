@@ -10,6 +10,7 @@ import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
+import { handleWithdrawError } from '@/dex/components/PagePool/Withdraw/handleWithdrawError'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
@@ -67,13 +68,18 @@ export const FormUnstake = ({ seed }: TransferProps) => {
     async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
+      try {
+        const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
-        const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
+          const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
+          setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        }
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
       }
-      if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepUnstake, chainId],
   )

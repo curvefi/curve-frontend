@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { addBreadcrumb, captureError } from '@ui/features/sentry'
+import { addBreadcrumb } from '@ui/features/sentry'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { logError, logMutation, logSuccess } from '@ui/lib/logging'
@@ -83,7 +83,6 @@ export function useTransactionMutation<TVariables extends object, TContext exten
       console.error(`Error in mutation ${JSON.stringify({ mutationKey, variables })}:`, error)
       setError(error)
       logError(mutationKey, { error, variables })
-      captureError(error, { variables, userAddress })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
   })

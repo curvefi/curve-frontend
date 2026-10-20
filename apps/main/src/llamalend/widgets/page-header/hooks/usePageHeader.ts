@@ -237,7 +237,7 @@ export const useAvailableLiquidity = ({
   }))
   const value = fallbackQ(
     mapQuery(onChainLiquidity, d => d.value),
-    combineQueries([apiMarket, borrowUsdRate], (d, rate) => d.liquidityUsd / rate),
+    mapQuery(apiMarket, d => d.liquidity),
   )
   const total = fallbackQ(
     mapQuery(onChainLiquidity, d => d.total),
