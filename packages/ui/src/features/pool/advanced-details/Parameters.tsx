@@ -32,7 +32,6 @@ export type ParametersProps = {
   rampADetails: { isFutureATimePassedToday: boolean; isRampUp: boolean } | undefined
   ammFee: QueryProp<Amount>
   daoFee: QueryProp<Amount>
-  eywaFee?: QueryProp<Amount | null>
   virtualPrice: QueryProp<Amount>
   gamma?: Amount
 }
@@ -55,7 +54,6 @@ export const Parameters = ({
   rampADetails,
   ammFee,
   daoFee,
-  eywaFee,
   virtualPrice,
   gamma,
 }: ParametersProps) => (
@@ -77,8 +75,6 @@ export const Parameters = ({
             formatNumber(daoFee, { maximumFractionDigits: 4, unit: 'percentage', abbreviate: false, fallback: '-' }),
           )}
         />
-
-        {eywaFee?.data != null && <ActionInfo label={t`EYWA fee`} value={eywaFee} />}
 
         <ActionInfo
           label={t`Virtual price`}
