@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
+import type { Nullish } from '@primitives/objects.utils'
 import { Select, type SelectProps } from '@ui/components/Select'
 
 export type ChartSelectOptions<TOption extends string = string> = {
   options: readonly (TOption | { value: TOption; label: ReactNode })[]
-  activeOption: TOption
+  activeOption: TOption | Nullish
   setActiveOption: (option: TOption) => void
 }
 
@@ -23,7 +24,7 @@ export const ChartSelect = <TOption extends string = string>({
 }: ChartSelectProps<TOption>) => (
   <Select
     variant="ghost"
-    value={activeOption}
+    value={activeOption ?? ''} // Keep MUI controlled while the active option is unknown.
     onChange={event => setActiveOption(event.target.value as TOption)}
     size="tiny"
     sx={{ alignSelf: 'center' }}

@@ -7,6 +7,7 @@ import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { LegendLine } from '@evm-ui/shared/ui/Chart/LegendSet'
 import Box from '@mui/material/Box'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -106,12 +107,21 @@ export const LiquidityDensityChart = ({
 
   return (
     <Stack data-testid="liquidity-density-chart" sx={{ gap: Spacing.sm }}>
-      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}>
-        <Typography component="h3" variant="headingXsBold" color="textSecondary" data-testid="liquidity-density-title">
-          {t`Liquidity density`}
-        </Typography>
-        {action}
-      </Stack>
+      <CardHeader
+        title={
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
+            <Typography
+              component="h3"
+              variant="headingXsBold"
+              color="textSecondary"
+              data-testid="liquidity-density-title"
+            >
+              {t`Liquidity density`}
+            </Typography>
+            {action}
+          </Stack>
+        }
+      />
       <MetricsGrid>
         <Metric
           category="dex.liquidityDensity"
