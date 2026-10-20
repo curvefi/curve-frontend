@@ -106,25 +106,25 @@ export const peakPrice = (curve: LiquidityCurve, pair: LiquidityPair) => {
         if (x < here / MAX_BALANCE_SEARCH_FACTOR || x > here * MAX_BALANCE_SEARCH_FACTOR) return true
         return maybe(gap(x), value => (hereGap > 0 ? value <= 0 : value >= 0)) ?? true
       })
-    return maybe(end, end => {
-      if (end < here / MAX_BALANCE_SEARCH_FACTOR) return undefined // No balance point below the pool
-      if (end > here * MAX_BALANCE_SEARCH_FACTOR) return undefined // No balance point above the pool
-      return maybe(gap(end), () => {
-        const bounds = iterate<readonly [number, number] | undefined>(
-          hereGap > 0 ? [end, end * BRACKET_GROWTH_FACTOR] : [end / BRACKET_GROWTH_FACTOR, end],
-          searchSteps,
-          ([low, high]) => {
-            const middle = (low + high) / 2
-            return maybe(gap(middle), (value): readonly [number, number] =>
-              value > 0 ? [low, middle] : [middle, high],
+    return maybe(end, end =>
+      end < here / MAX_BALANCE_SEARCH_FACTOR || end > here * MAX_BALANCE_SEARCH_FACTOR
+        ? undefined // No balance point below or above the pool
+        : maybe(gap(end), () => {
+            const bounds = iterate<readonly [number, number] | undefined>(
+              hereGap > 0 ? [end, end * BRACKET_GROWTH_FACTOR] : [end / BRACKET_GROWTH_FACTOR, end],
+              searchSteps,
+              ([low, high]) => {
+                const middle = (low + high) / 2
+                return maybe(gap(middle), (value): readonly [number, number] =>
+                  value > 0 ? [low, middle] : [middle, high],
+                )
+              },
+              ([low, high]) => high - low <= high * PRICE_SEARCH_TOLERANCE,
             )
-          },
-          ([low, high]) => high - low <= high * PRICE_SEARCH_TOLERANCE,
-        )
-        return maybe(bounds, ([low, high]) =>
-          high - low <= high * PRICE_SEARCH_TOLERANCE ? priceAt(curve, pair, (low + high) / 2) : undefined,
-        ) // Could not locate the balanced price if undefined
-      })
-    })
+            return maybe(bounds, ([low, high]) =>
+              high - low <= high * PRICE_SEARCH_TOLERANCE ? priceAt(curve, pair, (low + high) / 2) : undefined,
+            ) // Could not locate the balanced price if undefined
+          }),
+    )
   })
 }

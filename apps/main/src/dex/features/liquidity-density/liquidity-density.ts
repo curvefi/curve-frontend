@@ -40,28 +40,25 @@ export const processApiLiquidity = (
   { poolType, metapool, assetTypes }: PoolMetadata,
   snapshots: readonly PoolSnapshot[],
   pair: LiquidityPair,
-): PoolLiquidityResult | undefined => {
-  if (poolType !== 'stableswapng' || metapool || !assetTypes?.every(type => type === STANDARD_ASSET_TYPE)) {
-    return undefined
-  }
-  // Do not fill holes in the newest snapshot with parameters from another block.
-  return maybe(maxBy(snapshots, 'timestamp')?.a, a =>
-    // API balances are already whole tokens. For NG, A() is A_precise / STABLESWAP_A_PRECISION.
-    maybe(
-      createStableSwapCurve(
-        balances,
-        balances.map(() => 1), // Standard NG assets need no rate conversion from whole-token balances.
-        a,
-      ),
-      curve =>
-        maybe(liquidityProfile(curve, pair), profile => ({
-          ...profile,
-          family: 'stableswap',
-          centerPrice: peakPrice(curve, pair),
-        })),
-    ),
-  )
-}
+): PoolLiquidityResult | undefined =>
+  poolType !== 'stableswapng' || metapool || !assetTypes?.every(type => type === STANDARD_ASSET_TYPE)
+    ? undefined
+    : maybe(maxBy(snapshots, 'timestamp')?.a, a =>
+        // API balances are already whole tokens. For NG, A() is A_precise / STABLESWAP_A_PRECISION.
+        maybe(
+          createStableSwapCurve(
+            balances,
+            balances.map(() => 1), // Standard NG assets need no rate conversion from whole-token balances.
+            a,
+          ),
+          curve =>
+            maybe(liquidityProfile(curve, pair), profile => ({
+              ...profile,
+              family: 'stableswap',
+              centerPrice: peakPrice(curve, pair),
+            })),
+        ),
+      )
 
 /** flet-curve-demo/src/ui/pool_detail.py: _quoted_price uses one millionth of the input reserve. */
 export const liquidityProbeAmount = (
@@ -85,7 +82,7 @@ const quotedPrice = ({ fee }: PoolParameters, inputAmount: Decimal, outputAmount
       )
 
 const createLiquidityCandidates = (
-  { isCrypto, isMeta }: PoolTemplate,
+  { isCrypto, isMeta }: Pick<PoolTemplate, 'isCrypto' | 'isMeta'>,
   balances: Decimal[],
   parameters: PoolParameters,
   storedRates: Decimal[] | null,
@@ -111,8 +108,7 @@ const createLiquidityCandidates = (
   if (!scales || !gamma) return [] // Empty crypto pools may have no gamma or price scales.
   const invariant = maybe(D, d => fromWei(d, CRYPTO_INVARIANT_DECIMALS))
 
-  // flet-curve-demo/src/curve/depth.py: _crypto and fit. API factory types
-  // alone cannot distinguish every deployed math variant; fit against get_dy.
+  // flet-curve-demo/src/curve/depth.py: _crypto and fit. API factory types alone cannot distinguish every deployed math variant; fit against get_dy.
   if (balances.length === 2) {
     const [scale] = scales
     return [
@@ -124,28 +120,27 @@ const createLiquidityCandidates = (
       },
     ]
   }
-  if (balances.length === 3) {
-    return [
-      { family: 'tricrypto', curve: createTriCryptoCurve(balances, scales, amplification, gamma, invariant) },
-      {
-        family: 'tricrypto-legacy',
-        curve: createTriCryptoCurve(
-          balances,
-          scales,
-          +decimalDiv(A as Decimal, `${LEGACY_TRICRYPTO_A_PRECISION}`),
-          gamma,
-          invariant,
-          { legacy: true },
-        ),
-      },
-    ]
-  }
-  return []
+  return balances.length === 3
+    ? [
+        { family: 'tricrypto', curve: createTriCryptoCurve(balances, scales, amplification, gamma, invariant) },
+        {
+          family: 'tricrypto-legacy',
+          curve: createTriCryptoCurve(
+            balances,
+            scales,
+            +decimalDiv(A as Decimal, `${LEGACY_TRICRYPTO_A_PRECISION}`),
+            gamma,
+            invariant,
+            { legacy: true },
+          ),
+        },
+      ]
+    : [] // not supported
 }
 
 /** Returns no profile for unsupported data, solver failures, or a curve that does not match the quote. */
 export const processConnectedLiquidity = (
-  pool: PoolTemplate,
+  { isLending, isLlamma, isCrypto, isMeta }: PoolTemplate,
   poolBalances: Decimal[],
   parameters: PoolParameters,
   storedRates: Decimal[] | null,
@@ -155,38 +150,43 @@ export const processConnectedLiquidity = (
   quote: Decimal,
   inputAmount: Decimal,
   pair: LiquidityPair,
-): PoolLiquidityResult | undefined => {
-  const { isLending, isLlamma, isCrypto } = pool
-  if (isLending || isLlamma) return undefined // Lending rates are unavailable in the SDK; LLAMMA requires its own band-based solver.
-
-  return maybe(quotedPrice(parameters, inputAmount, quote), quoted => {
-    const best = minBy(
-      notFalsy(
-        ...createLiquidityCandidates(pool, poolBalances, parameters, storedRates, D, APrecise, metadata).map(
-          ({ family, curve }) =>
-            maybe(curve, curve =>
-              maybe(spotPrice(curve, pair), spot => ({ family, curve, error: Math.abs(spot - quoted) / quoted })),
+): PoolLiquidityResult | undefined =>
+  isLending || isLlamma
+    ? undefined // Lending rates are unavailable in the SDK; LLAMMA requires its own band-based solver.
+    : maybe(quotedPrice(parameters, inputAmount, quote), quoted => {
+        const best = minBy(
+          notFalsy(
+            ...createLiquidityCandidates(
+              { isCrypto, isMeta },
+              poolBalances,
+              parameters,
+              storedRates,
+              D,
+              APrecise,
+              metadata,
+            ).map(({ family, curve }) =>
+              maybe(curve, curve =>
+                maybe(spotPrice(curve, pair), spot => ({ family, curve, error: Math.abs(spot - quoted) / quoted })),
+              ),
             ),
-        ),
-      ),
-      'error',
-    )
-    return maybe(best, ({ curve, family, error }) =>
-      error > MAX_RELATIVE_QUOTE_ERROR
-        ? undefined
-        : maybe(liquidityProfile(curve, pair), profile => ({
-            ...profile,
-            family,
-            quoteError: error,
-            centerPrice: peakPrice(curve, pair),
-            // Crypto oracle values are denominated in coin 0; convert to output per input.
-            oraclePrice: isCrypto
-              ? maybe(parameters.priceOracle, prices => {
-                  const oraclePrices: Decimal[] = ['1', ...(prices as Decimal[])]
-                  return +decimalDiv(oraclePrices[pair[0]], oraclePrices[pair[1]])
-                })
-              : undefined,
-          })),
-    )
-  })
-}
+          ),
+          'error',
+        )
+        return maybe(best, ({ curve, family, error }) =>
+          error > MAX_RELATIVE_QUOTE_ERROR
+            ? undefined
+            : maybe(liquidityProfile(curve, pair), profile => ({
+                ...profile,
+                family,
+                quoteError: error,
+                centerPrice: peakPrice(curve, pair),
+                // Crypto oracle values are denominated in coin 0; convert to output per input.
+                oraclePrice: isCrypto
+                  ? maybe(parameters.priceOracle, prices => {
+                      const oraclePrices: Decimal[] = ['1', ...(prices as Decimal[])]
+                      return +decimalDiv(oraclePrices[pair[0]], oraclePrices[pair[1]])
+                    })
+                  : undefined,
+              })),
+        )
+      })

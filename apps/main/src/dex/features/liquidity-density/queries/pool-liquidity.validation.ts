@@ -23,11 +23,11 @@ const poolLiquidityQuoteValidationGroup = ({
   inputAmount,
 }: PoolLiquidityQuoteParams) => {
   poolLiquidityValidationGroup({ chainId, poolAddress })
-  for (const [field, coin] of recordEntries({ inputCoin, outputCoin })) {
+  recordEntries({ inputCoin, outputCoin }).forEach(([field, coin]) =>
     test(field, () => {
       enforce(coin).isNumber().greaterThanOrEquals(0)
-    })
-  }
+    }),
+  )
   test('outputCoin', () => {
     enforce(outputCoin).notEquals(inputCoin)
   })

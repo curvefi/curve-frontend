@@ -100,9 +100,6 @@ export const LiquidityDensityChart = ({
       oracleError,
     ],
   )
-  const deviation = combineQueries([profile, centerPrice], ({ spot }, center) =>
-    center > 0 ? Math.abs(spot / center - 1) * 100 : undefined,
-  )
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [width] = useResizeObserver(containerRef, { dimension: 'width' })
@@ -120,7 +117,9 @@ export const LiquidityDensityChart = ({
           category="dex.liquidityDensity"
           label={t`Current price deviation`}
           labelTooltip={{ title: t`Absolute percentage distance of the current price from the center of liquidity.` }}
-          value={deviation}
+          value={combineQueries([profile, centerPrice], ({ spot }, center) =>
+            center > 0 ? Math.abs(spot / center - 1) * 100 : undefined,
+          )}
           valueOptions={formatCategory('percent.value')}
           testId="liquidity-density-deviation"
         />

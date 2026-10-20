@@ -26,18 +26,19 @@ export const createTwoCryptoCurve = (
       const k0Other = (COIN_COUNT * other) / d
       const limit = legacy || gamma <= K0_GAMMA_THRESHOLD ? MAX_K0_RATIO : (MAX_K0_RATIO * K0_GAMMA_THRESHOLD) / gamma
       const inDomain = legacy ? isCryptoBalanceInDomain(other, d) : 1 / limit <= k0Other && k0Other <= limit
-      if (!inDomain) return undefined // Twocrypto input balance is outside its domain
-      return maybe(
-        cryptoBalance({
-          initialY: (d * d) / (other * COIN_COUNT_POWER),
-          otherSum: other,
-          otherK0: k0Other,
-          coinCount: COIN_COUNT,
-          amplification,
-          gamma,
-          invariant: d,
-        }),
-        y => (!legacy || isCryptoBalanceInDomain(y, d) ? y : undefined),
-      )
+      return inDomain
+        ? maybe(
+            cryptoBalance({
+              initialY: (d * d) / (other * COIN_COUNT_POWER),
+              otherSum: other,
+              otherK0: k0Other,
+              coinCount: COIN_COUNT,
+              amplification,
+              gamma,
+              invariant: d,
+            }),
+            y => (legacy && !isCryptoBalanceInDomain(y, d) ? undefined : y),
+          )
+        : undefined // Twocrypto input balance is outside its domain
     },
   })

@@ -9,11 +9,9 @@ const { useQuery: usePoolAmplificationQuery } = queryFactory({
   queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'pool.amplification', chainId, poolAddress }) as const,
   queryFn: async ({ poolAddress }: PoolQuery) => {
     const { address, curve, isCrypto } = requireLib('curveApi').getPool(poolAddress)
-    const { contract } = curve.contracts[address]
-    // StableSwap pools without A_precise() use stats.parameters().A.
-    return !isCrypto && 'A_precise' in contract
-      ? (decimal(((await contract.A_precise()) as bigint).toString()) ?? null)
-      : null
+    const { contract } = curve.contracts[address] // we call the internal curvejs contract because the lib doesn't support A_precise
+    const a = isCrypto ? null : ((await contract.A_precise?.()) as bigint) // StableSwap pools without A_precise() use stats.parameters().A.
+    return decimal(a) ?? null
   },
   validationSuite: poolLiquidityValidationSuite,
   category: 'dex.pool',
