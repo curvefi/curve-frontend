@@ -39,15 +39,8 @@ export const ChartFooter = <T extends string>({
         }}
       >
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm, flexWrap: 'wrap' }}>
-          {legendSets.map(legendSet => (
-            <LegendSet
-              key={`chart-footer-${legendSet.label}`}
-              label={legendSet.label}
-              line={legendSet.line}
-              box={legendSet.box}
-              toggled={legendSet.toggled}
-              onToggle={legendSet.onToggle}
-            />
+          {legendSets.map(props => (
+            <LegendSet key={`chart-footer-${props.label}`} {...props} />
           ))}
         </Stack>
         {hasToggle && (

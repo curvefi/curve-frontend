@@ -168,7 +168,6 @@ export const LiquidityDensityChart = ({
             option={useLiquidityDensityChartOption({
               profile,
               markers,
-              priceLabel,
               liquidityLabel,
               tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
                 <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
@@ -184,12 +183,11 @@ export const LiquidityDensityChart = ({
         testId="liquidity-density-legend"
         legendSets={useMemo(
           () => [
-            { label: inputSymbol, box: { fill: Chart.Lines[7] } },
-            { label: outputSymbol, box: { fill: Chart.Lines[8] } },
+            { label: inputSymbol ?? 'input', box: { fill: Chart.Lines[7] } },
+            { label: outputSymbol ?? 'output', box: { fill: Chart.Lines[8] } },
           ],
           [Chart.Lines, inputSymbol, outputSymbol],
         )}
-        description={t`Curve’s AMM automatically rebalances liquidity to maximize liquidity depth, optimize LP revenues and provide better trade execution.`}
       />
     </Stack>
   )

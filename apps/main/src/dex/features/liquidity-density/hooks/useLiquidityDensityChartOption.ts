@@ -14,13 +14,11 @@ const { FontSize, LineHeight, Spacing, BorderWidth } = SizesAndSpaces
 export const useLiquidityDensityChartOption = ({
   profile: { data: profile },
   markers,
-  priceLabel,
   liquidityLabel,
   tooltipFormatter,
 }: {
   profile: QueryProp<LiquidityProfile>
   markers: LiquidityPriceMarker[]
-  priceLabel: string
   liquidityLabel: string
   tooltipFormatter: (params: unknown) => HTMLElement | string
 }): EChartsOption => {
@@ -59,11 +57,6 @@ export const useLiquidityDensityChartOption = ({
         type: 'value',
         min: low,
         max: high,
-        name: priceLabel,
-        nameLocation: 'middle',
-        nameGap: px(Spacing.sm[breakpoint]),
-        nameMoveOverlap: true,
-        nameTextStyle: { ...textStyle, color: Text.TextColors.Secondary },
         axisLine: { show: false },
         axisTick: { show: false },
         splitLine: { show: true, lineStyle: gridLine },
@@ -152,5 +145,5 @@ export const useLiquidityDensityChartOption = ({
         },
       ],
     }
-  }, [liquidityLabel, markers, priceLabel, profile, theme, tooltipFormatter, breakpoint])
+  }, [liquidityLabel, markers, profile, theme, tooltipFormatter, breakpoint])
 }

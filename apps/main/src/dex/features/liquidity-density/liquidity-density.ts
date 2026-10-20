@@ -29,7 +29,6 @@ type LiquidityFamily = 'stableswap' | 'twocrypto' | 'twocrypto-legacy' | 'fxswap
 export type PoolLiquidityResult = LiquidityProfile & {
   family: LiquidityFamily
   centerPrice?: number
-  oraclePrice?: number
   /** Relative difference from a small fee-adjusted onchain quote, when connected. */
   quoteError?: number
 }
@@ -111,9 +110,13 @@ const createLiquidityCandidates = (
   // flet-curve-demo/src/curve/depth.py: _crypto and fit. API factory types alone cannot distinguish every deployed math variant; fit against get_dy.
   if (balances.length === 2) {
     const [scale] = scales
+    const fxswap = {
+      family: 'fxswap' as const,
+      curve: createStableSwapCurve(balances, [1, scale], amplification, invariant),
+    }
     return [
       { family: 'twocrypto', curve: createTwoCryptoCurve(balances, scale, amplification, gamma, invariant) },
-      { family: 'fxswap', curve: createStableSwapCurve(balances, [1, scale], amplification, invariant) },
+      fxswap,
       {
         family: 'twocrypto-legacy',
         curve: createTwoCryptoCurve(balances, scale, amplification, gamma, invariant, { legacy: true }),
@@ -154,39 +157,31 @@ export const processConnectedLiquidity = (
   isLending || isLlamma
     ? undefined // Lending rates are unavailable in the SDK; LLAMMA requires its own band-based solver.
     : maybe(quotedPrice(parameters, inputAmount, quote), quoted => {
-        const best = minBy(
-          notFalsy(
-            ...createLiquidityCandidates(
-              { isCrypto, isMeta },
-              poolBalances,
-              parameters,
-              storedRates,
-              D,
-              APrecise,
-              metadata,
-            ).map(({ family, curve }) =>
-              maybe(curve, curve =>
-                maybe(spotPrice(curve, pair), spot => ({ family, curve, error: Math.abs(spot - quoted) / quoted })),
-              ),
+        const candidates = notFalsy(
+          ...createLiquidityCandidates(
+            { isCrypto, isMeta },
+            poolBalances,
+            parameters,
+            storedRates,
+            D,
+            APrecise,
+            metadata,
+          ).map(({ family, curve }) =>
+            maybe(curve, curve =>
+              maybe(spotPrice(curve, pair), spot => ({ family, curve, error: Math.abs(spot - quoted) / quoted })),
             ),
           ),
-          'error',
-        )
+        ).filter(c => c.error <= MAX_RELATIVE_QUOTE_ERROR)
+
+        // Prefer a matching metadata family among valid candidates (currently applicable to fxswap).
+        const best = candidates.find(c => c.family === metadata.poolType) ?? minBy(candidates, 'error')
+
         return maybe(best, ({ curve, family, error }) =>
-          error > MAX_RELATIVE_QUOTE_ERROR
-            ? undefined
-            : maybe(liquidityProfile(curve, pair), profile => ({
-                ...profile,
-                family,
-                quoteError: error,
-                centerPrice: peakPrice(curve, pair),
-                // Crypto oracle values are denominated in coin 0; convert to output per input.
-                oraclePrice: isCrypto
-                  ? maybe(parameters.priceOracle, prices => {
-                      const oraclePrices: Decimal[] = ['1', ...(prices as Decimal[])]
-                      return +decimalDiv(oraclePrices[pair[0]], oraclePrices[pair[1]])
-                    })
-                  : undefined,
-              })),
+          maybe(liquidityProfile(curve, pair), profile => ({
+            ...profile,
+            family,
+            quoteError: error,
+            centerPrice: peakPrice(curve, pair),
+          })),
         )
       })

@@ -34,13 +34,13 @@ export const PoolLiquidityDensityChart = () => {
     [coins],
   )
   const {
-    key = '',
+    key,
     pair = selectedPair,
-    inputSymbol = '',
-    outputSymbol = '',
+    inputSymbol,
+    outputSymbol,
   } = pairs.find(({ pair }) => isEqual(pair, selectedPair)) ?? pairs[0] ?? {}
 
-  const { profile, inputTokenUsdPrice, outputTokenUsdPrice } = usePoolLiquidityDensity(
+  const { profile, oraclePrice, inputTokenUsdPrice, outputTokenUsdPrice } = usePoolLiquidityDensity(
     { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
     poolData,
     pair,
@@ -52,12 +52,9 @@ export const PoolLiquidityDensityChart = () => {
       profile={combineQueries([pool, valuedProfile], (_pool, profile) => profile)}
       inputSymbol={inputSymbol}
       outputSymbol={outputSymbol}
-      oraclePrice={combineQueries(
-        [mapQuery(profile, data => data?.oraclePrice), outputTokenUsdPrice],
-        (price, usdRate) => price * usdRate,
-      )}
+      oraclePrice={combineQueries([oraclePrice, outputTokenUsdPrice], (price, usdRate) => price * usdRate)}
       centerPrice={combineQueries(
-        [mapQuery(profile, data => data?.centerPrice), outputTokenUsdPrice],
+        [mapQuery(profile, p => p?.centerPrice), outputTokenUsdPrice],
         (price, usdRate) => price * usdRate,
       )}
       action={

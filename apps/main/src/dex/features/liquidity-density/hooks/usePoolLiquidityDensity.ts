@@ -1,3 +1,4 @@
+import { maxBy } from 'lodash'
 import { useCallback } from 'react'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
@@ -6,12 +7,14 @@ import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { ChainNameQuery, PoolQuery } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { fallbackQ } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import { liquidityProbeAmount, processApiLiquidity, processConnectedLiquidity } from '../liquidity-density'
+import { pairOraclePrice } from '../pool-oracle-price'
 import { usePoolAmplification } from '../queries/pool-amplification.query'
 import { usePoolInvariant } from '../queries/pool-invariant.query'
 import { usePoolLiquidityQuote } from '../queries/pool-liquidity-quote.query'
@@ -58,6 +61,18 @@ export const usePoolLiquidityDensity = (
 
   return {
     profile: fallbackQ(onchainProfile, apiProfile),
+    oraclePrice: fallbackQ(
+      mapQuery(parameters, ({ priceOracle }) =>
+        pairOraclePrice(priceOracle as Decimal[] | undefined, [inputCoin, outputCoin]),
+      ),
+      mapQuery(snapshots, snapshots =>
+        // Snapshot oracles use 18-decimal contract units; SDK parameters are already normalized.
+        pairOraclePrice(
+          maxBy(snapshots, 'timestamp')?.priceOracle?.map(price => price / 10 ** 18),
+          [inputCoin, outputCoin],
+        ),
+      ),
+    ),
     inputTokenUsdPrice: useTokenUsdRate(
       { ...params, tokenAddress: pool?.wrappedCoinAddresses[inputCoin] ?? apiPool.data?.coins[inputCoin]?.address },
       enabled,
