@@ -64,9 +64,8 @@ export const CurveProvider = <App extends AppName>({
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
-      switchChain({ chainId: network.chainId }).catch(e => {
-        console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
-        setConnectState(FAILURE)
+      void switchChain({ chainId: network.chainId }).then(chain => {
+        if (!chain) setConnectState(FAILURE)
       })
     }
   }, [isFocused, isInitialized, walletChainId, network, onChainUnavailable, switchChain, wallet, setConnectState])

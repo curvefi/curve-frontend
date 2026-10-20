@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import Button, { type ButtonProps } from '@mui/material/Button'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
+import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export type ConnectionProps = { isConnecting: boolean; isConnected: boolean; connect: () => Promise<void> }
@@ -28,7 +30,9 @@ export const ConnectWalletButton = ({
     disabled={isConnected || isConnecting}
     onClick={() => {
       onConnect?.()
-      void connect()
+      void connect().catch(error =>
+        notify(getErrorMessage(error, t`Unable to connect wallet. Please try again.`), 'error'),
+      )
     }}
     {...props}
   >

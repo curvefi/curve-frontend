@@ -14,6 +14,7 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
+import { handleWithdrawError } from '@/dex/components/PagePool/Withdraw/handleWithdrawError'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
@@ -107,8 +108,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     ) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues, maxSlippage)
-      if (typeof dismiss === 'function') dismiss()
+      try {
+        await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues, maxSlippage)
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
+      }
     },
     [fetchStepApprove],
   )
@@ -118,13 +124,18 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepWithdraw(activeKey, curve, pool, formValues, maxSlippage)
+      try {
+        const resp = await fetchStepWithdraw(activeKey, curve, pool, formValues, maxSlippage)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
-        const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
+          const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
+          setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        }
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
       }
-      if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepWithdraw, chainId],
   )
