@@ -2,7 +2,7 @@ import { isUndefined, omitBy } from 'lodash'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
-import { isEmpty, notFalsy, type Nullish } from '@primitives/objects.utils'
+import { isEmpty, maybe, notFalsy, type Nullish } from '@primitives/objects.utils'
 import {
   type DefaultError,
   keepPreviousData as keepPreviousDataTanstack,
@@ -79,7 +79,7 @@ export function queryFactory<
   queryKey,
   category,
   validationSuite,
-  dependencies = () => [],
+  dependencies,
   disableLog,
   keepPreviousData,
   ...options
@@ -107,7 +107,7 @@ export function queryFactory<
     queryKey: internalKey(params),
     queryFn,
     enabled: enabled && isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)),
-    dependencies: () => dependencies(params),
+    dependencies: maybe(dependencies, deps => () => deps(params)),
     retry: (failureCount, error) =>
       !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
       !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)

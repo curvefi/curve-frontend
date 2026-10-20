@@ -3,7 +3,6 @@ import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import { fetchTokenBalance, useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { q } from '@ui/features/queries/util'
@@ -24,15 +23,9 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress 
   const hasGauge = pool?.gauge.address != null && !isAddressEqual(pool.gauge.address as Address, zeroAddress)
   return {
     hasGauge,
-    lpTokenBalance: q(
-      useHydratedQuery(useTokenBalance, { chainId, userAddress, tokenAddress: pool?.lpToken as Address }, enabled),
-    ),
+    lpTokenBalance: q(useTokenBalance({ chainId, userAddress, tokenAddress: pool?.lpToken as Address }, enabled)),
     gaugeTokenBalance: q(
-      useHydratedQuery(
-        useTokenBalance,
-        { chainId, userAddress, tokenAddress: pool?.gauge.address as Address },
-        enabled && hasGauge,
-      ),
+      useTokenBalance({ chainId, userAddress, tokenAddress: pool?.gauge.address as Address }, enabled && hasGauge),
     ),
   }
 }

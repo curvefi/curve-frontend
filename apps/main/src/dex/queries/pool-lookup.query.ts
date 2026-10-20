@@ -2,11 +2,11 @@ import { test } from 'vest'
 import { fetchNewPools } from '@/dex/lib/curvejs'
 import { tryGetPool } from '@/dex/pool.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { ChainParams } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import type { Nullish } from '@primitives/objects.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import { queryClient } from '@ui/features/queries/query-client'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -16,7 +16,7 @@ type PoolLookupParams = ChainParams & { poolIdOrAddress: Nullish | string }
 const NAME = 'pool.lookup'
 
 /** Niche lookup for PagePool's URL resolution where pool can either by id or address; other consumers should use dedicated pool queries or the pool context. */
-export const { useQuery: usePoolLookup } = queryFactory({
+export const { useQuery: usePoolLookup } = hydratedQueryFactory({
   queryKey: ({ chainId, poolIdOrAddress }: PoolLookupParams) => ({ name: NAME, chainId, poolIdOrAddress }) as const,
   queryFn: async ({ poolIdOrAddress }: { poolIdOrAddress: string }) => {
     const curveApi = requireLib('curveApi')
