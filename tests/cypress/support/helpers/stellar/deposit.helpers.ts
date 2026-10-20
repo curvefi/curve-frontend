@@ -70,7 +70,19 @@ export const checkDepositBalances = ({ coins, lp }: PoolState) => {
 }
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
-  getActionValue('pool-deposit-expected-lp', 'stellar.simulation').should(value => expect(+value!).to.be.greaterThan(0))
+  getActionValue('pool-deposit-expected-lp', 'stellar.simulation')
+    .should(value => expect(Number(value)).to.be.greaterThan(0))
+    .then(expected =>
+      getActionValue('borrow-slippage', 'ui.interaction').then(slippage => {
+        const quote = Number(expected)
+        const minimum = quote * (1 - Number.parseFloat(slippage!) / 100)
+        // LP values show five significant digits; slippage shows two decimal places.
+        const tolerance = 10 ** (Math.floor(Math.log10(quote)) - 4) + (quote * 0.005) / 100
+        getActionValue('pool-deposit-minimum-lp', 'stellar.simulation').should(value =>
+          expect(Number(value), 'minimum LP after slippage').to.be.closeTo(minimum, tolerance),
+        )
+      }),
+    )
   submitAndExpectToast(
     () => depositSubmit().click(TIMEOUTS['ui.interaction']),
     { message: 'Deposit confirmed' },

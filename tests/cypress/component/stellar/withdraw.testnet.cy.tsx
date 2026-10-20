@@ -1,6 +1,6 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
-import { oneDecimal, oneInt, oneOf } from '@cy/support/generators'
+import { oneBool, oneDecimal, oneInt, oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
@@ -189,15 +189,23 @@ describe('Stellar testnet withdraw', () => {
       })
     })
 
-    it('withdraws the full LP balance into one coin without leaving LP dust', () => {
+    it('withdraws the full LP balance without leaving LP dust', () => {
       const coin = oneOf(...state.coins)
-      cy.log(`Withdraw Max into ${coin.symbol}`)
+      const balanced = oneBool()
+      cy.log(`Withdraw Max into ${balanced ? 'balanced outputs' : coin.symbol}`)
       mountWithdraw()
       selectWithdrawMax(state, coin)
       writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.05, coin.decimals))
       withdrawLpInput().find('input').should('have.value', state.lp.balance)
       checkPartialWithdrawQuote(state, state.lp.balance)
-      selectWithdrawMax(state, coin)
+      if (balanced) {
+        withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
+        checkWithdrawDetail('expected-lp', state.lp.balance)
+        checkWithdrawDetail('maximum-lp', state.lp.balance)
+        checkWithdrawDetail('projected-lp', '0')
+      } else {
+        selectWithdrawMax(state, coin)
+      }
       submitWithdrawAndCheck(state)
     })
   })

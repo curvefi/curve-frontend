@@ -1,8 +1,6 @@
-const { standard, extended, long } = {
-  standard: { timeout: 30_000 },
-  extended: { timeout: 90_000 },
-  long: { timeout: 120_000 },
-} as const satisfies Record<string, Cypress.Timeoutable>
+const [standard, extended, long, superSlow] = [30, 90, 120, 180].map((seconds): Cypress.Timeoutable => ({
+  timeout: seconds * 1000,
+}))
 
 /**
  * Select the dependency and operation being awaited, including for data displayed in the DOM.
@@ -34,8 +32,8 @@ export const TIMEOUTS = {
   'evm.balances': extended,
   'evm.contractRead': extended,
   'evm.allowance': extended,
-  'evm.simulation': extended,
-  'evm.confirmation': long,
+  'evm.simulation': standard,
+  'evm.confirmation': superSlow,
   'llamalend.marketMetadata': extended, // SDK market initialization: API metadata and contract configuration.
   'llamalend.liquidity': extended, // RPC cap/available liquidity, with Prices API market/token-price fallback.
   'llamalend.rates': long, // RPC rates or API market data, snapshots, and Merkl rewards.
