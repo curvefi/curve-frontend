@@ -134,8 +134,8 @@ export const useAdvancedDetailsData = ({
         borrowCap,
         borrowSymbol: borrowToken?.symbol,
       })),
-      mapQuery(apiMarket, ({ debtCeiling, liquidityUsd }) => ({
-        available: decimal(liquidityUsd),
+      mapQuery(apiMarket, ({ debtCeiling, liquidity }) => ({
+        available: decimal(liquidity),
         totalAssets: maybe(debtCeiling, decimal),
         borrowCap: maybe(debtCeiling, decimal),
         borrowSymbol: borrowToken?.symbol,
