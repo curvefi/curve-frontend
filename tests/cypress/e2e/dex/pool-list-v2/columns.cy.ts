@@ -236,6 +236,8 @@ describe('V2 pool-list columns', () => {
 
     cy.get('@dex-v2-pool-chains.all').should('have.length', 0)
     cy.get('@dex-v2-pools.all').should('have.length', 0)
+    // The SDK and the pool list each fetch Lite pools once during initialization.
+    cy.get('@dex-v2-lite-pools.all').should('have.length', 2)
     getV2PoolRow(V2_POOL_FIXTURES.liteLowTvl.address).should('be.visible')
 
     const getSearch = () => cy.get('[data-testid="table-text-search-dex-pool-list"]').find('input')
@@ -267,7 +269,7 @@ describe('V2 pool-list columns', () => {
       expectFirstPool(V2_POOL_FIXTURES.liteLowTvl.address)
     }
 
-    cy.get('@dex-v2-lite-pools.all').should('have.length', 1)
+    cy.get('@dex-v2-lite-pools.all').should('have.length', 2)
   })
 
   it('classifies representative pool types and adds status badges', () => {

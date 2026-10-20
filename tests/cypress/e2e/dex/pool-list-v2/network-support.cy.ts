@@ -7,7 +7,7 @@ import { Chain } from '@primitives/network.utils'
 const visitPoolList = (network: string, supportAlias: `@${string}`, category: TimeoutCategory) => {
   cy.viewport(...DESKTOP_VIEWPORT)
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
-  cy.wait('@dex-v2-platforms', TIMEOUTS['mock.curveCore.platforms'])
+  cy.wait('@dex-v2-lite-pool-chains', TIMEOUTS['mock.curveLite.platforms'])
   cy.wait('@dex-v2-prices-chains', TIMEOUTS['mock.prices.chains'])
   cy.wait(supportAlias, TIMEOUTS[category])
 }
