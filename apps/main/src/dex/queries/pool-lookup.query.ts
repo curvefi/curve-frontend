@@ -1,42 +1,29 @@
-import { test } from 'vest'
 import { fetchNewPools } from '@/dex/lib/curvejs'
 import { tryGetPool } from '@/dex/pool.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
-import type { ChainParams } from '@evm-ui/queries/query-types'
-import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
-import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
-import type { Nullish } from '@primitives/objects.utils'
+import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
+import { poolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { queryClient } from '@ui/features/queries/query-client'
-import { enforce } from '@ui/lib/validation/enforce-extension'
-import { createValidationSuite } from '@ui/lib/validation/lib'
-
-type PoolLookupParams = ChainParams & { poolIdOrAddress: Nullish | string }
 
 const NAME = 'pool.lookup'
 
-/** Niche lookup for PagePool's URL resolution where pool can either by id or address; other consumers should use dedicated pool queries or the pool context. */
+/** Niche lookup for PagePool, where the pool address comes from the URL and could be new (such that we need to refetch); other consumers should use dedicated pool queries or the pool context. */
 export const { useQuery: usePoolLookup } = hydratedQueryFactory({
-  queryKey: ({ chainId, poolIdOrAddress }: PoolLookupParams) => ({ name: NAME, chainId, poolIdOrAddress }) as const,
-  queryFn: async ({ poolIdOrAddress }: { poolIdOrAddress: string }) => {
+  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: NAME, chainId, poolAddress }) as const,
+  queryFn: async ({ poolAddress }: PoolQuery) => {
     const curveApi = requireLib('curveApi')
-    const pool = tryGetPool(poolIdOrAddress, curveApi)
+    const pool = tryGetPool(poolAddress, curveApi)
     if (pool) return pool
 
     try {
       await fetchNewPools(curveApi)
-      return tryGetPool(poolIdOrAddress, curveApi) ?? null
+      return tryGetPool(poolAddress, curveApi) ?? null
     } catch {
       return null
     }
   },
-  validationSuite: createValidationSuite(({ chainId, poolIdOrAddress }: PoolLookupParams) => {
-    chainValidationGroup({ chainId })
-    curveApiValidationGroup({ chainId })
-    test('poolIdOrAddress', () => {
-      enforce(poolIdOrAddress).message('Pool ID or address is required').isNotEmpty()
-    })
-  }),
+  validationSuite: poolValidationSuite,
   category: 'global.no-persist',
   disableLog: true, // Pool instances have circular references that cannot be serialized by the query logger used in Cypress.
 })

@@ -43,7 +43,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.createPool.resetState()
     }
 
-    await fetchPools(curve) // hydrates the lib with pool data required for curve.getPool(poolIdOrAddress)
+    await fetchPools(curve) // hydrates the lib with pool data required for curve.getPool(poolAddress)
     await invalidatePoolLookups()
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },

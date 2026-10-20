@@ -1,4 +1,4 @@
-import type { PoolAddressParams, PoolUrlParams } from '@/dex/types/main.types'
+import type { PoolAddressParams } from '@/dex/types/main.types'
 import { createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
@@ -22,9 +22,6 @@ const layoutProps = { getParentRoute: () => dexLayoutRoute }
 const LEGACY_POOLS: Record<string, string> = {
   '0x80466c64868e1ab14a1ddf27a676c3fcbe638fe5': 'tricrypto',
   '0xe7a24ef0c5e95ffb0f6684b813a78f2a3ad7d171': 'linkusd',
-  // We're phasing out pool ids but whatever, can't hurt I guess.
-  tricrypto: 'tricrypto',
-  linkusd: 'linkusd',
 }
 
 export const dexRoutes = dexLayoutRoute.addChildren([
@@ -59,16 +56,16 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/pools/$poolIdOrAddress',
-    loader: ({ params: { network, poolIdOrAddress } }: { params: PoolUrlParams }) => {
+    path: '$network/pools/$poolAddress',
+    loader: ({ params: { network, poolAddress } }: { params: PoolAddressParams }) => {
       if (network !== 'ethereum') return
-      const legacyPoolId = LEGACY_POOLS[poolIdOrAddress.toLowerCase()]
+      const legacyPoolId = LEGACY_POOLS[poolAddress.toLowerCase()]
       if (legacyPoolId)
         redirect({ href: `${EXTERNAL_LINKS.curve.classic}${legacyPoolId}/withdraw`, replace: true, throw: true })
     },
     component: PagePool,
-    head: ({ params: { poolIdOrAddress } }: { params: PoolUrlParams }) => ({
-      meta: [{ title: `Curve - Pool - ${poolIdOrAddress} - Curve` }],
+    head: ({ params: { poolAddress } }: { params: PoolAddressParams }) => ({
+      meta: [{ title: `Curve - Pool - ${poolAddress} - Curve` }],
     }),
     ...layoutProps,
   }),
@@ -81,8 +78,8 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/pools/$poolIdOrAddress/$formType',
-    loader: ({ params: { network, poolIdOrAddress } }) => redirectTo(`/dex/${network}/pools/${poolIdOrAddress}`),
+    path: '$network/pools/$poolAddress/$formType',
+    loader: ({ params: { network, poolAddress } }) => redirectTo(`/dex/${network}/pools/${poolAddress}`),
     ...layoutProps,
   }),
   createRoute({

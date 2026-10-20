@@ -46,7 +46,7 @@ describe('Pool Deposit (RPC)', () => {
         maxSlippage="0.5"
         poolAlert={null}
         seed={{ isSeed: false, loaded: true }}
-        params={{ network: defaultNetworks[CHAIN_ID].blockchainId, poolIdOrAddress: pool.id }}
+        params={{ network: defaultNetworks[CHAIN_ID].blockchainId, poolAddress: pool.address }}
       />
     </PoolTestCase>
   )

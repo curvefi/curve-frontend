@@ -7,28 +7,28 @@ import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { usePoolLookup } from '@/dex/queries/pool-lookup.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
-import type { PoolUrlParams } from '@/dex/types/main.types'
+import type { PoolAddressParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
-import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { mapQuery } from '@ui/features/queries/util'
+import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 export const PagePool = () => {
-  const { curveApi } = useCurve()
-  const props = useParams<PoolUrlParams>()
-  const isNavigating = useRouterState({ select: state => state.status === 'pending' })
-  const { poolIdOrAddress, network: blockchainId } = props
+  const { curveApi, isHydrated } = useCurve()
+  const props = useParams<PoolAddressParams>()
+  const { poolAddress: rPoolAddress, network: blockchainId } = props
+  const poolAddress = isAddress(rPoolAddress, { strict: false }) ? getAddress(rPoolAddress) : undefined
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const pool = usePoolLookup({ chainId, poolIdOrAddress })
+  const lookup = usePoolLookup({ chainId, poolAddress })
+  const pool = isHydrated ? lookup : fakeLoadingQ(undefined) // We want to have a loading state during hydration (pool query is disabled until then)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
@@ -54,7 +54,7 @@ export const PagePool = () => {
     )
 
   // Strict check with null as `undefined` means unresolved; null means 'doesn't exist'.
-  if (pool.data === null)
+  if (pool.data === null || !poolAddress)
     return (
       <ErrorPage
         title="404"
@@ -64,28 +64,10 @@ export const PagePool = () => {
       />
     )
 
-  const poolAddress = isAddress(poolIdOrAddress, { strict: false }) ? getAddress(poolIdOrAddress) : undefined
-
-  /**
-   * We're phasing out pool ids and redirect to pool address in URL, which we can only do after hydration.
-   * The URL updates before useParams, so rerenders can restart the redirect with the old pool id.
-   * Render null while navigating to let the address params update and prevent a redirect loop.
-   * Would also happen with programmatic navigate, so that wouldn't be a solution.
-   */
-  if (pool.data && !poolAddress) {
-    return isNavigating ? null : (
-      <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.data.address}`)} search replace resetScroll={false} />
-    )
-  }
-
-  // Render null without a pool address, which is only expected during redirects from legacy pool ids.
-  // Handling this rare case added too much complexity in an earlier attempt.
+  // Typescript is not smart enough to narrow the type of pool to exclude `null`
   return (
-    poolAddress && (
-      // Typescript is not smart enough to narrow the type of pool to exclude `null`
-      <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)} poolAddress={poolAddress}>
-        <Transfer params={props} />
-      </PoolContextProvider>
-    )
+    <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)} poolAddress={poolAddress}>
+      <Transfer params={props} />
+    </PoolContextProvider>
   )
 }
