@@ -73,8 +73,8 @@ export function useTransactionMutation<TVariables extends object, TContext exten
     onSuccess: async (data, variables, context) => {
       logSuccess(mutationKey, { data, variables })
       onReset?.()
-      await onSuccess?.(data, variables, context)
       notify(successMessage(variables, context), 'success')
+      await onSuccess?.(data, variables, context)
     },
     onError: (error, variables, _context) => {
       // Be aware that context may be undefined if onMutate threw before returning.
