@@ -28,7 +28,7 @@ describe('Peg stability reserve', () => {
     cy.mount(<TestComponent config={config} />)
 
     // Initial data when not connected
-    cy.get('[data-testid="pegkeeper-metric-rate-value"]').invoke('text').should('eq', '0.99985')
+    cy.get('[data-testid="pegkeeper-metric-rate-value"]', TIMEOUTS['evm.contractRead']).should('have.text', '0.99985')
     cy.get('[data-testid="pegkeeper-metric-debt-value"]')
       .as('debt')
       .invoke('text')

@@ -3,7 +3,9 @@ import { useLpTokenPool } from '@/llamalend/queries/lp-token-pool.query'
 import type { Chain } from '@curvefi/prices-api'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import Collapse from '@mui/material/Collapse'
 import type { Token } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { t } from '@ui/lib/i18n'
 
@@ -21,23 +23,26 @@ export const BuyCollateralLink = ({
   token: Token | undefined
 }) => {
   const { address: userAddress } = useConnection()
+  // loading is intentionally not shown: a skeleton would disappear for users holding collateral.
+  // TODO: Errors should be shown in the status bar
   const { data: balance } = useTokenBalance({ chainId, userAddress, tokenAddress: token?.address })
-  const hasNoBalance = balance != null && +balance === 0
-  const { data: poolAddress, isLoading } = useLpTokenPool({ blockchainId, tokenAddress: token?.address }, hasNoBalance)
+  const hasNoBalance = maybe(balance, Number) === 0
+  const { data: poolAddress } = useLpTokenPool({ blockchainId, tokenAddress: token?.address }, hasNoBalance)
 
   return (
-    token &&
-    hasNoBalance &&
-    !isLoading && (
-      <ExternalLink
-        href={
-          poolAddress
-            ? getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}/deposit`)
-            : `${getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_SWAP)}?to=${token.address}`
-        }
-        label={t`Get ${token.symbol}`}
-        data-testid="buy-collateral-link"
-      />
+    token && (
+      <Collapse in={hasNoBalance && poolAddress !== undefined} unmountOnExit>
+        <ExternalLink
+          href={
+            poolAddress
+              ? getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}/deposit`)
+              : `${getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_SWAP)}?to=${token.address}`
+          }
+          label={t`Get ${token.symbol}`}
+          fullWidth
+          data-testid="buy-collateral-link"
+        />
+      </Collapse>
     )
   )
 }

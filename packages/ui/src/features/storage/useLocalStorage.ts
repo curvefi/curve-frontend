@@ -4,6 +4,7 @@ import type { Address } from '@primitives/address.utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from '@ui/features/storage/useStoredState'
 import type { VisibilityVariants } from '@ui/features/tables/visibility.types'
 import { Duration } from '@ui/features/themes/design/0_primitives'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui/lib/env'
 
 function getFromLocalStorage<T>(storageKey: string) {
@@ -82,11 +83,8 @@ export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-
 const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Banner = 'Monthly') => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
   const expirationTime = Duration.Banner[frequency]
-
-  const shouldShowBanner = useMemo(
-    () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
-    [dismissedAt, expirationTime],
-  )
+  const date = useCurrentDate('1h') // minimum frequency is 1 day, so check every 1h while the window is open.
+  const shouldShowBanner = dismissedAt == null || date.getTime() - dismissedAt >= expirationTime
 
   const dismissBanner = useCallback(() => setDismissedAt(Date.now()), [setDismissedAt])
 

@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 import type { Nullish } from '@primitives/objects.utils'
+import { normalize } from '@sentry/core'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { useForm } from '@ui/features/forms'
-import { captureError, captureString } from '@ui/features/sentry'
+import { captureUserReport } from '@ui/features/sentry'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
@@ -22,36 +24,30 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
   return {
     form,
     values: form.values,
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     onSubmit: form.handleSubmit(async formData => {
-      const body = {
-        formData,
-        url: window.location.href,
-        context: {
-          ...context,
-          // stringify error because sentry will simply call .toString() on non-Error objects
-          error:
-            typeof error == 'string'
-              ? error
-              : JSON.stringify(
-                  error instanceof Error
-                    ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
-                    : error,
-                ),
-        },
-      }
-      console.info(`Submitting error report:`, body)
       try {
-        if (error == null || typeof error === 'string') {
-          captureString(error ?? 'Error Report', { body, userReport: true })
-        } else {
-          captureError(error as Error, { body, userReport: true })
-        }
+        await captureUserReport(error, {
+          formData,
+          url: window.location.href,
+          context: {
+            ...context,
+            // stringify error because sentry will simply call .toString() on non-Error objects
+            error:
+              typeof error == 'string'
+                ? error
+                : JSON.stringify(
+                    normalize(
+                      error instanceof Error
+                        ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
+                        : error,
+                    ),
+                  ),
+          },
+        })
         onClose()
       } catch (e) {
         console.warn(e)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-        form.setError('root', { type: 'server', message: e.message })
+        form.setError('root', { type: 'server', message: getErrorMessage(e, 'Unable to submit error report') })
       }
     }),
   }

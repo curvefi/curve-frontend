@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Button from '@mui/material/Button'
 import MenuList from '@mui/material/MenuList'
 import type { Nullish } from '@primitives/objects.utils'
 import { MenuItem } from '@ui/components/MenuItem'
@@ -62,7 +63,11 @@ export const ConnectWalletModal = <T extends WalletConnector>({
     sx={sx}
   >
     {error && (
-      <Alert variant="filled" severity="error">
+      <Alert
+        variant="filled"
+        severity="error"
+        action={<Button color="inherit" onClick={() => window.location.reload()}>{t`Refresh page`}</Button>}
+      >
         <AlertTitle>{t`Error connecting wallet`}</AlertTitle>
         {error.message}
       </Alert>
