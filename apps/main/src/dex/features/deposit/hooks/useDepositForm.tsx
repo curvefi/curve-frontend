@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { usePoolTokens } from '@/dex/features/pool/usePoolTokens'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { hasWrapped } from '@/dex/pool.utils'
 import { useDepositPriceImpact } from '@/dex/queries/deposit/deposit-bonus.query'
 import { useSeedAmounts } from '@/dex/queries/deposit/deposit-seed-amounts.query'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
@@ -40,10 +40,18 @@ function useForceSeedAmounts(
 }
 
 export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
-  const { chainId, poolId, pool, isWrapped: initialWrapped, setIsWrapped, blockchainId, api } = usePoolContext()
+  const {
+    chainId,
+    poolAddress,
+    pool: { data: pool, isLoading: isPoolLoading },
+    isWrapped: initialWrapped,
+    setIsWrapped,
+    blockchainId,
+    api,
+  } = usePoolContext()
   const { address: userAddress } = useConnection()
   const nativeToken = api?.getNetworkConstants().NATIVE_TOKEN
-  const initialTokenCount = (initialWrapped ? pool.wrappedCoins : pool.underlyingCoins).length
+  const initialTokenCount = (initialWrapped ? pool?.wrappedCoins : pool?.underlyingCoins)?.length ?? 0
   const userDefaultValues = useMemo(
     () => getDepositDefaults(initialTokenCount, initialWrapped, maxSlippage),
     [initialTokenCount, initialWrapped, maxSlippage],
@@ -65,9 +73,11 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     userAddress,
     isWrapped,
   })
-  const reserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
+  const reserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const isSeed = mapQuery(reserves, reserves => !Number(reserves.total))
   useFormSync(form, { decimals })
+  // Apply the resolved pool's default without replacing a user's slippage choice.
+  useFormSync(form, { slippage: maxSlippage }, pool != null && !form.isTouched('slippage'))
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
@@ -78,7 +88,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   }, [canDepositWrapped, update, isSeed.data])
 
   const [params, isDebouncing] = useFormDebounce(
-    { ...values, chainId, poolId, decimals, userAddress },
+    { ...values, chainId, poolAddress, decimals, userAddress },
     userDefaultValues,
   )
 
@@ -90,7 +100,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     onSubmit: submitMutation,
     isPending: isDepositing,
     error,
-  } = useDepositMutation({ chainId, poolId, tokenCount, onReset: () => reset(userDefaultValues) })
+  } = useDepositMutation({ chainId, poolAddress, tokenCount, onReset: () => reset(userDefaultValues) })
 
   const isPending = formState.isSubmitting || isDepositing
   const isDerivingSeedAmounts = isSeed.data === true && seedAmounts.isLoading
@@ -101,7 +111,6 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     reserves: mapQuery(reserves, reserves => reserves.tokens.map(t => t.balance)),
     isSeed,
     canDepositWrapped,
-    isWrappedOnly: isWrappedOnly(pool),
     // Unfortunately, curve.js requires a wallet. Seed deposit derives amounts from the first.
     inputsDisabled: !wallet || isPending || (isSeed.data !== false && ('first-only' as const)),
     tokens,
@@ -110,8 +119,9 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     userAddress,
     onSubmit: handleSubmit(submitMutation),
     isPending,
-    isLoading: isPending || priceImpact.isLoading || isDerivingSeedAmounts,
+    isLoading: isPoolLoading || isPending || priceImpact.isLoading || isDerivingSeedAmounts,
     isDisabled:
+      pool == null ||
       !formState.isValid ||
       isPending ||
       isDebouncing ||

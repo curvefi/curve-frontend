@@ -1,5 +1,6 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, type RefObject, useMemo, useRef } from 'react'
+import { sum } from 'lodash'
+import { type ReactNode, type RefObject, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -100,7 +101,7 @@ export const DataTable = <TData extends RowData>({
   const showPagination = !isLimited && table.getPageCount() > 1
 
   const headerGroups = table.getHeaderGroups()
-  const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
+  const columnCount = sum(headerGroups.map(g => g.headers.length))
   const top = useLayoutStore(state => state.navHeight)
   const tableTopRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)

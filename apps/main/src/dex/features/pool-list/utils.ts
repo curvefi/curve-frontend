@@ -1,7 +1,7 @@
 import { getAddress } from 'viem'
 import { Alerts, getVyperExploitedAlert } from '@/dex/hooks/usePoolAlert'
 import { TOKEN_ALERTS } from '@/dex/hooks/useTokenAlert'
-import { getTokens, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens } from '@/dex/pool.utils'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -14,7 +14,7 @@ import { isVyperVulnerablePool } from './alerts'
 
 /** Maps hydrated Curve pools (PoolTemplate) into the source-independent pool-list model. */
 export const curvePoolToRowData = (pool: PoolTemplate): PoolRowData => {
-  const { tokens, tokenAddresses } = getTokens(pool, { wrapped: isWrappedOnly(pool) })
+  const { tokens, tokenAddresses } = getTokens(pool, { wrapped: false })
   const coins = tokenAddresses.map((address, index) => ({
     poolIndex: index,
     address: getAddress(address),
@@ -38,7 +38,7 @@ export const enrichPoolRow = (
   campaignsByAddress: Record<string, CampaignRewards[]> | Nullish,
   userPosition: PoolRow['userPosition'],
 ): PoolRow => {
-  const campaigns = campaignsByAddress?.[pool.address.toLowerCase()]
+  const campaigns = campaignsByAddress?.[getAddress(pool.address)]
   return {
     ...pool,
     ...getPoolRates(pool, campaigns),

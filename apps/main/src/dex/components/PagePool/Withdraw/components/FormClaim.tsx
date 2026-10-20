@@ -29,9 +29,16 @@ import { amount as toAmount } from '@ui/lib/decimal'
 import { t, Trans } from '@ui/lib/i18n'
 
 export const FormClaim = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
-  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolId })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
+  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolAddress })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -55,11 +62,12 @@ export const FormClaim = ({ seed }: TransferProps) => {
   const config = useConfig()
 
   const updateFormValues = useCallback(() => {
+    if (!pool) return
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setTxInfoBar(null)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, pool?.id, pool, { isWrapped }, null, seed.isSeed, '')
+    void setFormValues('CLAIM', config, curve, pool.id, pool, { isWrapped }, null, seed.isSeed, '')
   }, [config, curve, isWrapped, pool, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
@@ -139,19 +147,19 @@ export const FormClaim = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues()
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // fetch claimable
   useEffect(() => {
@@ -159,7 +167,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
       void fetchClaimable(activeKey, chainId, pool)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolAddress, signerAddress])
 
   // steps
   useEffect(() => {

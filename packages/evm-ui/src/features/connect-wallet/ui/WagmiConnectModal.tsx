@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import { createSvgIcon } from '@mui/material/utils'
 import { toArray } from '@primitives/array.utils'
 import { ConnectWalletModal } from '@ui/features/connect-wallet/ConnectWalletModal'
+import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { BrowserWalletIcon } from '@ui/icons/BrowserWalletIcon'
@@ -80,11 +81,11 @@ export const WagmiConnectModal = () => {
       } catch (e) {
         console.info(e) // e.g. user rejected
         if (e instanceof Error) {
-          const error = new Error((e as BaseError).shortMessage ?? e.message)
+          const error = new Error((e as BaseError).shortMessage ?? e.message, { cause: e })
           error.stack = e.stack
           setError(error)
         } else {
-          setError(new Error(String(e)))
+          setError(new Error(getErrorMessage(e, String(e)), { cause: e }))
         }
       } finally {
         setConnectingToId(null)

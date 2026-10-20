@@ -6,6 +6,7 @@ import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
+import { handleWithdrawError } from '@/dex/components/PagePool/Withdraw/handleWithdrawError'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
@@ -22,7 +23,14 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormUnstake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -42,13 +50,14 @@ export const FormUnstake = ({ seed }: TransferProps) => {
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
         'UNSTAKE',
         config,
         curve,
-        poolId,
+        pool.id,
         pool,
         { isWrapped, ...updatedFormValues },
         null,
@@ -56,20 +65,25 @@ export const FormUnstake = ({ seed }: TransferProps) => {
         '',
       )
     },
-    [config, curve, isWrapped, pool, poolId, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, pool, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
+      try {
+        const resp = await fetchStepUnstake(activeKey, curve, pool, formValues)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
-        const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
+          const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
+          setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        }
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
       }
-      if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepUnstake, chainId],
   )
@@ -112,19 +126,19 @@ export const FormUnstake = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({})
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, seed.isSeed, signerAddress])
+  }, [chainId, poolAddress, seed.isSeed, signerAddress])
 
   // steps
   useEffect(() => {
@@ -134,12 +148,12 @@ export const FormUnstake = ({ seed }: TransferProps) => {
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
+  }, [chainId, poolAddress, signerAddress, formValues, formStatus])
 
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
-  const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
+  const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })
 
   return (
     <FormContent>

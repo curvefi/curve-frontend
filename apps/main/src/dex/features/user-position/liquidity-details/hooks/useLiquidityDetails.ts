@@ -11,22 +11,23 @@ import { zip } from '@primitives/array.utils'
 import { Chain } from '@primitives/network.utils'
 import type { LiquidityDetailsData } from '@ui/features/pools/liquidity-details/types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q, toQuery } from '@ui/features/queries/util'
+import { mapQuery, q, toQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimalPercent, decimalSum } from '@ui/lib/decimal'
 
-export type UseLiquidityDetailsParams = { chainId: ChainId; poolId: string | undefined; tokenAddresses: Address[] }
+export type UseLiquidityDetailsParams = { chainId: ChainId; poolAddress: Address; tokenAddresses: QueryProp<Address[]> }
 
 export const useLiquidityDetails = ({
   chainId,
-  poolId,
+  poolAddress,
   tokenAddresses,
 }: UseLiquidityDetailsParams): LiquidityDetailsData => {
   const { address: userAddress } = useConnection()
   const tokens = useTokens({ chainId })
-  const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
+
+  const queryParams = { chainId, poolAddress, userAddress }
+  const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })
 
   const hasPosition = Number(lpTokenBalance.data) > 0 || Number(gaugeTokenBalance.data) > 0
-  const queryParams = { chainId, poolId, userAddress }
 
   // There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A.
   const showBoost = chainId === Number(Chain.Ethereum)
@@ -50,8 +51,8 @@ export const useLiquidityDetails = ({
       userLpShare: mapQuery(userShare, ({ lpShare }) => lpShare),
     },
     metrics: { ...(showBoost && { boost: q(userBoost) }), lpTokenTotal, positionValue: q(userLiquidityUsd) },
-    rows: mapQuery(userBalances, balances =>
-      zip(tokenAddresses, balances).map(([address, amount]) => ({
+    rows: combineQueries([tokenAddresses, userBalances], (addresses, balances) =>
+      zip(addresses, balances).map(([address, amount]) => ({
         address,
         symbol: mapQuery(tokens, tokens => getToken(tokens, address)?.symbol),
         amount: toQuery(amount, userBalances),

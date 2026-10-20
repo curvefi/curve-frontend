@@ -83,7 +83,7 @@ export const ButtonMenu = <T extends string>({
       )}
       {options.length > 0 && (
         <Menu
-          anchorEl={anchorRef.current}
+          anchorEl={() => anchorRef.current}
           open={open}
           onClose={onClose}
           // Modify anchor and transform to open upwards from the right

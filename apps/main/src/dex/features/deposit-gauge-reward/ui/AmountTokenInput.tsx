@@ -9,6 +9,7 @@ import { TokenList } from '@evm-ui/features/select-token/ui/modal/TokenList'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
@@ -22,12 +23,12 @@ import { t } from '@ui/lib/i18n'
 
 export const AmountTokenInput = ({
   chainId,
-  poolId,
+  poolAddress,
   blockchainId,
   disabled,
 }: {
   chainId: ChainId
-  poolId: string
+  poolAddress: Address
   blockchainId: NetworkEnum
   disabled: boolean
 }) => {
@@ -43,7 +44,7 @@ export const AmountTokenInput = ({
 
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
-    poolId,
+    poolAddress,
     userAddress,
   })
 

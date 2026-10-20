@@ -50,7 +50,7 @@ const Primary = ({ children }: { children: string }) => (
 const UtilizationTooltipContent = ({
   market: {
     debtCeiling,
-    liquidityUsd,
+    liquidity,
     assets: { collateral, borrowed },
     type,
   },
@@ -76,12 +76,9 @@ const UtilizationTooltipContent = ({
         <TooltipItem title={t`Total borrowed`}>
           <Currency {...borrowed} />
         </TooltipItem>
-        {/** liquidityUsd is as the name says, in usd, but we want it denominated in the borrow token, and we have enough info to deduce the borrow token price directly (if both are > 0) */}
-        {borrowed.balance && borrowed.balanceUsd && (
-          <TooltipItem title={t`Available to borrow`}>
-            <Currency {...borrowed} balance={liquidityUsd * (borrowed.balance / borrowed.balanceUsd)} />
-          </TooltipItem>
-        )}
+        <TooltipItem title={t`Available to borrow`}>
+          <Currency {...borrowed} balance={liquidity} />
+        </TooltipItem>
         {debtCeiling != null && (
           <TooltipItem title={t`Debt ceiling`}>
             {/** Only mint markets have a debt ceiling which is in crvUSD */}

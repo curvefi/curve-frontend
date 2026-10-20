@@ -158,7 +158,7 @@ const convertLendingVault = (
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
     extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate, 'llamalend.rewards')) : null
-  const rewards = [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
+  const rewards = [...(campaigns[vault] ?? []), ...(campaigns[controller] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
@@ -200,8 +200,8 @@ const convertLendingVault = (
     solvencyPercent,
     badDebtUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
-    liquidity: totalAssets - totalDebt,
-    liquidityUsd: totalAssetsUsd - totalDebtUsd,
+    liquidity: Math.max(0, totalAssets - totalDebt),
+    liquidityUsd: Math.max(0, totalAssetsUsd - totalDebtUsd),
     totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
     // TVL = collateral converted to borrow token + collateral + unborrowed supplied assets.
@@ -286,7 +286,7 @@ const convertMintMarket = (
   const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
-  const rewards = [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])]
+  const rewards = [...(campaigns[address] ?? []), ...(campaigns[llamma] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })

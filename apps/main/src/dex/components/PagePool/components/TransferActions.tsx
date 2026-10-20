@@ -15,22 +15,36 @@ export const TransferActions = ({
   seed,
   loading,
 }: { loading?: boolean; children: ReactNode } & Pick<TransferProps, 'seed'>) => {
-  const { chainId, userAddress: signerAddress, poolId, isWrapped, tokenAddressesAll } = usePoolContext()
+  const {
+    chainId,
+    userAddress: signerAddress,
+    pool,
+    poolAddress,
+    isWrapped,
+    tokenAddressesAll: { data: tokenAddressesAll },
+  } = usePoolContext()
 
   const alert = useTokenAlert(tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
-  const currencyReserves = usePoolCurrencyReserves({ chainId, poolId, isWrapped })
+  const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
 
   const { address: userAddress } = useConnection()
   const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({
     chainId,
     userAddress,
-    poolId,
+    poolAddress,
   })
 
   const isLoading =
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-    loading || currencyReserves.isLoading || !isHydrated || !seed.loaded || seed.isSeed == null || walletBalancesLoading
+    loading ||
+    pool.data == null ||
+    pool.isLoading ||
+    currencyReserves.isLoading ||
+    !isHydrated ||
+    !seed.loaded ||
+    seed.isSeed == null ||
+    walletBalancesLoading
 
   return (
     <>

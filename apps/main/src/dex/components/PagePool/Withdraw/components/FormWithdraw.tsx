@@ -14,11 +14,12 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
+import { handleWithdrawError } from '@/dex/components/PagePool/Withdraw/handleWithdrawError'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -32,6 +33,7 @@ import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import { mediaQueries } from '@legacy-ui/utils/responsive'
+import { zip } from '@primitives/array.utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { constQ } from '@ui/features/queries/util'
@@ -44,13 +46,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     chainId,
     blockchainId,
     userAddress: signerAddress,
-    poolId,
-    pool,
+    pool: { data: pool },
+    poolAddress,
     api: curve,
     isWrapped,
     setIsWrapped,
-    tokens,
-    tokenAddresses: poolTokenAddresses,
+    tokens: { data: tokens },
+    tokenAddresses: { data: poolTokenAddresses },
   } = usePoolContext()
   const isSubscribedRef = useRef(false)
 
@@ -71,12 +73,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   const haveSigner = !!signerAddress
 
   const { address: userAddress } = useConnection()
-  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
+  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })
 
   const config = useConfig()
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -85,7 +88,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         'WITHDRAW',
         config,
         curve,
-        poolId,
+        pool.id,
         pool,
         { isWrapped, ...updatedFormValues },
         null,
@@ -93,7 +96,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, isWrapped, pool, poolId, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, pool, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -107,8 +110,13 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     ) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues, maxSlippage)
-      if (typeof dismiss === 'function') dismiss()
+      try {
+        await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues, maxSlippage)
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
+      }
     },
     [fetchStepApprove],
   )
@@ -118,13 +126,18 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepWithdraw(activeKey, curve, pool, formValues, maxSlippage)
+      try {
+        const resp = await fetchStepWithdraw(activeKey, curve, pool, formValues, maxSlippage)
 
-      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
-        const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && chainId) {
+          const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
+          setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(chainId, resp.hash)} />)
+        }
+      } catch (error) {
+        handleWithdrawError(activeKey, error)
+      } finally {
+        dismiss()
       }
-      if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepWithdraw, chainId],
   )
@@ -221,19 +234,19 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({}, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // max Slippage
   useEffect(() => {
@@ -266,7 +279,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
   }, [
     config,
     chainId,
-    poolId,
+    poolAddress,
     signerAddress,
     formValues,
     formStatus,
@@ -341,6 +354,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             isDisabled={isDisabled}
             value={formValues.selected}
             onChange={selected => {
+              if (!tokens || !poolTokenAddresses) return
               if (selected === 'token') {
                 updateFormValues(
                   {
@@ -364,7 +378,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
             <Radio aria-label="Withdraw as balanced amounts" value="lpToken">
               {t`Balanced`}
             </Radio>
-            {!pool.isCrypto && (
+            {pool?.isCrypto === false && (
               <Radio aria-label="Custom withdraw" value="imbalance">
                 {t`Custom`}
               </Radio>
@@ -381,8 +395,8 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                   blockchainId={blockchainId}
                   loading={slippage.loading}
                   selectedTokenAddress={formValues.selectedTokenAddress}
-                  tokens={tokens}
-                  tokenAddresses={poolTokenAddresses}
+                  tokens={tokens ?? []}
+                  tokenAddresses={poolTokenAddresses ?? []}
                   handleChanged={({ token, tokenAddress }) => {
                     updateFormValues(
                       { selectedToken: token, selectedTokenAddress: tokenAddress },
@@ -399,16 +413,15 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
                   amounts={formValues.amounts}
                   blockchainId={blockchainId}
                   loading={slippage.loading}
-                  tokens={tokens}
-                  tokenAddresses={poolTokenAddresses}
+                  tokens={tokens ?? []}
+                  tokenAddresses={poolTokenAddresses ?? []}
                 />
               )}
 
               {/* Custom */}
               <Box grid gridRowGap="narrow">
                 {formValues.selected === 'imbalance' &&
-                  tokens.map((token, idx) => {
-                    const tokenAddress = poolTokenAddresses[idx]
+                  zip(tokens ?? [], poolTokenAddresses ?? []).map(([token, tokenAddress], idx) => {
                     const amount = formValues.amounts[idx]
                     return (
                       <FieldToken
@@ -436,9 +449,10 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
         {hasWrapped(pool) && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(pool)}
+            isDisabled={isDisabled}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
+              if (!pool) return
               const wrapped = getTokens(pool, { wrapped: nextIsWrapped })
               setIsWrapped(nextIsWrapped)
               const cFormValues = lodash.cloneDeep(formValues)

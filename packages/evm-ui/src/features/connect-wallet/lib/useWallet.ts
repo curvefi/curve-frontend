@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 import { useConnect, useConnectors, type Connector } from 'wagmi'
 import { ConnectorAlreadyConnectedError } from 'wagmi'
 import { useGlobalState } from '@evm-ui/hooks/useGlobalState'
@@ -15,8 +15,10 @@ export const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { wallet, provider, connectState } = useCurve()
   const connectors = useConnectors()
-  state.wallet = wallet ?? null
-  state.provider = provider ?? null
+  useLayoutEffect(() => {
+    state.wallet = wallet ?? null
+    state.provider = provider ?? null
+  }, [wallet, provider])
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
   const { mutateAsync: connectAsync } = useConnect()
@@ -24,9 +26,7 @@ export const useWallet = () => {
   // disconnect by calling disconnect on all connectors, since we don't know which one is connected.
   // this is a workaround the fact that multiInjectedProviderDiscovery auto-connects to the next available injected provider,
   // which is not what we want when disconnecting.
-  const disconnect = useCallback(async () => {
-    await Promise.all(connectors.map(connector => connector.disconnect()))
-  }, [connectors])
+  const disconnect = useCallback(async () => await Promise.all(connectors.map(c => c.disconnect())), [connectors])
 
   // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(

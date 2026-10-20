@@ -40,8 +40,17 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps) => {
-  const { chainId, blockchainId, userAddress: signerAddress, poolId, pool, api: curve, isWrapped } = usePoolContext()
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const {
+    chainId,
+    blockchainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: poolQuery,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -51,7 +60,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   )
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolId })
+  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolAddress })
   const slippage = useStore(state => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore(state => state.poolDeposit.fetchStepDepositStake)
@@ -72,6 +81,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       loadMaxAmount: LoadMaxAmount | null,
       updatedMaxSlippage: string | null,
     ) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
@@ -200,19 +210,19 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // max Slippage
   useEffect(() => {
@@ -240,7 +250,16 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus, slippage.isHighSlippage, slippageConfirmed, maxSlippage])
+  }, [
+    chainId,
+    poolAddress,
+    signerAddress,
+    formValues,
+    formStatus,
+    slippage.isHighSlippage,
+    slippageConfirmed,
+    maxSlippage,
+  ])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const disableForm = !seed.loaded || formStatus.formProcessing
@@ -267,9 +286,13 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       />
 
       <div>
-        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={pool} />
+        <DetailInfoEstLpTokens formLpTokenExpected={formLpTokenExpected} maxSlippage={maxSlippage} pool={poolQuery} />
 
-        <DetailInfoExpectedApy lpTokenAmount={formLpTokenExpected.expected} pool={pool} crvApr={rewardsApy?.crv?.[0]} />
+        <DetailInfoExpectedApy
+          lpTokenAmount={formLpTokenExpected.expected}
+          pool={poolQuery}
+          crvApr={rewardsApy?.crv?.[0]}
+        />
 
         <DetailInfoSlippage {...slippage} />
 

@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react'
+import type { ReactNode } from 'react'
 import { useLiquidityDetails } from '@/dex/features/user-position/liquidity-details/hooks/useLiquidityDetails'
 import Stack from '@mui/material/Stack'
 import { Tabs } from '@ui/components/Tabs/Tabs'
@@ -16,12 +16,8 @@ const Content = ({ children }: { children: ReactNode }) => (
 )
 
 export const UserPosition = () => {
-  const { chainId, blockchainId, poolId, tokenAddresses } = usePoolContext()
-  const params = useMemo(
-    () => ({ blockchainId, chainId, poolId, tokenAddresses }),
-    [blockchainId, chainId, poolId, tokenAddresses],
-  )
-  const liquidityDetails = useLiquidityDetails(params)
+  const { chainId, blockchainId, poolAddress, tokenAddresses } = usePoolContext()
+  const liquidityDetails = useLiquidityDetails({ chainId, poolAddress, tokenAddresses })
   return (
     liquidityDetails.hasPosition && (
       <Stack>

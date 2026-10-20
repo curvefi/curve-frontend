@@ -7,16 +7,17 @@ import { fetchTokenBalance, useTokenBalance } from '@evm-ui/hooks/useTokenBalanc
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import { q } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { tryGetPool } from '../pool.utils'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
 
 /** Hook to get lp token and possible gauge token balances */
-export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Params, enabled = true) {
+export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress }: Params, enabled = true) {
   const { curveApi, isHydrated } = useCurve()
   const pool = useMemo(
-    () => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined),
-    [curveApi, isHydrated, poolId],
+    () => (isHydrated && poolAddress ? tryGetPool(poolAddress, curveApi) : undefined),
+    [curveApi, isHydrated, poolAddress],
   )
 
   const hasGauge = pool?.gauge.address != null && !isAddressEqual(pool.gauge.address as Address, zeroAddress)
@@ -32,9 +33,9 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Pa
 }
 
 /** Temporary imperative function for some zustand slices */
-export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolId: string) =>
+export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolAddress: Address) =>
   fetchTokenBalance(config, {
     chainId: curve?.chainId,
     userAddress: curve.signerAddress,
-    tokenAddress: curve.getPool(poolId).lpToken as Address,
+    tokenAddress: curve.getPool(poolAddress).lpToken as Address,
   })

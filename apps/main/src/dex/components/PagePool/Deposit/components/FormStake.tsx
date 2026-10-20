@@ -31,15 +31,23 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
 export const FormStake = ({ seed }: TransferProps) => {
-  const { chainId, userAddress: signerAddress, poolId, pool: pool, api: curve, isWrapped } = usePoolContext()
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const {
+    chainId,
+    userAddress: signerAddress,
+    poolAddress,
+    pool: poolQuery,
+    pool: { data: pool },
+    api: curve,
+    isWrapped,
+  } = usePoolContext()
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore(state => state.poolDeposit.formStatus)
   const formValues = useStore(state => state.poolDeposit.formValues)
-  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolId })
+  const { data: rewardsApy } = usePoolRewardsApy({ chainId, poolAddress })
   const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
   const setFormValues = useStore(state => state.poolDeposit.setFormValues)
@@ -54,6 +62,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      if (!pool) return
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
@@ -149,35 +158,35 @@ export const FormStake = ({ seed }: TransferProps) => {
   }, [])
 
   useEffect(() => {
-    if (poolId) {
+    if (pool) {
       resetState(pool, isWrapped)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [poolId])
+  }, [pool?.address])
 
   // curve state change
   useEffect(() => {
-    if (chainId && poolId) {
+    if (chainId && poolAddress) {
       updateFormValues({})
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.isSeed])
 
   // steps
   useEffect(() => {
-    if (curve && poolId) {
+    if (curve && pool) {
       const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, steps)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
+  }, [chainId, pool, signerAddress, formValues, formStatus])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disableForm = seed.isSeed === null || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
-  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
+  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })
 
   return (
     <FormContent>
@@ -198,7 +207,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       </FieldsWrapper>
 
       <div>
-        <DetailInfoExpectedApy lpTokenAmount={formValues.lpToken} pool={pool} crvApr={rewardsApy?.crv?.[0]} />
+        <DetailInfoExpectedApy lpTokenAmount={formValues.lpToken} pool={poolQuery} crvApr={rewardsApy?.crv?.[0]} />
 
         {haveSigner && (
           <DetailInfoEstGas

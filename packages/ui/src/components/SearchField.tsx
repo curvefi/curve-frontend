@@ -33,18 +33,17 @@ export const SearchField = ({
     callback: useCallback((value: string) => callback(sanitize(value)), [callback]),
   })
   const localInputRef = useRef<HTMLInputElement | null>(null)
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {
     setSearch('')
+    const ref = inputRef ?? localInputRef
     ref.current?.focus()
-  }, [setSearch, ref])
+  }, [setSearch, inputRef])
   return (
     <TextField
       fullWidth
       onChange={e => setSearch(e.target.value)}
       slotProps={{
-        htmlInput: { ref },
+        htmlInput: { ref: inputRef ?? localInputRef },
         input: {
           startAdornment: <SearchIcon />,
           endAdornment: search && (

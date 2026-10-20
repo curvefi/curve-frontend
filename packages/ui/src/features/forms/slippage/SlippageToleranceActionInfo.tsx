@@ -34,7 +34,12 @@ export const SlippageToleranceActionInfo = ({
         value={formatNumber(maxSlippage, 'percent.rate')}
         valueLeft={active && <Badge size="extraSmall" label={capitalize(active)} />}
         valueRight={
-          <IconButton onClick={openModal} size="extraExtraSmall" data-testid="slippage-settings-button">
+          <IconButton
+            onClick={openModal}
+            disabled={!type?.length}
+            size="extraExtraSmall"
+            data-testid="slippage-settings-button"
+          >
             <GearIcon sx={{ color: 'text.primary' }} />
           </IconButton>
         }

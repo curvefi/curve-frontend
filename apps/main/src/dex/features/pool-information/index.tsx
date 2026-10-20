@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { Metrics } from '@ui/features/pools/PoolInformationMetrics'
 import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdownCard'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { usePoolContext } from '../pool-context'
@@ -16,20 +17,24 @@ import { PoolComposition } from './components/PoolComposition'
 import { useMetrics } from './hooks/useMetrics'
 import { useYieldBreakdown } from './hooks/useYieldBreakdown'
 
-type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData?: PricesApiPool }
+type PoolInformation = { poolAlert: PoolAlert | null; pricesApiPoolData: QueryProp<PricesApiPool> }
 
 export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformation) => {
-  const { chainId, poolId, pool, tokenAddressesAll } = usePoolContext()
+  const {
+    chainId,
+    poolAddress,
+    tokenAddressesAll: { data: tokenAddressesAll },
+  } = usePoolContext()
   return (
     <Stack sx={stackedCardHeadersSx}>
       <Card size="small">
         <CardHeader title={t`Pool Information`} />
         <CardContent component={Stack}>
-          <Metrics {...useMetrics({ chainId, poolId, pricesApiPoolData })} />
+          <Metrics {...useMetrics({ chainId, poolAddress, pricesApiPoolData })} />
         </CardContent>
       </Card>
       <PoolComposition pricesApiPoolData={pricesApiPoolData} />
-      <YieldBreakdown {...useYieldBreakdown({ chainId, pool, poolId })} />
+      <YieldBreakdown {...useYieldBreakdown({ chainId, poolAddress })} />
       <PointsCampaigns />
       <Alerts poolAlert={poolAlert} tokenAlert={useTokenAlert(tokenAddressesAll)} />
     </Stack>

@@ -38,17 +38,16 @@ export const PoolAdvancedDetails = () => {
   const {
     chainId,
     blockchainId,
-    poolId,
     poolAddress,
-    pool,
-    pool: { lpToken, gauge },
-    tokens,
-    tokenAddresses,
+    pool: { data: pool, isLoading: poolIsLoading },
+    pool: { data: { lpToken, gauge } = {} },
+    tokens: { data: tokens },
+    tokenAddresses: { data: tokenAddresses },
   } = usePoolContext()
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
-  const parameters = usePoolParameters({ chainId, poolId })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolId })
+  const parameters = usePoolParameters({ chainId, poolAddress })
+  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
@@ -67,27 +66,32 @@ export const PoolAdvancedDetails = () => {
   const { priceOracle, priceScale, A, initial_A, initial_A_time, future_A, future_A_time } = parameters.data ?? {}
   const { assetTypes, basePool, coins, hasDonations, metapool, oracles, registry, vyperVersion } = metadata.data ?? {}
   const isFxSwap = hasDonations ?? false
-  const isEywaPool = chainId === +Chain.Fantom && poolId.startsWith('factory-eywa')
+  const isEywaPool = chainId === +Chain.Fantom && pool?.id.startsWith('factory-eywa')
 
   return (
     <AdvancedDetails
       chainId={chainId}
+      isLoading={poolIsLoading}
       info={{
-        poolId,
+        poolId: pool?.id,
         poolType: notFalsy(
-          getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }) ?? '-',
+          maybes([pool, tokens], (pool, tokens) =>
+            getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
+          ) ?? '-',
           metapool && t`Metapool`,
-          basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) && t`Basepool`,
+          poolAddress &&
+            basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) &&
+            t`Basepool`,
         ).join(', '),
         basePoolAddress: maybe(basePool, getAddress),
         registryAddress: maybe(registry, getAddress),
         vyperVersion,
       }}
       contracts={{
-        poolAddress: getAddress(poolAddress),
-        lpTokenAddress: getAddress(lpToken),
-        gaugeAddress: getAddress(gauge.address),
-        hasGauge: !isAddressEqual(gauge.address as Address, zeroAddress),
+        poolAddress: maybe(poolAddress, poolAddress => getAddress(poolAddress)),
+        lpTokenAddress: maybe(lpToken, lpToken => getAddress(lpToken)),
+        gaugeAddress: maybe(gauge, gauge => getAddress(gauge.address)),
+        hasGauge: maybe(gauge, gauge => !isAddressEqual(gauge.address as Address, zeroAddress)),
         gaugeIsKilled,
         oracles: assetTypes?.flatMap((assetType, index) => {
           const oracle = oracles?.[index]
@@ -99,7 +103,7 @@ export const PoolAdvancedDetails = () => {
       }}
       prices={{
         tokenSymbols: tokens,
-        tokenAddresses: tokenAddresses.map(getAddress),
+        tokenAddresses: (tokenAddresses ?? []).map(getAddress),
         // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
         priceOracleData: priceOracle?.length
           ? (priceOracle as Decimal[])
@@ -144,7 +148,7 @@ export const PoolAdvancedDetails = () => {
         gamma: amount(parameters.data?.gamma),
       }}
       addressDisplay={evmAddressDisplay}
-      managePoolLink={<ManagePoolLink chainId={chainId} poolAddress={getAddress(poolAddress)} />}
+      managePoolLink={<ManagePoolLink chainId={chainId} poolAddress={poolAddress && getAddress(poolAddress)} />}
       addGaugeLink={<AddGaugeLink />}
     />
   )

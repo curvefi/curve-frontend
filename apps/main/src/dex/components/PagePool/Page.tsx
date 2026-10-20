@@ -5,67 +5,40 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
-import { fetchNewPools } from '@/dex/lib/curvejs'
-import { tryGetPool } from '@/dex/pool.utils'
+import { usePoolLookup } from '@/dex/queries/pool-lookup.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
-import type { PoolQuery, UserPoolParams } from '@evm-ui/queries/query-types'
-import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
+import { maybe } from '@primitives/objects.utils'
 import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { queryFactory } from '@ui/features/queries/factory'
+import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
-const { useQuery: usePoolQuery } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-    ({ name: 'pool.lookup', chainId, poolId, userAddress }) as const,
-  queryFn: async ({ poolId }: PoolQuery) => {
-    const curveApi = requireLib('curveApi')
-    const pool = tryGetPool(poolId, curveApi)
-    if (pool) return pool
-
-    try {
-      await fetchNewPools(curveApi)
-      return tryGetPool(poolId, curveApi) ?? null
-    } catch {
-      return null
-    }
-  },
-  validationSuite: curvePoolValidationSuite,
-  category: 'global.no-persist',
-  disableLog: true, // Pool instances have circular references that cannot be serialized by the query logger used in Cypress.
-})
-
 export const PagePool = () => {
-  const { curveApi = null, isHydrated } = useCurve()
+  const { curveApi, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
   const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const { poolIdOrAddress, network: blockchainId } = props
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const { data: pool } = useHydratedQuery(usePoolQuery, {
-    chainId,
-    poolId: poolIdOrAddress,
-    // The query returns a pool tied to a specific curve-js instance, which gets recreated on user address change.
-    userAddress: curveApi?.signerAddress || undefined,
-  })
+  const lookup = useHydratedQuery(usePoolLookup, { chainId, poolIdOrAddress })
+  const pool = isHydrated ? lookup : fakeLoadingQ(undefined) // We want to have a loading state during hydration (pool query is disabled until then)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
-    () => pool && blacklist?.some(badPool => isAddressEqual(badPool, getAddress(pool.address))),
-    [blacklist, pool],
+    () =>
+      maybe(pool.data?.address, address => blacklist?.some(badPool => isAddressEqual(badPool, getAddress(address)))) ??
+      false,
+    [blacklist, pool.data?.address],
   )
-
-  // In a future PR we'll remove this check and make everything a query with skeletons and such.
-  if (!isHydrated) return null
 
   if (isBlacklisted)
     return (
@@ -83,7 +56,7 @@ export const PagePool = () => {
     )
 
   // Strict check with null as `undefined` means unresolved; null means 'doesn't exist'.
-  if (pool === null)
+  if (pool.data === null)
     return (
       <ErrorPage
         title="404"
@@ -93,21 +66,26 @@ export const PagePool = () => {
       />
     )
 
+  const poolAddress = isAddress(poolIdOrAddress, { strict: false }) ? getAddress(poolIdOrAddress) : undefined
+
   /**
    * We're phasing out pool ids and redirect to pool address in URL, which we can only do after hydration.
    * The URL updates before useParams, so rerenders can restart the redirect with the old pool id.
    * Render null while navigating to let the address params update and prevent a redirect loop.
    * Would also happen with programmatic navigate, so that wouldn't be a solution.
    */
-  if (pool && !isAddress(poolIdOrAddress, { strict: false })) {
+  if (pool.data && !poolAddress) {
     return isNavigating ? null : (
-      <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.address}`)} search replace resetScroll={false} />
+      <Navigate to={getPath(props, `${ROUTE.PAGE_POOLS}/${pool.data.address}`)} search replace resetScroll={false} />
     )
   }
 
+  // Render null without a pool address, which is only expected during redirects from legacy pool ids.
+  // Handling this rare case added too much complexity in an earlier attempt.
   return (
-    pool && (
-      <PoolContextProvider network={network} pool={pool}>
+    poolAddress && (
+      // Typescript is not smart enough to narrow the type of pool to exclude `null`
+      <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)} poolAddress={poolAddress}>
         <Transfer params={props} />
       </PoolContextProvider>
     )
