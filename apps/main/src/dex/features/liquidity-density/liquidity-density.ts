@@ -10,12 +10,7 @@ import { liquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
 import { createTriCryptoCurve } from '@ui/features/pools/liquidity-density/tricrypto'
 import { createTwoCryptoCurve } from '@ui/features/pools/liquidity-density/twocrypto'
-import type {
-  LiquidityCurve,
-  LiquidityPair,
-  LiquidityProfile,
-  LiquidityProfileOptions,
-} from '@ui/features/pools/liquidity-density/types'
+import type { LiquidityCurve, LiquidityPair, LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { decimalDiv, decimalDivToPrecision, decimalEqual, decimalMinus, fromWei } from '@ui/lib/decimal'
 
 // Contract/SDK scales differ by family, even where their numeric values coincide.
@@ -45,7 +40,6 @@ export const processApiLiquidity = (
   { poolType, metapool, assetTypes }: PoolMetadata,
   snapshots: readonly PoolSnapshot[],
   pair: LiquidityPair,
-  options?: LiquidityProfileOptions,
 ): PoolLiquidityResult | undefined => {
   if (poolType !== 'stableswapng' || metapool || !assetTypes?.every(type => type === STANDARD_ASSET_TYPE)) {
     return undefined
@@ -60,7 +54,7 @@ export const processApiLiquidity = (
         a,
       ),
       curve =>
-        maybe(liquidityProfile(curve, pair, options), profile => ({
+        maybe(liquidityProfile(curve, pair), profile => ({
           ...profile,
           family: 'stableswap',
           centerPrice: peakPrice(curve, pair),
@@ -161,7 +155,6 @@ export const processConnectedLiquidity = (
   quote: Decimal,
   inputAmount: Decimal,
   pair: LiquidityPair,
-  options?: LiquidityProfileOptions,
 ): PoolLiquidityResult | undefined => {
   const { isLending, isLlamma, isCrypto } = pool
   if (isLending || isLlamma) return undefined // Lending rates are unavailable in the SDK; LLAMMA requires its own band-based solver.
@@ -181,7 +174,7 @@ export const processConnectedLiquidity = (
     return maybe(best, ({ curve, family, error }) =>
       error > MAX_RELATIVE_QUOTE_ERROR
         ? undefined
-        : maybe(liquidityProfile(curve, pair, options), profile => ({
+        : maybe(liquidityProfile(curve, pair), profile => ({
             ...profile,
             family,
             quoteError: error,

@@ -3,7 +3,7 @@ import { maybe, maybes, notFalsy, range } from '@primitives/objects.utils'
 import { MIN_RELATIVE_PRICE_WIDTH } from './constants'
 import { balanceAtPrice, peakPrice, spotPrice } from './curve'
 import { iterate } from './math'
-import type { LiquidityCurve, LiquidityPair, LiquidityProfile, LiquidityProfileOptions, LiquiditySample } from './types'
+import type { LiquidityCurve, LiquidityPair, LiquidityProfile, LiquiditySample } from './types'
 
 // Port of flet-curve-demo/src/curve/liquidity.py: depth_at, background, auto_window, profile.
 // Reference commit: 5831c2416080e27c9c7018c281c48e21cae9beeb.
@@ -18,7 +18,7 @@ const WIDTH_SEARCH_CONVERGENCE_RATIO = 1.02
 const HALF_PEAK_DEPTH_RATIO = 0.5
 const WINDOW_HALF_WIDTHS = 5
 const WINDOW_LOG_PADDING_RATIO = 0.12
-const DEFAULT_PROFILE_POINTS = 160
+const PROFILE_BIN_COUNT = 48
 
 const depthAt = (curve: LiquidityCurve, pair: LiquidityPair, price: number) =>
   maybes(
@@ -77,41 +77,31 @@ const liquidityWindow = (curve: LiquidityCurve, pair: LiquidityPair): readonly [
 }
 
 /** Density is whole input tokens per 1% of log-price movement; price is output/input. */
-export const liquidityProfile = (
-  curve: LiquidityCurve,
-  pair: LiquidityPair,
-  { low: requestedLow, high: requestedHigh, points = DEFAULT_PROFILE_POINTS }: LiquidityProfileOptions = {},
-): LiquidityProfile | undefined => {
+export const liquidityProfile = (curve: LiquidityCurve, pair: LiquidityPair): LiquidityProfile | undefined => {
   const { scale } = curve
   const [inputCoin] = pair
-  return maybe(spotPrice(curve, pair), spot => {
-    const bounds =
-      requestedLow == null && requestedHigh == null
-        ? liquidityWindow(curve, pair)
-        : ([requestedLow, requestedHigh] as const)
-    return maybe(bounds, bounds =>
-      maybes(bounds, (low, high) => {
-        const span = Math.log(high / low)
-        const edges = range(points + 1).map(index => {
-          const price = low * Math.exp((span * index) / points)
-          return { price, balance: balanceAtPrice(curve, pair, price) }
-        })
-        const samples: LiquiditySample[] = notFalsy(
-          ...zip(edges.slice(0, -1), edges.slice(1)).map(
-            ([{ price: low, balance: previousBalance }, { price: high, balance }]) =>
-              // Keep domain gaps visible instead of drawing liquidity through an unsolved interval.
-              maybes([previousBalance, balance], (previous, current) => {
-                const width = Math.log(high / low)
-                const depth = ((Math.abs(current - previous) * DENSITY_LOG_PRICE_BAND) / width) * scale[inputCoin]
-                return { price: Math.sqrt(low * high), depth, low, high }
-              }),
-          ),
-        )
-        if (!samples.length) return undefined // No liquidity could be sampled in this price range
-        return { samples, spot, pair, low, high }
-      }),
-    )
-  })
+  return maybe(spotPrice(curve, pair), spot =>
+    maybe(liquidityWindow(curve, pair), ([low, high]) => {
+      const span = Math.log(high / low)
+      const edges = range(PROFILE_BIN_COUNT + 1).map(index => {
+        const price = low * Math.exp((span * index) / PROFILE_BIN_COUNT)
+        return { price, balance: balanceAtPrice(curve, pair, price) }
+      })
+      const samples: LiquiditySample[] = notFalsy(
+        ...zip(edges.slice(0, -1), edges.slice(1)).map(
+          ([{ price: low, balance: previousBalance }, { price: high, balance }]) =>
+            // Keep domain gaps visible instead of drawing liquidity through an unsolved interval.
+            maybes([previousBalance, balance], (previous, current) => {
+              const width = Math.log(high / low)
+              const depth = ((Math.abs(current - previous) * DENSITY_LOG_PRICE_BAND) / width) * scale[inputCoin]
+              return { price: Math.sqrt(low * high), depth, low, high }
+            }),
+        ),
+      )
+      if (!samples.length) return undefined // No liquidity could be sampled in this price range
+      return { samples, spot, pair, low, high }
+    }),
+  )
 }
 
 /** Convert density to USD (or another fixed denomination) without solving the curve again. */

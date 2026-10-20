@@ -11,9 +11,9 @@ import { createConfig } from '@wagmi/core'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
-const cryptoProfile = liquidityProfile(cryptoCurve, [1, 0], { points: 48 })!
+const cryptoProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
-const stableProfile = liquidityProfile(stableCurve, [1, 0], { points: 48 })!
+const stableProfile = liquidityProfile(stableCurve, [1, 0])!
 const queryClient = new QueryClient()
 const wagmiConfig = createConfig({
   chains: [mainnet],

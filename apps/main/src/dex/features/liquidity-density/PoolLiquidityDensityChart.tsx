@@ -10,8 +10,6 @@ import { t } from '@ui/lib/i18n'
 import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
-const PROFILE_OPTIONS = { points: 48 }
-
 export const PoolLiquidityDensityChart = () => {
   const { chainId, blockchainId, poolAddress, pool } = usePoolContext()
   // Default to pricing the second wrapped coin in the first.
@@ -41,7 +39,6 @@ export const PoolLiquidityDensityChart = () => {
     { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
     pool,
     pair,
-    PROFILE_OPTIONS,
   )
   const valuedProfile = useMemo(() => maybes([data, usdPrice], valueLiquidityProfile), [data, usdPrice])
 

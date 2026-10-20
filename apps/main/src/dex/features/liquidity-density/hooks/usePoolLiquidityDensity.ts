@@ -7,7 +7,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { ChainNameQuery, PoolQuery } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe } from '@primitives/objects.utils'
-import type { LiquidityPair, LiquidityProfileOptions } from '@ui/features/pools/liquidity-density/types'
+import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { fallbackQ } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -25,7 +25,6 @@ export const usePoolLiquidityDensity = (
   params: PoolLiquidityParams,
   pool: PoolTemplate,
   [inputCoin, outputCoin]: LiquidityPair,
-  { low, high, points }: LiquidityProfileOptions = {},
   enabled = true,
 ) => {
   const apiPool = usePoolPricesApi({ ...params, poolAddress: params.poolAddress }, enabled)
@@ -44,17 +43,16 @@ export const usePoolLiquidityDensity = (
     useCallback(
       (...results) =>
         maybe(inputAmount, inputAmount =>
-          processConnectedLiquidity(pool, ...results, inputAmount, [inputCoin, outputCoin], { low, high, points }),
+          processConnectedLiquidity(pool, ...results, inputAmount, [inputCoin, outputCoin]),
         ),
-      [pool, inputAmount, inputCoin, outputCoin, low, high, points],
+      [pool, inputAmount, inputCoin, outputCoin],
     ),
   )
   const apiProfile = useCombinedQueries(
     [apiPool, metadata, snapshots],
     useCallback(
-      (pool, metadata, snapshots) =>
-        processApiLiquidity(pool, metadata, snapshots, [inputCoin, outputCoin], { low, high, points }),
-      [inputCoin, outputCoin, low, high, points],
+      (pool, metadata, snapshots) => processApiLiquidity(pool, metadata, snapshots, [inputCoin, outputCoin]),
+      [inputCoin, outputCoin],
     ),
   )
 

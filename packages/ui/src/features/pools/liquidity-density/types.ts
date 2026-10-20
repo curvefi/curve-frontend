@@ -26,5 +26,3 @@ export type LiquidityProfile = {
   low: number
   high: number
 }
-
-export type LiquidityProfileOptions = { low?: number; high?: number; points?: number }

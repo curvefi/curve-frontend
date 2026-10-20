@@ -17,7 +17,7 @@ const searchSteps = range(PRICE_SEARCH_ITERATIONS)
 /** Apply rates, then rescale balances near 1 to avoid large intermediate values in the solvers. */
 export const curveCoordinates = (balances: readonly Amount[], rates: readonly Amount[]) => {
   const values = zip([...balances], [...rates]).map(([balance, rate]) => decimalMultiply(`${balance}`, rate))
-  if (!values.every(v => !+v)) return undefined // Empty reserves cannot define a marginal price.
+  if (!values.every(v => +v)) return undefined // Empty reserves cannot define a marginal price.
   const unit = decimalDiv(decimalSum(...values), `${values.length}`)
   const xp = values.map(value => +decimalDiv(value, unit))
   const scale = rates.map(rate => +decimalDiv(unit, `${rate}`))

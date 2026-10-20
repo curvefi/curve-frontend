@@ -18,10 +18,10 @@ import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
-const tokenProfile = liquidityProfile(cryptoCurve, [1, 0], { points: 48 })!
+const tokenProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75)
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
-const stableProfile = liquidityProfile(stableCurve, [1, 0], { points: 48 })!
+const stableProfile = liquidityProfile(stableCurve, [1, 0])!
 const chartProps: LiquidityDensityChartProps = {
   profile: usdProfile,
   inputSymbol: 'WBTC',
