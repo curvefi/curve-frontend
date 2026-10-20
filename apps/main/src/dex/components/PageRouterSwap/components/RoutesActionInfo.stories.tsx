@@ -19,7 +19,7 @@ const routes = [
     inputCoinAddress: REUSD_ADDRESS,
     outputCoinAddress: ethAddress,
     name: 'reUSD/ETH',
-    routeUrlId: 'reusd-eth',
+    routeUrlId: '0x48d670D189B4b48757992D36897bCa6E3f889040', // reUSD/DOLA as there is no reUSD/ETH pool
   },
   { poolId: 'pool-2', inputCoinAddress: ethAddress, outputCoinAddress: CRVUSD_ADDRESS, name: 'ETH/crvUSD Pool' },
 ] as Route[]

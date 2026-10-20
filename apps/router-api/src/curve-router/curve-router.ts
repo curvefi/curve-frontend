@@ -109,7 +109,7 @@ export async function buildCurveRouteResponse(
   const parsedRoutes = pools.map(([route, pool]) => ({
     ...route,
     name: pool?.name ?? route.poolId,
-    routeUrlId: pool?.id,
+    routeUrlId: pool?.address,
   }))
   const isStableswapRoute = pools.every(([, p]) => !p?.isCrypto)
   const warnings = getWarnings(fromAmount, toAmount, isStableswapRoute, toStoredRate)
