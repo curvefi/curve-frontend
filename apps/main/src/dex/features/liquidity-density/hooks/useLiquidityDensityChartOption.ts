@@ -4,6 +4,7 @@ import { CHART_LINE_WIDTHS, formatChartAxisNumber } from '@evm-ui/shared/ui/Char
 import { useTheme } from '@mui/material/styles'
 import { notFalsy } from '@primitives/objects.utils'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
+import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useBreakpoint } from '@ui/hooks/useBreakpoints'
 import type { LiquidityPriceMarker } from '../LiquidityDensityChart'
@@ -11,13 +12,13 @@ import type { LiquidityPriceMarker } from '../LiquidityDensityChart'
 const { FontSize, LineHeight, Spacing, BorderWidth } = SizesAndSpaces
 
 export const useLiquidityDensityChartOption = ({
-  profile,
+  profile: { data: profile },
   markers,
   priceLabel,
   liquidityLabel,
   tooltipFormatter,
 }: {
-  profile: LiquidityProfile | undefined
+  profile: QueryProp<LiquidityProfile>
   markers: LiquidityPriceMarker[]
   priceLabel: string
   liquidityLabel: string
@@ -138,7 +139,7 @@ export const useLiquidityDensityChartOption = ({
             label: { show: false },
             data: notFalsy(
               ...markers.map(
-                ({ value, color, dash }) =>
+                ({ value: { data: value }, color, dash }) =>
                   value != null &&
                   value >= low &&
                   value <= high && {

@@ -10,11 +10,12 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { maybes } from '@primitives/objects.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
-import { q } from '@ui/features/queries/util'
+import { combineQueries } from '@ui/features/queries/combine'
+import { q, type QueryProp } from '@ui/features/queries/util'
 import { Reds } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
@@ -28,21 +29,19 @@ const CHART_HEIGHT = Height.chart.sm
 export type LiquidityPriceMarker = {
   key: string
   label: string
-  value: number | undefined
+  value: QueryProp<number>
   color: string
   dash: number[]
 }
 
 export type LiquidityDensityChartProps = {
-  profile: LiquidityProfile | undefined
+  profile: QueryProp<LiquidityProfile>
   inputSymbol: string
   outputSymbol: string
   /** USD price of the output token, used to value the pair-denominated price metrics. */
-  outputTokenUsdPrice: number | undefined
-  oraclePrice: number | undefined
-  centerPrice: number | undefined
-  isLoading: boolean
-  error: Error | null
+  outputTokenUsdPrice: QueryProp<number>
+  oraclePrice: QueryProp<number>
+  centerPrice: QueryProp<number>
   action: ReactNode
 }
 
@@ -53,14 +52,15 @@ export const LiquidityDensityChart = ({
   outputTokenUsdPrice,
   oraclePrice,
   centerPrice,
-  isLoading,
-  error,
   action,
 }: LiquidityDensityChartProps) => {
+  const { data: profileData, isLoading: profileLoading, error: profileError } = profile
+  const { data: oracle, isLoading: oracleLoading, error: oracleError } = oraclePrice
+  const { data: center, isLoading: centerLoading, error: centerError } = centerPrice
   const { isConnected } = useConnection()
   const theme = useTheme()
   const { Chart, Color, Layer } = theme.design
-  const { spot, samples } = profile ?? {}
+  const { spot, samples } = profileData ?? {}
   const priceLabel = t`${outputSymbol} per ${inputSymbol}`
   const liquidityLabel = t`Liquidity in 1% range in USD`
   const markers = useMemo(
@@ -68,28 +68,40 @@ export const LiquidityDensityChart = ({
       {
         key: 'current-price',
         label: t`Current price`,
-        value: spot,
+        value: q({ data: spot, isLoading: profileLoading, error: profileError }),
         color: Layer.Highlight.Outline,
         dash: CHART_LINE_DASH_PATTERNS.tight,
       },
       {
         key: 'center-price',
         label: t`Center of liquidity`,
-        value: centerPrice,
+        value: q({ data: center, isLoading: centerLoading, error: centerError }),
         color: Color.Tertiary[400],
         dash: CHART_LINE_DASH_PATTERNS.regular,
       },
       {
         key: 'oracle-price',
         label: t`Internal price oracle`,
-        value: oraclePrice,
+        value: q({ data: oracle, isLoading: oracleLoading, error: oracleError }),
         color: Reds[500],
         dash: CHART_LINE_DASH_PATTERNS.regular,
       },
     ],
-    [Layer.Highlight.Outline, Color.Tertiary, centerPrice, oraclePrice, spot],
+    [
+      Layer.Highlight.Outline,
+      Color.Tertiary,
+      spot,
+      profileLoading,
+      profileError,
+      center,
+      centerLoading,
+      centerError,
+      oracle,
+      oracleLoading,
+      oracleError,
+    ],
   )
-  const deviation = maybes([spot, centerPrice], (spot, center) =>
+  const deviation = combineQueries([profile, centerPrice], ({ spot }, center) =>
     center > 0 ? Math.abs(spot / center - 1) * 100 : undefined,
   )
 
@@ -109,25 +121,30 @@ export const LiquidityDensityChart = ({
           category="dex.liquidityDensity"
           label={t`Current price deviation`}
           labelTooltip={{ title: t`Absolute percentage distance of the current price from the center of liquidity.` }}
-          value={q({ data: deviation, isLoading, error })}
-          valueOptions={{ unit: 'percentage', decimals: 2, abbreviate: false }}
+          value={deviation}
+          valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'percent.value') }}
           testId="liquidity-density-deviation"
         />
-        {markers.map(({ key, label, value, color, dash }) => (
-          <Metric
-            key={key}
-            category="dex.liquidityDensity"
-            label={label}
-            value={q({
-              data: maybes([value, outputTokenUsdPrice], (price, usdRate) => price * usdRate),
-              isLoading,
-              error,
-            })}
-            valueOptions={{ unit: 'dollar', maximumSignificantDigits: 7 }}
-            icon={<LegendLine color={color} dash={dash} />}
-            testId={`liquidity-density-${key}`}
-          />
-        ))}
+        {markers.map(({ key, label, value, color, dash }) => {
+          const usdValue = combineQueries([value, outputTokenUsdPrice], (price, usdRate) => price * usdRate)
+          return (
+            <Metric
+              key={key}
+              category="dex.liquidityDensity"
+              label={label}
+              value={usdValue}
+              valueOptions={{ abbreviate: false, formatter: value => formatNumber(value, 'usd.notional') }}
+              icon={
+                usdValue.data != null && (
+                  <Box component="span" sx={{ alignSelf: 'center', display: 'flex' }}>
+                    <LegendLine color={color} dash={dash} />
+                  </Box>
+                )
+              }
+              testId={`liquidity-density-${key}`}
+            />
+          )
+        })}
       </MetricsGrid>
       <Box
         ref={containerRef}
@@ -137,8 +154,8 @@ export const LiquidityDensityChart = ({
       >
         <ChartStateWrapper
           height={CHART_HEIGHT}
-          isLoading={isLoading}
-          error={error}
+          isLoading={profileLoading}
+          error={profileError}
           errorMessage={t`Unable to fetch liquidity density.`}
           isEmpty={!samples?.length}
           {...(isConnected

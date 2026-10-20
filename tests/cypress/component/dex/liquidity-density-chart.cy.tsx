@@ -13,6 +13,7 @@ import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liqu
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
 import { createTwoCryptoCurve } from '@ui/features/pools/liquidity-density/twocrypto'
 import type { LiquiditySample } from '@ui/features/pools/liquidity-density/types'
+import { constQ } from '@ui/features/queries/util'
 import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 
@@ -21,15 +22,14 @@ const tokenProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75)
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
 const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1)
+const loadingQuery = { ...constQ(undefined), isLoading: true }
 const chartProps: LiquidityDensityChartProps = {
-  profile: usdProfile,
+  profile: constQ(usdProfile),
   inputSymbol: 'WBTC',
   outputSymbol: 'USDC',
-  outputTokenUsdPrice: 1,
-  oraclePrice: 109_500,
-  centerPrice: peakPrice(cryptoCurve, [1, 0]),
-  isLoading: false,
-  error: null,
+  outputTokenUsdPrice: constQ(1),
+  oraclePrice: constQ(109_500),
+  centerPrice: constQ(peakPrice(cryptoCurve, [1, 0])),
   action: null,
 }
 
@@ -105,6 +105,11 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
     ;['current-price', 'center-price', 'oracle-price'].forEach(key => {
       cy.get(`[data-testid="liquidity-density-${key}"]`)
         .should('be.visible')
+        .should($metric => {
+          const value = $metric.find(`[data-testid="liquidity-density-${key}-value"]`)[0].getBoundingClientRect()
+          const line = $metric.find('[data-testid="chart-legend-line"]')[0].getBoundingClientRect()
+          expect(line.y + line.height / 2).to.be.closeTo(value.y + value.height / 2, 1)
+        })
         .find('[data-testid="chart-legend-line"]')
         .should('be.visible')
     })
@@ -114,7 +119,7 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
       expect(pixelAt(chart, left.price, left.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[7]))
       expect(pixelAt(chart, right.price, right.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[8]))
       // Reference markers must remain inside the plot, in the same price coordinate system as the bars.
-      ;[chartProps.oraclePrice!, chartProps.centerPrice!, usdProfile.spot].forEach(price =>
+      ;[chartProps.oraclePrice.data!, chartProps.centerPrice.data!, usdProfile.spot].forEach(price =>
         expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(true),
       )
       expectChartLabelsVisible(chart)
@@ -133,10 +138,10 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
   it('renders narrow stablecoin ranges and leaves unsolved intervals empty', () => {
     const gap = stableProfile.samples[10]
     mountChart({
-      profile: { ...stableProfile, samples: stableProfile.samples.filter(sample => sample !== gap) },
+      profile: constQ({ ...stableProfile, samples: stableProfile.samples.filter(sample => sample !== gap) }),
       inputSymbol: 'USDT',
-      centerPrice: peakPrice(stableCurve, [1, 0]),
-      oraclePrice: undefined,
+      centerPrice: constQ(peakPrice(stableCurve, [1, 0])),
+      oraclePrice: constQ(undefined),
     })
     cy.get('[data-testid="liquidity-density-oracle-price-value"]')
       .should('be.visible')
@@ -153,11 +158,11 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
   it('values price metrics in USD and measures deviation from the liquidity center', () => {
     const outputTokenUsdPrice = 0.98
     const centerPrice = usdProfile.spot / 1.0245
-    mountChart({ outputTokenUsdPrice, centerPrice })
+    mountChart({ outputTokenUsdPrice: constQ(outputTokenUsdPrice), centerPrice: constQ(centerPrice) })
     ;[
       { key: 'current-price', price: usdProfile.spot },
       { key: 'center-price', price: centerPrice },
-      { key: 'oracle-price', price: chartProps.oraclePrice! },
+      { key: 'oracle-price', price: chartProps.oraclePrice.data! },
     ].forEach(({ key, price }) => {
       cy.get(`[data-testid="liquidity-density-${key}-value"]`).should(
         'have.attr',
@@ -185,28 +190,29 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
     })
   })
 
-  it('shows loading without drawing a chart', () => {
-    mountChart({ profile: undefined, isLoading: true })
+  it('shows loading without drawing a chart or metric line icons', () => {
+    mountChart({ profile: loadingQuery, centerPrice: loadingQuery, oraclePrice: loadingQuery })
     cy.get(PLOT).find('[role="progressbar"]').should('be.visible')
     cy.get(PLOT).find('canvas').should('not.exist')
+    cy.get(CHART).find('[data-testid="chart-legend-line"]').should('not.exist')
   })
 
   it('shows an empty state when samples are missing', () => {
-    mountChart({ profile: undefined })
+    mountChart({ profile: constQ(undefined) })
     cy.get(PLOT).find('canvas').should('not.exist')
     cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
     cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
   })
 
   it('requests a wallet connection when samples are empty', () => {
-    mountChart({ profile: { ...usdProfile, samples: [] } })
+    mountChart({ profile: constQ({ ...usdProfile, samples: [] }) })
     cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
     cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
     cy.get(PLOT).find('canvas').should('not.exist')
   })
 
   it('shows query errors without drawing a chart', () => {
-    mountChart({ profile: undefined, error: new Error('RPC unavailable') })
+    mountChart({ profile: { ...constQ(undefined), error: new Error('RPC unavailable') } })
     cy.get(PLOT).find('[data-testid="chart-error"]').should('be.visible')
     cy.get(PLOT).find('canvas').should('not.exist')
   })

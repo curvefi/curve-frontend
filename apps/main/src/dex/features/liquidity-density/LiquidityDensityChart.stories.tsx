@@ -7,6 +7,7 @@ import { peakPrice } from '@ui/features/pools/liquidity-density/curve'
 import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
 import { createTwoCryptoCurve } from '@ui/features/pools/liquidity-density/twocrypto'
+import { constQ } from '@ui/features/queries/util'
 import { createConfig } from '@wagmi/core'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
@@ -14,6 +15,7 @@ const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const cryptoProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
 const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1)
+const loadingQuery = { ...constQ(undefined), isLoading: true }
 const queryClient = new QueryClient()
 const wagmiConfig = createConfig({
   chains: [mainnet],
@@ -36,14 +38,12 @@ const meta = {
   ],
   parameters: { layout: 'fullscreen' },
   args: {
-    profile: valueLiquidityProfile(cryptoProfile, 111_124.75),
+    profile: constQ(valueLiquidityProfile(cryptoProfile, 111_124.75)),
     inputSymbol: 'WBTC',
     outputSymbol: 'USDC',
-    outputTokenUsdPrice: 1,
-    centerPrice: peakPrice(cryptoCurve, [1, 0]),
-    oraclePrice: 109_500,
-    isLoading: false,
-    error: null,
+    outputTokenUsdPrice: constQ(1),
+    centerPrice: constQ(peakPrice(cryptoCurve, [1, 0])),
+    oraclePrice: constQ(109_500),
     action: null,
   },
 } satisfies Meta<typeof LiquidityDensityChart>
@@ -55,34 +55,41 @@ export const CryptoSwap: Story = {}
 
 export const StableSwap: Story = {
   args: {
-    profile: stableProfile,
+    profile: constQ(stableProfile),
     inputSymbol: 'USDT',
     outputSymbol: 'USDC',
-    centerPrice: peakPrice(stableCurve, [1, 0]),
-    oraclePrice: undefined,
+    centerPrice: constQ(peakPrice(stableCurve, [1, 0])),
+    oraclePrice: constQ(undefined),
   },
 }
 
-export const DepeggedQuote: Story = { args: { outputTokenUsdPrice: 0.98 } }
+export const DepeggedQuote: Story = { args: { outputTokenUsdPrice: constQ(0.98) } }
+
+export const LoadingUsdRate: Story = { args: { outputTokenUsdPrice: loadingQuery } }
+
+export const LoadingOracle: Story = { args: { oraclePrice: loadingQuery } }
 
 export const MissingUsdRate: Story = {
-  args: {
-    profile: undefined,
-    outputTokenUsdPrice: undefined,
-    error: new globalThis.Error('Unable to load token USD rate'),
-  },
+  args: { outputTokenUsdPrice: { ...constQ(undefined), error: new globalThis.Error('Unable to load token USD rate') } },
 }
 
 export const MissingIntervals: Story = {
   args: {
-    profile: { ...stableProfile, samples: stableProfile.samples.filter((_, index) => index < 12 || index > 18) },
+    profile: constQ({
+      ...stableProfile,
+      samples: stableProfile.samples.filter((_, index) => index < 12 || index > 18),
+    }),
     inputSymbol: 'USDT',
     outputSymbol: 'USDC',
-    centerPrice: peakPrice(stableCurve, [1, 0]),
-    oraclePrice: undefined,
+    centerPrice: constQ(peakPrice(stableCurve, [1, 0])),
+    oraclePrice: constQ(undefined),
   },
 }
 
-export const Loading: Story = { args: { profile: undefined, isLoading: true } }
-export const Unavailable: Story = { args: { profile: undefined, centerPrice: undefined, oraclePrice: undefined } }
-export const Error: Story = { args: { profile: undefined, error: new globalThis.Error('Unable to load pool state') } }
+export const Loading: Story = { args: { profile: loadingQuery, centerPrice: loadingQuery, oraclePrice: loadingQuery } }
+export const Unavailable: Story = {
+  args: { profile: constQ(undefined), centerPrice: constQ(undefined), oraclePrice: constQ(undefined) },
+}
+export const Error: Story = {
+  args: { profile: { ...constQ(undefined), error: new globalThis.Error('Unable to load pool state') } },
+}
