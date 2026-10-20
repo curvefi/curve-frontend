@@ -6,6 +6,7 @@ import { invalidateVeCrvQueries, useLockerLockedAmountAndUnlockTime } from '@/da
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { maybe } from '@primitives/objects.utils'
 import { useForm } from '@ui/features/forms'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 
 const defaultValues: WithdrawLockFormValues = {}
 
@@ -15,7 +16,10 @@ export const useWithdrawLockForm = ({ chainId }: { chainId: number }) => {
   const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
   const lock = lockedAmountAndUnlockTime.data
 
-  const canUnlock = maybe(lock, ({ lockedAmount, unlockTime }) => getIsLockExpired(lockedAmount, unlockTime))
+  const currentDate = useCurrentDate('1h')
+  const canUnlock = maybe(lock, ({ lockedAmount, unlockTime }) =>
+    getIsLockExpired(lockedAmount, unlockTime, currentDate),
+  )
 
   const {
     onSubmit: onSubmitWithdraw,
@@ -26,13 +30,14 @@ export const useWithdrawLockForm = ({ chainId }: { chainId: number }) => {
     userAddress,
     lockedAmount: lock?.lockedAmount,
     unlockTime: lock?.unlockTime,
+    currentDate,
     onReset: () => form.reset(defaultValues),
     onWithdrawn: useCallback(() => invalidateVeCrvQueries({ chainId, userAddress }), [chainId, userAddress]),
   })
 
   return {
     form,
-    params: { chainId, userAddress, ...lock },
+    params: { chainId, userAddress, ...lock, currentDate },
     canUnlock,
     lockedAmountAndUnlockTime,
     isPending,
