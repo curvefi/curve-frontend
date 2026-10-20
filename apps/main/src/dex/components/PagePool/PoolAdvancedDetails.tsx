@@ -73,7 +73,6 @@ export const PoolAdvancedDetails = () => {
       chainId={chainId}
       isLoading={poolIsLoading}
       info={{
-        poolId: pool?.id,
         poolType: notFalsy(
           maybes([pool, tokens], (pool, tokens) =>
             getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
