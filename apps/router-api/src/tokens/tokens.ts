@@ -14,17 +14,13 @@ const MIN_POOL_TVL = 100 // in dollars
  * Read cached API TVL, constructing a pool only when an on-chain calculation is required.
  * todo: helper copied from curve-js using internal cache files, it should be exposed from there!
  **/
-export const getPoolTvl = async (
-  curve: CurveJS,
-  { is_crypto = false, is_llamma, swap_address, id }: IPoolData & { id: string },
-): Promise<number> => {
-  if (curve.chainId === 1 && id === 'crveth') return 0
+export const getPoolTvl = async (curve: CurveJS, { is_llamma, swap_address }: IPoolData): Promise<number> => {
   if (!is_llamma) {
     const network = curve.getNetworkConstants().NETWORK_NAME
-    const tvl = await _getPoolTotalLiquidityFromApi(network, id, swap_address, is_crypto, curve.getIsLiteChain())
+    const tvl = await _getPoolTotalLiquidityFromApi(network, swap_address, curve.getIsLiteChain())
     if (tvl !== undefined) return Number(tvl)
   }
-  return Number(await curve.getPool(id).stats.totalLiquidityMemoized())
+  return Number(await curve.getPool(swap_address).stats.totalLiquidityMemoized())
 }
 
 /** Build the token catalog with metadata and available trading volumes from the shared Curve.js instance. */
