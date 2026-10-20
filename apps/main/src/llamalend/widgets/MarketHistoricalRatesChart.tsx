@@ -7,11 +7,6 @@ import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/Histo
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { type TimeOption } from '@evm-ui/queries/validation/time-option-validation'
-import {
-  addMovingAverages,
-  CHART_LINE_DASH_PATTERNS,
-  type ChartLineDashPattern,
-} from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
@@ -27,6 +22,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { addMovingAverages, CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@ui/features/charts/chart.utils'
 import { fallbackQ, mapQuery, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'

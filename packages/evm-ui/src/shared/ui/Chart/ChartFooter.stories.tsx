@@ -1,11 +1,11 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { CHART_LINE_DASH_PATTERNS } from '@ui/features/charts/chart.utils'
 import { t } from '@ui/lib/i18n'
 
 type TimeRange = '1D' | '1W' | '1M'

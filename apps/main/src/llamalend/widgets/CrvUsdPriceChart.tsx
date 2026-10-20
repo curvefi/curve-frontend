@@ -4,12 +4,6 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
-import {
-  addMovingAverages,
-  CHART_LINE_DASH_PATTERNS,
-  type ChartLineDashPattern,
-  formatChartAxisNumber,
-} from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
@@ -26,6 +20,12 @@ import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import {
+  addMovingAverages,
+  CHART_LINE_DASH_PATTERNS,
+  type ChartLineDashPattern,
+  formatChartAxisNumber,
+} from '@ui/features/charts/chart.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'

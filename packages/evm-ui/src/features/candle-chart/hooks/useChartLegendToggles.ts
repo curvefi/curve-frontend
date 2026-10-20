@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo } from 'react'
-import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { useTheme } from '@mui/material/styles'
 import { notFalsy } from '@primitives/objects.utils'
+import { CHART_LINE_DASH_PATTERNS } from '@ui/features/charts/chart.utils'
 import { t } from '@ui/lib/i18n'
 
 type UseChartLegendTogglesOptions = {

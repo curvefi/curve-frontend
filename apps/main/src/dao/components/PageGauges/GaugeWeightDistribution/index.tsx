@@ -6,11 +6,6 @@ import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-v
 import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
-import {
-  CHART_X_AXIS_LABEL_ROTATION,
-  createChartSeriesColorScale,
-  formatChartAxisNumber,
-} from '@evm-ui/shared/ui/Chart/chart.utils'
 import { EChartsBarChart } from '@evm-ui/shared/ui/Chart/EChartsBarChart'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { Box } from '@legacy-ui/Box'
@@ -18,6 +13,11 @@ import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'
 import { Chain } from '@primitives/network.utils'
 import { recordValues, notFalsy } from '@primitives/objects.utils'
+import {
+  CHART_X_AXIS_LABEL_ROTATION,
+  createChartSeriesColorScale,
+  formatChartAxisNumber,
+} from '@ui/features/charts/chart.utils'
 import { t } from '@ui/lib/i18n'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
