@@ -1,3 +1,4 @@
+import type { Amount } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { createCryptoCurve, cryptoBalance, isCryptoBalanceInDomain } from './cryptoswap'
 import type { LiquidityCurve } from './types'
@@ -10,11 +11,11 @@ const MAX_K0_RATIO = 100
 
 /** A is divided by 10,000; gamma, priceScale and D are divided by 1e18 by the caller. */
 export const createTwoCryptoCurve = (
-  balances: readonly number[],
-  priceScale: number,
+  balances: readonly Amount[],
+  priceScale: Amount,
   amplification: number,
   gamma: number,
-  invariant?: number,
+  invariant?: Amount,
   { legacy = false } = {},
 ): LiquidityCurve | undefined =>
   createCryptoCurve(balances, [1, priceScale], amplification, gamma, {

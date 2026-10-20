@@ -1,6 +1,7 @@
-import { mean } from 'lodash'
 import { zip } from '@primitives/array.utils'
+import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes, range } from '@primitives/objects.utils'
+import { decimalDiv, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { iterate } from './math'
 import type { LiquidityCurve, LiquidityPair } from './types'
 
@@ -14,12 +15,12 @@ const BRACKET_GROWTH_FACTOR = 2
 const searchSteps = range(PRICE_SEARCH_ITERATIONS)
 
 /** Apply rates, then rescale balances near 1 to avoid large intermediate values in the solvers. */
-export const curveCoordinates = (balances: readonly number[], rates: readonly number[]) => {
-  const values = zip([...balances], [...rates]).map(([balance, rate]) => balance * rate)
-  if (!values.every(Boolean)) return undefined // Empty reserves cannot define a marginal price.
-  const unit = mean(values)
-  const xp = values.map(value => value / unit)
-  const scale = rates.map(rate => unit / rate)
+export const curveCoordinates = (balances: readonly Amount[], rates: readonly Amount[]) => {
+  const values = zip([...balances], [...rates]).map(([balance, rate]) => decimalMultiply(`${balance}`, rate))
+  if (!values.every(v => !+v)) return undefined // Empty reserves cannot define a marginal price.
+  const unit = decimalDiv(decimalSum(...values), `${values.length}`)
+  const xp = values.map(value => +decimalDiv(value, unit))
+  const scale = rates.map(rate => +decimalDiv(unit, `${rate}`))
   return { xp, scale, unit }
 }
 

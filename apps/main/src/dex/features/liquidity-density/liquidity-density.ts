@@ -1,5 +1,6 @@
 import { maxBy, minBy } from 'lodash'
 import type { PoolParameters } from '@/dex/queries/pool-parameters.query'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Pool, PoolMetadata, PoolSnapshot } from '@curvefi/prices-api/pools'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -15,12 +16,7 @@ import type {
   LiquidityProfile,
   LiquidityProfileOptions,
 } from '@ui/features/pools/liquidity-density/types'
-import { decimalDivToPrecision, fromWei } from '@ui/lib/decimal'
-import type { PoolAmplification } from './queries/pool-amplification.query'
-import type { PoolInvariant } from './queries/pool-invariant.query'
-import type { PoolLiquidityQuote } from './queries/pool-liquidity-quote.query'
-import type { PoolStoredRates } from './queries/pool-stored-rates.query'
-import type { PoolWrappedBalances } from './queries/pool-wrapped-balances.query'
+import { decimalDiv, decimalDivToPrecision, decimalEqual, decimalMinus, fromWei } from '@ui/lib/decimal'
 
 // Contract/SDK scales differ by family, even where their numeric values coincide.
 const STABLESWAP_A_PRECISION = 100
@@ -75,28 +71,34 @@ export const processApiLiquidity = (
 
 /** flet-curve-demo/src/ui/pool_detail.py: _quoted_price uses one millionth of the input reserve. */
 export const liquidityProbeAmount = (
-  { isLending, isLlamma, balances, wrappedDecimals }: PoolWrappedBalances,
+  { isLending, isLlamma, wrappedDecimals }: PoolTemplate,
+  balances: Decimal[],
   inputCoin: number,
 ) =>
   isLending || isLlamma
     ? undefined // Lending rates are not exposed by getStoredRates; LLAMMA uses a different invariant.
     : maybe(zip(balances, wrappedDecimals)[inputCoin], ([balance, decimals]) =>
-        decimalDivToPrecision(balance as Decimal, QUOTE_PROBE_DIVISOR, decimals),
+        decimalDivToPrecision(balance, QUOTE_PROBE_DIVISOR, decimals),
       )
 
-const quotedPrice = ({ fee }: PoolParameters, { inputAmount, outputAmount }: PoolLiquidityQuote) =>
+const quotedPrice = ({ fee }: PoolParameters, inputAmount: Decimal, outputAmount: Decimal) =>
   // A tiny probe may round down to zero output. SDK fees are percentages.
-  +outputAmount ? +outputAmount / +inputAmount / (1 - +fee / FEE_PERCENT_SCALE) : undefined
+  decimalEqual(outputAmount, '0')
+    ? undefined
+    : +decimalDiv(
+        decimalDiv(outputAmount, inputAmount),
+        decimalMinus('1', decimalDiv(fee as Decimal, `${FEE_PERCENT_SCALE}`)),
+      )
 
 const createLiquidityCandidates = (
-  { balances: wrappedBalances, isCrypto, isMeta }: PoolWrappedBalances,
+  { isCrypto, isMeta }: PoolTemplate,
+  balances: Decimal[],
   parameters: PoolParameters,
-  storedRates: PoolStoredRates,
-  D: PoolInvariant,
-  APrecise: PoolAmplification,
+  storedRates: Decimal[] | null,
+  D: Decimal | null,
+  APrecise: Decimal | null,
   { assetTypes }: PoolMetadata,
 ): { family: LiquidityFamily; curve: LiquidityCurve | undefined }[] => {
-  const balances = wrappedBalances.map(Number)
   if (!isCrypto) {
     // The SDK's metapool rates use [1, base virtual price]. A nonstandard first
     // asset needs stored_rates instead, which that SDK path does not expose.
@@ -104,49 +106,43 @@ const createLiquidityCandidates = (
       return []
     }
     const { A } = parameters
-    const amplification = maybe(APrecise, a => +a / STABLESWAP_A_PRECISION) ?? +A
-    return [{ family: 'stableswap', curve: createStableSwapCurve(balances, storedRates!.map(Number), amplification) }]
+    const amplification = maybe(APrecise, a => +decimalDiv(a, `${STABLESWAP_A_PRECISION}`)) ?? +A
+    return [{ family: 'stableswap', curve: createStableSwapCurve(balances, storedRates!, amplification) }]
   }
 
   const { A, gamma: rawGamma, priceScale } = parameters
-  const amplification = +A
-  const gamma = Number(rawGamma)
-  const scales = priceScale?.map(Number)
+  const amplification = +decimalDiv(A as Decimal, `${CRYPTOSWAP_A_PRECISION}`)
+  const gamma = rawGamma ? +rawGamma : 0
+  const scales = priceScale as Decimal[] | undefined
   if (!scales || !gamma) return [] // Empty crypto pools may have no gamma or price scales.
-  const invariant = maybe(D, d => +fromWei(d, CRYPTO_INVARIANT_DECIMALS))
+  const invariant = maybe(D, d => fromWei(d, CRYPTO_INVARIANT_DECIMALS))
 
   // flet-curve-demo/src/curve/depth.py: _crypto and fit. API factory types
   // alone cannot distinguish every deployed math variant; fit against get_dy.
   if (balances.length === 2) {
     const [scale] = scales
     return [
-      {
-        family: 'twocrypto',
-        curve: createTwoCryptoCurve(balances, scale, amplification / CRYPTOSWAP_A_PRECISION, gamma, invariant),
-      },
-      {
-        family: 'fxswap',
-        curve: createStableSwapCurve(balances, [1, scale], amplification / CRYPTOSWAP_A_PRECISION, invariant),
-      },
+      { family: 'twocrypto', curve: createTwoCryptoCurve(balances, scale, amplification, gamma, invariant) },
+      { family: 'fxswap', curve: createStableSwapCurve(balances, [1, scale], amplification, invariant) },
       {
         family: 'twocrypto-legacy',
-        curve: createTwoCryptoCurve(balances, scale, amplification / CRYPTOSWAP_A_PRECISION, gamma, invariant, {
-          legacy: true,
-        }),
+        curve: createTwoCryptoCurve(balances, scale, amplification, gamma, invariant, { legacy: true }),
       },
     ]
   }
   if (balances.length === 3) {
     return [
-      {
-        family: 'tricrypto',
-        curve: createTriCryptoCurve(balances, scales, amplification / CRYPTOSWAP_A_PRECISION, gamma, invariant),
-      },
+      { family: 'tricrypto', curve: createTriCryptoCurve(balances, scales, amplification, gamma, invariant) },
       {
         family: 'tricrypto-legacy',
-        curve: createTriCryptoCurve(balances, scales, amplification / LEGACY_TRICRYPTO_A_PRECISION, gamma, invariant, {
-          legacy: true,
-        }),
+        curve: createTriCryptoCurve(
+          balances,
+          scales,
+          +decimalDiv(A as Decimal, `${LEGACY_TRICRYPTO_A_PRECISION}`),
+          gamma,
+          invariant,
+          { legacy: true },
+        ),
       },
     ]
   }
@@ -155,23 +151,25 @@ const createLiquidityCandidates = (
 
 /** Returns no profile for unsupported data, solver failures, or a curve that does not match the quote. */
 export const processConnectedLiquidity = (
-  poolBalances: PoolWrappedBalances,
+  pool: PoolTemplate,
+  poolBalances: Decimal[],
   parameters: PoolParameters,
-  storedRates: PoolStoredRates,
-  D: PoolInvariant,
-  APrecise: PoolAmplification,
+  storedRates: Decimal[] | null,
+  D: Decimal | null,
+  APrecise: Decimal | null,
   metadata: PoolMetadata,
-  quote: PoolLiquidityQuote,
+  quote: Decimal,
+  inputAmount: Decimal,
   pair: LiquidityPair,
   options?: LiquidityProfileOptions,
 ): PoolLiquidityResult | undefined => {
-  const { isLending, isLlamma, isCrypto } = poolBalances
+  const { isLending, isLlamma, isCrypto } = pool
   if (isLending || isLlamma) return undefined // Lending rates are unavailable in the SDK; LLAMMA requires its own band-based solver.
 
-  return maybe(quotedPrice(parameters, quote), quoted => {
+  return maybe(quotedPrice(parameters, inputAmount, quote), quoted => {
     const best = minBy(
       notFalsy(
-        ...createLiquidityCandidates(poolBalances, parameters, storedRates, D, APrecise, metadata).map(
+        ...createLiquidityCandidates(pool, poolBalances, parameters, storedRates, D, APrecise, metadata).map(
           ({ family, curve }) =>
             maybe(curve, curve =>
               maybe(spotPrice(curve, pair), spot => ({ family, curve, error: Math.abs(spot - quoted) / quoted })),
@@ -191,8 +189,8 @@ export const processConnectedLiquidity = (
             // Crypto oracle values are denominated in coin 0; convert to output per input.
             oraclePrice: isCrypto
               ? maybe(parameters.priceOracle, prices => {
-                  const oraclePrices = [1, ...prices.map(Number)]
-                  return oraclePrices[pair[0]] / oraclePrices[pair[1]]
+                  const oraclePrices: Decimal[] = ['1', ...(prices as Decimal[])]
+                  return +decimalDiv(oraclePrices[pair[0]], oraclePrices[pair[1]])
                 })
               : undefined,
           })),

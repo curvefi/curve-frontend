@@ -3,6 +3,7 @@ import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { ChainNameQuery, PoolQuery } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe } from '@primitives/objects.utils'
@@ -22,11 +23,12 @@ type PoolLiquidityParams = FieldsOf<PoolQuery & ChainNameQuery>
 /** Data and calculations only. Pair indices refer to the pool's wrapped coins, including metapool LP tokens. */
 export const usePoolLiquidityDensity = (
   params: PoolLiquidityParams,
+  pool: PoolTemplate,
   [inputCoin, outputCoin]: LiquidityPair,
   { low, high, points }: LiquidityProfileOptions = {},
   enabled = true,
 ) => {
-  const pool = usePoolPricesApi({ ...params, poolAddress: params.poolAddress }, enabled)
+  const apiPool = usePoolPricesApi({ ...params, poolAddress: params.poolAddress }, enabled)
   const metadata = usePoolMetadata(params, enabled)
   const snapshots = usePoolSnapshots(params, enabled)
   const balances = usePoolWrappedBalances(params, enabled)
@@ -34,18 +36,21 @@ export const usePoolLiquidityDensity = (
   const storedRates = usePoolStoredRates(params, enabled)
   const invariant = usePoolInvariant(params, enabled)
   const amplification = usePoolAmplification(params, enabled)
-  const inputAmount = maybe(balances.data, balances => liquidityProbeAmount(balances, inputCoin))
+  const inputAmount = maybe(balances.data, balances => liquidityProbeAmount(pool, balances, inputCoin))
   const quote = usePoolLiquidityQuote({ ...params, inputCoin, outputCoin, inputAmount }, enabled)
 
   const onchainProfile = useCombinedQueries(
     [balances, parameters, storedRates, invariant, amplification, metadata, quote],
     useCallback(
-      (...results) => processConnectedLiquidity(...results, [inputCoin, outputCoin], { low, high, points }),
-      [inputCoin, outputCoin, low, high, points],
+      (...results) =>
+        maybe(inputAmount, inputAmount =>
+          processConnectedLiquidity(pool, ...results, inputAmount, [inputCoin, outputCoin], { low, high, points }),
+        ),
+      [pool, inputAmount, inputCoin, outputCoin, low, high, points],
     ),
   )
   const apiProfile = useCombinedQueries(
-    [pool, metadata, snapshots],
+    [apiPool, metadata, snapshots],
     useCallback(
       (pool, metadata, snapshots) =>
         processApiLiquidity(pool, metadata, snapshots, [inputCoin, outputCoin], { low, high, points }),
@@ -53,7 +58,7 @@ export const usePoolLiquidityDensity = (
     ),
   )
 
-  const tokenAddress = balances.data?.wrappedCoinAddresses[inputCoin] ?? pool.data?.coins[inputCoin]?.address
+  const tokenAddress = pool.wrappedCoinAddresses[inputCoin] ?? apiPool.data?.coins[inputCoin]?.address
   return {
     profile: fallbackQ(onchainProfile, apiProfile),
     inputTokenUsdPrice: useTokenUsdRate({ ...params, tokenAddress }, enabled),

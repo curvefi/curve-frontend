@@ -1,5 +1,7 @@
 import { sum } from 'lodash'
+import type { Amount } from '@primitives/decimal.utils'
 import { maybe, range } from '@primitives/objects.utils'
+import { decimalDiv } from '@ui/lib/decimal'
 import { MIN_RELATIVE_PRICE_WIDTH, SOLVER_ITERATIONS, SOLVER_TOLERANCE } from './constants'
 import { curveCoordinates } from './curve'
 import { converge, productOfRatios } from './math'
@@ -52,13 +54,13 @@ const stableBalance = (
 
 /** Balances are whole tokens and rates are dimensionless multipliers, as returned by getStoredRates(false). */
 export const createStableSwapCurve = (
-  balances: readonly number[],
-  rates: readonly number[],
+  balances: readonly Amount[],
+  rates: readonly Amount[],
   amplification: number,
-  invariant?: number,
+  invariant?: Amount,
 ): LiquidityCurve | undefined =>
   maybe(curveCoordinates(balances, rates), ({ xp, scale, unit }) =>
-    maybe(maybe(invariant, d => d / unit) ?? stableInvariant(xp, amplification), d => ({
+    maybe(maybe(invariant, d => +decimalDiv(`${d}`, unit)) ?? stableInvariant(xp, amplification), d => ({
       xp,
       scale,
       seed: Math.max(1 / amplification, MIN_RELATIVE_PRICE_WIDTH),

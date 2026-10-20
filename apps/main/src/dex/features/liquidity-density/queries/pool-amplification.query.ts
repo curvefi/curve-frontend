@@ -1,7 +1,6 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
-import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 import { poolLiquidityValidationSuite } from './pool-liquidity.validation'
@@ -22,5 +21,3 @@ const { useQuery: usePoolAmplificationQuery } = queryFactory({
 
 export const usePoolAmplification = (params: PoolParams, enabled = true) =>
   useHydratedQuery(usePoolAmplificationQuery, params, enabled)
-
-export type PoolAmplification = Decimal | null

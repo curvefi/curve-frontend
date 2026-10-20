@@ -39,6 +39,7 @@ export const PoolLiquidityDensityChart = () => {
     inputTokenUsdPrice: { data: usdPrice },
   } = usePoolLiquidityDensity(
     { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
+    pool,
     pair,
     PROFILE_OPTIONS,
   )

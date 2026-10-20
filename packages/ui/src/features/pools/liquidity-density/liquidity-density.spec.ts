@@ -7,16 +7,31 @@ import { createTwoCryptoCurve } from './twocrypto'
 import type { LiquidityCurve } from './types'
 
 describe('liquidity density', () => {
-  it('prices a rate-balanced StableSwap in whole tokens in either direction', () => {
-    const curve = createStableSwapCurve([1_000_000, 500_000], [1, 2], 200)!
+  it.each([
+    [
+      [1_000_000, 500_000],
+      [1, 2],
+    ],
+    [
+      ['1000000', '500000'],
+      ['1', '2'],
+    ],
+    [
+      ['1e200', '5e199'],
+      ['1e200', '2e200'],
+    ],
+  ] as const)('prices a rate-balanced StableSwap with balances %j and rates %j', (balances, rates) => {
+    const curve = createStableSwapCurve(balances, rates, 200)!
     expect(spotPrice(curve, [0, 1])).toBeCloseTo(0.5, 7)
     expect(spotPrice(curve, [1, 0])).toBeCloseTo(2, 7)
   })
 
   it.each([
     ['twocrypto', createTwoCryptoCurve([1_400_000, 240], 2500, 40, 0.001)],
+    ['twocrypto decimals', createTwoCryptoCurve(['1400000', '240'], '2500', 40, 0.001)],
     ['twocrypto legacy', createTwoCryptoCurve([1_400_000, 240], 2500, 40, 0.001, undefined, { legacy: true })],
     ['tricrypto', createTriCryptoCurve([1_200_000, 12, 300], [60_000, 3000], 270, 0.001)],
+    ['tricrypto decimals', createTriCryptoCurve(['1200000', '12', '300'], ['60000', '3000'], 270, 0.001)],
     [
       'tricrypto legacy',
       createTriCryptoCurve([1_200_000, 12, 300], [60_000, 3000], 270, 0.001, undefined, { legacy: true }),

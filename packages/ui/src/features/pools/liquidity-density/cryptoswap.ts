@@ -1,5 +1,7 @@
 import { sum } from 'lodash'
+import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes, range } from '@primitives/objects.utils'
+import { decimalDiv } from '@ui/lib/decimal'
 import {
   MAX_CRYPTO_BALANCE_RATIO,
   MIN_CRYPTO_BALANCE_RATIO,
@@ -119,20 +121,20 @@ export const isCryptoBalanceInDomain = (balance: number, invariant: number, { in
 
 /** Normalize CryptoSwap coordinates and reuse its invariant and peak-width seed across math variants. */
 export const createCryptoCurve = (
-  balances: readonly number[],
-  rates: readonly number[],
+  balances: readonly Amount[],
+  rates: readonly Amount[],
   amplification: number,
   gamma: number,
   {
     invariant,
     solve,
   }: {
-    invariant?: number
+    invariant?: Amount
     solve: (balances: readonly number[], outputCoin: number, invariant: number) => number | undefined
   },
 ): LiquidityCurve | undefined =>
   maybe(curveCoordinates(balances, rates), ({ xp, scale, unit }) =>
-    maybe(maybe(invariant, d => d / unit) ?? cryptoInvariant(xp, amplification, gamma), d => ({
+    maybe(maybe(invariant, d => +decimalDiv(`${d}`, unit)) ?? cryptoInvariant(xp, amplification, gamma), d => ({
       xp,
       scale,
       seed: Math.max((Math.sqrt(gamma) * balances.length ** balances.length) / amplification, MIN_RELATIVE_PRICE_WIDTH),
