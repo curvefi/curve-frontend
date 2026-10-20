@@ -104,7 +104,7 @@ export const submitDepositAndCheck = (state: PoolState, amounts: PoolAmounts) =>
       getActionValue('pool-deposit-current-lp', 'stellar.read').should('equal', projected)
       state.coins.map(({ address, symbol, balance }) =>
         poolInput(address)
-          .find('[data-testid="balance-value"]')
+          .find('[data-testid="balance-value"]', TIMEOUTS['stellar.read'])
           .should('have.attr', 'data-value', decimalMinus(balance, amounts[symbol])),
       )
     })

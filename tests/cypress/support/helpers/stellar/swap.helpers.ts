@@ -14,8 +14,8 @@ import { formatToken } from '@ui/lib/tokens'
 const SWAP_SIDES = ['pay', 'receive'] as const
 
 export const swapInput = (side: SwapSide) => cy.get(`[data-testid="pool-swap-${side}"]`, TIMEOUTS['ui.render'])
-export const swapAmountInput = (side: SwapSide) =>
-  swapInput(side).find(`input[name="${SWAP_FIELDS[side].amountField}"]`)
+export const swapAmountInput = (side: SwapSide, options?: Cypress.Timeoutable) =>
+  swapInput(side).find(`input[name="${SWAP_FIELDS[side].amountField}"]`, options)
 export const swapSubmit = () => cy.get('[data-testid="pool-swap-submit"]', TIMEOUTS['ui.render'])
 
 export const writeSwapAmount = (side: SwapSide, amount: Decimal) => {
@@ -37,9 +37,9 @@ export const checkSwapBalances = ({ coins }: PoolState, fromIndex: number, toInd
     return swapInput(side).find('[data-testid="balance-value"]').should('have.attr', 'data-value', coin.balance)
   })
 
-export const readSwapAmounts = () =>
+export const readSwapAmounts = (editedSide: SwapSide) =>
   cyMap(SWAP_SIDES, side =>
-    swapAmountInput(side)
+    swapAmountInput(side, side === editedSide ? undefined : TIMEOUTS['stellar.simulation'])
       .should(input => expect(+input.val()!).to.be.greaterThan(0))
       .invoke('val')
       .then(value => value as Decimal),
@@ -88,10 +88,10 @@ export const checkSwapResult = (
   toIndex: number,
 ) => {
   swapInput('pay')
-    .find('[data-testid="balance-value"]')
+    .find('[data-testid="balance-value"]', TIMEOUTS['stellar.read'])
     .should('have.attr', 'data-value', decimalMinus(coins[fromIndex].balance, inputAmount))
   swapInput('receive')
-    .find('[data-testid="balance-value"]')
+    .find('[data-testid="balance-value"]', TIMEOUTS['stellar.read'])
     .should(element => {
       const received = decimalMinus(element.attr('data-value') as Decimal, coins[toIndex].balance)
       expect(+received, 'received wallet balance').to.be.gte(+minimumOutputAmount)
