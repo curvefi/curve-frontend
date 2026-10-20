@@ -12,6 +12,7 @@ import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
 import type { Address } from '@primitives/address.utils'
 import { Loading } from '@ui/components/Loading'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
+import { constQ } from '@ui/features/queries/util'
 
 type PoolDepositTestProps = { chainId: ChainId; poolAddress: Address; children: ReactNode }
 
@@ -26,7 +27,7 @@ function PoolTest({ chainId, poolAddress, children }: PoolDepositTestProps) {
   return isPending || !pool ? (
     <Loading />
   ) : (
-    <PoolContextProvider network={defaultNetworks[chainId]} pool={pool}>
+    <PoolContextProvider network={defaultNetworks[chainId]} pool={constQ(pool)} poolAddress={poolAddress}>
       {children}
     </PoolContextProvider>
   )

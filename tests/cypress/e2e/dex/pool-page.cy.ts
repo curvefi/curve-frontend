@@ -20,17 +20,17 @@ describe('Pool page', () => {
     clickTab('tab', 'deposit', TIMEOUTS['ui.render'])
     cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.render']).should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(slippageConfig.default))
-    cy.get('[data-testid="slippage-settings-button"]').click()
+    cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).should('be.enabled').click()
     const [isPreset, value] = oneOf<[boolean, string]>(
       [true, oneOf(...slippageConfig.presets)],
       [false, oneFloat(Number(slippageConfig.min), Number(slippageConfig.max)).toFixed(2)],
     )
     if (isPreset) {
       cy.get(`[data-testid="slippage-radio-group"] [value="${value}"]`).click()
-      cy.get('[data-testid="slippage-input"]').should('have.value', '') // value is empty, placeholder shown
+      cy.get('[data-testid="slippage-input"] input').should('have.value', '') // value is empty, placeholder shown
     } else {
-      cy.get('[data-testid="slippage-input"]').clear()
-      cy.get('[data-testid="slippage-input"]').type(value)
+      cy.get('[data-testid="slippage-input"] input').clear()
+      cy.get('[data-testid="slippage-input"] input').type(value)
     }
     cy.get('[data-testid="slippage-save-button"]').click()
     cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(value))

@@ -6,11 +6,12 @@ import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { getTokens, hasWrapped, isWrappedOnly } from '@/dex/pool.utils'
+import { getTokens, hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves, type CurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { Checkbox } from '@legacy-ui/Checkbox'
+import { zip } from '@primitives/array.utils'
 import { t } from '@ui/lib/i18n'
 import { Amount } from '../../utils'
 
@@ -72,13 +73,23 @@ export const FieldsDeposit = ({
     updatedMaxSlippage: string | null,
   ) => void
 }) => {
-  const { chainId, blockchainId, poolAddress, pool, isWrapped, setIsWrapped, tokens, tokenAddresses } = usePoolContext()
+  const {
+    chainId,
+    blockchainId,
+    poolAddress,
+    pool: { data: pool },
+    isWrapped,
+    setIsWrapped,
+    tokens: { data: tokens },
+    tokenAddresses: { data: tokenAddresses },
+  } = usePoolContext()
   const maxLoading = useStore(state => state.poolDeposit.maxLoading)
   const { data: reserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = useCallback(
     (value: string, changedIndex: number) => {
+      if (!tokenAddresses) return
       const { amounts } = useStore.getState().poolDeposit.formValues
       updateFormValues(
         isBalancedAmounts && reserves
@@ -95,16 +106,17 @@ export const FieldsDeposit = ({
   )
 
   const amountsInput = useMemo(() => {
-    if (formValues.amounts.length > 0) {
+    if (formValues.amounts.length > 0 || !tokens || !tokenAddresses) {
       return formValues.amounts
     }
-    return tokens.map((token, idx) => ({ token, tokenAddress: tokenAddresses[idx], value: '' }))
+    return tokens.map((token, idx) => ({ token, tokenAddress: tokenAddresses?.[idx], value: '' }))
   }, [formValues.amounts, tokens, tokenAddresses])
 
   const isDisabled = isSeed === null || isSeed || formProcessing
 
   const afterMaxClick = useCallback(
     (idx: number) => {
+      if (!tokenAddresses) return
       const tokenAddress = tokenAddresses[idx]
       updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null)
     },
@@ -117,9 +129,9 @@ export const FieldsDeposit = ({
 
   return (
     <FieldsWrapper>
-      {tokens.length === amountsInput.length &&
-        tokens.map((token, idx) => {
-          const tokenAddress = tokenAddresses[idx]
+      {tokenAddresses &&
+        tokens?.length === amountsInput.length &&
+        zip(tokens, tokenAddresses).map(([token, tokenAddress], idx) => {
           const addressBalanceAmount = userPoolBalances[tokenAddress]?.data
           const haveSameTokenName = tokenCount[token] > 1
           const { value } = amountsInput[idx]
@@ -163,7 +175,7 @@ export const FieldsDeposit = ({
       {hasWrapped(pool) && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={isDisabled || isWrappedOnly(pool)}
+            isDisabled={isDisabled}
             isSelected={isWrapped}
             onChange={nextIsWrapped => {
               if (pool) {

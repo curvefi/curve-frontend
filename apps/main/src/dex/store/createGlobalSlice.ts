@@ -2,6 +2,7 @@ import { produce } from 'immer'
 import { isEqual } from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
+import { invalidatePoolLookups } from '@/dex/queries/pool-lookup.query'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui/lib/logging'
@@ -43,6 +44,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     }
 
     await fetchPools(curve) // hydrates the lib with pool data required for curve.getPool(poolIdOrAddress)
+    await invalidatePoolLookups()
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

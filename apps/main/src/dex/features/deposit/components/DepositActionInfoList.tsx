@@ -14,7 +14,7 @@ type DepositActionInfoListProps = {
   form: UseFormReturn<DepositFormValues>
   params: UserDepositParams
   isSeed: QueryProp<boolean>
-  slippageType: SlippageType
+  slippageType: SlippageType | undefined
 }
 
 export const DepositActionInfoList = ({ form, params, isSeed, slippageType }: DepositActionInfoListProps) => {
