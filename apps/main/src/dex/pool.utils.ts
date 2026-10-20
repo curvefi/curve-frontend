@@ -16,7 +16,8 @@ export const tryGetPool = (poolAddress: PoolTemplate | string | Nullish, lib = g
           return getPool(pool, lib)
         } catch (e) {
           const msg = (e as Error).message
-          if (msg === `Pool with address ${pool} not found`) return undefined
+          // Pool with id is phased out but the library can still throw this if somebody uses a non-address in the URL.
+          if ([`Pool with address ${pool} not found`, `Pool with id ${pool} not found`].includes(msg)) return undefined
           throw e
         }
       })
