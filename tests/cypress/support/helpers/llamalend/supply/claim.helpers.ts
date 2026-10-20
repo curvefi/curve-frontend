@@ -128,12 +128,16 @@ export function checkClaimDetailsLoaded({
   hasApi?: boolean
   isMocked?: boolean
 } = {}) {
-  if (hasCrvRewards || hasOtherRewards) {
-    cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
-  } else {
-    cy.get('[data-testid="claim-action-info-list"]').should('not.be.visible')
-    return
+  if (!hasCrvRewards && !hasOtherRewards) {
+    return cy.get('[data-testid="claim-action-info-list"]').should('not.be.visible')
   }
+
+  // The table's test ID is absent while either reward query is loading.
+  cy.get(
+    '[data-testid="data-table"] [data-testid="data-table-cell-token"]',
+    TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)],
+  ).should('have.length.at.least', 1)
+  cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
 
   if (checkEstimatedTxCost) {
     if (hasCrvRewards) {
@@ -167,11 +171,6 @@ export function checkClaimDetailsLoaded({
     }
   }
 
-  cy.get('[data-testid="data-table"]', TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)]).should('exist')
-  cy.get('[data-testid="data-table-cell-token"]', TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)]).should(
-    'have.length.at.least',
-    1,
-  )
   cy.get('[data-testid="data-table-cell-token"]').each($row => {
     const [, match] = CLAIMABLE_AMOUNT_REGEX.exec($row.text().replaceAll(',', '')) ?? []
     expect(match).to.not.equal(undefined)
