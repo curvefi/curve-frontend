@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
+import { useShallow } from 'zustand/react/shallow'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
@@ -39,7 +40,8 @@ import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { constQ } from '@ui/features/queries/util'
+import { combineQueries } from '@ui/features/queries/combine'
+import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
@@ -129,30 +131,41 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     tokenAddresses,
   } = usePoolContext()
 
-  const poolAlert = usePoolAlert({ blockchainId, poolAddress, hasVyperVulnerability: pool.hasVyperVulnerability() })
-  const { data: currencyReserves } = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
-
-  const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool) ?? 'stable'])
-
-  const { signerAddress } = curve ?? {}
-  const { data: gaugeManager } = useGaugeManager({ chainId, poolAddress })
-  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress: signerAddress })
+  const poolAlert = usePoolAlert({
+    blockchainId,
+    poolAddress,
+    hasVyperVulnerability: pool.data?.hasVyperVulnerability(),
+  })
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool.data) ?? 'stable'])
 
   const { state } = useLocation()
   const defaultTab = (state as PoolRouteState).defaultTab
 
-  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
+  const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
+  const pricesApiPoolData = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
-  const currentSeed = useMemo(() => {
-    const balances = currencyReserves?.tokens.map(({ balance }) => +balance) ?? pricesApiPoolData?.balances
-    return balances?.length ? { isSeed: balances.every(balance => balance === 0), loaded: true } : null
-  }, [currencyReserves, pricesApiPoolData])
+  const currentSeed = mapQuery(
+    fallbackQ(
+      mapQuery(currencyReserves, reserves => reserves.tokens.map(({ balance }) => +balance)),
+      mapQuery(pricesApiPoolData, pool => pool.balances),
+    ),
+    // Need useShallow as mapQuery creates a new object every render, causing infinite rerenders in combination with usePreviousValue.
+    // Less complex than using useMappedQuery upstream for the fallback queries.
+    useShallow((balances: number[] | undefined) =>
+      balances?.length ? { isSeed: balances.every(balance => balance === 0), loaded: true } : null,
+    ),
+  )
+
   // Keep the last loaded status while reserve data is temporarily unavailable, including wrapped-mode changes.
-  const seed = usePreviousValue(currentSeed) ?? DEFAULT_SEED
+  const seed = usePreviousValue(currentSeed.data) ?? DEFAULT_SEED
 
   useEffect(() => {
-    if (currentSeed?.isSeed && hasWrapped(pool)) setIsWrapped(true)
-  }, [currentSeed, pool, setIsWrapped])
+    if (currentSeed.data?.isSeed && hasWrapped(pool.data)) setIsWrapped(true)
+  }, [currentSeed.data, pool.data, setIsWrapped])
+
+  const { signerAddress } = curve ?? {}
+  const { data: gaugeManager } = useGaugeManager({ chainId, poolAddress })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolAddress, userAddress: signerAddress })
 
   const tabParams = useMemo(
     () => ({
@@ -185,14 +198,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             blockchainId={blockchainId}
             poolAddress={poolAddress}
             // for now the page only renders when pool data has already loaded, it's not lazy yet.
-            title={constQ(pool.name)}
-            tokens={useMemo(
-              () =>
+            title={mapQuery(pool, pool => pool.name)}
+            tokens={
+              combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
                 zip(tokens, tokenAddresses)
                   .filter(([, address]) => address)
                   .map(([symbol, address]) => constQ({ symbol, address })),
-              [tokenAddresses, tokens],
-            )}
+              ).data
+            }
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />
@@ -203,8 +216,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         <UserPosition />
         {!isLiteChain(chainId) && (
           <>
-            {pricesApiPoolData && (
-              <OhlcAndActivityComp chainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
+            {pricesApiPoolData.data && (
+              <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
             )}
             <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
           </>

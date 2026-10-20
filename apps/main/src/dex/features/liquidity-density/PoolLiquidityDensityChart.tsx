@@ -13,14 +13,15 @@ import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
 export const PoolLiquidityDensityChart = () => {
-  const { chainId, blockchainId, poolAddress, pool } = usePoolContext()
+  const { chainId, blockchainId, poolAddress, pool: pool } = usePoolContext()
+  const { data: poolData, isLoading } = pool
   // Default to pricing the second wrapped coin in the first.
   const [selectedPair, setSelectedPair] = useState<LiquidityPair>([1, 0])
   // Density uses wrapped balances even when the pool form is showing underlying coins.
-  const coins = pool.wrappedCoins
+  const coins = poolData?.wrappedCoins
   const pairs = useMemo(
     () =>
-      coins.flatMap((inputSymbol, inputCoin) =>
+      coins?.flatMap((inputSymbol, inputCoin) =>
         coins
           .map((outputSymbol, outputCoin) => ({
             key: `${inputCoin}:${outputCoin}`,
@@ -29,21 +30,26 @@ export const PoolLiquidityDensityChart = () => {
             outputSymbol,
           }))
           .filter(({ pair: [inputCoin, outputCoin] }) => inputCoin !== outputCoin),
-      ),
+      ) ?? [],
     [coins],
   )
-  const { key, pair, inputSymbol, outputSymbol } = pairs.find(({ pair }) => isEqual(pair, selectedPair)) ?? pairs[0]
+  const {
+    key = '',
+    pair = selectedPair,
+    inputSymbol = '',
+    outputSymbol = '',
+  } = pairs.find(({ pair }) => isEqual(pair, selectedPair)) ?? pairs[0] ?? {}
 
   const { profile, inputTokenUsdPrice, outputTokenUsdPrice } = usePoolLiquidityDensity(
     { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
-    pool,
+    poolData,
     pair,
   )
   const valuedProfile = useCombinedQueries([profile, inputTokenUsdPrice, outputTokenUsdPrice], valueLiquidityProfile)
 
   return (
     <LiquidityDensityChart
-      profile={valuedProfile}
+      profile={combineQueries([pool, valuedProfile], (_pool, profile) => profile)}
       inputSymbol={inputSymbol}
       outputSymbol={outputSymbol}
       oraclePrice={combineQueries(
@@ -61,6 +67,7 @@ export const PoolLiquidityDensityChart = () => {
             label: `${inputSymbol} / ${outputSymbol}`,
           }))}
           activeOption={key}
+          isLoading={isLoading}
           inputProps={{ 'aria-label': t`Liquidity pair` }}
           setActiveOption={key =>
             maybe(

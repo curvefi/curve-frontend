@@ -4,6 +4,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@primitives/number.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -15,10 +16,10 @@ export const DetailInfoEstLpTokens = ({
 }: {
   formLpTokenExpected: FormLpTokenExpected
   maxSlippage: string
-  pool: PoolTemplate
+  pool: QueryProp<PoolTemplate>
 }) => {
-  const { referenceAsset } = pool
-  const showTooltip = referenceAsset !== 'CRYPTO'
+  const referenceAsset = pool.data?.referenceAsset
+  const showTooltip = referenceAsset && referenceAsset !== 'CRYPTO'
   const parsedVirtualPrice = formatToken(amount(formLpTokenExpected.virtualPrice), referenceAsset, 'amount')
 
   // min lp tokens received including slippage

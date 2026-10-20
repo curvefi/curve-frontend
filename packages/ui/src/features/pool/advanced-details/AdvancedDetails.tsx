@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
+import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
 import { ViewMoreButton } from '@ui/features/pool/advanced-details/ViewMoreButton'
@@ -20,8 +21,11 @@ const { Spacing } = SizesAndSpaces
 /** Two columns on desktop, one on mobile and desktop */
 const GRID_SIZE = { mobile: 12, desktop: 6 } as const
 
+const SKELETON_HEIGHT = '3lh' as const // personal aesthetical opinion
+
 export const AdvancedDetails = ({
   chainId,
+  isLoading,
   info,
   contracts,
   prices,
@@ -31,6 +35,7 @@ export const AdvancedDetails = ({
   addGaugeLink,
 }: {
   chainId: number
+  isLoading: boolean
   info: Omit<InfoProps, 'chainId' | 'addressDisplay'>
   contracts: Omit<ContractsProps, 'chainId' | 'addressDisplay'>
   prices: PricesProps
@@ -46,34 +51,40 @@ export const AdvancedDetails = ({
       <Card size="small">
         <CardHeader title={t`Advanced Details`} action={managePoolLink} />
         <CardContent>
-          <Grid container columnSpacing={Spacing.md}>
-            <Grid size={GRID_SIZE}>
-              <Stack>
-                <Contracts chainId={chainId} {...contracts} addressDisplay={addressDisplay} />
-                {!contracts.hasGauge && addGaugeLink}
-              </Stack>
-            </Grid>
+          {isLoading ? (
+            <Skeleton variant="rectangular" height={SKELETON_HEIGHT} />
+          ) : (
+            <>
+              <Grid container columnSpacing={Spacing.md}>
+                <Grid size={GRID_SIZE}>
+                  <Stack>
+                    <Contracts chainId={chainId} {...contracts} addressDisplay={addressDisplay} />
+                    {!contracts.hasGauge && addGaugeLink}
+                  </Stack>
+                </Grid>
 
-            <Grid size={GRID_SIZE}>
-              <Info chainId={chainId} {...info} addressDisplay={addressDisplay} />
-            </Grid>
-          </Grid>
-
-          <Collapse in={isOpen}>
-            <Grid container columnSpacing={Spacing.md}>
-              <Grid size={GRID_SIZE}>
-                <Parameters {...parameters} />
+                <Grid size={GRID_SIZE}>
+                  <Info chainId={chainId} {...info} addressDisplay={addressDisplay} />
+                </Grid>
               </Grid>
 
-              <Grid size={GRID_SIZE}>
-                <Prices {...prices} />
-              </Grid>
-            </Grid>
-          </Collapse>
+              <Collapse in={isOpen}>
+                <Grid container columnSpacing={Spacing.md}>
+                  <Grid size={GRID_SIZE}>
+                    <Parameters {...parameters} />
+                  </Grid>
+
+                  <Grid size={GRID_SIZE}>
+                    <Prices {...prices} />
+                  </Grid>
+                </Grid>
+              </Collapse>
+            </>
+          )}
         </CardContent>
       </Card>
 
-      <ViewMoreButton isOpen={isOpen} onClick={toggleOpen} />
+      {!isLoading && <ViewMoreButton isOpen={isOpen} onClick={toggleOpen} />}
     </Stack>
   )
 }

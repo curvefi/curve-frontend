@@ -6,9 +6,10 @@ import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { fetchTokenBalance, useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import type { ChainQuery, PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import type { Address } from '@primitives/address.utils'
-import { notFalsyArray, recordValues } from '@primitives/objects.utils'
+import { maybe, notFalsyArray, recordValues } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import type { FieldsOf } from '@ui/lib/validation/types'
+import { tryGetPool } from '../pool.utils'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
@@ -20,7 +21,7 @@ const getAddresses = ({ underlyingCoinAddresses, wrappedCoinAddresses }: PoolTem
 export function usePoolTokenBalances({ chainId, userAddress, poolAddress }: Params) {
   const { curveApi, isHydrated } = useCurve()
   const tokenAddresses = useMemo(
-    () => (isHydrated && poolAddress ? getAddresses(curveApi!.getPool(poolAddress)) : undefined),
+    () => (isHydrated ? maybe(tryGetPool(poolAddress, curveApi), getAddresses) : undefined),
     [curveApi, isHydrated, poolAddress],
   )
   const balances = useTokenBalances({ chainId, userAddress, tokenAddresses }, isHydrated)

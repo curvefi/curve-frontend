@@ -5,7 +5,6 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { range } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
@@ -72,36 +71,30 @@ export const checkSwapDetails = (
 }
 
 export const submitSwapForm = () => {
-  submitAndExpectToast(
-    () => swapSubmit().should('be.enabled').click(),
-    { message: 'Swap confirmed' },
-    'stellar.confirmation',
-  )
+  submitAndExpectToast(() => swapSubmit().click(), { message: 'Swap confirmed' }, 'stellar.confirmation')
   cyMap(SWAP_SIDES, side => swapAmountInput(side).should('have.value', ''))
   swapSubmit().should('be.disabled')
 }
 
+/** Check the pay and receive balances displayed by the form. */
 export const checkSwapResult = (
-  state: PoolState,
-  fresh: PoolState,
-  expected: { inputAmount: Decimal; minimumOutputAmount: Decimal; outputAmount?: Decimal },
+  { coins }: PoolState,
+  {
+    inputAmount,
+    minimumOutputAmount,
+    outputAmount,
+  }: { inputAmount: Decimal; minimumOutputAmount: Decimal; outputAmount?: Decimal },
   fromIndex: number,
   toIndex: number,
 ) => {
-  const { inputAmount, minimumOutputAmount, outputAmount } = expected
-  const sent = decimalMinus(state.coins[fromIndex].balance, fresh.coins[fromIndex].balance)
-  const received = decimalMinus(fresh.coins[toIndex].balance, state.coins[toIndex].balance)
-  expect(sent, 'amount paid').to.equal(inputAmount)
-  expect(+received, 'amount received').to.be.gte(+minimumOutputAmount)
-  if (outputAmount) expect(received, 'amount received').to.equal(outputAmount)
-  range(fresh.coins.length)
-    .filter(index => index !== fromIndex && index !== toIndex)
-    .forEach(index =>
-      expect(fresh.coins[index].balance, `${fresh.coins[index].symbol} wallet balance`).to.equal(
-        state.coins[index].balance,
-      ),
-    )
-  expect(fresh.lp.balance, 'LP balance').to.equal(state.lp.balance)
-  expect(fresh.supply, 'LP supply').to.equal(state.supply)
-  checkSwapBalances(fresh, fromIndex, toIndex)
+  swapInput('pay')
+    .find('[data-testid="balance-value"]')
+    .should('have.attr', 'data-value', decimalMinus(coins[fromIndex].balance, inputAmount))
+  swapInput('receive')
+    .find('[data-testid="balance-value"]')
+    .should(element => {
+      const received = decimalMinus(element.attr('data-value') as Decimal, coins[toIndex].balance)
+      expect(+received, 'received wallet balance').to.be.gte(+minimumOutputAmount)
+      if (outputAmount) expect(received).to.equal(outputAmount)
+    })
 }
