@@ -2,8 +2,7 @@ import type { EChartsOption } from 'echarts'
 import { useMemo } from 'react'
 import { CHART_LINE_WIDTHS, formatChartAxisNumber } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { useTheme } from '@mui/material/styles'
-import { formatNumber } from '@primitives/number.utils'
-import type { Unit } from '@primitives/units.util'
+import { notFalsy } from '@primitives/objects.utils'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useBreakpoint } from '@ui/hooks/useBreakpoints'
@@ -16,21 +15,18 @@ export const useLiquidityDensityChartOption = ({
   markers,
   priceLabel,
   liquidityLabel,
-  unit,
   tooltipFormatter,
 }: {
-  profile?: LiquidityProfile
+  profile: LiquidityProfile | undefined
   markers: LiquidityPriceMarker[]
   priceLabel: string
   liquidityLabel: string
-  unit: Unit
   tooltipFormatter: (params: unknown) => HTMLElement | string
 }): EChartsOption => {
   const theme = useTheme()
   const breakpoint = useBreakpoint()
   return useMemo(() => {
     const {
-      palette,
       design: { Chart, Color, Text },
       typography: {
         bodyXsRegular: { fontFamily },
@@ -45,7 +41,7 @@ export const useLiquidityDensityChartOption = ({
       color: Text.TextColors.Tertiary,
     }
     const gridLine = { color: Color.Neutral[200], width: px(BorderWidth.thin) }
-    const { samples, low = 0, high = 1, spot = 0 } = profile ?? {}
+    const { samples = [], low = 0, high = 1, spot = 0 } = profile ?? {}
 
     return {
       animation: false,
@@ -89,7 +85,7 @@ export const useLiquidityDensityChartOption = ({
         axisLine: { show: false },
         axisTick: { show: false },
         splitLine: { lineStyle: gridLine },
-        axisLabel: { ...textStyle, formatter: (value: number) => formatChartAxisNumber(value, { unit }) },
+        axisLabel: { ...textStyle, formatter: (value: number) => formatChartAxisNumber(value, { unit: 'dollar' }) },
       },
       tooltip: {
         trigger: 'axis',
@@ -109,7 +105,7 @@ export const useLiquidityDensityChartOption = ({
           // Numeric interval edges preserve the logarithmic sampling widths and solver gaps on a linear price axis.
           dimensions: ['price', 'depth', 'low', 'high'],
           encode: { x: [0, 2, 3], y: 1, tooltip: [0, 1] },
-          data: samples?.map(({ price, depth, low, high }) => [price, depth, low, high]) ?? [],
+          data: samples.map(({ price, depth, low, high }) => [price, depth, low, high]),
           clip: true,
           renderItem: (_params, api) => {
             const low = Number(api.value(2))
@@ -126,12 +122,12 @@ export const useLiquidityDensityChartOption = ({
                 {
                   type: 'rect',
                   shape: { x: left + gap / 2, y: top, width: Math.max(0, split - left - gap), height: bottom - top },
-                  style: { fill: Chart.Lines[1] },
+                  style: { fill: Chart.Lines[7] },
                 },
                 {
                   type: 'rect',
                   shape: { x: split + gap / 2, y: top, width: Math.max(0, right - split - gap), height: bottom - top },
-                  style: { fill: Chart.Lines[2] },
+                  style: { fill: Chart.Lines[8] },
                 },
               ],
             }
@@ -139,25 +135,21 @@ export const useLiquidityDensityChartOption = ({
           markLine: {
             silent: true,
             symbol: ['none', 'none'],
-            data: markers
-              .filter(({ value }) => value >= low && value <= high)
-              .map(({ value, color, dash, showPrice }) => ({
-                xAxis: value,
-                lineStyle: { color, width: CHART_LINE_WIDTHS.referenceLine, type: dash ?? 'solid' },
-                label: {
-                  show: !!showPrice,
-                  formatter: formatNumber(value, 'token.precise'),
-                  position: 'start',
-                  ...textStyle,
-                  color: palette.getContrastText(color),
-                  backgroundColor: color,
-                  padding: [px(Spacing['3xs'][breakpoint]), px(Spacing.xxs[breakpoint])],
-                  distance: 0,
-                },
-              })),
+            label: { show: false },
+            data: notFalsy(
+              ...markers.map(
+                ({ value, color, dash }) =>
+                  value != null &&
+                  value >= low &&
+                  value <= high && {
+                    xAxis: value,
+                    lineStyle: { color, width: CHART_LINE_WIDTHS.referenceLine, type: dash },
+                  },
+              ),
+            ),
           },
         },
       ],
     }
-  }, [liquidityLabel, markers, priceLabel, profile, theme, tooltipFormatter, unit, breakpoint])
+  }, [liquidityLabel, markers, priceLabel, profile, theme, tooltipFormatter, breakpoint])
 }

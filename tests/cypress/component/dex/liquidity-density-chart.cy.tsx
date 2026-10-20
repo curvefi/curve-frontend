@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { getInstanceByDom, type ECharts } from 'echarts'
-import { escapeRegExp } from 'lodash'
 import {
   LiquidityDensityChart,
   type LiquidityDensityChartProps,
@@ -21,14 +20,17 @@ const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const tokenProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const usdProfile = valueLiquidityProfile(tokenProfile, 111_124.75)
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
-const stableProfile = liquidityProfile(stableCurve, [1, 0])!
+const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1)
 const chartProps: LiquidityDensityChartProps = {
   profile: usdProfile,
   inputSymbol: 'WBTC',
   outputSymbol: 'USDC',
-  unit: 'dollar',
+  outputTokenUsdPrice: 1,
   oraclePrice: 109_500,
   centerPrice: peakPrice(cryptoCurve, [1, 0]),
+  isLoading: false,
+  error: null,
+  action: null,
 }
 
 const themes = { light: lightTheme(), dark: darkTheme(), chad: chadTheme() }
@@ -74,20 +76,22 @@ const pixelAt = (chart: ECharts, price: number, depth: number) => {
 
 const rgba = (hex: `#${string}`) => [...[1, 3, 5].map(start => parseInt(hex.slice(start, start + 2), 16)), 255]
 
-/** Check the rendered canvas text, including rotation, to catch clipped axis titles. */
-const expectAxisTitleVisible = (chart: ECharts, title: string) => {
-  const label = chart
+/** Check rendered label bounds, including rotation, without depending on their text. */
+const expectChartLabelsVisible = (chart: ECharts) => {
+  const labels = chart
     .getZr()
     .storage.getDisplayList()
-    .find(element => 'text' in element.style && element.style.text === title)
-  expect(label, title).not.to.be.undefined
-  // Text bounds are local to the label. Copy them so the rotation/translation into chart pixels does not mutate ECharts' layout.
-  const bounds = label!.getBoundingRect().clone()
-  if (label!.transform) bounds.applyTransform(label!.transform)
-  expect(bounds.x, `${title} left`).to.be.at.least(0)
-  expect(bounds.y, `${title} top`).to.be.at.least(0)
-  expect(bounds.x + bounds.width, `${title} right`).to.be.at.most(chart.getWidth())
-  expect(bounds.y + bounds.height, `${title} bottom`).to.be.at.most(chart.getHeight())
+    .filter(element => 'text' in element.style && !element.ignore && !element.invisible)
+  expect(labels).not.to.be.empty
+  labels.forEach(label => {
+    // Copy local bounds before applying the transform into chart pixels.
+    const bounds = label.getBoundingRect().clone()
+    if (label.transform) bounds.applyTransform(label.transform)
+    expect(bounds.x).to.be.at.least(0)
+    expect(bounds.y).to.be.at.least(0)
+    expect(bounds.x + bounds.width).to.be.at.most(chart.getWidth())
+    expect(bounds.y + bounds.height).to.be.at.most(chart.getHeight())
+  })
 }
 
 describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_HEIGHT})`, () => {
@@ -95,36 +99,35 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
 
   it(`renders density on both sides of spot using the ${THEME} palette`, () => {
     mountChart({ theme: THEME })
-    cy.get('[data-testid="liquidity-density-title"]').should('be.visible').and('have.text', 'Liquidity distribution')
-    ;[
-      'Internal price oracle',
-      'Center of liquidity',
-      'Current price',
-      chartProps.inputSymbol,
-      chartProps.outputSymbol,
-    ].forEach(label => {
-      cy.get(LEGEND).should('be.visible').and('contain.text', label)
+    cy.get('[data-testid="liquidity-density-title"]').should('be.visible')
+    cy.get(LEGEND).find('[data-testid="chart-legend-box"]').should('have.length', 2).and('be.visible')
+    cy.get(LEGEND).find('[data-testid="chart-legend-line"]').should('not.exist')
+    ;['current-price', 'center-price', 'oracle-price'].forEach(key => {
+      cy.get(`[data-testid="liquidity-density-${key}"]`)
+        .should('be.visible')
+        .find('[data-testid="chart-legend-line"]')
+        .should('be.visible')
     })
     getChart().should(chart => {
       const left = usdProfile.samples.find(sample => sample.high < usdProfile.spot)!
       const right = usdProfile.samples.findLast(sample => sample.low > usdProfile.spot)!
-      expect(pixelAt(chart, left.price, left.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[1]))
-      expect(pixelAt(chart, right.price, right.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[2]))
+      expect(pixelAt(chart, left.price, left.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[7]))
+      expect(pixelAt(chart, right.price, right.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[8]))
       // Reference markers must remain inside the plot, in the same price coordinate system as the bars.
       ;[chartProps.oraclePrice!, chartProps.centerPrice!, usdProfile.spot].forEach(price =>
         expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(true),
       )
-      expectAxisTitleVisible(chart, 'Liquidity in 1% range in USD')
-      expectAxisTitleVisible(chart, `${chartProps.outputSymbol} per ${chartProps.inputSymbol}`)
+      expectChartLabelsVisible(chart)
     })
     cy.get(CHART).should($chart => expect($chart[0].getBoundingClientRect().right).to.be.at.most(VIEWPORT_WIDTH))
   })
 
-  it('shows the sampled price and USD depth on hover', () => {
+  it('shows liquidity and deviation on hover without price markers', () => {
     mountChart()
     getChart().then(chart => hoverSample(chart, usdProfile.samples[10]))
-    cy.get('[data-testid="liquidity-density-tooltip-depth"]').should('be.visible').and('contain.text', '$')
-    cy.get('[data-testid="liquidity-density-tooltip-deviation"]').should('be.visible').and('contain.text', '%')
+    cy.get('[data-testid="liquidity-density-tooltip-depth"]').should('be.visible')
+    cy.get('[data-testid="liquidity-density-tooltip-deviation"]').should('be.visible')
+    cy.get(TOOLTIP).find('[data-testid="chart-legend-line"]').should('not.exist')
   })
 
   it('renders narrow stablecoin ranges and leaves unsolved intervals empty', () => {
@@ -135,43 +138,43 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
       centerPrice: peakPrice(stableCurve, [1, 0]),
       oraclePrice: undefined,
     })
-    cy.get(LEGEND).should('not.contain.text', 'Internal price oracle')
+    cy.get('[data-testid="liquidity-density-oracle-price-value"]')
+      .should('be.visible')
+      .and('not.have.attr', 'data-value')
     getChart().should(chart => {
       const sample = stableProfile.samples[9]
-      expect(pixelAt(chart, sample.price, sample.depth / 2)).to.deep.equal(rgba(themes.light.design.Chart.Lines[1]))
-      expect(pixelAt(chart, gap.price, gap.depth / 2)).not.to.deep.equal(rgba(themes.light.design.Chart.Lines[1]))
+      expect(pixelAt(chart, sample.price, sample.depth / 2)).to.deep.equal(rgba(themes.light.design.Chart.Lines[7]))
+      expect(pixelAt(chart, gap.price, gap.depth / 2)).not.to.deep.equal(rgba(themes.light.design.Chart.Lines[7]))
     })
     getChart().then(chart => hoverSample(chart, stableProfile.samples[9]))
-    cy.get(TOOLTIP).should('be.visible').and('contain.text', 'USDC per USDT')
+    cy.get(TOOLTIP).should('be.visible')
   })
 
-  it('labels unavailable USD valuation in token units', () => {
-    const symbol = ` ${chartProps.inputSymbol}`
-    const tokenTick = new RegExp(`^\\d[\\d.,]*${escapeRegExp(symbol)}$`)
-    mountChart({ profile: tokenProfile, unit: { symbol, position: 'suffix' } })
-    getChart().should(chart => {
-      expectAxisTitleVisible(chart, `Liquidity in 1% range in ${chartProps.inputSymbol}`)
-      const hasTokenTick = chart
-        .getZr()
-        .storage.getDisplayList()
-        .some(
-          element =>
-            'text' in element.style && typeof element.style.text === 'string' && tokenTick.test(element.style.text),
-        )
-      expect(hasTokenTick, 'Y-axis ticks include the token unit').to.be.true
+  it('values price metrics in USD and measures deviation from the liquidity center', () => {
+    const outputTokenUsdPrice = 0.98
+    const centerPrice = usdProfile.spot / 1.0245
+    mountChart({ outputTokenUsdPrice, centerPrice })
+    ;[
+      { key: 'current-price', price: usdProfile.spot },
+      { key: 'center-price', price: centerPrice },
+      { key: 'oracle-price', price: chartProps.oraclePrice! },
+    ].forEach(({ key, price }) => {
+      cy.get(`[data-testid="liquidity-density-${key}-value"]`).should(
+        'have.attr',
+        'data-value',
+        String(price * outputTokenUsdPrice),
+      )
     })
-    getChart().then(chart => hoverSample(chart, tokenProfile.samples[10]))
-    cy.get('[data-testid="liquidity-density-tooltip-depth"]')
-      .should('be.visible')
-      .and('contain.text', symbol)
-      .and('not.contain.text', '$')
+    cy.get('[data-testid="liquidity-density-deviation-value"]').should($value => {
+      expect(Number($value.attr('data-value'))).to.be.closeTo(2.45, 1e-10)
+    })
   })
 
-  it('resizes when its card width changes without a window resize', () => {
+  it('resizes when its container width changes without a window resize', () => {
     mountChart()
     getChart().then(chart => {
       const initialWidth = chart.getWidth()
-      // Constrain the production card directly; its ResizeObserver must update the canvas to match the plot.
+      // Constrain the chart container directly; its ResizeObserver must update the canvas to match the plot.
       cy.get(CHART).invoke('css', 'width', '50%')
       cy.get(PLOT).should($plot => {
         const resized = getInstanceByDom($plot[0].querySelector<HTMLElement>('.echarts-for-react')!)!
@@ -188,10 +191,10 @@ describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_H
     cy.get(PLOT).find('canvas').should('not.exist')
   })
 
-  it('renders a chart without an empty state while samples are missing', () => {
+  it('shows an empty state when samples are missing', () => {
     mountChart({ profile: undefined })
-    cy.get(PLOT).find('canvas').should('be.visible')
-    cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('not.exist')
+    cy.get(PLOT).find('canvas').should('not.exist')
+    cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
     cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
   })
 

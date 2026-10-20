@@ -5,143 +5,180 @@ import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
+import { LegendLine } from '@evm-ui/shared/ui/Chart/LegendSet'
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { maybe, notFalsy } from '@primitives/objects.utils'
-import { getUnitOptions, type Unit } from '@primitives/units.util'
+import Typography from '@mui/material/Typography'
+import { maybes } from '@primitives/objects.utils'
+import { Metric } from '@ui/components/Metric'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
+import { q } from '@ui/features/queries/util'
+import { Reds } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
 import { t } from '@ui/lib/i18n'
-import { UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { useLiquidityDensityChartOption } from './hooks/useLiquidityDensityChartOption'
 import { LiquidityDensityTooltip } from './LiquidityDensityTooltip'
 
 const { Height, Spacing } = SizesAndSpaces
 const CHART_HEIGHT = Height.chart.sm
 
-export type LiquidityPriceMarker = { label: string; value: number; color: string; dash?: number[]; showPrice?: boolean }
+export type LiquidityPriceMarker = {
+  key: string
+  label: string
+  value: number | undefined
+  color: string
+  dash: number[]
+}
 
 export type LiquidityDensityChartProps = {
-  profile?: LiquidityProfile
+  profile: LiquidityProfile | undefined
   inputSymbol: string
   outputSymbol: string
-  unit: Unit
-  oraclePrice?: number
-  centerPrice?: number
-  isLoading?: boolean
-  error?: Error | null
-  action?: ReactNode
+  /** USD price of the output token, used to value the pair-denominated price metrics. */
+  outputTokenUsdPrice: number | undefined
+  oraclePrice: number | undefined
+  centerPrice: number | undefined
+  isLoading: boolean
+  error: Error | null
+  action: ReactNode
 }
 
 export const LiquidityDensityChart = ({
   profile,
   inputSymbol,
   outputSymbol,
-  unit,
+  outputTokenUsdPrice,
   oraclePrice,
   centerPrice,
-  isLoading = false,
+  isLoading,
   error,
   action,
 }: LiquidityDensityChartProps) => {
   const { isConnected } = useConnection()
   const theme = useTheme()
-  const { Chart, Color } = theme.design
+  const { Chart, Color, Layer } = theme.design
   const { spot, samples } = profile ?? {}
   const priceLabel = t`${outputSymbol} per ${inputSymbol}`
-  const liquidityLabel = t`Liquidity in 1% range in ${unit === 'dollar' ? 'USD' : getUnitOptions(unit)?.symbol.trim() || UNAVAILABLE_TOKEN_SYMBOL}`
+  const liquidityLabel = t`Liquidity in 1% range in USD`
   const markers = useMemo(
-    () =>
-      notFalsy<LiquidityPriceMarker>(
-        oraclePrice && { label: t`Internal price oracle`, value: oraclePrice, color: Color.Primary[500] },
-        centerPrice && {
-          label: t`Center of liquidity`,
-          value: centerPrice,
-          color: Color.Tertiary[400],
-          dash: CHART_LINE_DASH_PATTERNS.regular,
-        },
-        spot && {
-          label: t`Current price`,
-          value: spot,
-          color: Chart.Lines[1],
-          dash: CHART_LINE_DASH_PATTERNS.tight,
-          showPrice: true,
-        },
-      ),
-    [Chart.Lines, Color.Primary, Color.Tertiary, centerPrice, oraclePrice, spot],
+    (): LiquidityPriceMarker[] => [
+      {
+        key: 'current-price',
+        label: t`Current price`,
+        value: spot,
+        color: Layer.Highlight.Outline,
+        dash: CHART_LINE_DASH_PATTERNS.tight,
+      },
+      {
+        key: 'center-price',
+        label: t`Center of liquidity`,
+        value: centerPrice,
+        color: Color.Tertiary[400],
+        dash: CHART_LINE_DASH_PATTERNS.regular,
+      },
+      {
+        key: 'oracle-price',
+        label: t`Internal price oracle`,
+        value: oraclePrice,
+        color: Reds[500],
+        dash: CHART_LINE_DASH_PATTERNS.regular,
+      },
+    ],
+    [Layer.Highlight.Outline, Color.Tertiary, centerPrice, oraclePrice, spot],
+  )
+  const deviation = maybes([spot, centerPrice], (spot, center) =>
+    center > 0 ? Math.abs(spot / center - 1) * 100 : undefined,
   )
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [width] = useResizeObserver(containerRef, { dimension: 'width' })
 
   return (
-    <Card size="small" data-testid="liquidity-density-chart">
-      <CardHeader title={t`Liquidity distribution`} action={action} data-testid="liquidity-density-title" />
-      <CardContent component={Stack} sx={{ gap: Spacing.sm }}>
-        <Box
-          ref={containerRef}
-          data-testid="liquidity-density-plot"
-          role={samples?.length ? 'img' : undefined}
-          aria-label={t`Liquidity distribution: ${priceLabel}. ${liquidityLabel}.`}
-        >
-          <ChartStateWrapper
-            height={CHART_HEIGHT}
-            isLoading={isLoading}
-            error={error}
-            errorMessage={t`Unable to fetch liquidity distribution.`}
-            isEmpty={maybe(samples, s => !s.length)}
-            {...(isConnected
-              ? {
-                  emptyMessage: t`Liquidity distribution is unavailable for this pool.`,
-                  emptyTestId: 'liquidity-density-unavailable',
-                }
-              : {
-                  emptyTitle: t`Connect wallet`,
-                  emptyMessage: t`Please connect your wallet to view liquidity distribution.`,
-                  emptyTestId: 'liquidity-density-connect-wallet',
-                })}
-          >
-            <ReactECharts
-              option={useLiquidityDensityChartOption({
-                profile,
-                markers,
-                priceLabel,
-                liquidityLabel,
-                unit,
-                tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
-                  <LiquidityDensityTooltip
-                    sample={sample}
-                    spot={spot}
-                    priceLabel={priceLabel}
-                    unit={unit}
-                    markers={markers}
-                  />
-                )),
-              })}
-              notMerge
-              autoResize={false}
-              style={{ width: width || '100%', height: CHART_HEIGHT }}
-            />
-          </ChartStateWrapper>
-        </Box>
-        <ChartFooter
-          testId="liquidity-density-legend"
-          legendSets={useMemo(
-            () => [
-              ...markers.map(({ label, color, dash }) => ({ label, line: { lineStroke: color, dash } })),
-              { label: inputSymbol, box: { fill: Chart.Lines[2] } },
-              { label: outputSymbol, box: { fill: Chart.Lines[1] } },
-            ],
-            [Chart.Lines, inputSymbol, markers, outputSymbol],
-          )}
-          description={t`Curve’s AMM automatically rebalances liquidity to maximize liquidity depth, optimize LP revenues and provide better trade execution.`}
+    <Stack data-testid="liquidity-density-chart" sx={{ gap: Spacing.sm }}>
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm }}>
+        <Typography component="h3" variant="headingXsBold" color="textSecondary" data-testid="liquidity-density-title">
+          {t`Liquidity density`}
+        </Typography>
+        {action}
+      </Stack>
+      <MetricsGrid>
+        <Metric
+          category="dex.liquidityDensity"
+          label={t`Current price deviation`}
+          labelTooltip={{ title: t`Absolute percentage distance of the current price from the center of liquidity.` }}
+          value={q({ data: deviation, isLoading, error })}
+          valueOptions={{ unit: 'percentage', decimals: 2, abbreviate: false }}
+          testId="liquidity-density-deviation"
         />
-      </CardContent>
-    </Card>
+        {markers.map(({ key, label, value, color, dash }) => (
+          <Metric
+            key={key}
+            category="dex.liquidityDensity"
+            label={label}
+            value={q({
+              data: maybes([value, outputTokenUsdPrice], (price, usdRate) => price * usdRate),
+              isLoading,
+              error,
+            })}
+            valueOptions={{ unit: 'dollar', maximumSignificantDigits: 7 }}
+            icon={<LegendLine color={color} dash={dash} />}
+            testId={`liquidity-density-${key}`}
+          />
+        ))}
+      </MetricsGrid>
+      <Box
+        ref={containerRef}
+        data-testid="liquidity-density-plot"
+        role={samples?.length ? 'img' : undefined}
+        aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
+      >
+        <ChartStateWrapper
+          height={CHART_HEIGHT}
+          isLoading={isLoading}
+          error={error}
+          errorMessage={t`Unable to fetch liquidity density.`}
+          isEmpty={!samples?.length}
+          {...(isConnected
+            ? {
+                emptyMessage: t`Liquidity density is unavailable for this pool.`,
+                emptyTestId: 'liquidity-density-unavailable',
+              }
+            : {
+                emptyTitle: t`Connect wallet`,
+                emptyMessage: t`Please connect your wallet to view liquidity density.`,
+                emptyTestId: 'liquidity-density-connect-wallet',
+              })}
+        >
+          <ReactECharts
+            option={useLiquidityDensityChartOption({
+              profile,
+              markers,
+              priceLabel,
+              liquidityLabel,
+              tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
+                <LiquidityDensityTooltip sample={sample} spot={spot} priceLabel={priceLabel} />
+              )),
+            })}
+            notMerge
+            autoResize={false}
+            style={{ width: width || '100%', height: CHART_HEIGHT }}
+          />
+        </ChartStateWrapper>
+      </Box>
+      <ChartFooter
+        testId="liquidity-density-legend"
+        legendSets={useMemo(
+          () => [
+            { label: inputSymbol, box: { fill: Chart.Lines[7] } },
+            { label: outputSymbol, box: { fill: Chart.Lines[8] } },
+          ],
+          [Chart.Lines, inputSymbol, outputSymbol],
+        )}
+        description={t`Curve’s AMM automatically rebalances liquidity to maximize liquidity depth, optimize LP revenues and provide better trade execution.`}
+      />
+    </Stack>
   )
 }

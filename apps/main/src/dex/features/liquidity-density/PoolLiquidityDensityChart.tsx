@@ -3,9 +3,10 @@ import { useMemo, useState } from 'react'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
+import { combineQueryState, useCombinedQueries } from '@ui/features/queries/combine'
 import { t } from '@ui/lib/i18n'
 import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
@@ -32,26 +33,22 @@ export const PoolLiquidityDensityChart = () => {
   )
   const { key, pair, inputSymbol, outputSymbol } = pairs.find(({ pair }) => isEqual(pair, selectedPair)) ?? pairs[0]
 
-  const {
-    profile: { data, error, isLoading },
-    inputTokenUsdPrice: { data: usdPrice },
-  } = usePoolLiquidityDensity(
+  const { profile, inputTokenUsdPrice, outputTokenUsdPrice } = usePoolLiquidityDensity(
     { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
     pool,
     pair,
   )
-  const valuedProfile = useMemo(() => maybes([data, usdPrice], valueLiquidityProfile), [data, usdPrice])
+  const valuedProfile = useCombinedQueries([profile, inputTokenUsdPrice], valueLiquidityProfile)
 
   return (
     <LiquidityDensityChart
-      profile={valuedProfile ?? data}
+      profile={valuedProfile.data}
       inputSymbol={inputSymbol}
       outputSymbol={outputSymbol}
-      unit={valuedProfile ? 'dollar' : { symbol: ` ${inputSymbol}`, position: 'suffix' }}
-      oraclePrice={data?.oraclePrice}
-      centerPrice={data?.centerPrice}
-      isLoading={isLoading}
-      error={error}
+      outputTokenUsdPrice={outputTokenUsdPrice.data}
+      oraclePrice={profile.data?.oraclePrice}
+      centerPrice={profile.data?.centerPrice}
+      {...combineQueryState(valuedProfile, outputTokenUsdPrice)}
       action={
         <ChartSelect
           options={pairs.map(({ key, inputSymbol, outputSymbol }) => ({

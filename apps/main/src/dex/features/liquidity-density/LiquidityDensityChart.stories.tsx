@@ -13,7 +13,7 @@ import { LiquidityDensityChart } from './LiquidityDensityChart'
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const cryptoProfile = liquidityProfile(cryptoCurve, [1, 0])!
 const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
-const stableProfile = liquidityProfile(stableCurve, [1, 0])!
+const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1)
 const queryClient = new QueryClient()
 const wagmiConfig = createConfig({
   chains: [mainnet],
@@ -39,9 +39,12 @@ const meta = {
     profile: valueLiquidityProfile(cryptoProfile, 111_124.75),
     inputSymbol: 'WBTC',
     outputSymbol: 'USDC',
-    unit: 'dollar',
+    outputTokenUsdPrice: 1,
     centerPrice: peakPrice(cryptoCurve, [1, 0]),
     oraclePrice: 109_500,
+    isLoading: false,
+    error: null,
+    action: null,
   },
 } satisfies Meta<typeof LiquidityDensityChart>
 
@@ -60,7 +63,15 @@ export const StableSwap: Story = {
   },
 }
 
-export const TokenUnits: Story = { args: { profile: cryptoProfile, unit: { symbol: ' WBTC', position: 'suffix' } } }
+export const DepeggedQuote: Story = { args: { outputTokenUsdPrice: 0.98 } }
+
+export const MissingUsdRate: Story = {
+  args: {
+    profile: undefined,
+    outputTokenUsdPrice: undefined,
+    error: new globalThis.Error('Unable to load token USD rate'),
+  },
+}
 
 export const MissingIntervals: Story = {
   args: {

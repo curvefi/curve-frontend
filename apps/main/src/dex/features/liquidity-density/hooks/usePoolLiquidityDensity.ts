@@ -56,9 +56,15 @@ export const usePoolLiquidityDensity = (
     ),
   )
 
-  const tokenAddress = pool.wrappedCoinAddresses[inputCoin] ?? apiPool.data?.coins[inputCoin]?.address
   return {
     profile: fallbackQ(onchainProfile, apiProfile),
-    inputTokenUsdPrice: useTokenUsdRate({ ...params, tokenAddress }, enabled),
+    inputTokenUsdPrice: useTokenUsdRate(
+      { ...params, tokenAddress: pool.wrappedCoinAddresses[inputCoin] ?? apiPool.data?.coins[inputCoin]?.address },
+      enabled,
+    ),
+    outputTokenUsdPrice: useTokenUsdRate(
+      { ...params, tokenAddress: pool.wrappedCoinAddresses[outputCoin] ?? apiPool.data?.coins[outputCoin]?.address },
+      enabled,
+    ),
   }
 }

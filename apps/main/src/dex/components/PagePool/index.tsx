@@ -22,7 +22,6 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
 import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
-import { PoolLiquidityDensityChart } from '@/dex/features/liquidity-density/PoolLiquidityDensityChart'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
@@ -207,7 +206,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             {pricesApiPoolData && (
               <OhlcAndActivityComp chainId={chainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
             )}
-            <PoolLiquidityDensityChart key={`${chainId}:${poolAddress}`} />
             <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
           </>
         )}
