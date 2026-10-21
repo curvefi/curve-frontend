@@ -6,6 +6,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
 import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import {
   ChartTooltipSeriesGroup,
   ChartTooltipSeriesRow,
@@ -14,7 +15,6 @@ import {
 import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -109,7 +109,7 @@ export const PoolHistoricalBaseRateChart = ({
       <CardHeader
         title={t`Historical Base Rate`}
         action={
-          <SelectTimeOption
+          <ChartSelect
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}

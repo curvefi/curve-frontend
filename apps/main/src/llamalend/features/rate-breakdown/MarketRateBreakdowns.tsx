@@ -6,7 +6,7 @@ import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistorical
 import { usePageHeaderRates } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import { MarketRateType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
@@ -121,7 +121,7 @@ export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateTy
           options={tabs}
           testIdPrefix="historical-rate-tab"
         />
-        <SelectTimeOption<TimeOption>
+        <ChartSelect<TimeOption>
           options={timeOptions}
           activeOption={timeOption}
           setActiveOption={setTimeOption}

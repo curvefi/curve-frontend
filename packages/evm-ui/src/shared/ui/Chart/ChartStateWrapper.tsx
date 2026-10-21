@@ -9,7 +9,9 @@ type ChartStateWrapperProps = {
   height: number
   isLoading: boolean
   isEmpty?: boolean
+  emptyTitle?: ReactNode
   emptyMessage?: ReactNode
+  emptyTestId?: string
   error?: Error | null
   errorMessage: string
   refreshData?: () => Promise<unknown> | void
@@ -23,27 +25,28 @@ export const ChartStateWrapper = ({
   height,
   isLoading,
   isEmpty,
+  emptyTitle,
   emptyMessage,
+  emptyTestId,
   error,
   errorMessage,
   refreshData,
   children,
   userAddress,
-}: ChartStateWrapperProps) => {
-  if (isLoading) return <ChartLoading height={height} />
-  if (error)
-    return (
-      <ChartError
-        height={height}
-        error={error}
-        errorMessage={errorMessage}
-        refreshData={refreshData}
-        userAddress={userAddress}
-      />
-    )
-  if (isEmpty) return <ChartEmpty height={height} message={emptyMessage} />
-
-  return (
+}: ChartStateWrapperProps) =>
+  isLoading ? (
+    <ChartLoading height={height} />
+  ) : error ? (
+    <ChartError
+      height={height}
+      error={error}
+      errorMessage={errorMessage}
+      refreshData={refreshData}
+      userAddress={userAddress}
+    />
+  ) : isEmpty ? (
+    <ChartEmpty height={height} title={emptyTitle} message={emptyMessage} testId={emptyTestId} />
+  ) : (
     <ErrorBoundary
       title="Chart Error"
       inline
@@ -54,4 +57,3 @@ export const ChartStateWrapper = ({
       {children}
     </ErrorBoundary>
   )
-}

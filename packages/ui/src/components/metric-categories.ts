@@ -84,6 +84,7 @@ export const METRIC_CATEGORIES = {
   // DEX
   'dex.poolHeader': METRIC_TYPES.primaryStat,
   'dex.poolInformation': METRIC_TYPES.primaryStat,
+  'dex.liquidityDensity': METRIC_TYPES.tertiaryStat,
   'dex.userLiquidityDetails': METRIC_TYPES.primaryStat,
   'dex.refuelCharts': METRIC_TYPES.primaryStat,
   'dex.refuelPoolInformation': METRIC_TYPES.responsiveStat,

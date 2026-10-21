@@ -31,3 +31,5 @@ export const useNewLlamaMarketDetailPage = useStableChannel
 export const useMarketMobileFormDrawer = useStableChannel
 
 export const useNewPoolForms = useBetaChannel
+
+export const useLiquidityDensityChart = useBetaChannel

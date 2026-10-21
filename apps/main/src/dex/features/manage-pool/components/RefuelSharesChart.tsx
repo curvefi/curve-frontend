@@ -10,8 +10,8 @@ import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
+import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
 import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -182,7 +182,7 @@ export const RefuelSharesChart = ({
       }
       action={
         <>
-          <SelectTimeOption
+          <ChartSelect
             options={PERIODS}
             activeOption={period}
             setActiveOption={setPeriod}

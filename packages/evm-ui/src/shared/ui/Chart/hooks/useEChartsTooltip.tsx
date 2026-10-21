@@ -10,7 +10,11 @@ import { toArray } from '@primitives/array.utils'
  * so we maintain our own React Root and use `flushSync` to force immediate rendering
  * before returning the container element back to ECharts.
  */
-export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTooltip?: (datum: TData) => ReactNode) {
+export function useEChartsTooltip<TData>(
+  data: TData[] | undefined,
+  theme: Theme,
+  renderTooltip?: (datum: TData) => ReactNode,
+) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const rootRef = useRef<Root | null>(null)
   const renderTooltipRef = useRef(renderTooltip)
@@ -38,7 +42,7 @@ export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTool
       }
 
       const { dataIndex } = (toArray(params)[0] ?? {}) as { dataIndex?: number }
-      const datum = data[dataIndex ?? -1]
+      const datum = data?.[dataIndex ?? -1]
 
       // eslint-disable-next-line @eslint-react/dom-no-flush-sync -- Existing violation before enabling this rule.
       flushSync(() =>
