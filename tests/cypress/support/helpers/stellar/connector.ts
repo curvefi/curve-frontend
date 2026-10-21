@@ -5,7 +5,12 @@ import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit.tech/stellar-wallets-kit/types'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import { contract, Keypair, TransactionBuilder } from '@stellar/stellar-sdk'
+import { retry } from '@primitives/promise.utils'
+import { contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk'
+import { Duration } from '@ui/features/themes/design/0_primitives'
+
+const POOL_DEPLOYMENT_RETRIES = 5
+const POOL_DEPLOYMENT_RETRY_DELAY_MS = Duration.Delay
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
 export const connectTestWallet = ({ deployer }: TestnetConfig) => {
@@ -49,6 +54,18 @@ type Factory = {
   }) => Promise<contract.AssembledTransaction<contract.Result<StellarContract>>>
 }
 
+/**
+ * A footprint lists the ledger entries a transaction may read or write.
+ * Concurrent deployments can change the pool address after simulation, making that list stale.
+ */
+const isPoolDeploymentFootprintConflict = (confirmation: rpc.Api.GetTransactionResponse | undefined) =>
+  confirmation?.status === rpc.Api.GetTransactionStatus.FAILED &&
+  !!confirmation.diagnosticEventsXdr?.some(e =>
+    e.event.body.value.topics.some(
+      t => t.type === 'scvError' && t.value.type === 'sceStorage' && t.value.value.name === 'scecExceededLimit',
+    ),
+  )
+
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
 export const deployTestPool = async (config: TestnetConfig) => {
   const { factory: factoryAddress, deployer, coins } = config
@@ -58,20 +75,31 @@ export const deployTestPool = async (config: TestnetConfig) => {
     networkPassphrase: Networks.TESTNET,
     rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
   })
-  const transaction = await factory.deploy_plain_pool({
-    deployer: deployer.address,
-    name: 'Cypress StableSwap USDX/USDY/USDZ',
-    symbol: 'CY-USDXUSDYUSDZ',
-    coins,
-    a: 100n,
-    fee: 30_000_000n,
-    offpeg_fee_multiplier: 20_000_000_000n,
-    ma_exp_time: 0n,
-    implementation_idx: 0,
-    asset_types: coins.map(() => 0),
-    methods: [],
-    oracles: [],
-  })
-  const { result } = await sendStellarTransaction(transaction)
-  return result.unwrap()
+  return retry(
+    async () => {
+      // Concurrent deployments advance the factory counter, changing the pool address and footprint.
+      const transaction = await factory.deploy_plain_pool({
+        deployer: deployer.address,
+        name: 'Cypress StableSwap USDX/USDY/USDZ',
+        symbol: 'CY-USDXUSDYUSDZ',
+        coins,
+        a: 100n,
+        fee: 30_000_000n,
+        offpeg_fee_multiplier: 20_000_000_000n,
+        ma_exp_time: 0n,
+        implementation_idx: 0,
+        asset_types: coins.map(() => 0),
+        methods: [],
+        oracles: [],
+      })
+      const { result } = await sendStellarTransaction(transaction)
+      return result.unwrap()
+    },
+    {
+      retries: POOL_DEPLOYMENT_RETRIES,
+      delay: () => POOL_DEPLOYMENT_RETRY_DELAY_MS,
+      shouldRetry: error =>
+        isPoolDeploymentFootprintConflict((error as Error).cause as rpc.Api.GetTransactionResponse | undefined),
+    },
+  )
 }
