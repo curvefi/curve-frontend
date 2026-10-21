@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { formatDate } from '@primitives/date.utils'
 import { Banner } from '@ui/features/banners/Banner'
 import { StackBanners } from '@ui/features/banners/StackBanners'
@@ -9,7 +9,10 @@ import {
   useDismissPhishingWarn,
   useReleaseChannel,
 } from '@ui/features/storage/useLocalStorage'
+import { Duration } from '@ui/features/themes/design/0_primitives'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
+import { useDebounced } from '@ui/hooks/useDebounce'
+import { useResettableState } from '@ui/hooks/useResettableState'
 import { IS_CYPRESS, IS_PREVIEW_HOST, ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 
@@ -47,6 +50,11 @@ export const GlobalBanner = ({
   const [shouldShowPhishingBanner, dismissShowPhishingBanner] = useDismissPhishingWarn()
   const currentDate = useCurrentDate()
 
+  const hasNetworkMismatch = isConnected && !connectError && walletChainId != chainId
+  const [showNetworkWarning, setShowNetworkWarning] = useResettableState(false, [hasNetworkMismatch])
+  const updateNetworkWarning = useDebounced(setShowNetworkWarning, Duration.WalletBannerDelay)
+  useEffect(() => updateNetworkWarning(hasNetworkMismatch), [hasNetworkMismatch, updateNetworkWarning])
+
   return (
     <StackBanners>
       {releaseChannel !== ReleaseChannel.Stable && !IS_CYPRESS && (
@@ -74,9 +82,7 @@ export const GlobalBanner = ({
           {[connectError.message, t`Please try to switch your RPC in your wallet settings.`].join(' ')}
         </Banner>
       ) : (
-        isConnected &&
-        chainId &&
-        walletChainId != chainId && (
+        showNetworkWarning && (
           <Banner severity="warning" buttonText={t`Change network`} onClick={() => void switchChain({ chainId })}>
             {t`Please switch your wallet's network to`} <strong>{blockchainId}</strong> {t`to use Curve on`}{' '}
             <strong>{blockchainId}</strong>.{' '}

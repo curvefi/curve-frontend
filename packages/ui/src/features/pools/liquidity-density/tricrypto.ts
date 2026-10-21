@@ -1,6 +1,6 @@
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { createCryptoCurve, cryptoBalance, isCryptoBalanceInDomain } from './cryptoswap'
+import { createCryptoCurve, cryptoNewtonY, isCryptoBalanceInDomain } from './cryptoswap'
 import type { LiquidityCurve } from './types'
 
 const COIN_COUNT = 3
@@ -20,7 +20,7 @@ export const createTriCryptoCurve = (
     solve: (state, outputCoin, d) => {
       const others = state.filter((_, index) => index !== outputCoin).toSorted((a, b) => b - a)
       if (legacy && !others.every(value => isCryptoBalanceInDomain(value, d, { inclusive: true }))) {
-        return undefined // Tricrypto input balance is outside its domain
+        return // Tricrypto input balance is outside its domain
       }
       const [larger, smaller] = others
       const yAfterSmaller = ((d / COIN_COUNT) * d) / (smaller * COIN_COUNT)
@@ -28,7 +28,7 @@ export const createTriCryptoCurve = (
       const k0Other = (((larger * COIN_COUNT) / d) * smaller * COIN_COUNT) / d
 
       return maybe(
-        cryptoBalance({
+        cryptoNewtonY({
           initialY,
           otherSum: larger + smaller,
           otherK0: k0Other,

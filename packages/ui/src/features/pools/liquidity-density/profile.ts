@@ -98,8 +98,7 @@ export const liquidityProfile = (curve: LiquidityCurve, pair: LiquidityPair): Li
             }),
         ),
       )
-      if (!samples.length) return undefined // No liquidity could be sampled in this price range
-      return { samples, spot, pair, low, high }
+      if (samples.length) return { samples, spot, pair, low, high }
     }),
   )
 }

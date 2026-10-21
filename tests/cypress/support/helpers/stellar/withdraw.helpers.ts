@@ -62,7 +62,10 @@ export const checkWithdrawBalances = ({ coins, lp }: WithdrawState) => {
   checkWithdrawDetail('current-lp', lp.balance)
   withdrawLpInput().find('[data-testid="balance-value"]').should('have.attr', 'data-value', lp.balance)
   coins.forEach(({ address }) => {
-    poolInput(address).find('[data-testid="balance-value"]').invoke('attr', 'data-value').should('not.be.empty')
+    poolInput(address)
+      .find('[data-testid="balance-value"]', TIMEOUTS['stellar.simulation'])
+      .invoke(TIMEOUTS['stellar.simulation'], 'attr', 'data-value')
+      .should('not.be.empty')
   })
 }
 

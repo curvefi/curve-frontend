@@ -155,12 +155,12 @@ describe('Stellar testnet withdraw', () => {
 
       // Recovery: correcting the amount clears errors and enables withdrawal.
       writePoolAmount(coin.address, correctedOutput)
+      checkPartialWithdrawQuote(state, lpBudget)
       withdrawLpInput().find('[data-testid="helper-message-error"]').should('not.exist')
       state.coins.map(({ address }) =>
         poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist'),
       )
       cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
-      checkPartialWithdrawQuote(state, lpBudget)
       checkEstimatedTxCost({ category: 'stellar.simulation' })
       submitWithdrawAndCheck(state).then(refreshState)
     })

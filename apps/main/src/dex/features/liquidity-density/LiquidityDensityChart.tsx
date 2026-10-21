@@ -183,6 +183,7 @@ export const LiquidityDensityChart = ({
                 <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
               )),
             })}
+            opts={{ renderer: 'svg' }}
             notMerge
             autoResize={false}
             style={{ width: width || '100%', height: CHART_HEIGHT }}

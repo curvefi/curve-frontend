@@ -18,9 +18,11 @@ const INVARIANT_BRACKET_GROWTH_FACTOR = 2
 const solverSteps = range(SOLVER_ITERATIONS)
 const bracketSteps = range(SOLVER_ITERATIONS + 1)
 
-/** Solve an output balance with the Newton iteration shared by electric-router's cryptoswap.py/tricrypto.py.
- * Reference commit: 282fa4c8fd838c99f80c3c5fae26fbca9b8747cc. */
-export const cryptoBalance = ({
+/**
+ * Solve output balance with the Newton iteration shared by electric-router's commit 282fa4c.
+ * cryptoswap.newton_y_fast (2 coins) and tricrypto.newton_y_fast (3 coins).
+ */
+export const cryptoNewtonY = ({
   initialY,
   otherSum,
   otherK0,
@@ -44,7 +46,7 @@ export const cryptoBalance = ({
       const k0 = (otherK0 * y * coinCount) / invariant
       const total = otherSum + y
       const gap = Math.abs(gamma + 1 - k0)
-      if (!gap) return undefined // The invariant has a pole at K0 = gamma + 1.
+      if (!gap) return // The invariant has a pole at K0 = gamma + 1.
       const mul1 = (invariant * gap * gap) / (gamma * gamma * amplification)
       const mul2 = 1 + (2 * k0) / gap
       const yDerivative = y + total * mul2 + mul1
@@ -52,7 +54,7 @@ export const cryptoBalance = ({
       if (yDerivative < dDerivative) return y / 2
       const difference = yDerivative - dDerivative
       const derivative = difference / y
-      if (!derivative) return undefined // Newton's step cannot divide by a zero derivative.
+      if (!derivative) return // Newton's step cannot divide by a zero derivative.
       const minus = mul1 / derivative
       const plus = (difference + invariant) / derivative + minus / k0
       const correction = minus + total / derivative
@@ -76,7 +78,7 @@ export const cryptoInvariant = (
   const residual = (d: number) => {
     const k0 = (balanceProduct * n ** n) / d ** n
     const gap = gamma + 1 - k0
-    if (gap === 0) return undefined // Invariant is singular
+    if (!gap) return // Invariant is singular
     // Unlike the demo's residual, account for the router's ANN convention:
     // amplification is A * N**N, while the invariant's K coefficient uses A.
     const k = ((amplification / n ** n) * k0 * gamma * gamma) / (gap * gap)
@@ -90,9 +92,7 @@ export const cryptoInvariant = (
     .find(d => maybe(residual(d), value => value < 0) ?? true)
   return maybes([lower, upper], (lower, upper) =>
     maybes([residual(lower), residual(upper)], (lowValue, highValue) => {
-      if (lowValue <= 0 || highValue >= 0) {
-        return undefined // Could not bracket the invariant
-      }
+      if (lowValue <= 0 || highValue >= 0) return // Could not bracket the invariant
       const bounds = iterate<readonly [number, number] | undefined>(
         [lower, upper],
         solverSteps,
