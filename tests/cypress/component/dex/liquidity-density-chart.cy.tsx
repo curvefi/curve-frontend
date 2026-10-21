@@ -7,7 +7,7 @@ import {
 import { oneOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
-import { oneViewport } from '@cy/support/ui'
+import { allViewports } from '@cy/support/ui'
 import { peakPrice } from '@ui/features/pools/liquidity-density/curve'
 import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
@@ -34,7 +34,6 @@ const chartProps: LiquidityDensityChartProps = {
 
 const themes = { light: lightTheme(), dark: darkTheme(), chad: chadTheme() }
 const THEME = oneOf('light', 'dark', 'chad')
-const [VIEWPORT_WIDTH, VIEWPORT_HEIGHT, BREAKPOINT] = oneViewport()
 const CHART = '[data-testid="liquidity-density-chart"]'
 const PLOT = '[data-testid="liquidity-density-plot"]'
 const LEGEND = '[data-testid="liquidity-density-legend"]'
@@ -62,18 +61,21 @@ const getChart = () =>
 
 const hoverSample = (chart: ECharts, { price, depth }: LiquiditySample) => {
   const [x, y] = chart.convertToPixel({ gridIndex: 0 }, [price, depth / 2])
-  cy.get(PLOT).find('canvas').first().trigger('mousemove', x, y)
+  cy.get(PLOT).find('.echarts-for-react svg').trigger('mousemove', x, y)
 }
 
-/** Read the actual canvas so incorrect bar positions, missing bars, and wrong theme colors fail. */
-const pixelAt = (chart: ECharts, price: number, depth: number) => {
+/** Inspect rendered SVG geometry so incorrect bar positions, missing bars, and wrong theme colors fail. */
+const fillAt = (chart: ECharts, price: number, depth: number) => {
   const [x, y] = chart.convertToPixel({ gridIndex: 0 }, [price, depth])
-  const canvas = chart.getDom().querySelector('canvas')!
-  const scale = canvas.width / canvas.getBoundingClientRect().width
-  return Array.from(canvas.getContext('2d')!.getImageData(Math.round(x * scale), Math.round(y * scale), 1, 1).data)
+  const svg = chart.getDom().querySelector('svg')!
+  const point = svg.createSVGPoint()
+  point.x = x
+  point.y = y
+  return Array.from(svg.querySelectorAll<SVGPathElement>('path[fill]:not([fill="none"])'))
+    .filter(path => !path.closest('defs'))
+    .find(path => path.isPointInFill(point.matrixTransform(path.getCTM()!.inverse())))
+    ?.getAttribute('fill')
 }
-
-const rgba = (hex: `#${string}`) => [...[1, 3, 5].map(start => parseInt(hex.slice(start, start + 2), 16)), 255]
 
 /** Check rendered label bounds, including rotation, without depending on their text. */
 const expectChartLabelsVisible = (chart: ECharts) => {
@@ -93,139 +95,146 @@ const expectChartLabelsVisible = (chart: ECharts) => {
   })
 }
 
-describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_HEIGHT})`, () => {
-  beforeEach(() => cy.viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
+allViewports().forEach(([VIEWPORT_WIDTH, VIEWPORT_HEIGHT, BREAKPOINT]) => {
+  describe(`Liquidity density chart (${BREAKPOINT}, ${VIEWPORT_WIDTH}x${VIEWPORT_HEIGHT})`, () => {
+    beforeEach(() => cy.viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
 
-  it(`renders density on both sides of spot using the ${THEME} palette`, () => {
-    mountChart({ theme: THEME })
-    cy.get('[data-testid="liquidity-density-title"]').should('be.visible')
-    cy.get(LEGEND).find('[data-testid="chart-legend-box"]').should('have.length', 2).and('be.visible')
-    cy.get(LEGEND).find('[data-testid="chart-legend-line"]').should('not.exist')
-    ;['current-price', 'center-price', 'oracle-price'].forEach(key => {
-      cy.get(`[data-testid="liquidity-density-${key}"]`)
+    it(`renders density on both sides of spot using the ${THEME} palette`, () => {
+      mountChart({ theme: THEME })
+      cy.get(PLOT).find('.echarts-for-react svg text').should('be.visible')
+      cy.get(PLOT).find('canvas').should('not.exist')
+      cy.get('[data-testid="liquidity-density-title"]').should('be.visible')
+      cy.get(LEGEND).find('[data-testid="chart-legend-box"]').should('have.length', 2).and('be.visible')
+      cy.get(LEGEND).find('[data-testid="chart-legend-line"]').should('not.exist')
+      ;['current-price', 'center-price', 'oracle-price'].forEach(key => {
+        cy.get(`[data-testid="liquidity-density-${key}"]`)
+          .should('be.visible')
+          .should($metric => {
+            const value = $metric.find(`[data-testid="liquidity-density-${key}-value"]`)[0].getBoundingClientRect()
+            const line = $metric.find('[data-testid="chart-legend-line"]')[0].getBoundingClientRect()
+            expect(line.y + line.height / 2).to.be.closeTo(value.y + value.height / 2, 1)
+          })
+          .find('[data-testid="chart-legend-line"]')
+          .should('be.visible')
+      })
+      getChart().should(chart => {
+        const left = usdProfile.samples.find(sample => sample.high < usdProfile.spot)!
+        const right = usdProfile.samples.findLast(sample => sample.low > usdProfile.spot)!
+        expect(fillAt(chart, left.price, left.depth / 2)).to.equal(themes[THEME].design.Chart.Lines[7])
+        expect(fillAt(chart, right.price, right.depth / 2)).to.equal(themes[THEME].design.Chart.Lines[8])
+        // Reference markers must remain inside the plot, in the same price coordinate system as the bars.
+        ;[chartProps.oraclePrice.data!, chartProps.centerPrice.data!, usdProfile.spot].forEach(price =>
+          expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(
+            true,
+          ),
+        )
+        expectChartLabelsVisible(chart)
+      })
+      cy.get(CHART).should($chart => expect($chart[0].getBoundingClientRect().right).to.be.at.most(VIEWPORT_WIDTH))
+    })
+
+    it('shows liquidity and deviation on hover without price markers', () => {
+      mountChart()
+      getChart().then(chart => hoverSample(chart, usdProfile.samples[10]))
+      cy.get('[data-testid="liquidity-density-tooltip-depth"]').should('be.visible')
+      cy.get('[data-testid="liquidity-density-tooltip-deviation"]').should('be.visible')
+      cy.get(TOOLTIP).find('[data-testid="chart-legend-line"]').should('not.exist')
+    })
+
+    it('renders narrow stablecoin ranges and leaves unsolved intervals empty', () => {
+      const gap = stableProfile.samples[10]
+      mountChart({
+        profile: constQ({ ...stableProfile, samples: stableProfile.samples.filter(sample => sample !== gap) }),
+        inputSymbol: 'USDT',
+        centerPrice: constQ(peakPrice(stableCurve, [1, 0])),
+        oraclePrice: constQ(undefined),
+      })
+      cy.get('[data-testid="liquidity-density-oracle-price-value"]')
         .should('be.visible')
-        .should($metric => {
-          const value = $metric.find(`[data-testid="liquidity-density-${key}-value"]`)[0].getBoundingClientRect()
-          const line = $metric.find('[data-testid="chart-legend-line"]')[0].getBoundingClientRect()
-          expect(line.y + line.height / 2).to.be.closeTo(value.y + value.height / 2, 1)
-        })
-        .find('[data-testid="chart-legend-line"]')
-        .should('be.visible')
+        .and('not.have.attr', 'data-value')
+      getChart().should(chart => {
+        const sample = stableProfile.samples[9]
+        expect(fillAt(chart, sample.price, sample.depth / 2)).to.equal(themes.light.design.Chart.Lines[7])
+        expect(fillAt(chart, gap.price, gap.depth / 2)).to.equal(undefined)
+      })
+      getChart().then(chart => hoverSample(chart, stableProfile.samples[9]))
+      cy.get(TOOLTIP).should('be.visible')
     })
-    getChart().should(chart => {
-      const left = usdProfile.samples.find(sample => sample.high < usdProfile.spot)!
-      const right = usdProfile.samples.findLast(sample => sample.low > usdProfile.spot)!
-      expect(pixelAt(chart, left.price, left.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[7]))
-      expect(pixelAt(chart, right.price, right.depth / 2)).to.deep.equal(rgba(themes[THEME].design.Chart.Lines[8]))
-      // Reference markers must remain inside the plot, in the same price coordinate system as the bars.
-      ;[chartProps.oraclePrice.data!, chartProps.centerPrice.data!, usdProfile.spot].forEach(price =>
-        expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(true),
-      )
-      expectChartLabelsVisible(chart)
-    })
-    cy.get(CHART).should($chart => expect($chart[0].getBoundingClientRect().right).to.be.at.most(VIEWPORT_WIDTH))
-  })
 
-  it('shows liquidity and deviation on hover without price markers', () => {
-    mountChart()
-    getChart().then(chart => hoverSample(chart, usdProfile.samples[10]))
-    cy.get('[data-testid="liquidity-density-tooltip-depth"]').should('be.visible')
-    cy.get('[data-testid="liquidity-density-tooltip-deviation"]').should('be.visible')
-    cy.get(TOOLTIP).find('[data-testid="chart-legend-line"]').should('not.exist')
-  })
-
-  it('renders narrow stablecoin ranges and leaves unsolved intervals empty', () => {
-    const gap = stableProfile.samples[10]
-    mountChart({
-      profile: constQ({ ...stableProfile, samples: stableProfile.samples.filter(sample => sample !== gap) }),
-      inputSymbol: 'USDT',
-      centerPrice: constQ(peakPrice(stableCurve, [1, 0])),
-      oraclePrice: constQ(undefined),
-    })
-    cy.get('[data-testid="liquidity-density-oracle-price-value"]')
-      .should('be.visible')
-      .and('not.have.attr', 'data-value')
-    getChart().should(chart => {
-      const sample = stableProfile.samples[9]
-      expect(pixelAt(chart, sample.price, sample.depth / 2)).to.deep.equal(rgba(themes.light.design.Chart.Lines[7]))
-      expect(pixelAt(chart, gap.price, gap.depth / 2)).not.to.deep.equal(rgba(themes.light.design.Chart.Lines[7]))
-    })
-    getChart().then(chart => hoverSample(chart, stableProfile.samples[9]))
-    cy.get(TOOLTIP).should('be.visible')
-  })
-
-  it('renders prices in USD and measures deviation from the liquidity center', () => {
-    const outputTokenUsdPrice = 0.98
-    const centerPrice = usdProfile.spot / 1.0245
-    mountChart({
-      profile: constQ(valueLiquidityProfile(tokenProfile, 111_124.75, outputTokenUsdPrice)),
-      centerPrice: constQ(centerPrice * outputTokenUsdPrice),
-      oraclePrice: constQ(chartProps.oraclePrice.data! * outputTokenUsdPrice),
-    })
-    ;[
-      { key: 'current-price', price: usdProfile.spot },
-      { key: 'center-price', price: centerPrice },
-      { key: 'oracle-price', price: chartProps.oraclePrice.data! },
-    ].forEach(({ key, price }) => {
-      cy.get(`[data-testid="liquidity-density-${key}-value"]`).should(
-        'have.attr',
-        'data-value',
-        String(price * outputTokenUsdPrice),
-      )
-    })
-    cy.get('[data-testid="liquidity-density-deviation-value"]').should($value => {
-      expect(Number($value.attr('data-value'))).to.be.closeTo(2.45, 1e-10)
-    })
-    getChart().should(chart => {
-      const { min, max } = (chart.getOption().xAxis as { min: number; max: number }[])[0]
-      expect(min).to.equal(tokenProfile.low * outputTokenUsdPrice)
-      expect(max).to.equal(tokenProfile.high * outputTokenUsdPrice)
-      const sample = usdProfile.samples.find(sample => sample.high < usdProfile.spot)!
-      expect(pixelAt(chart, sample.price * outputTokenUsdPrice, sample.depth / 2)).to.deep.equal(
-        rgba(themes.light.design.Chart.Lines[7]),
-      )
-    })
-  })
-
-  it('resizes when its container width changes without a window resize', () => {
-    mountChart()
-    getChart().then(chart => {
-      const initialWidth = chart.getWidth()
-      // Constrain the chart container directly; its ResizeObserver must update the canvas to match the plot.
-      cy.get(CHART).invoke('css', 'width', '50%')
-      cy.get(PLOT).should($plot => {
-        const resized = getInstanceByDom($plot[0].querySelector<HTMLElement>('.echarts-for-react')!)!
-        const plotWidth = $plot[0].getBoundingClientRect().width
-        expect(resized.getWidth()).to.equal(Math.round(plotWidth))
-        expect(resized.getWidth()).to.be.lessThan(initialWidth)
+    it('renders prices in USD and measures deviation from the liquidity center', () => {
+      const outputTokenUsdPrice = 0.98
+      const centerPrice = usdProfile.spot / 1.0245
+      mountChart({
+        profile: constQ(valueLiquidityProfile(tokenProfile, 111_124.75, outputTokenUsdPrice)),
+        centerPrice: constQ(centerPrice * outputTokenUsdPrice),
+        oraclePrice: constQ(chartProps.oraclePrice.data! * outputTokenUsdPrice),
+      })
+      ;[
+        { key: 'current-price', price: usdProfile.spot },
+        { key: 'center-price', price: centerPrice },
+        { key: 'oracle-price', price: chartProps.oraclePrice.data! },
+      ].forEach(({ key, price }) => {
+        cy.get(`[data-testid="liquidity-density-${key}-value"]`).should(
+          'have.attr',
+          'data-value',
+          String(price * outputTokenUsdPrice),
+        )
+      })
+      cy.get('[data-testid="liquidity-density-deviation-value"]').should($value => {
+        expect(Number($value.attr('data-value'))).to.be.closeTo(2.45, 1e-10)
+      })
+      getChart().should(chart => {
+        const { min, max } = (chart.getOption().xAxis as { min: number; max: number }[])[0]
+        expect(min).to.equal(tokenProfile.low * outputTokenUsdPrice)
+        expect(max).to.equal(tokenProfile.high * outputTokenUsdPrice)
+        const sample = usdProfile.samples.find(sample => sample.high < usdProfile.spot)!
+        expect(fillAt(chart, sample.price * outputTokenUsdPrice, sample.depth / 2)).to.equal(
+          themes.light.design.Chart.Lines[7],
+        )
       })
     })
-  })
 
-  it('shows loading without drawing a chart or metric line icons', () => {
-    mountChart({ profile: loadingQuery, centerPrice: loadingQuery, oraclePrice: loadingQuery })
-    cy.get(PLOT).find('[role="progressbar"]').should('be.visible')
-    cy.get(PLOT).find('canvas').should('not.exist')
-    cy.get(CHART).find('[data-testid="chart-legend-line"]').should('not.exist')
-  })
+    it('resizes when its container width changes without a window resize', () => {
+      mountChart()
+      getChart().then(chart => {
+        const initialWidth = chart.getWidth()
+        // Constrain the chart container directly; its ResizeObserver must update the SVG to match the plot.
+        cy.get(CHART).invoke('css', 'width', '50%')
+        cy.get(PLOT).should($plot => {
+          const resized = getInstanceByDom($plot[0].querySelector<HTMLElement>('.echarts-for-react')!)!
+          const plotWidth = $plot[0].getBoundingClientRect().width
+          expect(resized.getWidth()).to.equal(Math.round(plotWidth))
+          expect(resized.getWidth()).to.be.lessThan(initialWidth)
+          expect(resized.getDom().querySelector('svg')!.getBoundingClientRect().width).to.equal(resized.getWidth())
+        })
+      })
+    })
 
-  it('shows an empty state when samples are missing', () => {
-    mountChart({ profile: constQ(undefined) })
-    cy.get(PLOT).find('canvas').should('not.exist')
-    cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
-    cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
-  })
+    it('shows loading without drawing a chart or metric line icons', () => {
+      mountChart({ profile: loadingQuery, centerPrice: loadingQuery, oraclePrice: loadingQuery })
+      cy.get(PLOT).find('[role="progressbar"]').should('be.visible')
+      cy.get(PLOT).find('.echarts-for-react').should('not.exist')
+      cy.get(CHART).find('[data-testid="chart-legend-line"]').should('not.exist')
+    })
 
-  it('requests a wallet connection when samples are empty', () => {
-    mountChart({ profile: constQ({ ...usdProfile, samples: [] }) })
-    cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
-    cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
-    cy.get(PLOT).find('canvas').should('not.exist')
-  })
+    it('shows an empty state when samples are missing', () => {
+      mountChart({ profile: constQ(undefined) })
+      cy.get(PLOT).find('.echarts-for-react').should('not.exist')
+      cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
+      cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
+    })
 
-  it('shows query errors without drawing a chart', () => {
-    mountChart({ profile: { ...constQ(undefined), error: new Error('RPC unavailable') } })
-    cy.get(PLOT).find('[data-testid="chart-error"]').should('be.visible')
-    cy.get(PLOT).find('canvas').should('not.exist')
+    it('requests a wallet connection when samples are empty', () => {
+      mountChart({ profile: constQ({ ...usdProfile, samples: [] }) })
+      cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
+      cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
+      cy.get(PLOT).find('.echarts-for-react').should('not.exist')
+    })
+
+    it('shows query errors without drawing a chart', () => {
+      mountChart({ profile: { ...constQ(undefined), error: new Error('RPC unavailable') } })
+      cy.get(PLOT).find('[data-testid="chart-error"]').should('be.visible')
+      cy.get(PLOT).find('.echarts-for-react').should('not.exist')
+    })
   })
 })
