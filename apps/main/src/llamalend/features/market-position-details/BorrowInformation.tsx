@@ -8,8 +8,10 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-p
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
+import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe } from '@primitives/objects.utils'
@@ -20,6 +22,7 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
+import { getLeverageValueColor } from './market-position-details.utils'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
@@ -29,7 +32,12 @@ type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOr
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
-  const leverage = useUserCurrentLeverage(params)
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const collateralLeverage = useUserCurrentLeverage(params)
+  const equityLeverage = useEquityLeverage({ params }, isEquityLeverage)
+  const leverage = isEquityLeverage
+    ? equityLeverage?.current
+    : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
   const oraclePrice = useMarketOraclePrice(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 
@@ -110,12 +118,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
         )}
       />
-      {isPositionLeveraged(leverage.data) && (
+      {leverage && (
         <Metric
           category={METRIC_CATEGORY}
           label={t`Leverage`}
-          value={q(leverage)}
-          valueOptions={{ unit: 'multiplier' }}
+          value={leverage}
+          valueOptions={{ unit: 'multiplier', fallback: '-', color: getLeverageValueColor(leverage.data) }}
         />
       )}
     </MetricsGrid>
