@@ -62,15 +62,15 @@ export function checkBorrowMoreDetailsLoaded({
   controllerApproved?: boolean
   isMocked?: boolean
 }) {
-  getActionValue('borrow-apr', getTimeoutCategory('tenderly.simulation', isMocked)).should('include', '%')
-  getActionValue('borrow-health', getTimeoutCategory('tenderly.simulation', isMocked)).should('match', DECIMAL_REGEX)
-  getActionValue('borrow-health', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
+  getActionValue('borrow-apr', getTimeoutCategory('tenderly', 'simulation', isMocked)).should('include', '%')
+  getActionValue('borrow-health', getTimeoutCategory('tenderly', 'simulation', isMocked)).should('match', DECIMAL_REGEX)
+  getActionValue('borrow-health', getTimeoutCategory('tenderly', 'simulation', isMocked), 'previous').should(
     'match',
     DECIMAL_REGEX,
   )
   checkEstimatedTxCost({
     hasValue: hasApi && controllerApproved,
-    category: getTimeoutCategory('tenderly.simulation', isMocked),
+    category: getTimeoutCategory('tenderly', 'simulation', isMocked),
   })
   checkDebt(
     { current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol },
@@ -79,7 +79,10 @@ export function checkBorrowMoreDetailsLoaded({
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {
     cy.get('[data-testid="loan-action-settings"]').within(() => {
-      getActionValue('borrow-price-impact', getTimeoutCategory('tenderly.simulation', isMocked)).should('include', '%')
+      getActionValue('borrow-price-impact', getTimeoutCategory('tenderly', 'simulation', isMocked)).should(
+        'include',
+        '%',
+      )
       cy.get('[data-testid="borrow-slippage"]').should('be.visible')
       getActionValue('borrow-slippage', 'ui.render').should('include', '%')
     })

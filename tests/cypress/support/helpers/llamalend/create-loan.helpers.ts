@@ -131,7 +131,7 @@ export function checkLoanDetailsLoaded({
   isMocked?: boolean
   rpc?: 'evm' | 'tenderly'
 }) {
-  const category = getTimeoutCategory(`${rpc}.simulation`, isMocked)
+  const category = getTimeoutCategory(rpc, 'simulation', isMocked)
   getActionValue('borrow-price-range', category).should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr', category).should('include', '%')
   getActionValue('borrow-apr', category, 'previous').should('include', '%')
@@ -185,9 +185,10 @@ export const waitForRoutesLoaded = ({
   cy.get('[data-testid="loan-action-settings"] [data-testid="route-provider-accordion"]').click()
   cy.wait('@routerRoutes', TIMEOUTS['mock.router.routes'])
   cy.get('[data-testid="refresh-button"]').should('be.enabled')
-  cy.get(`[data-testid="${submitButtonTestId}"]`, TIMEOUTS[getTimeoutCategory('tenderly.simulation', isMocked)]).should(
-    'be.enabled',
-  )
+  cy.get(
+    `[data-testid="${submitButtonTestId}"]`,
+    TIMEOUTS[getTimeoutCategory('tenderly', 'simulation', isMocked)],
+  ).should('be.enabled')
 }
 
 export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]').click(TIMEOUTS['ui.interaction'])
@@ -215,15 +216,15 @@ export function writeCreateLoanForm({
   cy.get('[data-testid="borrow-debt-input"]', TIMEOUTS['ui.render']).should('be.visible')
   cy.get(
     '[data-testid="borrow-collateral-input"] [data-testid="balance-value"]',
-    TIMEOUTS[getTimeoutCategory(`${rpc}.balances`, isMocked)],
+    TIMEOUTS[getTimeoutCategory(rpc, 'balances', isMocked)],
   ).should('be.visible')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   getMaxBorrowBalance().should('be.visible')
-  getActionInfo('borrow-health', getTimeoutCategory(`${rpc}.simulation`, isMocked)).should('have.text', '-')
+  getActionInfo('borrow-health', getTimeoutCategory(rpc, 'simulation', isMocked)).should('have.text', '-')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health', getTimeoutCategory(`${rpc}.simulation`, isMocked)).should('match', DECIMAL_REGEX)
+  getActionValue('borrow-health', getTimeoutCategory(rpc, 'simulation', isMocked)).should('match', DECIMAL_REGEX)
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button', isMocked })
@@ -238,7 +239,7 @@ export const checkLoanRangeSlider = (isMocked = false) => {
     cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
     getBorrowInput().should('not.have.attr', 'data-value', safeMax)
     getMaxBorrowBalance().should('not.have.attr', 'data-value', safeMax)
-    getMaxBorrowBalance(TIMEOUTS[getTimeoutCategory('evm.simulation', isMocked)]).click()
+    getMaxBorrowBalance(TIMEOUTS[getTimeoutCategory('evm', 'simulation', isMocked)]).click()
     cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
     getMaxBorrowBalance().should('have.attr', 'data-value', safeMax)
     getBorrowInput().should('have.attr', 'data-value', safeMax)

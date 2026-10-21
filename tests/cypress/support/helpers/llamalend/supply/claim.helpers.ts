@@ -26,7 +26,7 @@ const submitClaimForm = (type: SupplyActionType, isMocked = false) =>
 const getClaimSubmitButton = (type: ClaimRewardType, isMocked = false) =>
   cy.get(
     `[data-testid="supply-claim-${type}-rewards-submit-button"]`,
-    TIMEOUTS[getTimeoutCategory('tenderly.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   )
 
 export const submitClaimAndSettle = (
@@ -84,7 +84,7 @@ export const prepareClaimRewards = ({
 const touchClaimForm = (type: string, isMocked = false) => {
   cy.get(
     `[data-testid="supply-${type}-submit-button"]`,
-    TIMEOUTS[getTimeoutCategory('tenderly.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   ).should('be.disabled')
 }
 
@@ -105,7 +105,7 @@ export function validateClaimTabState({
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get(
     '[data-testid="supply-claim-empty-state"]',
-    TIMEOUTS[getTimeoutCategory('tenderly.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   ).should(noRewards ? 'be.visible' : 'not.exist')
 }
 
@@ -136,7 +136,7 @@ export function checkClaimDetailsLoaded({
   // The table's test ID is absent while either reward query is loading.
   cy.get(
     '[data-testid="data-table"] [data-testid="data-table-cell-token"]',
-    TIMEOUTS[getTimeoutCategory('tenderly.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   ).should('have.length.at.least', 1)
   cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
 
@@ -145,13 +145,13 @@ export function checkClaimDetailsLoaded({
       checkEstimatedTxCostValue({
         hasValue: hasApi,
         name: 'claim-crv-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('tenderly.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
     } else {
       checkEstimatedTxCostValue({
         hasValue: false,
         name: 'claim-crv-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('tenderly.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
       getActionInfo('claim-crv-rewards-estimated-tx-cost', 'ui.render').should('have.text', '-')
     }
@@ -160,13 +160,13 @@ export function checkClaimDetailsLoaded({
       checkEstimatedTxCostValue({
         hasValue: hasApi,
         name: 'claim-other-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('tenderly.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
     } else {
       checkEstimatedTxCostValue({
         hasValue: false,
         name: 'claim-other-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('tenderly.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
       getActionInfo('claim-other-rewards-estimated-tx-cost', 'ui.render').should('have.text', '-')
     }

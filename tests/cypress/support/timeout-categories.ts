@@ -72,26 +72,21 @@ export const TIMEOUTS = {
   'mock.sentry.report': standard, // Intercepted Sentry envelope submission.
 
   // Stubbed SDK operations in component tests.
-  'mock.evm.balances': extended,
-  'mock.evm.contractRead': standard,
-  'mock.evm.allowance': standard,
-  'mock.evm.simulation': extended,
-  'mock.evm.confirmation': extended,
+  'mock.balances': extended,
+  'mock.contractRead': standard,
+  'mock.allowance': standard,
+  'mock.simulation': extended,
+  'mock.submit': extended,
 } as const satisfies Record<string, Cypress.Timeoutable>
 
 export type TimeoutCategory = keyof typeof TIMEOUTS
 
-const MOCK_TIMEOUT_CATEGORIES = {
-  'evm.balances': 'mock.evm.balances',
-  'evm.contractRead': 'mock.evm.contractRead',
-  'evm.simulation': 'mock.evm.simulation',
-  'tenderly.balances': 'mock.evm.balances',
-  'tenderly.contractRead': 'mock.evm.contractRead',
-  'tenderly.allowance': 'mock.evm.allowance',
-  'tenderly.simulation': 'mock.evm.simulation',
-  'tenderly.submit': 'mock.evm.confirmation',
-} as const satisfies Partial<Record<TimeoutCategory, TimeoutCategory>>
-
 /** Shared helpers receive the mock flag explicitly; never infer it from the environment. */
-export const getTimeoutCategory = (category: keyof typeof MOCK_TIMEOUT_CATEGORIES, isMocked: boolean) =>
-  isMocked ? MOCK_TIMEOUT_CATEGORIES[category] : category
+export const getTimeoutCategory = <
+  Provider extends 'evm' | 'tenderly',
+  Operation extends 'balances' | 'contractRead' | 'allowance' | 'simulation' | 'submit',
+>(
+  provider: Provider,
+  operation: Operation,
+  isMocked: boolean,
+) => `${isMocked ? 'mock' : provider}.${operation}` as const
