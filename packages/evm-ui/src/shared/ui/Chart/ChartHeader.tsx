@@ -12,7 +12,7 @@ import { t } from '@ui/lib/i18n'
 import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { SelectTimeOption, type TimeOption } from './SelectTimeOption'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Padding, Sizing } = SizesAndSpaces
 
 export type ChartSelections<TChartKey = string> = {
   /** Display title of the active selection (in the button-group variant it's on the left) */
@@ -31,6 +31,13 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   }
   timeOption?: TimeOption<TTimeOption>
   chartOptionVariant: 'select' | 'buttons-group'
+  /** Rendered before the chart selection */
+  title?: ReactNode
+  /**
+   * Use when the header sits inside a card's content; mirrors the Figma "Nested" property.
+   * Fills the row with Layer 1 at card title height, with a smaller title inset and primary title text.
+   */
+  nested?: boolean
   flipChart?: () => void
   customButton?: ReactNode
   /** When true, displays "Loading" in the chart selection area and disables interaction */
@@ -42,6 +49,8 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   chartSelections,
   timeOption,
   chartOptionVariant,
+  title,
+  nested = false,
   flipChart,
   customButton,
   isLoading = false,
@@ -56,6 +65,46 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   )
   const hasSingleOption = chartSelections.selections.length === 1
 
+  // Active selection title or Select dropdown menu based on the chartOptionVariant
+  const chartSelection =
+    chartOptionVariant === 'buttons-group' || hasSingleOption ? (
+      <Typography variant="bodySBold">{isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}</Typography>
+    ) : isLoading ? (
+      <Select variant="ghost" value="loading" size="tiny" sx={{ alignSelf: 'center' }} disabled>
+        <MenuItem value="loading">
+          <Typography variant="bodySBold">{t`Loading`}</Typography>
+        </MenuItem>
+      </Select>
+    ) : (
+      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
+        <Select
+          variant="ghost"
+          value={chartSelections.activeSelection ?? ''}
+          onChange={event => {
+            if (event.target.value != null && chartSelections.setActiveSelection)
+              chartSelections.setActiveSelection(event.target.value as TChartKey)
+          }}
+          size="tiny"
+          sx={{ alignSelf: 'center' }}
+          MenuProps={{
+            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+            transformOrigin: { vertical: 'top', horizontal: 'left' },
+          }}
+        >
+          {chartSelections.selections.map(selection => (
+            <MenuItem value={selection.key} key={selection.key}>
+              <Typography variant="bodySBold">{selection.activeTitle}</Typography>
+            </MenuItem>
+          ))}
+        </Select>
+        {flipChart && (
+          <IconButton color="ghost" size="extraSmall" onClick={flipChart}>
+            <ArrowsHorizontalIcon />
+          </IconButton>
+        )}
+      </Stack>
+    )
+
   return (
     <Stack
       direction="row"
@@ -66,46 +115,26 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
           flexWrap: 'wrap',
           rowGap: Spacing.md,
           columnGap: Spacing.sm,
+          // matches the small CardHeader height so the row lines up with sibling card titles
+          ...(nested && { backgroundColor: theme => theme.design.Layer[1].Fill, minHeight: Sizing.lg }),
         },
         sx,
       )}
     >
-      {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
-      {chartOptionVariant === 'buttons-group' || hasSingleOption ? (
-        <Typography variant="bodySBold">{isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}</Typography>
-      ) : isLoading ? (
-        <Select value="loading" size="small" sx={{ alignSelf: 'center' }} disabled>
-          <MenuItem value="loading">
-            <Typography variant="bodySBold">{t`Loading`}</Typography>
-          </MenuItem>
-        </Select>
-      ) : (
-        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
-          <Select
-            value={chartSelections.activeSelection ?? ''}
-            onChange={event => {
-              if (event.target.value != null && chartSelections.setActiveSelection)
-                chartSelections.setActiveSelection(event.target.value as TChartKey)
-            }}
-            size="small"
-            sx={{ alignSelf: 'center' }}
-            MenuProps={{
-              anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-              transformOrigin: { vertical: 'top', horizontal: 'left' },
-            }}
+      {title ? (
+        <Stack direction="row" sx={{ alignItems: 'center' }}>
+          <Typography
+            component="h3"
+            variant="headingXsBold"
+            color={nested ? 'textPrimary' : 'textSecondary'}
+            sx={{ paddingInline: nested ? Spacing.sm : Padding.Card.sm }}
           >
-            {chartSelections.selections.map(selection => (
-              <MenuItem value={selection.key} key={selection.key}>
-                <Typography variant="bodySBold">{selection.activeTitle}</Typography>
-              </MenuItem>
-            ))}
-          </Select>
-          {flipChart && (
-            <IconButton color="ghost" size="extraSmall" onClick={flipChart}>
-              <ArrowsHorizontalIcon />
-            </IconButton>
-          )}
+            {title}
+          </Typography>
+          {chartSelection}
         </Stack>
+      ) : (
+        chartSelection
       )}
       <Stack direction="row" sx={{ alignItems: 'center' }}>
         <ToggleButtonGroup exclusive value={chartSelections.activeSelection} onChange={handleChartOptionToggle}>

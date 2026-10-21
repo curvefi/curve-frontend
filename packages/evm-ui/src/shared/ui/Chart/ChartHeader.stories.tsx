@@ -3,6 +3,10 @@ import { DEFAULT_TIME_OPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart
 import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
 import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 type DexChartKey = 'lp-usd' | 'lp-token' | 'pair'
@@ -121,6 +125,43 @@ const LendLoanOhlcChartHeader = () => {
   )
 }
 
+type LiquidityChartKey = 'liquidity' | 'volume'
+const liquiditySelections: ChartSelections<LiquidityChartKey>[] = [
+  { key: 'liquidity', label: 'Liquidity', activeTitle: 'Liquidity' },
+  { key: 'volume', label: 'Volume', activeTitle: 'Volume' },
+]
+
+const NestedChartHeaderExample = ({ width }: { width: number }) => {
+  const [activeChart, setActiveChart] = useState<LiquidityChartKey>('liquidity')
+  const [activeTime, setActiveTime] = useState<CandleChartTimeOption>(DEFAULT_TIME_OPTION)
+
+  return (
+    <Card size="small" sx={{ width }}>
+      <CardHeader title="Composition" />
+      <ChartHeader
+        title="Liquidity density"
+        nested
+        chartOptionVariant="select"
+        chartSelections={{
+          selections: liquiditySelections,
+          activeSelection: activeChart,
+          setActiveSelection: (value: LiquidityChartKey) => setActiveChart(value),
+        }}
+        timeOption={{
+          options: TIME_OPTIONS,
+          activeOption: activeTime,
+          setActiveOption: (value: CandleChartTimeOption) => setActiveTime(value),
+        }}
+      />
+      <CardContent>
+        <Typography variant="bodySRegular" color="textSecondary">
+          Chart body
+        </Typography>
+      </CardContent>
+    </Card>
+  )
+}
+
 const ScrvUsdStatisticsHeaderExample = () => {
   const [activeChart, setActiveChart] = useState<StatisticsChart>('savingsRate')
 
@@ -225,5 +266,22 @@ export const ButtonsGroupVariantScrvUsdStatisticsHeaderNarrow: Story = {
       },
     },
   },
+}
+
+export const NestedSelectVariant: Story = {
+  render: () => <NestedChartHeaderExample width={exampleWidths.normalWidth} />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Nested header inside a card: title, select and time selector. The title padding lines up with the card title.',
+      },
+    },
+  },
+}
+
+export const NestedSelectVariantNarrow: Story = {
+  render: () => <NestedChartHeaderExample width={exampleWidths.narrowWidth} />,
+  parameters: { docs: { description: { story: 'Narrow width example of the nested header inside a card.' } } },
 }
 export default meta
