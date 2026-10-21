@@ -31,3 +31,6 @@ export const useNewLlamaMarketDetailPage = useStableChannel
 export const useMarketMobileFormDrawer = useStableChannel
 
 export const useNewPoolForms = useBetaChannel
+
+/** LlamaLend leverage as position value ÷ equity */
+export const useLlamalendEquityLeverage = useBetaChannel
