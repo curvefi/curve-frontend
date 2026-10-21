@@ -167,7 +167,7 @@ export const createPoolDepositSlice = (
             tokenAddress: tokenAddresses[idx],
             value: seedAmounts?.[idx] || '',
           })),
-          isWrapped: hasWrapped(pool),
+          isWrapped: hasWrapped(pool) ?? false,
         }
       } catch (error) {
         console.error('Api error getSeedAmounts', error)
@@ -177,7 +177,7 @@ export const createPoolDepositSlice = (
             const value = idx === 0 ? formValues.amounts[idx].value : ''
             return { token, tokenAddress: tokenAddresses[idx], value }
           }),
-          isWrapped: hasWrapped(pool),
+          isWrapped: hasWrapped(pool) ?? false,
         }
       }
     },

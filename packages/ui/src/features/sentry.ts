@@ -39,7 +39,9 @@ export const initSentry = (applicationKey: string, transport?: BrowserOptions['t
     ],
     beforeSend: (event, { originalException: error }) =>
       isUserErrorReport(event) ||
-      (!event.tags?.third_party_code && !isExpectedExternalError(getErrorMessage(event, error)))
+      (!event.tags?.third_party_code &&
+        !isExpectedExternalError(getErrorMessage(event, error)) &&
+        !isRejectedWalletError(error))
         ? withErrorMessage(event, error)
         : null,
     sendClientReports: false, // prevents client_report envelopes for dropped events
@@ -74,7 +76,22 @@ const IGNORED_EXTENSION_MESSAGES = [
   'Extension context invalidated.',
 ]
 
-/** Wallet and transaction failures are handled at their call sites; report any that still escape. */
+const REJECTED_WALLET_MESSAGES = [
+  'Not Allowed',
+  'wallet must has at least one account',
+  'Request rejected',
+  'User rejected the request.',
+  'Permission denied, approve www.curve.finance in Frame to continue',
+  'Tx Signature: User denied transaction signature.',
+]
+
+/** Injected wallets can reject internal promises outside our call sites, without parsed stack frames. */
+const isRejectedWalletError = (error: unknown) =>
+  isObjectLike(error) &&
+  error.code === 4001 &&
+  typeof error.message === 'string' &&
+  REJECTED_WALLET_MESSAGES.includes(error.message)
+
 const isExpectedExternalError = (message: string | undefined) =>
   !!message &&
   (EXPECTED_EXTERNAL_MESSAGES.some(pattern => message.includes(pattern)) ||

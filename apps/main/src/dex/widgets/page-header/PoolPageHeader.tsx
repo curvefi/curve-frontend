@@ -4,7 +4,7 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import type { Address } from '@primitives/address.utils'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
-import { constQ, fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { amount } from '@ui/lib/decimal'
 
 export const PoolPageHeader = ({
@@ -20,8 +20,8 @@ export const PoolPageHeader = ({
   blockchainId: string
   poolAddress: Address
   title: QueryProp<string>
-  tokens: QueryProp<{ symbol: string | undefined; address: Address }>[] | undefined
-  pricesApiPoolData: PricesApiPool | undefined
+  tokens: QueryProp<{ symbol: string; address: Address }>[] | undefined
+  pricesApiPoolData: QueryProp<PricesApiPool>
   backHref: string
 }) => {
   const tvl = usePoolTvl({ chainId, poolAddress })
@@ -36,12 +36,12 @@ export const PoolPageHeader = ({
       rightItems={
         <PoolHeaderMetrics
           tvl={fallbackQ(
-            mapQuery(tvl, data => amount(data)),
-            constQ(amount(pricesApiPoolData?.tvlUsd)),
+            mapQuery(tvl, tvl => amount(tvl)),
+            mapQuery(pricesApiPoolData, pool => amount(pool.tvlUsd)),
           )}
           volume24h={fallbackQ(
-            mapQuery(volume, data => amount(data)),
-            constQ(amount(pricesApiPoolData?.tradingVolume24h)),
+            mapQuery(volume, volume => amount(volume)),
+            mapQuery(pricesApiPoolData, pool => amount(pool.tradingVolume24h)),
           )}
         />
       }

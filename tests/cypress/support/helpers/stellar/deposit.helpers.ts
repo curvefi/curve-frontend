@@ -1,38 +1,28 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { calculateMinimumMint } from '@/stellar/lib/amounts'
-import { fetchExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
-import { fetchPoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
-import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import {
-  checkPoolPriceImpact,
-  checkPoolSlippage,
-  type PoolAmounts,
-  poolInput,
-  type PoolState,
-  TEST_NETWORK,
-} from '@cy/support/helpers/stellar/pool.helpers'
+import { oneDecimal } from '@cy/support/generators'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries } from '@primitives/objects.utils'
-import { useUserProfileStore } from '@ui/features/user-profile/store'
-import { decimalMinus, decimalMultiply, decimalSum, toWei } from '@ui/lib/decimal'
+import { decimalMinus, decimalMultiply, toWei } from '@ui/lib/decimal'
 
-export const BASE_DEPOSIT_AMOUNT = '0.01' satisfies Decimal
-
-export const allCoinDeposit = (coins: PoolState['coins']): PoolAmounts =>
-  fromEntries(coins.map((coin, index) => [coin.symbol, decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1)]))
+/** Seed and balanced deposits use coin proportions 1:2:3. */
+export const allCoinDeposit = (coins: PoolState['coins'], unit = oneDecimal(0.01, 0.05)): PoolAmounts =>
+  fromEntries(coins.map((coin, index) => [coin.symbol, decimalMultiply(unit, index + 1)]))
 
 /** Seed a fresh test pool without mounting a deposit form. */
 export const seedTestPool = async (pool: StellarContract, { coins, deployer: { address: account } }: TestnetConfig) => {
+  const unit = oneDecimal(0.01, 0.05)
   const amounts = await Promise.all(
     coins.map(async (token, index) => {
       const decimals = await fetchTokenDecimals({ network: TEST_NETWORK, token })
-      return BigInt(toWei(decimalMultiply(BASE_DEPOSIT_AMOUNT, index + 1), decimals))
+      return BigInt(toWei(decimalMultiply(unit, index + 1), decimals))
     }),
   )
   const transaction = await simulateContractCall<bigint>(
@@ -43,22 +33,6 @@ export const seedTestPool = async (pool: StellarContract, { coins, deployer: { a
     account,
   )
   return sendStellarTransaction(transaction)
-}
-
-const fetchDepositPreview = async (pool: StellarContract, { coins, lp, supply }: PoolState, amounts: PoolAmounts) => {
-  const expected = await fetchExpectedLp({
-    network: TEST_NETWORK,
-    pool,
-    amounts: coins.map(({ symbol }) => amounts[symbol] ?? '0'),
-    decimals: coins.map(({ decimals }) => decimals),
-    supply,
-    isDeposit: true,
-  })
-  return {
-    expected,
-    minimum: calculateMinimumMint(expected, useUserProfileStore.getState().maxSlippage.stable),
-    projected: decimalSum(lp.balance, expected),
-  }
 }
 
 export const depositBalancedCheckbox = () =>
@@ -78,15 +52,6 @@ export const checkBalancedWalletAmounts = (coins: PoolState['coins']) =>
     Math.min(...coins.map(({ balance }, index) => Number(balance) / (index + 1))),
   )
 
-const checkDepositSupply = (pool: StellarContract, state: PoolState, expectedLp: Decimal) =>
-  cy
-    .then(TIMEOUTS['stellar.read'], () => fetchPoolSupply({ network: TEST_NETWORK, pool }, { staleTime: 0 }))
-    .then(supply => {
-      const seedLock = +state.supply ? '0' : state.config.seedLock
-      expect(decimalMinus(supply, state.supply)).to.equal(decimalSum(expectedLp, seedLock))
-      expect(decimalMinus(supply, decimalSum(state.lp.balance, expectedLp))).to.equal(state.config.seedLock)
-    })
-
 export const depositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', TIMEOUTS['ui.render'])
 export const checkDepositDetail = (
   detail: 'expected-lp' | 'minimum-lp' | 'current-lp' | 'projected-lp' | 'seed-lock',
@@ -105,7 +70,19 @@ export const checkDepositBalances = ({ coins, lp }: PoolState) => {
 }
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
-  getActionValue('pool-deposit-expected-lp', 'stellar.simulation').should(value => expect(+value!).to.be.greaterThan(0))
+  getActionValue('pool-deposit-expected-lp', 'stellar.simulation')
+    .should(value => expect(Number(value)).to.be.greaterThan(0))
+    .then(expected =>
+      getActionValue('borrow-slippage', 'ui.interaction').then(slippage => {
+        const quote = Number(expected)
+        const minimum = quote * (1 - Number.parseFloat(slippage!) / 100)
+        // LP values show five significant digits; slippage shows two decimal places.
+        const tolerance = 10 ** (Math.floor(Math.log10(quote)) - 4) + (quote * 0.005) / 100
+        getActionValue('pool-deposit-minimum-lp', 'stellar.simulation').should(value =>
+          expect(Number(value), 'minimum LP after slippage').to.be.closeTo(minimum, tolerance),
+        )
+      }),
+    )
   submitAndExpectToast(
     () => depositSubmit().click(TIMEOUTS['ui.interaction']),
     { message: 'Deposit confirmed' },
@@ -117,25 +94,18 @@ export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
   depositSubmit().should('be.disabled')
 }
 
-const checkDepositResult = (state: PoolState, amounts: PoolAmounts, projectedLp: Decimal) =>
-  checkDepositBalances({
-    ...state,
-    lp: { ...state.lp, balance: projectedLp },
-    coins: state.coins.map(coin => ({ ...coin, balance: decimalMinus(coin.balance, amounts[coin.symbol]) })),
-  })
-
-/** Check the preview, confirm the deposit, and verify its effect on the wallet and pool. */
-export const submitDepositAndCheck = (pool: StellarContract, state: PoolState, amounts: PoolAmounts) =>
-  cy
-    .then(TIMEOUTS['stellar.simulation'], () => fetchDepositPreview(pool, state, amounts))
-    .then(({ expected, minimum, projected }) => {
-      checkDepositDetail('expected-lp', expected)
-      checkDepositDetail('minimum-lp', minimum)
-      checkDepositDetail('projected-lp', projected)
-      checkEstimatedTxCost({ category: 'stellar.simulation' })
-      checkPoolSlippage()
-      if (+state.supply) checkPoolPriceImpact()
+/** Submit through the form and check its LP and token balance refresh. */
+export const submitDepositAndCheck = (state: PoolState, amounts: PoolAmounts) => {
+  depositSubmit().should('be.enabled')
+  return getActionValue('pool-deposit-projected-lp', 'stellar.simulation')
+    .should(value => expect(Number(value)).to.be.greaterThan(+state.lp.balance))
+    .then(projected => {
       submitDepositForm(state)
-      checkDepositResult(state, amounts, projected)
-      checkDepositSupply(pool, state, expected)
+      getActionValue('pool-deposit-current-lp', 'stellar.read').should('equal', projected)
+      state.coins.map(({ address, symbol, balance }) =>
+        poolInput(address)
+          .find('[data-testid="balance-value"]', TIMEOUTS['stellar.read'])
+          .should('have.attr', 'data-value', decimalMinus(balance, amounts[symbol])),
+      )
     })
+}

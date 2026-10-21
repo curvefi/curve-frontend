@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
-import { getTokens, isWrappedOnly, tryGetPool } from '@/dex/pool.utils'
+import { getTokens, tryGetPool } from '@/dex/pool.utils'
 import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -36,11 +36,7 @@ export const DetailInfoTradeRouteRoute = ({
 
   const pool = useMemo(() => tryGetPool(poolId), [poolId])
   const { tokens: poolTokens, tokenAddresses } = useMemo(
-    () =>
-      maybe(pool, pool => getTokens(pool, { wrapped: isWrappedOnly(pool) })) ?? {
-        tokens: undefined,
-        tokenAddresses: undefined,
-      },
+    () => maybe(pool, pool => getTokens(pool, { wrapped: false })) ?? { tokens: undefined, tokenAddresses: undefined },
     [pool],
   )
   return (

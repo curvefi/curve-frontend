@@ -70,7 +70,6 @@
     ]
   },
   "resolutions": {
-    "@types/node": "26.6.3",
-    "vite": "8.3.1"
+    "@types/node": "26.6.3"
   }
 }

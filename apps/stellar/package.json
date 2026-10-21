@@ -30,6 +30,6 @@
     "@sentry/vite-plugin": "5.4.0",
     "@types/node": "26.6.3",
     "@vitejs/plugin-react": "6.1.1",
-    "vite": "8.3.1"
+    "vite": "8.3.3"
   }
 }

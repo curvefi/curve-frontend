@@ -12,5 +12,3 @@ export type YieldBreakdownRow = {
   maxBoostRate?: number
   rateTooltip?: Pick<TooltipProps, 'title' | 'body' | 'clickable'>
 }
-
-export type YieldBreakdownData = { rows: YieldBreakdownRow[]; total: number; maxBoostTotal: number }

@@ -8,7 +8,7 @@ export function useRedirectToEth(blockchainId: string, supportedBlockchainIds: s
   useEffect(() => {
     if (!supportedBlockchainIds.includes(blockchainId) && pathname) {
       console.warn(`Chain '${blockchainId}' not supported, redirecting...`)
-      push(replaceNetworkInPath(pathname, 'ethereum') + searchStr)
+      push(replaceNetworkInPath(pathname, 'ethereum') + searchStr, { replace: true })
     }
   }, [blockchainId, supportedBlockchainIds, push, pathname, searchStr])
 }

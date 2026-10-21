@@ -6,7 +6,9 @@ import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositActionInfoList } from './DepositActionInfoList'
 
 export const DepositTab = ({ maxSlippage }: TransferProps) => {
-  const { pool } = usePoolContext()
+  const {
+    pool: { data: pool },
+  } = usePoolContext()
   const { params, ...form } = useDepositForm({ maxSlippage })
   return (
     <DepositForm
