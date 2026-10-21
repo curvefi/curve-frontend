@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { vercel } from 'vite-plugin-vercel/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+import { reactCompiler } from '../../react-compiler.config'
 
 const {
   API_PROXY_TARGET,
@@ -44,7 +44,7 @@ export default defineConfig(({ command }) => ({
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
   plugins: [
     react(),
-    babel({ presets: [reactCompilerPreset({ compilationMode: 'annotation' })] }),
+    reactCompiler(),
     svgr(),
     ...(isVercelDeployment
       ? [

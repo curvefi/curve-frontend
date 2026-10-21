@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be deleted. */
+
 import { cloneDeep } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useConnection, type Config } from 'wagmi'

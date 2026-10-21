@@ -7,10 +7,12 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { WithdrawLockQuery } from './withdraw-lock.types'
 
-export const withdrawLockValidationSuite = createValidationSuite((params: WithdrawLockQuery) => {
-  curveApiValidationGroup({ chainId: params.chainId })
-  userAddressValidationGroup({ userAddress: params.userAddress })
-  test('unlockTime', t`Your CRV lock has not expired`, () => {
-    enforce(getIsLockExpired(params.lockedAmount, params.unlockTime)).isTruthy()
-  })
-})
+export const withdrawLockValidationSuite = createValidationSuite(
+  ({ chainId, currentDate, lockedAmount, unlockTime, userAddress }: WithdrawLockQuery) => {
+    curveApiValidationGroup({ chainId })
+    userAddressValidationGroup({ userAddress })
+    test('unlockTime', t`Your CRV lock has not expired`, () => {
+      enforce(getIsLockExpired(lockedAmount, unlockTime, currentDate)).isTruthy()
+    })
+  },
+)
