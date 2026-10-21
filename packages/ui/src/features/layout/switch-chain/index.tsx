@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import { useEffect } from 'react'
 import Badge from '@mui/material/Badge'
 import IconButton from '@mui/material/IconButton'
-import { maybe, type PartialRecord } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { ModalSettingsButton } from '@ui/components/ModalSettingsButton'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -20,12 +20,10 @@ import type { NetworkSwitchPolicy } from './util'
 
 const { IconSize } = SizesAndSpaces
 
-export type ChainSwitcherProps<TApp extends string> = {
+export type ChainSwitcherProps = {
   networkSwitch: NetworkSwitchPolicy
   supportedNetworks: ChainListOption[]
-  currentMenu: TApp
   currentNetwork: ChainListOption | undefined
-  hideChains?: PartialRecord<TApp, number[]>
   tvls: QueryProp<Record<string, number>>
 }
 
@@ -36,14 +34,7 @@ const getTvl =
       ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
       : (maybe(tvls, tvls => tvls[id]) ?? 0)
 
-export const ChainSwitcher = <TApp extends string>({
-  networkSwitch,
-  supportedNetworks,
-  currentMenu,
-  currentNetwork,
-  tvls,
-  hideChains,
-}: ChainSwitcherProps<TApp>) => {
+export const ChainSwitcher = ({ networkSwitch, supportedNetworks, currentNetwork, tvls }: ChainSwitcherProps) => {
   const blockchainId = currentNetwork?.blockchainId
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
@@ -65,12 +56,6 @@ export const ChainSwitcher = <TApp extends string>({
       closeSettings()
     },
     [blockchainId, networkSwitch.type, close, closeSettings],
-  )
-
-  const options = lodash.orderBy(
-    supportedNetworks.filter(n => !hideChains?.[currentMenu]?.includes(n.chainId)),
-    [getTvl(tvls.data), 'name'],
-    ['desc', 'asc'],
   )
 
   return (
@@ -115,7 +100,7 @@ export const ChainSwitcher = <TApp extends string>({
           ) : (
             <ChainList
               showTestnets={showTestnets}
-              options={options}
+              options={lodash.orderBy(supportedNetworks, [getTvl(tvls.data), 'name'], ['desc', 'asc'])}
               tvls={tvls}
               selectedNetworkId={blockchainId}
               onNetwork={close}

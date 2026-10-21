@@ -36,7 +36,6 @@ export const MobileHeader = <TApp extends string>({
   banners,
   supportedNetworks,
   tvls,
-  hideChains,
   links,
   currentNetwork,
   connectWalletProps,
@@ -74,9 +73,7 @@ export const MobileHeader = <TApp extends string>({
           supportedNetworks={supportedNetworks}
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
-          currentMenu={currentMenu}
           currentNetwork={currentNetwork}
-          hideChains={hideChains}
           tvls={tvls}
         />
 

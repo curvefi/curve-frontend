@@ -52,7 +52,6 @@ function mountSwitcher({
       <>
         <ChainSwitcher
           networkSwitch={policy}
-          currentMenu="dex"
           currentNetwork={options.find(option => option.blockchainId === blockchainId)}
           supportedNetworks={options.map(option => ({
             ...option,

@@ -21,7 +21,7 @@ import { EvmBanners } from '@evm-ui/shared/ui/EvmBanners'
 import { shortenAddress } from '@evm-ui/utils'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
-import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
+import { mapRecord, maybe } from '@primitives/objects.utils'
 import { useLocation, useMatches } from '@tanstack/react-router'
 import { Footer } from '@ui/features/layout/Footer'
 import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.util'
@@ -64,7 +64,7 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
 }
 
 // Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
-const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = { dex: [Chain.ZkSync, Chain.Mantle] }
+const HIDE_CHAINS: number[] = [Chain.ZkSync, Chain.Mantle]
 
 /** Resolves the given links based on current network and pathname */
 const resolveLinks = ({ blockchainId, pathname }: { blockchainId: string; pathname: string }) =>
@@ -100,9 +100,10 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   const networkSwitch = useMatches().findLast(match => match.staticData.networkSwitch)?.staticData.networkSwitch ?? {
     type: 'same-page',
   }
+  // Would be cool if can get rid of the app distinction in supported networks in a future PR.
   const supportedNetworks = createChainOptions(currentApp === 'lend' ? lendNetworks : networks, targetBlockchainId =>
     getNetworkSwitchHref(location, targetBlockchainId, networkSwitch),
-  )
+  ).filter(n => !HIDE_CHAINS?.includes(n.chainId))
 
   return (
     <PageLayout
@@ -125,7 +126,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
           pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
           links={resolveLinks(routeContext)}
           sections={getHeaderSections(formatUrl)}
-          hideChains={HIDE_CHAINS}
           tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
           connectWalletProps={{ disconnect, address, addressLabel, isConnecting, isConnected, connect }}
         />

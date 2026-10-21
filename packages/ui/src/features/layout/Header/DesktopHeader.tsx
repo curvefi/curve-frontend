@@ -24,7 +24,6 @@ export const DesktopHeader = <TApp extends string>({
   supportedNetworks,
   pages,
   appStats,
-  hideChains,
   tvls,
   links,
   banners,
@@ -54,8 +53,6 @@ export const DesktopHeader = <TApp extends string>({
             networkSwitch={networkSwitch}
             supportedNetworks={supportedNetworks}
             currentNetwork={currentNetwork}
-            currentMenu={currentMenu}
-            hideChains={hideChains}
             tvls={tvls}
           />
           <ConnectWalletIndicator {...connectWalletProps} />
