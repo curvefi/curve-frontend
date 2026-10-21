@@ -22,15 +22,6 @@ const helpers = { waitForTransaction, waitForTransactions }
 
 const USE_API = true
 
-export const fetchNewPools = async (curve: CurveApi) =>
-  await Promise.all([
-    curve.factory.fetchNewPools(),
-    curve.cryptoFactory.fetchNewPools(),
-    curve.twocryptoFactory.fetchNewPools(),
-    curve.tricryptoFactory.fetchNewPools(),
-    curve.stableNgFactory.fetchNewPools(),
-  ])
-
 export const fetchPools = async (curve: CurveApi) => {
   await Promise.all([
     curve.factory.fetchPools(USE_API),
@@ -40,10 +31,6 @@ export const fetchPools = async (curve: CurveApi) => {
     curve.tricryptoFactory.fetchPools(USE_API),
     curve.stableNgFactory.fetchPools(USE_API),
   ])
-
-  if (!curve.isNoRPC) {
-    await fetchNewPools(curve)
-  }
 }
 
 // curve

@@ -5,7 +5,7 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
-import { usePoolLookup } from '@/dex/queries/pool-lookup.query'
+import { tryGetPool } from '@/dex/pool.utils'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -14,7 +14,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { constQ, fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
@@ -27,8 +27,8 @@ export const PagePool = () => {
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const lookup = usePoolLookup({ chainId, poolAddress })
-  const pool = isHydrated ? lookup : fakeLoadingQ(undefined) // We want to have a loading state during hydration (pool query is disabled until then)
+  // We want to have a loading state during hydration (pool is unavailable until then)
+  const pool = isHydrated ? constQ(tryGetPool(poolAddress, curveApi) ?? null) : fakeLoadingQ(undefined)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
