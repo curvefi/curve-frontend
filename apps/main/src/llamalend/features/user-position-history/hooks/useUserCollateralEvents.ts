@@ -58,7 +58,16 @@ export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof
   type: UserCollateralEventType
 } & Partial<MarketTokens>
 
-export type UserCollateralEvents = { events: ParsedUserCollateralEvent[]; originalLeverage: Decimal }
+export type UserCollateralEvents = {
+  events: ParsedUserCollateralEvent[]
+  originalLeverage: Decimal
+  /** The open position borrowed through the leverage zap */
+  isZapLeveraged: boolean
+}
+
+/** True when a zap `Deposit` follows the last closed position. `events` are oldest first, as the API sends them. */
+const hasZapBorrowInOpenPosition = (events: UserCollateralEventFromApi[]) =>
+  events.slice(events.findLastIndex(e => e.isPositionClosed) + 1).some(e => e.leverage?.eventType === 'Deposit')
 
 const parseEventType = (
   { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: UserCollateralEventFromApi,
@@ -103,6 +112,7 @@ export const useUserCollateralEvents = ({
           originalLeverage: Number(data.totalDepositFromUserPrecise)
             ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
             : '0', // deposit should only be 0 if there is no loan, this is just a guard for div-by-zero errors
+          isZapLeveraged: hasZapBorrowInOpenPosition(data.events),
           events:
             data.events
               .map((event, index, events) => ({
