@@ -5,7 +5,6 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { isLendMarket } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
-import { useMarketVaultPricePerShare } from '@/llamalend/queries/market/market-vault-price-per-share.query'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.query'
 import {
@@ -33,7 +32,7 @@ import { Metric } from '@ui/components/Metric'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { decimalMultiply } from '@ui/lib/decimal'
+import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatCappedRateValue, aprToApy } from '@ui/lib/rates.utils'
 import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
@@ -97,18 +96,19 @@ export const SupplyPositionDetails = () => {
 
   const balances = useUserBalances(params)
   const supplyAsset = combineQueries(
-    [
-      useTokenUsdRate({ chainId, tokenAddress: market.addresses?.borrowed_token }),
-      useMarketVaultPricePerShare(params),
-      balances,
-    ],
-    (usdRate, perShare, { totalShares: totalShares = '0' }): SupplyAsset => ({
-      symbol: market.borrowed_token.symbol,
-      address: market.borrowed_token.address as Address,
-      usdRate,
-      depositedAmount: decimalMultiply(perShare, totalShares),
-      depositedUsdValue: decimalMultiply(perShare, totalShares, usdRate),
-    }),
+    [useTokenUsdRate({ chainId, tokenAddress: market.addresses?.borrowed_token }), balances],
+    (usdRate, { vaultSharesConverted, gaugeConverted }): SupplyAsset => {
+      // Use the converted balances instead of shares * price per share: the per-share value is rounded to the
+      // borrowed token decimals, which understates the position for low-decimal tokens like USDC.
+      const depositedAmount = decimalSum(vaultSharesConverted, gaugeConverted)
+      return {
+        symbol: market.borrowed_token.symbol,
+        address: market.borrowed_token.address as Address,
+        usdRate,
+        depositedAmount,
+        depositedUsdValue: decimalMultiply(depositedAmount, usdRate),
+      }
+    },
   )
 
   const extraIncentives = combineQueries(
