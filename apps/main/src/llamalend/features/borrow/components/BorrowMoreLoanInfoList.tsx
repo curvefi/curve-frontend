@@ -1,3 +1,4 @@
+import { getBorrowMorePosition } from '@/llamalend/equity-leverage.utils'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -7,18 +8,21 @@ import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
+import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
-import { decimalSum } from '@ui/lib/decimal'
+import { constQ, mapQuery, q } from '@ui/features/queries/util'
+import { decimalSum, ZERO } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
@@ -47,6 +51,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
   const totalCollateral = expectedCollateralQuery.data?.totalCollateral
   const collateralDelta = leverageEnabled ? totalCollateral : userCollateral
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const userState = q(useUserState(params, isOpen))
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -72,8 +78,21 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       debt={mapQuery(prevDebt, stateDebt => decimalSum(stateDebt, debt))}
       {...getLeverageInfoFields({
         leverageEnabled,
-        leverageValue: useBorrowMoreFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        collateralLeverageValue: useBorrowMoreFutureLeverage(params, isOpen),
+        prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
+        isEquityLeverage,
+        equityLeverage: useEquityLeverage(
+          {
+            params,
+            // with leverage, wait for the collateral bought with the debt
+            futurePosition: combineQueries(
+              [userState, leverageEnabled ? expectedCollateralQuery : constQ(null)],
+              state => getBorrowMorePosition(state, { collateral: collateralDelta ?? ZERO, debt: debt ?? ZERO }),
+            ),
+            leverageEnabled,
+          },
+          isOpen && isEquityLeverage,
+        ),
         prevCollateral,
         leverageTotalCollateral: combineQueries(
           [prevCollateral, expectedCollateralQuery],

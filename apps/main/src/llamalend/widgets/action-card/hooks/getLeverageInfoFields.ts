@@ -6,11 +6,15 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
+import type { EquityLeverage } from './useEquityLeverage'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
-  leverageValue: Query<Decimal | null>
-  prevLeverageValue: Query<Decimal | null>
+  collateralLeverageValue: Query<Decimal | null>
+  prevCollateralLeverageValue: Query<Decimal | null>
+  /** Beta: show the equity leverage instead of the collateral leverage */
+  isEquityLeverage: boolean
+  equityLeverage: EquityLeverage | null
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   collateralDelta?: Decimal // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
@@ -19,25 +23,31 @@ type LeverageInfoFieldsOptions = {
 export const getLeverageInfoFields = ({
   leverageEnabled,
   collateralDelta,
-  leverageValue,
-  prevLeverageValue,
+  collateralLeverageValue,
+  prevCollateralLeverageValue,
+  isEquityLeverage,
+  equityLeverage,
   prevCollateral,
   leverageTotalCollateral,
 }: LeverageInfoFieldsOptions) =>
   ({
     // we show the leverage info even when the leverage is disabled for the current action
-    ...(leverageEnabled || isPositionLeveraged(prevLeverageValue.data)
+    ...(leverageEnabled || isPositionLeveraged(prevCollateralLeverageValue.data) || equityLeverage
       ? {
           leverageEnabled: true,
-          leverageValue: q(leverageValue),
-          prevLeverageValue: q(prevLeverageValue),
+          // the equity leverage row is hidden when `equityLeverage` is null
+          ...(isEquityLeverage
+            ? { leverageValue: equityLeverage?.future, prevLeverageValue: equityLeverage?.current }
+            : { leverageValue: q(collateralLeverageValue), prevLeverageValue: q(prevCollateralLeverageValue) }),
+          collateralLeverageValue: q(collateralLeverageValue),
+          prevCollateralLeverageValue: q(prevCollateralLeverageValue),
           prevLeverageCollateral: {
-            data: calculateLeverageCollateral(prevCollateral.data, prevLeverageValue.data),
-            ...combineQueryState(prevCollateral, prevLeverageValue),
+            data: calculateLeverageCollateral(prevCollateral.data, prevCollateralLeverageValue.data),
+            ...combineQueryState(prevCollateral, prevCollateralLeverageValue),
           },
           leverageCollateral: {
-            data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
-            ...combineQueryState(leverageTotalCollateral, leverageValue),
+            data: calculateLeverageCollateral(leverageTotalCollateral.data, collateralLeverageValue.data),
+            ...combineQueryState(leverageTotalCollateral, collateralLeverageValue),
           },
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,

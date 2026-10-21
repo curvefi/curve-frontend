@@ -1,5 +1,8 @@
 import { BORROW_RATE_TITLE } from '@/llamalend/constants'
-import { getHealthValueColor } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import {
+  getHealthValueColor,
+  getLeverageValueColor,
+} from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
@@ -43,6 +46,9 @@ export type LoanActionInfoListProps = {
   returnToWallet?: QueryProp<{ value: Decimal; symbol: string }[]>
   prevLeverageValue?: QueryProp<Decimal | null>
   leverageValue?: QueryProp<Decimal | null>
+  /** Collateral leverage for the return on equity, while the leverage row may show the equity leverage */
+  prevCollateralLeverageValue?: QueryProp<Decimal | null>
+  collateralLeverageValue?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
@@ -82,6 +88,8 @@ export const LoanActionInfoList = ({
   returnToWallet,
   prevLeverageValue,
   leverageValue,
+  prevCollateralLeverageValue,
+  collateralLeverageValue,
   prevLeverageCollateral,
   leverageCollateral,
   prevLeverageTotalCollateral,
@@ -216,11 +224,13 @@ export const LoanActionInfoList = ({
             <ActionInfo
               label={t`Leverage`}
               value={
-                leverageValue?.data && prevLeverageValue
+                leverageValue?.data !== undefined && prevLeverageValue
                   ? mapQuery(prevLeverageValue, data => formatLeverage(data))
                   : DISABLED_Q
               }
               futureValue={mapQuery(leverageValue ?? DISABLED_Q, data => formatLeverage(data))}
+              currentValueColor={getLeverageValueColor(prevLeverageValue?.data)}
+              valueColor={getLeverageValueColor(leverageValue?.data)}
               size="small"
               testId="borrow-leverage"
             />
@@ -228,9 +238,9 @@ export const LoanActionInfoList = ({
           {collateralApy && (
             <ActionInfo
               label={t`Return on Equity (RoE)`}
-              value={formatReturnOnEquity(prevLeverageValue, prevRates, collateralApy)}
+              value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
               futureValue={formatReturnOnEquity(
-                leverageValue,
+                collateralLeverageValue,
                 /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
                 rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
                 collateralApy,

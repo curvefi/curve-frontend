@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
+import { getRepayPosition } from '@/llamalend/equity-leverage.utils'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
@@ -13,16 +14,18 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-le
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
+import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { combineQueryState } from '@ui/features/queries/combine'
+import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
-import { decimal, decimalMinus } from '@ui/lib/decimal'
+import { decimal, decimalMinus, ZERO } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -107,6 +110,8 @@ export function RepayLoanInfoList({
     { isFull, userBorrowed },
     isOpen,
   )
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const userState = q(useUserState(params, isOpen))
 
   return (
     <LoanActionInfoList
@@ -138,8 +143,20 @@ export function RepayLoanInfoList({
       {...getLeverageInfoFields({
         // we need to use the leverage implementations to do any swap. deleverage implementation cannot show the expected values
         leverageEnabled: showLeverage,
-        leverageValue: useRepayFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        collateralLeverageValue: useRepayFutureLeverage(params, isOpen),
+        prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
+        isEquityLeverage,
+        equityLeverage: useEquityLeverage(
+          {
+            params,
+            futurePosition: combineQueries(
+              [userState, debt],
+              (state, debt) =>
+                debt && getRepayPosition(state, { stateCollateral: stateCollateral ?? ZERO, debt, isFull: !!isFull }),
+            ),
+          },
+          isOpen && isEquityLeverage,
+        ),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
