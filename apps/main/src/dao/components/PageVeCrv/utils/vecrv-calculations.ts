@@ -9,6 +9,8 @@ import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { decimal } from '@ui/lib/decimal'
 import { MILLISECONDS_PER_SECOND } from '@ui/lib/time'
 
+export const UNLOCK_DATE_REFRESH = '5m' as const
+
 /** Returns the Curve API rounded unlock timestamp for a lock duration. */
 export const calcUnlockTime = ({
   curveApi,

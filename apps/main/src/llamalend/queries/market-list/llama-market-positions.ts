@@ -4,8 +4,8 @@ import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import { splitArrayTuple, zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy, type PartialRecord, recordValues } from '@primitives/objects.utils'
-import { useQueries } from '@tanstack/react-query'
 import { combineQueryState } from '@ui/features/queries/combine'
+import { useQueries } from '@ui/features/queries/query-hooks'
 import type { Query } from '@ui/features/queries/util'
 import {
   getUserLendingSuppliesOptions,

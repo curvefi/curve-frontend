@@ -2,17 +2,16 @@ import { isUndefined, omitBy } from 'lodash'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
-import { isEmpty, notFalsy, type Nullish } from '@primitives/objects.utils'
+import { isEmpty, maybe, notFalsy, type Nullish } from '@primitives/objects.utils'
 import {
   type DefaultError,
   keepPreviousData as keepPreviousDataTanstack,
   type QueryExecuteOptions,
   QueryFunctionContext,
-  queryOptions,
-  useQuery,
 } from '@tanstack/react-query'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
+import { useQuery, type QueryOptions } from '@ui/features/queries/query-hooks'
 import type { DeepPartial } from '@ui/features/queries/util'
 import { logError, logQuery, logSuccess } from '@ui/lib/logging'
 import { formatTimeDiff } from '@ui/lib/time'
@@ -100,29 +99,29 @@ export function queryFactory<
   const queryFn = async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
     await runQuery(queryKey, query, disableLog)
 
-  const getQueryOptions = (params: TParams, enabled = true) =>
-    queryOptions<TData, DefaultError, TData, InternalQueryKey<TKey>>({
-      ...QUERY_CATEGORIES[category],
-      queryKey: internalKey(params),
-      queryFn,
-      enabled:
-        enabled &&
-        isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)) &&
-        !dependencies?.(params).some(key => queryClient.getQueryData([key]) === undefined),
-      retry: (failureCount, error) =>
-        !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
-        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
-        failureCount < 3,
-      ...(keepPreviousData && {
-        placeholderData:
-          typeof keepPreviousData === 'function'
-            ? (prevData, prevQuery) =>
-                // We use query keys by passing a single object as the first and only item in the query key array, hence queryKey[0].
-                prevQuery && keepPreviousData(prevQuery.queryKey[0], queryKey(params)) ? prevData : undefined
-            : keepPreviousDataTanstack,
-      }),
-      ...options,
-    })
+  const getQueryOptions = (
+    params: TParams,
+    enabled = true,
+  ): QueryOptions<TData, DefaultError, TData, InternalQueryKey<TKey>> => ({
+    ...QUERY_CATEGORIES[category],
+    queryKey: internalKey(params),
+    queryFn,
+    enabled: enabled && isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)),
+    dependencies: maybe(dependencies, deps => () => deps(params)),
+    retry: (failureCount, error) =>
+      !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
+      !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
+      failureCount < 3,
+    ...(keepPreviousData && {
+      placeholderData:
+        typeof keepPreviousData === 'function'
+          ? (prevData, prevQuery) =>
+              // We use query keys by passing a single object as the first and only item in the query key array, hence queryKey[0].
+              prevQuery && keepPreviousData(prevQuery.queryKey[0], queryKey(params)) ? prevData : undefined
+          : keepPreviousDataTanstack,
+    }),
+    ...options,
+  })
 
   return {
     queryKey,
@@ -148,7 +147,7 @@ export function queryFactory<
         ...options,
         staleTime: 0,
       }),
-    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    useQuery: (params: TParams, enabled?: boolean) => useQuery(getQueryOptions(params, enabled)),
     /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */
     invalidate: (params: TParams, { partial = false } = {}) =>
       queryClient.invalidateQueries({

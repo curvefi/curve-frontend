@@ -3,10 +3,12 @@ import { FormLockCreate } from '@/dao/components/PageVeCrv/components/FormLockCr
 import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
+import { UNLOCK_DATE_REFRESH } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import type { LockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import type { ChainId } from '@/dao/types/dao.types'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
+import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
@@ -53,7 +55,7 @@ export const FormCrvLocker = ({
       chainId,
       lockedAmount,
       unlockTime,
-      canUnlock: getIsLockExpired(lockedAmount, unlockTime),
+      canUnlock: getIsLockExpired(lockedAmount, unlockTime, useCurrentDate(UNLOCK_DATE_REFRESH)),
       hasLockedCrv: decimalGreaterThan(lockedAmount, ZERO),
     }}
     overflow="fullWidth"

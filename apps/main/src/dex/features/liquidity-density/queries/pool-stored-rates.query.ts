@@ -1,13 +1,12 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import { poolLiquidityValidationSuite } from './pool-liquidity.validation'
 
 const USE_UNDERLYING = false
 
-const { useQuery: usePoolStoredRatesQuery } = queryFactory({
+export const { useQuery: usePoolStoredRates } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'pool.storedRates', chainId, poolAddress }) as const,
   queryFn: async ({ poolAddress }: PoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolAddress)
@@ -18,6 +17,3 @@ const { useQuery: usePoolStoredRatesQuery } = queryFactory({
   validationSuite: poolLiquidityValidationSuite,
   category: 'dex.pool',
 })
-
-export const usePoolStoredRates = (params: PoolParams, enabled = true) =>
-  useHydratedQuery(usePoolStoredRatesQuery, params, enabled)
