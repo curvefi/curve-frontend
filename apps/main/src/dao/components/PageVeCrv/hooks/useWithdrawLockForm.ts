@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { useWithdrawLockMutation } from '@/dao/components/PageVeCrv/mutations/withdraw-lock.mutation'
 import type { WithdrawLockFormValues } from '@/dao/components/PageVeCrv/queries/withdraw-lock.types'
+import { UNLOCK_DATE_REFRESH } from '@/dao/components/PageVeCrv/utils/vecrv-calculations'
 import { invalidateVeCrvQueries, useLockerLockedAmountAndUnlockTime } from '@/dao/entities/locker-vecrv-info'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 import { maybe } from '@primitives/objects.utils'
@@ -16,7 +17,7 @@ export const useWithdrawLockForm = ({ chainId }: { chainId: number }) => {
   const lockedAmountAndUnlockTime = useLockerLockedAmountAndUnlockTime({ chainId, userAddress })
   const lock = lockedAmountAndUnlockTime.data
 
-  const currentDate = useCurrentDate('1h')
+  const currentDate = useCurrentDate(UNLOCK_DATE_REFRESH)
   const canUnlock = maybe(lock, ({ lockedAmount, unlockTime }) =>
     getIsLockExpired(lockedAmount, unlockTime, currentDate),
   )
