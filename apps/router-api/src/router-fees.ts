@@ -6,6 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
 import type { ExternalRouteProvider } from '@primitives/router.utils'
+import { HttpError } from './router.utils'
 import type { RoutesQuery } from './routes/routes.schemas'
 
 /** note: no fractions allowed by enso */
@@ -37,10 +38,7 @@ export const getRouterFee = (
 
   const assetsType = controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)]
   if (!assetsType) {
-    // Fastify replies with the error's statusCode, so an unsupported market is a client error instead of a 500
-    throw Object.assign(new Error(`A supported controllerAddress is required for ${provider} on chain ${chainId}`), {
-      statusCode: 400,
-    })
+    throw new HttpError(400, `A supported controllerAddress is required for ${provider} on chain ${chainId}`)
   }
   return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }
 }
