@@ -31,11 +31,6 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/beta-markets',
-    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
-    ...layoutProps,
-  }),
-  createRoute({
     path: '$network/markets',
     loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
     ...layoutProps,
