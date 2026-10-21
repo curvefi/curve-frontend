@@ -44,7 +44,8 @@ export const PieChart = ({
       textStyle: { fontFamily: theme.typography.fontFamily },
       tooltip: {
         trigger: 'item',
-        renderMode: 'richText',
+        renderMode: 'html',
+        appendToBody: true,
         confine: true,
         backgroundColor: theme.design.Layer[1].Fill,
         borderColor: theme.design.Layer[3].Outline,
@@ -84,7 +85,7 @@ export const PieChart = ({
         />
         {children && (
           <Box sx={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', pointerEvents: 'none' }}>
-            <Box ref={centerRef} sx={{ padding: Spacing.sm }}>
+            <Box ref={centerRef} sx={{ padding: Spacing.lg }}>
               <Box sx={{ width: IconSize[centerSize], height: IconSize[centerSize] }}>{children}</Box>
             </Box>
           </Box>

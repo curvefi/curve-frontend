@@ -49,11 +49,11 @@ export const PoolCompositionChart = ({ rows }: { rows: QueryProp<PoolComposition
   if (!composition || !chart) return null
 
   return (
-    <PieChart data={chart} formatValue={formatShare} testId="pool-composition-chart">
+    <PieChart data={chart} formatValue={formatShare} centerSize="xl" testId="pool-composition-chart">
       <TokenIcons
         blockchainId={composition[0].source.blockchainId}
         tokens={composition.flatMap(({ source }) => toArray(source.address).map(address => ({ address })))}
-        size="lg"
+        size="xl"
         showTooltips={false}
       />
     </PieChart>
