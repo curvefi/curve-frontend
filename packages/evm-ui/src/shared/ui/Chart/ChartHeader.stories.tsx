@@ -125,15 +125,15 @@ const LendLoanOhlcChartHeader = () => {
   )
 }
 
-type LiquidityChartKey = 'liquidity' | 'volume'
-const liquiditySelections: ChartSelections<LiquidityChartKey>[] = [
-  { key: 'liquidity', label: 'Liquidity', activeTitle: 'Liquidity' },
-  { key: 'volume', label: 'Volume', activeTitle: 'Volume' },
+type LiquidityPairKey = 'usdc-dai' | 'usdt-dai' | 'usdt-usdc'
+const liquidityPairSelections: ChartSelections<LiquidityPairKey>[] = [
+  { key: 'usdc-dai', label: 'USDC / DAI', activeTitle: 'USDC / DAI' },
+  { key: 'usdt-dai', label: 'USDT / DAI', activeTitle: 'USDT / DAI' },
+  { key: 'usdt-usdc', label: 'USDT / USDC', activeTitle: 'USDT / USDC' },
 ]
 
 const NestedChartHeaderExample = ({ width }: { width: number }) => {
-  const [activeChart, setActiveChart] = useState<LiquidityChartKey>('liquidity')
-  const [activeTime, setActiveTime] = useState<CandleChartTimeOption>(DEFAULT_TIME_OPTION)
+  const [activePair, setActivePair] = useState<LiquidityPairKey>('usdc-dai')
 
   return (
     <Card size="small" sx={{ width }}>
@@ -143,14 +143,9 @@ const NestedChartHeaderExample = ({ width }: { width: number }) => {
         nested
         chartOptionVariant="select"
         chartSelections={{
-          selections: liquiditySelections,
-          activeSelection: activeChart,
-          setActiveSelection: (value: LiquidityChartKey) => setActiveChart(value),
-        }}
-        timeOption={{
-          options: TIME_OPTIONS,
-          activeOption: activeTime,
-          setActiveOption: (value: CandleChartTimeOption) => setActiveTime(value),
+          selections: liquidityPairSelections,
+          activeSelection: activePair,
+          setActiveSelection: (value: LiquidityPairKey) => setActivePair(value),
         }}
       />
       <CardContent>
@@ -274,7 +269,7 @@ export const NestedSelectVariant: Story = {
     docs: {
       description: {
         story:
-          'Nested header inside a card: title, select and time selector. The title padding lines up with the card title.',
+          'Matches the liquidity density chart in the pool composition card: nested header with title and pair select, lined up with the card title.',
       },
     },
   },
