@@ -15,21 +15,21 @@
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-stellar.tsbuildinfo"
   },
   "dependencies": {
-    "@creit.tech/stellar-wallets-kit": "2.7.0",
+    "@creit.tech/stellar-wallets-kit": "2.7.1",
     "@curvefi/ui": "workspace:^",
-    "@tanstack/react-query": "5.104.0",
-    "@tanstack/react-query-devtools": "5.104.0",
-    "@tanstack/react-router": "1.170.40",
+    "@tanstack/react-query": "5.104.3",
+    "@tanstack/react-query-devtools": "5.104.3",
+    "@tanstack/react-router": "1.170.45",
     "@tanstack/react-router-devtools": "1.167.2",
-    "@tanstack/router-core": "1.171.33",
+    "@tanstack/router-core": "1.171.38",
     "vite-plugin-svgr": "5.2.0",
-    "vite-plugin-vercel": "11.1.1",
-    "wrangler": "4.143.0"
+    "vite-plugin-vercel": "11.2.0",
+    "wrangler": "4.151.1"
   },
   "devDependencies": {
-    "@sentry/vite-plugin": "5.4.0",
-    "@types/node": "26.6.3",
-    "@vitejs/plugin-react": "6.1.1",
-    "vite": "8.3.3"
+    "@sentry/vite-plugin": "11.8.0",
+    "@types/node": "26.6.5",
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.4"
   }
 }

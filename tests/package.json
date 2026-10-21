@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "@cypress/react": "10.0.1",
-    "@cypress/vite-dev-server": "7.3.4",
-    "@vitejs/plugin-react": "6.1.1",
-    "cypress": "16.1.0",
+    "@cypress/vite-dev-server": "8.0.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "cypress": "16.2.0",
     "main": "workspace:^",
     "stellar": "workspace:^",
-    "vite": "8.3.3",
+    "vite": "8.3.4",
     "vite-plugin-svgr": "5.2.0",
-    "wait-on": "9.4.0"
+    "wait-on": "9.5.1"
   }
 }
