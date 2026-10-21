@@ -4,9 +4,9 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
-import { t } from '@ui/lib/i18n'
 import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { ChartSelect, type ChartSelectOptions } from './ChartSelect'
 
@@ -33,12 +33,12 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   title?: ReactNode
   /**
    * Use when the header sits inside a card's content; mirrors the Figma "Nested" property.
-   * Fills the row with Layer 1 at card title height, with a smaller title inset and primary title text.
+   * Card title height, smaller title inset and primary title text; the parent provides the surface.
    */
   nested?: boolean
   flipChart?: () => void
   customButton?: ReactNode
-  /** When true, displays "Loading" in the chart selection area and disables interaction */
+  /** When true, shows a skeleton in the chart selection area and disables interaction */
   isLoading?: boolean
   sx?: SxProps
 }
@@ -74,7 +74,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
           rowGap: Spacing.md,
           columnGap: Spacing.sm,
           // matches the small CardHeader height so the row lines up with sibling card titles
-          ...(nested && { backgroundColor: t => t.design.Layer[1].Fill, minHeight: Sizing.lg }),
+          ...(nested && { minHeight: Sizing.lg }),
         },
         sx,
       )}
@@ -82,7 +82,6 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
       <Stack direction="row" sx={{ alignItems: 'center' }}>
         {title && (
           <Typography
-            component="h3"
             variant="headingXsBold"
             color={nested ? 'textPrimary' : 'textSecondary'}
             sx={{ paddingInline: nested ? Spacing.sm : Padding.Card.sm }}
@@ -92,7 +91,9 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
         )}
         {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
         {chartOptionVariant === 'buttons-group' || hasSingleOption || isLoading ? (
-          <Typography variant="bodySBold">{isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}</Typography>
+          <WithSkeleton loading={isLoading}>
+            <Typography variant="bodySBold">{foundChartOption?.activeTitle ?? '?'}</Typography>
+          </WithSkeleton>
         ) : (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
             <ChartSelect

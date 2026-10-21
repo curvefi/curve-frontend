@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
+import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
@@ -138,21 +139,23 @@ const NestedChartHeaderExample = ({ width }: { width: number }) => {
   return (
     <Card size="small" sx={{ width }}>
       <CardHeader title="Composition" />
-      <ChartHeader
-        title="Liquidity density"
-        nested
-        chartOptionVariant="select"
-        chartSelections={{
-          selections: liquidityPairSelections,
-          activeSelection: activePair,
-          setActiveSelection: (value: LiquidityPairKey) => setActivePair(value),
-        }}
-      />
-      <CardContent>
-        <Typography variant="bodySRegular" color="textSecondary">
-          Chart body
-        </Typography>
-      </CardContent>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        <ChartHeader
+          title="Liquidity density"
+          nested
+          chartOptionVariant="select"
+          chartSelections={{
+            selections: liquidityPairSelections,
+            activeSelection: activePair,
+            setActiveSelection: (value: LiquidityPairKey) => setActivePair(value),
+          }}
+        />
+        <CardContent size="small">
+          <Typography variant="bodySRegular" color="textSecondary">
+            Chart body
+          </Typography>
+        </CardContent>
+      </Stack>
     </Card>
   )
 }
