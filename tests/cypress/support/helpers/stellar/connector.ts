@@ -10,7 +10,7 @@ import { contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk
 import { Duration } from '@ui/features/themes/design/0_primitives'
 
 const POOL_DEPLOYMENT_RETRIES = 5
-const POOL_DEPLOYMENT_RETRY_DELAY_MS = Duration.Delay
+const POOL_DEPLOYMENT_RETRY_DELAY_MS = Duration.StellarPoolDeploymentRetry
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
 export const connectTestWallet = ({ deployer }: TestnetConfig) => {
@@ -97,7 +97,8 @@ export const deployTestPool = async (config: TestnetConfig) => {
     },
     {
       retries: POOL_DEPLOYMENT_RETRIES,
-      delay: () => POOL_DEPLOYMENT_RETRY_DELAY_MS,
+      // Spread retries across ledger closes so competing deployments do not keep colliding.
+      delay: () => POOL_DEPLOYMENT_RETRY_DELAY_MS * (1 + Math.random()),
       shouldRetry: error =>
         isPoolDeploymentFootprintConflict((error as Error).cause as rpc.Api.GetTransactionResponse | undefined),
     },
