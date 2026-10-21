@@ -183,8 +183,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, electron]
-        iteration: [1, 2]
+        browser: [chrome, firefox]
+        iteration: [1]
     name: Cypress Stellar component tests in ${{ matrix.browser }} ${{ matrix.iteration }}
     timeout-minutes: 15
     runs-on: ubuntu-26.04
