@@ -24,7 +24,7 @@ export function submitLoanForm({
       }
     },
     { message, approvalMessage: notFalsy(approveDelegation && 'Approved leverage delegation', approvalMessage) },
-    getTimeoutCategory('evm.confirmation', isMocked),
+    getTimeoutCategory('tenderly.submit', isMocked),
   )
   return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }

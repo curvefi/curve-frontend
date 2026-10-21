@@ -31,7 +31,7 @@ const confirmLowSolvencyDepositForm = (isMocked = false) =>
       cy.get('[data-testid="low-solvency-action-submit-button"]').click()
     },
     { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
-    getTimeoutCategory('evm.confirmation', isMocked),
+    getTimeoutCategory('tenderly.submit', isMocked),
   )
 
 /**

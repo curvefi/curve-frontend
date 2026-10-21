@@ -122,32 +122,26 @@ export function checkLoanDetailsLoaded({
   hasApi = true,
   controllerApproved = true,
   isMocked = false,
+  rpc = 'evm',
 }: {
   leverageEnabled: boolean
   expectError?: string
   hasApi?: boolean
   controllerApproved?: boolean
   isMocked?: boolean
+  rpc?: 'evm' | 'tenderly'
 }) {
-  getActionValue('borrow-price-range', getTimeoutCategory('evm.simulation', isMocked)).should(
-    'match',
-    DECIMAL_RANGE_REGEX,
-  )
-  getActionValue('borrow-apr', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
-  getActionValue('borrow-apr', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('include', '%')
-  getActionValue('borrow-ltv', getTimeoutCategory('evm.simulation', isMocked)).should(
-    hasApi ? 'include' : 'equal',
-    hasApi ? '%' : '-',
-  )
-  getActionValue('borrow-ltv', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('include', '%')
-  checkEstimatedTxCost({
-    hasValue: hasApi && !expectError && controllerApproved,
-    category: getTimeoutCategory('evm.simulation', isMocked),
-  })
+  const category = getTimeoutCategory(`${rpc}.simulation`, isMocked)
+  getActionValue('borrow-price-range', category).should('match', DECIMAL_RANGE_REGEX)
+  getActionValue('borrow-apr', category).should('include', '%')
+  getActionValue('borrow-apr', category, 'previous').should('include', '%')
+  getActionValue('borrow-ltv', category).should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
+  getActionValue('borrow-ltv', category, 'previous').should('include', '%')
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError && controllerApproved, category })
 
   if (leverageEnabled) {
     cy.get('[data-testid="loan-action-settings"]').within(() => {
-      getActionValue('borrow-price-impact', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
+      getActionValue('borrow-price-impact', category).should('include', '%')
       cy.get('[data-testid="borrow-slippage"]').should('be.visible')
       getActionValue('borrow-slippage', 'ui.render').should('include', '%')
     })
@@ -191,7 +185,7 @@ export const waitForRoutesLoaded = ({
   cy.get('[data-testid="loan-action-settings"] [data-testid="route-provider-accordion"]').click()
   cy.wait('@routerRoutes', TIMEOUTS['mock.router.routes'])
   cy.get('[data-testid="refresh-button"]').should('be.enabled')
-  cy.get(`[data-testid="${submitButtonTestId}"]`, TIMEOUTS[getTimeoutCategory('evm.simulation', isMocked)]).should(
+  cy.get(`[data-testid="${submitButtonTestId}"]`, TIMEOUTS[getTimeoutCategory('tenderly.simulation', isMocked)]).should(
     'be.enabled',
   )
 }
@@ -208,6 +202,7 @@ export function writeCreateLoanForm({
   hasLeverage,
   waitForRoutes,
   isMocked = false,
+  rpc = 'evm',
 }: {
   collateral: Decimal
   borrow: Decimal
@@ -215,19 +210,20 @@ export function writeCreateLoanForm({
   hasLeverage: boolean
   waitForRoutes?: boolean
   isMocked?: boolean
+  rpc?: 'evm' | 'tenderly'
 }) {
   cy.get('[data-testid="borrow-debt-input"]', TIMEOUTS['ui.render']).should('be.visible')
   cy.get(
     '[data-testid="borrow-collateral-input"] [data-testid="balance-value"]',
-    TIMEOUTS[getTimeoutCategory('evm.balances', isMocked)],
+    TIMEOUTS[getTimeoutCategory(`${rpc}.balances`, isMocked)],
   ).should('be.visible')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   getMaxBorrowBalance().should('be.visible')
-  getActionInfo('borrow-health', getTimeoutCategory('evm.simulation', isMocked)).should('have.text', '-')
+  getActionInfo('borrow-health', getTimeoutCategory(`${rpc}.simulation`, isMocked)).should('have.text', '-')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health', getTimeoutCategory('evm.simulation', isMocked)).should('match', DECIMAL_REGEX)
+  getActionValue('borrow-health', getTimeoutCategory(`${rpc}.simulation`, isMocked)).should('match', DECIMAL_REGEX)
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button', isMocked })

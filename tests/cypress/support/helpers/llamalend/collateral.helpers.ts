@@ -35,19 +35,22 @@ export const checkCollateralDetailsLoaded = ({
   const formattedCurrent = formatNumber(current, 'token.amount')
   const formattedFuture = formatNumber(future, 'token.amount')
 
-  getActionValue('borrow-collateral', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+  getActionValue('borrow-collateral', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
     'equal',
     formattedCurrent,
   )
-  getActionValue('borrow-collateral', getTimeoutCategory('evm.simulation', isMocked)).should('equal', formattedFuture)
-  checkEstimatedTxCost({ hasValue: hasApi, category: getTimeoutCategory('evm.simulation', isMocked) })
+  getActionValue('borrow-collateral', getTimeoutCategory('tenderly.simulation', isMocked)).should(
+    'equal',
+    formattedFuture,
+  )
+  checkEstimatedTxCost({ hasValue: hasApi, category: getTimeoutCategory('tenderly.simulation', isMocked) })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
 export const checkCurrentCollateral = (expected: Decimal, isMocked = false) => {
   const formatted = formatNumber(expected, 'token.amount')
-  getActionValue('borrow-collateral', getTimeoutCategory('evm.simulation', isMocked)).should('equal', formatted)
-  getActionValue('borrow-collateral', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+  getActionValue('borrow-collateral', getTimeoutCategory('tenderly.simulation', isMocked)).should('equal', formatted)
+  getActionValue('borrow-collateral', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
     'equal',
     formatted,
   )

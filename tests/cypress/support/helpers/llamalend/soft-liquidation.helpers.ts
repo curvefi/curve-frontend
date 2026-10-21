@@ -18,7 +18,9 @@ const getResetPositionWalletInput = () =>
 
 export function checkClosePositionDetailsLoaded({ debt, isMocked = false }: { debt: Decimal; isMocked?: boolean }) {
   cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
-  cy.get('[data-testid="outstanding-debt"]').invoke('text').should('match', DECIMAL_REGEX) // first check the number is displayed before converting to number
+  cy.get('[data-testid="outstanding-debt"]', TIMEOUTS[getTimeoutCategory('tenderly.contractRead', isMocked)])
+    .invoke('text')
+    .should('match', DECIMAL_REGEX) // first check the number is displayed before converting to number
   cy.get('[data-testid="outstanding-debt"]')
     .invoke('text')
     .should(val => {
@@ -26,8 +28,10 @@ export function checkClosePositionDetailsLoaded({ debt, isMocked = false }: { de
       expect(actualDebt).to.be.closeTo(Number(debt), Number(debt) * 0.01)
     })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  cy.get('[data-testid="you-recover"]').invoke('text').should('match', DECIMAL_REGEX)
-  checkEstimatedTxCost({ category: getTimeoutCategory('evm.simulation', isMocked) })
+  cy.get('[data-testid="you-recover"]', TIMEOUTS[getTimeoutCategory('tenderly.simulation', isMocked)])
+    .invoke('text')
+    .should('match', DECIMAL_REGEX)
+  checkEstimatedTxCost({ category: getTimeoutCategory('tenderly.simulation', isMocked) })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
@@ -52,12 +56,12 @@ export const checkResetPositionMinimumWalletMessage = () => {
 }
 
 export function checkResetPositionDetailsLoaded({ debt, isMocked = false }: { debt: DebtCheck; isMocked?: boolean }) {
-  getActionValue('borrow-price-range', getTimeoutCategory('evm.simulation', isMocked)).should(
+  getActionValue('borrow-price-range', getTimeoutCategory('tenderly.simulation', isMocked)).should(
     'match',
     DECIMAL_RANGE_REGEX,
   )
-  getActionValue('borrow-apr', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
-  checkEstimatedTxCost({ category: getTimeoutCategory('evm.simulation', isMocked) })
+  getActionValue('borrow-apr', getTimeoutCategory('tenderly.simulation', isMocked)).should('include', '%')
+  checkEstimatedTxCost({ category: getTimeoutCategory('tenderly.simulation', isMocked) })
   checkDebt(debt, { isMocked })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
@@ -72,7 +76,7 @@ export function writeResetPositionWalletAmount({ amount }: { amount: Decimal }) 
 export const clickResetPositionMinimumWalletAmount = (isMocked = false) => {
   cy.get(
     '[data-testid="reset-position-input-user-borrowed"] [data-testid="helper-message-number-0"]',
-    TIMEOUTS[getTimeoutCategory('evm.simulation', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly.simulation', isMocked)],
   ).click()
 }
 

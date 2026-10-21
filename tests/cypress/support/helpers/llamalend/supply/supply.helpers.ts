@@ -79,12 +79,12 @@ const getSupplyInput = (type: SupplyFormType) =>
 const getSupplyInputBalanceValue = (type: SupplyFormType, isMocked = false) =>
   cy.get(
     `[data-testid="supply-${type}-input"] [data-testid="balance-value"]`,
-    TIMEOUTS[getTimeoutCategory('evm.balances', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly.balances', isMocked)],
   )
 
 export const getSupplyInputBalanceValueAttr = (type: SupplyFormType, isMocked = false) =>
   getSupplyInputBalanceValue(type, isMocked).invoke(
-    TIMEOUTS[getTimeoutCategory('evm.balances', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly.balances', isMocked)],
     'attr',
     'data-value',
   )
@@ -121,12 +121,12 @@ export const submitSupplyForm = (type: SupplyActionType, options: ToastOptions, 
   submitAndExpectToast(
     () => cy.get(`[data-testid="supply-${type}-submit-button"]`).click(TIMEOUTS['ui.interaction']),
     options,
-    getTimeoutCategory('evm.confirmation', isMocked),
+    getTimeoutCategory('tenderly.submit', isMocked),
   )
 
 export const checkSupplySubmitButtonText = (type: SupplyFormType, buttonText: string, isMocked = false) =>
   cy
-    .get(`[data-testid="supply-${type}-submit-button"]`, TIMEOUTS[getTimeoutCategory('evm.allowance', isMocked)])
+    .get(`[data-testid="supply-${type}-submit-button"]`, TIMEOUTS[getTimeoutCategory('tenderly.allowance', isMocked)])
     .should('have.text', buttonText)
 
 export const checkSupplyActionInfoValues = ({
@@ -153,46 +153,49 @@ export const checkSupplyActionInfoValues = ({
   cy.get('[data-testid="supply-action-info-list"]').should('be.visible')
 
   if (supplyApy != null) {
-    getActionValue('supply-apy', getTimeoutCategory('evm.simulation', isMocked)).should(
+    getActionValue('supply-apy', getTimeoutCategory('tenderly.simulation', isMocked)).should(
       'equal',
       formatNumber(supplyApy as Decimal, 'percent.rate'),
     )
   }
   if (prevSupplyApy != null) {
-    getActionValue('supply-apy', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+    getActionValue('supply-apy', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
       'equal',
       formatNumber(prevSupplyApy as Decimal, 'percent.rate'),
     )
   }
   if (vaultShares != null) {
-    getActionValue('supply-vault-shares', getTimeoutCategory('evm.simulation', isMocked)).should(
+    getActionValue('supply-vault-shares', getTimeoutCategory('tenderly.simulation', isMocked)).should(
       'equal',
       formatNumber(vaultShares as Decimal, { abbreviate: true }),
     )
   }
   if (prevVaultShares != null) {
-    getActionValue('supply-vault-shares', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+    getActionValue('supply-vault-shares', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
       'equal',
       formatNumber(prevVaultShares as Decimal, { abbreviate: true }),
     )
   }
   if (suppliedAssets != null) {
-    getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked)).should(
+    getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked)).should(
       'equal',
       formatNumber(suppliedAssets as Decimal, { abbreviate: false }),
     )
   }
   if (prevSuppliedAssets != null) {
-    getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+    getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
       'equal',
       formatNumber(prevSuppliedAssets as Decimal, { abbreviate: false }),
     )
   }
   if (symbol) {
-    getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked), 'right').should('contain', symbol)
+    getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked), 'right').should(
+      'contain',
+      symbol,
+    )
   }
 
-  checkEstimatedTxCostValue({ hasValue: hasApi, category: getTimeoutCategory('evm.simulation', isMocked) })
+  checkEstimatedTxCostValue({ hasValue: hasApi, category: getTimeoutCategory('tenderly.simulation', isMocked) })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
@@ -205,8 +208,11 @@ export const checkSupplyAlert = (testId: string) => {
  */
 export function checkCurrentSuppliedAmount(expectedAmount: Decimal, isMocked = false) {
   const expected = formatNumber(expectedAmount, 'token.amount')
-  getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked)).should('equal', expected)
-  getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('equal', expected)
+  getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked)).should('equal', expected)
+  getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
+    'equal',
+    expected,
+  )
 }
 
 /**
@@ -220,22 +226,25 @@ export function checkCurrentStakedAmount({
   isMocked?: boolean
 }) {
   if (+expectedAmountSupplied) {
-    getActionValue('supply-vault-shares', getTimeoutCategory('evm.simulation', isMocked)).should('match', DECIMAL_REGEX)
-    getActionValue('supply-vault-shares', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+    getActionValue('supply-vault-shares', getTimeoutCategory('tenderly.simulation', isMocked)).should(
+      'match',
+      DECIMAL_REGEX,
+    )
+    getActionValue('supply-vault-shares', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
       'match',
       DECIMAL_REGEX,
     )
   } else {
-    getActionValue('supply-vault-shares', getTimeoutCategory('evm.simulation', isMocked)).should('equal', '0')
-    getActionValue('supply-vault-shares', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+    getActionValue('supply-vault-shares', getTimeoutCategory('tenderly.simulation', isMocked)).should('equal', '0')
+    getActionValue('supply-vault-shares', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
       'equal',
       '0',
     )
   }
 
   const expectedAmount = formatNumber(expectedAmountSupplied, 'token.amount')
-  getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked)).should('equal', expectedAmount)
-  getActionValue('supply-amount', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+  getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked)).should('equal', expectedAmount)
+  getActionValue('supply-amount', getTimeoutCategory('tenderly.simulation', isMocked), 'previous').should(
     'equal',
     expectedAmount,
   )
