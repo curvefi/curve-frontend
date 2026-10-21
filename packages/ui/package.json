@@ -29,7 +29,7 @@
     "@tanstack/react-router": "1.170.45",
     "@tanstack/react-router-devtools": "1.167.2",
     "@tanstack/react-table": "9.3.1",
-    "bignumber.js": "11.1.5",
+    "bignumber.js": "10.0.2",
     "echarts": "6.1.0",
     "echarts-for-react": "3.0.6",
     "fuse.js": "7.5.0",
