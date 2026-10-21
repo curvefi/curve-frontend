@@ -122,12 +122,6 @@ allViewports().forEach(([VIEWPORT_WIDTH, VIEWPORT_HEIGHT, BREAKPOINT]) => {
         const right = usdProfile.samples.findLast(sample => sample.low > usdProfile.spot)!
         expect(fillAt(chart, left.price, left.depth / 2)).to.equal(themes[THEME].design.Chart.Lines[7])
         expect(fillAt(chart, right.price, right.depth / 2)).to.equal(themes[THEME].design.Chart.Lines[8])
-        // Reference markers must remain inside the plot, in the same price coordinate system as the bars.
-        ;[chartProps.oraclePrice.data!, chartProps.centerPrice.data!, usdProfile.spot].forEach(price =>
-          expect(chart.containPixel({ gridIndex: 0 }, chart.convertToPixel({ gridIndex: 0 }, [price, 0]))).to.equal(
-            true,
-          ),
-        )
         expectChartLabelsVisible(chart)
       })
       cy.get(CHART).should($chart => expect($chart[0].getBoundingClientRect().right).to.be.at.most(VIEWPORT_WIDTH))

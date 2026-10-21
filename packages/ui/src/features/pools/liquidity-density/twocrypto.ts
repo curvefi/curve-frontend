@@ -1,6 +1,6 @@
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { createCryptoCurve, cryptoBalance, isCryptoBalanceInDomain } from './cryptoswap'
+import { createCryptoCurve, cryptoNewtonY, isCryptoBalanceInDomain } from './cryptoswap'
 import type { LiquidityCurve } from './types'
 
 const COIN_COUNT = 2
@@ -28,7 +28,7 @@ export const createTwoCryptoCurve = (
       const inDomain = legacy ? isCryptoBalanceInDomain(other, d) : 1 / limit <= k0Other && k0Other <= limit
       return inDomain
         ? maybe(
-            cryptoBalance({
+            cryptoNewtonY({
               initialY: (d * d) / (other * COIN_COUNT_POWER),
               otherSum: other,
               otherK0: k0Other,

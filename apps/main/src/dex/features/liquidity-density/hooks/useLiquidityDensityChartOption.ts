@@ -127,6 +127,7 @@ export const useLiquidityDensityChartOption = ({
             }
           },
           markLine: {
+            precision: -1, // Preserve price precision; ECharts otherwise rounds coordinates to two decimals.
             silent: true,
             symbol: ['none', 'none'],
             label: { show: false },
