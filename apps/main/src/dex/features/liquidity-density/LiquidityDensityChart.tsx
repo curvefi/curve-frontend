@@ -1,10 +1,7 @@
 import ReactECharts from 'echarts-for-react'
 import { type ReactNode, useMemo, useRef } from 'react'
 import { useConnection } from 'wagmi'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
-import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
-import { LegendLine } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import Box from '@mui/material/Box'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
@@ -14,6 +11,9 @@ import { Metric } from '@ui/components/Metric'
 import { formatCategory } from '@ui/components/metric.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { CHART_LINE_DASH_PATTERNS } from '@ui/features/charts/chart.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { LegendLine } from '@ui/features/charts/LegendSet'
+import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { q, type QueryProp } from '@ui/features/queries/util'
@@ -157,7 +157,7 @@ export const LiquidityDensityChart = ({
         role={samples?.length ? 'img' : undefined}
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           height={CHART_HEIGHT}
           isLoading={profileLoading}
           error={profileError}
@@ -188,7 +188,7 @@ export const LiquidityDensityChart = ({
             autoResize={false}
             style={{ width: width || '100%', height: CHART_HEIGHT }}
           />
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
       </Box>
       <ChartFooter
         testId="liquidity-density-legend"

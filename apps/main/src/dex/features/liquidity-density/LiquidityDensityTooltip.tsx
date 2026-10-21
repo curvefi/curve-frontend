@@ -1,10 +1,10 @@
+import { formatNumber } from '@primitives/number.utils'
+import { formatChartAxisNumber } from '@ui/features/charts/chart.utils'
 import {
   ChartTooltipDataRow,
   ChartTooltipSeriesGroup,
   ChartTooltipShell,
-} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
-import { formatNumber } from '@primitives/number.utils'
-import { formatChartAxisNumber } from '@ui/features/charts/chart.utils'
+} from '@ui/features/charts/ChartTooltipComponents'
 import type { LiquiditySample } from '@ui/features/pools/liquidity-density/types'
 import { t } from '@ui/lib/i18n'
 

@@ -7,6 +7,9 @@ import { TIME_FRAMES } from '@ui/lib/time'
 
 export type ChartLineDashPattern = number[]
 
+export const TIME_OPTIONS = ['15m', '30m', '1h', '4h', '6h', '12h', '1d', '7d', '14d'] as const
+export const DEFAULT_TIME_OPTION = '1d' satisfies (typeof TIME_OPTIONS)[number]
+
 const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
 export const CHART_X_AXIS_LABEL_ROTATION = -45
 const DEFAULT_CHART_ABBREVIATE_FROM = 10000

@@ -6,8 +6,7 @@ import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-v
 import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
-import { EChartsBarChart } from '@evm-ui/shared/ui/Chart/EChartsBarChart'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box } from '@legacy-ui/Box'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'
@@ -18,6 +17,7 @@ import {
   createChartSeriesColorScale,
   formatChartAxisNumber,
 } from '@ui/features/charts/chart.utils'
+import { EChartsBarChart } from '@ui/features/charts/EChartsBarChart'
 import { t } from '@ui/lib/i18n'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'

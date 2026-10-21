@@ -4,11 +4,7 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { ChartSelect } from '@evm-ui/shared/ui/Chart/ChartSelect'
-import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
-import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
@@ -26,6 +22,10 @@ import {
   type ChartLineDashPattern,
   formatChartAxisNumber,
 } from '@ui/features/charts/chart.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { ChartSelect } from '@ui/features/charts/ChartSelect'
+import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
+import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
