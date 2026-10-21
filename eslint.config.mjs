@@ -62,17 +62,6 @@ const config = [
         ([rule]) => !['react-hooks/rules-of-hooks', 'react-hooks/exhaustive-deps'].includes(rule),
       ),
     ),
-    // skip compiler checks for legacy code.
-    ignores: [
-      'apps/main/src/dex/components/PageCompensation/**',
-      'apps/main/src/dex/components/PageCreatePool/**',
-      'apps/main/src/dex/components/PagePool/components/AlertSeedAmounts.tsx',
-      'apps/main/src/dex/components/PagePool/{Deposit,Swap,Withdraw}/**',
-      'apps/main/src/dex/components/PageRouterSwap/**',
-      'apps/main/src/{dao,dex}/store/create*Slice.ts',
-      'packages/legacy-ui/src/InputComp/InputLabel.tsx',
-      'packages/legacy-ui/src/Tooltip/TooltipButton.tsx',
-    ],
   },
 
   // Project-wide rules + plugins
@@ -248,6 +237,23 @@ const config = [
   },
 
   // Override (replaces legacy `overrides`)
+  {
+    ignores: ['packages/ui/src/features/queries/query-hooks.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@tanstack/react-query',
+              importNames: ['useQuery', 'useQueries', 'UseQueryOptions'],
+              message: 'Import useQuery, useQueries and QueryOptions from @ui/features/queries/query-hooks instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   {
     files: ['**/*.stories.{ts,tsx,mts}', 'storybook/**/*.{ts,tsx,mts}'],
     languageOptions: {

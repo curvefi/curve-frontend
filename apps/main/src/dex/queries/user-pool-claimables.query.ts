@@ -1,14 +1,14 @@
 import { groupBy } from 'lodash'
 import { useMemo } from 'react'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { assert, fromEntries, recordEntries } from '@primitives/objects.utils'
-import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { NoRetryError } from '@ui/features/queries/factory'
 import { q, type QueryData } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -43,7 +43,7 @@ export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChai
  * so the expected gains don't justify the extra work and complexity. Keep one multicall batch.
  *
  */
-const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
+const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) =>
     ({ ...getUserPoolClaimablesQueryKey({ chainId, userAddress }), poolAddresses }) as const,
   queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
@@ -92,8 +92,7 @@ export function useUserPoolClaimables(params: UserPoolClaimablesParams, enabled 
     () => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
     [chainId, poolAddresses],
   )
-  const query = useHydratedQuery(
-    useUserPoolClaimablesQuery,
+  const query = useUserPoolClaimablesQuery(
     { ...params, poolAddresses: filteredPoolAddresses },
     enabled && !!filteredPoolAddresses?.length && curveApi?.chainId === chainId,
   )

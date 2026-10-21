@@ -214,10 +214,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         <CampaignRewardsBanner />
         <UserPosition />
-        {!isLiteChain(chainId) && pricesApiPoolData.data && (
-          <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
+        {!isLiteChain(chainId) && (
+          <>
+            {pricesApiPoolData.data && (
+              <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
+            )}
+            <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
+          </>
         )}
-        {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />}
         <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />
         <PoolAdvancedDetails />
       </DetailPageLayout>

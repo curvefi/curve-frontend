@@ -29,7 +29,6 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
 import { Chain } from '@primitives/network.utils'
-import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 import { constQ } from '@ui/features/queries/util'
@@ -53,11 +52,7 @@ type GaugeManagementForm = keyof typeof gaugeManagementForms
 function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   const { isPending } = useNetworksQuery()
   const { curveApi, isHydrated } = useCurve()
-  const pool = useMemo(
-    () => maybe(curveApi, curveApi => tryGetPool(POOL_ADDRESS, curveApi)),
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [curveApi, isHydrated],
-  )
+  const pool = useMemo(() => (isHydrated ? tryGetPool(POOL_ADDRESS, curveApi) : undefined), [curveApi, isHydrated])
   const Form = gaugeManagementForms[form]
 
   return isPending || !isHydrated || pool == null ? (
