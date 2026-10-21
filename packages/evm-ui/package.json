@@ -27,8 +27,6 @@
     "@supercharge/promise-pool": "3.3.0",
     "@walletconnect/ethereum-provider": "2.25.0",
     "dayjs": "1.11.23",
-    "echarts": "6.1.0",
-    "echarts-for-react": "3.0.6",
     "ethers": "6.17.0",
     "external-rewards": "workspace:^",
     "lightweight-charts": "5.2.1",

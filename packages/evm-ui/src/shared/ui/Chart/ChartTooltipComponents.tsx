@@ -6,8 +6,17 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-export const ChartTooltipShell = ({ title, children }: { title: ReactNode; children: ReactNode }) => (
+export const ChartTooltipShell = ({
+  title,
+  children,
+  testId,
+}: {
+  title: ReactNode
+  children: ReactNode
+  testId?: string
+}) => (
   <Paper
+    data-testid={testId}
     sx={{
       display: 'flex',
       flexDirection: 'column',
@@ -58,12 +67,14 @@ export const ChartTooltipDataRow = ({
   label,
   value,
   valueColor,
+  testId,
 }: {
   label: ReactNode
   value: ReactNode
   valueColor?: string
+  testId?: string
 }) => (
-  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+  <Stack data-testid={testId} direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
     <Typography variant="bodySRegular">{label}</Typography>
     <Typography variant="bodySBold" sx={{ color: valueColor }}>
       {value}

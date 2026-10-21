@@ -162,7 +162,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
             )}
           </Stack>
         }
-        title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
+        title={tooltip?.title ?? (numberValue == null ? fallback : String(value))}
         mobileDrawer
       >
         <Stack
