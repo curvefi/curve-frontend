@@ -98,8 +98,6 @@ export const SupplyPositionDetails = () => {
   const supplyAsset = combineQueries(
     [useTokenUsdRate({ chainId, tokenAddress: market.addresses?.borrowed_token }), balances],
     (usdRate, { vaultSharesConverted, gaugeConverted }): SupplyAsset => {
-      // Use the converted balances instead of shares * price per share: the per-share value is rounded to the
-      // borrowed token decimals, which understates the position for low-decimal tokens like USDC.
       const depositedAmount = decimalSum(vaultSharesConverted, gaugeConverted)
       return {
         symbol: market.borrowed_token.symbol,
