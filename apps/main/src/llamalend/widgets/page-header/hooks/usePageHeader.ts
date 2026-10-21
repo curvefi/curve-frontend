@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
@@ -264,8 +265,16 @@ function useCampaigns({
   vaultAddress: Address | Nullish
   marketType: MarketType
 }) {
-  const { data: controllerCampaigns } = useCampaignsByAddress({ blockchainId, address: controllerAddress })
-  const { data: vaultCampaigns } = useCampaignsByAddress({ blockchainId, address: vaultAddress })
+  const { data: controllerCampaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: controllerAddress,
+    formatAddress: getAddress,
+  })
+  const { data: vaultCampaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: vaultAddress,
+    formatAddress: getAddress,
+  })
   return marketType === MarketType.Lend ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
 }
 

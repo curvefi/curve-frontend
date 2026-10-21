@@ -1,5 +1,4 @@
-import { capitalize, groupBy } from 'lodash'
-import { getAddress } from 'viem'
+import { capitalize } from 'lodash'
 import { paginate } from '@curvefi/prices-api/paginate'
 import type { Address } from '@primitives/address.utils'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
@@ -70,7 +69,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
         platformImageId: token.icon,
         dashboardLink: `https://app.merkl.xyz/opportunities/${network}/${opp.type}/${opp.identifier}`,
 
-        address: getAddress(opp.explorerAddress),
+        address: opp.explorerAddress,
         description: opp.description,
         steps: opp.howToSteps,
         lock: false, // Merkl doesn't offer 'locked' rewards.
@@ -109,8 +108,5 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
   }
 
   const opportunities = await paginate(fetchPage, 0, 100)
-  const campaigns = opportunities.flatMap(opportunityToCampaignRewards)
-
-  // Can't use Object.groupBy until we support ES2024
-  return groupBy(campaigns, x => x.address)
+  return opportunities.flatMap(opportunityToCampaignRewards)
 }

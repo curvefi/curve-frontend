@@ -24,7 +24,11 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
   const rewards = usePoolRewardsApy({ chainId, poolAddress })
-  const campaigns = useCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
+  const campaigns = useCampaignsByAddress({
+    blockchainId: network?.blockchainId,
+    address: poolAddress,
+    formatAddress: getAddress,
+  })
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = mapQuery(

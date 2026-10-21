@@ -1,6 +1,5 @@
 import memoizee from 'memoizee'
-import { useCallback } from 'react'
-import { getAddress } from 'viem'
+import { useCallback, useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults } from '@tanstack/react-query'
@@ -42,17 +41,12 @@ export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], 
   )
 })
 
-type UseCampaignsOptions = { blockchainId?: string; enabled?: boolean }
+type UseCampaignsOptions = { blockchainId?: string; enabled?: boolean; formatAddress: (address: string) => Address }
 
 type CampaignQueries = [
   ReturnType<typeof getCampaignsExternalOptions>,
   ReturnType<typeof getCampaignsPoolsMerklOptions>,
   ReturnType<typeof getCampaignsMarketsMerklOptions>,
-]
-const queries: CampaignQueries = [
-  getCampaignsExternalOptions({}),
-  getCampaignsPoolsMerklOptions({}),
-  getCampaignsMarketsMerklOptions({}),
 ]
 
 /**
@@ -63,20 +57,28 @@ const queries: CampaignQueries = [
  * @example
  * ```typescript
  * // Get all campaigns from all networks
- * const { data: allCampaigns } = useCampaigns()
+ * const { data: allCampaigns } = useCampaigns({ getAddress })
  *
  * // Get campaigns filtered by network
  * const { data: ethereumCampaigns } = useCampaigns({
- *   blockchainId: 'ethereum'
+ *   blockchainId: 'ethereum',
+ *   getAddress,
  * })
  *
  * // Access campaigns for a specific pool address
  * const poolCampaigns = ethereumCampaigns['0x123...'] || []
  * ```
  */
-export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
+export const useCampaigns = ({ blockchainId, formatAddress }: UseCampaignsOptions) =>
   useQueries({
-    queries,
+    queries: useMemo<CampaignQueries>(
+      () => [
+        getCampaignsExternalOptions(formatAddress),
+        getCampaignsPoolsMerklOptions(formatAddress),
+        getCampaignsMarketsMerklOptions(formatAddress),
+      ],
+      [formatAddress],
+    ),
     combine: useCallback(
       ([external, merklPools, merklMarkets]: QueriesResults<CampaignQueries>) => ({
         ...combineQueryState(external, merklPools, merklMarkets),
@@ -87,27 +89,15 @@ export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
     ),
   })
 
-/**
- * Hook for accessing campaigns for a specific campaign address, optionally filtered by network.
- *
- * @param address - Address to get campaigns for
- * @param blockchainId - Optional chain identifier to filter campaigns by network
- *
- * @example
- * ```typescript
- * const { data: campaigns, isLoading } = useCampaignByAddress({
- *   address: '0x123...',
- *   blockchainId: 'ethereum'
- * })
- * ```
- */
+/** Hook for accessing campaigns for a specific campaign address, optionally filtered by network. */
 export const useCampaignsByAddress = ({
   address,
   blockchainId,
+  formatAddress,
 }: { address: Address | Nullish } & UseCampaignsOptions) => {
   const query = useMappedQuery(
-    useCampaigns({ blockchainId, enabled: Boolean(address) }),
-    useCallback(campaigns => address && campaigns[getAddress(address)], [address]),
+    useCampaigns({ blockchainId, formatAddress, enabled: Boolean(address) }),
+    useCallback(campaigns => address && campaigns[formatAddress(address)], [address, formatAddress]),
   )
 
   // TODO: Temporarily map undefined data to [], needs a proper fix

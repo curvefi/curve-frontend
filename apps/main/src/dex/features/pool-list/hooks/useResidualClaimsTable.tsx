@@ -1,6 +1,6 @@
 import { capitalize } from 'lodash'
 import { useCallback } from 'react'
-import { isAddressEqual } from 'viem'
+import { getAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { getPool } from '@/dex/pool.utils'
 import { resetPoolLists } from '@/dex/queries/invalidation'
@@ -37,7 +37,7 @@ export const useResidualClaimsTable = (
   const { address: userAddress } = useConnection()
   const { curveApi, isHydrated } = useCurve()
 
-  const campaigns = useCampaigns({ blockchainId })
+  const campaigns = useCampaigns({ blockchainId, formatAddress: getAddress })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const poolAddresses = usePoolAddresses({ chainId }, enabled)
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { isAddressEqual } from 'viem'
+import { getAddress, isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import type { UserFullPoolPosition } from '@/dex/queries/user-full-pool-positions.query'
@@ -38,7 +38,7 @@ export const useUserPositionsTable = (
   const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
 
-  const campaigns = useCampaigns({ blockchainId })
+  const campaigns = useCampaigns({ blockchainId, formatAddress: getAddress })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const litePoolList = useLitePoolList({ chainId }, enabled && isLite && !!userAddress)
   const poolAddresses = useMappedQuery(

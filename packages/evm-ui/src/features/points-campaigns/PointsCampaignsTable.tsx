@@ -1,4 +1,3 @@
-import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { ExternalLink } from '@ui/components/ExternalLink'
@@ -6,6 +5,7 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { constQ } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
+import { DataTable } from '@ui/features/tables/DataTable'
 import { t } from '@ui/lib/i18n'
 import type { PointsCampaignRow } from './points-campaigns.utils'
 
@@ -59,5 +59,5 @@ const COLUMNS = columnHelper.columns([
 export const PointsCampaignsTable = ({ rows }: { rows: PointsCampaignRow[] }) => {
   const table = useCurveTable({ query: constQ(rows), columns: COLUMNS })
 
-  return <EvmDataTable category="detail" table={table} emptyState={{ title: t`No points campaigns found` }} />
+  return <DataTable category="detail" table={table} emptyState={{ title: t`No points campaigns found` }} />
 }

@@ -1,4 +1,5 @@
 import { capitalize } from 'lodash'
+import { getAddress } from 'viem'
 import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { getControllerAddress, getVaultAddress } from '@/llamalend/llama.utils'
@@ -13,8 +14,16 @@ type CampaignRewardsBannerProps = { chainId: ChainId; market: LendMarketTemplate
 
 export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBannerProps) => {
   const blockchainId = networks[chainId].blockchainId as Chain
-  const { data: supplyCampaigns } = useCampaignsByAddress({ blockchainId, address: getVaultAddress(market) })
-  const { data: borrowCampaigns } = useCampaignsByAddress({ blockchainId, address: getControllerAddress(market) })
+  const { data: supplyCampaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: getVaultAddress(market),
+    formatAddress: getAddress,
+  })
+  const { data: borrowCampaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: getControllerAddress(market),
+    formatAddress: getAddress,
+  })
 
   const action = notFalsy(supplyCampaigns.length && t`supplying`, borrowCampaigns.length && t`borrowing`).join(' and ')
 

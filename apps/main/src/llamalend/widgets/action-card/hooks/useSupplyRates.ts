@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
@@ -69,7 +70,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   const snapshotsQuery = useMarketSnapshots({ marketType: MarketType.Lend, controllerAddress, blockchainId, enabled })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
-  const campaignsQuery = useCampaignsByAddress({ blockchainId, address: controllerAddress })
+  const campaignsQuery = useCampaignsByAddress({ blockchainId, address: controllerAddress, formatAddress: getAddress })
 
   // Without `reservesDelta`, `rates`/`netSupplyApy` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netSupplyApy] = addNetApy(

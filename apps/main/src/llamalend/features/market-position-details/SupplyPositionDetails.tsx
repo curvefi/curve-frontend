@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { zeroAddress } from 'viem'
+import { getAddress, zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { isLendMarket } from '@/llamalend/llama.utils'
@@ -68,7 +68,11 @@ export const SupplyPositionDetails = () => {
 
   const params = { chainId, marketId: market.id, userAddress }
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
-  const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: market.addresses.vault as Address,
+    formatAddress: getAddress,
+  })
   const noGauge = market.addresses.gauge === zeroAddress
 
   const userSupplyBoost = useUserSupplyBoost(params)
