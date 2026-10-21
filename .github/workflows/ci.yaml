@@ -180,12 +180,14 @@ jobs:
           if-no-files-found: error
 
   cypress-component-stellar:
-    name: Cypress Stellar component tests
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+        iteration: [1]
+    name: Cypress Stellar component tests in ${{ matrix.browser }} ${{ matrix.iteration }}
     timeout-minutes: 15
     runs-on: ubuntu-26.04
-    concurrency: # shared testnet account, run sequentially to avoid conflicting balances
-      group: stellar-testnet
-      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -205,20 +207,21 @@ jobs:
       - name: Run Stellar tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:stellar --browser electron 2>&1 | \
-            tee ../stellar-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
+          yarn run cy:run:stellar --browser ${{ matrix.browser }} 2>&1 | \
+            tee ../stellar-cypress-${{ matrix.browser }}-${{ matrix.iteration }}.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         timeout-minutes: 10 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test
-          TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-stellar
+          TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-stellar-${{ matrix.browser }}-${{ matrix.iteration }}
+          CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
           CYPRESS_STELLAR_TESTNET_CONFIG: ${{ secrets.STELLAR_TESTNET_CONFIG }}
 
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: cypress-stellar
+          name: cypress-stellar-${{ matrix.browser }}-${{ matrix.iteration }}
           path: tests/cypress/screenshots
           retention-days: ${{ job.status == 'success' && 1 || 3 }}
           if-no-files-found: ${{ job.status == 'success' && 'ignore' || 'error' }}
@@ -226,8 +229,8 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: stellar-cypress-log
-          path: stellar-cypress.log
+          name: stellar-cypress-log-${{ matrix.browser }}-${{ matrix.iteration }}
+          path: stellar-cypress-${{ matrix.browser }}-${{ matrix.iteration }}.log
           retention-days: 3
           if-no-files-found: error
 
