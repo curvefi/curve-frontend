@@ -58,6 +58,7 @@ export const TIMEOUTS = {
   'stellar.read': extended,
   'stellar.simulation': extended,
   'stellar.confirmation': long,
+  'stellar.fundWallet': long,
   'stellar.deployPool': long,
   'stellar.seedPool': long,
 
