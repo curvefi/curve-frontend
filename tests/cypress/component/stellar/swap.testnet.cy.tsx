@@ -66,7 +66,9 @@ describe('Stellar testnet swap', () => {
   it('previews amounts without a connected wallet', () => {
     mountSwap({ connected: false })
     writeSwapAmount('pay', oneDecimal(0.0001, 0.0005))
-    swapAmountInput('receive').should(input => expect(Number(input.val())).to.be.greaterThan(0))
+    swapAmountInput('receive', TIMEOUTS['stellar.simulation']).should(input =>
+      expect(Number(input.val())).to.be.greaterThan(0),
+    )
     cy.get('[data-testid="pool-swap-connect-wallet"]', TIMEOUTS['ui.render']).should('be.enabled')
     swapSubmit().should('not.exist')
   })
@@ -92,7 +94,7 @@ describe('Stellar testnet swap', () => {
     if (toIndex !== (reverse ? DEFAULT_FROM_INDEX : DEFAULT_TO_INDEX)) selectSwapToken('receive', state.coins[toIndex])
     checkSwapBalances(state, fromIndex, toIndex)
     writeSwapAmount(side, amount)
-    readSwapAmounts().then(amounts => {
+    readSwapAmounts(side).then(amounts => {
       expect(amounts[SWAP_FIELDS[side].amountField]).to.equal(amount)
       if (side === 'pay') checkSwapDetails(amounts, state.coins[fromIndex], state.coins[toIndex])
       checkEstimatedTxCost({ category: 'stellar.simulation' })
