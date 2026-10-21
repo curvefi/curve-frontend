@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { t } from '@ui/lib/i18n'
 import { applySxProps, type SxProps } from '@ui/lib/mui'
-import { SelectTimeOption, type TimeOption } from './SelectTimeOption'
+import { ChartSelect, type ChartSelectOptions } from './ChartSelect'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,7 +29,7 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
     /** optional: not all charts have multiple options */
     setActiveSelection?: (value: TChartKey) => void
   }
-  timeOption?: TimeOption<TTimeOption>
+  timeOption?: ChartSelectOptions<TTimeOption>
   chartOptionVariant: 'select' | 'buttons-group'
   flipChart?: () => void
   customButton?: ReactNode
@@ -117,7 +117,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
               </ToggleButton>
             ))}
           {timeOption && (
-            <SelectTimeOption
+            <ChartSelect
               options={timeOption.options}
               activeOption={timeOption.activeOption}
               setActiveOption={timeOption.setActiveOption}
