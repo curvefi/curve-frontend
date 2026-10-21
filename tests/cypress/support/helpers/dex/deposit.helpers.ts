@@ -34,15 +34,15 @@ export const writePoolDepositForm = (amounts: readonly Decimal[], { coins }: Dep
   })
 
 export const checkPoolDepositDetailsLoaded = () => {
-  getActionValue('pool-deposit-expected-lp', 'evm.simulation').should(value =>
+  getActionValue('pool-deposit-expected-lp', 'tenderly.simulation').should(value =>
     expect(Number(value)).to.be.greaterThan(0),
   )
-  getActionValue('pool-deposit-minimum-lp', 'evm.simulation').should(value =>
+  getActionValue('pool-deposit-minimum-lp', 'tenderly.simulation').should(value =>
     expect(Number(value)).to.be.greaterThan(0),
   )
-  getActionValue('pool-price-impact', 'evm.simulation').should('include', '%')
+  getActionValue('pool-price-impact', 'tenderly.simulation').should('include', '%')
   // The gas value can use the native token when USD prices are unavailable.
-  getActionValue('estimated-tx-cost', 'evm.simulation').should('be.a', 'string').and('not.be.empty')
+  getActionValue('estimated-tx-cost', 'tenderly.simulation').should('be.a', 'string').and('not.be.empty')
   poolDepositSubmit().should('be.enabled').and('have.text', 'Deposit')
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
@@ -58,7 +58,7 @@ export const getPoolDepositAllowance = ({
   tokenAddress: Address
   pool: DepositTestPool
 }) =>
-  cy.then(TIMEOUTS['evm.contractRead'], () =>
+  cy.then(TIMEOUTS['tenderly.allowance'], () =>
     createPublicClient({ transport: http(publicRpcUrl) }).readContract({
       address: tokenAddress,
       abi: erc20Abi,
@@ -87,25 +87,25 @@ export const submitPoolDepositAndCheck = ({
       ),
     )
 
-  return cy.then(TIMEOUTS['evm.balances'], readBalances).then(before => {
+  return cy.then(TIMEOUTS['tenderly.balances'], readBalances).then(before => {
     submitAndExpectToast(
       () => poolDepositSubmit().click(),
       { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
-      'evm.confirmation',
+      'tenderly.submit',
     )
     coins.forEach(({ address }) => {
       poolDepositInput(address).should('have.value', '')
     })
     poolDepositSubmit().should('be.disabled')
 
-    cy.then(TIMEOUTS['evm.balances'], readBalances).then(after => {
+    cy.then(TIMEOUTS['tenderly.balances'], readBalances).then(after => {
       coins.forEach((coin, index) => {
         const spent = parseUnits(amounts[index], coin.decimals)
         expect(before[index] - after[index], `${coin.symbol} spent`).to.equal(spent)
         const { address, decimals } = coin
         cy.get(
           `[data-testid="pool-token-input-${address}"] [data-testid="balance-value"]`,
-          TIMEOUTS['evm.balances'],
+          TIMEOUTS['tenderly.balances'],
         ).should(v => expect(v.attr('data-value')).to.equal(formatUnits(after[index], decimals)))
       })
       const lpIndex = coins.length
@@ -133,7 +133,7 @@ export const checkBalancedPoolDepositAmounts = ({
   pool: DepositTestPool
 }) =>
   cy
-    .then(TIMEOUTS['evm.contractRead'], async () => {
+    .then(TIMEOUTS['tenderly.contractRead'], async () => {
       const client = createPublicClient({ transport: http(publicRpcUrl) })
       return await Promise.all(
         coins.map((_, index) =>
@@ -155,7 +155,7 @@ export const checkBalancedPoolDepositAmounts = ({
       )
     })
     .then(reserves => {
-      cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', TIMEOUTS['evm.balances'])
+      cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', TIMEOUTS['tenderly.balances'])
         .should('have.length', coins.length)
         .then(balances => {
           const walletBalances = Array.from(balances, balance => balance.getAttribute('data-value')!)

@@ -31,14 +31,12 @@ export const TIMEOUTS = {
   // Chain reads and previews are distinct from submission/receipt confirmation.
   'evm.balances': extended,
   'evm.contractRead': extended,
-  'evm.allowance': extended,
   'evm.simulation': standard,
-  'evm.confirmation': superSlow,
   'llamalend.marketMetadata': extended, // SDK market initialization: API metadata and contract configuration.
   'llamalend.liquidity': extended, // RPC cap/available liquidity, with Prices API market/token-price fallback.
   'llamalend.rates': long, // RPC rates or API market data, snapshots, and Merkl rewards.
 
-  // Tenderly VNet REST lifecycle and admin JSON-RPC operations.
+  // Tenderly VNet lifecycle, RPC reads, simulations and transaction workflows.
   'tenderly.create': standard,
   'tenderly.fork': standard,
   'tenderly.get': standard,
@@ -47,12 +45,11 @@ export const TIMEOUTS = {
   'tenderly.storage': standard,
   'tenderly.snapshot': standard,
   'tenderly.clock': standard,
-  'tenderly.submit': standard,
-  // Existing setup callbacks await multiple operations; retain their workflow budgets.
-  'tenderly.approve': standard, // Submit approval and confirm its receipt.
-  'tenderly.exchange': standard, // Approve, exchange and confirm both receipts.
-  'tenderly.createLoan': extended, // Approve collateral and create a loan, including receipts.
-  'tenderly.softLiquidation': extended, // Read state, override oracle storage, advance time and exchange.
+  'tenderly.balances': extended,
+  'tenderly.contractRead': extended,
+  'tenderly.allowance': extended,
+  'tenderly.simulation': extended,
+  'tenderly.submit': superSlow, // Includes approvals and receipt confirmation.
 
   // Soroban reads/simulations, confirmation, and multi-step test-pool setup.
   'stellar.read': extended,
@@ -75,21 +72,21 @@ export const TIMEOUTS = {
   'mock.sentry.report': standard, // Intercepted Sentry envelope submission.
 
   // Stubbed SDK operations in component tests.
-  'mock.evm.balances': extended,
-  'mock.evm.contractRead': standard,
-  'mock.evm.allowance': standard,
-  'mock.evm.simulation': extended,
-  'mock.evm.confirmation': extended,
+  'mock.balances': extended,
+  'mock.contractRead': standard,
+  'mock.allowance': standard,
+  'mock.simulation': extended,
+  'mock.submit': extended,
 } as const satisfies Record<string, Cypress.Timeoutable>
 
 export type TimeoutCategory = keyof typeof TIMEOUTS
 
-type MockableTimeoutCategory = {
-  [Category in TimeoutCategory]: `mock.${Category}` extends TimeoutCategory ? Category : never
-}[TimeoutCategory]
-
 /** Shared helpers receive the mock flag explicitly; never infer it from the environment. */
-export const getTimeoutCategory = <Category extends MockableTimeoutCategory>(
-  category: Category,
+export const getTimeoutCategory = <
+  Provider extends 'evm' | 'tenderly',
+  Operation extends 'balances' | 'contractRead' | 'allowance' | 'simulation' | 'submit',
+>(
+  provider: Provider,
+  operation: Operation,
   isMocked: boolean,
-): Category | `mock.${Category}` => (isMocked ? `mock.${category}` : category)
+) => `${isMocked ? 'mock' : provider}.${operation}` as const

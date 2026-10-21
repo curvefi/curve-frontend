@@ -117,7 +117,7 @@ describe('Pool Deposit (RPC)', () => {
 
   it('deposits the maximum remaining wallet balance of one coin', () => {
     cy.mount(<TestWrapper />)
-    cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', TIMEOUTS['evm.balances'])
+    cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', TIMEOUTS['tenderly.balances'])
       .should('have.length', pool.coins.length)
       .filter((_, element) => Number(element.getAttribute('data-value')) > 0)
       .first()

@@ -11,7 +11,7 @@ const GAUGE_ABI = parseAbi([
 ])
 
 const getGaugeManager = ({ publicRpcUrl, gaugeAddress }: { publicRpcUrl: string; gaugeAddress: Address }) =>
-  cy.then(TIMEOUTS['evm.contractRead'], async () => {
+  cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     return await client.readContract({ address: gaugeAddress, abi: GAUGE_ABI, functionName: 'manager' })
   })
@@ -85,7 +85,7 @@ export const getErc20Balance = ({
   tokenAddress: Address
   accountAddress: Address
 }) =>
-  cy.then(TIMEOUTS['evm.balances'], async () => {
+  cy.then(TIMEOUTS['tenderly.balances'], async () => {
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     return await client.readContract({
       address: tokenAddress,
@@ -108,7 +108,7 @@ export const expectErc20BalanceChange = ({
   initialBalance: bigint
   expectedChange: bigint
 }) =>
-  cy.then(TIMEOUTS['evm.balances'], async () => {
+  cy.then(TIMEOUTS['tenderly.balances'], async () => {
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     const readBalance = async () =>
       await client.readContract({
@@ -119,7 +119,7 @@ export const expectErc20BalanceChange = ({
       })
 
     await waitFor(async () => (await readBalance()) - initialBalance === expectedChange, {
-      ...TIMEOUTS['evm.balances'],
+      ...TIMEOUTS['tenderly.balances'],
       message: `Expected ERC20 balance change to be ${expectedChange}`,
     })
     expect(await readBalance()).to.equal(initialBalance + expectedChange)
@@ -136,7 +136,7 @@ export const expectGaugeRewardDistributor = ({
   rewardTokenAddress: Address
   expectedDistributorAddress: Address
 }) =>
-  cy.then(TIMEOUTS['evm.contractRead'], async () => {
+  cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     const [, distributor] = await client.readContract({
       address: gaugeAddress,

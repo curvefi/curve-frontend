@@ -28,7 +28,7 @@ export const sendAdminTransaction = ({
       body: { jsonrpc: '2.0', method: 'eth_sendTransaction', params: [{ from, to, data }], id: 2 },
       ...TIMEOUTS['tenderly.submit'],
     })
-    .then(TIMEOUTS['evm.confirmation'], ({ body }) =>
+    .then(TIMEOUTS['tenderly.submit'], ({ body }) =>
       client.waitForTransactionReceipt({
         hash: assert(body.result, `Failed to send available balance transaction: ${JSON.stringify(body.error)}`),
         pollingInterval: VNET_RECEIPT_POLLING_INTERVAL,
