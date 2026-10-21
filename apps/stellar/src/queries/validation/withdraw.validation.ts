@@ -65,8 +65,14 @@ const validateMaximumBurn = ({
   test('maximumBurn', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn).isDecimal().gt(0)
   })
-  test('root', 'Maximum LP required exceeds the LP amount. Reduce the token amounts or increase the LP amount.', () => {
-    enforce(maybes([maximumBurn, lpAmount], (burn, budget) => new BigNumber(burn).lte(budget))).isTruthy()
+  skipWhen(maximumBurn == null, () => {
+    test(
+      'root',
+      'Maximum LP required exceeds the LP amount. Reduce the token amounts or increase the LP amount.',
+      () => {
+        enforce(maybes([maximumBurn, lpAmount], (burn, budget) => new BigNumber(burn).lte(budget))).isTruthy()
+      },
+    )
   })
   skipWhen(!isExactBurn, () => {
     test('maximumBurn', 'LP burn does not match the selected LP amount', () => {

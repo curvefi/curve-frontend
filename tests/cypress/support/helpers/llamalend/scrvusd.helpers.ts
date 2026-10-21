@@ -181,8 +181,7 @@ export const readScrvUsdWithdrawBalance = () =>
   cy
     .get('[data-testid="scrvusd-withdraw-input"] [data-testid="balance-value"]', TIMEOUTS['evm.balances'])
     .invoke(TIMEOUTS['evm.balances'], 'attr', 'data-value')
-    .should(balance => expect(balance).to.be.a('string').and.not.equal(''))
-    .then(balance => balance as Decimal)
+    .should(balance => expect(balance).to.be.a('string').and.not.equal('')) as Cypress.Chainable<Decimal>
 
 export const checkScrvUsdWithdrawBalanceGreaterThan = (expectedMinimum: Decimal) =>
   readScrvUsdWithdrawBalance().should(balance => expect(decimalCompare(balance, expectedMinimum)).to.equal(1))
