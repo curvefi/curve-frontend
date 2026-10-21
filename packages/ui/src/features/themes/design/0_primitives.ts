@@ -158,6 +158,7 @@ export const Duration = {
   ChartFrame: 16, // 16ms = ~60fps
   Delay: 100,
   Flicker: 1000,
+  WalletBannerDelay: 1000, // Give wallets some time to change chain id before screaming at the user
   Focus: 50,
   FormDebounce: 350,
   TransactionPollTimeout: 2 * 60 * 1000, // 2 minutes
