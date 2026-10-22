@@ -18,13 +18,13 @@ export const getNetworkSwitchHref = (
 ): string => {
   if (policy.type !== 'same-page') return location.href
 
-  let href = replaceNetworkInPath(location.href, targetBlockchainId)
-  if (policy.clearSearchParams?.length && location.searchStr) {
-    const search = getSearchString(
-      Object.fromEntries(policy.clearSearchParams.map(key => [key, null])),
-      new URLSearchParams(location.searchStr),
-    )
-    href = href.replace(location.searchStr, search)
-  }
-  return href
+  const href = replaceNetworkInPath(location.href, targetBlockchainId)
+  if (!policy.clearSearchParams?.length || !location.searchStr) return href
+
+  // Delete search params if dedicated by the policy.
+  const search = getSearchString(
+    Object.fromEntries(policy.clearSearchParams.map(key => [key, null])),
+    new URLSearchParams(location.searchStr),
+  )
+  return href.replace(location.searchStr, search)
 }
