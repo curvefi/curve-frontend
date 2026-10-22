@@ -127,6 +127,8 @@ export const hasResetPosition = (market: MarketTemplate | Nullish): market is Le
  * (prev)Leverage is >0 and <1 when the position has been leveraged in the past or went through soft liquidation.
  * (prev)Leverage is 1 when the position is not leveraged at all (simple borrowing, no leverage).
  * (prev)Leverage is > 1 when the position is leveraged.
+ * @deprecated Checks a collateral leverage ratio. Use `isZapLeveraged` from `useUserCollateralEvents` to know if the
+ * position borrowed through the zap, and `useEquityLeverage` for the value.
  **/
 export const isPositionLeveraged = (leverage: Amount | Nullish) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)

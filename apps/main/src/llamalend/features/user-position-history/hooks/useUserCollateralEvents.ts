@@ -60,6 +60,7 @@ export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof
 
 export type UserCollateralEvents = {
   events: ParsedUserCollateralEvent[]
+  /** @deprecated Total deposit ÷ deposit from the user. Use `isZapLeveraged` to know if the position borrowed through the zap. */
   originalLeverage: Decimal
   /** The open position borrowed through the leverage zap */
   isZapLeveraged: boolean
