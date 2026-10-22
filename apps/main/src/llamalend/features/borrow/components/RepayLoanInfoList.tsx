@@ -144,7 +144,7 @@ export function RepayLoanInfoList({
         collateralLeverageValue: useRepayFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage,
-        equityLeverage: useRepayEquityLeverage(params, debt, isOpen),
+        equityLeverage: useRepayEquityLeverage(params, { debt, debtDelta }, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),

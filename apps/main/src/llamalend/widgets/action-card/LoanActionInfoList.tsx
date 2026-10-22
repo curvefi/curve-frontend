@@ -47,9 +47,10 @@ export type LoanActionInfoListProps = {
   returnToWallet?: QueryProp<{ value: Decimal; symbol: string }[]>
   prevLeverageValue?: QueryProp<Decimal | null>
   leverageValue?: QueryProp<Decimal | null>
-  /** Collateral leverage for the return on equity, while the leverage row may show the equity leverage */
+  /** @deprecated Return on equity inputs, collateral leverage path only */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
+  /** Est. leveraged APR in percent, shown instead of the return on equity */
   prevLeveragedApr?: QueryProp<Decimal | null>
   leveragedApr?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>

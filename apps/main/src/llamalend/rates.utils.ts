@@ -1,5 +1,6 @@
 import { sumBy } from 'lodash'
 import { getAddress } from 'viem'
+import type { MarketYields } from '@/llamalend/equity-leverage.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
@@ -14,7 +15,7 @@ import { type Nullish, maybe, maybes, notFalsy, recordValues } from '@primitives
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, mapQuery, type QueryProp, type Range } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
+import { decimal, ZERO } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 /** Returns the rate tabs available for a market and the tab selected by default */
@@ -87,6 +88,9 @@ export const getSnapshotCollateralRebasingYieldApr = <
 >(
   snapshot: TSnapshot,
 ) => snapshot.collateralToken.rebasingYieldApr
+
+export const getSnapshotBorrowedRebasingYieldApr = (snapshot: LendingSnapshot | CrvUsdSnapshot) =>
+  ('borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken).rebasingYieldApr
 
 export const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
   snapshots: TSnapshot[] | undefined,
@@ -162,6 +166,18 @@ export const getMarketCampaigns = (
       } satisfies Record<MarketType, (addresses: MarketCampaignAddresses) => (Address | Nullish)[]>
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
+
+/** Yields from the latest snapshot and the borrow campaign rewards of a market */
+export const getMarketYields = (
+  snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
+  campaigns: Record<string, CampaignRewards[]>,
+  addresses: MarketCampaignAddresses & { marketType: MarketType },
+): MarketYields => ({
+  collateralYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr)) ?? null,
+  borrowedYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr)) ?? ZERO,
+  borrowRewardsApr:
+    decimal(sumCampaignsApr(getMarketCampaigns(campaigns, addresses).filter(c => c.action === 'borrow'))) ?? ZERO,
+})
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0

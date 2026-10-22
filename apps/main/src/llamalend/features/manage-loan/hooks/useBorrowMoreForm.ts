@@ -3,7 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getFutureOrCurrent, useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
@@ -36,7 +36,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
-import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { futureOrCurrentQ, mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalSum } from '@ui/lib/decimal'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
@@ -224,7 +224,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     // todo: delete this if users do not complain about it, for now dev-only feature
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
-    leverage: isEquityLeverage ? equityLeverage && getFutureOrCurrent(equityLeverage) : collateralLeverage,
+    leverage: isEquityLeverage
+      ? equityLeverage && futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+      : collateralLeverage,
     equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,

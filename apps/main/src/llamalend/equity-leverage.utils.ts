@@ -12,32 +12,32 @@ import {
 
 type LoanAmounts = Pick<UserState, 'collateral' | 'debt'>
 
+/** Collateral at the oracle price plus the borrowed tokens in the AMM, in the borrowed token */
+const getPositionValue = ({ collateral, stablecoin }: UserState, oraclePrice: Decimal) =>
+  decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
+
 /** How many times its equity the position is worth, or null when the equity is zero. */
-export const getEquityLeverage = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) => {
-  const value = decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
-  const equity = decimalMinus(value, debt)
+export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => {
+  const value = getPositionValue(position, oraclePrice)
+  const equity = decimalMinus(value, position.debt)
   return decimalEqual(equity, ZERO) ? null : decimalDiv(value, equity)
 }
 
-/** APRs in percent. The collateral yield and borrow APR are null when unknown. */
-export type LeverageRates = {
-  collateralYieldApr: Decimal | null
-  borrowedYieldApr: Decimal
-  borrowApr: Decimal | null
-  borrowRewardsApr: Decimal
-}
+/** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. Null when unknown. */
+export type MarketYields = { collateralYieldApr: Decimal | null; borrowedYieldApr: Decimal; borrowRewardsApr: Decimal }
 
 /** Estimated APR on the equity, or null when the equity is zero or a required rate is unknown. */
 export const getEquityLeverageApr = (
-  { collateral, stablecoin, debt }: UserState,
+  position: UserState,
   oraclePrice: Decimal,
-  { collateralYieldApr, borrowedYieldApr, borrowApr, borrowRewardsApr }: LeverageRates,
+  borrowApr: Decimal | undefined,
+  { collateralYieldApr, borrowedYieldApr, borrowRewardsApr }: MarketYields,
 ) => {
-  const collateralValue = decimalMultiply(collateral, oraclePrice)
-  const equity = decimalMinus(decimalSum(collateralValue, stablecoin), debt)
+  const { collateral, stablecoin, debt } = position
+  const equity = decimalMinus(getPositionValue(position, oraclePrice), debt)
   if (collateralYieldApr == null || borrowApr == null || decimalEqual(equity, ZERO)) return null
   const earned = decimalSum(
-    decimalMultiply(collateralValue, collateralYieldApr),
+    decimalMultiply(collateral, oraclePrice, collateralYieldApr),
     decimalMultiply(stablecoin, borrowedYieldApr),
   )
   const borrowCost = decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr))
