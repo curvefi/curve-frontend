@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { getCreateLoanPosition } from '@/llamalend/equity-leverage.utils'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
@@ -13,7 +12,7 @@ import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
 import {
   getFutureOrCurrentEquityLeverage,
-  useEquityLeverage,
+  useCreateLoanEquityLeverage,
 } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
@@ -27,7 +26,7 @@ import { useCallbackSync, useForm, useFormSync } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimalSum, ZERO } from '@ui/lib/decimal'
+import { decimalSum } from '@ui/lib/decimal'
 import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
@@ -147,16 +146,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
   const isEquityLeverage = useLlamalendEquityLeverage()
-  const equityLeverage = useEquityLeverage(
-    {
-      params,
-      futurePosition: mapQuery(expectedCollateral, ({ totalCollateral }) =>
-        getCreateLoanPosition({ collateral: totalCollateral, debt: values.debt ?? ZERO }),
-      ),
-      leverageEnabled: values.leverageEnabled,
-    },
-    isEquityLeverage && !!values.leverageEnabled,
-  )
+  const equityLeverage = useCreateLoanEquityLeverage(params)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 

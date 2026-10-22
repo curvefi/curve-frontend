@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { getAddCollateralPosition } from '@/llamalend/equity-leverage.utils'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
@@ -8,11 +7,10 @@ import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collatera
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
-import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
-import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
+import { useAddCollateralEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -21,7 +19,7 @@ import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { decimal, ZERO } from '@ui/lib/decimal'
+import { decimal } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function AddCollateralInfoList<ChainId extends IChainId>({
@@ -45,7 +43,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const isEquityLeverage = useLlamalendEquityLeverage()
-  const userState = q(useUserState(params, isOpen))
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -77,13 +74,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         collateralLeverageValue: useAddCollateralFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage,
-        equityLeverage: useEquityLeverage(
-          {
-            params,
-            futurePosition: mapQuery(userState, state => getAddCollateralPosition(state, userCollateral ?? ZERO)),
-          },
-          isOpen && isEquityLeverage,
-        ),
+        equityLeverage: useAddCollateralEquityLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: prevCollateral,
         collateralDelta: userCollateral,

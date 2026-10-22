@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { LEVERAGE } from '@/llamalend/constants'
-import { getBorrowMorePosition } from '@/llamalend/equity-leverage.utils'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -21,7 +20,6 @@ import {
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
-import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
@@ -29,7 +27,7 @@ import {
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
 import {
   getFutureOrCurrentEquityLeverage,
-  useEquityLeverage,
+  useBorrowMoreEquityLeverage,
 } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
@@ -41,10 +39,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
-import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimalSum, ZERO } from '@ui/lib/decimal'
+import { decimalSum } from '@ui/lib/decimal'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { useMarketContext } from '../../market-context'
 
@@ -179,21 +176,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
   const isEquityLeverage = useLlamalendEquityLeverage()
   const collateralLeverage = useBorrowMoreLeverage(params)
-  const equityLeverage = useEquityLeverage(
-    {
-      params,
-      futurePosition: combineQueries(
-        [q(useUserState(params, isEquityLeverage)), isLeverageEnabled ? expectedCollateral : constQ(null)],
-        (position, expected) =>
-          getBorrowMorePosition(position, {
-            collateral: (expected ? expected.totalCollateral : values.userCollateral) ?? ZERO,
-            debt: values.debt ?? ZERO,
-          }),
-      ),
-      leverageEnabled: values.leverageEnabled,
-    },
-    isEquityLeverage,
-  )
+  const equityLeverage = useBorrowMoreEquityLeverage(params)
   const isPending = formState.isSubmitting || isBorrowing
   return {
     form,
