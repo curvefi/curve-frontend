@@ -49,11 +49,9 @@ export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
     prevCollateral,
     leverageTotalCollateral,
   } = options
-  // we show the leverage info even when the leverage is disabled for the current action
-  const showLeverage =
-    !!leverageEnabled || (isEquityLeverage ? !!equityLeverage : isPositionLeveraged(prevCollateralLeverageValue.data))
   return {
-    ...(showLeverage
+    // we show the leverage info even when the leverage is disabled for the current action
+    ...(leverageEnabled || (isEquityLeverage ? equityLeverage : isPositionLeveraged(prevCollateralLeverageValue.data))
       ? {
           leverageEnabled: true,
           ...(isEquityLeverage
