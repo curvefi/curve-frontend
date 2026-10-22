@@ -19,6 +19,40 @@ export const getEquityLeverage = ({ collateral, stablecoin, debt }: UserState, o
   return decimalEqual(equity, ZERO) ? null : decimalDiv(value, equity)
 }
 
+/** APRs in percent. The collateral yield and borrow APR are null when unknown. */
+export type LeverageRates = {
+  collateralYieldApr: Decimal | null
+  borrowedYieldApr: Decimal
+  borrowApr: Decimal | null
+  borrowRewardsApr: Decimal
+}
+
+/**
+ * Estimated APR on the equity: what the collateral and the borrowed tokens in the AMM earn, minus the borrow cost net
+ * of rewards, divided by the equity. Null when the equity is zero or a required rate is unknown.
+ */
+export const getEquityLeverageApr = (
+  { collateral, stablecoin, debt }: UserState,
+  oraclePrice: Decimal,
+  { collateralYieldApr, borrowedYieldApr, borrowApr, borrowRewardsApr }: LeverageRates,
+) => {
+  const collateralValue = decimalMultiply(collateral, oraclePrice)
+  const equity = decimalMinus(decimalSum(collateralValue, stablecoin), debt)
+  if (collateralYieldApr == null || borrowApr == null || decimalEqual(equity, ZERO)) return null
+  const earned = decimalSum(
+    decimalMultiply(collateralValue, collateralYieldApr),
+    decimalMultiply(stablecoin, borrowedYieldApr),
+  )
+  const borrowCost = decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr))
+  return decimalDiv(decimalMinus(earned, borrowCost), equity)
+}
+
+/** How many times the collateral yield the equity earns. Null when the collateral has no positive yield. */
+export const getYieldMultiplier = (equityLeverageApr: Decimal | null, collateralYieldApr: Decimal | null) =>
+  equityLeverageApr != null && collateralYieldApr != null && decimalGreaterThan(collateralYieldApr, ZERO)
+    ? decimalDiv(equityLeverageApr, collateralYieldApr)
+    : null
+
 export const getCreateLoanPosition = ({ collateral, debt }: LoanAmounts): UserState => ({
   collateral,
   stablecoin: ZERO,
