@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { getCreateLoanPosition } from '@/llamalend/equity-leverage.utils'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
@@ -10,9 +11,11 @@ import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
+import { getShownEquityLeverage, useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
@@ -21,7 +24,7 @@ import { useCallbackSync, useForm, useFormSync } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimalSum } from '@ui/lib/decimal'
+import { decimalSum, ZERO } from '@ui/lib/decimal'
 import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
@@ -140,6 +143,17 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const collateralTokenAddress = collateralToken?.address
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const equityLeverage = useEquityLeverage(
+    {
+      params,
+      futurePosition: mapQuery(expectedCollateral, ({ totalCollateral }) =>
+        getCreateLoanPosition({ collateral: totalCollateral, debt: values.debt ?? ZERO }),
+      ),
+      leverageEnabled: values.leverageEnabled,
+    },
+    isEquityLeverage && !!values.leverageEnabled,
+  )
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
@@ -160,11 +174,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     borrowToken,
     collateralToken,
     error: formActions.error ?? creationError,
-    leverage: {
-      data: expectedCollateral.data?.leverage,
-      // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
-      ...combineQueryState(maxTokenValues.debt, expectedCollateral),
-    },
+    leverage: isEquityLeverage
+      ? equityLeverage && getShownEquityLeverage(equityLeverage)
+      : {
+          data: expectedCollateral.data?.leverage,
+          // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
+          ...combineQueryState(maxTokenValues.debt, expectedCollateral),
+        },
+    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: q(useCreateLoanIsApproved(params)),
     isControllerApproved: q(isControllerApproved),

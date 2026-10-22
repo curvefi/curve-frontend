@@ -1,14 +1,12 @@
-import { getCreateLoanPosition } from '@/llamalend/equity-leverage.utils'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
-import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
+import type { EquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { constQ, mapQuery, q } from '@ui/features/queries/util'
-import { ZERO } from '@ui/lib/decimal'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
@@ -27,6 +25,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   isControllerApproved,
   collateralToken,
   borrowToken,
+  equityLeverage,
   form,
 }: {
   marketType: MarketType
@@ -36,6 +35,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
+  equityLeverage: EquityLeverage | null
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isOpen = form.isTouched('userCollateral', 'debt')
@@ -63,16 +63,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         collateralLeverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevCollateralLeverageValue: constQ('0'),
         isEquityLeverage,
-        equityLeverage: useEquityLeverage(
-          {
-            params,
-            futurePosition: mapQuery(expectedCollateral, ({ totalCollateral }) =>
-              getCreateLoanPosition({ collateral: totalCollateral, debt: debt ?? ZERO }),
-            ),
-            leverageEnabled,
-          },
-          isOpen && isEquityLeverage,
-        ),
+        equityLeverage,
         prevCollateral: constQ('0'),
         leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),
       })}

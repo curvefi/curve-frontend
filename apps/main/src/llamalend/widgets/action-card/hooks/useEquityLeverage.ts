@@ -45,3 +45,7 @@ export function useEquityLeverage(
   const isZapBorrow = !!leverageEnabled && hasZapV2(market)
   return enabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? { current, future } : null
 }
+
+/** The future leverage once the position after the action is known, the current one until then */
+export const getShownEquityLeverage = ({ current, future }: EquityLeverage) =>
+  future.data === undefined ? current : future

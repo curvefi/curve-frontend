@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { LEVERAGE } from '@/llamalend/constants'
+import { getBorrowMorePosition } from '@/llamalend/equity-leverage.utils'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -20,23 +21,27 @@ import {
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
+import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import {
   type BorrowMoreForm,
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
+import { getShownEquityLeverage, useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
-import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { combineQueries } from '@ui/features/queries/combine'
+import { constQ, mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimalSum } from '@ui/lib/decimal'
+import { decimalSum, ZERO } from '@ui/lib/decimal'
 import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { useMarketContext } from '../../market-context'
 
@@ -169,6 +174,24 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const collateralLeverage = useBorrowMoreLeverage(params)
+  const equityLeverage = useEquityLeverage(
+    {
+      params,
+      // with leverage, wait for the collateral bought with the debt
+      futurePosition: combineQueries(
+        [q(useUserState(params, isEquityLeverage)), isLeverageEnabled ? expectedCollateral : constQ(null)],
+        (position, expected) =>
+          getBorrowMorePosition(position, {
+            collateral: (expected ? expected.totalCollateral : values.userCollateral) ?? ZERO,
+            debt: values.debt ?? ZERO,
+          }),
+      ),
+      leverageEnabled: values.leverageEnabled,
+    },
+    isEquityLeverage,
+  )
   const isPending = formState.isSubmitting || isBorrowing
   return {
     form,
@@ -219,7 +242,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     // todo: delete this if users do not complain about it, for now dev-only feature
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
-    leverage: useBorrowMoreLeverage(params),
+    leverage: isEquityLeverage ? equityLeverage && getShownEquityLeverage(equityLeverage) : collateralLeverage,
+    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
   }
