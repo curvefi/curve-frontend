@@ -87,6 +87,24 @@ export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
     ),
   })
 
+type MarketCampaignQueries = [
+  ReturnType<typeof getCampaignsExternalOptions>,
+  ReturnType<typeof getCampaignsMarketsMerklOptions>,
+]
+
+/** Like {@link useCampaigns}, without the Merkl DEX pool campaigns, so LlamaLend markets don't wait for them */
+export const useMarketCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
+  useQueries({
+    queries: [getCampaignsExternalOptions({}), getCampaignsMarketsMerklOptions({})],
+    combine: useCallback(
+      ([external, merklMarkets]: QueriesResults<MarketCampaignQueries>) => ({
+        ...combineQueryState(external, merklMarkets),
+        data: combineCampaigns([external.data, merklMarkets.data], blockchainId),
+      }),
+      [blockchainId],
+    ),
+  })
+
 /**
  * Hook for accessing campaigns for a specific campaign address, optionally filtered by network.
  *
