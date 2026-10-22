@@ -1,15 +1,16 @@
 /* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit.tech/stellar-wallets-kit/types'
-import { TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
-import type { Decimal } from '@primitives/decimal.utils'
-import { contract, Keypair, TransactionBuilder } from '@stellar/stellar-sdk'
-import { decimalGreaterThan, decimalMinus, toWei } from '@ui/lib/decimal'
+import { retry } from '@primitives/promise.utils'
+import { contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk'
+import { Duration } from '@ui/features/themes/design/0_primitives'
+
+const POOL_DEPLOYMENT_RETRIES = 5
+const POOL_DEPLOYMENT_RETRY_DELAY_MS = Duration.StellarPoolDeploymentRetry
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
 export const connectTestWallet = ({ deployer }: TestnetConfig) => {
@@ -53,33 +54,20 @@ type Factory = {
   }) => Promise<contract.AssembledTransaction<contract.Result<StellarContract>>>
 }
 
-/** Replenish the existing wallet to the deployment script's target before creating another test pool. */
-const fundTestWallet = async (
-  { deployer, issuer, coins }: TestnetConfig,
-  targetBalance: Decimal = '100', // mint enough to cover 100 units of each coin
-  rechargeWhenLowerThan: Decimal = '50', // mint more if the balance is below 50 units
-  decimals = 7, // default to 7 decimals for test tokens
-) => {
-  // Mints share the issuer account's sequence number, so confirm each before starting the next.
-  for (const token of coins) {
-    const balance = await fetchTokenBalance(
-      { network: TEST_NETWORK, token, account: deployer.address, decimals },
-      { staleTime: 0 },
-    )
-    const shortfall = decimalMinus(targetBalance, balance)
-    if (decimalGreaterThan(rechargeWhenLowerThan, shortfall)) continue
-
-    const toMint = BigInt(toWei(shortfall, decimals))
-    await sendStellarTransaction(
-      await simulateContractCall<void>(TEST_NETWORK, token, 'mint', [deployer.address, toMint], issuer.address),
-      contract.basicNodeSigner(Keypair.fromSecret(issuer.secret), Networks.TESTNET).signTransaction,
-    )
-  }
-}
+/**
+ * A footprint lists the ledger entries a transaction may read or write.
+ * Concurrent deployments can change the pool address after simulation, making that list stale.
+ */
+const isPoolDeploymentFootprintConflict = (confirmation: rpc.Api.GetTransactionResponse | undefined) =>
+  confirmation?.status === rpc.Api.GetTransactionStatus.FAILED &&
+  !!confirmation.diagnosticEventsXdr?.some(e =>
+    e.event.body.value.topics.some(
+      t => t.type === 'scvError' && t.value.type === 'sceStorage' && t.value.value.name === 'scecExceededLimit',
+    ),
+  )
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
 export const deployTestPool = async (config: TestnetConfig) => {
-  await fundTestWallet(config)
   const { factory: factoryAddress, deployer, coins } = config
   const factory = await contract.Client.from<Factory>({
     contractId: factoryAddress,
@@ -87,20 +75,32 @@ export const deployTestPool = async (config: TestnetConfig) => {
     networkPassphrase: Networks.TESTNET,
     rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
   })
-  const transaction = await factory.deploy_plain_pool({
-    deployer: deployer.address,
-    name: 'Cypress StableSwap USDX/USDY/USDZ',
-    symbol: 'CY-USDXUSDYUSDZ',
-    coins,
-    a: 100n,
-    fee: 30_000_000n,
-    offpeg_fee_multiplier: 20_000_000_000n,
-    ma_exp_time: 0n,
-    implementation_idx: 0,
-    asset_types: coins.map(() => 0),
-    methods: [],
-    oracles: [],
-  })
-  const { result } = await sendStellarTransaction(transaction)
-  return result.unwrap()
+  return retry(
+    async () => {
+      // Concurrent deployments advance the factory counter, changing the pool address and footprint.
+      const transaction = await factory.deploy_plain_pool({
+        deployer: deployer.address,
+        name: 'Cypress StableSwap USDX/USDY/USDZ',
+        symbol: 'CY-USDXUSDYUSDZ',
+        coins,
+        a: 100n,
+        fee: 30_000_000n,
+        offpeg_fee_multiplier: 20_000_000_000n,
+        ma_exp_time: 0n,
+        implementation_idx: 0,
+        asset_types: coins.map(() => 0),
+        methods: [],
+        oracles: [],
+      })
+      const { result } = await sendStellarTransaction(transaction)
+      return result.unwrap()
+    },
+    {
+      retries: POOL_DEPLOYMENT_RETRIES,
+      // Spread retries across ledger closes so competing deployments do not keep colliding.
+      delay: () => POOL_DEPLOYMENT_RETRY_DELAY_MS * (1 + Math.random()),
+      shouldRetry: error =>
+        isPoolDeploymentFootprintConflict((error as Error).cause as rpc.Api.GetTransactionResponse | undefined),
+    },
+  )
 }

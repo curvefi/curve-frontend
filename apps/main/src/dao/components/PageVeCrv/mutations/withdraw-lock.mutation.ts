@@ -12,6 +12,7 @@ export const useWithdrawLockMutation = ({
   userAddress,
   lockedAmount,
   unlockTime,
+  currentDate,
   onReset,
   onWithdrawn,
 }: {
@@ -19,6 +20,7 @@ export const useWithdrawLockMutation = ({
   userAddress: Address | undefined
   lockedAmount: Decimal | undefined
   unlockTime: number | undefined
+  currentDate: Date
   onReset: () => void
   onWithdrawn: OnTransactionSuccess<WithdrawLockMutation>
 }) => {
@@ -26,7 +28,7 @@ export const useWithdrawLockMutation = ({
     mutationKey: [{ chainId, userAddress, name: 'lockCrv.withdraw' }] as const,
     mutationFn: async () => ({ hash: (await requireLib('curveApi').boosting.withdrawLockedCrv()) as Hex }),
     validationSuite: withdrawLockValidationSuite,
-    validationParams: { chainId, lockedAmount, unlockTime },
+    validationParams: { chainId, lockedAmount, unlockTime, currentDate },
     pendingMessage: () => t`Withdrawing locked CRV...`,
     successMessage: () => t`CRV withdrawal successful.`,
     onSuccess: onWithdrawn,

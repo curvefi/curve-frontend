@@ -24,7 +24,7 @@ export function usePoolTokenBalances({ chainId, userAddress, poolAddress }: Para
     () => (isHydrated ? maybe(tryGetPool(poolAddress, curveApi), getAddresses) : undefined),
     [curveApi, isHydrated, poolAddress],
   )
-  const balances = useTokenBalances({ chainId, userAddress, tokenAddresses }, isHydrated)
+  const balances = useTokenBalances({ chainId, userAddress, tokenAddresses })
   return useMemo(() => combineQueryState(...recordValues(balances)), [balances])
 }
 

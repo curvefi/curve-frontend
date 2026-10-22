@@ -1,22 +1,21 @@
 import { getAddress } from 'viem'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { PromisePool } from '@supercharge/promise-pool'
-import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
 import { decimal, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { getPool } from '../pool.utils'
 
-const {
-  useQuery: useUserLitePoolPositionsQuery,
+export const {
+  useQuery: useUserLitePoolPositions,
   queryKey: getUserLitePoolPositionsQueryKey,
   invalidate: invalidateUserLitePoolPositions,
-} = queryFactory({
+} = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
     ({ name: 'getUserLitePoolPositions', chainId, userAddress }) as const,
   queryFn: async ({ userAddress }: UserChainQuery) => {
@@ -40,10 +39,5 @@ const {
   }),
   category: 'dex.user',
 })
-
-export { getUserLitePoolPositionsQueryKey, invalidateUserLitePoolPositions }
-
-export const useUserLitePoolPositions = (params: UserChainParams, enabled = true) =>
-  useHydratedQuery(useUserLitePoolPositionsQuery, params, enabled)
 
 export type UserLitePoolPositions = QueryData<typeof useUserLitePoolPositions>

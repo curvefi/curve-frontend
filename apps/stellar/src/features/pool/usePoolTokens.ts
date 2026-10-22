@@ -6,9 +6,9 @@ import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-deci
 import { getTokenSymbolQueryOptions } from '@/stellar/queries/token/token-symbol.query'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useQueries } from '@tanstack/react-query'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
 import { combineQueries } from '@ui/features/queries/combine'
+import { useQueries } from '@ui/features/queries/query-hooks'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 
 const combine = <T>(results: Query<T>[]): QueryProp<T>[] => results.map(q)

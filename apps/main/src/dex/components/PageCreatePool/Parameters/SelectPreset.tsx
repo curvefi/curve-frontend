@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be rewritten. */
+
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'

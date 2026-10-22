@@ -1,13 +1,12 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
-import { useQueries } from '@tanstack/react-query'
-import type { UseQueryOptions } from '@tanstack/react-query'
 import { combineQueryState } from '@ui/features/queries/combine'
+import { useQueries, type QueryOptions } from '@ui/features/queries/query-hooks'
 import type { Query } from '@ui/features/queries/util'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryKey = any // disable typecheck for this as we accept any query key
-type HealthQueryOptions = UseQueryOptions<Decimal, Error, Decimal, QueryKey>
+type HealthQueryOptions = QueryOptions<Decimal, Error, Decimal, QueryKey>
 
 /**
  * Docs courtesy of Saint Rat:
