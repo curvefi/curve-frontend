@@ -28,6 +28,8 @@ const getCollateralLeverageFields = ({
 }: LeverageInfoFieldsOptions) => ({
   leverageValue: q(collateralLeverageValue),
   prevLeverageValue: q(prevCollateralLeverageValue),
+  collateralLeverageValue: q(collateralLeverageValue),
+  prevCollateralLeverageValue: q(prevCollateralLeverageValue),
   prevLeverageCollateral: {
     data: calculateLeverageCollateral(prevCollateral.data, prevCollateralLeverageValue.data),
     ...combineQueryState(prevCollateral, prevCollateralLeverageValue),
@@ -42,7 +44,6 @@ export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
   const {
     leverageEnabled,
     collateralDelta,
-    collateralLeverageValue,
     prevCollateralLeverageValue,
     isEquityLeverage,
     equityLeverage,
@@ -55,10 +56,13 @@ export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
       ? {
           leverageEnabled: true,
           ...(isEquityLeverage
-            ? equityLeverage && { leverageValue: equityLeverage.future, prevLeverageValue: equityLeverage.current }
+            ? equityLeverage && {
+                leverageValue: equityLeverage.future,
+                prevLeverageValue: equityLeverage.current,
+                leveragedApr: equityLeverage.futureApr,
+                prevLeveragedApr: equityLeverage.currentApr,
+              }
             : getCollateralLeverageFields(options)),
-          collateralLeverageValue: q(collateralLeverageValue),
-          prevCollateralLeverageValue: q(prevCollateralLeverageValue),
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
         }

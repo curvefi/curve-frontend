@@ -6,6 +6,7 @@ import {
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
+import { EstLeveragedAprTooltipContent } from '@/llamalend/widgets/tooltips/EstLeveragedAprTooltipContent'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -49,6 +50,9 @@ export type LoanActionInfoListProps = {
   /** Collateral leverage for the return on equity, while the leverage row may show the equity leverage */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
+  /** Est. leveraged APR, shown instead of the return on equity */
+  prevLeveragedApr?: QueryProp<Decimal | null>
+  leveragedApr?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
@@ -90,6 +94,8 @@ export const LoanActionInfoList = ({
   leverageValue,
   prevCollateralLeverageValue,
   collateralLeverageValue,
+  prevLeveragedApr,
+  leveragedApr,
   prevLeverageCollateral,
   leverageCollateral,
   prevLeverageTotalCollateral,
@@ -237,7 +243,21 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {collateralApy && (
+          {(prevLeveragedApr ?? leveragedApr) && (
+            <ActionInfo
+              label={t`Est. leveraged APR`}
+              labelTooltip={{ title: t`Est. leveraged APR`, body: <EstLeveragedAprTooltipContent /> }}
+              value={
+                leveragedApr?.data !== undefined && prevLeveragedApr
+                  ? mapQuery(prevLeveragedApr, data => formatNumber(data, 'percent.rate'))
+                  : DISABLED_Q
+              }
+              futureValue={mapQuery(leveragedApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              size="small"
+              testId="borrow-leveraged-apr"
+            />
+          )}
+          {collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
             <ActionInfo
               label={t`Return on Equity (RoE)`}
               value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
