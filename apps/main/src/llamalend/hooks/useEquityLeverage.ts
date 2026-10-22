@@ -61,8 +61,9 @@ export function useEquityLeverage(
   return isLoadingEvents ? undefined : null
 }
 
+/** The current leverage while the action has no future position, e.g. empty inputs */
 export const getFutureOrCurrentEquityLeverage = ({ current, future }: EquityLeverage) =>
-  future.data === undefined ? current : future
+  future.data === undefined && !future.isLoading && !future.error ? current : future
 
 export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
   const { market } = useMarketContext()
