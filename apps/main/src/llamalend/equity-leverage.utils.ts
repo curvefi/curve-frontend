@@ -27,10 +27,7 @@ export type LeverageRates = {
   borrowRewardsApr: Decimal
 }
 
-/**
- * Estimated APR on the equity: what the collateral and the borrowed tokens in the AMM earn, minus the borrow cost net
- * of rewards, divided by the equity. Null when the equity is zero or a required rate is unknown.
- */
+/** Estimated APR on the equity, or null when the equity is zero or a required rate is unknown. */
 export const getEquityLeverageApr = (
   { collateral, stablecoin, debt }: UserState,
   oraclePrice: Decimal,
