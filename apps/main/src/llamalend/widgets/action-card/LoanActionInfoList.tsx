@@ -50,7 +50,6 @@ export type LoanActionInfoListProps = {
   /** Collateral leverage for the return on equity, while the leverage row may show the equity leverage */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
-  /** Est. leveraged APR, shown instead of the return on equity */
   prevLeveragedApr?: QueryProp<Decimal | null>
   leveragedApr?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
@@ -243,7 +242,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {(prevLeveragedApr ?? leveragedApr) && (
+          {(prevLeveragedApr ?? leveragedApr) ? (
             <ActionInfo
               label={t`Est. leveraged APR`}
               labelTooltip={{ title: t`Est. leveraged APR`, body: <EstLeveragedAprTooltipContent /> }}
@@ -256,20 +255,22 @@ export const LoanActionInfoList = ({
               size="small"
               testId="borrow-leveraged-apr"
             />
-          )}
-          {collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
-            <ActionInfo
-              label={t`Return on Equity (RoE)`}
-              value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
-              futureValue={formatReturnOnEquity(
-                collateralLeverageValue,
-                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
-                rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
-                collateralApy,
-              )}
-              size="small"
-              testId="borrow-return-on-equity"
-            />
+          ) : (
+            collateralApy &&
+            (prevCollateralLeverageValue ?? collateralLeverageValue) && (
+              <ActionInfo
+                label={t`Return on Equity (RoE)`}
+                value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
+                futureValue={formatReturnOnEquity(
+                  collateralLeverageValue,
+                  /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
+                  rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
+                  collateralApy,
+                )}
+                size="small"
+                testId="borrow-return-on-equity"
+              />
+            )
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo

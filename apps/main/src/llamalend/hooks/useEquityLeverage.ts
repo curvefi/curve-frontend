@@ -60,8 +60,7 @@ const getApr = (position: UserState | null, oraclePrice: Decimal, { borrowApr }:
 const getBorrowedToken = (snapshot: LendingSnapshot | CrvUsdSnapshot) =>
   'borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken
 
-/** Yields and borrow rewards of the market, from its latest snapshot and its borrow campaigns */
-function useLeverageRates(enabled: boolean): QueryProp<MarketYields> {
+function useMarketYields(enabled: boolean): QueryProp<MarketYields> {
   const { marketType, controllerAddress, chainId, ammAddress, vaultToken } = useMarketContext()
   const blockchainId = BlockchainIds[chainId]
   const snapshots = useMarketSnapshots({ marketType, controllerAddress, blockchainId, enabled })
@@ -117,13 +116,13 @@ export function useEquityLeverage(
   const oraclePrice = q(useMarketOraclePrice(params, isEnabled))
   const position = q(useUserState(params, isEnabled))
   const futurePositionQuery = futurePosition ?? DISABLED_Q
-  const leverageRates = useLeverageRates(isEnabled)
+  const marketYields = useMarketYields(isEnabled)
   const currentRates = q(useMarketRates(params, isEnabled))
   const futureRates = getFutureOrCurrent({
     current: currentRates,
     future: q(useMarketFutureRates({ chainId, marketId: params.marketId, debtDelta }, isEnabled)),
   })
-  const currentApr = combineQueries([position, oraclePrice, currentRates, leverageRates], getApr)
+  const currentApr = combineQueries([position, oraclePrice, currentRates, marketYields], getApr)
   const equityLeverage = {
     current: combineQueries([position, oraclePrice], getEquityLeverage),
     future: combineQueries(
@@ -131,8 +130,8 @@ export function useEquityLeverage(
       (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
     ),
     currentApr,
-    futureApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, leverageRates], getApr),
-    yieldMultiplier: combineQueries([currentApr, leverageRates], (apr, { collateralYieldApr }) =>
+    futureApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, marketYields], getApr),
+    yieldMultiplier: combineQueries([currentApr, marketYields], (apr, { collateralYieldApr }) =>
       getYieldMultiplier(apr, collateralYieldApr),
     ),
   }
