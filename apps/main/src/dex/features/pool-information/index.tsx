@@ -1,12 +1,15 @@
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import type { PoolAlert } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
+import { MAINNET_CRV } from '@evm-ui/utils/address'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
+import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
 import { Metrics } from '@ui/features/pools/PoolInformationMetrics'
-import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdownCard'
+import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdown'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
@@ -25,6 +28,8 @@ export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformatio
     poolAddress,
     tokenAddressesAll: { data: tokenAddressesAll },
   } = usePoolContext()
+  const { tooltipData, ...yieldBreakdown } = useYieldBreakdown({ chainId, poolAddress })
+
   return (
     <Stack sx={stackedCardHeadersSx}>
       <Card size="small">
@@ -34,7 +39,12 @@ export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformatio
         </CardContent>
       </Card>
       <PoolComposition pricesApiPoolData={pricesApiPoolData} />
-      <YieldBreakdown {...useYieldBreakdown({ chainId, poolAddress })} />
+      <YieldBreakdown
+        {...yieldBreakdown}
+        totalTooltip={maybe(tooltipData.data, data => (
+          <NetRateTooltipContent {...data} crvToken={MAINNET_CRV} />
+        ))}
+      />
       <PointsCampaigns />
       <Alerts poolAlert={poolAlert} tokenAlert={useTokenAlert(tokenAddressesAll)} />
     </Stack>

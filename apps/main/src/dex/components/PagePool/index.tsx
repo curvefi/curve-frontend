@@ -25,26 +25,33 @@ import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
+import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
+import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
+import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
-import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { MAINNET_CRV } from '@evm-ui/utils/address'
 import { zip } from '@primitives/array.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
+import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
+import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
@@ -143,6 +150,9 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const pricesApiPoolData = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
+  const tvl = usePoolTvl({ chainId, poolAddress })
+  const volume = usePoolVolume({ chainId, poolAddress })
+  const { total: netApr, tooltipData: netAprTooltipData } = useYieldBreakdown({ chainId, poolAddress })
 
   const currentSeed = mapQuery(
     fallbackQ(
@@ -193,11 +203,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
       <DetailPageLayout
         header={
-          <PoolPageHeader
-            chainId={chainId}
-            blockchainId={blockchainId}
-            poolAddress={poolAddress}
-            // for now the page only renders when pool data has already loaded, it's not lazy yet.
+          <PoolDetailsHeader
+            backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
             title={mapQuery(pool, pool => pool.name)}
             tokens={
               combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
@@ -206,8 +213,23 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                   .map(([symbol, address]) => constQ({ symbol, address })),
               ).data
             }
-            pricesApiPoolData={pricesApiPoolData}
-            backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
+            blockchainId={blockchainId}
+            rightItems={
+              <PoolHeaderMetrics
+                netApr={netApr}
+                netAprTooltip={maybe(netAprTooltipData.data, data => (
+                  <NetRateTooltipContent {...data} crvToken={MAINNET_CRV} />
+                ))}
+                tvl={fallbackQ(
+                  mapQuery(tvl, tvl => amount(tvl)),
+                  mapQuery(pricesApiPoolData, pool => amount(pool.tvlUsd)),
+                )}
+                volume24h={fallbackQ(
+                  mapQuery(volume, volume => amount(volume)),
+                  mapQuery(pricesApiPoolData, pool => amount(pool.tradingVolume24h)),
+                )}
+              />
+            }
           />
         }
         formTabs={{ content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} /> }}
