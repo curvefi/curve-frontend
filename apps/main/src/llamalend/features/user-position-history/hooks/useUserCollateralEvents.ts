@@ -66,7 +66,7 @@ export type UserCollateralEvents = {
   isZapLeveraged: boolean
 }
 
-/** True when a zap `Deposit` follows the last closed position. `events` are oldest first, as the API sends them. */
+/** `events` are oldest first, as the API sends them. */
 const hasZapBorrowInOpenPosition = (events: UserCollateralEventFromApi[]) =>
   events.slice(events.findLastIndex(e => e.isPositionClosed) + 1).some(e => e.leverage?.eventType === 'Deposit')
 

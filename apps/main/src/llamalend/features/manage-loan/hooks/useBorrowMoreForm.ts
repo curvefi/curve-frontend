@@ -179,7 +179,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const equityLeverage = useEquityLeverage(
     {
       params,
-      // with leverage, wait for the collateral bought with the debt
       futurePosition: combineQueries(
         [q(useUserState(params, isEquityLeverage)), isLeverageEnabled ? expectedCollateral : constQ(null)],
         (position, expected) =>

@@ -6,7 +6,6 @@ import { decimal } from '@ui/lib/decimal'
 import { getRepayImplementation } from './repay-query.helpers'
 
 /**
- * Query to get the user's expected leverage value in a position, after repaying
  * @deprecated Collateral leverage: collateral ÷ collateral deposited by the user, wrong after soft liquidation. Use `useEquityLeverage`.
  */
 export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutureLeverage } = queryFactory({

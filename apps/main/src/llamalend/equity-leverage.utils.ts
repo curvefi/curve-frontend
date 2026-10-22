@@ -12,18 +12,13 @@ import {
 
 type LoanAmounts = Pick<UserState, 'collateral' | 'debt'>
 
-/**
- * Equity leverage = position value ÷ equity.
- * Position value = C·p + X: collateral C at oracle price p, plus borrowed tokens X held in the AMM after soft liquidation.
- * Equity = position value − debt. The leverage is negative when the equity is negative, and null when it is zero.
- */
+/** How many times its equity the position is worth, or null when the equity is zero. */
 export const getEquityLeverage = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) => {
   const value = decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
   const equity = decimalMinus(value, debt)
   return decimalEqual(equity, ZERO) ? null : decimalDiv(value, equity)
 }
 
-/** Position opened by a new loan. */
 export const getCreateLoanPosition = ({ collateral, debt }: LoanAmounts): UserState => ({
   collateral,
   stablecoin: ZERO,
@@ -39,8 +34,8 @@ export const getBorrowMorePosition = (position: UserState, { collateral, debt }:
 
 /**
  * Position after repaying with `stateCollateral` from the position, leaving `debt`.
- * A full repay closes the position. A partial repay keeps the borrowed tokens in the AMM, because a partial repay from
- * collateral reverts in soft liquidation.
+ * A partial repay keeps the borrowed tokens in the AMM, because a partial repay from collateral reverts in soft
+ * liquidation.
  */
 export const getRepayPosition = (
   position: UserState,

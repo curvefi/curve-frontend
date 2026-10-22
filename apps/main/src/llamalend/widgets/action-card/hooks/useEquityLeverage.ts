@@ -20,12 +20,7 @@ export function useEquityLeverage(
     params,
     futurePosition,
     leverageEnabled,
-  }: {
-    params: UserMarketParams
-    futurePosition?: QueryProp<UserState | null>
-    /** The action borrows with leverage, which goes through the zap when the market has one */
-    leverageEnabled?: boolean
-  },
+  }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; leverageEnabled?: boolean },
   enabled: boolean,
 ): EquityLeverage | null {
   const { market, marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
@@ -46,6 +41,5 @@ export function useEquityLeverage(
   return enabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? { current, future } : null
 }
 
-/** The future leverage once the position after the action is known, the current one until then */
 export const getShownEquityLeverage = ({ current, future }: EquityLeverage) =>
   future.data === undefined ? current : future

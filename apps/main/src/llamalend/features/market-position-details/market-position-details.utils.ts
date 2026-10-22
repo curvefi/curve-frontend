@@ -64,7 +64,6 @@ export const getHealthValueColor = ({
   ]
 }
 
-/** Negative leverage means negative equity: the debt is worth more than the position. */
 export const getLeverageValueColor = (leverage: Decimal | Nullish) =>
   leverage != null && decimalGreaterThan(ZERO, leverage) ? 'error' : undefined
 

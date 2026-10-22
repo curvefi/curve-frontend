@@ -12,7 +12,6 @@ type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
   collateralLeverageValue: Query<Decimal | null>
   prevCollateralLeverageValue: Query<Decimal | null>
-  /** Beta: show the equity leverage instead of the collateral leverage */
   isEquityLeverage: boolean
   equityLeverage: EquityLeverage | null
   prevCollateral: QueryProp<Decimal | null>
@@ -35,7 +34,6 @@ export const getLeverageInfoFields = ({
     ...(leverageEnabled || isPositionLeveraged(prevCollateralLeverageValue.data) || equityLeverage
       ? {
           leverageEnabled: true,
-          // the equity leverage row is hidden when `equityLeverage` is null
           ...(isEquityLeverage
             ? { leverageValue: equityLeverage?.future, prevLeverageValue: equityLeverage?.current }
             : { leverageValue: q(collateralLeverageValue), prevLeverageValue: q(prevCollateralLeverageValue) }),
