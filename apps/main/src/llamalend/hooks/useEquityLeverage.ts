@@ -18,7 +18,7 @@ import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-mor
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useMarketFutureRates } from '@/llamalend/queries/market/market-future-rates.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
-import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
+import { type MarketRates, useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { type UserState, useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -52,11 +52,16 @@ export type EquityLeverage = {
 export const getFutureOrCurrent = <T>({ current, future }: { current: QueryProp<T>; future: QueryProp<T> }) =>
   future.data === undefined && !future.isLoading && !future.error ? current : future
 
+type MarketYields = Omit<LeverageRates, 'borrowApr'>
+
+const getApr = (position: UserState | null, oraclePrice: Decimal, { borrowApr }: MarketRates, yields: MarketYields) =>
+  position && getEquityLeverageApr(position, oraclePrice, { ...yields, borrowApr: borrowApr ?? null })
+
 const getBorrowedToken = (snapshot: LendingSnapshot | CrvUsdSnapshot) =>
   'borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken
 
 /** Yields and borrow rewards of the market, from its latest snapshot and its borrow campaigns */
-function useLeverageRates(enabled: boolean): QueryProp<Omit<LeverageRates, 'borrowApr'>> {
+function useLeverageRates(enabled: boolean): QueryProp<MarketYields> {
   const { marketType, controllerAddress, chainId, ammAddress, vaultToken } = useMarketContext()
   const blockchainId = BlockchainIds[chainId]
   const snapshots = useMarketSnapshots({ marketType, controllerAddress, blockchainId, enabled })
@@ -118,11 +123,7 @@ export function useEquityLeverage(
     current: currentRates,
     future: q(useMarketFutureRates({ chainId, marketId: params.marketId, debtDelta }, isEnabled)),
   })
-  const currentApr = combineQueries(
-    [position, oraclePrice, currentRates, leverageRates],
-    (position, oraclePrice, { borrowApr }, rates) =>
-      getEquityLeverageApr(position, oraclePrice, { ...rates, borrowApr: borrowApr ?? null }),
-  )
+  const currentApr = combineQueries([position, oraclePrice, currentRates, leverageRates], getApr)
   const equityLeverage = {
     current: combineQueries([position, oraclePrice], getEquityLeverage),
     future: combineQueries(
@@ -130,11 +131,7 @@ export function useEquityLeverage(
       (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
     ),
     currentApr,
-    futureApr: combineQueries(
-      [futurePositionQuery, oraclePrice, futureRates, leverageRates],
-      (position, oraclePrice, { borrowApr }, rates) =>
-        position && getEquityLeverageApr(position, oraclePrice, { ...rates, borrowApr: borrowApr ?? null }),
-    ),
+    futureApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, leverageRates], getApr),
     yieldMultiplier: combineQueries([currentApr, leverageRates], (apr, { collateralYieldApr }) =>
       getYieldMultiplier(apr, collateralYieldApr),
     ),
