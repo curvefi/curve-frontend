@@ -6,6 +6,9 @@ import { decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { getAprCampaigns, getCrvAprRange } from './cells/utils'
 import type { PoolClaimables, PoolRates, PoolRowData } from './types'
 
+/** Lite networks don't have server side rendering (yet) nor do they have age data, so filtering happens locally. */
+export const isActiveLitePool = ({ tvlUsd }: PoolRowData) => (tvlUsd ?? 0) > 0
+
 /** Calculates pool yields independently of network routing, alerts, and wallet state. */
 export const getPoolRates = (pool: PoolRowData, campaigns?: CampaignRewards[]): PoolRates => {
   const extraRewardsTotalApr = sum(pool.extraRewardsApr.filter(reward => reward.apr > 0).map(reward => reward.apr))

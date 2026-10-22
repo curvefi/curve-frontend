@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { PartialRecord } from '@primitives/objects.utils'
 import type { FilterProps } from '@ui/features/tables/data-table.utils'
 import { useFilters } from '@ui/features/tables/hooks/useFilters'
+import { useSearchNavigate, useSearchParams } from '@ui/hooks/router'
 import {
   PoolFilterId,
   POOL_TYPE_FILTERS,
@@ -50,7 +51,15 @@ export const usePoolsFilters = () => {
     [columnFiltersById, setColumnFilter],
   )
 
+  const searchParams = useSearchParams()
+  const searchNavigate = useSearchNavigate(searchParams)
+  const isActivePoolsSelected = searchParams.get('active') !== 'no'
+
   return {
+    activePoolsFilter: {
+      isSelected: isActivePoolsSelected,
+      toggle: () => searchNavigate({ active: isActivePoolsSelected ? 'no' : null, page: null }, { replace: true }),
+    },
     apiParams: getPoolsApiParams(columnFiltersById),
     filterProps,
     onSearch: setGlobalFilter,

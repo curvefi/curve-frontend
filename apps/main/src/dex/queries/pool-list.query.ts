@@ -3,6 +3,7 @@ import type { ChainParams, ChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationSuite } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
+import { MILLISECONDS_PER_SECOND, SECONDS_PER_DAY } from '@ui/lib/time'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
@@ -22,8 +23,19 @@ type PoolListRequestParams = Pick<
   | 'sortBy'
   | 'sortDirection'
 >
-type PoolListQuery = ChainQuery & PoolListRequestParams & { pageSize?: ListPoolsParams['pagination'] }
+type PoolListQuery = ChainQuery &
+  PoolListRequestParams & { pageSize?: ListPoolsParams['pagination']; activePoolsFilter?: boolean }
 type PoolListParams = FieldsOf<PoolListQuery>
+
+/** Applies active pools filter to given params, except when the given params have stronger constraints. */
+const applyActivePoolsFilter = (params: ListPoolsParams): ListPoolsParams => ({
+  ...params,
+  minTvl: Math.max(params.minTvl ?? 0, Number.MIN_VALUE),
+  maxCreationDate: Math.min(
+    params.maxCreationDate ?? Infinity,
+    Math.floor(Date.now() / MILLISECONDS_PER_SECOND) - 3 * SECONDS_PER_DAY,
+  ),
+})
 
 export const getPoolListRootQueryKey = ({ chainId }: ChainParams) => ({ name: 'listPools', chainId }) as const
 
@@ -32,6 +44,7 @@ export const { useQuery: usePoolList } = queryFactory({
     chainId,
     page,
     pageSize,
+    activePoolsFilter,
     searchString,
     poolType,
     minTvl,
@@ -50,6 +63,7 @@ export const { useQuery: usePoolList } = queryFactory({
       chainId,
       page,
       pageSize,
+      activePoolsFilter,
       searchString,
       poolType,
       minTvl,
@@ -63,8 +77,11 @@ export const { useQuery: usePoolList } = queryFactory({
       sortBy,
       sortDirection,
     }) as const,
-  queryFn: async ({ pageSize, ...params }: PoolListQuery) => {
-    const poolList = await listPools({ ...params, pagination: pageSize })
+  queryFn: async ({ pageSize, activePoolsFilter, ...params }: PoolListQuery) => {
+    const poolList = await listPools({
+      ...(activePoolsFilter ? applyActivePoolsFilter(params) : params),
+      pagination: pageSize,
+    })
 
     return { ...poolList, pageCount: getPageCount(poolList.count, poolList.pagination) }
   },
