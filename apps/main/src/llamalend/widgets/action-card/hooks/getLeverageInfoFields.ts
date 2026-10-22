@@ -35,7 +35,7 @@ export const getLeverageInfoFields = ({
       ? {
           leverageEnabled: true,
           ...(isEquityLeverage
-            ? { leverageValue: equityLeverage?.future, prevLeverageValue: equityLeverage?.current }
+            ? equityLeverage && { leverageValue: equityLeverage.future, prevLeverageValue: equityLeverage.current }
             : { leverageValue: q(collateralLeverageValue), prevLeverageValue: q(prevCollateralLeverageValue) }),
           collateralLeverageValue: q(collateralLeverageValue),
           prevCollateralLeverageValue: q(prevCollateralLeverageValue),

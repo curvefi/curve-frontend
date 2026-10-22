@@ -41,5 +41,5 @@ export function useEquityLeverage(
   return enabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? { current, future } : null
 }
 
-export const getShownEquityLeverage = ({ current, future }: EquityLeverage) =>
+export const getFutureOrCurrentEquityLeverage = ({ current, future }: EquityLeverage) =>
   future.data === undefined ? current : future

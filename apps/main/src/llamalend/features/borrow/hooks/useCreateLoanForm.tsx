@@ -11,7 +11,10 @@ import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
-import { getShownEquityLeverage, useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
+import {
+  getFutureOrCurrentEquityLeverage,
+  useEquityLeverage,
+} from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -175,7 +178,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     collateralToken,
     error: formActions.error ?? creationError,
     leverage: isEquityLeverage
-      ? equityLeverage && getShownEquityLeverage(equityLeverage)
+      ? equityLeverage && getFutureOrCurrentEquityLeverage(equityLeverage)
       : {
           data: expectedCollateral.data?.leverage,
           // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.

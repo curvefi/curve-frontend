@@ -27,7 +27,10 @@ import {
   borrowMoreFormValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
-import { getShownEquityLeverage, useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
+import {
+  getFutureOrCurrentEquityLeverage,
+  useEquityLeverage,
+} from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -241,7 +244,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     // todo: delete this if users do not complain about it, for now dev-only feature
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
-    leverage: isEquityLeverage ? equityLeverage && getShownEquityLeverage(equityLeverage) : collateralLeverage,
+    leverage: isEquityLeverage
+      ? equityLeverage && getFutureOrCurrentEquityLeverage(equityLeverage)
+      : collateralLeverage,
     equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
