@@ -10,6 +10,7 @@ import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.quer
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
+import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
@@ -124,6 +125,17 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           label={t`Leverage`}
           value={leverage}
           valueOptions={{ unit: 'multiplier', fallback: '-', color: getLeverageValueColor(leverage.data) }}
+          valueTooltip={
+            isEquityLeverage
+              ? {
+                  title: t`Leverage`,
+                  body: <LeverageTooltipContent />,
+                  placement: 'top',
+                  arrow: false,
+                  clickable: true,
+                }
+              : undefined
+          }
         />
       )}
     </MetricsGrid>
