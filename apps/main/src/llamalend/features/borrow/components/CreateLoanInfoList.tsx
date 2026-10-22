@@ -1,6 +1,6 @@
+import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
-import type { EquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'

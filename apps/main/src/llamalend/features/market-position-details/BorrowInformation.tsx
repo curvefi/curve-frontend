@@ -1,3 +1,4 @@
+import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import {
   formatCollateralNotional,
   isPositionLeveraged,
@@ -8,7 +9,6 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-p
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
-import { useEquityLeverage } from '@/llamalend/widgets/action-card/hooks/useEquityLeverage'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'

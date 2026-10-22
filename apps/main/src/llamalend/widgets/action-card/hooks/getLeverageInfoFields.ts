@@ -1,3 +1,4 @@
+import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -6,7 +7,6 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
-import type { EquityLeverage } from './useEquityLeverage'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
