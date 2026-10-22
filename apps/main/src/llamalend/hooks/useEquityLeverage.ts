@@ -36,12 +36,12 @@ export function useEquityLeverage(
   {
     params,
     futurePosition,
-    leverageEnabled,
-  }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; leverageEnabled?: boolean | null },
+    isZapBorrow = false,
+  }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; isZapBorrow?: boolean },
   enabled = true,
 ): EquityLeverage | null {
   const isEnabled = useLlamalendEquityLeverage() && enabled
-  const { market, marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
+  const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
   const { data: collateralEvents } = useUserCollateralEvents({
     app: marketType,
     controllerAddress,
@@ -55,43 +55,42 @@ export function useEquityLeverage(
     [futurePosition ?? DISABLED_Q, oraclePrice],
     (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
   )
-  const isZapBorrow = !!leverageEnabled && hasZapV2(market)
   return isEnabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? { current, future } : null
 }
 
 export const getFutureOrCurrentEquityLeverage = ({ current, future }: EquityLeverage) =>
   future.data === undefined ? current : future
 
-export const useCreateLoanEquityLeverage = (params: CreateLoanFormQueryParams) =>
-  useEquityLeverage(
+export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
+  const { market } = useMarketContext()
+  return useEquityLeverage(
     {
       params,
       futurePosition: mapQuery(
         useCreateLoanExpectedCollateral(params, !!params.leverageEnabled),
         ({ totalCollateral }) => getCreateLoanPosition({ collateral: totalCollateral, debt: params.debt ?? ZERO }),
       ),
-      leverageEnabled: params.leverageEnabled,
+      isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
     },
     !!params.leverageEnabled,
   )
+}
 
 export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {
   const { market } = useMarketContext()
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, !!params.leverageEnabled)
+  const isZapBorrow = isLeverageBorrowMore(market, params.leverageEnabled)
   return useEquityLeverage({
     params,
     futurePosition: combineQueries(
-      [
-        q(useUserState(params)),
-        isLeverageBorrowMore(market, params.leverageEnabled) ? expectedCollateral : constQ(null),
-      ],
+      [q(useUserState(params)), isZapBorrow ? expectedCollateral : constQ(null)],
       (position, expected) =>
         getBorrowMorePosition(position, {
           collateral: (expected ? expected.totalCollateral : params.userCollateral) ?? ZERO,
           debt: params.debt ?? ZERO,
         }),
     ),
-    leverageEnabled: params.leverageEnabled,
+    isZapBorrow,
   })
 }
 
