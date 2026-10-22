@@ -9,7 +9,7 @@ export const LeverageTooltipContent = () => (
     />
     <TooltipDescription text={t`Calculated as: position value / (position value - debt)`} />
     <TooltipDescription
-      text={t`Shown for positions that borrowed through Curve's leverage. It moves with price: it rises when collateral falls and drops when collateral gains. Below 0, your debt is worth more than your position.`}
+      text={t`It moves with price: it rises when collateral falls and drops when collateral gains. `}
     />
   </TooltipWrapper>
 )
