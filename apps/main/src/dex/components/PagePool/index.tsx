@@ -36,12 +36,10 @@ import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
-import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
@@ -119,17 +117,7 @@ type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
-  const {
-    chainId,
-    blockchainId,
-    poolAddress,
-    pool,
-    api: curve,
-    isWrapped,
-    setIsWrapped,
-    tokens,
-    tokenAddresses,
-  } = usePoolContext()
+  const { chainId, blockchainId, poolAddress, pool, api: curve, isWrapped, setIsWrapped } = usePoolContext()
 
   const poolAlert = usePoolAlert({
     blockchainId,
@@ -194,18 +182,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       <DetailPageLayout
         header={
           <PoolPageHeader
-            chainId={chainId}
-            blockchainId={blockchainId}
-            poolAddress={poolAddress}
-            // for now the page only renders when pool data has already loaded, it's not lazy yet.
-            title={mapQuery(pool, pool => pool.name)}
-            tokens={
-              combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
-                zip(tokens, tokenAddresses)
-                  .filter(([, address]) => address)
-                  .map(([symbol, address]) => constQ({ symbol, address })),
-              ).data
-            }
             pricesApiPoolData={pricesApiPoolData}
             backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
           />

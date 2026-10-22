@@ -8,7 +8,9 @@ import { RefuelSharesChart } from '@/dex/features/manage-pool/components/RefuelS
 import { ReservesCompositionChart } from '@/dex/features/manage-pool/components/ReservesCompositionChart'
 import { useRefuelPool } from '@/dex/features/manage-pool/queries/pools.query'
 import { RefuelFormTabs } from '@/dex/features/manage-pool/RefuelFormTabs'
+import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
+import { usePoolLookup } from '@/dex/queries/pool-lookup.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
@@ -18,7 +20,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { Banner } from '@ui/features/banners/Banner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { constQ, mapQuery } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
@@ -37,6 +39,7 @@ export const ManagePool = () => {
   const chartEnd = Math.floor(useCurrentDate('15m').getTime() / 1000) //  Don't refresh too often as that can reset chart state.
 
   const pool = useRefuelPool({ blockchainId, poolAddress })
+  const curvePool = usePoolLookup({ chainId, poolIdOrAddress: poolAddress })
   const refuelShares = useReadContract({
     address: poolAddress,
     abi: refuelPoolAbi,
@@ -54,15 +57,16 @@ export const ManagePool = () => {
     poolAddress && (
       <DetailPageLayout
         header={
-          <PoolPageHeader
-            chainId={chainId}
-            blockchainId={blockchainId}
+          <PoolContextProvider
+            network={{ chainId, blockchainId }}
+            pool={mapQuery(curvePool, data => data ?? undefined)}
             poolAddress={poolAddress}
-            title={mapQuery(pool, pool => pool.name)}
-            tokens={pool.data?.coins.map(constQ)}
-            backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
-            pricesApiPoolData={pool}
-          />
+          >
+            <PoolPageHeader
+              backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
+              pricesApiPoolData={pool}
+            />
+          </PoolContextProvider>
         }
         formTabs={{
           content: <RefuelFormTabs chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />,
