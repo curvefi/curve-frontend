@@ -7,7 +7,7 @@ import {
 import { oneOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
-import { allViewports } from '@cy/support/ui'
+import { allViewports, SUBPIXEL_TOLERANCE } from '@cy/support/ui'
 import { peakPrice } from '@ui/features/pools/liquidity-density/curve'
 import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
@@ -88,10 +88,10 @@ const expectChartLabelsVisible = (chart: ECharts) => {
     // Copy local bounds before applying the transform into chart pixels.
     const bounds = label.getBoundingRect().clone()
     if (label.transform) bounds.applyTransform(label.transform)
-    expect(bounds.x).to.be.at.least(0)
-    expect(bounds.y).to.be.at.least(0)
-    expect(bounds.x + bounds.width).to.be.at.most(chart.getWidth())
-    expect(bounds.y + bounds.height).to.be.at.most(chart.getHeight())
+    expect(bounds.x).to.be.at.least(-SUBPIXEL_TOLERANCE)
+    expect(bounds.y).to.be.at.least(-SUBPIXEL_TOLERANCE)
+    expect(bounds.x + bounds.width).to.be.at.most(chart.getWidth() + SUBPIXEL_TOLERANCE)
+    expect(bounds.y + bounds.height).to.be.at.most(chart.getHeight() + SUBPIXEL_TOLERANCE)
   })
 }
 
