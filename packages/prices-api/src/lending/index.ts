@@ -61,7 +61,7 @@ export async function getUserMarketCollateralEvents(
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/collateral_events/${blockchainId}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
+    `${host}/v1/lending/collateral_events/${blockchainId}/${marketController}/${userAddr}${txHash ? `?new_tx=${txHash}` : ''}`,
   )
 
   return Schema.getUserCollateralEventsResponse.parse(response)

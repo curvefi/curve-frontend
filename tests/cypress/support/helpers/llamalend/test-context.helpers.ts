@@ -6,7 +6,7 @@ import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
 import { queryClient } from '@ui/features/queries/query-client'
-import { blockUnmockedApis, mockNewHashCollateralEvents } from './market-list-mocks'
+import { blockUnmockedApis, mockNewTxCollateralEvents } from './market-list-mocks'
 
 export const llamaNetworks: NetworkDict<LlamaChainId> = lendNetworks
 
@@ -21,7 +21,7 @@ export const resetLlamaTestContext = () => {
 export const setupMockedLlamalendComponentTest = () => {
   resetLlamaTestContext()
   blockUnmockedApis()
-  mockNewHashCollateralEvents()
+  mockNewTxCollateralEvents()
 }
 
 export const setGasInfo = (
