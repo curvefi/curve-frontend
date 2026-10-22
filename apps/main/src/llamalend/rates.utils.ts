@@ -1,10 +1,12 @@
 import { sumBy } from 'lodash'
+import { getAddress } from 'viem'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { type ExtraIncentive, MarketRateType, MarketType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -140,6 +142,26 @@ export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
         c => c.reward?.value ?? 0,
       )
     : null
+
+type MarketCampaignAddresses = {
+  controllerAddress: Address | Nullish
+  vaultAddress: Address | Nullish
+  ammAddress: Address | Nullish
+}
+
+/** Campaigns of a market, from the contracts that reward its market type */
+export const getMarketCampaigns = (
+  campaigns: Record<string, CampaignRewards[]>,
+  { marketType, ...addresses }: MarketCampaignAddresses & { marketType: MarketType },
+) =>
+  notFalsy(
+    ...(
+      {
+        [MarketType.Lend]: ({ vaultAddress, controllerAddress }) => [vaultAddress, controllerAddress],
+        [MarketType.Mint]: ({ controllerAddress, ammAddress }) => [controllerAddress, ammAddress],
+      } satisfies Record<MarketType, (addresses: MarketCampaignAddresses) => (Address | Nullish)[]>
+    )[marketType](addresses),
+  ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
