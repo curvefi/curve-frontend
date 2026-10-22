@@ -1,13 +1,13 @@
 import { depositQueryValidationSuite } from '@/dex/features/deposit/deposit.validation'
 import type { DepositParams, DepositQuery } from '@/dex/features/deposit/types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { Decimal } from '@primitives/decimal.utils'
 import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 
-export const { useQuery: useDepositBonus } = queryFactory({
+export const { useQuery: useDepositBonus } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
     ({ name: 'depositBonus', chainId, poolAddress, isWrapped, amounts }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>

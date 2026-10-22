@@ -19,13 +19,23 @@ export const LegendLine = ({
   dash?: ChartLineDashPattern
   opacity?: number
 }) => (
-  <svg width="20" height="2" style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}>
+  <svg
+    data-testid="chart-legend-line"
+    width="20"
+    height="2"
+    style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}
+  >
     <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash?.join(' ')} />
   </svg>
 )
 
 export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fill: string; opacity?: number }) => (
-  <svg width="12" height="12" style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}>
+  <svg
+    data-testid="chart-legend-box"
+    width="12"
+    height="12"
+    style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}
+  >
     <rect x="0" y="0" width="12" height="12" stroke={outline} fill={fill} />
   </svg>
 )

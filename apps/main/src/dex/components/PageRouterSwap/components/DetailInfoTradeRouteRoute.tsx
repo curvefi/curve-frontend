@@ -7,6 +7,7 @@ import { getTokens, tryGetPool } from '@/dex/pool.utils'
 import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
@@ -34,7 +35,8 @@ export const DetailInfoTradeRouteRoute = ({
   const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
   const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
 
-  const pool = useMemo(() => tryGetPool(poolId), [poolId])
+  const { curveApi, isHydrated } = useCurve()
+  const pool = useMemo(() => (isHydrated ? tryGetPool(poolId, curveApi) : undefined), [poolId, curveApi, isHydrated])
   const { tokens: poolTokens, tokenAddresses } = useMemo(
     () => maybe(pool, pool => getTokens(pool, { wrapped: false })) ?? { tokens: undefined, tokenAddresses: undefined },
     [pool],
