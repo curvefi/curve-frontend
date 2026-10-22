@@ -3,7 +3,7 @@ import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { type Nullish, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
@@ -13,7 +13,7 @@ type LeverageInfoFieldsOptions = {
   collateralLeverageValue: Query<Decimal | null>
   prevCollateralLeverageValue: Query<Decimal | null>
   isEquityLeverage: boolean
-  equityLeverage: EquityLeverage | null
+  equityLeverage: EquityLeverage | Nullish
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   collateralDelta?: Decimal // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used

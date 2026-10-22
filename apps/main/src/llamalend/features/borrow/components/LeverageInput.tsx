@@ -2,7 +2,7 @@ import { type ChangeEvent } from 'react'
 import { getLeverageValueColor } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -16,8 +16,8 @@ export const LeverageInput = ({
   onToggle,
 }: {
   checked: boolean | undefined
-  /** null hides the value */
-  leverage: QueryProp<Decimal | null> | null
+  /** null or undefined hides the value */
+  leverage: QueryProp<Decimal | null> | Nullish
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
 }) => (
   <CheckboxField

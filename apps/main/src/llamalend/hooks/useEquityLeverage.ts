@@ -21,6 +21,7 @@ import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, DISABLED_Q, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { ZERO } from '@ui/lib/decimal'
@@ -30,7 +31,7 @@ export type EquityLeverage = { current: QueryProp<Decimal | null>; future: Query
 /**
  * Equity leverage of the open position (current) and of the position after the action (future).
  * Returns null when it is not shown: disabled, on the stable channel, or neither the open position nor the action
- * borrows through the zap.
+ * borrows through the zap. Returns undefined while the collateral events load.
  */
 export function useEquityLeverage(
   {
@@ -39,10 +40,10 @@ export function useEquityLeverage(
     isZapBorrow = false,
   }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; isZapBorrow?: boolean },
   enabled = true,
-): EquityLeverage | null {
+): EquityLeverage | Nullish {
   const isEnabled = useLlamalendEquityLeverage() && enabled
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
-  const { data: collateralEvents } = useUserCollateralEvents({
+  const { data: collateralEvents, isLoading: isLoadingEvents } = useUserCollateralEvents({
     app: marketType,
     controllerAddress,
     chainId,
@@ -55,7 +56,9 @@ export function useEquityLeverage(
     [futurePosition ?? DISABLED_Q, oraclePrice],
     (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
   )
-  return isEnabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? { current, future } : null
+  if (!isEnabled) return null
+  if (isZapBorrow || collateralEvents?.isZapLeveraged) return { current, future }
+  return isLoadingEvents ? undefined : null
 }
 
 export const getFutureOrCurrentEquityLeverage = ({ current, future }: EquityLeverage) =>
