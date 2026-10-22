@@ -10,8 +10,10 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-le
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
+import { EstLeveragedAprTooltipContent } from '@/llamalend/widgets/tooltips/EstLeveragedAprTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
+import { YieldMultiplierTooltipContent } from '@/llamalend/widgets/tooltips/YieldMultiplierTooltipContent'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
@@ -120,6 +122,24 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             isEquityLeverage ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...METRIC_TOOLTIP } : undefined
           }
         />
+      )}
+      {equityLeverage && (
+        <>
+          <Metric
+            category={METRIC_CATEGORY}
+            label={t`Est. leveraged APR`}
+            value={equityLeverage.currentApr}
+            valueOptions={{ unit: 'percentage', fallback: '-' }}
+            valueTooltip={{ title: t`Est. leveraged APR`, body: <EstLeveragedAprTooltipContent />, ...METRIC_TOOLTIP }}
+          />
+          <Metric
+            category={METRIC_CATEGORY}
+            label={t`Yield multiplier`}
+            value={equityLeverage.yieldMultiplier}
+            valueOptions={{ unit: 'multiplier', fallback: '-' }}
+            valueTooltip={{ title: t`Yield multiplier`, body: <YieldMultiplierTooltipContent />, ...METRIC_TOOLTIP }}
+          />
+        </>
       )}
     </MetricsGrid>
   )
