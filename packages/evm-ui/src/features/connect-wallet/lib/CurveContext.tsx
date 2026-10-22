@@ -2,7 +2,7 @@ import { BrowserProvider } from 'ethers'
 import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
 import type { Provider } from '@evm-ui/utils/ethers'
-import { constQ, fakeLoadingQ } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import { setUser } from '@ui/features/sentry'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
@@ -15,7 +15,7 @@ type CurveContextValue = {
   connectState: ConnectState
   curveApi?: CurveApi
   llamaApi?: LlamaApi
-  error?: unknown
+  error?: Error
   wallet?: Wallet
   provider?: Provider
   isHydrated: boolean
@@ -67,7 +67,6 @@ export function useWagmiWallet() {
 export const useCurve = () => use(CurveContext)
 
 export function useLlamaQuery() {
-  const { llamaApi: api } = useCurve()
-  const { isConnected } = useConnection()
-  return isConnected ? fakeLoadingQ(api) : constQ(undefined)
+  const { llamaApi, connectState, error } = useCurve()
+  return q({ data: llamaApi, isLoading: !llamaApi && isLoading(connectState), error: error ?? null })
 }

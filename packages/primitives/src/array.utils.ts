@@ -79,7 +79,7 @@ export const median = (values: number[]) => {
   return sorted.length % 2 === 0 ? sorted[middle - 1] : sorted[middle]
 }
 
-export const zip = <T extends readonly unknown[][]>(
+export const zip = <T extends readonly (readonly unknown[])[]>(
   ...arrays: T
 ): { [K in keyof T]: T[K] extends readonly (infer U)[] ? U : never }[] => {
   if (arrays.some(array => array.length !== arrays[0].length)) {

@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be rewritten. */
+
 import { Contract, Interface } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'

@@ -11,26 +11,24 @@ import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
 import { maybe } from '@primitives/objects.utils'
 import { Navigate, useRouterState } from '@tanstack/react-router'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 export const PagePool = () => {
-  const { curveApi, isHydrated } = useCurve()
+  const { curveApi } = useCurve()
   const props = useParams<PoolUrlParams>()
   const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const { poolIdOrAddress, network: blockchainId } = props
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const lookup = useHydratedQuery(usePoolLookup, { chainId, poolIdOrAddress })
-  const pool = isHydrated ? lookup : fakeLoadingQ(undefined) // We want to have a loading state during hydration (pool query is disabled until then)
+  const pool = usePoolLookup({ chainId, poolIdOrAddress })
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(

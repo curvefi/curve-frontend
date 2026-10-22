@@ -9,7 +9,7 @@ import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.quer
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { useQueries } from '@tanstack/react-query'
+import { useQueries } from '@ui/features/queries/query-hooks'
 import { DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
