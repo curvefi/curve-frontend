@@ -38,7 +38,7 @@ export function useEquityLeverage(
     futurePosition,
     leverageEnabled,
   }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; leverageEnabled?: boolean | null },
-  enabled: boolean,
+  enabled = true,
 ): EquityLeverage | null {
   const isEnabled = useLlamalendEquityLeverage() && enabled
   const { market, marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
@@ -78,27 +78,24 @@ export const useCreateLoanEquityLeverage = (params: CreateLoanFormQueryParams) =
 export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {
   const { market } = useMarketContext()
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, !!params.leverageEnabled)
-  return useEquityLeverage(
-    {
-      params,
-      futurePosition: combineQueries(
-        [
-          q(useUserState(params)),
-          isLeverageBorrowMore(market, params.leverageEnabled) ? expectedCollateral : constQ(null),
-        ],
-        (position, expected) =>
-          getBorrowMorePosition(position, {
-            collateral: (expected ? expected.totalCollateral : params.userCollateral) ?? ZERO,
-            debt: params.debt ?? ZERO,
-          }),
-      ),
-      leverageEnabled: params.leverageEnabled,
-    },
-    true,
-  )
+  return useEquityLeverage({
+    params,
+    futurePosition: combineQueries(
+      [
+        q(useUserState(params)),
+        isLeverageBorrowMore(market, params.leverageEnabled) ? expectedCollateral : constQ(null),
+      ],
+      (position, expected) =>
+        getBorrowMorePosition(position, {
+          collateral: (expected ? expected.totalCollateral : params.userCollateral) ?? ZERO,
+          debt: params.debt ?? ZERO,
+        }),
+    ),
+    leverageEnabled: params.leverageEnabled,
+  })
 }
 
-export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled: boolean) =>
+export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled = true) =>
   useEquityLeverage(
     {
       params,
@@ -116,7 +113,7 @@ export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Deci
     enabled,
   )
 
-export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled: boolean) =>
+export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
   useEquityLeverage(
     {
       params,
@@ -127,7 +124,7 @@ export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled
     enabled,
   )
 
-export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled: boolean) =>
+export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
   useEquityLeverage(
     {
       params,

@@ -36,7 +36,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const { data: userStateValue } = userState
   const isEquityLeverage = useLlamalendEquityLeverage()
   const collateralLeverage = useUserCurrentLeverage(params)
-  const equityLeverage = useEquityLeverage({ params }, isEquityLeverage)
+  const equityLeverage = useEquityLeverage({ params })
   const leverage = isEquityLeverage
     ? equityLeverage?.current
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
