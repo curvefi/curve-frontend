@@ -16,7 +16,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
-import { type Nullish, maybes } from '@primitives/objects.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
@@ -41,7 +41,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
   leverageEnabled: boolean | undefined
-  equityLeverage: EquityLeverage | Nullish
+  equityLeverage: EquityLeverage | null
   form: UseFormReturn<BorrowMoreForm>
 }) {
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')

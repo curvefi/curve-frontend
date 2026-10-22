@@ -21,7 +21,6 @@ import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { Nullish } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, DISABLED_Q, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { ZERO } from '@ui/lib/decimal'
@@ -31,7 +30,7 @@ export type EquityLeverage = { current: QueryProp<Decimal | null>; future: Query
 /**
  * Equity leverage of the open position (current) and of the position after the action (future).
  * Returns null when it is not shown: disabled, on the stable channel, or neither the open position nor the action
- * borrows through the zap. Returns undefined while the collateral events load.
+ * borrows through the zap.
  */
 export function useEquityLeverage(
   {
@@ -40,10 +39,10 @@ export function useEquityLeverage(
     isZapBorrow = false,
   }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; isZapBorrow?: boolean },
   enabled = true,
-): EquityLeverage | Nullish {
+): EquityLeverage | null {
   const isEnabled = useLlamalendEquityLeverage() && enabled
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
-  const { data: collateralEvents, isLoading: isLoadingEvents } = useUserCollateralEvents({
+  const { data: collateralEvents } = useUserCollateralEvents({
     app: marketType,
     controllerAddress,
     chainId,
@@ -56,9 +55,7 @@ export function useEquityLeverage(
     [futurePosition ?? DISABLED_Q, oraclePrice],
     (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
   )
-  if (!isEnabled) return null
-  if (isZapBorrow || collateralEvents?.isZapLeveraged) return { current, future }
-  return isLoadingEvents ? undefined : null
+  return isEnabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? { current, future } : null
 }
 
 /** The current leverage while the action has no future position, e.g. empty inputs */
