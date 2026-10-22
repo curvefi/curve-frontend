@@ -1,11 +1,6 @@
 import {
-  getAddCollateralPosition,
-  getBorrowMorePosition,
-  getCreateLoanPosition,
   getEquityLeverage,
   getEquityLeverageApr,
-  getRemoveCollateralPosition,
-  getRepayPosition,
   getYieldMultiplier,
   type MarketYields,
 } from '@/llamalend/equity-leverage.utils'
@@ -29,7 +24,7 @@ import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, DISABLED_Q, futureOrCurrentQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
-import { ZERO } from '@ui/lib/decimal'
+import { decimalGreaterThan, decimalMinus, decimalSum, ZERO } from '@ui/lib/decimal'
 
 /** Leverage and est. leveraged APR of the open position (current) and of the position after the action (future) */
 export type EquityLeverage = {
@@ -104,7 +99,7 @@ export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
       params,
       futurePosition: mapQuery(
         useCreateLoanExpectedCollateral(params, !!params.leverageEnabled),
-        ({ totalCollateral }) => getCreateLoanPosition({ collateral: totalCollateral, debt: params.debt ?? ZERO }),
+        ({ totalCollateral }) => ({ collateral: totalCollateral, stablecoin: ZERO, debt: params.debt ?? ZERO }),
       ),
       isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
       debtDelta: params.debt,
@@ -121,11 +116,14 @@ export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {
     params,
     futurePosition: combineQueries(
       [q(useUserState(params)), isZapBorrow ? expectedCollateral : constQ(null)],
-      (position, expected) =>
-        getBorrowMorePosition(position, {
-          collateral: (expected ? expected.totalCollateral : params.userCollateral) ?? ZERO,
-          debt: params.debt ?? ZERO,
-        }),
+      (position, expected) => ({
+        ...position,
+        collateral: decimalSum(
+          position.collateral,
+          (expected ? expected.totalCollateral : params.userCollateral) ?? ZERO,
+        ),
+        debt: decimalSum(position.debt, params.debt ?? ZERO),
+      }),
     ),
     isZapBorrow,
     debtDelta: params.debt,
@@ -142,13 +140,12 @@ export const useRepayEquityLeverage = (
       params,
       futurePosition: combineQueries(
         [q(useUserState(params, enabled)), debt],
+        // a partial repay keeps the borrowed tokens in the AMM: a partial repay from collateral reverts in soft liquidation
         (position, debt) =>
           debt &&
-          getRepayPosition(position, {
-            stateCollateral: params.stateCollateral ?? ZERO,
-            debt,
-            isFull: !!params.isFull,
-          }),
+          (params.isFull
+            ? { collateral: ZERO, stablecoin: ZERO, debt: ZERO }
+            : { ...position, collateral: decimalMinus(position.collateral, params.stateCollateral ?? ZERO), debt }),
       ),
       debtDelta,
     },
@@ -159,9 +156,10 @@ export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled
   useEquityLeverage(
     {
       params,
-      futurePosition: mapQuery(q(useUserState(params, enabled)), position =>
-        getAddCollateralPosition(position, params.userCollateral ?? ZERO),
-      ),
+      futurePosition: mapQuery(q(useUserState(params, enabled)), position => ({
+        ...position,
+        collateral: decimalSum(position.collateral, params.userCollateral ?? ZERO),
+      })),
     },
     enabled,
   )
@@ -170,9 +168,12 @@ export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enab
   useEquityLeverage(
     {
       params,
-      futurePosition: mapQuery(q(useUserState(params, enabled)), position =>
-        getRemoveCollateralPosition(position, params.userCollateral ?? ZERO),
-      ),
+      futurePosition: mapQuery(q(useUserState(params, enabled)), position => ({
+        ...position,
+        collateral: decimalGreaterThan(params.userCollateral ?? ZERO, position.collateral)
+          ? ZERO
+          : decimalMinus(position.collateral, params.userCollateral ?? ZERO),
+      })),
     },
     enabled,
   )

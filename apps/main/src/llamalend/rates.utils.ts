@@ -167,7 +167,10 @@ export const getMarketCampaigns = (
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
-/** Yields from the latest snapshot and the borrow campaign rewards of a market */
+/**
+ * Yields from the latest snapshot and the borrow campaign rewards of a market.
+ * No collateral yield means no est. leveraged APR; no borrowed-token yield or no campaign counts as 0%.
+ */
 export const getMarketYields = (
   snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
   campaigns: Record<string, CampaignRewards[]>,

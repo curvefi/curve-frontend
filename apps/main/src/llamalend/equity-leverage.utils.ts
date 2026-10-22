@@ -10,8 +10,6 @@ import {
   ZERO,
 } from '@ui/lib/decimal'
 
-type LoanAmounts = Pick<UserState, 'collateral' | 'debt'>
-
 /** Collateral at the oracle price plus the borrowed tokens in the AMM, in the borrowed token */
 const getPositionValue = ({ collateral, stablecoin }: UserState, oraclePrice: Decimal) =>
   decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
@@ -49,41 +47,3 @@ export const getYieldMultiplier = (equityLeverageApr: Decimal | null, collateral
   equityLeverageApr != null && collateralYieldApr != null && decimalGreaterThan(collateralYieldApr, ZERO)
     ? decimalDiv(equityLeverageApr, collateralYieldApr)
     : null
-
-export const getCreateLoanPosition = ({ collateral, debt }: LoanAmounts): UserState => ({
-  collateral,
-  stablecoin: ZERO,
-  debt,
-})
-
-/** Position after adding `collateral` and `debt`. */
-export const getBorrowMorePosition = (position: UserState, { collateral, debt }: LoanAmounts): UserState => ({
-  ...position,
-  collateral: decimalSum(position.collateral, collateral),
-  debt: decimalSum(position.debt, debt),
-})
-
-/**
- * Position after repaying with `stateCollateral` from the position, leaving `debt`.
- * A partial repay keeps the borrowed tokens in the AMM, because a partial repay from collateral reverts in soft
- * liquidation.
- */
-export const getRepayPosition = (
-  position: UserState,
-  { stateCollateral, debt, isFull }: { stateCollateral: Decimal; debt: Decimal; isFull: boolean },
-): UserState =>
-  isFull
-    ? { collateral: ZERO, stablecoin: ZERO, debt: ZERO }
-    : { ...position, collateral: decimalMinus(position.collateral, stateCollateral), debt }
-
-export const getAddCollateralPosition = (position: UserState, collateral: Decimal): UserState => ({
-  ...position,
-  collateral: decimalSum(position.collateral, collateral),
-})
-
-export const getRemoveCollateralPosition = (position: UserState, collateral: Decimal): UserState => ({
-  ...position,
-  collateral: decimalGreaterThan(collateral, position.collateral)
-    ? ZERO
-    : decimalMinus(position.collateral, collateral),
-})
