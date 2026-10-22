@@ -201,21 +201,23 @@ export const LoanActionInfoList = ({
             />
           )}
         </Stack>
-        <Stack>
-          {(collateral ?? prevCollateral) && (
-            <ActionInfo
-              label={t`Collateral`}
-              value={mapQuery(prevCollateral ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
-              futureValue={mapQuery(collateral ?? DISABLED_Q, data =>
-                isFullRepay ? 0 : formatNumber(data, { abbreviate: false }),
-              )}
-              valueRight={collateralSymbol}
-              size="small"
-              testId="borrow-collateral"
-            />
-          )}
-          {!leverageEnabled && debtActionInfo}
-        </Stack>
+        {!leverageEnabled && (
+          <Stack>
+            {(collateral ?? prevCollateral) && (
+              <ActionInfo
+                label={t`Collateral`}
+                value={mapQuery(prevCollateral ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
+                futureValue={mapQuery(collateral ?? DISABLED_Q, data =>
+                  isFullRepay ? 0 : formatNumber(data, { abbreviate: false }),
+                )}
+                valueRight={collateralSymbol}
+                size="small"
+                testId="borrow-collateral"
+              />
+            )}
+            {debtActionInfo}
+          </Stack>
+        )}
       </Stack>
 
       {leverageEnabled && (
