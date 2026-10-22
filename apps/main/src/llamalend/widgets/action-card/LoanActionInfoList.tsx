@@ -50,7 +50,6 @@ export type LoanActionInfoListProps = {
   /** @deprecated Return on equity inputs, collateral leverage path only */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
-  /** Est. leveraged APR in percent, shown instead of the return on equity */
   prevLeveragedApr?: QueryProp<Decimal | null>
   leveragedApr?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
