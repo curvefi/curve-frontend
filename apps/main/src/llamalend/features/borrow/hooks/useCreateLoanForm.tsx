@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { getFutureOrCurrentEquityLeverage, useCreateLoanEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { getFutureOrCurrent, useCreateLoanEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
@@ -165,7 +165,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     collateralToken,
     error: formActions.error ?? creationError,
     leverage: isEquityLeverage
-      ? equityLeverage && getFutureOrCurrentEquityLeverage(equityLeverage)
+      ? equityLeverage && getFutureOrCurrent(equityLeverage)
       : {
           data: expectedCollateral.data?.leverage,
           // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.

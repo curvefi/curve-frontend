@@ -3,7 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getFutureOrCurrentEquityLeverage, useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { getFutureOrCurrent, useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
@@ -224,9 +224,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     // todo: delete this if users do not complain about it, for now dev-only feature
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
-    leverage: isEquityLeverage
-      ? equityLeverage && getFutureOrCurrentEquityLeverage(equityLeverage)
-      : collateralLeverage,
+    leverage: isEquityLeverage ? equityLeverage && getFutureOrCurrent(equityLeverage) : collateralLeverage,
     equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
