@@ -27,6 +27,7 @@ import { getLeverageValueColor } from './market-position-details.utils'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
+const METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
 
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
@@ -75,9 +76,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               )}
             />
           ),
-          placement: 'top',
-          arrow: false,
-          clickable: true,
+          ...METRIC_TOOLTIP,
         }}
       />
       <Metric
@@ -88,13 +87,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           symbol: borrowToken?.symbol,
           usdRate: q(borrowUsdRate),
         })}
-        valueTooltip={{
-          title: t`Total Debt`,
-          body: <TotalDebtTooltipContent />,
-          placement: 'top',
-          arrow: false,
-          clickable: true,
-        }}
+        valueTooltip={{ title: t`Total Debt`, body: <TotalDebtTooltipContent />, ...METRIC_TOOLTIP }}
       />
       <Metric
         category={METRIC_CATEGORY}
@@ -111,9 +104,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               priceUnit={priceUnit}
             />
           ),
-          placement: 'top',
-          arrow: false,
-          clickable: true,
+          ...METRIC_TOOLTIP,
         }}
         notional={mapQuery(rangeToLiquidation, v =>
           maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
@@ -126,15 +117,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           value={leverage}
           valueOptions={{ unit: 'multiplier', fallback: '-', color: getLeverageValueColor(leverage.data) }}
           valueTooltip={
-            isEquityLeverage
-              ? {
-                  title: t`Leverage`,
-                  body: <LeverageTooltipContent />,
-                  placement: 'top',
-                  arrow: false,
-                  clickable: true,
-                }
-              : undefined
+            isEquityLeverage ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...METRIC_TOOLTIP } : undefined
           }
         />
       )}
