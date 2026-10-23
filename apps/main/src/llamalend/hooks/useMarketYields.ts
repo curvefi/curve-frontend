@@ -14,7 +14,7 @@ export function useMarketYields(enabled: boolean): QueryProp<MarketYields> {
   const snapshots = useMarketSnapshots({ marketType, controllerAddress, blockchainId, enabled })
   const { data: campaigns, isLoading } = useMarketCampaigns({ blockchainId })
   return combineQueries(
-    // useMarketCampaigns returns {} while loading; rewards are best-effort, so a campaign error means no rewards
+    // useMarketCampaigns returns {} while loading; campaign errors are ignored, as on the market page
     [snapshots, { data: isLoading ? undefined : campaigns, isLoading, error: null }],
     (snapshots, campaigns) =>
       getMarketYields(snapshots, campaigns, {
