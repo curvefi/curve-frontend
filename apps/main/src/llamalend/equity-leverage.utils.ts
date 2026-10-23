@@ -1,5 +1,6 @@
 import type { UserState } from '@/llamalend/queries/user/user-state.query'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import {
   decimalDiv,
   decimalEqual,
@@ -44,6 +45,6 @@ export const getEquityLeverageApr = (
 
 /** How many times the collateral yield the equity earns. Null when the collateral has no positive yield. */
 export const getYieldMultiplier = (equityLeverageApr: Decimal | null, collateralYieldApr: Decimal | null) =>
-  equityLeverageApr != null && collateralYieldApr != null && decimalGreaterThan(collateralYieldApr, ZERO)
-    ? decimalDiv(equityLeverageApr, collateralYieldApr)
-    : null
+  maybes([equityLeverageApr, collateralYieldApr], (apr, yieldApr) =>
+    decimalGreaterThan(yieldApr, ZERO) ? decimalDiv(apr, yieldApr) : null,
+  ) ?? null
