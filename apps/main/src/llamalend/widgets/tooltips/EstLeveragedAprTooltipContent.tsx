@@ -5,6 +5,9 @@ export const EstLeveragedAprTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`Estimated yearly return on your equity.`} />
     <TooltipDescription text={t`It's an estimate: yields, rates and rewards change over time.`} />
+    <TooltipDescription
+      text={t`Below it, the yield multiplier: how many times the collateral yield your equity earns, APR ÷ Yc.`}
+    />
     <TooltipFormula
       formula={t`APR = (C × Yc + X × Yb − D × (B − R)) ÷ E`}
       terms={[
