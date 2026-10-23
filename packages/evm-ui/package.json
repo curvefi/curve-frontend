@@ -28,7 +28,6 @@
     "@walletconnect/ethereum-provider": "2.26.0",
     "dayjs": "1.11.23",
     "ethers": "6.17.0",
-    "external-rewards": "workspace:^",
     "lightweight-charts": "5.2.1",
     "viem": "2.57.7",
     "wagmi": "3.7.7"
