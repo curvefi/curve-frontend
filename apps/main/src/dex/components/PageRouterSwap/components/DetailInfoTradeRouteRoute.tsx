@@ -19,7 +19,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const formatRoute = (route: Route) => route.name || isAddress(route.poolId, { strict: false}) ? shortenAddress(route.poolId) : route.poolId
+const formatRoute = (route: Route) =>
+  route.name || isAddress(route.poolId, { strict: false }) ? shortenAddress(route.poolId) : route.poolId
 
 export const DetailInfoTradeRouteRoute = ({
   params,
