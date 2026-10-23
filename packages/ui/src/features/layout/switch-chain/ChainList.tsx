@@ -5,7 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { recordEntries } from '@primitives/objects.utils'
-import { Link, useRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { MenuItem } from '@ui/components/MenuItem'
 import { MenuSectionHeader } from '@ui/components/MenuSectionHeader'
 import { SearchField } from '@ui/components/SearchField'
@@ -48,7 +48,6 @@ export function ChainList({
   onNetwork?: (chainId: number) => void
   tvls: QueryProp<Record<string, number>>
 }) {
-  const router = useRouter()
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = lodash.groupBy(
     options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
@@ -85,26 +84,19 @@ export function ChainList({
               <Fragment key={key}>
                 <MenuSectionHeader>{title}</MenuSectionHeader>
                 <MenuList>
-                  {groupedOptions[key]
-                    ?.map(network => ({ ...network, url: new URL(network.href, router.origin) }))
-                    .map(({ blockchainId, chainId, name, url: { pathname, search, hash } }) => (
-                      <MenuItem<number, typeof Link<typeof router, string, string>>
-                        data-testid={`menu-item-chain-${blockchainId}`}
-                        key={blockchainId}
-                        value={chainId}
-                        {...(blockchainId !== selectedNetworkId && {
-                          component: Link,
-                          to: pathname,
-                          ...(search && { search: router.options.parseSearch(search) }),
-                          ...(hash && { hash: hash.slice(1) }),
-                        })}
-                        isSelected={blockchainId == selectedNetworkId}
-                        icon={<ChainSwitcherIcon blockchainId={blockchainId} size={36} />}
-                        label={name}
-                        onSelected={onNetwork}
-                        isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
-                      />
-                    ))}
+                  {groupedOptions[key]?.map(({ blockchainId, chainId, name, href }) => (
+                    <MenuItem
+                      data-testid={`menu-item-chain-${blockchainId}`}
+                      key={blockchainId}
+                      value={chainId}
+                      {...(blockchainId !== selectedNetworkId && { component: Link, href })}
+                      isSelected={blockchainId == selectedNetworkId}
+                      icon={<ChainSwitcherIcon blockchainId={blockchainId} size={36} />}
+                      label={name}
+                      onSelected={onNetwork}
+                      isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
+                    />
+                  ))}
                 </MenuList>
               </Fragment>
             ))
