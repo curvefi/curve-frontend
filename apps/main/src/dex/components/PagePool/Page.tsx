@@ -14,7 +14,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { constQ, fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { constQ, loadingQ, mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
@@ -28,7 +28,7 @@ export const PagePool = () => {
   const { data: network } = useNetworkByChain({ chainId })
 
   // We want to have a loading state during hydration (pool is unavailable until then)
-  const pool = isHydrated ? constQ(tryGetPool(poolAddress, curveApi) ?? null) : fakeLoadingQ(undefined)
+  const pool = isHydrated ? constQ(tryGetPool(poolAddress, curveApi) ?? null) : loadingQ(undefined)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(

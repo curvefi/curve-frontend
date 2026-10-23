@@ -13,7 +13,7 @@ import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ, mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -41,7 +41,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
 
   // Transform trades data with block explorer URLs
   const tradesWithUrls = useCombinedQueries(
-    [poolTrades, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    [poolTrades, poolPriceApi, loadingQ(isHydrated || undefined)],
     useCallback(
       tradesData =>
         maybe(network, blockchainId => tradesData.trades.map(trade => ({ ...trade, chainId, blockchainId }))),
