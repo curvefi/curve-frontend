@@ -8,6 +8,7 @@ import { useMarketLiquidationBand } from '@/llamalend/queries/market/market-liqu
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { maybe } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
 
@@ -35,7 +36,7 @@ export const useBandsData = ({
   const chartData = useProcessedBandsData({ marketBandsBalances: marketBands.data, userBandsBalances: userBands.data })
   const userBandsBalances = userBands.data ?? EMPTY_BANDS
   const data = useMemo(
-    () => ({ chartData, userBandsBalances, oraclePrice: oraclePrice.data }),
+    () => maybe(chartData, chartData => ({ chartData, userBandsBalances, oraclePrice: oraclePrice.data })),
     [chartData, userBandsBalances, oraclePrice.data],
   )
   const { isLoading } = combineQueryState(loanExists, liquidationBand, userBands, marketBands, oraclePrice)

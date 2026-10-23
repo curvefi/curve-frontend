@@ -12,10 +12,13 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-export type ChartEmptyState = { testId?: string } & Pick<
+export type ChartEmptyState<T> = { testId?: string } & Pick<
   EmptyStateCardProps,
   'title' | 'description' | 'button' | 'secondaryButton'
->
+> & {
+    /** Decides if the loaded data counts as empty. By default only an empty array is empty. */
+    isEmpty?: (data: T) => boolean
+  }
 
 export type ChartErrorState = { onReload?: () => Promise<unknown> | void } & Pick<
   EmptyStateCardProps,
@@ -25,12 +28,13 @@ export type ChartErrorState = { onReload?: () => Promise<unknown> | void } & Pic
 export type ChartStateWrapperProps<T> = {
   query: QueryProp<T>
   height: number
-  isEmpty?: boolean
-  emptyState?: ChartEmptyState
+  emptyState?: ChartEmptyState<T>
   errorState?: ChartErrorState
   children: (data: T) => ReactNode
   userAddress?: Address
 }
+
+const isEmptyArray = (data: unknown) => Array.isArray(data) && data.length === 0
 
 const Loading = ({ height }: { height: number }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: height }}>
@@ -41,8 +45,7 @@ const Loading = ({ height }: { height: number }) => (
 export const ChartStateWrapper = <T,>({
   query: { data, isLoading, error },
   height,
-  isEmpty,
-  emptyState,
+  emptyState: { isEmpty = isEmptyArray, ...emptyState } = {},
   errorState,
   children,
   userAddress,
@@ -62,12 +65,10 @@ export const ChartStateWrapper = <T,>({
         userAddress={userAddress}
       />
     </Box>
-  ) : isEmpty ? (
+  ) : data === undefined || isEmpty(data) ? (
     <Stack sx={{ alignItems: 'center', justifyContent: 'center', padding: Spacing.md, minHeight: height }}>
-      <EmptyStateCard {...emptyState} title={emptyState?.title ?? t`No chart data found`} />
+      <EmptyStateCard {...emptyState} title={emptyState.title ?? t`No chart data found`} />
     </Stack>
-  ) : data === undefined ? (
-    <Loading height={height} />
   ) : (
     <ErrorBoundary
       title="Chart Error"

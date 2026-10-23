@@ -19,7 +19,6 @@ export const DailyLocks = () => {
         <EvmChartStateWrapper
           query={q(locks)}
           height={DAO_CHART_HEIGHT}
-          isEmpty={locks.data?.length === 0}
           errorState={{ description: t`Unable to fetch daily veCRV locks.`, onReload: locks.refetch }}
         >
           {data => <PositiveAndNegativeBarChart height={DAO_CHART_HEIGHT} data={data} />}

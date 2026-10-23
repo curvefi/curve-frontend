@@ -71,7 +71,6 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
           <EvmChartStateWrapper
             query={userVoteRows}
             height={DAO_COMPACT_CHART_HEIGHT}
-            isEmpty={userVoteRows.data?.length === 0}
             emptyState={{ description: t`No gauge votes found` }}
             errorState={{
               description: t`Unable to fetch user gauge votes.`,
@@ -97,7 +96,6 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
           <EvmChartStateWrapper
             query={gaugeRows}
             height={DAO_COMPACT_CHART_HEIGHT}
-            isEmpty={gaugeRows.data?.length === 0}
             emptyState={{ description: t`No gauges with >0.5% relative gauge weight found` }}
             errorState={{ description: t`Unable to fetch gauges.`, onReload: gauges.refetch }}
           >

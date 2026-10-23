@@ -10,7 +10,7 @@ type ProcessedBandsData = {
 
 export const useProcessedBandsData = ({ marketBandsBalances, userBandsBalances }: ProcessedBandsData) =>
   useMemo(() => {
-    if (!marketBandsBalances) return []
+    if (!marketBandsBalances) return undefined
 
     const userBands = userBandsBalances ?? []
 

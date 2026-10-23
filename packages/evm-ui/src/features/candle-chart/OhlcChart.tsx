@@ -17,8 +17,7 @@ export type OhlcChartProps = {
   hideCandleSeriesLabel: boolean
   chartHeight: number
   series: QueryProp<OhlcSeries>
-  isEmpty?: boolean
-  emptyState?: ChartEmptyState
+  emptyState: ChartEmptyState<OhlcSeries>
   liquidationRange?: LiquidationRanges
   selectedChartKey: string | undefined
   timeOption: TimeOption
@@ -34,7 +33,6 @@ export type OhlcChartProps = {
 
 export const OhlcChart = ({
   series,
-  isEmpty,
   emptyState,
   refetchPricesData,
   chartHeight,
@@ -51,7 +49,6 @@ export const OhlcChart = ({
       <EvmChartStateWrapper
         query={series}
         height={chartHeight}
-        isEmpty={isEmpty}
         emptyState={emptyState}
         errorState={{
           description: selectedChartLabel

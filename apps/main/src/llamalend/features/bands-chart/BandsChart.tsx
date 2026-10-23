@@ -149,8 +149,7 @@ const BandsChartComponent = ({ bands, height, ...overlay }: BandsChartProps) => 
     <EvmChartStateWrapper
       query={bands}
       height={height}
-      isEmpty={bands.data?.chartData.length === 0}
-      emptyState={{ description: t`No active bands for this market` }}
+      emptyState={{ description: t`No active bands for this market`, isEmpty: data => data.chartData.length === 0 }}
       errorState={{ description: t`Failed to load bands chart data` }}
     >
       {data => <BandsChartContent {...data} {...overlay} />}

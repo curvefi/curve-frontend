@@ -39,7 +39,6 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart.lg
       <EvmChartStateWrapper
         query={q(history)}
         height={height}
-        isEmpty={history.data?.length === 0}
         errorState={{ description: ERROR_MESSAGE, onReload: () => void history.refetch() }}
       >
         {data => (

@@ -168,9 +168,9 @@ export const LiquidityDensityChart = ({
         <ChartStateWrapper
           query={profile}
           height={CHART_HEIGHT}
-          isEmpty={!samples?.length}
-          emptyState={
-            isConnected
+          emptyState={{
+            isEmpty: profile => !profile.samples.length,
+            ...(isConnected
               ? {
                   description: t`Liquidity density is unavailable for this pool.`,
                   testId: 'liquidity-density-unavailable',
@@ -179,8 +179,8 @@ export const LiquidityDensityChart = ({
                   title: t`Connect wallet`,
                   description: t`Please connect your wallet to view liquidity density.`,
                   testId: 'liquidity-density-connect-wallet',
-                }
-          }
+                }),
+          }}
           errorState={{ description: t`Unable to fetch liquidity density.` }}
         >
           {() => (
