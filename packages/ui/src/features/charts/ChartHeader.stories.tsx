@@ -1,5 +1,10 @@
 import { useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DEFAULT_TIME_OPTION, TIME_OPTIONS } from './chart.utils'
 import { ChartHeader, type ChartSelections } from './ChartHeader'
@@ -121,6 +126,40 @@ const LendLoanOhlcChartHeader = () => {
   )
 }
 
+type LiquidityPairKey = 'usdc-dai' | 'usdt-dai' | 'usdt-usdc'
+const liquidityPairSelections: ChartSelections<LiquidityPairKey>[] = [
+  { key: 'usdc-dai', label: 'USDC / DAI', activeTitle: 'USDC / DAI' },
+  { key: 'usdt-dai', label: 'USDT / DAI', activeTitle: 'USDT / DAI' },
+  { key: 'usdt-usdc', label: 'USDT / USDC', activeTitle: 'USDT / USDC' },
+]
+
+const NestedChartHeaderExample = ({ width }: { width: number }) => {
+  const [activePair, setActivePair] = useState<LiquidityPairKey>('usdc-dai')
+
+  return (
+    <Card size="small" sx={{ width }}>
+      <CardHeader title="Composition" />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        <ChartHeader
+          title="Liquidity density"
+          nested
+          chartOptionVariant="select"
+          chartSelections={{
+            selections: liquidityPairSelections,
+            activeSelection: activePair,
+            setActiveSelection: (value: LiquidityPairKey) => setActivePair(value),
+          }}
+        />
+        <CardContent size="small">
+          <Typography variant="bodySRegular" color="textSecondary">
+            Chart body
+          </Typography>
+        </CardContent>
+      </Stack>
+    </Card>
+  )
+}
+
 const ScrvUsdStatisticsHeaderExample = () => {
   const [activeChart, setActiveChart] = useState<StatisticsChart>('savingsRate')
 
@@ -225,5 +264,22 @@ export const ButtonsGroupVariantScrvUsdStatisticsHeaderNarrow: Story = {
       },
     },
   },
+}
+
+export const NestedSelectVariant: Story = {
+  render: () => <NestedChartHeaderExample width={exampleWidths.normalWidth} />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Matches the liquidity density chart in the pool composition card: nested header with title and pair select, lined up with the card title.',
+      },
+    },
+  },
+}
+
+export const NestedSelectVariantNarrow: Story = {
+  render: () => <NestedChartHeaderExample width={exampleWidths.narrowWidth} />,
+  parameters: { docs: { description: { story: 'Narrow width example of the nested header inside a card.' } } },
 }
 export default meta

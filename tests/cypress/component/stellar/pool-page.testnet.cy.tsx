@@ -57,7 +57,7 @@ describe('Stellar testnet pool page', () => {
     checkDepositBalances(state)
 
     cy.get('[data-testid="tab-withdraw"]', TIMEOUTS['ui.interaction']).click()
-    withdrawLpInput().find('input').should('be.enabled')
+    withdrawLpInput().find('input', TIMEOUTS['stellar.read']).should('be.enabled')
     withdrawSubmit().should('be.disabled')
   })
 })

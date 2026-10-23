@@ -7,7 +7,7 @@ import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llam
 import { clickTab } from '@cy/support/helpers/tabs'
 import type { AppRoute } from '@cy/support/routes'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
-import { oneViewport } from '@cy/support/ui'
+import { oneViewport, SUBPIXEL_TOLERANCE } from '@cy/support/ui'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 
 const NAV_ID = 'detail-page-section-nav'
@@ -40,8 +40,7 @@ const assertSectionReached = (section: MarketSectionId) =>
         )
 
         expect(win.scrollY, `${section}: page scrolled`).to.be.greaterThan(0)
-        // Firefox can round fractional layout positions differently in CI, so allow one CSS pixel.
-        expect(top, `${section}: below navigation`).to.be.at.least(obstruction - 1)
+        expect(top, `${section}: below navigation`).to.be.at.least(obstruction - SUBPIXEL_TOLERANCE)
         expect(top, `${section}: inside viewport`).to.be.lessThan(win.innerHeight)
       }),
   )
