@@ -13,10 +13,10 @@ type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
   queryKey: ({ contractAddress, blockchainId, timeOption = '1M', limit }: QueryParams) =>
-    ({ name: 'getSnapshots', version: 3, blockchainId, contractAddress, timeOption, limit }) as const,
-  queryFn: ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
+    ({ name: 'getSnapshots', version: 4, blockchainId, contractAddress, timeOption, limit }) as const,
+  queryFn: async ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
-    return NoRetryError.catch404(async () =>
+    const response = await NoRetryError.catch404(async () =>
       // A limit requests the latest snapshots directly; otherwise fetch the full selected range in chunks.
       limit
         ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
@@ -26,6 +26,7 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
               getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: fetchOnChain, ...range }),
           }),
     )
+    return response.toReversed()
   },
   validationSuite: contractValidationSuite,
   category: 'global.snapshots',
