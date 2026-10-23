@@ -3,11 +3,12 @@ import { getDexChartSelectionKey, useDexOhlcQuery } from '@/dex/queries/ohlc-cha
 import type { ChainId } from '@/dex/types/main.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import type { Pool } from '@curvefi/prices-api/pools'
-import type { OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@evm-ui/features/candle-chart/hooks/useDexChartList'
 import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
+import type { OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { LpPriceOhlcDataFormatted } from '@evm-ui/features/candle-chart/types'
+import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
@@ -47,16 +48,13 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
     fetchMore,
   } = useOhlcQueryAdapter({ query: chartQuery, selectItems: selectDexOhlcData })
   const isLoading = !isAnchorEndReady || isQueryLoading
-  const isEmpty = !isLoading && !error && ohlcData?.length === 0
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
     chartHeight: Height.chart.lg,
-    isLoading,
-    isEmpty,
-    emptyMessage: t`No OHLC data found. Data may be unavailable for this pool.`,
-    error,
-    ohlcData,
+    series: q({ data: { ohlcData }, isLoading, error }),
+    isEmpty: ohlcData?.length === 0,
+    emptyState: { description: t`No OHLC data found. Data may be unavailable for this pool.` },
     selectChartList,
     selectedChartKey,
     timeOption,

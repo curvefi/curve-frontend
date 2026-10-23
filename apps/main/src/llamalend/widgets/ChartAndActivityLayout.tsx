@@ -7,8 +7,8 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import type { VaultActivityProps } from '@evm-ui/features/activity-table/types'
-import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
+import { OhlcChart, type OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
@@ -255,7 +255,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
             gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
           }}
         >
-          <ChartWrapper
+          <OhlcChart
             {...chart.ohlcChartProps}
             onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
           />
@@ -367,7 +367,7 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
           gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
         }}
       >
-        <ChartWrapper
+        <OhlcChart
           {...chart.ohlcChartProps}
           onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
         />
