@@ -50,7 +50,6 @@ export function useResizeObserver(
     if (!node) return console.warn(`Could not find the element to observe for resize`, elementRef)
 
     const { width, height } = node.getBoundingClientRect()
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setDimensions([Math.round(width), Math.round(height)])
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
