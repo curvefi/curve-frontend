@@ -21,19 +21,19 @@ export const ETHEREUM_ONLY_NETWORK_SWITCH: NetworkSwitchPolicy = {
 }
 
 export const getNetworkSwitchHref = (
-  location: Pick<ParsedLocation, 'searchStr' | 'href'>,
+  { searchStr, href }: Pick<ParsedLocation, 'searchStr' | 'href'>,
   targetBlockchainId: string,
   policy: NetworkSwitchPolicy,
 ): string => {
-  if (policy.type !== 'same-page') return location.href
+  if (policy.type !== 'same-page') return href
 
-  const href = replaceNetworkInPath(location.href, targetBlockchainId)
-  if (!policy.clearSearchParams?.length || !location.searchStr) return href
+  const newHref = replaceNetworkInPath(href, targetBlockchainId)
+  if (!policy.clearSearchParams?.length || !searchStr) return newHref
 
   // Delete search params if dedicated by the policy.
   const search = getSearchString(
     Object.fromEntries(policy.clearSearchParams.map(key => [key, null])),
-    new URLSearchParams(location.searchStr),
+    new URLSearchParams(searchStr),
   )
-  return href.replace(location.searchStr, search)
+  return newHref.replace(searchStr, search)
 }
