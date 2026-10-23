@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
-import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
+import type { BandsData } from '@/llamalend/features/bands-chart/types'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
@@ -19,7 +19,6 @@ import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { type Token } from '@primitives/address.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -27,7 +26,7 @@ import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { useBandsChartVisible } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import type { TabItem } from '@ui/hooks/useTabs'
@@ -37,7 +36,6 @@ import { getTokenPairUnit } from '@ui/lib/tokens'
 import { LlammaActivityEventsTable } from '../features/llamma-activity/LlammaActivityEventsTable'
 import { LlammaActivityTradesTable } from '../features/llamma-activity/LlammaActivityTradesTable'
 import type { LlammaActivityProps } from '../features/llamma-activity/types'
-import type { FetchedBandsBalances } from '../queries/bands/bands-balances.query-helpers'
 import { useMarketOraclePrice } from '../queries/market/market-oracle-price.query'
 import { useMarketPrice } from '../queries/market/market-price.query'
 
@@ -46,7 +44,6 @@ const { Spacing } = SizesAndSpaces
 const METRIC_CATEGORY = 'llamalend.marketCharts'
 const PRICE_VALUE_OPTIONS = { abbreviate: false, formatter: (value: Amount) => formatNumber(value, 'token.precise') }
 
-const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
 // This keeps the layout from re-rendering when the visible range is effectively unchanged.
 const VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE = 1e-8
@@ -69,15 +66,7 @@ type ChartAndActivityLayoutProps = {
     legendSets: LegendItem[]
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
-  bands?: {
-    chartData: ChartDataPoint[] | undefined
-    userBandsBalances: FetchedBandsBalances[]
-    oraclePrice: string | undefined
-    isLoading: boolean
-    error: Error | null
-    collateralToken: Token | undefined
-    borrowToken: Token | undefined
-  }
+  bands: QueryProp<BandsData>
   activity: LlammaActivityProps
 }
 
@@ -192,6 +181,9 @@ export const MarketActivityLayout = <T extends MarketRateType>({
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
+  const {
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -203,10 +195,10 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
     )
   }, [])
 
-  const showBands = bands && isBandsVisible && isConnected
-  const hasUserBands = !!bands?.userBandsBalances?.length
-  const collateralSymbol = bands?.collateralToken?.symbol
-  const borrowSymbol = bands?.borrowToken?.symbol
+  const showBands = isBandsVisible && isConnected
+  const hasUserBands = !!bands.data?.userBandsBalances.length
+  const collateralSymbol = collateralToken?.symbol
+  const borrowSymbol = borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
       showBands && hasUserBands
@@ -243,7 +235,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
               setActiveOption={chart.setTimeOption}
               isLoading={chart.isLoading}
             />
-            {isConnected && bands && (
+            {isConnected && (
               <ToggleBandsChartButton
                 label={t`Bands`}
                 tooltip={t`The price ranges your position can move through during soft liquidation.`}
@@ -269,16 +261,12 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
           />
           {showBands && (
             <BandsChart
-              isLoading={bands.isLoading}
-              error={bands.error}
-              collateralToken={bands.collateralToken}
-              borrowToken={bands.borrowToken}
-              chartData={bands.chartData}
-              userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+              bands={bands}
+              collateralToken={collateralToken}
+              borrowToken={borrowToken}
               newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
               liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
               liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
-              oraclePrice={bands.oraclePrice}
               priceRange={candlePriceRange}
               height={chart.ohlcChartProps.chartHeight}
             />
@@ -304,6 +292,9 @@ export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAn
 const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
+  const {
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -315,10 +306,10 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
     )
   }, [])
 
-  const showBands = bands && isBandsVisible && isConnected
-  const hasUserBands = !!bands?.userBandsBalances?.length
-  const collateralSymbol = bands?.collateralToken?.symbol
-  const borrowSymbol = bands?.borrowToken?.symbol
+  const showBands = isBandsVisible && isConnected
+  const hasUserBands = !!bands.data?.userBandsBalances.length
+  const collateralSymbol = collateralToken?.symbol
+  const borrowSymbol = borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
       showBands && hasUserBands
@@ -360,8 +351,7 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
         }}
         isLoading={chart.isLoading || isMarketLoading}
         customButton={
-          isConnected &&
-          bands && (
+          isConnected && (
             <ToggleBandsChartButton
               label={t`Bands`}
               tooltip={t`The price ranges your position can move through during soft liquidation.`}
@@ -383,16 +373,12 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
         />
         {showBands && (
           <BandsChart
-            isLoading={bands.isLoading}
-            error={bands.error}
-            collateralToken={bands.collateralToken}
-            borrowToken={bands.borrowToken}
-            chartData={bands.chartData}
-            userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+            bands={bands}
+            collateralToken={collateralToken}
+            borrowToken={borrowToken}
             newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
             liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
             liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
-            oraclePrice={bands.oraclePrice}
             priceRange={candlePriceRange}
             height={chart.ohlcChartProps.chartHeight}
           />
