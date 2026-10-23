@@ -1,6 +1,6 @@
 import { zip } from 'lodash'
 import { useMemo } from 'react'
-import { zeroAddress } from 'viem'
+import { zeroAddress, type Address } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import { getTokens, tryGetPool } from '@/dex/pool.utils'
@@ -29,14 +29,17 @@ export const DetailInfoTradeRouteRoute = ({
   params: UrlParams
   route: Route
   tokens: TokenMapper | undefined
-  poolId: string
+  poolId: string // Should be an address as returned by curve-js, but didn't want to rename just yet as this'll get a rewrite.
   swapCustomRouteRedirect: string | undefined
 }) => {
   const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
   const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
 
   const { curveApi, isHydrated } = useCurve()
-  const pool = useMemo(() => (isHydrated ? tryGetPool(poolId, curveApi) : undefined), [poolId, curveApi, isHydrated])
+  const pool = useMemo(
+    () => (isHydrated ? tryGetPool(poolId as Address, curveApi) : undefined),
+    [poolId, curveApi, isHydrated],
+  )
   const { tokens: poolTokens, tokenAddresses } = useMemo(
     () => maybe(pool, pool => getTokens(pool, { wrapped: false })) ?? { tokens: undefined, tokenAddresses: undefined },
     [pool],

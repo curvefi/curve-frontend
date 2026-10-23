@@ -5,10 +5,10 @@ import type { Address } from '@primitives/address.utils'
 import { maybes, type Nullish } from '@primitives/objects.utils'
 
 /** Gets a pool by its address, throws an error if no pool is found. */
-export const getPool = (poolAddress: string | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
+export const getPool = (poolAddress: Address | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
   typeof poolAddress === 'string' ? lib.getPool(poolAddress) : poolAddress
 
-export const tryGetPool = (poolAddress: PoolTemplate | string | Nullish, lib = getLib('curveApi')) =>
+export const tryGetPool = (poolAddress: PoolTemplate | Address | Nullish, lib = getLib('curveApi')) =>
   typeof poolAddress === 'object'
     ? poolAddress
     : maybes([poolAddress, lib], (pool, lib) => {
