@@ -1,15 +1,18 @@
-import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { TooltipDescription, TooltipFormula, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
 export const LeverageTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`Your position value divided by your equity.`} />
     <TooltipDescription
-      text={t`Position value is your collateral at the oracle price, plus the borrowed tokens held in your bands during soft liquidation. Equity is the position value minus your debt, including interest.`}
+      text={t`It moves with price: it rises when collateral falls and drops when collateral gains.`}
     />
-    <TooltipDescription text={t`Calculated as: position value / (position value - debt)`} />
-    <TooltipDescription
-      text={t`It moves with price: it rises when collateral falls and drops when collateral gains. `}
+    <TooltipFormula
+      formula={t`Leverage = (C + X) ÷ (C + X − debt)`}
+      terms={[
+        { symbol: 'C', label: t`collateral at the oracle price` },
+        { symbol: 'X', label: t`collateral converted to the borrowed token during soft liquidation` },
+      ]}
     />
   </TooltipWrapper>
 )

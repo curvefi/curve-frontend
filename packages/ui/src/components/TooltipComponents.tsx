@@ -174,6 +174,28 @@ export const TooltipItems = ({
   </Stack>
 )
 
+export const TooltipFormula = ({
+  formula,
+  terms = [],
+}: {
+  formula: ReactNode
+  terms?: readonly { symbol: string; label: ReactNode }[]
+}) => (
+  <TooltipItems secondary>
+    <Typography variant="bodySBold" component="span">
+      {formula}
+    </Typography>
+    {terms.map(({ symbol, label }) => (
+      <Typography key={symbol} variant="bodyXsRegular" color="textSecondary" component="span">
+        <Typography variant="bodyXsBold" color="textPrimary" component="span">
+          {symbol}
+        </Typography>{' '}
+        = {label}
+      </Typography>
+    ))}
+  </TooltipItems>
+)
+
 export const TooltipFooter = ({ children }: { children: ReactNode }) => (
   <Typography variant="bodyXsRegular" component="span" sx={{ fontStyle: 'italic' }}>
     {children}
