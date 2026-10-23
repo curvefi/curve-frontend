@@ -3,7 +3,6 @@ import { getRangeFilterLabel } from '@ui/features/tables/filters'
 import { TableActiveFilterGroups, type TableActiveFilterGroup } from '@ui/features/tables/TableActiveFilterGroups'
 import { TableActiveFiltersBar } from '@ui/features/tables/TableActiveFiltersBar'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { PoolsChips } from '../chips/PoolsChips'
 import { POOL_DEFAULT_TVL_MIN, type PoolsFiltersProps, type usePoolsFilters } from '../hooks/usePoolsFilters'
@@ -36,7 +35,6 @@ export const PoolsFiltersCollapsible = ({
   resetFilters,
   setColumnFilter,
 }: PoolsFiltersCollapsibleProps) => {
-  const isMobile = useIsMobile()
   const poolType = columnFiltersById[PoolFilterId.PoolType]
   const poolTypeLabel = poolTypeFilters.find(({ key }) => key === poolType)?.label ?? poolType
   const tvlLabel = getTvlFilterLabel(columnFiltersById[PoolFilterId.Tvl])
@@ -77,11 +75,9 @@ export const PoolsFiltersCollapsible = ({
 
   return (
     <>
-      {isMobile && (
-        <Stack sx={{ padding: Spacing.sm, paddingTop: 0 }}>
-          <PoolsChips isLite={isLite} activePoolsFilter={activePoolsFilter} />
-        </Stack>
-      )}
+      <Stack sx={{ padding: Spacing.sm, paddingTop: 0, display: { tablet: 'none' } }}>
+        <PoolsChips isLite={isLite} activePoolsFilter={activePoolsFilter} />
+      </Stack>
       {!isLite && hasActiveFilters && (
         <TableActiveFiltersBar
           hasActiveFilters={hasActiveFilters}
