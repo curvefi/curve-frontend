@@ -40,8 +40,7 @@ const getApr = (position: UserState | null, oraclePrice: Decimal, { borrowApr }:
 
 /**
  * Equity leverage, est. leveraged APR and yield multiplier of the open position and of the position after the action.
- * Returns null when it is not shown: disabled, on the stable channel, or neither the open position nor the action
- * borrows through the zap.
+ * Returns null when it is not shown: disabled, or neither the open position nor the action borrows through the zap.
  */
 export function useEquityLeverage(
   {
