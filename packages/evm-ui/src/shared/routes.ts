@@ -142,15 +142,12 @@ export const getCurrentNetwork = (path: string): string | undefined => {
   return blockchainId
 }
 
-export const createChainOption = (
-  network: NetworkDef & { isTestnet?: boolean },
-  currentApp: AppName,
-): ChainListOption => ({
+export const createChainOption = (network: NetworkDef, currentApp: AppName): ChainListOption => ({
   ...network,
   name: getChainName(network.chainId),
   isConfigured: isChainConfigured(network.chainId),
   isLite: isLiteChain(network.chainId),
-  isTestnet: network.isTestnet ?? isTestnet(network.chainId),
+  isTestnet: isTestnet(network.chainId),
   href: getInternalUrl(currentApp, network.blockchainId),
 })
 
