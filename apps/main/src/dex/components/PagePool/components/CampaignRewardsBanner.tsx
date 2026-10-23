@@ -1,16 +1,11 @@
-import { getAddress } from 'viem'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { usePoolCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
+import { usePoolCampaignsByAddress } from '@/dex/features/pool-information/hooks/usePoolCampaignsByAddress'
 import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerComp'
 import { t } from '@ui/lib/i18n'
 
 export const CampaignRewardsBanner = () => {
   const { blockchainId, poolAddress } = usePoolContext()
-  const { data: campaigns } = usePoolCampaignsByAddress({
-    blockchainId,
-    address: poolAddress,
-    formatAddress: getAddress,
-  })
+  const { data: campaigns } = usePoolCampaignsByAddress({ blockchainId, address: poolAddress })
 
   const message = campaigns.some(campaign => campaign.tags.includes('points'))
     ? t`Liquidity providers in this pool also earn points!`

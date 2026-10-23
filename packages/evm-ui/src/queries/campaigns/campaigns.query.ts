@@ -1,15 +1,9 @@
 import memoizee from 'memoizee'
 import { useCallback } from 'react'
 import type { Address } from '@primitives/address.utils'
-import { type Nullish, fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
-import { type QueriesResults } from '@tanstack/react-query'
+import { fromEntries, notFalsy, type Nullish, objectKeys } from '@primitives/objects.utils'
 import type { Campaigns } from '@ui/features/campaigns/types'
-import { combineQueryState } from '@ui/features/queries/combine'
-import { useQueries } from '@ui/features/queries/query-hooks'
 import { type Query, useMappedQuery } from '@ui/features/queries/util'
-import { getCampaignsExternalOptions } from './campaigns-external.query'
-import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl.query'
-import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl.query'
 
 /**
  * Combines multiple campaign records into a single record, merging campaigns by address.
@@ -23,87 +17,24 @@ import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl.query'
  * @param filter - Optional filter function to apply to individual campaigns before grouping
  * @returns Combined record with all campaigns merged by address
  */
-export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], network?: string): Campaigns => {
-  // Get all unique addresses from all campaign sources
-  const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
-
-  // Combine campaigns by address, applying optional filter
-  return fromEntries(
-    [...allAddresses]
+export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], network?: string | null): Campaigns =>
+  fromEntries(
+    // Get all unique addresses from all campaign sources
+    [...new Set(notFalsy(...campaigns).flatMap(objectKeys))]
+      // Combine campaigns by address, applying optional filter
       .map(address => {
         const allRewards = notFalsy(...campaigns.flatMap(record => record?.[address]))
         const filteredRewards = network ? allRewards.filter(r => r.network === network) : allRewards
-
         return [address, filteredRewards] as const
       })
       // Only include campaigns that have rewards after filtering
       .filter(([_, rewards]) => rewards.length > 0),
-  )
-})
+  ),
+)
 
-type UseCampaignsOptions = { blockchainId?: string; formatAddress: (address: string) => Address }
-
-type PoolCampaignQueries = [
-  ReturnType<typeof getCampaignsExternalOptions>,
-  ReturnType<typeof getCampaignsPoolsMerklOptions>,
-]
-
-/**
- * Hook for accessing the DEX pool campaigns, optionally filtered by network.
- *
- * @param blockchainId - Optional chain identifier to filter campaigns by network
- *
- * @example
- * ```typescript
- * // Get campaigns from all networks
- * const { data: allCampaigns } = usePoolCampaigns({ getAddress })
- *
- * // Get campaigns filtered by network
- * const { data: ethereumCampaigns } = usePoolCampaigns({
- *   blockchainId: 'ethereum',
- *   getAddress,
- * })
- *
- * // Access campaigns for a specific pool address
- * const poolCampaigns = ethereumCampaigns['0x123...'] || []
- * ```
- */
-export const usePoolCampaigns = ({ blockchainId, formatAddress }: UseCampaignsOptions) =>
-  useQueries({
-    queries: [getCampaignsExternalOptions(formatAddress), getCampaignsPoolsMerklOptions(formatAddress)],
-    combine: useCallback(
-      ([external, merklPools]: QueriesResults<PoolCampaignQueries>) => ({
-        ...combineQueryState(external, merklPools),
-        // Combine campaigns with an optional network filter
-        data: combineCampaigns([external.data, merklPools.data], blockchainId),
-      }),
-      [blockchainId],
-    ),
-  })
-
-type MarketCampaignQueries = [
-  ReturnType<typeof getCampaignsExternalOptions>,
-  ReturnType<typeof getCampaignsMarketsMerklOptions>,
-]
-
-/** Like {@link usePoolCampaigns}, for the LlamaLend market campaigns */
-export const useMarketCampaigns = ({ blockchainId, formatAddress }: UseCampaignsOptions) =>
-  useQueries({
-    queries: [getCampaignsExternalOptions(formatAddress), getCampaignsMarketsMerklOptions(formatAddress)],
-    combine: useCallback(
-      ([external, merklMarkets]: QueriesResults<MarketCampaignQueries>) => ({
-        ...combineQueryState(external, merklMarkets),
-        data: combineCampaigns([external.data, merklMarkets.data], blockchainId),
-      }),
-      [blockchainId],
-    ),
-  })
-
-type UseCampaignsByAddressOptions = { address: Address | Nullish; formatAddress: (address: string) => Address }
-
-const useCampaignsByAddress = (
+export const useCampaignsByAddress = (
   campaigns: Query<Campaigns>,
-  { address, formatAddress }: UseCampaignsByAddressOptions,
+  { address, formatAddress }: { address: Address | Nullish; formatAddress: (address: string) => Address },
 ) => {
   const query = useMappedQuery(
     campaigns,
@@ -113,19 +44,3 @@ const useCampaignsByAddress = (
   // TODO: Temporarily map undefined data to [], needs a proper fix
   return { ...query, data: query.data ?? [] }
 }
-
-/** Hook for accessing the campaigns of a DEX pool, optionally filtered by network. */
-export const usePoolCampaignsByAddress = ({
-  address,
-  blockchainId,
-  formatAddress,
-}: UseCampaignsByAddressOptions & UseCampaignsOptions) =>
-  useCampaignsByAddress(usePoolCampaigns({ blockchainId, formatAddress }), { address, formatAddress })
-
-/** Like {@link usePoolCampaignsByAddress}, for a LlamaLend controller, vault or AMM */
-export const useMarketCampaignsByAddress = ({
-  address,
-  blockchainId,
-  formatAddress,
-}: UseCampaignsByAddressOptions & UseCampaignsOptions) =>
-  useCampaignsByAddress(useMarketCampaigns({ blockchainId, formatAddress }), { address, formatAddress })

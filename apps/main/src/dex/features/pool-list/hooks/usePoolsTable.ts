@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
-import { getAddress, isAddressEqual } from 'viem'
+import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
+import { usePoolCampaigns } from '@/dex/hooks/usePoolCampaigns'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import { useLitePoolChains, usePoolChains, usePoolList } from '@/dex/queries/pool-list.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { usePoolCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { usePoolsFilters } from '@ui/features/pool-list/hooks/usePoolsFilters'
@@ -53,7 +53,7 @@ export const usePoolsTable = (
   )
   const isSupported = poolListSupport.data ?? false
 
-  const campaigns = usePoolCampaigns({ blockchainId, formatAddress: getAddress })
+  const campaigns = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, isSupported)
   const litePoolList = useLitePoolList({ chainId }, isLite && isSupported)
 

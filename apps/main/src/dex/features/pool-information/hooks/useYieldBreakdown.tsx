@@ -2,10 +2,10 @@ import { sum } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { type Address, getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolCampaignsByAddress } from '@/dex/features/pool-information/hooks/usePoolCampaignsByAddress'
 import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId } from '@/dex/types/main.types'
-import { usePoolCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV, MAINNET_CRV_ADDRESS, shortenAddress } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
@@ -24,11 +24,7 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
   const rewards = usePoolRewardsApy({ chainId, poolAddress })
-  const campaigns = usePoolCampaignsByAddress({
-    blockchainId: network?.blockchainId,
-    address: poolAddress,
-    formatAddress: getAddress,
-  })
+  const campaigns = usePoolCampaignsByAddress({ blockchainId: network?.blockchainId, address: poolAddress })
 
   // For some reason it might be curve-js returns no token price, so we'll try to fall back to our own token rates query.
   const missingTokenRates = mapQuery(

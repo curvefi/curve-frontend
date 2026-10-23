@@ -1,14 +1,14 @@
 import { capitalize } from 'lodash'
 import { useCallback } from 'react'
-import { getAddress, isAddressEqual } from 'viem'
+import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
+import { usePoolCampaigns } from '@/dex/hooks/usePoolCampaigns'
 import { getPool } from '@/dex/pool.utils'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import { usePoolAddresses } from '@/dex/queries/pool-addresses.query'
 import { useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { usePoolCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import { PongLoader } from '@ui/components/PongLoader'
 import type { PoolClaimables, ResidualClaimsTableData } from '@ui/features/pool-list/types'
 import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
@@ -37,7 +37,7 @@ export const useResidualClaimsTable = (
   const { address: userAddress } = useConnection()
   const { curveApi, isHydrated } = useCurve()
 
-  const campaigns = usePoolCampaigns({ blockchainId, formatAddress: getAddress })
+  const campaigns = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const poolAddresses = usePoolAddresses({ chainId }, enabled)
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)

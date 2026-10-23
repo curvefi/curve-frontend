@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
-import { getAddress, zeroAddress } from 'viem'
+import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { useMarketCampaignsByAddress } from '@/llamalend/features/market-advanced-information/hooks/useMarketCampaignsByAddress'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { isLendMarket } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
@@ -19,7 +20,6 @@ import {
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
-import { useMarketCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
@@ -68,11 +68,7 @@ export const SupplyPositionDetails = () => {
 
   const params = { chainId, marketId: market.id, userAddress }
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
-  const { data: campaigns } = useMarketCampaignsByAddress({
-    blockchainId,
-    address: market.addresses.vault as Address,
-    formatAddress: getAddress,
-  })
+  const { data: campaigns } = useMarketCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
   const noGauge = market.addresses.gauge === zeroAddress
 
   const userSupplyBoost = useUserSupplyBoost(params)
