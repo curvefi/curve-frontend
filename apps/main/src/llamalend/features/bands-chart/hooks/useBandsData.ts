@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { useMarketBandsBalances } from '@/llamalend/queries/bands/market-bands-balances.query'
 import { useUserBandsBalances } from '@/llamalend/queries/bands/user-bands-balances.query'
@@ -10,19 +11,20 @@ import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
-import { q } from '@ui/features/queries/util'
+import { q, type QueryProp } from '@ui/features/queries/util'
 
 const EMPTY_BANDS: FetchedBandsBalances[] = []
 
 export const useBandsData = ({
   chainId,
-  marketId,
+  market,
   enabled = true,
 }: {
   chainId: IChainId
-  marketId: string | undefined
+  market: QueryProp<MarketTemplate>
   enabled?: boolean
 }) => {
+  const marketId = market.data?.id
   const { address: userAddress } = useConnection()
   const loanExists = useLoanExists({ chainId, marketId, userAddress }, enabled)
   const liquidationBand = useMarketLiquidationBand({ chainId, marketId }, enabled)
@@ -39,7 +41,14 @@ export const useBandsData = ({
     () => maybe(chartData, chartData => ({ chartData, userBandsBalances, oraclePrice: oraclePrice.data })),
     [chartData, userBandsBalances, oraclePrice.data],
   )
-  const { isLoading, error } = combineQueryState(loanExists, liquidationBand, userBands, marketBands, oraclePrice)
+  const { isLoading, error } = combineQueryState(
+    market,
+    loanExists,
+    liquidationBand,
+    userBands,
+    marketBands,
+    oraclePrice,
+  )
 
   return useMemo(() => q({ data, isLoading, error }), [data, isLoading, error])
 }

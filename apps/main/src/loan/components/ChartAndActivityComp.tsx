@@ -23,6 +23,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     chainId,
     blockchainId,
     marketId,
+    marketQuery,
     ammAddress,
     controllerAddress,
     tokens: { collateralToken, borrowToken },
@@ -37,7 +38,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     ohlcChartProps,
   } = useOhlcChartState({ chainId, marketId: marketId ?? '', previewPrices, controllerAddress, ammAddress })
 
-  const bands = useBandsData({ chainId, marketId, enabled: isBandsVisible })
+  const bands = useBandsData({ chainId, market: marketQuery, enabled: isBandsVisible })
 
   const chart = { chartMode, isLoading: isChartLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
 
