@@ -42,6 +42,10 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const isEquityLeverage = useLlamalendEquityLeverage()
+  const collateral = mapQuery(
+    prevCollateral,
+    stateCollateral => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
+  )
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -62,10 +66,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
           isOpen && !!userCollateral,
         ),
       )}
-      collateral={mapQuery(
-        prevCollateral,
-        stateCollateral => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
-      )}
+      collateral={collateral}
       prices={q(useRemoveCollateralPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       {...getLeverageInfoFields({
@@ -75,7 +76,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         isEquityLeverage,
         equityLeverage: useRemoveCollateralEquityLeverage(params, isOpen),
         prevCollateral,
-        leverageTotalCollateral: prevCollateral,
+        leverageTotalCollateral: collateral,
         collateralDelta: userCollateral && decimalNegate(userCollateral),
       })}
       {...prevLoanState}

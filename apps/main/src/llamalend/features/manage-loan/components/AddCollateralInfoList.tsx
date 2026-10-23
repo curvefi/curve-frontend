@@ -43,6 +43,10 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const isEquityLeverage = useLlamalendEquityLeverage()
+  const collateral = mapQuery(
+    prevCollateral,
+    stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
+  )
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -63,10 +67,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
           isOpen && !!userCollateral,
         ),
       )}
-      collateral={mapQuery(
-        prevCollateral,
-        stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
-      )}
+      collateral={collateral}
       prices={q(useAddCollateralPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       {...getLeverageInfoFields({
@@ -76,7 +77,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         isEquityLeverage,
         equityLeverage: useAddCollateralEquityLeverage(params, isOpen),
         prevCollateral,
-        leverageTotalCollateral: prevCollateral,
+        leverageTotalCollateral: collateral,
         collateralDelta: userCollateral,
       })}
       {...prevLoanState}
