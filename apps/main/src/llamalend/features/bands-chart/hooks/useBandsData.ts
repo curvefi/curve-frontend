@@ -39,7 +39,7 @@ export const useBandsData = ({
     () => maybe(chartData, chartData => ({ chartData, userBandsBalances, oraclePrice: oraclePrice.data })),
     [chartData, userBandsBalances, oraclePrice.data],
   )
-  const { isLoading } = combineQueryState(loanExists, liquidationBand, userBands, marketBands, oraclePrice)
+  const { isLoading, error } = combineQueryState(loanExists, liquidationBand, userBands, marketBands, oraclePrice)
 
-  return useMemo(() => q({ data, isLoading, error: marketBands.error }), [data, isLoading, marketBands.error])
+  return useMemo(() => q({ data, isLoading, error }), [data, isLoading, error])
 }
