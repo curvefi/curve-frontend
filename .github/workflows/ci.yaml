@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - run: yarn set version stable
       - run: yarn install --immutable
@@ -35,6 +36,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - name: Restore ESLint cache
         uses: ./.github/actions/restore-cache
@@ -72,6 +74,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - run: yarn set version stable
       - run: yarn install --immutable
@@ -95,6 +98,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
@@ -136,6 +140,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
@@ -193,6 +198,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
@@ -256,6 +262,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - run: npm install -g wait-on &
 
