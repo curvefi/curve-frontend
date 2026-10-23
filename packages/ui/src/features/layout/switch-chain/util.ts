@@ -17,7 +17,7 @@ export type NetworkSwitchPolicy =
 
 export const ETHEREUM_ONLY_NETWORK_SWITCH: NetworkSwitchPolicy = {
   type: 'locked',
-  toastTitle: () => t`This application is only available on the Ethereum Mainnet`,
+  toastTitle: () => t`This section is only available on the Ethereum Mainnet`,
 }
 
 export const getNetworkSwitchHref = (
