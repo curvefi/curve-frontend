@@ -1,5 +1,4 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react'
-import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { BandsData } from '@/llamalend/features/bands-chart/types'
@@ -179,7 +178,6 @@ export const MarketActivityLayout = <T extends MarketRateType>({
 )
 
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
-  const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const {
     tokens: { collateralToken, borrowToken },
@@ -195,7 +193,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
     )
   }, [])
 
-  const showBands = isBandsVisible && isConnected
+  const showBands = isBandsVisible
   const hasUserBands = !!bands.data?.userBandsBalances.length
   const collateralSymbol = collateralToken?.symbol
   const borrowSymbol = borrowToken?.symbol
@@ -235,14 +233,12 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
               setActiveOption={chart.setTimeOption}
               isLoading={chart.isLoading}
             />
-            {isConnected && (
-              <ToggleBandsChartButton
-                label={t`Bands`}
-                tooltip={t`The price ranges your position can move through during soft liquidation.`}
-                isVisible={isBandsVisible}
-                toggle={toggleBandsVisible}
-              />
-            )}
+            <ToggleBandsChartButton
+              label={t`Bands`}
+              tooltip={t`The price ranges your position can move through during soft liquidation.`}
+              isVisible={isBandsVisible}
+              toggle={toggleBandsVisible}
+            />
           </Stack>
         }
         slotProps={{ title: { style: { textTransform: 'none' } } }}
@@ -290,7 +286,6 @@ export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAn
 )
 
 const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
-  const { isConnected } = useConnection()
   const { tokenPair, isMarketLoading } = useMarketTokenPair()
   const {
     tokens: { collateralToken, borrowToken },
@@ -306,7 +301,7 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
     )
   }, [])
 
-  const showBands = isBandsVisible && isConnected
+  const showBands = isBandsVisible
   const hasUserBands = !!bands.data?.userBandsBalances.length
   const collateralSymbol = collateralToken?.symbol
   const borrowSymbol = borrowToken?.symbol
@@ -351,14 +346,12 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
         }}
         isLoading={chart.isLoading || isMarketLoading}
         customButton={
-          isConnected && (
-            <ToggleBandsChartButton
-              label={t`Bands`}
-              tooltip={t`The price ranges your position can move through during soft liquidation.`}
-              isVisible={isBandsVisible}
-              toggle={toggleBandsVisible}
-            />
-          )
+          <ToggleBandsChartButton
+            label={t`Bands`}
+            tooltip={t`The price ranges your position can move through during soft liquidation.`}
+            isVisible={isBandsVisible}
+            toggle={toggleBandsVisible}
+          />
         }
       />
       <Stack
