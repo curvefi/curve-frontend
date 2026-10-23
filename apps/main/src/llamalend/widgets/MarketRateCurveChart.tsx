@@ -44,8 +44,6 @@ const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineD
   { key: 'supplyApy', label: SUPPLY_RATE_TITLE, dash: CHART_LINE_DASH_PATTERNS.wide },
 ]
 
-const EMPTY: RateCurveChartPoint[] = []
-
 const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>
   sortBy(rates, 'utilization')
 
@@ -63,7 +61,11 @@ export const MarketRateCurveChart = () => {
   const {
     design: { Color },
   } = useTheme()
-  const rateCurve = useRateCurve({ blockchainId, contractAddress: controllerAddress })
+  // the rate curve query stays idle until the market provides the controller address
+  const rateCurve = combineQueries(
+    [q(useRateCurve({ blockchainId, contractAddress: controllerAddress })), fallbackQ(marketQuery, apiMarket)],
+    rateCurve => rateCurve,
+  )
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalDebt = fallbackQ(
     q(useMarketTotalDebt({ chainId, marketId })),
@@ -154,7 +156,7 @@ export const MarketRateCurveChart = () => {
           />
         </MetricsGrid>
         <EvmChartStateWrapper
-          query={q({ data: chartData.data ?? EMPTY, isLoading: chartData.isLoading, error: chartData.error })}
+          query={chartData}
           height={Height.chart.sm}
           errorState={{ description: t`Unable to fetch rate curve data.` }}
         >
