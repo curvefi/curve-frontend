@@ -67,6 +67,7 @@ export const ChainSwitcher = ({ networkSwitch, supportedNetworks, currentNetwork
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             invisible={!isLocked}
             badgeContent={<LockClosedIcon data-testid="network-lock" />}
+            // We haven't standardized MUI's badge yet, so we're manually setting color and sizes in this specific case.
             sx={{
               '& .MuiBadge-badge': {
                 backgroundColor: 'background.paper',
