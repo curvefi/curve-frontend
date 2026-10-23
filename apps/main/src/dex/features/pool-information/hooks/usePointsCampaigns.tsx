@@ -3,7 +3,7 @@ import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolCampaignsByAddress } from '@/dex/features/pool-information/hooks/usePoolCampaignsByAddress'
 import type { ChainId } from '@/dex/types/main.types'
-import { getPointsCampaignRows } from '@evm-ui/features/points-campaigns/points-campaigns.utils'
+import { getPointsCampaignRows } from '@ui/features/points-campaigns/points-campaigns.utils'
 
 export const usePointsCampaigns = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: Address }) => {
   const { data: network } = useNetworkByChain({ chainId })
