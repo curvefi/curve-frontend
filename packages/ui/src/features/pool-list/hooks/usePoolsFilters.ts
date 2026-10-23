@@ -16,6 +16,7 @@ export { PoolFilterId }
 export type { PoolsApiParams } from '../filters/utils'
 
 const POOL_LIST_SEARCH_QUERY_FIELD = 'search'
+const ACTIVE_POOLS_DISABLED_VALUE = 'no'
 
 export type PoolsFiltersProps = FilterProps<PoolFilterId> & { poolTypeFilters: typeof POOL_TYPE_FILTERS }
 
@@ -53,12 +54,16 @@ export const usePoolsFilters = () => {
 
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
-  const isActivePoolsSelected = searchParams.get('active') !== 'no'
+  const isActivePoolsSelected = searchParams.get('active') !== ACTIVE_POOLS_DISABLED_VALUE
 
   return {
     activePoolsFilter: {
       isSelected: isActivePoolsSelected,
-      toggle: () => searchNavigate({ active: isActivePoolsSelected ? 'no' : null, page: null }, { replace: true }),
+      toggle: () =>
+        searchNavigate(
+          { active: isActivePoolsSelected ? ACTIVE_POOLS_DISABLED_VALUE : null, page: null },
+          { replace: true },
+        ),
     },
     apiParams: getPoolsApiParams(columnFiltersById),
     filterProps,
