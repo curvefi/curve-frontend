@@ -5,7 +5,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId } from '@/dex/types/main.types'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
+import { usePoolCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV, MAINNET_CRV_ADDRESS, shortenAddress } from '@evm-ui/utils/address'
 import { scanAddressPath, scanTokenPath } from '@legacy-ui/utils'
@@ -24,7 +24,7 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
 
   // it's called rewards 'APY' but it appears that's fake news and its all APRs
   const rewards = usePoolRewardsApy({ chainId, poolAddress })
-  const campaigns = useCampaignsByAddress({
+  const campaigns = usePoolCampaignsByAddress({
     blockchainId: network?.blockchainId,
     address: poolAddress,
     formatAddress: getAddress,

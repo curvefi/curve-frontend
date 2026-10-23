@@ -6,7 +6,7 @@ import type { UserFullPoolPosition } from '@/dex/queries/user-full-pool-position
 import { type UserPoolClaimables, useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
+import { usePoolCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
@@ -38,7 +38,7 @@ export const useUserPositionsTable = (
   const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
 
-  const campaigns = useCampaigns({ blockchainId, formatAddress: getAddress })
+  const campaigns = usePoolCampaigns({ blockchainId, formatAddress: getAddress })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const litePoolList = useLitePoolList({ chainId }, enabled && isLite && !!userAddress)
   const poolAddresses = useMappedQuery(
