@@ -154,7 +154,7 @@ describe('Gauge Management (RPC)', () => {
     submitAndExpectToast(
       () => cy.get('[data-testid="add-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
       { message: `Added reward token ${REWARD_TOKEN_SYMBOL}` },
-      'evm.confirmation',
+      'tenderly.submit',
     )
     expectGaugeRewardDistributor({
       publicRpcUrl,
@@ -174,7 +174,7 @@ describe('Gauge Management (RPC)', () => {
         submitAndExpectToast(
           () => cy.get('[data-testid="deposit-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
           { message: 'Deposited reward token', approvalMessage: 'Approved deposit reward' },
-          'evm.confirmation',
+          'tenderly.submit',
         )
         expectErc20BalanceChange({
           publicRpcUrl,

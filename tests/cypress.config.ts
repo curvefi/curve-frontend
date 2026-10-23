@@ -1,6 +1,9 @@
 import { randomUUID } from 'node:crypto'
 import { defineConfig } from 'cypress'
+import type { TestnetAccount, TestnetConfig } from './cypress/support/helpers/stellar/stellar-testnet.config'
+import { createTestnetDeployer, type TestnetDeployment } from './cypress/tasks/stellar-testnet'
 import { vitePreprocessor } from './vite-cypress-preprocessor'
+import { assert } from '@primitives/objects.utils'
 
 const testSeed = (process.env.TEST_SEED = process.env.TEST_SEED?.trim() || randomUUID())
 console.info(`Cypress test seed: ${testSeed}`)
@@ -26,5 +29,27 @@ export default defineConfig({
     devServer: { framework: 'react', bundler: 'vite' },
     indexHtmlFile: 'cypress/support/component-index.html',
     supportFile: 'cypress/support/component.ts',
+    setupNodeEvents(on, config) {
+      let deployerPromise: Promise<TestnetAccount> | undefined
+      on('before:run', () => {
+        deployerPromise = undefined
+      })
+      on('task', {
+        getStellarTestnetConfig: async (rpcUrl: string): Promise<TestnetConfig> => {
+          const deployment: TestnetDeployment = assert(
+            config.env.STELLAR_TESTNET_CONFIG,
+            'STELLAR_TESTNET_CONFIG environment variable is not set',
+          )
+          deployerPromise ??= createTestnetDeployer(deployment, rpcUrl)
+          return {
+            deployer: await deployerPromise,
+            issuer: { address: deployment.issuer.address },
+            factory: deployment.factory,
+            coins: deployment.coins,
+          }
+        },
+      })
+      return config
+    },
   },
 })
