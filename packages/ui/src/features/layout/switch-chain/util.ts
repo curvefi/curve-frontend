@@ -4,7 +4,16 @@ import { getSearchString } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 
 export type NetworkSwitchPolicy =
-  { type: 'same-page'; clearSearchParams?: readonly string[] } | { type: 'locked'; toastTitle?: () => string }
+  | {
+      type: 'same-page'
+      /** Clear specific URL search params when switching, such as 'from' and 'to' on quickswap, and 'page' on table pages. */
+      clearSearchParams?: readonly string[]
+    }
+  | {
+      type: 'locked'
+      /** Optional custom 'error' message to give more context about why network switching would be locked. */
+      toastTitle?: () => string
+    }
 
 export const ETHEREUM_ONLY_NETWORK_SWITCH: NetworkSwitchPolicy = {
   type: 'locked',
