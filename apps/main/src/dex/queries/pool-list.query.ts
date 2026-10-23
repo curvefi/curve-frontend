@@ -3,7 +3,7 @@ import type { ChainParams, ChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationSuite } from '@evm-ui/queries/validation/chain-validation'
 import { getPageCount } from '@evm-ui/utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { MILLISECONDS_PER_SECOND, SECONDS_PER_DAY } from '@ui/lib/time'
+import { ACTIVE_POOL_DAYS, MILLISECONDS_PER_SECOND, SECONDS_PER_DAY } from '@ui/lib/time'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
@@ -26,8 +26,6 @@ type PoolListRequestParams = Pick<
 type PoolListQuery = ChainQuery &
   PoolListRequestParams & { pageSize?: ListPoolsParams['pagination']; activePoolsFilter?: boolean }
 type PoolListParams = FieldsOf<PoolListQuery>
-
-const ACTIVE_POOL_DAYS = 3 as const
 
 /** Applies active pools filter to given params, except when the given params have stronger constraints. */
 const applyActivePoolsFilter = (params: ListPoolsParams): ListPoolsParams => ({

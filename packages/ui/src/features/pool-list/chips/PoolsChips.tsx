@@ -4,6 +4,7 @@ import { GridChip } from '@ui/features/tables/chips/GridChip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ActiveIcon } from '@ui/icons/ActiveIcon'
 import { t } from '@ui/lib/i18n'
+import { ACTIVE_POOL_DAYS } from '@ui/lib/time'
 
 const { Spacing } = SizesAndSpaces
 
@@ -20,7 +21,7 @@ export const PoolsChips = ({
       body={
         isLite
           ? t`Only show pools with TVL above $0.`
-          : t`Only show pools with TVL above $0 that are at least 3 days old.`
+          : t`Only show pools with TVL above $0 that are at least ${ACTIVE_POOL_DAYS} days old.`
       }
       placement="top"
     >
