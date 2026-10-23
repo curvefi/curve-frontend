@@ -91,7 +91,7 @@ export function ChainList({
                       value={chainId}
                       {...(blockchainId !== selectedNetworkId && { component: Link, href })}
                       isSelected={blockchainId == selectedNetworkId}
-                      icon={<ChainSwitcherIcon blockchainId={blockchainId} size={36} />}
+                      icon={<ChainSwitcherIcon blockchainId={blockchainId} size="lg" />}
                       label={name}
                       onSelected={onNetwork}
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
