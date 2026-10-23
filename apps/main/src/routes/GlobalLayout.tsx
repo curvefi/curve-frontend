@@ -28,7 +28,7 @@ import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.ut
 import { Header } from '@ui/features/layout/Header'
 import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
 import { PageLayout } from '@ui/features/layout/PageLayout'
-import { getNetworkSwitchHref } from '@ui/features/layout/switch-chain/util'
+import { getNetworkSwitchHref } from '@ui/features/layout/switch-chain/switch-policies'
 import type { Maintenance } from '@ui/features/maintenance/hooks/useMaintenance'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>

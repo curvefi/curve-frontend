@@ -11,7 +11,7 @@ import {
 import { replaceNetworkInPath } from '@ui/features/layout/routes'
 import { ChainSwitcher } from '@ui/features/layout/switch-chain'
 import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList'
-import { getNetworkSwitchHref } from '@ui/features/layout/switch-chain/util'
+import { getNetworkSwitchHref } from '@ui/features/layout/switch-chain/switch-policies'
 import { q } from '@ui/features/queries/util'
 import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 

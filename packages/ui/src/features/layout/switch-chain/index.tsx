@@ -16,7 +16,7 @@ import { t } from '@ui/lib/i18n'
 import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
-import type { NetworkSwitchPolicy } from './util'
+import type { NetworkSwitchPolicy } from './switch-policies'
 
 const { IconSize } = SizesAndSpaces
 

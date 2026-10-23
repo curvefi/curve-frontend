@@ -1,6 +1,6 @@
 import type { PoolAddressParams, PoolUrlParams } from '@/dex/types/main.types'
 import { createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router'
-import { ETHEREUM_ONLY_NETWORK_SWITCH } from '@ui/features/layout/switch-chain/util'
+import { ETHEREUM_ONLY_NETWORK_SWITCH } from '@ui/features/layout/switch-chain/switch-policies'
 import { redirectTo } from '@ui/hooks/router'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 import { rootRoute } from './root.routes'

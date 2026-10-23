@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { ConnectWalletProps } from '@ui/features/connect-wallet/ConnectWalletIndicator'
 import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList'
 import type { QueryProp } from '@ui/features/queries/util'
-import type { NetworkSwitchPolicy } from '../switch-chain/util'
+import type { NetworkSwitchPolicy } from '../switch-chain/switch-policies'
 
 export type HeaderLink = {
   href: string // this is the full pathname to the page, including leading slash, the app name and the network
