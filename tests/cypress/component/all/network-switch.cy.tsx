@@ -95,7 +95,10 @@ function mountSwitcher({
 }
 
 describe('ChainSwitcher navigation', () => {
-  beforeEach(() => oneViewport())
+  beforeEach(() => {
+    const [width, height] = oneViewport()
+    cy.viewport(width, height)
+  })
 
   it('replaces the network in URLs without changing their suffixes', () => {
     expect(replaceNetworkInPath('/bridge/ethereum?tab=native#bridge%2Fstep%25', 'arbitrum')).to.equal(
