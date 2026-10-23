@@ -7,6 +7,7 @@ import { vercel } from 'vite-plugin-vercel/vite'
 import { reactCompiler } from '../../react-compiler.config'
 
 const {
+  MERKL_API_PROXY_TARGET = 'http://localhost:3011',
   SENTRY_AUTH_TOKEN,
   SENTRY_ORG,
   SENTRY_PROJECT,
@@ -18,7 +19,12 @@ const isVercelDeployment = process.env.VERCEL === '1'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  server: { port: 3100, hmr: true, ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'] },
+  server: {
+    port: 3100,
+    hmr: true,
+    proxy: { '/api/merkl': { target: MERKL_API_PROXY_TARGET, changeOrigin: true } },
+    ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
+  },
   preview: { port: 3100 },
   build: { sourcemap: true },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-stellar'),
@@ -29,6 +35,7 @@ export default defineConfig(({ command }) => ({
     ...(isVercelDeployment
       ? [
           vercel({
+            entries: [{ id: resolve(__dirname, '_api/merkl.ts'), route: '/api/merkl/**' }],
             rewrites: [
               { source: '/favicon', destination: '/favicon.ico' },
               { source: '/(.*)', destination: '/index.html', enforce: 'post' },

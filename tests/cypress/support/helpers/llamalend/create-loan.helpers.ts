@@ -213,6 +213,7 @@ export function writeCreateLoanForm({
   isMocked?: boolean
   rpc?: 'evm' | 'tenderly'
 }) {
+  const contractReadCategory = getTimeoutCategory(rpc, 'contractRead', isMocked)
   cy.get('[data-testid="borrow-debt-input"]', TIMEOUTS['ui.render']).should('be.visible')
   cy.get(
     '[data-testid="borrow-collateral-input"] [data-testid="balance-value"]',
@@ -220,11 +221,11 @@ export function writeCreateLoanForm({
   ).should('be.visible')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
-  getMaxBorrowBalance().should('be.visible')
-  getActionInfo('borrow-health', getTimeoutCategory(rpc, 'simulation', isMocked)).should('have.text', '-')
+  getMaxBorrowBalance(TIMEOUTS[contractReadCategory]).should('be.visible')
+  getActionInfo('borrow-health', 'ui.render').should('have.text', '-')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health', getTimeoutCategory(rpc, 'simulation', isMocked)).should('match', DECIMAL_REGEX)
+  getActionValue('borrow-health', contractReadCategory).should('match', DECIMAL_REGEX)
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button', isMocked })
