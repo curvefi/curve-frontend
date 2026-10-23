@@ -1,3 +1,4 @@
+import { campaigns } from 'external-rewards'
 import { groupBy, inRange } from 'lodash'
 import { Address } from '@primitives/address.utils'
 import { queryOptions } from '@tanstack/react-query'
@@ -5,7 +6,6 @@ import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { CURVE_ASSETS_URL } from '@ui/lib/resource.constants'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
-import { campaigns } from '@external-rewards'
 
 const REWARDS = campaigns.flatMap(campaign =>
   campaign.pools.map<CampaignRewards>(pool => ({
