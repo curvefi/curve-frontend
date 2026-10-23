@@ -1,18 +1,13 @@
 import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
-import {
-  DESKTOP_VIEWPORT,
-  MOBILE_VIEWPORT,
-  getV2PoolRow,
-  visitV2PoolList,
-} from '@cy/support/helpers/dex-pools-list-v2.helpers'
+import { getV2PoolRow, visitV2PoolList } from '@cy/support/helpers/dex-pools-list-v2.helpers'
+import { oneViewport } from '@cy/support/ui'
 
-for (const [size, viewport] of [
-  ['desktop', DESKTOP_VIEWPORT],
-  ['mobile', MOBILE_VIEWPORT],
-] as const) {
-  it(`toggles Active on ${size} without a filter bar or refetching Lite pools`, () => {
+const testCases = [oneViewport()]
+
+testCases.forEach(([width, height, breakpoint]) => {
+  it(`toggles Active on (${breakpoint}, ${width}x${height}) without a filter bar or refetching Lite pools`, () => {
     setupDexPoolListV2Mocks()
-    visitV2PoolList({ network: 'taiko', viewport })
+    visitV2PoolList({ network: 'taiko', viewport: [width, height] })
     const chip = () => cy.get('[data-testid="chip-active"]')
     const zeroTvlPool = () => cy.get(`[data-testid="table-row-link-${V2_POOL_FIXTURES.liteZeroTvl.address}"]`)
 
@@ -30,4 +25,4 @@ for (const [size, viewport] of [
     cy.get('@dex-v2-lite-pools.all').should('have.length', 1)
     cy.get('@dex-v2-pools.all').should('have.length', 0)
   })
-}
+})
