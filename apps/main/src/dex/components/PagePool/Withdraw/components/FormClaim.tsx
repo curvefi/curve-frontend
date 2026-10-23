@@ -29,21 +29,12 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { amount as toAmount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
-function getTokensText({ claimableCrv, claimableRewards }: FormValues, { isClaimCrv, isClaimRewards }: FormStatus) {
-  const message = []
-
-  if (isClaimCrv) {
-    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-    message.push(`CRV ${claimableCrv}`)
-  } else if (isClaimRewards) {
-    claimableRewards.map(({ symbol, amount }) => {
-      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-      message.push(`${symbol} ${amount}`)
-    })
-  }
-
-  return message.join(', ')
-}
+const getTokensText = ({ claimableCrv, claimableRewards }: FormValues, { isClaimCrv, isClaimRewards }: FormStatus) =>
+  isClaimCrv
+    ? `CRV ${claimableCrv}`
+    : isClaimRewards
+      ? claimableRewards.map(({ symbol, amount }) => `${symbol} ${amount}`).join(', ')
+      : ''
 
 function getClaimText(
   formValues: FormValues,
