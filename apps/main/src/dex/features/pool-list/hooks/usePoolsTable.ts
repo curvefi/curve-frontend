@@ -89,6 +89,7 @@ export const usePoolsTable = (
   )
 
   // userHasPositions depends on all enrichedPools so can only filter afterwards.
+  // filtering also happens for lite networks locally as the migration to server-side filtering isn't done yet
   const filteredQuery =
     isLite && filters.activePoolsFilter.isSelected
       ? mapQuery(enrichedPools, pools => pools.filter(isActiveLitePool))
