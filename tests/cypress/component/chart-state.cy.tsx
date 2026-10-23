@@ -1,6 +1,6 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
-import type { ChartEmptyState } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
+import { ChartStateWrapper, type ChartEmptyState } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { q } from '@ui/features/queries/util'
 
@@ -110,5 +110,24 @@ describe('Chart states', () => {
     cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
     cy.get(SPINNER).should('not.exist')
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
+  })
+
+  it('renders a connect wallet button from the empty state with the connection props', () => {
+    const connect = cy.stub().as('connect').resolves()
+    cy.mount(
+      <ChartStateWrapper
+        query={q<Points>({ data: [], isLoading: false, error: null })}
+        height={HEIGHT}
+        emptyState={{ ...EMPTY_STATE, button: { type: 'connect-wallet' } }}
+        isConnected={false}
+        isConnecting={false}
+        connect={connect}
+      >
+        {() => <div data-testid={CHART} />}
+      </ChartStateWrapper>,
+    )
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
+    cy.contains('button', 'Connect Wallet').click()
+    cy.get('@connect').should('have.been.calledOnce')
   })
 })

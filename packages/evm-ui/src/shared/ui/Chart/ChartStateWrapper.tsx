@@ -2,8 +2,10 @@ import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
+import type { AllOrNone } from '@primitives/objects.utils'
 import { EmptyStateCard, type EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import { Spinner } from '@ui/components/Spinner'
+import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
 import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -25,7 +27,7 @@ export type ChartErrorState = { onReload?: () => Promise<unknown> | void } & Pic
   'title' | 'description'
 >
 
-export type ChartStateWrapperProps<T> = {
+export type ChartStateWrapperProps<T> = AllOrNone<ConnectionProps> & {
   query: QueryProp<T>
   height: number
   emptyState?: ChartEmptyState<T>
@@ -49,6 +51,7 @@ export const ChartStateWrapper = <T,>({
   errorState,
   children,
   userAddress,
+  ...connectionProps
 }: ChartStateWrapperProps<T>) =>
   isLoading ? (
     <Loading height={height} />
@@ -67,7 +70,7 @@ export const ChartStateWrapper = <T,>({
     </Box>
   ) : data === undefined || isEmpty(data) ? (
     <Stack sx={{ alignItems: 'center', justifyContent: 'center', padding: Spacing.md, minHeight: height }}>
-      <EmptyStateCard {...emptyState} title={emptyState.title ?? t`No chart data found`} />
+      <EmptyStateCard {...connectionProps} {...emptyState} title={emptyState.title ?? t`No chart data found`} />
     </Stack>
   ) : (
     <ErrorBoundary

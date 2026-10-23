@@ -3,7 +3,7 @@ import { type ReactNode, useMemo, useRef } from 'react'
 import { useConnection } from 'wagmi'
 import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { LegendLine } from '@evm-ui/shared/ui/Chart/LegendSet'
 import Box from '@mui/material/Box'
@@ -57,8 +57,8 @@ export const LiquidityDensityChart = ({
   const { data: profileData, isLoading: profileLoading, error: profileError } = profile
   const { data: oracle, isLoading: oracleLoading, error: oracleError } = oraclePrice
   const { data: center, isLoading: centerLoading, error: centerError } = centerPrice
-  const { isConnected } = useConnection()
   const theme = useTheme()
+  const { isConnected } = useConnection()
   const { Chart, Color, Layer } = theme.design
   const { spot, samples } = profileData ?? {}
   const priceLabel = t`USD per ${inputSymbol}`
@@ -165,7 +165,7 @@ export const LiquidityDensityChart = ({
         role={samples?.length ? 'img' : undefined}
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
-        <ChartStateWrapper
+        <EvmChartStateWrapper
           query={profile}
           height={CHART_HEIGHT}
           emptyState={{
@@ -179,6 +179,7 @@ export const LiquidityDensityChart = ({
                   title: t`Connect wallet`,
                   description: t`Please connect your wallet to view liquidity density.`,
                   testId: 'liquidity-density-connect-wallet',
+                  button: { type: 'connect-wallet' },
                 }),
           }}
           errorState={{ description: t`Unable to fetch liquidity density.` }}
@@ -192,7 +193,7 @@ export const LiquidityDensityChart = ({
               style={{ width: width || '100%', height: CHART_HEIGHT }}
             />
           )}
-        </ChartStateWrapper>
+        </EvmChartStateWrapper>
       </Box>
       <ChartFooter
         testId="liquidity-density-legend"
