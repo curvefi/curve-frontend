@@ -182,7 +182,11 @@ export const TooltipFormula = ({
   terms?: readonly { symbol: string; label: ReactNode }[]
 }) => (
   <TooltipItems secondary>
-    <Typography variant="bodySBold" component="span">
+    <Typography
+      variant="bodySBold"
+      component="span"
+      sx={{ display: 'flex', alignItems: 'center', gap: Spacing.xs, whiteSpace: 'nowrap' }}
+    >
       {formula}
     </Typography>
     {terms.map(({ symbol, label }) => (
@@ -194,6 +198,19 @@ export const TooltipFormula = ({
       </Typography>
     ))}
   </TooltipItems>
+)
+
+/** A numerator over a denominator, for a {@link TooltipFormula} */
+export const TooltipFraction = ({ numerator, denominator }: { numerator: ReactNode; denominator: ReactNode }) => (
+  <Stack component="span" sx={{ alignItems: 'center' }}>
+    <Stack
+      component="span"
+      sx={{ alignSelf: 'stretch', alignItems: 'center', paddingInline: Spacing.xxs, borderBottom: '1px solid' }}
+    >
+      {numerator}
+    </Stack>
+    <span>{denominator}</span>
+  </Stack>
 )
 
 export const TooltipFooter = ({ children }: { children: ReactNode }) => (
