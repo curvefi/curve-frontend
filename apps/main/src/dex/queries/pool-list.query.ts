@@ -27,13 +27,15 @@ type PoolListQuery = ChainQuery &
   PoolListRequestParams & { pageSize?: ListPoolsParams['pagination']; activePoolsFilter?: boolean }
 type PoolListParams = FieldsOf<PoolListQuery>
 
+const ACTIVE_POOL_DAYS = 3 as const
+
 /** Applies active pools filter to given params, except when the given params have stronger constraints. */
 const applyActivePoolsFilter = (params: ListPoolsParams): ListPoolsParams => ({
   ...params,
   minTvl: Math.max(params.minTvl ?? 0, Number.MIN_VALUE),
   maxCreationDate: Math.min(
     params.maxCreationDate ?? Infinity,
-    Math.floor(Date.now() / MILLISECONDS_PER_SECOND) - 3 * SECONDS_PER_DAY,
+    Math.floor(Date.now() / MILLISECONDS_PER_SECOND) - ACTIVE_POOL_DAYS * SECONDS_PER_DAY,
   ),
 })
 
