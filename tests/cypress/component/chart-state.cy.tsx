@@ -1,37 +1,41 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import { q } from '@ui/features/queries/util'
 
 const HEIGHT = 240
 const CHART = 'chart-content'
+const SPINNER = '.MuiCircularProgress-root'
 
 const ThrowingChart = () => {
   throw new Error('render failed')
 }
 
-type StateProps = Partial<{ isLoading: boolean; isEmpty: boolean; error: Error | null; onReload: () => void }>
+type StateProps = Partial<{
+  data: string | undefined
+  isLoading: boolean
+  isEmpty: boolean
+  error: Error | null
+  onReload: () => void
+}>
 
-const mountChart = (
-  { isLoading = false, isEmpty = false, error = null, onReload }: StateProps = {},
-  child = <div data-testid={CHART} />,
-) =>
-  cy.mount(
+const mountChart = (props: StateProps = {}, child = <div data-testid={CHART} />) => {
+  const { isLoading = false, isEmpty = false, error = null, onReload } = props
+  const data = 'data' in props ? props.data : 'points'
+  return cy.mount(
     <ComponentTestWrapper config={mockedWagmiConfig} autoConnect={false}>
       <EvmChartStateWrapper
+        query={q({ data, isLoading, error })}
         height={HEIGHT}
-        isLoading={isLoading}
         isEmpty={isEmpty}
-        emptyTitle="Nothing here"
-        emptyMessage="No points for this range"
-        emptyTestId="chart-empty"
-        error={error}
-        errorMessage="Unable to fetch chart data."
-        refreshData={onReload}
+        emptyState={{ title: 'Nothing here', description: 'No points for this range', testId: 'chart-empty' }}
+        errorState={{ description: 'Unable to fetch chart data.', onReload }}
       >
-        {child}
+        {() => child}
       </EvmChartStateWrapper>
     </ComponentTestWrapper>,
   )
+}
 
 describe('Chart states', () => {
   it('renders the chart when data is ready', () => {
@@ -41,7 +45,7 @@ describe('Chart states', () => {
 
   it('shows a spinner while loading, even with an error or empty data', () => {
     mountChart({ isLoading: true, isEmpty: true, error: new Error('boom') })
-    cy.get('.MuiCircularProgress-root').should('be.visible')
+    cy.get(SPINNER).should('be.visible')
     cy.get('[data-testid="chart-error"]').should('not.exist')
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
   })
@@ -70,5 +74,17 @@ describe('Chart states', () => {
     cy.on('uncaught:exception', () => false)
     mountChart({}, <ThrowingChart />)
     cy.contains('Chart Error').should('be.visible')
+  })
+
+  it('shows a spinner while data is undefined without an error or loading flag', () => {
+    mountChart({ data: undefined })
+    cy.get(SPINNER).should('be.visible')
+    cy.get(`[data-testid="${CHART}"]`).should('not.exist')
+  })
+
+  it('shows the empty state over the pending spinner', () => {
+    mountChart({ data: undefined, isEmpty: true })
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
+    cy.get(SPINNER).should('not.exist')
   })
 })

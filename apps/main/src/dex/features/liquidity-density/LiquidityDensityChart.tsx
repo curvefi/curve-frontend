@@ -104,6 +104,14 @@ export const LiquidityDensityChart = ({
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [width] = useResizeObserver(containerRef, { dimension: 'width' })
+  const option = useLiquidityDensityChartOption({
+    profile,
+    markers,
+    liquidityLabel,
+    tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
+      <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
+    )),
+  })
 
   return (
     <Stack data-testid="liquidity-density-chart" sx={{ gap: Spacing.sm }}>
@@ -158,36 +166,32 @@ export const LiquidityDensityChart = ({
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
         <ChartStateWrapper
+          query={profile}
           height={CHART_HEIGHT}
-          isLoading={profileLoading}
-          error={profileError}
-          errorMessage={t`Unable to fetch liquidity density.`}
           isEmpty={!samples?.length}
-          {...(isConnected
-            ? {
-                emptyMessage: t`Liquidity density is unavailable for this pool.`,
-                emptyTestId: 'liquidity-density-unavailable',
-              }
-            : {
-                emptyTitle: t`Connect wallet`,
-                emptyMessage: t`Please connect your wallet to view liquidity density.`,
-                emptyTestId: 'liquidity-density-connect-wallet',
-              })}
+          emptyState={
+            isConnected
+              ? {
+                  description: t`Liquidity density is unavailable for this pool.`,
+                  testId: 'liquidity-density-unavailable',
+                }
+              : {
+                  title: t`Connect wallet`,
+                  description: t`Please connect your wallet to view liquidity density.`,
+                  testId: 'liquidity-density-connect-wallet',
+                }
+          }
+          errorState={{ description: t`Unable to fetch liquidity density.` }}
         >
-          <ReactECharts
-            option={useLiquidityDensityChartOption({
-              profile,
-              markers,
-              liquidityLabel,
-              tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
-                <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
-              )),
-            })}
-            opts={{ renderer: 'svg' }}
-            notMerge
-            autoResize={false}
-            style={{ width: width || '100%', height: CHART_HEIGHT }}
-          />
+          {() => (
+            <ReactECharts
+              option={option}
+              opts={{ renderer: 'svg' }}
+              notMerge
+              autoResize={false}
+              style={{ width: width || '100%', height: CHART_HEIGHT }}
+            />
+          )}
         </ChartStateWrapper>
       </Box>
       <ChartFooter

@@ -13,6 +13,7 @@ import { Card, CardHeader, Stack } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
 import { maybe, recordEntries } from '@primitives/objects.utils'
+import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { AdvancedDetails } from './AdvancedDetails'
@@ -21,7 +22,6 @@ import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
 const { Spacing, Height } = SizesAndSpaces
-const EMPTY_YIELD_DATA: never[] = []
 
 const chartLabels: Record<StatisticsChart, string> = { savingsRate: t`Savings Rate`, distributions: t`Distributions` }
 
@@ -34,16 +34,8 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
   const [selectedStatisticsChart, setSelectedStatisticsChart] = useState<StatisticsChart>('savingsRate')
   const [revenueChartTimeOption, setRevenueChartTimeOption] = useState<(typeof timeOptions)[number]>('1M')
 
-  const {
-    data: yieldData,
-    isLoading: isScrvUsdYieldLoading,
-    error: scrvUsdYieldError,
-  } = useScrvUsdYield({ timeOption: revenueChartTimeOption }, selectedStatisticsChart === 'savingsRate')
-  const {
-    data: revenueData,
-    isLoading: isRevenueLoading,
-    error: revenueError,
-  } = useScrvUsdRevenue({}, selectedStatisticsChart === 'distributions')
+  const yieldQuery = useScrvUsdYield({ timeOption: revenueChartTimeOption }, selectedStatisticsChart === 'savingsRate')
+  const revenueQuery = useScrvUsdRevenue({}, selectedStatisticsChart === 'distributions')
 
   const {
     design: { Color },
@@ -82,16 +74,11 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
         {selectedStatisticsChart === 'savingsRate' && (
           <Stack sx={{ gap: Spacing.md }}>
             <EvmChartStateWrapper
+              query={q(yieldQuery)}
               height={Height.chart.lg}
-              isLoading={isScrvUsdYieldLoading}
-              error={scrvUsdYieldError}
-              errorMessage={t`Unable to fetch savings rate data.`}
+              errorState={{ description: t`Unable to fetch savings rate data.` }}
             >
-              <RevenueLineChart
-                height={Height.chart.lg}
-                data={yieldData ?? EMPTY_YIELD_DATA}
-                visibleSeries={visibleSeries}
-              />
+              {data => <RevenueLineChart height={Height.chart.lg} data={data} visibleSeries={visibleSeries} />}
             </EvmChartStateWrapper>
             <ChartFooter
               legendSets={legendSets}
@@ -104,12 +91,11 @@ export const Statistics = ({ chainId }: { chainId: ChainId | undefined }) => {
 
         {selectedStatisticsChart === 'distributions' && (
           <EvmChartStateWrapper
+            query={q(revenueQuery)}
             height={Height.chart.lg}
-            isLoading={isRevenueLoading}
-            error={revenueError}
-            errorMessage={t`Unable to fetch distributions data.`}
+            errorState={{ description: t`Unable to fetch distributions data.` }}
           >
-            <RevenueDistributionsBarChart height={Height.chart.lg} data={revenueData ?? null} />
+            {data => <RevenueDistributionsBarChart height={Height.chart.lg} data={data} />}
           </EvmChartStateWrapper>
         )}
 

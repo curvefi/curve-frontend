@@ -44,6 +44,8 @@ const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineD
   { key: 'supplyApy', label: SUPPLY_RATE_TITLE, dash: CHART_LINE_DASH_PATTERNS.wide },
 ]
 
+const EMPTY: RateCurveChartPoint[] = []
+
 const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>
   sortBy(rates, 'utilization')
 
@@ -152,24 +154,25 @@ export const MarketRateCurveChart = () => {
           />
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={q({ data: chartData.data ?? EMPTY, isLoading: chartData.isLoading, error: chartData.error })}
           height={Height.chart.sm}
-          isLoading={chartData.isLoading}
-          error={chartData.error}
-          errorMessage={t`Unable to fetch rate curve data.`}
+          errorState={{ description: t`Unable to fetch rate curve data.` }}
         >
-          <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
-            data={chartData.data ?? []}
-            height={Height.chart.sm}
-            xKey="utilization"
-            series={series}
-            visibleSeries={visibleSeries}
-            xAxisType="value"
-            markLines={markLines}
-            xTickFormatter={value => formatNumber(+value, 'percent.rate')}
-            yTickFormatter={value => formatNumber(+value, 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={RateCurveTooltip}
-          />
+          {data => (
+            <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="utilization"
+              series={series}
+              visibleSeries={visibleSeries}
+              xAxisType="value"
+              markLines={markLines}
+              xTickFormatter={value => formatNumber(+value, 'percent.rate')}
+              yTickFormatter={value => formatNumber(+value, 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={RateCurveTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}

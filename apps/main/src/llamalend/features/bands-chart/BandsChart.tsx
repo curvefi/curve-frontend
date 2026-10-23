@@ -14,6 +14,7 @@ import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapp
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { Box, useTheme } from '@mui/material'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
+import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -154,45 +155,40 @@ const BandsChartComponent = ({
   oraclePrice,
   height,
   priceRange,
-}: BandsChartProps) => {
-  const isChartDataPending = !error && chartData === undefined
-
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        fontVariantNumeric: 'tabular-nums',
-        width: '100%',
-        minHeight: `${height}px`,
-        height,
-        minWidth: 0,
-      }}
+}: BandsChartProps) => (
+  <Box
+    sx={{
+      display: 'flex',
+      fontVariantNumeric: 'tabular-nums',
+      width: '100%',
+      minHeight: `${height}px`,
+      height,
+      minWidth: 0,
+    }}
+  >
+    <EvmChartStateWrapper
+      query={q({ data: chartData, isLoading, error })}
+      height={height}
+      isEmpty={chartData?.length === 0}
+      emptyState={{ description: t`No active bands for this market` }}
+      errorState={{ description: t`Failed to load bands chart data` }}
     >
-      <EvmChartStateWrapper
-        height={height}
-        isLoading={isLoading || isChartDataPending}
-        isEmpty={chartData?.length === 0}
-        emptyMessage={t`No active bands for this market`}
-        error={error}
-        errorMessage={t`Failed to load bands chart data`}
-      >
-        {chartData != null && (
-          <BandsChartContent
-            collateralToken={collateralToken}
-            borrowToken={borrowToken}
-            chartData={chartData}
-            userBandsBalances={userBandsBalances}
-            newLiquidationRange={newLiquidationRange}
-            liqRangeCurrentVisible={liqRangeCurrentVisible}
-            liqRangeNewVisible={liqRangeNewVisible}
-            oraclePrice={oraclePrice}
-            priceRange={priceRange}
-          />
-        )}
-      </EvmChartStateWrapper>
-    </Box>
-  )
-}
+      {data => (
+        <BandsChartContent
+          collateralToken={collateralToken}
+          borrowToken={borrowToken}
+          chartData={data}
+          userBandsBalances={userBandsBalances}
+          newLiquidationRange={newLiquidationRange}
+          liqRangeCurrentVisible={liqRangeCurrentVisible}
+          liqRangeNewVisible={liqRangeNewVisible}
+          oraclePrice={oraclePrice}
+          priceRange={priceRange}
+        />
+      )}
+    </EvmChartStateWrapper>
+  </Box>
+)
 
 /**
  * Memoized export to prevent unnecessary re-renders when parent components update

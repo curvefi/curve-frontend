@@ -133,36 +133,37 @@ export const PoolHistoricalBaseRateChart = ({
           />
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={ratePoints}
           height={CHART_HEIGHT}
-          isLoading={ratePoints.isLoading}
-          error={ratePoints.error}
-          errorMessage={t`Unable to fetch historical base rate data.`}
+          errorState={{ description: t`Unable to fetch historical base rate data.` }}
         >
-          <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
-            data={ratePoints.data ?? []}
-            height={CHART_HEIGHT}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={value => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={({ datum, visibleSeries: activeSeries }) => (
-              <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
-                <ChartTooltipSeriesGroup>
-                  {activeSeries.map(activeSeriesItem => (
-                    <ChartTooltipSeriesRow
-                      key={activeSeriesItem.key}
-                      label={activeSeriesItem.label}
-                      lineColor={activeSeriesItem.color}
-                      dash={activeSeriesItem.dash}
-                      value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
-                    />
-                  ))}
-                </ChartTooltipSeriesGroup>
-              </ChartTooltipShell>
-            )}
-          />
+          {data => (
+            <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
+              data={data}
+              height={CHART_HEIGHT}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={value => formatDate(value)}
+              yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={({ datum, visibleSeries: activeSeries }) => (
+                <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
+                  <ChartTooltipSeriesGroup>
+                    {activeSeries.map(activeSeriesItem => (
+                      <ChartTooltipSeriesRow
+                        key={activeSeriesItem.key}
+                        label={activeSeriesItem.label}
+                        lineColor={activeSeriesItem.color}
+                        dash={activeSeriesItem.dash}
+                        value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
+                      />
+                    ))}
+                  </ChartTooltipSeriesGroup>
+                </ChartTooltipShell>
+              )}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>
