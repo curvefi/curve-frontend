@@ -13,8 +13,7 @@ import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
-import { combineQueryState } from '@ui/features/queries/combine'
-import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useTabs } from '@ui/hooks/useTabs'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
@@ -97,19 +96,14 @@ const HISTORICAL_RATE_TABS = {
 }
 
 export const MarketHistoricalRatesTabs = ({ rateType }: { rateType: MarketRateType }) => {
-  const { marketType, controllerAddress, blockchainId, marketQuery, apiMarket } = useMarketContext()
+  const { marketType, controllerAddressQuery, blockchainId } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
-  const marketSnapshots = useMarketSnapshots({
-    controllerAddress,
+  const snapshots = useMarketSnapshots({
+    controllerAddress: controllerAddressQuery,
     marketType,
     blockchainId,
     range: { kind: 'timeRange', timeOption: '1Y' },
   })
-  // the snapshots query stays idle until the market provides the controller address
-  const snapshots: MarketSnapshotsQuery = {
-    ...marketSnapshots,
-    ...combineQueryState(marketSnapshots, fallbackQ(marketQuery, apiMarket)),
-  }
   const { types, defaultValue } = getMarketRateTypeTabConfig({ marketType, rateType })
   const { tab, tabs, onChange, content } = useTabs({
     menu: types.map(type => ({ ...HISTORICAL_RATE_TABS[type], value: type })),

@@ -44,7 +44,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { chainId, controllerAddress, bands, marketType } = useMarketContext<ChainId>()
+  const { chainId, controllerAddressQuery, bands, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -93,7 +93,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       footer={
         <CreateLoanInfoList
           marketType={marketType}
-          controllerAddress={controllerAddress}
+          controllerAddress={controllerAddressQuery}
           form={form}
           params={params}
           values={values}

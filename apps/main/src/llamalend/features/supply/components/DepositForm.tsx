@@ -16,7 +16,7 @@ type DepositFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainI
 const TEST_ID_PREFIX = 'supply-deposit'
 
 export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormProps<ChainId>) => {
-  const { chainId, controllerAddress } = useMarketContext<ChainId>()
+  const { chainId, controllerAddressQuery } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -44,7 +44,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
           form={form}
           params={params}
           tokens={{ borrowToken }}
-          controllerAddress={controllerAddress}
+          controllerAddress={controllerAddressQuery}
         />
       }
     >

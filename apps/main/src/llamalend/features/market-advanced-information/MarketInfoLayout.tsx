@@ -58,13 +58,14 @@ const MarketInfoSections = ({
 }
 
 const NewMarketInfoContent = () => {
-  const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
+  const { chainId, marketId, marketQuery, marketType, apiMarket, controllerAddressQuery } = useMarketContext()
   const { solvency, deployedDays, maxLeverage, maxReturnOnEquity } = useAdvancedDetailsData({
     chainId,
     marketQuery,
     marketId,
     marketType,
     apiMarket,
+    controllerAddressQuery,
   })
 
   return (

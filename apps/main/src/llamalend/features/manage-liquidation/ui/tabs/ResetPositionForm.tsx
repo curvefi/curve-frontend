@@ -14,7 +14,7 @@ import { t } from '@ui/lib/i18n'
 const { Spacing } = SizesAndSpaces
 
 export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaChainId> }) => {
-  const { chainId, controllerAddress, marketType } = useMarketContext<LlamaChainId>()
+  const { chainId, controllerAddressQuery, marketType } = useMarketContext<LlamaChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -42,7 +42,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
-          controllerAddress={controllerAddress}
+          controllerAddress={controllerAddressQuery}
           marketType={marketType}
         />
       }

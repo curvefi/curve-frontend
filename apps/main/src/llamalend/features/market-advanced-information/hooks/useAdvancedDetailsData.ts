@@ -1,10 +1,5 @@
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
-import {
-  calculateLendMarketTvlUsd,
-  calculateMintMarketTvlUsd,
-  getControllerAddress,
-  getTokens,
-} from '@/llamalend/llama.utils'
+import { calculateLendMarketTvlUsd, calculateMintMarketTvlUsd, getTokens } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
@@ -17,6 +12,7 @@ import type { MarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireBlockchainId } from '@evm-ui/utils/network'
+import type { Address } from '@primitives/address.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
@@ -35,21 +31,23 @@ export const useAdvancedDetailsData = ({
   marketId,
   marketType,
   apiMarket,
+  controllerAddressQuery,
 }: MarketParams & {
   marketQuery: QueryProp<MarketTemplate>
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
+  controllerAddressQuery: QueryProp<Address>
 }) => {
   const market = marketQuery.data
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
-  const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const controllerAddress = controllerAddressQuery.data
   const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: market?.minBands ?? 0 })
-  const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
+  const snapshots = useMarketSnapshots({ blockchainId, controllerAddress: controllerAddressQuery, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
   const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })

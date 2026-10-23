@@ -38,7 +38,7 @@ export function useBorrowRates<ChainId extends IChainId>(
   }: {
     params: MarketParams<ChainId>
     marketType: MarketType
-    controllerAddress: Address | undefined
+    controllerAddress: QueryProp<Address>
     debtDelta?: Decimal | null
   },
   enabled: boolean,
