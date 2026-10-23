@@ -1,3 +1,4 @@
+import { oneViewport } from '@cy/support/ui'
 import { Chain } from '@primitives/network.utils'
 import {
   createMemoryHistory,
@@ -94,7 +95,7 @@ function mountSwitcher({
 }
 
 describe('ChainSwitcher navigation', () => {
-  beforeEach(() => cy.viewport(1280, 800))
+  beforeEach(() => oneViewport())
 
   it('replaces the network in URLs without changing their suffixes', () => {
     expect(replaceNetworkInPath('/bridge/ethereum?tab=native#bridge%2Fstep%25', 'arbitrum')).to.equal(

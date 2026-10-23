@@ -4,6 +4,7 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import {
   oneDesktopViewport,
   oneMobileOrTabletViewport,
+  oneMobileViewport,
   oneViewport,
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
@@ -199,12 +200,7 @@ describe('Header', () => {
     })
   })
 
-  ;(
-    [
-      [1440, 900, 'desktop'],
-      [390, 844, 'mobile'],
-    ] as const
-  ).forEach(([viewportWidth, viewportHeight, viewport]) => {
+  ;([oneDesktopViewport(), oneMobileViewport()] as const).forEach(([viewportWidth, viewportHeight, viewport]) => {
     it(`updates the ${viewport} header links after switching networks`, () => {
       cy.viewport(viewportWidth, viewportHeight)
       cy.visitWithoutTestConnector('/dex/ethereum/pools', { onBeforeLoad: dismissHeaderBanners })
@@ -223,7 +219,8 @@ describe('Header', () => {
   })
 
   it('shows the market network without offering to switch a vault to another chain', () => {
-    cy.viewport(1440, 900)
+    ;[width, height] = oneDesktopViewport()
+    cy.viewport(width, height)
     const path = '/lend/ethereum/markets/0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617/vault'
     cy.visitWithoutTestConnector(path, { onBeforeLoad: dismissHeaderBanners })
     cy.get('[data-testid="form-market-page"]', TIMEOUTS['ui.render']).should('be.visible')
@@ -236,7 +233,8 @@ describe('Header', () => {
   })
 
   it('explains the Ethereum-only savings network without opening a selector', () => {
-    cy.viewport(1440, 900)
+    ;[width, height] = oneDesktopViewport()
+    cy.viewport(width, height)
     cy.visitWithoutTestConnector('/crvusd/ethereum/scrvUSD', { onBeforeLoad: dismissHeaderBanners })
     cy.get('header [data-testid="btn-change-chain"]', TIMEOUTS['ui.render']).click()
     cy.get('[data-testid="alert-eth-only"]').should('be.visible')
