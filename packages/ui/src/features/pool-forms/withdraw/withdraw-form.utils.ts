@@ -19,7 +19,7 @@ export type WithdrawMutation = {
   amounts: (Decimal | undefined)[]
   maxAmounts: (Decimal | undefined)[]
   isBalanced: boolean
-  decimals: number[]
+  decimals: (number | undefined)[]
   lpAmount: Decimal
   maxLpAmount: Decimal
   maxWithdrawIndex: number | undefined
@@ -34,4 +34,4 @@ export type WithdrawFormValues = AllowUndefined<
   Omit<WithdrawMutation, 'amounts' | 'maxAmounts' | 'expected'>,
   'decimals' | 'lpAmount' | 'maxLpAmount' | 'supply' | 'seedLock' | 'maximumBurn'
 > &
-  PoolTokenFields & { decimals: number[] | undefined }
+  PoolTokenFields & { isWrapped?: boolean }

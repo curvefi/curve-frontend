@@ -3,6 +3,8 @@ import { getCampaignsPoolsMerklQueryKey } from '@evm-ui/queries/campaigns/campai
 import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/queries/query-types'
 import { getLitePoolListQueryKey } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
+import { invalidateDepositBonus } from './deposit/deposit-bonus.query'
+import { invalidateDepositExpected } from './deposit/deposit-expected.query'
 import { getPoolAddressesQueryKey } from './pool-addresses.query'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
@@ -18,6 +20,9 @@ import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
 import { getUserPoolClaimablesQueryKey } from './user-pool-claimables.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
 import { invalidateUserPoolShareQuery } from './user-pool-share.query'
+import { invalidateWithdrawBonus } from './withdraw/withdraw-bonus.query'
+import { invalidateWithdrawExpected } from './withdraw/withdraw-expected.query'
+import { invalidateWithdrawMaxAmounts } from './withdraw/withdraw-max-amounts.query'
 
 /** Compatibility helper that refreshes user-pool-info method queries and the user's pool positions. */
 export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
@@ -34,6 +39,11 @@ export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
 
 export const invalidatePoolInfo = async (params: PoolParams) =>
   await Promise.all([
+    invalidateDepositBonus(params, { partial: true }),
+    invalidateDepositExpected(params, { partial: true }),
+    invalidateWithdrawBonus(params, { partial: true }),
+    invalidateWithdrawExpected(params, { partial: true }),
+    invalidateWithdrawMaxAmounts(params, { partial: true }),
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),
     invalidatePoolGaugeStatus(params),

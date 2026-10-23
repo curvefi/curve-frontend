@@ -5,7 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 
-export const { useQuery: useDepositExpected } = queryFactory({
+export const { useQuery: useDepositExpected, invalidate: invalidateDepositExpected } = queryFactory({
   queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
     ({ name: 'depositExpected', chainId, poolAddress, isWrapped, amounts }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>

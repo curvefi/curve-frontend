@@ -7,7 +7,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 
-export const { useQuery: useDepositBonus } = queryFactory({
+export const { useQuery: useDepositBonus, invalidate: invalidateDepositBonus } = queryFactory({
   queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
     ({ name: 'depositBonus', chainId, poolAddress, isWrapped, amounts }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>

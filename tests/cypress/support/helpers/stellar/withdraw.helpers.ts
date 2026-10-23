@@ -1,6 +1,5 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { fetchPoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { oneDecimal } from '@cy/support/generators'
@@ -12,6 +11,7 @@ import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { decimalMultiply, toWei } from '@ui/lib/decimal'
 
 export const fetchWithdrawState = async (pool: StellarContract, config: TestnetConfig) => {

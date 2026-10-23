@@ -8,6 +8,7 @@ export const WithdrawTab = (params: PoolQuery) => {
   return (
     <WithdrawForm
       {...form}
+      canWithdrawWrapped={false}
       footer={
         <WithdrawActionInfoList
           params={queryParams}

@@ -12,6 +12,7 @@ import { t } from '@ui/lib/i18n'
 import type { PoolFormProps } from '../pool-form.types'
 import { PoolTokenInputs } from '../PoolTokenInputs'
 import type { WithdrawFormValues } from './withdraw-form.utils'
+import { WrappedWithdrawCheckbox } from './WrappedWithdrawCheckbox'
 
 type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   reserves: QueryProp<Decimal[]>
@@ -19,6 +20,7 @@ type WithdrawFormProps = PoolFormProps<WithdrawFormValues> & {
   decimals: QueryProp<number>[] | undefined
   lpBalance: QueryProp<Decimal>
   supply: QueryProp<Decimal>
+  canWithdrawWrapped: boolean
   lpTokenDecimals: number
 }
 
@@ -40,6 +42,7 @@ export const WithdrawForm = ({
   decimals,
   lpTokenDecimals,
   supply,
+  canWithdrawWrapped,
 }: WithdrawFormProps) => {
   const { update } = form
   const onMax = useCallback(
@@ -79,6 +82,7 @@ export const WithdrawForm = ({
           update({ ...fromEntries([[poolAmountField(index), value]]), isBalanced: false, maxWithdrawIndex: undefined })
         }}
       />
+      {canWithdrawWrapped && <WrappedWithdrawCheckbox disabled={isPending} />}
       <FormButton
         {...wallet}
         pending={isPending}

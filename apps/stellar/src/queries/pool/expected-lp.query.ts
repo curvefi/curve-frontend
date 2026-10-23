@@ -1,12 +1,12 @@
 import { BigNumber } from 'bignumber.js'
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import {
   type ExpectedLpParams,
   type ExpectedLpQuery,
   quoteValidationSuite,
 } from '@/stellar/queries/validation/liquidity.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { getSingleCoinWithdrawIndex } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimalRound, fromWei, toBigIntArray, toWeiArray } from '@ui/lib/decimal'

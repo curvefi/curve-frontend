@@ -8,5 +8,5 @@ export const { useQuery: usePoolParameters, invalidate: invalidatePoolParameters
     ({ name: 'pool.stats.parameters', chainId, poolAddress }) as const,
   queryFn: async ({ poolAddress }: PoolQuery) => await requireLib('curveApi').getPool(poolAddress).stats.parameters(),
   validationSuite: curvePoolValidationSuite,
-  category: 'dex.poolParams',
+  category: 'dex.pool',
 })

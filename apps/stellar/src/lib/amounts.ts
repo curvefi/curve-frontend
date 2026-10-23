@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
-
-export const LP_TOKEN_DECIMALS = 18
 
 const applyLpSlippage = (amount: Decimal, slippage: Decimal, rounding: BigNumber.RoundingMode): Decimal =>
   new BigNumber(amount)

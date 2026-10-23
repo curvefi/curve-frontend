@@ -1,7 +1,7 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import type { DepositParams, DepositQuery } from '@/stellar/features/deposit/types'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { depositValidationSuite } from '@/stellar/queries/validation/deposit.validation'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
 

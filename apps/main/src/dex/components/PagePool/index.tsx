@@ -18,7 +18,7 @@ import {
 } from '@/dex/components/PagePool/utils'
 import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormClaim'
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
-import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
+import { FormWithdraw as LegacyFormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
 import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
@@ -27,6 +27,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
+import { WithdrawTab } from '@/dex/features/withdraw/components/WithdrawTab'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
@@ -52,6 +53,16 @@ const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
 const FormDeposit = (props: TransferProps) =>
   useNewPoolForms() ? <DepositTab {...props} /> : <LegacyFormDeposit {...props} />
+
+const FormWithdraw = (props: TransferProps) => {
+  const { pool } = usePoolContext()
+  // Custom amounts use withdrawImbalance, which crypto pools don’t support.
+  return useNewPoolForms() && pool.data?.isCrypto === false ? (
+    <WithdrawTab {...props} />
+  ) : (
+    <LegacyFormWithdraw {...props} />
+  )
+}
 
 const menu = [
   {
