@@ -210,7 +210,7 @@ describe('DEX Pools', () => {
     it('defaults to Active, persists toggles without an active-filters bar, and resets pagination', () => {
       cy.clock(ACTIVE_FILTER_NOW, ['Date'])
       visitAndWait(width, height, { query: { page: '5', sort: 'tvl' } })
-      cy.get('[data-testid="chip-active"]').should('be.visible').and('have.attr', 'aria-pressed', 'true')
+      cy.get('[data-testid="chip-active"]:visible').should('be.visible').and('have.attr', 'aria-pressed', 'true')
       cy.location('search').should('not.include', 'active=')
       cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
       expectLastPoolRequestParams(params => {
@@ -218,7 +218,7 @@ describe('DEX Pools', () => {
         expect(params.get('max_creation_date')).to.equal(`${ACTIVE_FILTER_NOW / 1000 - 3 * 86400}`)
       })
 
-      cy.get('[data-testid="chip-active"]').click().should('have.attr', 'aria-pressed', 'false')
+      cy.get('[data-testid="chip-active"]:visible').click().should('have.attr', 'aria-pressed', 'false')
       waitForPoolListResponse()
       expectUrlQueryParam('active', 'no')
       expectUrlQueryParam('sort', 'tvl')
@@ -232,8 +232,8 @@ describe('DEX Pools', () => {
 
       cy.reload()
       waitForPoolListResponse()
-      cy.get('[data-testid="chip-active"]').should('have.attr', 'aria-pressed', 'false')
-      cy.get('[data-testid="chip-active"]').click().should('have.attr', 'aria-pressed', 'true')
+      cy.get('[data-testid="chip-active"]:visible').should('have.attr', 'aria-pressed', 'false')
+      cy.get('[data-testid="chip-active"]:visible').click().should('have.attr', 'aria-pressed', 'true')
       waitForPoolListResponse()
       cy.location('search').should('not.include', 'active=')
     })
@@ -242,7 +242,7 @@ describe('DEX Pools', () => {
       it(`preserves TVL when toggling Active ${active ? 'off' : 'on'}, and preserves Active when resetting filters`, () => {
         const minTvl = POOL_LIST_FILTER_TVL_MIN
         visitAndWait(width, height, { query: { tvl: `${minTvl}~`, ...(active ? {} : { active: 'no' }) } })
-        cy.get('[data-testid="chip-active"]').click().should('have.attr', 'aria-pressed', `${!active}`)
+        cy.get('[data-testid="chip-active"]:visible').click().should('have.attr', 'aria-pressed', `${!active}`)
         waitForPoolListResponse()
         expectUrlQueryParam('tvl', `${minTvl}~`)
         expectLastPoolRequestParams(params => {
@@ -259,7 +259,7 @@ describe('DEX Pools', () => {
           expect(params.has('tvl')).to.equal(false)
           expect(params.get('active')).to.equal(active ? 'no' : null)
         })
-        cy.get('[data-testid="chip-active"]').should('have.attr', 'aria-pressed', `${!active}`)
+        cy.get('[data-testid="chip-active"]:visible').should('have.attr', 'aria-pressed', `${!active}`)
         cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
       })
     }
