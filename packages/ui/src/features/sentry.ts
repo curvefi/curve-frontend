@@ -10,7 +10,7 @@ import {
   setUser as setSentryUser,
   thirdPartyErrorFilterIntegration,
 } from '@sentry/react'
-import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui/lib/env'
+import { IS_CYPRESS, IS_DEVELOPMENT, IS_PREVIEW_HOST } from '@ui/lib/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
@@ -23,9 +23,13 @@ const ENVIRONMENT = IS_CYPRESS
       ? 'production'
       : window.location.hostname.replace(`.${TLD}`, '') // subdomain or hostname, e.g. localhost
 
+const SENTRY_ENABLED =
+  !IS_DEVELOPMENT ||
+  (IS_CYPRESS && (window as { Cypress?: { spec: { name: string } } }).Cypress?.spec.name === 'error-boundary.cy.ts')
+
 /** Initialize Sentry error reporting */
 export const initSentry = (applicationKey: string, transport?: BrowserOptions['transport']) =>
-  ENVIRONMENT !== 'localhost' &&
+  SENTRY_ENABLED &&
   init({
     dsn: SENTRY_DSN,
     ...(transport && { transport }),
