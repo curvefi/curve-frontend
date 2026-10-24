@@ -4,18 +4,19 @@ import { shortenAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybes, type Nullish } from '@primitives/objects.utils'
 
-/** Gets a pool by its ID, throws an error if no pool is found with the given ID. */
-export const getPool = (poolIdOrAddress: string | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
-  typeof poolIdOrAddress === 'string' ? lib.getPool(poolIdOrAddress) : poolIdOrAddress
+/** Gets a pool by its address, throws an error if no pool is found. */
+export const getPool = (poolAddress: Address | PoolTemplate, lib = requireLib('curveApi')): PoolTemplate =>
+  typeof poolAddress === 'string' ? lib.getPool(poolAddress) : poolAddress
 
-export const tryGetPool = (poolIdOrAddress: PoolTemplate | string | Nullish, lib = getLib('curveApi')) =>
-  typeof poolIdOrAddress === 'object'
-    ? poolIdOrAddress
-    : maybes([poolIdOrAddress, lib], (pool, lib) => {
+export const tryGetPool = (poolAddress: PoolTemplate | Address | Nullish, lib = getLib('curveApi')) =>
+  typeof poolAddress === 'object'
+    ? poolAddress
+    : maybes([poolAddress, lib], (pool, lib) => {
         try {
           return getPool(pool, lib)
         } catch (e) {
           const msg = (e as Error).message
+          // Pool with id is phased out but the library can still throw this if somebody uses a non-address in the URL.
           if ([`Pool with address ${pool} not found`, `Pool with id ${pool} not found`].includes(msg)) return undefined
           throw e
         }

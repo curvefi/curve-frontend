@@ -410,7 +410,19 @@ const mockLitePoolChains = () =>
     {
       body: {
         success: true,
-        data: { platforms: { taiko: [] }, platforms_metadata: { taiko: { chain_id: Chain.Taiko, name: 'Taiko' } } },
+        data: {
+          platforms: { taiko: [] },
+          platforms_metadata: {
+            taiko: {
+              chain_id: Chain.Taiko,
+              name: 'Taiko',
+              rpc_url: 'https://rpc.mainnet.taiko.xyz',
+              explorer_base_url: 'https://taikoscan.io/',
+              is_mainnet: true,
+              native_currency_symbol: 'ETH',
+            },
+          },
+        },
         generated_time_ms: V2_POOL_FIXTURE_NOW,
       },
     },
@@ -458,27 +470,6 @@ const mockLitePoolList = () =>
         success: true,
         data: { pool_data: LITE_POOL_FIXTURES, tvl: LITE_POOL_FIXTURES.reduce((total, pool) => total + pool.tvl, 0) },
         generated_time_ms: V2_POOL_FIXTURE_NOW,
-      },
-    },
-  )
-
-const mockPlatforms = () =>
-  cy.intercept(
-    { method: 'GET', hostname: 'api-core.curve.finance', pathname: '/v1/getPlatforms' },
-    {
-      body: {
-        data: {
-          platforms: { taiko: {} },
-          platformsMetadata: {
-            taiko: {
-              name: 'Taiko',
-              rpcUrl: 'https://rpc.mainnet.taiko.xyz',
-              explorerBaseUrl: 'https://taikoscan.io/',
-              isMainnet: true,
-              chainId: Chain.Taiko,
-            },
-          },
-        },
       },
     },
   )
@@ -533,7 +524,6 @@ export const setupDexPoolListV2Mocks = () => {
   mockLitePoolChains().as('dex-v2-lite-pool-chains')
   mockPoolList().as('dex-v2-pools')
   mockLitePoolList().as('dex-v2-lite-pools')
-  mockPlatforms().as('dex-v2-platforms')
   mockBootstrapRequests()
   mockMerklOpportunities()
 }
