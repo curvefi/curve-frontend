@@ -27,7 +27,7 @@ export const PoolHeaderMetrics = ({
         label={t`Net APR`}
         value={netApr}
         valueOptions={{ unit: 'percentage', formatter: formatCappedRateValue }}
-        valueTooltip={maybe(netAprTooltip, body => ({ title: t`Net APR`, body }))}
+        valueTooltip={maybe(netAprTooltip, body => ({ title: t`Net APR`, body, clickable: true }))}
         category="dex.poolHeader"
         alignment="end"
       />
