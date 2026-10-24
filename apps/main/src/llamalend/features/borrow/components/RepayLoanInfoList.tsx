@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useRepayEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
@@ -15,6 +16,7 @@ import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -107,6 +109,7 @@ export function RepayLoanInfoList({
     { isFull, userBorrowed },
     isOpen,
   )
+  const isEquityLeverage = useLlamalendEquityLeverage()
 
   return (
     <LoanActionInfoList
@@ -138,8 +141,10 @@ export function RepayLoanInfoList({
       {...getLeverageInfoFields({
         // we need to use the leverage implementations to do any swap. deleverage implementation cannot show the expected values
         leverageEnabled: showLeverage,
-        leverageValue: useRepayFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        collateralLeverageValue: useRepayFutureLeverage(params, isOpen),
+        prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
+        isEquityLeverage,
+        equityLeverage: useRepayEquityLeverage(params, { debt, debtDelta }, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),

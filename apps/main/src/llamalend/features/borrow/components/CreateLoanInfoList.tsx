@@ -1,6 +1,8 @@
+import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
@@ -23,6 +25,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   isControllerApproved,
   collateralToken,
   borrowToken,
+  equityLeverage,
   form,
 }: {
   marketType: MarketType
@@ -32,10 +35,12 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
+  equityLeverage: EquityLeverage | null
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isOpen = form.isTouched('userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
+  const isEquityLeverage = useLlamalendEquityLeverage()
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -55,8 +60,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       {...getLeverageInfoFields({
         leverageEnabled,
         collateralDelta: userCollateral,
-        leverageValue: mapQuery(expectedCollateral, data => data.leverage),
-        prevLeverageValue: constQ('0'),
+        collateralLeverageValue: mapQuery(expectedCollateral, data => data.leverage),
+        prevCollateralLeverageValue: constQ('0'),
+        isEquityLeverage,
+        equityLeverage,
         prevCollateral: constQ('0'),
         leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),
       })}

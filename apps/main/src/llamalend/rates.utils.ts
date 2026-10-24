@@ -1,10 +1,13 @@
 import { sumBy } from 'lodash'
+import { getAddress } from 'viem'
+import type { MarketYields } from '@/llamalend/equity-leverage.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { type ExtraIncentive, MarketRateType, MarketType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -12,7 +15,7 @@ import { type Nullish, maybe, maybes, notFalsy, recordValues } from '@primitives
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, mapQuery, type QueryProp, type Range } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
+import { decimal, ZERO } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 /** Returns the rate tabs available for a market and the tab selected by default */
@@ -86,6 +89,9 @@ export const getSnapshotCollateralRebasingYieldApr = <
   snapshot: TSnapshot,
 ) => snapshot.collateralToken.rebasingYieldApr
 
+export const getSnapshotBorrowedRebasingYieldApr = (snapshot: LendingSnapshot | CrvUsdSnapshot) =>
+  ('borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken).rebasingYieldApr
+
 export const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
   snapshots: TSnapshot[] | undefined,
   getValue: (snapshot: TSnapshot) => TValue | Nullish,
@@ -140,6 +146,41 @@ export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
         c => c.reward?.value ?? 0,
       )
     : null
+
+type MarketCampaignAddresses = {
+  controllerAddress: Address | Nullish
+  vaultAddress: Address | Nullish
+  ammAddress: Address | Nullish
+}
+
+/** Campaigns of a market, from the contracts that reward its market type */
+export const getMarketCampaigns = (
+  campaigns: Record<string, CampaignRewards[]>,
+  { marketType, ...addresses }: MarketCampaignAddresses & { marketType: MarketType },
+) =>
+  notFalsy(
+    ...(
+      {
+        [MarketType.Lend]: ({ vaultAddress, controllerAddress }) => [vaultAddress, controllerAddress],
+        [MarketType.Mint]: ({ controllerAddress, ammAddress }) => [controllerAddress, ammAddress],
+      } satisfies Record<MarketType, (addresses: MarketCampaignAddresses) => (Address | Nullish)[]>
+    )[marketType](addresses),
+  ).flatMap(address => campaigns[getAddress(address)] ?? [])
+
+/**
+ * Yields from the latest snapshot and the borrow campaign rewards of a market.
+ * No collateral yield means no est. leveraged APR; no borrowed-token yield or no campaign counts as 0%.
+ */
+export const getMarketYields = (
+  snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
+  campaigns: Record<string, CampaignRewards[]>,
+  addresses: MarketCampaignAddresses & { marketType: MarketType },
+): MarketYields => ({
+  collateralYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr)) ?? null,
+  borrowedYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr)) ?? ZERO,
+  borrowRewardsApr:
+    decimal(sumCampaignsApr(getMarketCampaigns(campaigns, addresses).filter(c => c.action === 'borrow'))) ?? ZERO,
+})
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
