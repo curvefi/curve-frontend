@@ -1,7 +1,6 @@
-import type { ComponentProps } from 'react'
 import { useConnection } from 'wagmi'
-import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
+import { ChartStateWrapper, type ChartStateWrapperProps } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 
-export const EvmChartStateWrapper = (props: Omit<ComponentProps<typeof ChartStateWrapper>, 'userAddress'>) => (
+export const EvmChartStateWrapper = <T,>(props: Omit<ChartStateWrapperProps<T>, 'userAddress'>) => (
   <ChartStateWrapper {...props} userAddress={useConnection().address} />
 )

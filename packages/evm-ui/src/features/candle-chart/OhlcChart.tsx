@@ -1,10 +1,14 @@
 import { CandleChart } from '@evm-ui/features/candle-chart/CandleChart'
 import { useChartPalette } from '@evm-ui/features/candle-chart/hooks/useChartPalette'
 import type { ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import type { ChartEmptyState } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
 import Stack from '@mui/material/Stack'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
+
+export type OhlcSeries = { ohlcData: LpPriceOhlcDataFormatted[] | undefined; oraclePriceData?: OraclePriceData[] }
 
 export type OhlcChartProps = {
   /**
@@ -12,12 +16,9 @@ export type OhlcChartProps = {
    */
   hideCandleSeriesLabel: boolean
   chartHeight: number
-  isLoading: boolean
+  series: QueryProp<OhlcSeries>
   isEmpty?: boolean
-  emptyMessage?: string
-  error: Error | null
-  ohlcData: LpPriceOhlcDataFormatted[] | undefined
-  oraclePriceData?: OraclePriceData[]
+  emptyState?: ChartEmptyState
   liquidationRange?: LiquidationRanges
   selectedChartKey: string | undefined
   timeOption: TimeOption
@@ -31,60 +32,43 @@ export type OhlcChartProps = {
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
-export const ChartWrapper = ({
-  hideCandleSeriesLabel,
-  chartHeight,
-  isLoading,
+export const OhlcChart = ({
+  series,
   isEmpty,
-  emptyMessage,
-  error,
-  ohlcData,
-  oraclePriceData,
-  liquidationRange,
-  selectedChartKey,
-  timeOption,
+  emptyState,
   refetchPricesData,
-  fetchMoreChartData,
-  oraclePriceVisible,
-  liqRangeCurrentVisible,
-  liqRangeNewVisible,
+  chartHeight,
   selectChartList,
-  latestOraclePrice,
-  onVisiblePriceRangeChange,
+  selectedChartKey,
+  ...candleProps
 }: OhlcChartProps) => {
   const colors = useChartPalette()
 
   const selectedChartLabel = selectChartList.find(c => c.key === selectedChartKey)?.label
-  const errorMessage = selectedChartLabel
-    ? t`Unable to fetch "${selectedChartLabel}" data.`
-    : t`Unable to fetch chart data.`
 
   return (
     <Stack direction="column" sx={{ width: '100%', minWidth: 0 }}>
       <EvmChartStateWrapper
+        query={series}
         height={chartHeight}
-        isLoading={isLoading}
-        error={error}
-        errorMessage={errorMessage}
         isEmpty={isEmpty}
-        emptyMessage={emptyMessage}
-        refreshData={refetchPricesData}
+        emptyState={emptyState}
+        errorState={{
+          description: selectedChartLabel
+            ? t`Unable to fetch "${selectedChartLabel}" data.`
+            : t`Unable to fetch chart data.`,
+          onReload: refetchPricesData,
+        }}
       >
-        <CandleChart
-          hideCandleSeriesLabel={hideCandleSeriesLabel}
-          chartHeight={chartHeight}
-          ohlcData={ohlcData}
-          oraclePriceData={oraclePriceData}
-          liquidationRange={liquidationRange}
-          timeOption={timeOption}
-          colors={colors}
-          fetchMoreChartData={fetchMoreChartData}
-          liqRangeCurrentVisible={liqRangeCurrentVisible}
-          liqRangeNewVisible={liqRangeNewVisible}
-          oraclePriceVisible={oraclePriceVisible}
-          latestOraclePrice={latestOraclePrice}
-          onVisiblePriceRangeChange={onVisiblePriceRangeChange}
-        />
+        {({ ohlcData, oraclePriceData }) => (
+          <CandleChart
+            {...candleProps}
+            chartHeight={chartHeight}
+            ohlcData={ohlcData}
+            oraclePriceData={oraclePriceData}
+            colors={colors}
+          />
+        )}
       </EvmChartStateWrapper>
     </Stack>
   )
