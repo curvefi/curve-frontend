@@ -9,7 +9,7 @@ import { ChipVolatileBaseApy } from '../../pools/ChipVolatileBaseApy'
 import type { PoolRow, PoolTableMeta } from '../types'
 import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
-import { formatCellValue, isVolatileRate } from './utils'
+import { formatCellValue, getNetRateTooltipData, isVolatileRate } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -24,7 +24,7 @@ export const NetRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolT
         Wrapper={Tooltip}
         clickable
         title={t`Net APR`}
-        body={<NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatile} />}
+        body={<NetRateTooltipContent {...getNetRateTooltipData(pool)} crvToken={crvToken} volatile={volatile} />}
         placement="top"
       >
         <Box

@@ -5,6 +5,7 @@ import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
 import { CampaignTooltipContent } from '@ui/features/pool-list/cells/RewardIcons'
 import { RewardsRateTooltipContent } from '@ui/features/pool-list/cells/RewardsRateTooltipContent'
+import { getNetRateTooltipData } from '@ui/features/pool-list/cells/utils'
 import type { PoolRow, PoolTableMeta } from '@ui/features/pool-list/types'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
@@ -130,7 +131,9 @@ describe('V2 pool-list tooltip content', () => {
   })
 
   it('renders the complete Net APR breakdown and BOLD campaign links', () => {
-    mountContent(<NetRateTooltipContent pool={createPool()} crvToken={CRV_TOKEN} volatile={false} />)
+    mountContent(
+      <NetRateTooltipContent {...getNetRateTooltipData(createPool())} crvToken={CRV_TOKEN} volatile={false} />,
+    )
 
     expectContent([
       'Base APR10%',
@@ -149,7 +152,7 @@ describe('V2 pool-list tooltip content', () => {
   })
 
   it('renders the volatile Net rate warning', () => {
-    mountContent(<NetRateTooltipContent pool={createPool()} crvToken={CRV_TOKEN} volatile />)
+    mountContent(<NetRateTooltipContent {...getNetRateTooltipData(createPool())} crvToken={CRV_TOKEN} volatile />)
     cy.get(CONTENT).should('contain.text', 'This net rate is volatile and is unlikely to persist.')
   })
 

@@ -17,7 +17,7 @@ import { formatToken } from '@ui/lib/tokens'
 import { ClaimablesTooltipContent } from '../cells/ClaimablesTooltipContent'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { ClaimablesIcons, RewardIcons } from '../cells/RewardIcons'
-import { getBaseApr, isVolatileRate } from '../cells/utils'
+import { getBaseApr, getNetRateTooltipData, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES } from '../columns/column.titles'
 import { PoolColumnId } from '../columns/columns.enum'
 import type { PoolRow, PoolTableMeta, PoolTableVariant } from '../types'
@@ -100,7 +100,13 @@ export const PoolExpandedPanel = ({
           valueTooltip={
             netRate
               ? {
-                  body: <NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatileBaseRate} />,
+                  body: (
+                    <NetRateTooltipContent
+                      {...getNetRateTooltipData(pool)}
+                      crvToken={crvToken}
+                      volatile={volatileBaseRate}
+                    />
+                  ),
                   clickable: true,
                   placement: 'top',
                   title: t`Net APR`,

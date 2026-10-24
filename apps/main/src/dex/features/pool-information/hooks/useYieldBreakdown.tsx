@@ -16,7 +16,7 @@ import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipConten
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
 import type { YieldBreakdownRow } from '@ui/features/pools/yield-breakdown/types'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; poolAddress: Address }) => {
@@ -137,5 +137,5 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
     total => maybe(crvRateRange, ({ unboostedRate, maximumRate }) => total - unboostedRate + maximumRate) ?? 0,
   )
 
-  return { maxBoostTotal, total, rows }
+  return { maxBoostTotal, total, rows, rewards: q(rewards), campaigns, unboostedCrvRate, maxBoostCrvRate }
 }
