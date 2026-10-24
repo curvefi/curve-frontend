@@ -1,6 +1,6 @@
 import type { UTCTimestamp } from 'lightweight-charts'
 import type { PoolCoin } from '@curvefi/prices-api/pools'
-import { TIME_OPTIONS } from './constants'
+import { TIME_OPTIONS } from '@ui/features/charts/chart.utils'
 
 export type TimeOption = (typeof TIME_OPTIONS)[number]
 
