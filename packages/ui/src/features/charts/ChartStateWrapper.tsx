@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
-import { ChartEmpty } from '@evm-ui/shared/ui/Chart/ChartEmpty'
-import { ChartError } from '@evm-ui/shared/ui/Chart/ChartError'
-import { ChartLoading } from '@evm-ui/shared/ui/Chart/ChartLoading'
 import type { Address } from '@primitives/address.utils'
+import type { AllOrNone } from '@primitives/objects.utils'
+import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
+import { ChartEmpty } from './ChartEmpty'
+import { ChartError } from './ChartError'
+import { ChartLoading } from './ChartLoading'
 
 type ChartStateWrapperProps = {
   height: number
@@ -17,7 +19,7 @@ type ChartStateWrapperProps = {
   refreshData?: () => Promise<unknown> | void
   children: ReactNode
   userAddress?: Address
-}
+} & AllOrNone<ConnectionProps>
 
 /** Renders loading spinner, error message, empty message, or chart content based on query state.
  * Wraps children in an ErrorBoundary to catch rendering errors. */
@@ -33,6 +35,7 @@ export const ChartStateWrapper = ({
   refreshData,
   children,
   userAddress,
+  ...connectionProps
 }: ChartStateWrapperProps) =>
   isLoading ? (
     <ChartLoading height={height} />
@@ -45,7 +48,7 @@ export const ChartStateWrapper = ({
       userAddress={userAddress}
     />
   ) : isEmpty ? (
-    <ChartEmpty height={height} title={emptyTitle} message={emptyMessage} testId={emptyTestId} />
+    <ChartEmpty height={height} title={emptyTitle} message={emptyMessage} testId={emptyTestId} {...connectionProps} />
   ) : (
     <ErrorBoundary
       title="Chart Error"

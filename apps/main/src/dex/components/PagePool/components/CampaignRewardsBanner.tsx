@@ -1,11 +1,11 @@
 import { usePoolContext } from '@/dex/features/pool-context'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
+import { usePoolCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import { CampaignBannerComp } from '@legacy-ui/CampaignRewards/CampaignBannerComp'
 import { t } from '@ui/lib/i18n'
 
 export const CampaignRewardsBanner = () => {
   const { blockchainId, poolAddress } = usePoolContext()
-  const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: poolAddress })
+  const { data: campaigns } = usePoolCampaignsByAddress({ blockchainId, address: poolAddress })
 
   const message = campaigns.some(campaign => campaign.tags.includes('points'))
     ? t`Liquidity providers in this pool also earn points!`

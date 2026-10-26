@@ -11,7 +11,7 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
+import { useMarketCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'
@@ -69,7 +69,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   const snapshotsQuery = useMarketSnapshots({ marketType: MarketType.Lend, controllerAddress, blockchainId, enabled })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
-  const campaignsQuery = useCampaignsByAddress({ blockchainId, address: controllerAddress })
+  const campaignsQuery = useMarketCampaignsByAddress({ blockchainId, address: controllerAddress })
 
   // Without `reservesDelta`, `rates`/`netSupplyApy` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netSupplyApy] = addNetApy(

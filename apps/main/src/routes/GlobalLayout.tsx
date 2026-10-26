@@ -1,11 +1,9 @@
 import { type ReactNode } from 'react'
 import { useConnection, useEnsName } from 'wagmi'
-import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
 import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
-import { networks as crvusdNetworks } from '@/loan/networks'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConnectModal'
 import { type TvlSource, useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
@@ -23,14 +21,15 @@ import { EvmBanners } from '@evm-ui/shared/ui/EvmBanners'
 import { shortenAddress } from '@evm-ui/utils'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
 import { Chain } from '@primitives/network.utils'
-import { mapRecord, maybe, type PartialRecord } from '@primitives/objects.utils'
+import { mapRecord, maybe } from '@primitives/objects.utils'
+import { useLocation, useMatches } from '@tanstack/react-router'
 import { Footer } from '@ui/features/layout/Footer'
 import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.util'
 import { Header } from '@ui/features/layout/Header'
 import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
 import { PageLayout } from '@ui/features/layout/PageLayout'
+import { getNetworkSwitchHref } from '@ui/features/layout/switch-chain/switch-policies'
 import type { Maintenance } from '@ui/features/maintenance/hooks/useMaintenance'
-import { usePathname } from '@ui/hooks/router'
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) =>
   [
@@ -56,17 +55,6 @@ const APP_TO_MENU = {
   analytics: 'analytics',
 } as const satisfies Record<AppName, AppMenuOption>
 
-const getSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
-  ({
-    dao: daoNetworks,
-    crvusd: crvusdNetworks,
-    lend: lendNetworks,
-    llamalend: lendNetworks,
-    dex: allNetworks,
-    bridge: allNetworks,
-    analytics: allNetworks,
-  })[app]
-
 const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   dex: 'pool',
   llamalend: 'lending',
@@ -76,7 +64,7 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
 }
 
 // Sometimes a network has been defined and needs to be accessed for legacy purposes, but we want to hide it from the list for whatever reason.
-const HIDE_CHAINS: PartialRecord<AppMenuOption, number[]> = { dex: [Chain.ZkSync, Chain.Mantle] }
+const HIDE_CHAINS: number[] = [Chain.ZkSync, Chain.Mantle]
 
 /** Resolves the given links based on current network and pathname */
 const resolveLinks = ({ blockchainId, pathname }: { blockchainId: string; pathname: string }) =>
@@ -103,10 +91,19 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   const { address, isConnecting, isConnected } = useConnection()
   const addressLabel = useEnsName({ address }).data ?? maybe(address, shortenAddress)
   const { blockchainId, chainId } = network
+  const location = useLocation()
 
   const currentMenu = APP_TO_MENU[currentApp]
-  const routeContext = { blockchainId, pathname: usePathname() }
+  const routeContext = { blockchainId, pathname: location.pathname }
   const formatUrl = (page: string) => getInternalUrl(currentApp, blockchainId, page)
+
+  const networkSwitch = useMatches().findLast(match => match.staticData.networkSwitch)?.staticData.networkSwitch ?? {
+    type: 'same-page',
+  }
+  // Would be cool if can get rid of the app distinction in supported networks in a future PR.
+  const supportedNetworks = createChainOptions(currentApp === 'lend' ? lendNetworks : networks, targetBlockchainId =>
+    getNetworkSwitchHref(location, targetBlockchainId, networkSwitch),
+  ).filter(n => !HIDE_CHAINS?.includes(n.chainId))
 
   return (
     <PageLayout
@@ -121,14 +118,14 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
               isConnected={isConnected}
             />
           }
-          currentNetwork={createChainOption(network, currentApp)}
+          currentNetwork={createChainOption(network, location.href)}
           currentMenu={currentMenu}
-          supportedNetworks={createChainOptions(getSupportedNetworks(networks, currentApp), currentApp)}
+          supportedNetworks={supportedNetworks}
+          networkSwitch={networkSwitch}
           appStats={useAppStats(currentApp, network)}
           pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
           links={resolveLinks(routeContext)}
           sections={getHeaderSections(formatUrl)}
-          hideChains={HIDE_CHAINS}
           tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
           connectWalletProps={{ disconnect, address, addressLabel, isConnecting, isConnected, connect }}
         />

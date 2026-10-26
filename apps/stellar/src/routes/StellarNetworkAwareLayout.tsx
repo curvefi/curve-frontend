@@ -3,7 +3,7 @@ import { StellarConnectModal } from '@/stellar/features/connect-wallet/StellarCo
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { recordEntries } from '@primitives/objects.utils'
-import { HeadContent, Outlet } from '@tanstack/react-router'
+import { HeadContent, Outlet, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { GlobalBanner } from '@ui/features/banners/GlobalBanner'
 import { ErrorBoundary } from '@ui/features/errors/ErrorBoundary'
@@ -12,6 +12,7 @@ import { getFooterSections } from '@ui/features/layout/Footer/footer-sections.ut
 import { Header } from '@ui/features/layout/Header'
 import { getHeaderSections } from '@ui/features/layout/Header/header-sections.util'
 import { PageLayout } from '@ui/features/layout/PageLayout'
+import { replaceNetworkInPath } from '@ui/features/layout/routes'
 import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList'
 import { BackendMaintenanceGuard } from '@ui/features/maintenance/components/BackendMaintenanceGuard'
 import { useMaintenance } from '@ui/features/maintenance/hooks/useMaintenance'
@@ -44,7 +45,8 @@ const PLACEHOLDERS = {
 }
 
 export const StellarNetworkAwareLayout = () => {
-  const { network } = useParams<{ network?: string }>()
+  const { network, pool } = useParams<{ network?: string; pool?: string }>()
+  const { href } = useLocation()
   const { address, connect, disconnect, isConnected, isConnecting, error } = useWallet()
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
 
@@ -59,6 +61,7 @@ export const StellarNetworkAwareLayout = () => {
         <PageLayout
           header={
             <Header
+              networkSwitch={{ type: pool ? 'locked' : 'same-page' }}
               banners={
                 <GlobalBanner
                   rootUrl={EXTERNAL_LINKS.curve.stellar}
@@ -76,7 +79,10 @@ export const StellarNetworkAwareLayout = () => {
               }
               currentNetwork={chain}
               currentMenu={APP}
-              supportedNetworks={CHAIN_OPTIONS}
+              supportedNetworks={CHAIN_OPTIONS.map(option => ({
+                ...option,
+                href: replaceNetworkInPath(href, option.blockchainId),
+              }))}
               appStats={PLACEHOLDERS.stats}
               pages={pages}
               links={{ dex: { label: t`DEX`, href: chain.href, pages } }}
