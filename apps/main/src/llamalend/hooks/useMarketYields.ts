@@ -12,10 +12,10 @@ export function useMarketYields(enabled: boolean): QueryProp<MarketYields> {
   const { marketType, controllerAddress, chainId, ammAddress, vaultToken } = useMarketContext()
   const blockchainId = BlockchainIds[chainId]
   const snapshots = useMarketSnapshots({ marketType, controllerAddress, blockchainId, enabled })
-  const { data: campaigns, isLoading } = useMarketCampaigns({ blockchainId })
+  const { data: campaigns, isLoading, error } = useMarketCampaigns({ blockchainId })
   return combineQueries(
-    // useMarketCampaigns returns {} while loading; campaign errors are ignored, as on the market page
-    [snapshots, { data: isLoading ? undefined : campaigns, isLoading, error: null }],
+    // useMarketCampaigns returns {} while loading; on an error the APR still shows, without the rewards
+    [snapshots, { data: isLoading ? undefined : campaigns, isLoading, error }],
     (snapshots, campaigns) =>
       getMarketYields(snapshots, campaigns, {
         marketType,
