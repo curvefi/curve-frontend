@@ -101,7 +101,7 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
     const resp = await fetch(url, { method: 'GET' })
 
     if (!resp.ok) {
-      throw new FetchError(resp.status, `Merkl fetch error ${resp.status} for URL: ${url}`, await resp.text())
+      throw new FetchError(resp.status, `Cannot load campaigns (error ${resp.status})`, await resp.text())
     }
 
     return (await resp.json()) as MerklOpportunity[]

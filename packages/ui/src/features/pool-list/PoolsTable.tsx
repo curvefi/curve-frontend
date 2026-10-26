@@ -79,7 +79,7 @@ export const PoolsTable = ({
   })
 
   const globalFilterFn = usePoolsGlobalFilterFn(
-    isLite ? (tableQuery?.data ?? EMPTY_POOL_ROWS) : EMPTY_POOL_ROWS,
+    isLite ? (tableQuery.data ?? EMPTY_POOL_ROWS) : EMPTY_POOL_ROWS,
     globalFilter,
   )
 
@@ -130,7 +130,11 @@ export const PoolsTable = ({
               }),
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
-        errorState={{ title: t`Unable to retrieve pool list`, description: tableQuery.error?.message, onReload }}
+        errorState={{
+          title: tableQuery.data ? t`Some data could not be loaded` : t`Unable to retrieve pool list`,
+          description: tableQuery.error?.message,
+          onReload,
+        }}
         expandedPanel={{ Body: PoolsExpandedPanel, Actions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >

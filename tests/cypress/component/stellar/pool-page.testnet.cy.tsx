@@ -86,13 +86,11 @@ describe('Stellar testnet pool page', () => {
     cy.get('[data-testid="data-table-cell-campaignUrl"]')
       .find('a')
       .should('have.attr', 'href', `https://app.merkl.xyz/opportunities/${TEST_NETWORK}/POOL/${pool}-PTS`)
-    if (breakpoint !== 'mobile') {
-      cy.get('[data-testid="yield-rate-tooltip-trigger"]').trigger('mouseover')
-      cy.get('[data-testid="tooltip-value-link"]').should(
-        'have.attr',
-        'href',
-        `https://app.merkl.xyz/opportunities/${TEST_NETWORK}/POOL/${pool}-RWD`,
-      )
-    }
+    cy.get('[data-testid="yield-rate-tooltip-trigger"]').trigger(breakpoint === 'mobile' ? 'touchstart' : 'mouseover', {
+      touches: [{ pageX: width / 2, clientY: height / 2 }],
+    })
+    cy.get('[data-testid="tooltip-value-link"]')
+      .should('be.visible')
+      .and('have.attr', 'href', `https://app.merkl.xyz/opportunities/${TEST_NETWORK}/POOL/${pool}-RWD`)
   })
 })

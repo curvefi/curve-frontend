@@ -35,25 +35,29 @@ export const createMerklOpportunity = ({
   },
 })
 
+export const mockCampaigns = (campaigns: ReturnType<typeof createMerklOpportunity>[] = [], delay = 0) =>
+  cy.intercept('GET', '/api/merkl/v1/opportunities*', { body: campaigns, delay }).as('campaigns')
+
 export const mockPoolCampaigns = (
   pool: { address: string; name: string },
   tokenAddress: string,
   campaigns: { apr: number; symbol: string; network: string; chainId: number }[],
 ) =>
+  mockCampaigns(
+    campaigns.map(({ apr, symbol, network, chainId }) =>
+      createMerklOpportunity({
+        identifier: `${pool.address}-${symbol}`,
+        pool: { ...pool, chain_id: chainId },
+        network,
+        apr,
+        symbol,
+        platform: symbol,
+        tokenAddress,
+      }),
+    ),
+  )
+
+export const mockCampaignsError = (statusCode = 500) =>
   cy
-    .intercept(
-      'GET',
-      '/api/merkl/v1/opportunities*',
-      campaigns.map(({ apr, symbol, network, chainId }) =>
-        createMerklOpportunity({
-          identifier: `${pool.address}-${symbol}`,
-          pool: { ...pool, chain_id: chainId },
-          network,
-          apr,
-          symbol,
-          platform: symbol,
-          tokenAddress,
-        }),
-      ),
-    )
-    .as('campaigns')
+    .intercept('GET', '/api/merkl/v1/opportunities*', { statusCode, body: { error: 'Merkl unavailable' } })
+    .as('campaignsError')
