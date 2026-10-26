@@ -15,7 +15,7 @@ export const LeverageInput = ({
   onToggle,
 }: {
   checked: boolean | undefined
-  /** null hides the value */
+  /** A `null` query hides the leverage, a `null` value shows it as unavailable */
   leverage: QueryProp<Decimal | null> | null
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
 }) => (

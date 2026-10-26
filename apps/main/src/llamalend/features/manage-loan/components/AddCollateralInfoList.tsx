@@ -42,7 +42,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
-  const isEquityLeverage = useLlamalendEquityLeverage()
   const collateral = mapQuery(
     prevCollateral,
     stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
@@ -74,7 +73,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         leverageEnabled: false,
         collateralLeverageValue: useAddCollateralFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
-        isEquityLeverage,
+        isEquityLeverage: useLlamalendEquityLeverage(),
         equityLeverage: useAddCollateralEquityLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: collateral,

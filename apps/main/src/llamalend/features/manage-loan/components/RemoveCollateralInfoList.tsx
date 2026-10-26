@@ -41,7 +41,6 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
-  const isEquityLeverage = useLlamalendEquityLeverage()
   const collateral = mapQuery(
     prevCollateral,
     stateCollateral => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
@@ -73,7 +72,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         leverageEnabled: false,
         collateralLeverageValue: useRemoveCollateralFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
-        isEquityLeverage,
+        isEquityLeverage: useLlamalendEquityLeverage(),
         equityLeverage: useRemoveCollateralEquityLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: collateral,

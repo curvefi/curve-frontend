@@ -109,7 +109,6 @@ export function RepayLoanInfoList({
     { isFull, userBorrowed },
     isOpen,
   )
-  const isEquityLeverage = useLlamalendEquityLeverage()
 
   return (
     <LoanActionInfoList
@@ -143,7 +142,7 @@ export function RepayLoanInfoList({
         leverageEnabled: showLeverage,
         collateralLeverageValue: useRepayFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
-        isEquityLeverage,
+        isEquityLeverage: useLlamalendEquityLeverage(),
         equityLeverage: useRepayEquityLeverage(params, { debt, debtDelta }, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>

@@ -51,7 +51,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
   const totalCollateral = expectedCollateralQuery.data?.totalCollateral
   const collateralDelta = leverageEnabled ? totalCollateral : userCollateral
-  const isEquityLeverage = useLlamalendEquityLeverage()
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -79,7 +78,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         leverageEnabled,
         collateralLeverageValue: useBorrowMoreFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
-        isEquityLeverage,
+        isEquityLeverage: useLlamalendEquityLeverage(),
         equityLeverage,
         prevCollateral,
         leverageTotalCollateral: combineQueries(

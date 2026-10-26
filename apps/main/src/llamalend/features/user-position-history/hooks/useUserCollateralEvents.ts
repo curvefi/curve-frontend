@@ -66,7 +66,10 @@ export type UserCollateralEvents = {
   isZapLeveraged: boolean
 }
 
-/** `events` are oldest first, as the API sends them. */
+/**
+ * Whether the open position deposited through the leverage zap. Only events after the last closed position count, so a
+ * closed leveraged loan doesn't mark a new plain borrow. `events` are oldest first, as the API sends them.
+ */
 const hasZapBorrowInOpenPosition = (events: UserCollateralEventFromApi[]) =>
   events.slice(events.findLastIndex(e => e.isPositionClosed) + 1).some(e => e.leverage?.eventType === 'Deposit')
 

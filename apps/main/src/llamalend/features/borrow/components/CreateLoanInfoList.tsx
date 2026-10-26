@@ -40,7 +40,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
 }) => {
   const isOpen = form.isTouched('userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
-  const isEquityLeverage = useLlamalendEquityLeverage()
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -62,7 +61,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         collateralDelta: userCollateral,
         collateralLeverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevCollateralLeverageValue: constQ('0'),
-        isEquityLeverage,
+        isEquityLeverage: useLlamalendEquityLeverage(),
         equityLeverage,
         prevCollateral: constQ('0'),
         leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),

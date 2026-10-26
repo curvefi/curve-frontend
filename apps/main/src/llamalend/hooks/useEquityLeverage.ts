@@ -72,7 +72,7 @@ export function useEquityLeverage(
   const marketYields = useMarketYields(isEnabled)
   const currentRates = q(useMarketRates(params, isEnabled))
   const futureRates = futureOrCurrentQ(
-    q(useMarketFutureRates({ chainId, marketId: params.marketId, debtDelta }, isEnabled)),
+    q(useMarketFutureRates({ ...params, chainId, debtDelta }, isEnabled)),
     currentRates,
   )
   const currentApr = combineQueries([position, oraclePrice, currentRates, marketYields], getApr)
