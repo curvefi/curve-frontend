@@ -35,7 +35,7 @@ export type ChartStateWrapperProps<T> = AllOrNone<ConnectionProps> & {
 }
 
 const Loading = ({ height }: { height: number }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: height }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1, minHeight: height }}>
     <Spinner />
   </Box>
 )
@@ -55,7 +55,7 @@ export const ChartStateWrapper = <T,>({
   ) : error ? (
     <Box
       data-testid="chart-error"
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: height }}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1, minHeight: height }}
     >
       <ErrorMessage
         title={errorState?.title ?? t`An error occurred`}
