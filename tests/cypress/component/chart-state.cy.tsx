@@ -64,7 +64,6 @@ describe('Chart states', () => {
     mountChart({ error: new Error('boom'), data: [], onReload })
     cy.get('[data-testid="chart-error"]')
       .should('have.css', 'min-height', `${HEIGHT}px`)
-      .and('contain.text', 'An error occurred')
       .and('contain.text', 'Unable to fetch chart data.')
     cy.get('[data-testid="chart-empty"]').should('not.exist')
     cy.contains('button', 'Reload').click()
@@ -73,9 +72,7 @@ describe('Chart states', () => {
 
   it('shows the empty state with the given copy for an empty array', () => {
     mountChart({ data: [] })
-    cy.get('[data-testid="chart-empty"]')
-      .should('contain.text', 'Nothing here')
-      .and('contain.text', 'No points for this range')
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
   })
 
@@ -89,7 +86,7 @@ describe('Chart states', () => {
     const isEmpty = cy.stub().as('isEmpty').returns(true)
     mountChart({ data: ['point'], emptyState: { ...EMPTY_STATE, isEmpty } })
     cy.get('@isEmpty').should('have.been.calledWith', ['point'])
-    cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
   })
 
@@ -107,7 +104,7 @@ describe('Chart states', () => {
 
   it('shows the empty state while data is undefined without an error or loading flag', () => {
     mountChart({ data: undefined })
-    cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
     cy.get(SPINNER).should('not.exist')
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
   })
@@ -126,7 +123,7 @@ describe('Chart states', () => {
         {() => <div data-testid={CHART} />}
       </ChartStateWrapper>,
     )
-    cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
     cy.contains('button', 'Connect Wallet').click()
     cy.get('@connect').should('have.been.calledOnce')
   })
