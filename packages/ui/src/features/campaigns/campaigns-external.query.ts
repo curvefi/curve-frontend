@@ -1,7 +1,8 @@
 import { campaigns } from 'external-rewards'
-import { groupBy, inRange } from 'lodash'
-import { Address } from '@primitives/address.utils'
+import { inRange } from 'lodash'
+import type { Address } from '@primitives/address.utils'
 import { queryOptions } from '@tanstack/react-query'
+import { groupCampaignsByAddress } from '@ui/features/campaigns/campaigns.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { CURVE_ASSETS_URL } from '@ui/lib/resource.constants'
@@ -61,11 +62,4 @@ const { getQueryOptions, queryKey } = queryFactory({
 export const getCampaignsExternalQueryKey = queryKey
 
 export const getCampaignsExternalOptions = (getAddress: (address: string) => Address, enabled = true) =>
-  queryOptions({
-    ...getQueryOptions({}, enabled),
-    select: (rewards: CampaignRewards[]) =>
-      groupBy(
-        rewards.map(reward => ({ ...reward, address: getAddress(reward.address) })),
-        reward => reward.address,
-      ),
-  })
+  queryOptions({ ...getQueryOptions({}, enabled), select: groupCampaignsByAddress(getAddress) })

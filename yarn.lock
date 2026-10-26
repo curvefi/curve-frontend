@@ -14537,6 +14537,7 @@ __metadata:
     "@tanstack/router-core": "npm:1.171.38"
     "@types/node": "npm:26.6.5"
     "@vitejs/plugin-react": "npm:6.1.2"
+    merkl-api: "workspace:^"
     vite: "npm:8.3.3"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:11.1.1"
