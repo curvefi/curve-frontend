@@ -227,7 +227,7 @@ describe('Header', () => {
     cy.get('header [data-testid="chain-icon-ethereum"]').should('be.visible')
     cy.get('header [data-testid="network-lock"]').should('be.visible')
     cy.get('header [data-testid="btn-change-chain"]').click()
-    cy.get('[data-testid="alert-eth-only"]').should('contain.text', 'Network switching unavailable')
+    cy.get('[data-testid="alert-eth-only"]').should('contain.text', 'This market is only available on Ethereum')
     cy.get('[role="dialog"]').should('not.exist')
     cy.location('pathname').should('match', new RegExp(`^${path}/?$`))
   })
