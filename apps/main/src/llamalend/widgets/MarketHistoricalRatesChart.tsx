@@ -142,20 +142,14 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
     ),
   )
 
-  const chartData = useMappedQuery(
-    ratePoints,
-    useCallback(
-      (ratePoints): RateChartPoint[] => {
-        const cutoff = new Date(dataUpdatedAt.getTime() - TIME_OPTION_MS[timeOption])
-        return addMovingAverages(
-          ratePoints.filter(({ timestamp }) => timestamp >= cutoff.getTime()),
-          d => d.rate,
-          d => d.timestamp,
-        )
-      },
-      [timeOption, dataUpdatedAt],
-    ),
-  )
+  const chartData = mapQuery(ratePoints, (ratePoints): RateChartPoint[] => {
+    const cutoff = new Date(dataUpdatedAt.getTime() - TIME_OPTION_MS[timeOption])
+    return addMovingAverages(
+      ratePoints.filter(({ timestamp }) => timestamp >= cutoff.getTime()),
+      d => d.rate,
+      d => d.timestamp,
+    )
+  })
 
   const averageRates = useMappedQuery(
     ratePoints,
