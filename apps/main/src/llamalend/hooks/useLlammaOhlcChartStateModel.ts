@@ -135,11 +135,7 @@ export const useLlammaOhlcChartStateModel = ({
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart.md,
     series: q({ data: { ohlcData, oraclePriceData }, isLoading, error: currentError }),
-    emptyState: {
-      description: emptyMessage,
-      // the resolved series falls back to [], so only the raw oracle pool query tells it is empty
-      isEmpty: () => oraclePoolsChartQuery.data?.ohlcData?.length === 0,
-    },
+    emptyState: { description: emptyMessage },
     liquidationRange: selectedLiqRange.data,
     timeOption,
     selectedChartKey,

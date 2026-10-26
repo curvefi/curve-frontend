@@ -17,7 +17,7 @@ export type OhlcChartProps = {
   hideCandleSeriesLabel: boolean
   chartHeight: number
   series: QueryProp<OhlcSeries>
-  emptyState: ChartEmptyState<OhlcSeries>
+  emptyState: Omit<ChartEmptyState<OhlcSeries>, 'isEmpty'>
   liquidationRange?: LiquidationRanges
   selectedChartKey: string | undefined
   timeOption: TimeOption
@@ -49,7 +49,11 @@ export const OhlcChart = ({
       <EvmChartStateWrapper
         query={series}
         height={chartHeight}
-        emptyState={emptyState}
+        emptyState={{
+          ...emptyState,
+          // CandleChart can draw the oracle price line without candles, so the chart is only empty when both are missing
+          isEmpty: ({ ohlcData, oraclePriceData }) => !ohlcData?.length && !oraclePriceData?.length,
+        }}
         errorState={{
           description: selectedChartLabel
             ? t`Unable to fetch "${selectedChartLabel}" data.`

@@ -53,10 +53,7 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
     hideCandleSeriesLabel: false,
     chartHeight: Height.chart.lg,
     series: q({ data: { ohlcData }, isLoading, error }),
-    emptyState: {
-      description: t`No OHLC data found. Data may be unavailable for this pool.`,
-      isEmpty: ({ ohlcData }) => ohlcData?.length === 0,
-    },
+    emptyState: { description: t`No OHLC data found. Data may be unavailable for this pool.` },
     selectChartList,
     selectedChartKey,
     timeOption,
