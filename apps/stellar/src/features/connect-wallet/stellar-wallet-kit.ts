@@ -31,12 +31,8 @@ const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
 const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
-/**
- * TTL renewal can become payable after simulation. A five-entry testnet deposit needed 1,279,509 stroops of rent two
- * ledgers later; 60k/entry reserved only 300k. Reserve 400k/entry (0.04 XLM): 2m for that footprint, with unused refundable
- * fees returned. Keep the 20% buffer for larger simulated fees. This is headroom, not a guarantee against rent increases.
- */
-const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 400_000n
+/** TTL renewal can become payable after simulation. Keep the 20% buffer for larger simulated fees. */
+const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 600_000n
 
 export const initWallet = (onError: (error: Error) => void) => {
   const modules = defaultModules()
