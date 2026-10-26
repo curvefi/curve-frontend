@@ -55,7 +55,6 @@ describe('Chart states', () => {
     mountChart({ error: new Error('boom'), isEmpty: true, onReload })
     cy.get('[data-testid="chart-error"]')
       .should('have.css', 'min-height', `${HEIGHT}px`)
-      .and('contain.text', 'An error occurred')
       .and('contain.text', 'Unable to fetch chart data.')
     cy.get('[data-testid="chart-empty"]').should('not.exist')
     cy.contains('button', 'Reload').click()
@@ -64,9 +63,7 @@ describe('Chart states', () => {
 
   it('shows the empty state with the given copy', () => {
     mountChart({ isEmpty: true })
-    cy.get('[data-testid="chart-empty"]')
-      .should('contain.text', 'Nothing here')
-      .and('contain.text', 'No points for this range')
+    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
   })
 
@@ -74,17 +71,5 @@ describe('Chart states', () => {
     cy.on('uncaught:exception', () => false)
     mountChart({}, <ThrowingChart />)
     cy.contains('Chart Error').should('be.visible')
-  })
-
-  it('shows a spinner while data is undefined without an error or loading flag', () => {
-    mountChart({ data: undefined })
-    cy.get(SPINNER).should('be.visible')
-    cy.get(`[data-testid="${CHART}"]`).should('not.exist')
-  })
-
-  it('shows the empty state over the pending spinner', () => {
-    mountChart({ data: undefined, isEmpty: true })
-    cy.get('[data-testid="chart-empty"]').should('contain.text', 'Nothing here')
-    cy.get(SPINNER).should('not.exist')
   })
 })

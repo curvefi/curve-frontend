@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
@@ -33,12 +32,11 @@ export const useBandsData = ({
   const oraclePrice = useMarketOraclePrice({ chainId, marketId }, enabled)
 
   const chartData = useProcessedBandsData({ marketBandsBalances: marketBands.data, userBandsBalances: userBands.data })
-  const userBandsBalances = userBands.data ?? EMPTY_BANDS
-  const data = useMemo(
-    () => ({ chartData, userBandsBalances, oraclePrice: oraclePrice.data }),
-    [chartData, userBandsBalances, oraclePrice.data],
-  )
   const { isLoading } = combineQueryState(loanExists, liquidationBand, userBands, marketBands, oraclePrice)
 
-  return useMemo(() => q({ data, isLoading, error: marketBands.error }), [data, isLoading, marketBands.error])
+  return q({
+    data: { chartData, userBandsBalances: userBands.data ?? EMPTY_BANDS, oraclePrice: oraclePrice.data },
+    isLoading,
+    error: marketBands.error,
+  })
 }
