@@ -6,7 +6,7 @@ import { TopHoldersBarChart as TopHoldersBarChartComponent } from '@/dao/compone
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box } from '@legacy-ui/Box'
 import { SelectSortingMethod } from '@legacy-ui/Select/SelectSortingMethod'
 import MuiBox from '@mui/material/Box'

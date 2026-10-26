@@ -2,14 +2,17 @@ import { meanBy } from 'lodash'
 import type { Theme } from '@mui/material/styles'
 import { movingAverage } from '@primitives/array.utils'
 import { formatNumber, type NumberFormatOptions } from '@primitives/number.utils'
+import { range } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui/lib/time'
 
 export type ChartLineDashPattern = number[]
 
+export const TIME_OPTIONS = ['15m', '30m', '1h', '4h', '6h', '12h', '1d', '7d', '14d'] as const
+export const DEFAULT_TIME_OPTION = '1d' satisfies (typeof TIME_OPTIONS)[number]
+
 const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
 export const CHART_X_AXIS_LABEL_ROTATION = -45
 const DEFAULT_CHART_ABBREVIATE_FROM = 10000
-const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const
 
 export const CHART_LINE_DASH_PATTERNS = {
   /** Matches lightweight-charts LineStyle.Dashed with the default 1px price line width. */
@@ -22,10 +25,14 @@ export const CHART_LINE_DASH_PATTERNS = {
 
 export const CHART_LINE_WIDTHS = { defaultPriceLine: 1, referenceLine: 2 } as const
 
-export const createChartSeriesColorScale = (theme: Theme) => CHART_COLOR_INDICES.map(i => theme.design.Chart.Lines[i])
+const getChartColorIndices = (theme: Theme) =>
+  range(1, Object.keys(theme.design.Chart.Surfaces).length) as (keyof Theme['design']['Chart']['Surfaces'])[]
+
+export const createChartSeriesColorScale = (theme: Theme) =>
+  getChartColorIndices(theme).map(i => theme.design.Chart.Lines[i])
 
 export const createChartSeriesSurfaceColorScale = (theme: Theme) =>
-  CHART_COLOR_INDICES.map(i => theme.design.Chart.Surfaces[i])
+  getChartColorIndices(theme).map(i => theme.design.Chart.Surfaces[i])
 
 export const getChartSignedValueColor = (theme: Theme, value: number | bigint) => {
   const { Negative, Positive } = theme.design.Chart.Candles
