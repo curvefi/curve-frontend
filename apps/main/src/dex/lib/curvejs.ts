@@ -33,18 +33,6 @@ export const fetchPools = async (curve: CurveApi) => {
   ])
 }
 
-// curve
-const network = {
-  getTVL: (curve: CurveApi) => {
-    log('getChainTVL', curve.chainId)
-    return curve.getTVL()
-  },
-  getVolume: (curve: CurveApi) => {
-    log('getChainVolume', curve.chainId)
-    return curve.getVolume()
-  },
-}
-
 const router = {
   routesAndOutput: async (
     activeKey: string,
@@ -995,4 +983,4 @@ function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
   }
 }
 
-export const curvejsApi = { helpers, network, router, poolDeposit, poolWithdraw, poolSwap }
+export const curvejsApi = { helpers, router, poolDeposit, poolWithdraw, poolSwap }
