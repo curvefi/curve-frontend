@@ -12,7 +12,7 @@ export const STELLAR_NETWORKS = {
       address: 'CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA' as const,
     },
     rpcUrl: 'https://rpc.ankr.com/stellar_soroban',
-    explorerUrl: 'https://stellarchain.io/',
+    explorerUrl: 'https://stellar.expert/explorer/public/',
   },
   'stellar-testnet': {
     name: 'Stellar testnet',
@@ -25,7 +25,7 @@ export const STELLAR_NETWORKS = {
       address: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC' as const,
     },
     rpcUrl: 'https://soroban-testnet.stellar.org',
-    explorerUrl: 'https://testnet.stellarchain.io/',
+    explorerUrl: 'https://stellar.expert/explorer/testnet/',
   },
 } as const
 
