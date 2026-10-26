@@ -42,9 +42,7 @@ export const useAdvancedDetailsData = ({
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = controllerAddressQuery.data
-  const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
-  const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
-  const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
+  const marketOverview = useMarketOverview({ blockchainId, controllerAddress: controllerAddressQuery, marketType })
 
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: market?.minBands ?? 0 })
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress: controllerAddressQuery, marketType })
@@ -144,10 +142,11 @@ export const useAdvancedDetailsData = ({
     deployedDays: mapQuery(marketOverview, ({ deployedDays }) => deployedDays),
     tvl,
     ...(marketType === MarketType.Lend && {
-      solvency: mapQuery(
-        q({ ...solvency, isLoading: solvency.isLoading || isControllerLoading }),
-        ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd }),
-      ),
+      // solvency is picked by controller address, so report its loading and error too
+      solvency: combineQueries([solvency, controllerAddressQuery], ({ solvencyPercent, badDebtUsd }) => ({
+        value: solvencyPercent,
+        badDebtUsd,
+      })),
     }),
   }
 }
