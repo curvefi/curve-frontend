@@ -62,6 +62,8 @@ const TIME_UNITS = [
   { unit: 'minute', seconds: SECONDS_PER_MINUTE },
 ] as const
 
+export const ACTIVE_POOL_DAYS = 3 as const
+
 const JUST_NOW_SECONDS = 5 * SECONDS_PER_MINUTE
 
 /** Formats an elapsed timestamp using the largest matching unit. */
