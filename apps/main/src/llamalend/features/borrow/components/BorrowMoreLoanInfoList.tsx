@@ -19,8 +19,8 @@ import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
-import { decimalSum } from '@ui/lib/decimal'
+import { constQ, mapQuery, q } from '@ui/features/queries/util'
+import { decimalSum, ZERO } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
@@ -83,8 +83,9 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         equityLeverage,
         prevCollateral,
         leverageTotalCollateral: combineQueries(
-          [prevCollateral, expectedCollateralQuery],
-          (prevCollateral, { totalCollateral }) => maybes([totalCollateral, prevCollateral], decimalSum),
+          [prevCollateral, leverageEnabled ? expectedCollateralQuery : constQ(null)],
+          (prevCollateral, expected) =>
+            maybes([prevCollateral, (expected ? expected.totalCollateral : userCollateral) ?? ZERO], decimalSum),
         ),
         collateralDelta,
       })}
