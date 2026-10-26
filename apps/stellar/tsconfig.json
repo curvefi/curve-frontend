@@ -6,6 +6,7 @@
       "@/stellar/*": ["./src/*"],
       "@ui": ["../../packages/ui/src/index.ts"],
       "@ui/*": ["../../packages/ui/src/*"],
+      "@external-rewards": ["../../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]
