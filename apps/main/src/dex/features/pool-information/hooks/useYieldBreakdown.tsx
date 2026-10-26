@@ -141,7 +141,7 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
       crvRateRange: maxBoostTotal && maxBoostTotal !== total ? (crvRateRange ?? null) : null,
       incentiveItems:
         unboostedCrvRate || extraRewards.length || aprCampaigns.length
-          ? { incentivesRate: total - (baseRate ?? 0), unboostedCrvRate, extraRewards, campaigns: aprCampaigns }
+          ? { incentivesRate: total - baseRate, unboostedCrvRate, extraRewards, campaigns: aprCampaigns }
           : null,
       pointsCampaigns,
     }
