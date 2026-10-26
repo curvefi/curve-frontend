@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { styled } from 'styled-components'
 import { DAO_COMPACT_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
@@ -11,7 +11,7 @@ import { Box } from '@legacy-ui/Box'
 import { SelectSortingMethod } from '@legacy-ui/Select/SelectSortingMethod'
 import MuiBox from '@mui/material/Box'
 import { sortBy } from '@primitives/array.utils'
-import { useCombinedQueries } from '@ui/features/queries/combine'
+import { combineQueries } from '@ui/features/queries/combine'
 import { decimalMinus, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
@@ -56,13 +56,8 @@ export const TopLockers = () => {
   const holders = useVeCrvHoldersQuery({})
   const [topHoldersSortBy, setTopHoldersSortBy] = useState<TopHoldersSortBy>('weightRatio')
 
-  const rows = useCombinedQueries(
-    [holders, stats],
-    useCallback(
-      (veCrvHolders: VeCrvHolder[], veCrvData: VeCrvStats) =>
-        toTopHolderRows(veCrvHolders, veCrvData, topHoldersSortBy),
-      [topHoldersSortBy],
-    ),
+  const rows = combineQueries([holders, stats], (veCrvHolders, veCrvData) =>
+    toTopHolderRows(veCrvHolders, veCrvData, topHoldersSortBy),
   )
 
   return (
