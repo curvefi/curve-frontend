@@ -25,7 +25,14 @@ const expectToast = ({ type = 'success', message, approvalMessage }: ToastOption
     .should('have.length', 1)
     .and('contain.text', message)
 
-/** Wait for previous notifications, submit, then verify the transaction outcome. */
+/**
+ * The success toast shows before the mutation's `onSuccess` (user events, invalidations) finishes, and the form button
+ * stays pending until then. Ending a test with those intercepted requests in flight makes Chrome reload the spec.
+ */
+const expectFormSettled = (timeoutCategory: TimeoutCategory) =>
+  cy.contains('button', 'Processing...', TIMEOUTS[timeoutCategory]).should('not.exist')
+
+/** Wait for previous notifications, submit, verify the transaction outcome, then wait for the form to settle. */
 export const submitAndExpectToast = <T>(
   submit: () => Cypress.Chainable<T> | void,
   options: ToastOptions,
@@ -36,3 +43,4 @@ export const submitAndExpectToast = <T>(
       submit()
     })
     .then(() => expectToast(options, timeoutCategory))
+    .then(() => expectFormSettled(timeoutCategory))

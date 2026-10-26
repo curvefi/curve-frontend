@@ -15,7 +15,7 @@ import { t } from '@ui/lib/i18n'
 const { Spacing } = SizesAndSpaces
 
 export type ParametersProps = {
-  a: number | Nullish
+  a?: number | Nullish
   adjustmentStep?: number | null
   allowedExtraProfit?: number | null
   feeGamma?: number | null
