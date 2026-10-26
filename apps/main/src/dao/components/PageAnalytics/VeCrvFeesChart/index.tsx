@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box } from '@legacy-ui/Box'
 import { constQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'

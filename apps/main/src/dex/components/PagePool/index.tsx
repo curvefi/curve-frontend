@@ -25,6 +25,8 @@ import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
+import { PointsCampaigns } from '@/dex/features/pool-information/components/points-campaigns'
+import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
@@ -36,16 +38,19 @@ import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import Stack from '@mui/material/Stack'
 import { zip } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdownCard'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
 import { t } from '@ui/lib/i18n'
+import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -214,14 +219,16 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         <CampaignRewardsBanner />
         <UserPosition />
-        {!isLiteChain(chainId) && (
-          <>
-            {pricesApiPoolData.data && (
-              <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
-            )}
-            <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
-          </>
+        {!isLiteChain(chainId) && pricesApiPoolData.data && (
+          <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
         )}
+        <Stack sx={stackedCardHeadersSx}>
+          {!isLiteChain(chainId) && (
+            <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
+          )}
+          <YieldBreakdown {...useYieldBreakdown({ chainId, poolAddress })} />
+          <PointsCampaigns />
+        </Stack>
         <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />
         <PoolAdvancedDetails />
       </DetailPageLayout>

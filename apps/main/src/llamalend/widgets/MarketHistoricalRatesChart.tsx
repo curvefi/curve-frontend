@@ -7,15 +7,7 @@ import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/Histo
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { type TimeOption } from '@evm-ui/queries/validation/time-option-validation'
-import {
-  addMovingAverages,
-  CHART_LINE_DASH_PATTERNS,
-  type ChartLineDashPattern,
-} from '@evm-ui/shared/ui/Chart/chart.utils'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
-import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
@@ -27,6 +19,10 @@ import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { addMovingAverages, CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@ui/features/charts/chart.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
+import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
