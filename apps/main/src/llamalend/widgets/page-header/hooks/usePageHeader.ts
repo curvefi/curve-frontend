@@ -22,7 +22,7 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
-import { useCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
+import { useMarketCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
@@ -264,8 +264,8 @@ function useCampaigns({
   vaultAddress: Address | Nullish
   marketType: MarketType
 }) {
-  const { data: controllerCampaigns } = useCampaignsByAddress({ blockchainId, address: controllerAddress })
-  const { data: vaultCampaigns } = useCampaignsByAddress({ blockchainId, address: vaultAddress })
+  const { data: controllerCampaigns } = useMarketCampaignsByAddress({ blockchainId, address: controllerAddress })
+  const { data: vaultCampaigns } = useMarketCampaignsByAddress({ blockchainId, address: vaultAddress })
   return marketType === MarketType.Lend ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
 }
 
