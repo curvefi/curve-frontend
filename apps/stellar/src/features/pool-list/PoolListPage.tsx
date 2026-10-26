@@ -24,7 +24,11 @@ export const PoolListPage = () => {
   const { address, connect, isConnected, isConnecting } = useWallet()
   const { isLite } = STELLAR_NETWORKS[network]
   const pagination = usePoolsPagination()
-  const { isFetching, refetch, pageCount, query } = usePoolList({ network })
+  const filters = usePoolsFilters()
+  const { isFetching, refetch, pageCount, query } = usePoolList({
+    network,
+    activePoolsFilter: filters.activePoolsFilter.isSelected,
+  })
   return (
     <ListPageLayout>
       <PoolsTable
@@ -35,7 +39,7 @@ export const PoolListPage = () => {
         userHasPositions={undefined}
         alerts={NO_ALERTS}
         isLite={isLite}
-        filters={usePoolsFilters()}
+        filters={filters}
         pagination={pagination}
         sorting={usePoolsSorting(isLite, pagination.updateQueryAndResetPage)}
         addressDisplay={stellarAddressDisplay}

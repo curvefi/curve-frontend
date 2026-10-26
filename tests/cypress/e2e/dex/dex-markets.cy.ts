@@ -12,6 +12,7 @@ const POOL_LIST_FILTER_POOL_TYPE = 'crypto'
 const POOL_LIST_FILTER_TVL_MIN = 480_000_000
 const POOL_LIST_FILTER_TVL_MAX = 500_000_000
 const POOL_LIST_FILTER_VOLUME_MAX = 500_000_000
+const ACTIVE_FILTER_NOW = Date.UTC(2026, 9, 22)
 
 type PoolListResponseBody = { pools?: { name?: string }[] }
 
@@ -163,7 +164,7 @@ describe('DEX Pools', () => {
       visitAndWait(width, height)
       cy.url().should('not.include', 'tvl') // initial sort not in URL
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${POOL_DEFAULT_TVL_MIN}`)
+        expect(params.get('min_tvl')).to.equal(`${Number.MIN_VALUE}`)
         expect(params.get('sort_by')).to.equal('volume')
         expect(params.get('sort_direction')).to.equal('desc')
       })
@@ -206,6 +207,63 @@ describe('DEX Pools', () => {
       cy.get('[data-testid^="data-table-row-"]', TIMEOUTS['mock.prices.pools']).should('have.length.greaterThan', 0)
     })
 
+    it('defaults to Active, persists toggles without an active-filters bar, and resets pagination', () => {
+      cy.clock(ACTIVE_FILTER_NOW, ['Date'])
+      visitAndWait(width, height, { query: { page: '5', sort: 'tvl' } })
+      cy.get('[data-testid="chip-active"]:visible').should('be.visible').and('have.attr', 'aria-pressed', 'true')
+      cy.location('search').should('not.include', 'active=')
+      cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal(`${Number.MIN_VALUE}`)
+        expect(params.get('max_creation_date')).to.equal(`${ACTIVE_FILTER_NOW / 1000 - 3 * 86400}`)
+      })
+
+      cy.get('[data-testid="chip-active"]:visible').click().should('have.attr', 'aria-pressed', 'false')
+      waitForPoolListResponse()
+      expectUrlQueryParam('active', 'no')
+      expectUrlQueryParam('sort', 'tvl')
+      cy.location('search').should('not.include', 'page=')
+      cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
+      expectLastPoolRequestParams(params => {
+        expect(params.get('page')).to.equal('1')
+        expect(params.get('min_tvl')).to.equal(`${POOL_DEFAULT_TVL_MIN}`)
+        expect(params.has('max_creation_date')).to.equal(false)
+      })
+
+      cy.reload()
+      waitForPoolListResponse()
+      cy.get('[data-testid="chip-active"]:visible').should('have.attr', 'aria-pressed', 'false')
+      cy.get('[data-testid="chip-active"]:visible').click().should('have.attr', 'aria-pressed', 'true')
+      waitForPoolListResponse()
+      cy.location('search').should('not.include', 'active=')
+    })
+
+    for (const active of [true, false]) {
+      it(`preserves TVL when toggling Active ${active ? 'off' : 'on'}, and preserves Active when resetting filters`, () => {
+        const minTvl = POOL_LIST_FILTER_TVL_MIN
+        visitAndWait(width, height, { query: { tvl: `${minTvl}~`, ...(active ? {} : { active: 'no' }) } })
+        cy.get('[data-testid="chip-active"]:visible').click().should('have.attr', 'aria-pressed', `${!active}`)
+        waitForPoolListResponse()
+        expectUrlQueryParam('tvl', `${minTvl}~`)
+        expectLastPoolRequestParams(params => {
+          expect(params.get('min_tvl')).to.equal(`${minTvl}`)
+          expect(params.has('max_creation_date')).to.equal(!active)
+        })
+        cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible')
+        cy.get('[data-testid^="dex-pool-active-filter-"]').should('have.length', 1)
+
+        cy.get('[data-testid="dex-pool-filters-collapsible-reset-btn"]').click()
+        waitForPoolListResponse()
+        cy.location('search').should(search => {
+          const params = new URLSearchParams(search)
+          expect(params.has('tvl')).to.equal(false)
+          expect(params.get('active')).to.equal(active ? 'no' : null)
+        })
+        cy.get('[data-testid="chip-active"]:visible').should('have.attr', 'aria-pressed', `${!active}`)
+        cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
+      })
+    }
+
     it('resets page when search changes', () => {
       expectPageResetAfter(() => {
         cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(DEX_POOL_LIST_SEARCH)
@@ -247,7 +305,7 @@ describe('DEX Pools', () => {
     it('treats default TVL min as inactive', () => {
       visitAndWait(width, height, { query: { tvl: `${POOL_DEFAULT_TVL_MIN}~` } })
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${POOL_DEFAULT_TVL_MIN}`)
+        expect(params.get('min_tvl')).to.equal(`${Number.MIN_VALUE}`)
       })
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
     })
@@ -257,7 +315,7 @@ describe('DEX Pools', () => {
 
       visitAndWait(width, height, { query: { tvl: `~${maxTvl}` } })
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${POOL_DEFAULT_TVL_MIN}`)
+        expect(params.get('min_tvl')).to.equal(`${Number.MIN_VALUE}`)
         expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
       })
       cy.get('[data-testid="dex-pool-active-filter-tvl"]')

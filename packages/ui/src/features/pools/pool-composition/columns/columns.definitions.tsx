@@ -1,20 +1,20 @@
 import Box from '@mui/material/Box'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
-import { mapQuery, type QueryProp, toValue } from '@ui/features/queries/util'
+import { mapQuery, type QueryOrValue, type QueryProp, toValue } from '@ui/features/queries/util'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
 import { PoolCompositionColumnId } from './columns.enum'
 
 export type PoolCompositionRow = {
-  source: TokenInfoTokenIconProps
+  source: Omit<TokenInfoTokenIconProps, 'primary'> & { primary: QueryOrValue<string> }
   displayAddress: string
   explorerUrl?: string
   marketShare: QueryProp<Amount>
@@ -43,7 +43,13 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
   columnHelper.accessor('source', {
     id: PoolCompositionColumnId.Asset,
     header: headers[PoolCompositionColumnId.Asset],
-    cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
+    cell: ({ getValue, row }) => (
+      <TokenCell
+        source={getValue()}
+        displayAddress={row.original.displayAddress}
+        explorerUrl={row.original.explorerUrl}
+      />
+    ),
     enableSorting: false,
   }),
   columnHelper.accessor('price', {
@@ -76,11 +82,9 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
       return (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <Tooltip
-            title={maybe(
-              getValue().data,
-              value =>
-                // TokenInfo primary is ReactNode; we only want to show a tooltip if it's a pure string (which it should for all our cases)
-                typeof symbol === 'string' &&
+            title={maybes(
+              [getValue().data, symbol],
+              (value, symbol) =>
                 `${formatToken(value, symbol)}${maybe(row.original.amountUsd.data, value => ` / ${value}`) ?? ''}`,
             )}
             placement="top"

@@ -5,7 +5,7 @@ const RETRIES = 2
 const RETRY_DELAY_MS = 500
 const REQUEST_TIMEOUT_MS = 30_000
 const EXPONENTIAL_BACKOFF = 2
-const RETRY_STATUSES = [0, 408, 425, 429, 500, 502, 503, 504]
+const RETRY_STATUSES = [408, 425, 429, 500, 502, 503, 504]
 
 /**
  * Converts a Record of string key-value pairs to a URL query string.

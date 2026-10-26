@@ -57,7 +57,7 @@ describe('V2 pool-list yields', () => {
   })
 
   it('handles inactive, incomplete, empty, volatile, and high yield data', () => {
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT, active: false })
     showV2PoolColumns(YIELD_COLUMNS)
 
     const killed = V2_POOL_FIXTURES.killed.address
