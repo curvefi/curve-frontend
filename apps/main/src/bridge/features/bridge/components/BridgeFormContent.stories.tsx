@@ -128,7 +128,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         }}
         onAmount={setAmount}
         onChangeNetwork={() => setIsWrongNetwork(false)}
-        onNetworkSelected={network => setFromChainId(network.chainId)}
+        onNetworkSelected={setFromChainId}
       />
     </FormContent>
   )
