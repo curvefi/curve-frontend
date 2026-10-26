@@ -1,7 +1,4 @@
 import { useMemo, useState } from 'react'
-import { DEFAULT_TIME_OPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
-import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
-import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -9,6 +6,9 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { DEFAULT_TIME_OPTION, TIME_OPTIONS } from './chart.utils'
+import { ChartHeader, type ChartSelections } from './ChartHeader'
+import { ToggleBandsChartButton } from './ToggleBandsChartButton'
 
 type DexChartKey = 'lp-usd' | 'lp-token' | 'pair'
 const dexSelections: ChartSelections<DexChartKey>[] = [
@@ -195,7 +195,7 @@ const ScrvUsdStatisticsHeaderExampleNarrow = () => {
 }
 
 const meta: Meta<typeof ChartHeader> = {
-  title: 'EVM UI/Shared UI/ChartHeader',
+  title: 'UI/Shared UI/ChartHeader',
   component: ChartHeader,
   parameters: {
     docs: {
