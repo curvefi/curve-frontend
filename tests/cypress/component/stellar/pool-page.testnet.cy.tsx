@@ -3,7 +3,7 @@ import { PoolPage } from '@/stellar/features/pool/PoolPage'
 import { StellarUrls } from '@/stellar/routes/routes'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { checkDepositBalances, seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
-import { fetchPoolState, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
+import { fetchPoolState, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { withdrawLpInput, withdrawSubmit } from '@cy/support/helpers/stellar/withdraw.helpers'
@@ -57,7 +57,17 @@ describe('Stellar testnet pool page', () => {
     checkDepositBalances(state)
 
     cy.get('[data-testid="tab-withdraw"]', TIMEOUTS['ui.interaction']).click()
+    cy.get('[data-testid="tab-withdraw-one-coin"]').should('have.attr', 'aria-selected', 'true')
+    poolInput(state.coins[0].address).find('input', TIMEOUTS['stellar.read']).should('be.enabled')
+    cy.get('[data-testid="pool-withdraw-lp-input"]').should('not.exist')
+    withdrawSubmit().should('be.disabled')
+
+    cy.get('[data-testid="tab-withdraw-advanced"]').click()
+    cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').should('not.be.checked')
     withdrawLpInput().find('input', TIMEOUTS['stellar.read']).should('be.enabled')
+    state.coins.map(({ address }) => poolInput(address).should('be.visible'))
+    cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').check()
+    cy.get('[data-testid="pool-withdraw-lp-input"]').should('not.exist')
     withdrawSubmit().should('be.disabled')
   })
 })

@@ -14,8 +14,7 @@ export const PoolTokenInputs = ({
   disabled,
   maxAmounts,
   maxSelectedIndex,
-  positionAmounts,
-  positionTooltip,
+  showBalance = true,
   onMax,
   onValueChange,
 }: {
@@ -23,8 +22,7 @@ export const PoolTokenInputs = ({
   disabled: PoolTokenDisabled
   maxAmounts?: QueryProp<Decimal>[]
   maxSelectedIndex?: number
-  positionAmounts?: QueryProp<Decimal>[]
-  positionTooltip?: string
+  showBalance?: boolean
   onMax?: (index: number) => void
   onValueChange: (index: number, value: Decimal | undefined) => void
 }) =>
@@ -41,7 +39,7 @@ export const PoolTokenInputs = ({
           isMaxSelected={index === maxSelectedIndex}
           onMax={onMax}
           onValueChange={onValueChange}
-          positionBalance={positionAmounts && { position: positionAmounts[index], tooltip: positionTooltip }}
+          walletBalance={showBalance ? { symbol: token.symbol, balance: token.balance } : undefined}
         />
       ) : (
         isLoading && <LargeTokenInputSkeleton />

@@ -1,77 +1,37 @@
-import { useCallback, useMemo } from 'react'
-import { completeArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, maybes } from '@primitives/objects.utils'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
-import { scaleReserves } from '@ui/features/pool-forms/balanced-amounts.utils'
-import { getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
-import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
-import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { combineQueryState } from '@ui/features/queries/combine'
+import type { AdvancedWithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { q, type QueryProp } from '@ui/features/queries/util'
-import { decimalRound } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
-const getBalancedAmountUpdates = (
-  lpAmount: Decimal | undefined,
-  decimals: number[] | undefined,
-  reserves: Decimal[] | undefined,
-  supply: Decimal | undefined,
-  lpTokenDecimals: number,
-) =>
-  maybes([lpAmount, decimals, reserves, supply], (lpAmount, decimals, reserves, supply) => {
-    const scaledValues = scaleReserves(reserves, decimals, decimalRound(lpAmount, lpTokenDecimals), supply)
-    return fromEntries(scaledValues.map((amount, index) => [poolAmountField(index), amount]))
-  })
-
 export function LiquidityProviderInput({
+  form,
   balance,
+  inputBalanceUsd,
   isDisabled,
-  reserves,
-  tokens,
-  decimals,
-  supply,
-  lpTokenDecimals,
+  onChange,
 }: {
+  form: UseFormReturn<AdvancedWithdrawFormValues>
+  inputBalanceUsd?: Decimal
   balance: QueryProp<Decimal>
   isDisabled: boolean
-  reserves: QueryProp<Decimal[]>
-  tokens: QueryProp<PoolToken>[] | undefined
-  decimals: QueryProp<number>[] | undefined
-  supply: QueryProp<Decimal>
-  lpTokenDecimals: number
+  onChange: (amount: Decimal | undefined) => void
 }) {
-  const { update, formState, values } = useFormContext<WithdrawFormValues>()
+  const { formState, values } = form
   const { errors, touchedFields } = formState
-  const queryState = combineQueryState(balance, reserves, supply, ...(decimals ?? []))
-  const error = (touchedFields.lpAmount ? (errors.lpAmount ?? errors.maxLpAmount) : undefined) ?? queryState.error
-  const { lpAmount } = values
-  const tokenCount = tokens?.length
-  const decimalsData = useMemo(() => completeArray(decimals?.map(q => q.data)), [decimals])
-
-  const onBalance = useCallback(
-    (lpAmount: Decimal | undefined) =>
-      update({
-        lpAmount,
-        isBalanced: true,
-        maxWithdrawIndex: undefined,
-        ...(getBalancedAmountUpdates(lpAmount, decimalsData, reserves.data, supply.data, lpTokenDecimals) ??
-          getPoolDefaultValues(tokenCount ?? 0)),
-      }),
-    [update, decimalsData, reserves.data, supply.data, lpTokenDecimals, tokenCount],
-  )
-
+  const error = (touchedFields.lpAmount ? (errors.lpAmount ?? errors.maxLpAmount) : undefined) ?? balance.error
   return (
     <LargeTokenInput
       name="lpAmount"
       label={t`LP amount`}
-      balance={q({ data: lpAmount, error: error ?? null, isLoading: false })}
-      onBalance={onBalance}
+      balance={q({ data: values.lpAmount, error: error ?? null, isLoading: false })}
+      inputBalanceUsd={inputBalanceUsd}
+      onBalance={onChange}
       walletBalance={{ symbol: t`LP Tokens`, balance }}
-      maxBalance={{ balance, chips: 'max', onMax: onBalance }}
-      disabled={isDisabled || !decimalsData || !reserves.data || !supply.data || !+supply.data}
-      message={error?.message ?? t`Entering an LP amount fills balanced outputs. You can then edit the token amounts.`}
+      maxBalance={{ balance, chips: 'max', onMax: onChange }}
+      disabled={isDisabled}
+      message={error?.message}
       testId="pool-withdraw-lp-input"
     />
   )

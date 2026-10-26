@@ -38,24 +38,31 @@ export const connectTestWallet = ({ deployer }: TestnetConfig) => {
   return StellarWalletsKit.fetchAddress()
 }
 
+type PoolDeployment = { pool: StellarContract }
 type Factory = {
+  implementation: (params: {
+    coin_count: number
+    implementation_index: number
+  }) => Promise<contract.AssembledTransaction<{ wasm_hash: Buffer } | undefined>>
   deploy_plain_pool: (
-    params: {
+    args: {
       deployer: StellarAddress
-      name: string
-      symbol: string
-      coins: StellarContract[]
-      a: bigint
-      fee: bigint
-      offpeg_fee_multiplier: bigint
-      ma_exp_time: bigint
-      implementation_idx: number
-      asset_types: 0[]
-      methods: []
-      oracles: StellarContract[]
+      params: {
+        name: string
+        symbol: string
+        coins: StellarContract[]
+        amplification: bigint
+        fee: bigint
+        offpeg_fee_multiplier: bigint
+        ma_exp_time: bigint
+        wasm_hash: Buffer
+        asset_types: 0[]
+        methods: []
+        oracles: StellarContract[]
+      }
     },
     options: { simulate: false },
-  ) => Promise<contract.AssembledTransaction<contract.Result<StellarContract>>>
+  ) => Promise<contract.AssembledTransaction<contract.Result<PoolDeployment>>>
 }
 
 /**
@@ -78,7 +85,7 @@ const isPoolDeploymentFootprintConflict = (confirmation: rpc.Api.GetTransactionR
  * https://github.com/stellar/stellar-protocol/blob/master/core/cap-0066.md#allow-resource-fees-to-exceed-uint32
  */
 const sendPoolDeployment = async (
-  transaction: contract.AssembledTransaction<contract.Result<StellarContract>>,
+  transaction: contract.AssembledTransaction<contract.Result<PoolDeployment>>,
   keypair: Keypair,
 ) => {
   const server = new rpc.Server(transaction.options.rpcUrl)
@@ -98,35 +105,38 @@ const sendPoolDeployment = async (
   if (confirmed.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
     throw new Error(`Pool deployment failed: ${confirmed.status}`, { cause: confirmed })
   }
-  return transaction.options.parseResultXdr(assert(confirmed.returnValue, 'Missing pool address')).unwrap()
+  return transaction.options.parseResultXdr(assert(confirmed.returnValue, 'Missing pool address')).unwrap().pool
 }
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
-export const deployTestPool = async (config: TestnetConfig) => {
-  const { factory: factoryAddress, deployer, coins } = config
+export const deployTestPool = async ({ factory: factoryAddress, deployer, coins }: TestnetConfig) => {
   const factory = await contract.Client.from<Factory>({
     contractId: factoryAddress,
     publicKey: deployer.address,
     networkPassphrase: Networks.TESTNET,
     rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
   })
+  const { result: implementation } = await factory.implementation({ coin_count: coins.length, implementation_index: 0 })
+  const { wasm_hash } = assert(implementation, 'Missing pool implementation')
   return retry(
     async () => {
       // Concurrent deployments advance the factory counter, changing the pool address and footprint.
       const transaction = await factory.deploy_plain_pool(
         {
           deployer: deployer.address,
-          name: 'Cypress StableSwap USDX/USDY/USDZ',
-          symbol: 'CY-USDXUSDYUSDZ',
-          coins,
-          a: 100n,
-          fee: 30_000_000n,
-          offpeg_fee_multiplier: 20_000_000_000n,
-          ma_exp_time: 0n,
-          implementation_idx: 0,
-          asset_types: coins.map(() => 0),
-          methods: [],
-          oracles: [],
+          params: {
+            name: 'Cypress StableSwap USDX/USDY/USDZ',
+            symbol: 'CY-USDXUSDYUSDZ',
+            coins,
+            amplification: 100n,
+            fee: 30_000_000n,
+            offpeg_fee_multiplier: 20_000_000_000n,
+            ma_exp_time: 866n,
+            wasm_hash,
+            asset_types: coins.map(() => 0),
+            methods: [],
+            oracles: [],
+          },
         },
         { simulate: false },
       )
