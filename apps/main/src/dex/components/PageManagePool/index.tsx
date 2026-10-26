@@ -9,8 +9,9 @@ import { ReservesCompositionChart } from '@/dex/features/manage-pool/components/
 import { useRefuelPool } from '@/dex/features/manage-pool/queries/pools.query'
 import { RefuelFormTabs } from '@/dex/features/manage-pool/RefuelFormTabs'
 import { useChainId } from '@/dex/hooks/useChainId'
+import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
+import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
-import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import Grid from '@mui/material/Grid'
@@ -18,10 +19,13 @@ import { formatNumber } from '@primitives/number.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { Banner } from '@ui/features/banners/Banner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
-import { constQ, mapQuery } from '@ui/features/queries/util'
+import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
+import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
+import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
@@ -37,6 +41,8 @@ export const ManagePool = () => {
   const chartEnd = Math.floor(useCurrentDate('15m').getTime() / 1000) //  Don't refresh too often as that can reset chart state.
 
   const pool = useRefuelPool({ blockchainId, poolAddress })
+  const tvl = usePoolTvl({ chainId, poolAddress })
+  const volume = usePoolVolume({ chainId, poolAddress })
   const refuelShares = useReadContract({
     address: poolAddress,
     abi: refuelPoolAbi,
@@ -54,14 +60,23 @@ export const ManagePool = () => {
     poolAddress && (
       <DetailPageLayout
         header={
-          <PoolPageHeader
-            chainId={chainId}
-            blockchainId={blockchainId}
-            poolAddress={poolAddress}
+          <PoolDetailsHeader
+            backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
             title={mapQuery(pool, pool => pool.name)}
             tokens={pool.data?.coins.map(constQ)}
-            backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
-            pricesApiPoolData={pool}
+            blockchainId={blockchainId}
+            rightItems={
+              <PoolHeaderMetrics
+                tvl={fallbackQ(
+                  mapQuery(tvl, tvl => amount(tvl)),
+                  mapQuery(pool, pool => amount(pool.tvlUsd)),
+                )}
+                volume24h={fallbackQ(
+                  mapQuery(volume, volume => amount(volume)),
+                  mapQuery(pool, pool => amount(pool.tradingVolume24h)),
+                )}
+              />
+            }
           />
         }
         formTabs={{

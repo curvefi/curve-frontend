@@ -22,6 +22,7 @@ export const PoolInformation = ({ poolAlert, pricesApiPoolData }: PoolInformatio
     poolAddress,
     tokenAddressesAll: { data: tokenAddressesAll },
   } = usePoolContext()
+
   return (
     <Stack sx={stackedCardHeadersSx}>
       <Card size="small">

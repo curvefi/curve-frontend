@@ -12,8 +12,10 @@ export type NetworkSwitchPolicy =
   | {
       type: 'locked'
       /** Optional custom 'error' message to give more context about why network switching would be locked. */
-      toastTitle?: () => string
+      toastTitle?: (networkName?: string) => string
     }
+
+export const NETWORK_SWITCH_UNAVAILABLE = t`Network switching unavailable`
 
 export const ETHEREUM_ONLY_NETWORK_SWITCH: NetworkSwitchPolicy = {
   type: 'locked',
