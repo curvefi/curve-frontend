@@ -15,7 +15,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMax, decimalMinus, decimalNegate } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
@@ -33,7 +33,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   form: UseFormReturn<CollateralForm>
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
   marketType: MarketType
 }) {
   const isOpen = form.isTouched('userCollateral')

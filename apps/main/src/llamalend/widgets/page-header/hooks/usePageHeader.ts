@@ -1,7 +1,7 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
-import { getTokens, getVaultAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
 import { useMarketRates, type MarketRates } from '@/llamalend/queries/market/market-rates.query'
@@ -270,20 +270,12 @@ function useCampaigns({
 }
 
 export const usePageHeaderRates = () => {
-  const {
-    chainId,
-    blockchainId,
-    market,
-    marketQuery,
-    apiMarket,
-    marketType,
-    controllerAddress,
-    controllerAddressQuery,
-  } = useMarketContext()
+  const { chainId, blockchainId, market, marketQuery, apiMarket, marketType } = useMarketContext()
   const vaultAddress = getVaultAddress(market, apiMarket.data)
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
   const snapshot = useMarketSnapshots({
     marketType,
-    controllerAddress: controllerAddressQuery,
+    controllerAddress,
     blockchainId,
     range: { kind: 'limit', limit: RATE_WINDOW },
   })

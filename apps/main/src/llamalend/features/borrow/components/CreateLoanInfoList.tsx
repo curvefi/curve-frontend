@@ -4,7 +4,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { constQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { constQ, mapQuery, q } from '@ui/features/queries/util'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
@@ -26,7 +26,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   form,
 }: {
   marketType: MarketType
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
   params: CreateLoanFormQueryParams<ChainId>
   values: CreateLoanForm
   isControllerApproved: boolean | undefined

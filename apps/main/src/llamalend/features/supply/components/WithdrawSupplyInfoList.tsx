@@ -8,7 +8,7 @@ import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMinus, decimalNegate } from '@ui/lib/decimal'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
@@ -16,7 +16,7 @@ type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
   params: WithdrawParams<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<WithdrawForm>
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
 }
 
 export function WithdrawSupplyInfoList<ChainId extends IChainId>({

@@ -53,7 +53,7 @@ export const MarketRateCurveChart = () => {
     blockchainId,
     marketId,
     marketQuery,
-    controllerAddressQuery,
+    controllerAddress,
     apiMarket,
     tokens: { borrowToken },
   } = useMarketContext()
@@ -61,7 +61,11 @@ export const MarketRateCurveChart = () => {
   const {
     design: { Color },
   } = useTheme()
-  const rateCurve = useRateCurve({ blockchainId, controllerAddress: controllerAddressQuery })
+  // the rate curve query stays idle until the market provides the controller address
+  const rateCurve = combineQueries(
+    [q(useRateCurve({ blockchainId, contractAddress: controllerAddress })), fallbackQ(marketQuery, apiMarket)],
+    rateCurve => rateCurve,
+  )
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalDebt = fallbackQ(
     q(useMarketTotalDebt({ chainId, marketId })),

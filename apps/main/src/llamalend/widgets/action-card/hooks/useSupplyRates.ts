@@ -62,14 +62,14 @@ export function useSupplyRates<ChainId extends IChainId>(
     params: { chainId, marketId, userAddress },
     controllerAddress,
     reservesDelta,
-  }: { params: UserMarketParams<ChainId>; reservesDelta?: Decimal | null; controllerAddress: QueryProp<Address> },
+  }: { params: UserMarketParams<ChainId>; reservesDelta?: Decimal | null; controllerAddress: Address | undefined },
   enabled: boolean,
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
   const snapshotsQuery = useMarketSnapshots({ marketType: MarketType.Lend, controllerAddress, blockchainId, enabled })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
-  const campaignsQuery = useMarketCampaignsByAddress({ blockchainId, address: controllerAddress.data })
+  const campaignsQuery = useMarketCampaignsByAddress({ blockchainId, address: controllerAddress })
 
   // Without `reservesDelta`, `rates`/`netSupplyApy` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netSupplyApy] = addNetApy(

@@ -7,7 +7,7 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { type QueriesResults } from '@tanstack/react-query'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { getLendingVaultsOptions } from '../market-list/lending-vaults'
 import { getMintMarketOptions } from '../market-list/mint-markets'
@@ -21,7 +21,7 @@ export const useMarketOverview = ({
   marketType,
 }: {
   blockchainId: Chain | undefined
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
   marketType: MarketType
 }) =>
   q(
@@ -36,7 +36,7 @@ export const useMarketOverview = ({
       combine: useCallback(
         (results: QueriesResults<OverviewQueries>) => {
           const [lendingVaults, mintMarkets] = results
-          const marketOverview = maybes([blockchainId, controllerAddress.data], (blockchainId, controllerAddress) =>
+          const marketOverview = maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
             marketType === MarketType.Lend
               ? maybe(
                   lendingVaults.data?.find(
@@ -53,8 +53,7 @@ export const useMarketOverview = ({
           )
 
           return {
-            // the overview is picked by controller address, so report its loading and error too
-            ...combineQueryState(...results, controllerAddress),
+            ...combineQueryState(...results),
             data: maybe(marketOverview, ({ createdAt, totalBorrowers }) => ({
               deployedDays: Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS),
               totalBorrowers,

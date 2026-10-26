@@ -20,7 +20,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { chainId, marketId, controllerAddressQuery, marketType } = useMarketContext<ChainId>()
+  const { chainId, marketId, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -50,7 +50,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
-          controllerAddress={controllerAddressQuery}
+          controllerAddress={controllerAddress}
           marketType={marketType}
         />
       }

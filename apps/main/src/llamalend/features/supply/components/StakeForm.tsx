@@ -17,7 +17,7 @@ type StakeFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainId>
 const TEST_ID_PREFIX = 'supply-stake'
 
 export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps<ChainId>) => {
-  const { chainId, controllerAddressQuery } = useMarketContext<ChainId>()
+  const { chainId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.blockchainId
 
@@ -49,7 +49,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
           form={form}
           params={params}
           tokens={{ borrowToken }}
-          controllerAddress={controllerAddressQuery}
+          controllerAddress={controllerAddress}
         />
       }
     >

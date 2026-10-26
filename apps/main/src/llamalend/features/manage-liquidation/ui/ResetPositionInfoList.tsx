@@ -14,7 +14,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketType } from '@evm-ui/types/market'
 import type { Address, Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMax, decimalMinus } from '@ui/lib/decimal'
 
 export function ResetPositionInfoList<ChainId extends IChainId>({
@@ -27,7 +27,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   params: ResetParams<ChainId>
   values: ResetForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
   marketType: MarketType
 }) {
   const debtReduction = getResetDebtReduction(values)

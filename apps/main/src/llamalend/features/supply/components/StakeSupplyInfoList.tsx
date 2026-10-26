@@ -7,7 +7,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
@@ -16,7 +16,7 @@ type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeFormParams<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<StakeForm>
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
 }
 
 export function StakeSupplyInfoList<ChainId extends IChainId>({

@@ -15,7 +15,7 @@ type WithdrawFormProps<ChainId extends IChainId> = { networks: NetworkDict<Chain
 const TEST_ID_PREFIX = 'supply-withdraw'
 
 export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFormProps<ChainId>) => {
-  const { chainId, marketId, controllerAddressQuery } = useMarketContext<ChainId>()
+  const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -42,7 +42,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
           form={form}
           params={params}
           tokens={{ borrowToken }}
-          controllerAddress={controllerAddressQuery}
+          controllerAddress={controllerAddress}
         />
       }
     >

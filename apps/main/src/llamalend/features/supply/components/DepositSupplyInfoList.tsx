@@ -9,7 +9,7 @@ import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalSum } from '@ui/lib/decimal'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
@@ -17,7 +17,7 @@ type DepositSupplyInfoListProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<DepositForm>
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
 }
 
 export function DepositSupplyInfoList<ChainId extends IChainId>({

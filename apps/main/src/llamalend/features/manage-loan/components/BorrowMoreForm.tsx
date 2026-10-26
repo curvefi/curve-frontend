@@ -35,7 +35,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
-  const { chainId, controllerAddressQuery, marketType } = useMarketContext<ChainId>()
+  const { chainId, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -83,7 +83,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
-          controllerAddress={controllerAddressQuery}
+          controllerAddress={controllerAddress}
           form={form}
           params={params}
           values={values}

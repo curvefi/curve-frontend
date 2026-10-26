@@ -18,9 +18,9 @@ const { Spacing } = SizesAndSpaces
 const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
 
 export const MarketAdvancedDetails = () => {
-  const { chainId, marketId, marketQuery, marketType, apiMarket, controllerAddressQuery } = useMarketContext()
+  const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
-    useAdvancedDetailsData({ chainId, marketQuery, marketId, marketType, apiMarket, controllerAddressQuery })
+    useAdvancedDetailsData({ chainId, marketQuery, marketId, marketType, apiMarket })
   const isLendMarket = marketType === MarketType.Lend
 
   return (

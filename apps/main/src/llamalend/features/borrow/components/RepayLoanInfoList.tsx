@@ -88,7 +88,7 @@ export function RepayLoanInfoList({
   prices,
   prevPrices,
 }: {
-  controllerAddress: QueryProp<Address>
+  controllerAddress: Address | undefined
   marketType: MarketType
   params: RepayParams
   values: RepayFormData

@@ -71,7 +71,7 @@ export const RepayForm = <ChainId extends IChainId>({
   collateralEvents: QueryProp<UserCollateralEvents>
   isInSoftLiquidation?: boolean
 }) => {
-  const { chainId, controllerAddressQuery, market, tokens: marketTokens, marketType } = useMarketContext<ChainId>()
+  const { chainId, controllerAddress, market, tokens: marketTokens, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -137,7 +137,7 @@ export const RepayForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
-          controllerAddress={controllerAddressQuery}
+          controllerAddress={controllerAddress}
           marketType={marketType}
           form={form}
           params={params}
