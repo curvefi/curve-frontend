@@ -1,7 +1,8 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
-import type { BandsData } from '@/llamalend/features/bands-chart/types'
+import { isUserBand } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
+import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
@@ -66,7 +67,7 @@ type ChartAndActivityLayoutProps = {
     legendSets: LegendItem[]
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
-  bands: QueryProp<BandsData>
+  bands: QueryProp<ChartDataPoint[]>
   activity: LlammaActivityProps
 }
 
@@ -195,7 +196,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
   }, [])
 
   const showBands = isBandsVisible
-  const hasUserBands = !!bands.data?.userBandsBalances.length
+  const hasUserBands = !!bands.data?.some(isUserBand)
   const collateralSymbol = collateralToken?.symbol
   const borrowSymbol = borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
@@ -259,6 +260,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
           {showBands && (
             <BandsChart
               bands={bands}
+              oraclePrice={chart.ohlcChartProps.latestOraclePrice}
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
@@ -303,7 +305,7 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
   }, [])
 
   const showBands = isBandsVisible
-  const hasUserBands = !!bands.data?.userBandsBalances.length
+  const hasUserBands = !!bands.data?.some(isUserBand)
   const collateralSymbol = collateralToken?.symbol
   const borrowSymbol = borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
@@ -368,6 +370,7 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
         {showBands && (
           <BandsChart
             bands={bands}
+            oraclePrice={chart.ohlcChartProps.latestOraclePrice}
             collateralToken={collateralToken}
             borrowToken={borrowToken}
             newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}

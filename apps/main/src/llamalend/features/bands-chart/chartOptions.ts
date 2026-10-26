@@ -20,7 +20,7 @@ const getOverlayPrices = (rangeOverlays: BandsRangeOverlay[]) =>
 
 const getPriceMin = (
   chartData: ChartDataPoint[],
-  oraclePrice: string | undefined,
+  oraclePrice: number | undefined,
   rangeOverlays: BandsRangeOverlay[],
 ) => {
   const rangePrices = getOverlayPrices(rangeOverlays)
@@ -34,7 +34,7 @@ const getPriceMin = (
 
 const getPriceMax = (
   chartData: ChartDataPoint[],
-  oraclePrice: string | undefined,
+  oraclePrice: number | undefined,
   rangeOverlays: BandsRangeOverlay[],
 ) => {
   const rangePrices = getOverlayPrices(rangeOverlays)
@@ -281,7 +281,7 @@ export const getChartOptions = (
   chartData: ChartDataPoint[],
   derived: DerivedChartData,
   rangeOverlays: BandsRangeOverlay[],
-  oraclePrice: string | undefined,
+  oraclePrice: number | undefined,
   palette: BandsChartPalette,
   tooltipFormatter: (params: unknown) => HTMLElement | string,
 ): BandsChartOption => {

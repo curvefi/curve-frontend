@@ -47,7 +47,7 @@ const createRangeBoundaryLines = (rangeOverlay: BandsRangeOverlay, xStart: numbe
 ]
 
 const createOracleReferenceLine = (
-  oraclePrice: string | undefined,
+  oraclePrice: number | undefined,
   xStart: number,
   xEnd: number,
   palette: BandsChartPalette,
@@ -65,7 +65,7 @@ export const generateRangeBoundaryLines = (
 ): HorizontalLine[] => createRangeBoundaryLines(rangeOverlay, xStart, xEnd)
 
 export const generateOracleReferenceLines = (
-  oraclePrice: string | undefined,
+  oraclePrice: number | undefined,
   xStart: number,
   xEnd: number,
   palette: BandsChartPalette,

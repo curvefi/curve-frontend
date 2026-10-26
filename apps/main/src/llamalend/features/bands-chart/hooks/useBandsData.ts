@@ -1,18 +1,13 @@
 import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { useMarketBandsBalances } from '@/llamalend/queries/bands/market-bands-balances.query'
 import { useUserBandsBalances } from '@/llamalend/queries/bands/user-bands-balances.query'
 import { useMarketLiquidationBand } from '@/llamalend/queries/market/market-liquidation-band.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { maybe } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type QueryProp } from '@ui/features/queries/util'
-
-const EMPTY_BANDS: FetchedBandsBalances[] = []
 
 export const useBandsData = ({
   chainId,
@@ -32,25 +27,9 @@ export const useBandsData = ({
     enabled,
   )
   const marketBands = useMarketBandsBalances({ chainId, marketId, liquidationBand: liquidationBand.data }, enabled)
-  const oraclePrice = useMarketOraclePrice({ chainId, marketId }, enabled)
 
   const chartData = useProcessedBandsData({ marketBandsBalances: marketBands.data, userBandsBalances: userBands.data })
-  const { isLoading, error } = combineQueryState(
-    market,
-    loanExists,
-    liquidationBand,
-    userBands,
-    marketBands,
-    oraclePrice,
-  )
+  const { isLoading, error } = combineQueryState(market, loanExists, liquidationBand, userBands, marketBands)
 
-  return q({
-    data: maybe(chartData, chartData => ({
-      chartData,
-      userBandsBalances: userBands.data ?? EMPTY_BANDS,
-      oraclePrice: oraclePrice.data,
-    })),
-    isLoading,
-    error,
-  })
+  return q({ data: chartData, isLoading, error })
 }
