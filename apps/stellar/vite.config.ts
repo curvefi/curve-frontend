@@ -63,6 +63,7 @@ export default defineConfig(({ command }) => ({
       { find: '@api-server', replacement: resolve(__dirname, '../../packages/api-server/src') },
       { find: '@merkl-api', replacement: resolve(__dirname, '../merkl-api/src') },
       { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src') },
+      { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],

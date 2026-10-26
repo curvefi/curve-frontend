@@ -7,10 +7,10 @@ import { StellarUrls } from '@/stellar/routes/routes'
 import { FetchError } from '@primitives/fetch.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { PoolRow } from '@ui/features/pool-list/types'
-import { getPoolRates, litePoolToRowData } from '@ui/features/pool-list/utils'
+import { getPoolRates, isActiveLitePool, litePoolToRowData } from '@ui/features/pool-list/utils'
 import { constQ, useMappedQuery } from '@ui/features/queries/util'
 
-export function usePoolList({ network }: NetworkQuery) {
+export function usePoolList({ network, activePoolsFilter }: NetworkQuery & { activePoolsFilter: boolean }) {
   const { chainId } = STELLAR_NETWORKS[network]
   const { data, isLoading, error, isFetching, refetch: refetchList } = useLitePoolList({ chainId })
   const {
@@ -25,6 +25,7 @@ export function usePoolList({ network }: NetworkQuery) {
       ({ pools }): PoolRow[] =>
         pools
           .map(litePoolToRowData)
+          .filter(pool => !activePoolsFilter || isActiveLitePool(pool))
           .map(pool => ({
             ...pool,
             ...getPoolRates(pool, campaigns[pool.address]),
@@ -35,7 +36,7 @@ export function usePoolList({ network }: NetworkQuery) {
             hasVyperVulnerability: undefined,
             url: StellarUrls.pool({ network, pool: asStellarContract(pool.address) }),
           })),
-      [chainId, network, campaigns],
+      [activePoolsFilter, chainId, network, campaigns],
     ),
   )
 

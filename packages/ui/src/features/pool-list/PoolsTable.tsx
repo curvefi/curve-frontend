@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { ExpandedState } from '@tanstack/react-table'
 import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
+import { PoolsChips } from '@ui/features/pool-list/chips/PoolsChips'
 import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
 import { PoolsFilters } from '@ui/features/pool-list/filters/PoolsFilters'
 import { PoolsFiltersCollapsible } from '@ui/features/pool-list/filters/PoolsFiltersCollapsible'
@@ -53,7 +54,7 @@ export const PoolsTable = ({
   isConnected,
   connect,
   isLite,
-  filters: { globalFilter, columnFilters, filterProps, onSearch, resetFilters, searchText },
+  filters: { activePoolsFilter, globalFilter, columnFilters, filterProps, onSearch, resetFilters, searchText },
   pagination: { onPaginationChange, pagination },
   sorting: { onSortingChange, sortField, sorting, sortOptions },
   isFetching,
@@ -121,7 +122,7 @@ export const PoolsTable = ({
             ? {
                 title: t`Can't find what you're looking for?`,
                 description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
-                button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
+                button: { label: t`Reset filters`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
               }
             : {
                 title: t`We couldn't find any results.`,
@@ -142,20 +143,19 @@ export const PoolsTable = ({
           testIdPrefix={LOCAL_STORAGE_KEY}
           searchText={searchText}
           onSearch={onSearch}
-          collapsibleFilters={
-            isLite
-              ? undefined
-              : {
-                  collapsible: (
-                    <PoolsFiltersCollapsible
-                      hasActiveFilters={hasActiveFilters}
-                      resetFilters={resetFilters}
-                      {...filterProps}
-                    />
-                  ),
-                  hasActiveFilters,
-                }
-          }
+          chips={<PoolsChips isLite={isLite} activePoolsFilter={activePoolsFilter} />}
+          collapsibleFilters={{
+            collapsible: (
+              <PoolsFiltersCollapsible
+                activePoolsFilter={activePoolsFilter}
+                isLite={isLite}
+                hasActiveFilters={hasActiveFilters}
+                resetFilters={resetFilters}
+                {...filterProps}
+              />
+            ),
+            hasActiveFilters,
+          }}
           filterChip={
             !isLite && (
               <TableFiltersChip

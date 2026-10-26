@@ -253,7 +253,7 @@ const LITE_POOL_SHOWCASE = createLitePoolFixture({
 const LITE_POOL_LOW_TVL = createLitePoolFixture({
   address: '0x9999999999999999999999999999999999999999',
   name: 'V2 Low TVL',
-  tvl: 1,
+  tvl: Number.MIN_VALUE,
   gauge_address: address('2009'),
   gauge_crv_apr: [1, 2.5],
   coins: [
@@ -262,12 +262,14 @@ const LITE_POOL_LOW_TVL = createLitePoolFixture({
   ],
 })
 
-const LITE_POOL_FIXTURES = [LITE_POOL_SHOWCASE, LITE_POOL_LOW_TVL]
+const LITE_POOL_ZERO_TVL = createLitePoolFixture({ address: address('1107'), name: 'Lite Zero TVL', tvl: 0 })
+const LITE_POOL_FIXTURES = [LITE_POOL_SHOWCASE, LITE_POOL_LOW_TVL, LITE_POOL_ZERO_TVL]
 
 export const V2_POOL_FIXTURES = {
   ...FULL_V2_POOL_FIXTURES,
   lite: LITE_POOL_SHOWCASE,
   liteLowTvl: LITE_POOL_LOW_TVL,
+  liteZeroTvl: LITE_POOL_ZERO_TVL,
 } as const
 
 const DEX_MERKL_OPPORTUNITIES = [
@@ -401,9 +403,18 @@ const mockPoolList = () =>
     const pagination = Number(url.searchParams.get('pagination') ?? 50)
     const sortBy = url.searchParams.get('sort_by')
     const sortDirection = url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc'
+    const minTvl = url.searchParams.get('min_tvl')
+    const maxTvl = url.searchParams.get('max_tvl')
+    const maxCreationDate = url.searchParams.get('max_creation_date')
     const matching = orderBy(
       Object.values(FULL_V2_POOL_FIXTURES)
         .filter(pool => pool.chain_id === chainId)
+        .filter(pool => minTvl == null || pool.tvl_usd >= Number(minTvl))
+        .filter(pool => maxTvl == null || pool.tvl_usd <= Number(maxTvl))
+        .filter(
+          pool =>
+            maxCreationDate == null || (pool.creation_date != null && pool.creation_date <= Number(maxCreationDate)),
+        )
         .filter(
           pool =>
             !search ||
