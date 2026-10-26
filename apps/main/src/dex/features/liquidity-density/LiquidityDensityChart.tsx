@@ -16,7 +16,7 @@ import { LegendLine } from '@ui/features/charts/LegendSet'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { Reds } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
@@ -166,11 +166,10 @@ export const LiquidityDensityChart = ({
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
         <EvmChartStateWrapper
-          query={profile}
+          query={mapQuery(profile, ({ samples }) => samples)}
           height={CHART_HEIGHT}
-          emptyState={{
-            isEmpty: profile => !profile.samples.length,
-            ...(isConnected
+          emptyState={
+            isConnected
               ? {
                   description: t`Liquidity density is unavailable for this pool.`,
                   testId: 'liquidity-density-unavailable',
@@ -180,8 +179,8 @@ export const LiquidityDensityChart = ({
                   description: t`Please connect your wallet to view liquidity density.`,
                   testId: 'liquidity-density-connect-wallet',
                   button: { type: 'connect-wallet' },
-                }),
-          }}
+                }
+          }
           errorState={{ description: t`Unable to fetch liquidity density.` }}
         >
           {() => (
