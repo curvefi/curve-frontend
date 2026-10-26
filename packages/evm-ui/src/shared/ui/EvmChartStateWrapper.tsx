@@ -6,11 +6,14 @@ import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletB
 
 export const EvmChartStateWrapper = <T,>(
   props: Omit<ChartStateWrapperProps<T>, 'userAddress' | keyof ConnectionProps>,
-) => (
-  <ChartStateWrapper
-    {...props}
-    {...pick(useConnection(), 'isConnecting', 'isConnected')}
-    userAddress={useConnection().address}
-    connect={useWallet().connect}
-  />
-)
+) => {
+  const connection = useConnection()
+  return (
+    <ChartStateWrapper
+      {...props}
+      {...pick(connection, 'isConnecting', 'isConnected')}
+      userAddress={connection.address}
+      connect={useWallet().connect}
+    />
+  )
+}
