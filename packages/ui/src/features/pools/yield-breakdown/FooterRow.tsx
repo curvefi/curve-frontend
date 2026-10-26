@@ -44,13 +44,7 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
         {total.error ? (
           <ErrorIconButton error={total.error} size="small" />
         ) : (
-          <Tooltip
-            title={totalTooltip ? t`Total APR` : undefined}
-            body={totalTooltip}
-            placement="top"
-            clickable
-            mobileDrawer
-          >
+          <Tooltip title={totalTooltip && t`Total APR`} body={totalTooltip} placement="top" clickable mobileDrawer>
             <Stack>
               <Typography variant="tableCellValueStrong">{formatNumber(total.data, 'percent.rate')}</Typography>
               {!!maxBoostTotal && maxBoostTotal != total.data && (
