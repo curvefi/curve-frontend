@@ -32,4 +32,4 @@ export const useMarketMobileFormDrawer = useStableChannel
 
 export const useNewPoolForms = useBetaChannel
 
-export const useLiquidityDensityChart = useBetaChannel
+export const useLiquidityDensityChart = useStableChannel
