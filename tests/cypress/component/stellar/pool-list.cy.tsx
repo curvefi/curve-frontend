@@ -10,7 +10,8 @@ import { PoolColumnId } from '@ui/features/pool-list/columns/columns.enum'
 import { queryClient } from '@ui/features/queries/query-client'
 
 const NETWORK = 'stellar-testnet'
-const POOL_LIST_URL = StellarUrls.poolList({ network: NETWORK })
+// Testnet pools have no USD prices, so include pools with zero TVL.
+const POOL_LIST_URL = `${StellarUrls.poolList({ network: NETWORK })}?active=no`
 const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', TIMEOUTS['curveLite.pools'])
 const search = () => cy.get('[data-testid="table-text-search-dex-pool-list"] input')
 
@@ -60,7 +61,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('sorts the list by TVL', () => {
-      mountStellarApp(`${POOL_LIST_URL}?sort=${PoolColumnId.NetRate}`)
+      mountStellarApp(`${POOL_LIST_URL}&sort=${PoolColumnId.NetRate}`)
       poolLinks().should('exist')
       openDrawer(breakpoint, 'sort')
       if (breakpoint === 'mobile') {

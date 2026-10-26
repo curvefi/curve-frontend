@@ -31,7 +31,8 @@ const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
 const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
-const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 60_000n // ≈ $0.0011 at the time of writing; TTL renewal headroom.
+/** TTL renewal can become payable after simulation. Keep the 20% buffer for larger simulated fees. */
+const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 600_000n
 
 export const initWallet = (onError: (error: Error) => void) => {
   const modules = defaultModules()
@@ -92,18 +93,17 @@ const getMinResourceFeeBuffer = ({ readOnly, readWrite }: xdr.LedgerFootprint) =
 }
 
 /** Prepare the fee budget without mutating the SDK's original simulation or built transaction. */
-export function getStellarTransactionFees<T>(transaction: StellarTransaction<T>) {
-  const { transactionData } = transaction.simulationData
-  const resourceFee = transactionData.resourceFee
+export function getStellarTransactionFees<T>({ options, simulationData: { transactionData } }: StellarTransaction<T>) {
+  const { resources, resourceFee } = transactionData
   // Round the proportional buffer up to a whole stroop and apply at least the per-entry minimum.
   const proportionalBuffer = (resourceFee * RESOURCE_FEE_BUFFER_PERCENT + 99n) / 100n
-  const minResourceFeeBuffer = getMinResourceFeeBuffer(transactionData.resources.footprint)
+  const minResourceFeeBuffer = getMinResourceFeeBuffer(resources.footprint)
   const bufferedResourceFee =
     resourceFee + (proportionalBuffer > minResourceFeeBuffer ? proportionalBuffer : minResourceFeeBuffer)
-  // The SDK fee option is inclusion-only. Its built.fee includes resources and is mutated by sign().
-  const inclusionFee = BigInt(transaction.options.fee ?? BASE_FEE)
+  // The SDK fee option is inclusion-only.
+  const inclusionFee = BigInt(options.fee ?? BASE_FEE)
   const sorobanData = new SorobanDataBuilder(transactionData).setResourceFee(bufferedResourceFee).build()
-  return { fee: (inclusionFee + bufferedResourceFee).toString(), inclusionFee: inclusionFee.toString(), sorobanData }
+  return { fee: (inclusionFee + bufferedResourceFee).toString(), sorobanData }
 }
 
 export async function simulateContractCall<T>(
@@ -135,18 +135,13 @@ export const readContract = async <T>(
   args: ContractArgument[] = [],
 ) => (await simulateContractCall<T>(network, contractId, method, args)).result
 
-/**
- * SDK sign() adds the resource fee twice: https://github.com/stellar/js-stellar-sdk/issues/1357
- * Preserve its refreshed timeout, but explicitly restore our inclusion fee and buffered resources before asking the wallet to sign.
- */
-const fixResourceFee = <T>(
+/** Apply our TTL buffer while preserving the SDK's refreshed timeout. */
+const applyResourceFeeBuffer = <T>(
   envelope: string,
-  transaction: contract.AssembledTransaction<T>,
-  fee: string,
+  transaction: StellarTransaction<T>,
   sorobanData: xdr.SorobanTransactionData,
 ) =>
   TransactionBuilder.cloneFrom(new Transaction(envelope, transaction.options.networkPassphrase), {
-    fee,
     sorobanData,
   }).build()
 
@@ -154,13 +149,12 @@ export async function sendStellarTransaction<T>(
   transaction: StellarTransaction<T>,
   signTransaction: contract.SignTransaction = StellarWalletsKit.signTransaction.bind(StellarWalletsKit),
 ) {
-  // Capture the budget once, before SDK sign() rebuilds its transaction; retries reuse it.
-  const { sorobanData, inclusionFee } = getStellarTransactionFees(transaction)
+  const { sorobanData } = getStellarTransactionFees(transaction)
   const sent = await retry(
     () =>
       transaction.signAndSend({
         signTransaction: (envelope, options) => {
-          const tx = fixResourceFee(envelope, transaction, inclusionFee, sorobanData)
+          const tx = applyResourceFeeBuffer(envelope, transaction, sorobanData)
           return signTransaction(tx.toXdr(), options)
         },
         watcher: {}, // we could change the watcher to log submission and confirmation events
