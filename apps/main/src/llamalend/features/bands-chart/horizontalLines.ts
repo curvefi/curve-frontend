@@ -1,8 +1,4 @@
-import {
-  CHART_LINE_DASH_PATTERNS,
-  CHART_LINE_WIDTHS,
-  type ChartLineDashPattern,
-} from '@evm-ui/shared/ui/Chart/chart.utils'
+import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS, type ChartLineDashPattern } from '@ui/features/charts/chart.utils'
 import type { BandsChartPalette, BandsRangeOverlay } from './types'
 
 /**

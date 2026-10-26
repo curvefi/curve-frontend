@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import { useWallet } from '@evm-ui/features/connect-wallet'
-import { ChartStateWrapper, type ChartStateWrapperProps } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 import { pick } from '@primitives/objects.utils'
+import { ChartStateWrapper, type ChartStateWrapperProps } from '@ui/features/charts/ChartStateWrapper'
 import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 
 export const EvmChartStateWrapper = <T,>(

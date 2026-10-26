@@ -1,7 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
-import { ChartStateWrapper, type ChartEmptyState } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
+import { ChartStateWrapper, type ChartEmptyState } from '@ui/features/charts/ChartStateWrapper'
 import { q } from '@ui/features/queries/util'
 
 const HEIGHT = 240

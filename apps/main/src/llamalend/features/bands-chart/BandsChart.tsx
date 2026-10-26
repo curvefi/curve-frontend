@@ -9,10 +9,10 @@ import type {
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
 import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
-import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box, useTheme } from '@mui/material'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
+import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { getChartOptions } from './chartOptions'
