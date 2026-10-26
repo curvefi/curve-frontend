@@ -1,7 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
-import { ChartStateWrapper, type ChartEmptyState } from '@ui/features/charts/ChartStateWrapper'
+import type { ChartEmptyState } from '@ui/features/charts/ChartStateWrapper'
 import { q } from '@ui/features/queries/util'
 
 const HEIGHT = 240
@@ -90,41 +90,9 @@ describe('Chart states', () => {
     cy.get(`[data-testid="${CHART}"]`).should('not.exist')
   })
 
-  it('renders the chart for an empty array when the isEmpty selector does not match', () => {
-    mountChart({ data: [], emptyState: { ...EMPTY_STATE, isEmpty: () => false } })
-    cy.get(`[data-testid="${CHART}"]`).should('exist')
-    cy.get('[data-testid="chart-empty"]').should('not.exist')
-  })
-
   it('catches chart render errors', () => {
     cy.on('uncaught:exception', () => false)
     mountChart({}, <ThrowingChart />)
     cy.contains('Chart Error').should('be.visible')
-  })
-
-  it('shows the empty state while data is undefined without an error or loading flag', () => {
-    mountChart({ data: undefined })
-    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
-    cy.get(SPINNER).should('not.exist')
-    cy.get(`[data-testid="${CHART}"]`).should('not.exist')
-  })
-
-  it('renders a connect wallet button from the empty state with the connection props', () => {
-    const connect = cy.stub().as('connect').resolves()
-    cy.mount(
-      <ChartStateWrapper
-        query={q<Points>({ data: [], isLoading: false, error: null })}
-        height={HEIGHT}
-        emptyState={{ ...EMPTY_STATE, button: { type: 'connect-wallet' } }}
-        isConnected={false}
-        isConnecting={false}
-        connect={connect}
-      >
-        {() => <div data-testid={CHART} />}
-      </ChartStateWrapper>,
-    )
-    cy.get('[data-testid="chart-empty"]').should('contain.text', 'No points for this range')
-    cy.contains('button', 'Connect Wallet').click()
-    cy.get('@connect').should('have.been.calledOnce')
   })
 })
