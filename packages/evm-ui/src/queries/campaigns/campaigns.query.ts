@@ -7,7 +7,7 @@ import { type QueriesResults } from '@tanstack/react-query'
 import type { Campaigns } from '@ui/features/campaigns/types'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
-import { useMappedQuery } from '@ui/features/queries/util'
+import { type Query, useMappedQuery } from '@ui/features/queries/util'
 import { getCampaignsExternalOptions } from './campaigns-external.query'
 import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl.query'
 import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl.query'
@@ -42,31 +42,25 @@ export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], 
   )
 })
 
-type UseCampaignsOptions = { blockchainId?: string; enabled?: boolean }
+type UseCampaignsOptions = { blockchainId?: string }
 
-type CampaignQueries = [
+type PoolCampaignQueries = [
   ReturnType<typeof getCampaignsExternalOptions>,
   ReturnType<typeof getCampaignsPoolsMerklOptions>,
-  ReturnType<typeof getCampaignsMarketsMerklOptions>,
-]
-const queries: CampaignQueries = [
-  getCampaignsExternalOptions({}),
-  getCampaignsPoolsMerklOptions({}),
-  getCampaignsMarketsMerklOptions({}),
 ]
 
 /**
- * Hook for accessing all campaigns, optionally filtered by network.
+ * Hook for accessing the DEX pool campaigns, optionally filtered by network.
  *
  * @param blockchainId - Optional chain identifier to filter campaigns by network
  *
  * @example
  * ```typescript
- * // Get all campaigns from all networks
- * const { data: allCampaigns } = useCampaigns()
+ * // Get campaigns from all networks
+ * const { data: allCampaigns } = usePoolCampaigns()
  *
  * // Get campaigns filtered by network
- * const { data: ethereumCampaigns } = useCampaigns({
+ * const { data: ethereumCampaigns } = usePoolCampaigns({
  *   blockchainId: 'ethereum'
  * })
  *
@@ -74,42 +68,66 @@ const queries: CampaignQueries = [
  * const poolCampaigns = ethereumCampaigns['0x123...'] || []
  * ```
  */
-export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
+export const usePoolCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
   useQueries({
-    queries,
+    queries: [getCampaignsExternalOptions({}), getCampaignsPoolsMerklOptions({})],
     combine: useCallback(
-      ([external, merklPools, merklMarkets]: QueriesResults<CampaignQueries>) => ({
-        ...combineQueryState(external, merklPools, merklMarkets),
+      ([external, merklPools]: QueriesResults<PoolCampaignQueries>) => ({
+        ...combineQueryState(external, merklPools),
         // Combine campaigns with an optional network filter
-        data: combineCampaigns([external.data, merklPools.data, merklMarkets.data], blockchainId),
+        data: combineCampaigns([external.data, merklPools.data], blockchainId),
       }),
       [blockchainId],
     ),
   })
 
-/**
- * Hook for accessing campaigns for a specific campaign address, optionally filtered by network.
- *
- * @param address - Address to get campaigns for
- * @param blockchainId - Optional chain identifier to filter campaigns by network
- *
- * @example
- * ```typescript
- * const { data: campaigns, isLoading } = useCampaignByAddress({
- *   address: '0x123...',
- *   blockchainId: 'ethereum'
- * })
- * ```
- */
-export const useCampaignsByAddress = ({
-  address,
-  blockchainId,
-}: { address: Address | Nullish } & UseCampaignsOptions) => {
+type MarketCampaignQueries = [
+  ReturnType<typeof getCampaignsExternalOptions>,
+  ReturnType<typeof getCampaignsMarketsMerklOptions>,
+]
+
+/** Like {@link usePoolCampaigns}, for the LlamaLend market campaigns */
+export const useMarketCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
+  useQueries({
+    queries: [getCampaignsExternalOptions({}), getCampaignsMarketsMerklOptions({})],
+    combine: useCallback(
+      ([external, merklMarkets]: QueriesResults<MarketCampaignQueries>) => ({
+        ...combineQueryState(external, merklMarkets),
+        data: combineCampaigns([external.data, merklMarkets.data], blockchainId),
+      }),
+      [blockchainId],
+    ),
+  })
+
+const useCampaignsByAddress = (campaigns: Query<Campaigns>, address: Address | Nullish) => {
   const query = useMappedQuery(
-    useCampaigns({ blockchainId, enabled: Boolean(address) }),
+    campaigns,
     useCallback(campaigns => address && campaigns[getAddress(address)], [address]),
   )
 
   // TODO: Temporarily map undefined data to [], needs a proper fix
   return { ...query, data: query.data ?? [] }
 }
+
+type UseCampaignsByAddressOptions = { address: Address | Nullish } & UseCampaignsOptions
+
+/**
+ * Hook for accessing the campaigns of a DEX pool, optionally filtered by network.
+ *
+ * @param address - Address to get campaigns for
+ * @param blockchainId - Optional chain identifier to filter campaigns by network
+ *
+ * @example
+ * ```typescript
+ * const { data: campaigns, isLoading } = usePoolCampaignsByAddress({
+ *   address: '0x123...',
+ *   blockchainId: 'ethereum'
+ * })
+ * ```
+ */
+export const usePoolCampaignsByAddress = ({ address, blockchainId }: UseCampaignsByAddressOptions) =>
+  useCampaignsByAddress(usePoolCampaigns({ blockchainId }), address)
+
+/** Like {@link usePoolCampaignsByAddress}, for a LlamaLend controller, vault or AMM */
+export const useMarketCampaignsByAddress = ({ address, blockchainId }: UseCampaignsByAddressOptions) =>
+  useCampaignsByAddress(useMarketCampaigns({ blockchainId }), address)
