@@ -1,4 +1,4 @@
-import { startDevServer } from '@curvefi/api-server'
+import { startDevServer } from '@api-server/server'
 import { createMerklServer } from './server'
 
 void startDevServer({

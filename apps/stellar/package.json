@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "2.7.1",
+    "@curvefi/api-server": "workspace:^",
     "@curvefi/ui": "workspace:^",
     "@tanstack/react-query": "5.104.3",
     "@tanstack/react-query-devtools": "5.104.3",

@@ -18,6 +18,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
+    "@curvefi/api-server": "workspace:^",
     "@curvefi/evm-ui": "workspace:^",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",

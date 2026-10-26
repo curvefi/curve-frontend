@@ -4,6 +4,8 @@
     "types": ["node"],
     "paths": {
       "@/stellar/*": ["./src/*"],
+      "@api-server/*": ["../../packages/api-server/src/*"],
+      "@merkl-api/*": ["../merkl-api/src/*"],
       "@ui": ["../../packages/ui/src/index.ts"],
       "@ui/*": ["../../packages/ui/src/*"],
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],

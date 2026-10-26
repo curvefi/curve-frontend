@@ -1,4 +1,4 @@
-import { createApiServer } from '@curvefi/api-server'
+import { createApiServer } from '@api-server/server'
 import { getOpportunities } from './routes/opportunities'
 import { OpportunitiesOpts, OPPORTUNITIES_PATH } from './routes/opportunities.schemas'
 
