@@ -53,9 +53,10 @@ const createOracleReferenceLine = (
   palette: BandsChartPalette,
 ): HorizontalLine[] => {
   if (!oraclePrice) return []
-  const price = Number(oraclePrice)
 
-  return [createHorizontalLine(xStart, xEnd, price, palette.oraclePriceLineColor, DEFAULT_ORACLE_PRICE_LINE_STYLE)]
+  return [
+    createHorizontalLine(xStart, xEnd, oraclePrice, palette.oraclePriceLineColor, DEFAULT_ORACLE_PRICE_LINE_STYLE),
+  ]
 }
 
 export const generateRangeBoundaryLines = (

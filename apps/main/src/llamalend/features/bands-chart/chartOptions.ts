@@ -24,7 +24,7 @@ const getPriceMin = (
   rangeOverlays: BandsRangeOverlay[],
 ) => {
   const rangePrices = getOverlayPrices(rangeOverlays)
-  const oraclePriceValues = oraclePrice ? [Number(oraclePrice)] : []
+  const oraclePriceValues = notFalsy(oraclePrice)
   const min = Math.min(...chartData.map(d => d.p_down), ...rangePrices, ...oraclePriceValues)
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
@@ -38,7 +38,7 @@ const getPriceMax = (
   rangeOverlays: BandsRangeOverlay[],
 ) => {
   const rangePrices = getOverlayPrices(rangeOverlays)
-  const oraclePriceValues = oraclePrice ? [Number(oraclePrice)] : []
+  const oraclePriceValues = notFalsy(oraclePrice)
   const max = Math.max(...chartData.map(d => d.p_up), ...rangePrices, ...oraclePriceValues)
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
