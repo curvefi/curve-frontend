@@ -1,5 +1,6 @@
 import type { PoolAddressParams, PoolUrlParams } from '@/dex/types/main.types'
 import { createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router'
+import { ETHEREUM_ONLY_NETWORK_SWITCH } from '@ui/features/layout/switch-chain/switch-policies'
 import { redirectTo } from '@ui/hooks/router'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 import { rootRoute } from './root.routes'
@@ -36,6 +37,10 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/compensation',
+    staticData: { networkSwitch: ETHEREUM_ONLY_NETWORK_SWITCH },
+    loader: ({ params: { network } }) => {
+      if (network !== 'ethereum') redirectTo('/dex/ethereum/compensation')
+    },
     component: PageCompensation,
     head: () => ({ meta: [{ title: 'Compensation - Curve' }] }),
     ...layoutProps,
@@ -54,12 +59,14 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools',
+    staticData: { networkSwitch: { type: 'same-page', clearSearchParams: ['page'] } },
     component: PagePoolList,
     head: () => ({ meta: [{ title: 'Pools - Curve' }] }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/pools/$poolIdOrAddress',
+    staticData: { networkSwitch: { type: 'locked' } },
     loader: ({ params: { network, poolIdOrAddress } }: { params: PoolUrlParams }) => {
       if (network !== 'ethereum') return
       const legacyPoolId = LEGACY_POOLS[poolIdOrAddress.toLowerCase()]
@@ -74,6 +81,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools/$poolAddress/manage-pool',
+    staticData: { networkSwitch: { type: 'locked' } },
     component: PageManagePool,
     head: ({ params: { poolAddress } }: { params: PoolAddressParams }) => ({
       meta: [{ title: `Curve - Pool - ${poolAddress} - Manage` }],
@@ -87,6 +95,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/swap',
+    staticData: { networkSwitch: { type: 'same-page', clearSearchParams: ['from', 'to'] } },
     component: PageRouterSwap,
     head: () => ({ meta: [{ title: 'Swap - Curve' }] }),
     ...layoutProps,

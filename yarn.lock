@@ -5349,9 +5349,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:^17.0.0":
-  version: 17.2.0
-  resolution: "@stellar/stellar-sdk@npm:17.2.0"
+"@stellar/stellar-sdk@npm:17.3.0, @stellar/stellar-sdk@npm:^17.0.0":
+  version: 17.3.0
+  resolution: "@stellar/stellar-sdk@npm:17.3.0"
   dependencies:
     "@exodus/bytes": "npm:^1.15.1"
     "@noble/ed25519": "npm:^3.1.0"
@@ -5369,7 +5369,7 @@ __metadata:
     stellar-contract-bindings-typescript: bin/stellar-contract-bindings-typescript
     stellar-js: bin/stellar-js
     stellar-sdk: bin/stellar-js
-  checksum: 10c0/ac05910e33ce82951295c1325c084b2aa310dccee0b3286e2f93381b73e02989221867f16bfbc0836f7a966d991e5959f891351bdd16da3b72eb7be6a4255ca9
+  checksum: 10c0/9182e3675931368a345118c7e69a27c855bbf14ce580ddd35295d83dadd2624871a074744408ab66a43d0c7ab1390e953027950d1163d3736d279cb97fa0376d
   languageName: node
   linkType: hard
 
@@ -14530,6 +14530,7 @@ __metadata:
     "@creit.tech/stellar-wallets-kit": "npm:2.7.1"
     "@curvefi/ui": "workspace:^"
     "@sentry/vite-plugin": "npm:11.8.0"
+    "@stellar/stellar-sdk": "npm:17.3.0"
     "@tanstack/react-query": "npm:5.104.3"
     "@tanstack/react-query-devtools": "npm:5.104.3"
     "@tanstack/react-router": "npm:1.170.45"
