@@ -69,7 +69,7 @@ export const ChartStateWrapper = <T,>({
       />
     </Box>
   ) : data === undefined || isEmpty(data) ? (
-    <Stack sx={{ alignItems: 'center', justifyContent: 'center', padding: Spacing.md, minHeight: height }}>
+    <Stack sx={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1, padding: Spacing.md, minHeight: height }}>
       <EmptyStateCard {...connectionProps} {...emptyState} title={emptyState.title ?? t`No chart data found`} />
     </Stack>
   ) : (
