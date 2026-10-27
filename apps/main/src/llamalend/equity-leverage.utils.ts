@@ -15,11 +15,14 @@ import {
 const getPositionValue = ({ collateral, stablecoin }: UserState, oraclePrice: Decimal) =>
   decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
 
+/** What the position returns if closed now at the oracle price, in the borrowed token */
+export const getEquity = (position: UserState, oraclePrice: Decimal) =>
+  decimalMinus(getPositionValue(position, oraclePrice), position.debt)
+
 /** How many times its equity the position is worth, or null when the equity is zero. */
 export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => {
-  const value = getPositionValue(position, oraclePrice)
-  const equity = decimalMinus(value, position.debt)
-  return decimalEqual(equity, ZERO) ? null : decimalDiv(value, equity)
+  const equity = getEquity(position, oraclePrice)
+  return decimalEqual(equity, ZERO) ? null : decimalDiv(getPositionValue(position, oraclePrice), equity)
 }
 
 /** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. Null when unknown. */
@@ -33,7 +36,7 @@ export const getEquityLeverageApr = (
   { collateralYieldApr, borrowedYieldApr, borrowRewardsApr }: MarketYields,
 ) => {
   const { collateral, stablecoin, debt } = position
-  const equity = decimalMinus(getPositionValue(position, oraclePrice), debt)
+  const equity = getEquity(position, oraclePrice)
   if (collateralYieldApr == null || borrowApr == null || decimalEqual(equity, ZERO)) return null
   const earned = decimalSum(
     decimalMultiply(collateral, oraclePrice, collateralYieldApr),
