@@ -25,7 +25,7 @@ type LlammaOhlcChartStateModelParams = {
   llammaAddress: Address | undefined
   marketId: string | undefined
   network: Chain | undefined
-  oraclePrice: string | undefined
+  oraclePrice: Decimal | undefined
   previewPrices: Range<Decimal> | undefined
   userPrices: QueryProp<Range<Decimal> | null>
 }
@@ -145,7 +145,7 @@ export const useLlammaOhlcChartStateModel = ({
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
-    latestOraclePrice: maybe(oraclePrice, Number),
+    latestOraclePrice: oraclePrice,
   }
 
   return { ohlcChartProps, chartMode, isLoading, selectedChartKey, setTimeOption, legendSets }

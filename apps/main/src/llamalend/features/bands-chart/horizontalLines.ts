@@ -1,3 +1,4 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS, type ChartLineDashPattern } from '@ui/features/charts/chart.utils'
 import type { BandsChartPalette, BandsRangeOverlay } from './types'
@@ -48,14 +49,20 @@ const createRangeBoundaryLines = (rangeOverlay: BandsRangeOverlay, xStart: numbe
 ]
 
 const createOracleReferenceLine = (
-  oraclePrice: number | undefined,
+  oraclePrice: Decimal | undefined,
   xStart: number,
   xEnd: number,
   palette: BandsChartPalette,
 ): HorizontalLine[] =>
   notFalsy(
     oraclePrice &&
-      createHorizontalLine(xStart, xEnd, oraclePrice, palette.oraclePriceLineColor, DEFAULT_ORACLE_PRICE_LINE_STYLE),
+      createHorizontalLine(
+        xStart,
+        xEnd,
+        Number(oraclePrice),
+        palette.oraclePriceLineColor,
+        DEFAULT_ORACLE_PRICE_LINE_STYLE,
+      ),
   )
 
 export const generateRangeBoundaryLines = (
@@ -65,7 +72,7 @@ export const generateRangeBoundaryLines = (
 ): HorizontalLine[] => createRangeBoundaryLines(rangeOverlay, xStart, xEnd)
 
 export const generateOracleReferenceLines = (
-  oraclePrice: number | undefined,
+  oraclePrice: Decimal | undefined,
   xStart: number,
   xEnd: number,
   palette: BandsChartPalette,

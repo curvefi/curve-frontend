@@ -2,6 +2,7 @@ import { CandleChart } from '@evm-ui/features/candle-chart/CandleChart'
 import { useChartPalette } from '@evm-ui/features/candle-chart/hooks/useChartPalette'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { ChartSelections } from '@ui/features/charts/ChartHeader'
 import type { ChartEmptyState } from '@ui/features/charts/ChartStateWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -27,7 +28,7 @@ export type OhlcChartProps = {
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   selectChartList: ChartSelections[]
-  latestOraclePrice?: number
+  latestOraclePrice?: Decimal
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
