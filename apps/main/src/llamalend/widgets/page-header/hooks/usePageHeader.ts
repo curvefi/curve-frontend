@@ -1,3 +1,4 @@
+import { useMarketCampaignsByAddress } from '@/llamalend/features/market-advanced-information/hooks/useMarketCampaignsByAddress'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
@@ -22,7 +23,6 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
-import { useMarketCampaignsByAddress } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'

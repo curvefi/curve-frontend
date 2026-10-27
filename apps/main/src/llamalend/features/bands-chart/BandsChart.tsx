@@ -3,17 +3,17 @@ import { useMemo, memo } from 'react'
 import type {
   BandsChartOption,
   BandsChartToken,
+  BandsData,
   BandsPriceRange,
   BandsRangeOverlay,
-  ChartDataPoint,
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
-import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box, useTheme } from '@mui/material'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -23,23 +23,17 @@ import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 import { TooltipContent } from './TooltipContent'
 
 type BandsChartProps = {
+  bands: QueryProp<BandsData>
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken
-  chartData: ChartDataPoint[] | undefined
-  error: Error | null
-  isLoading: boolean
-  userBandsBalances: FetchedBandsBalances[]
   newLiquidationRange?: LlammaLiquididationRange | null
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
-  oraclePrice?: string
   height: number
   priceRange?: { min: number; max: number }
 }
 
-type BandsChartContentProps = Omit<BandsChartProps, 'chartData' | 'error' | 'isLoading' | 'height'> & {
-  chartData: ChartDataPoint[]
-}
+type BandsChartContentProps = BandsData & Omit<BandsChartProps, 'bands' | 'height'>
 
 // These fields are named from the LLAMMA band orientation, not from screen position:
 // lowerBandPriceDown is the visual upper/current-top boundary, and upperBandPriceUp
@@ -141,58 +135,28 @@ const BandsChartContent = ({
  * - User price line markers for start and end of liquidation range
  * - Oracle price line marker
  */
-const BandsChartComponent = ({
-  collateralToken,
-  borrowToken,
-  chartData,
-  error,
-  isLoading,
-  userBandsBalances,
-  newLiquidationRange,
-  liqRangeCurrentVisible = true,
-  liqRangeNewVisible = true,
-  oraclePrice,
-  height,
-  priceRange,
-}: BandsChartProps) => {
-  const isChartDataPending = !error && chartData === undefined
-
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        fontVariantNumeric: 'tabular-nums',
-        width: '100%',
-        minHeight: `${height}px`,
-        height,
-        minWidth: 0,
-      }}
+const BandsChartComponent = ({ bands, height, ...overlay }: BandsChartProps) => (
+  <Box
+    sx={{
+      display: 'flex',
+      fontVariantNumeric: 'tabular-nums',
+      width: '100%',
+      minHeight: `${height}px`,
+      height,
+      minWidth: 0,
+    }}
+  >
+    <EvmChartStateWrapper
+      query={bands}
+      height={height}
+      isEmpty={bands.data?.chartData.length === 0}
+      emptyState={{ description: t`No active bands for this market` }}
+      errorState={{ description: t`Failed to load bands chart data` }}
     >
-      <EvmChartStateWrapper
-        height={height}
-        isLoading={isLoading || isChartDataPending}
-        isEmpty={chartData?.length === 0}
-        emptyMessage={t`No active bands for this market`}
-        error={error}
-        errorMessage={t`Failed to load bands chart data`}
-      >
-        {chartData != null && (
-          <BandsChartContent
-            collateralToken={collateralToken}
-            borrowToken={borrowToken}
-            chartData={chartData}
-            userBandsBalances={userBandsBalances}
-            newLiquidationRange={newLiquidationRange}
-            liqRangeCurrentVisible={liqRangeCurrentVisible}
-            liqRangeNewVisible={liqRangeNewVisible}
-            oraclePrice={oraclePrice}
-            priceRange={priceRange}
-          />
-        )}
-      </EvmChartStateWrapper>
-    </Box>
-  )
-}
+      {data => <BandsChartContent {...data} {...overlay} />}
+    </EvmChartStateWrapper>
+  </Box>
+)
 
 /**
  * Memoized export to prevent unnecessary re-renders when parent components update

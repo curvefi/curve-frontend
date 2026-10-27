@@ -1,20 +1,19 @@
-import type { ComponentProps } from 'react'
 import { useConnection } from 'wagmi'
 import { useWallet } from '@evm-ui/features/connect-wallet'
-import { ChartStateWrapper } from '@ui/features/charts/ChartStateWrapper'
+import { pick } from '@primitives/objects.utils'
+import { ChartStateWrapper, type ChartStateWrapperProps } from '@ui/features/charts/ChartStateWrapper'
 import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 
-export const EvmChartStateWrapper = (
-  props: Omit<ComponentProps<typeof ChartStateWrapper>, 'userAddress' | keyof ConnectionProps>,
+export const EvmChartStateWrapper = <T,>(
+  props: Omit<ChartStateWrapperProps<T>, 'userAddress' | keyof ConnectionProps>,
 ) => {
-  const { address, isConnected, isConnecting } = useConnection()
+  const connection = useConnection()
   return (
     <ChartStateWrapper
       {...props}
-      userAddress={address}
+      {...pick(connection, 'isConnecting', 'isConnected')}
+      userAddress={connection.address}
       connect={useWallet().connect}
-      isConnected={isConnected}
-      isConnecting={isConnecting}
     />
   )
 }
