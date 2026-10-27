@@ -9,7 +9,7 @@ import { getPointsCampaignRows } from '@ui/features/points-campaigns/points-camp
 import { PointsCampaignsTable } from '@ui/features/points-campaigns/PointsCampaignsTable'
 import { CampaignTooltipContent } from '@ui/features/pool-list/cells/RewardIcons'
 import type { YieldBreakdownRow } from '@ui/features/pools/yield-breakdown/types'
-import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdownCard'
+import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdown'
 import { constQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { usePoolCampaigns } from './usePoolCampaigns'
