@@ -1,6 +1,6 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { ethAddress, getAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
@@ -407,8 +407,8 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
         getMintMarketOptions({}, enabled),
         getBadDebtLendMarketsOptions(enabled),
         getBadDebtMintMarketsOptions(enabled),
-        getCampaignsExternalOptions({}, enabled),
-        getCampaignsMarketsMerklOptions({}, enabled),
+        getCampaignsExternalOptions(getAddress, enabled),
+        getCampaignsMarketsMerklOptions(getAddress, enabled),
         getFavoriteMarketOptions({}, enabled),
       ],
       [enabled],
