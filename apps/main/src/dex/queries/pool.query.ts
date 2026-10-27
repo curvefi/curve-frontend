@@ -5,6 +5,7 @@ import type { IExternalPoolData, IFactoryPoolType } from '@curvefi/api/lib/inter
 import type { PoolType, V2PoolDetails } from '@curvefi/prices-api/pools'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
@@ -55,6 +56,7 @@ const toPoolData = (pool: V2PoolDetails): IExternalPoolData => {
 async function loadPool({ chainId, poolAddress }: PoolQuery, curveApi: CurveApi, visiting = new Set<string>()) {
   const pool = tryGetPool(poolAddress, curveApi)
   if (pool) return pool
+  if (isLiteChain(chainId)) return null
 
   if (visiting.has(poolAddress)) throw new Error(`Circular base pool dependency for pool ${poolAddress}`)
   visiting.add(poolAddress)
