@@ -1,3 +1,4 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { formatChartAxisNumber } from '@ui/features/charts/chart.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
@@ -20,11 +21,11 @@ const getOverlayPrices = (rangeOverlays: BandsRangeOverlay[]) =>
 
 const getPriceMin = (
   chartData: ChartDataPoint[],
-  oraclePrice: string | undefined,
+  oraclePrice: Decimal | undefined,
   rangeOverlays: BandsRangeOverlay[],
 ) => {
   const rangePrices = getOverlayPrices(rangeOverlays)
-  const oraclePriceValues = oraclePrice ? [Number(oraclePrice)] : []
+  const oraclePriceValues = notFalsy(oraclePrice).map(Number)
   const min = Math.min(...chartData.map(d => d.p_down), ...rangePrices, ...oraclePriceValues)
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
@@ -34,11 +35,11 @@ const getPriceMin = (
 
 const getPriceMax = (
   chartData: ChartDataPoint[],
-  oraclePrice: string | undefined,
+  oraclePrice: Decimal | undefined,
   rangeOverlays: BandsRangeOverlay[],
 ) => {
   const rangePrices = getOverlayPrices(rangeOverlays)
-  const oraclePriceValues = oraclePrice ? [Number(oraclePrice)] : []
+  const oraclePriceValues = notFalsy(oraclePrice).map(Number)
   const max = Math.max(...chartData.map(d => d.p_up), ...rangePrices, ...oraclePriceValues)
   // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
   const bandDelta = chartData[0].p_down - chartData[0].p_up
@@ -281,7 +282,7 @@ export const getChartOptions = (
   chartData: ChartDataPoint[],
   derived: DerivedChartData,
   rangeOverlays: BandsRangeOverlay[],
-  oraclePrice: string | undefined,
+  oraclePrice: Decimal | undefined,
   palette: BandsChartPalette,
   tooltipFormatter: (params: unknown) => HTMLElement | string,
 ): BandsChartOption => {

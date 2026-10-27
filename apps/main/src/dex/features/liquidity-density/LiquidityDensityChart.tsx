@@ -16,7 +16,7 @@ import { LegendLine } from '@ui/features/charts/LegendSet'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { Reds } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
@@ -57,8 +57,8 @@ export const LiquidityDensityChart = ({
   const { data: profileData, isLoading: profileLoading, error: profileError } = profile
   const { data: oracle, isLoading: oracleLoading, error: oracleError } = oraclePrice
   const { data: center, isLoading: centerLoading, error: centerError } = centerPrice
-  const { isConnected } = useConnection()
   const theme = useTheme()
+  const { isConnected } = useConnection()
   const { Chart, Color, Layer } = theme.design
   const { spot, samples } = profileData ?? {}
   const priceLabel = t`USD per ${inputSymbol}`
@@ -166,9 +166,8 @@ export const LiquidityDensityChart = ({
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
         <EvmChartStateWrapper
-          query={profile}
+          query={mapQuery(profile, ({ samples }) => samples)}
           height={CHART_HEIGHT}
-          isEmpty={!samples?.length}
           emptyState={
             isConnected
               ? {
@@ -179,6 +178,7 @@ export const LiquidityDensityChart = ({
                   title: t`Connect wallet`,
                   description: t`Please connect your wallet to view liquidity density.`,
                   testId: 'liquidity-density-connect-wallet',
+                  button: { type: 'connect-wallet' },
                 }
           }
           errorState={{ description: t`Unable to fetch liquidity density.` }}

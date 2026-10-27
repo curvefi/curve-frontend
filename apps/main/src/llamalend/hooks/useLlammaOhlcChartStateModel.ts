@@ -25,7 +25,7 @@ type LlammaOhlcChartStateModelParams = {
   llammaAddress: Address | undefined
   marketId: string | undefined
   network: Chain | undefined
-  oraclePrice: string | undefined
+  oraclePrice: Decimal | undefined
   previewPrices: Range<Decimal> | undefined
   userPrices: QueryProp<Range<Decimal> | null>
 }
@@ -135,7 +135,6 @@ export const useLlammaOhlcChartStateModel = ({
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart.md,
     series: q({ data: { ohlcData, oraclePriceData }, isLoading, error: currentError }),
-    isEmpty: oraclePoolsChartQuery.data?.ohlcData?.length === 0,
     emptyState: { description: emptyMessage },
     liquidationRange: selectedLiqRange.data,
     timeOption,
@@ -146,7 +145,7 @@ export const useLlammaOhlcChartStateModel = ({
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
-    latestOraclePrice: maybe(oraclePrice, Number),
+    latestOraclePrice: oraclePrice,
   }
 
   return { ohlcChartProps, chartMode, isLoading, selectedChartKey, setTimeOption, legendSets }

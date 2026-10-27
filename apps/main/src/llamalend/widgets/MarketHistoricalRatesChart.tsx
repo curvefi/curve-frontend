@@ -23,7 +23,7 @@ import { addMovingAverages, CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern 
 import { ChartFooter } from '@ui/features/charts/ChartFooter'
 import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
 import type { LegendItem } from '@ui/features/charts/LegendSet'
-import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -110,7 +110,7 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[], now:
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: MarketHistoricalRatesChartProps) => {
-  const { chainId, marketId, controllerAddress, apiMarket } = useMarketContext()
+  const { chainId, marketId, apiMarket } = useMarketContext()
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(() => activeSeriesConfig.map(({ key }) => key))
@@ -142,14 +142,14 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
     ),
   )
 
-  const chartData = useMemo<RateChartPoint[]>(() => {
+  const chartData = mapQuery(ratePoints, (ratePoints): RateChartPoint[] => {
     const cutoff = new Date(dataUpdatedAt.getTime() - TIME_OPTION_MS[timeOption])
     return addMovingAverages(
-      (ratePoints.data ?? []).filter(({ timestamp }) => timestamp >= cutoff.getTime()),
+      ratePoints.filter(({ timestamp }) => timestamp >= cutoff.getTime()),
       d => d.rate,
       d => d.timestamp,
     )
-  }, [ratePoints.data, timeOption, dataUpdatedAt])
+  })
 
   const averageRates = useMappedQuery(
     ratePoints,
@@ -214,7 +214,7 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
-          query={q({ data: chartData, isLoading: snapshots.isLoading || !controllerAddress, error: snapshots.error })}
+          query={chartData}
           height={Height.chart.sm}
           errorState={{ description: t`Unable to fetch historical rates data.` }}
         >
