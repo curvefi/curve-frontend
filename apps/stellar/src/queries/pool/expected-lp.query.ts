@@ -7,7 +7,6 @@ import {
   quoteValidationSuite,
 } from '@/stellar/queries/validation/liquidity.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getSingleCoinWithdrawIndex } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimalRound, fromWei, toBigIntArray, toWeiArray } from '@ui/lib/decimal'
 
@@ -34,7 +33,7 @@ export const {
     maxAmounts,
     lpAmount,
     maxLpAmount,
-    maxWithdrawIndex,
+    isExactBurn,
   }: ExpectedLpParams) =>
     ({
       name: 'calc_token_amount',
@@ -48,7 +47,7 @@ export const {
       maxAmounts: isDeposit ? undefined : maxAmounts,
       lpAmount: isDeposit ? undefined : lpAmount,
       maxLpAmount: isDeposit ? undefined : maxLpAmount,
-      maxWithdrawIndex: isDeposit ? undefined : maxWithdrawIndex,
+      isExactBurn: isDeposit ? undefined : isExactBurn,
     }) as const,
   queryFn: async ({
     network,
@@ -58,10 +57,9 @@ export const {
     isDeposit,
     isBalanced,
     lpAmount,
-    maxLpAmount,
-    maxWithdrawIndex,
+    isExactBurn,
   }: ExpectedLpQuery): Promise<Decimal> => {
-    if (!isDeposit && (isBalanced || getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }) != null)) {
+    if (!isDeposit && (isBalanced || isExactBurn)) {
       return decimalRound(lpAmount!, LP_TOKEN_DECIMALS)
     }
     const quote = fromWei(

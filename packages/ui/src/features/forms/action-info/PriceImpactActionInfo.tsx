@@ -9,7 +9,7 @@ import { getPriceImpactLevel, type PriceImpact, type PriceImpactLevel } from '@u
 
 const { IconSize } = SizesAndSpaces
 
-const getIconColor = (theme: Theme, level: PriceImpactLevel) =>
+const getIconColor = (theme: Theme, level: Exclude<PriceImpactLevel, 'success'>) =>
   ({
     caution: theme.design.Text.TextColors.Feedback.Caution,
     warning: theme.design.Text.TextColors.Feedback.Warning,
@@ -30,7 +30,8 @@ export const PriceImpactActionInfo = ({ priceImpact, ...props }: PriceImpactActi
       label={t`Price impact`}
       valueColor={level ?? undefined}
       valueLeft={
-        level && (
+        level &&
+        level !== 'success' && (
           <ExclamationTriangleIcon
             titleAccess={t`Elevated price impact`}
             sx={{ color: theme => getIconColor(theme, level), width: IconSize.xs, height: IconSize.xs }}
