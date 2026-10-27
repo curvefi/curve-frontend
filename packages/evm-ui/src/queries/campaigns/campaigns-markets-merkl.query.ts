@@ -1,10 +1,24 @@
+import { groupBy } from 'lodash'
+import { Address } from '@primitives/address.utils'
+import { queryOptions } from '@tanstack/react-query'
+import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { fetchMerklRewards } from './merkl'
 
-export const { getQueryOptions: getCampaignsMarketsMerklOptions } = queryFactory({
-  queryKey: () => ({ name: 'campaigns-markets-merkl', version: 1 }) as const,
+const { getQueryOptions } = queryFactory({
+  queryKey: () => ({ name: 'campaigns-markets-merkl', version: 2 }) as const,
   queryFn: async () => await fetchMerklRewards({ mainProtocolId: 'llamalend', test: false, status: 'LIVE' }),
   validationSuite: EmptyValidationSuite,
   category: 'global.campaigns',
 })
+
+export const getCampaignsMarketsMerklOptions = (getAddress: (address: string) => Address, enabled = true) =>
+  queryOptions({
+    ...getQueryOptions({}, enabled),
+    select: (rewards: CampaignRewards[]) =>
+      groupBy(
+        rewards.map(reward => ({ ...reward, address: getAddress(reward.address) })),
+        reward => reward.address,
+      ),
+  })
