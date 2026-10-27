@@ -23,7 +23,7 @@ import { addMovingAverages, CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern 
 import { ChartFooter } from '@ui/features/charts/ChartFooter'
 import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
 import type { LegendItem } from '@ui/features/charts/LegendSet'
-import { fallbackQ, mapQuery, useMappedQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -214,22 +214,23 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={q({ data: chartData, isLoading: snapshots.isLoading || !controllerAddress, error: snapshots.error })}
           height={Height.chart.sm}
-          isLoading={snapshots.isLoading || !controllerAddress}
-          error={snapshots.error}
-          errorMessage={t`Unable to fetch historical rates data.`}
+          errorState={{ description: t`Unable to fetch historical rates data.` }}
         >
-          <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
-            data={chartData}
-            height={Height.chart.sm}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={HistoricalRatesTooltip}
-          />
+          {data => (
+            <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
+              yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={HistoricalRatesTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>
