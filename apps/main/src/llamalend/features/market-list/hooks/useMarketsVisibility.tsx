@@ -1,6 +1,8 @@
 import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
+import { MarketRateType } from '@evm-ui/types/market'
 import { mapRecord } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
 import type { MigrationOptions } from '@ui/features/storage/useStoredState'
@@ -25,6 +27,9 @@ const FILTER_ONLY_COLUMNS = [
   MarketColumnId.Version,
   MarketColumnId.UserEarnings, // hidden until we have a backend
 ]
+
+/** Only in the borrow positions table, which has no column menu, so they stay out of the visibility options */
+const POSITION_PNL_COLUMNS = [MarketColumnId.UserEquity, MarketColumnId.UserPnl]
 
 /** Rate columns whose saved visibility resets to the new defaults, since the net/total rates are now optional. */
 const RESET_VISIBILITY_COLUMNS = [MarketColumnId.BorrowRate, MarketColumnId.NetBorrowRate, MarketColumnId.NetSupplyRate]
@@ -58,13 +63,16 @@ export const getMarketsColumnVariant = (
 export const useMarketsVisibility = (title: string, sorting: SortingState, variant: MarketColumnVariant) => {
   const isMobile = useIsMobile()
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as MarketColumnId
+  const showPositionPnl = useLlamalendPositionPnl() && variant === MarketRateType.Borrow
   const visibilitySettings = useVisibilitySettings(title, MARKETS_COLUMN_OPTIONS, variant, migration)
   const columnVisibility = useMemo(
     () => ({
       ...(isMobile ? createMarketsMobileColumns(sortField) : visibilitySettings.columnVisibility),
-      ...Object.fromEntries(FILTER_ONLY_COLUMNS.map(id => [id, false])),
+      ...Object.fromEntries(
+        [...FILTER_ONLY_COLUMNS, ...(showPositionPnl ? [] : POSITION_PNL_COLUMNS)].map(id => [id, false]),
+      ),
     }),
-    [isMobile, sortField, visibilitySettings.columnVisibility],
+    [isMobile, showPositionPnl, sortField, visibilitySettings.columnVisibility],
   )
 
   return { sortField, ...visibilitySettings, columnVisibility }

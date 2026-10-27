@@ -1,6 +1,8 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
+import { getPositionCashFlowsOptions } from '@/llamalend/features/user-position-history/queries/position-cash-flows'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
+import type { PositionCashFlows } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
@@ -39,6 +41,7 @@ const normalizeMarketStats = (stats: BorrowStats) => {
      * During soft liquidation part of the deposited collateral is converted into the borrow token.
      */
     borrowToken: collateralBorrowTokenAmount,
+    oraclePrice: stats.oraclePrice,
   }
 }
 
@@ -47,11 +50,13 @@ export type MarketStats = ReturnType<typeof normalizeMarketStats>
 type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
+  cashFlows: QueryProp<PositionCashFlows>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
+  cashFlows: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -94,13 +99,31 @@ const createTokenPriceEntries = (markets: LlamaMarket[]) =>
  * The summary, table cells, and TanStack accessors consume the same query results. Rebuilding the enriched row array
  * as queries resolve invalidates TanStack's row value cache so asynchronously loaded values are re-sorted.
  */
-export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address | undefined): LlamaMarketRow[] => {
+export const useLlamaMarketRows = (
+  markets: LlamaMarket[],
+  userAddress: Address | undefined,
+  { isPositionPnlEnabled }: { isPositionPnlEnabled: boolean },
+): LlamaMarketRow[] => {
   const statsEntries = useMemo(() => createStatsEntries(markets, userAddress), [markets, userAddress])
   const tokenPriceEntries = useMemo(() => createTokenPriceEntries(markets), [markets])
 
   const statsQueries = useQueries({
     queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
     combine: results => results.map(result => q<BorrowStats>(result)),
+  })
+  const cashFlowsQueries = useQueries({
+    queries: useMemo(
+      () =>
+        statsEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
+          getPositionCashFlowsOptions(
+            type,
+            { contractAddress: controllerAddress, userAddress, blockchainId },
+            isPositionPnlEnabled,
+          ),
+        ),
+      [statsEntries, userAddress, isPositionPnlEnabled],
+    ),
+    combine: results => results.map(result => q<PositionCashFlows>(result)),
   })
   const tokenPriceQueries = useQueries({
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
@@ -109,6 +132,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
+    const cashFlowsByMarket = new Map(statsEntries.map(({ market }, index) => [market, cashFlowsQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
@@ -127,8 +151,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
             collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
           },
+          cashFlows: cashFlowsByMarket.get(market) ?? DISABLED_Q,
         },
       }
     })
-  }, [markets, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [markets, statsEntries, statsQueries, cashFlowsQueries, tokenPriceEntries, tokenPriceQueries])
 }

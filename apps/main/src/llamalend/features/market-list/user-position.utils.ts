@@ -1,10 +1,14 @@
 import { sum } from 'lodash'
+import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { isLegacyMintController } from '@/llamalend/markets.constants'
+import { getPositionPnl } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -37,6 +41,41 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 }
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+
+const getUserEquity = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data, ({ collateral, borrowToken, borrowed, oraclePrice }) => {
+    const price = decimal(oraclePrice)!
+    const position = { collateral: decimal(collateral)!, stablecoin: decimal(borrowToken)!, debt: decimal(borrowed)! }
+    return { equity: getEquity(position, price), oraclePrice: price }
+  })
+
+/** Equity in USD, at the borrowed token's USD rate */
+export const getUserEquityUsd = (row: LlamaMarketRow) =>
+  maybes(
+    [getUserEquity(row)?.equity, row.positionQueries.prices.borrowed.data],
+    (equity, rate) => Number(equity) * rate,
+  )
+
+/** PNL of the open borrow position, undefined until its stats and collateral events load */
+const getUserPnl = (row: LlamaMarketRow) =>
+  maybes([getUserEquity(row), row.positionQueries.cashFlows.data], ({ equity, oraclePrice }, cashFlows) =>
+    getPositionPnl({
+      equity,
+      oraclePrice,
+      cashFlows,
+      hasRoe: !isLegacyMintController(row.blockchainId, row.controllerAddress),
+    }),
+  )
+
+/** ROE in the collateral token, in percent: the PNL column sorts by it */
+export const getUserPnlRoe = (row: LlamaMarketRow) => maybe(getUserPnl(row)?.collateral?.roe, Number)
+
+/** PNL in USD, from the collateral-token PNL at the collateral's USD rate */
+export const getUserPnlUsd = (row: LlamaMarketRow) =>
+  maybes(
+    [getUserPnl(row)?.collateral?.pnl, row.positionQueries.prices.collateral.data],
+    (pnl, rate) => Number(pnl) * rate,
+  )
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied

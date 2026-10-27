@@ -8,6 +8,7 @@ import {
 import { useLlamaMarketRows, type LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useLlamaMarkets, type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { resetMintMarkets, resetAllUserMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
+import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import type { Address } from '@primitives/address.utils'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
@@ -20,7 +21,8 @@ export const useMarketsTable = (address: Address | undefined) => {
     userAddress: address,
     enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
   })
-  const marketRows = useLlamaMarketRows(marketsQuery.data?.markets ?? EMPTY_MARKETS, address)
+  const isPositionPnlEnabled = useLlamalendPositionPnl()
+  const marketRows = useLlamaMarketRows(marketsQuery.data?.markets ?? EMPTY_MARKETS, address, { isPositionPnlEnabled })
   const tableQuery = useMappedQuery(
     marketsQuery,
     useCallback(
