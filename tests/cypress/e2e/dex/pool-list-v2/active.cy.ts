@@ -8,7 +8,7 @@ testCases.forEach(([width, height, breakpoint]) => {
   it(`toggles Active on (${breakpoint}, ${width}x${height}) without a filter bar or refetching Lite pools`, () => {
     setupDexPoolListV2Mocks()
     visitV2PoolList({ network: 'taiko', viewport: [width, height] })
-    const chip = () => cy.get('[data-testid="chip-active"]')
+    const chip = () => cy.get('[data-testid="chip-active"]:visible')
     const zeroTvlPool = () => cy.get(`[data-testid="table-row-link-${V2_POOL_FIXTURES.liteZeroTvl.address}"]`)
 
     chip().should('be.visible').and('have.attr', 'aria-pressed', 'true')

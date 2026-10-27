@@ -16,7 +16,7 @@ import { t } from '@ui/lib/i18n'
 import { ChainList, type ChainListOption } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
-import type { NetworkSwitchPolicy } from './switch-policies'
+import { NETWORK_SWITCH_UNAVAILABLE, type NetworkSwitchPolicy } from './switch-policies'
 
 const { IconSize } = SizesAndSpaces
 
@@ -44,7 +44,7 @@ export const ChainSwitcher = ({ networkSwitch, supportedNetworks, currentNetwork
   const onClick = isLocked
     ? () =>
         showToast({
-          title: networkSwitch.toastTitle?.() ?? t`Network switching unavailable`,
+          title: networkSwitch.toastTitle?.(currentNetwork?.name) ?? NETWORK_SWITCH_UNAVAILABLE,
           severity: 'warning',
           testId: 'alert-eth-only',
         })

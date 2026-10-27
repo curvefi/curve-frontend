@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -12,10 +13,12 @@ import type { YieldBreakdownRow } from './types'
 export const YieldBreakdown = ({
   maxBoostTotal,
   total,
+  totalTooltip,
   rows,
 }: {
   maxBoostTotal: QueryProp<number>
   total: QueryProp<number>
+  totalTooltip?: ReactNode
   rows: QueryProp<YieldBreakdownRow[]>
 }) => {
   const isMobile = useIsMobile()
@@ -33,7 +36,12 @@ export const YieldBreakdown = ({
         table={table}
         footerRow={
           (rows.data?.length ?? 0) > 1 && (
-            <FooterRow visibleColumns={table.getVisibleLeafColumns()} maxBoostTotal={maxBoostTotal} total={total} />
+            <FooterRow
+              visibleColumns={table.getVisibleLeafColumns()}
+              maxBoostTotal={maxBoostTotal}
+              total={total}
+              totalTooltip={totalTooltip}
+            />
           )
         }
       />
