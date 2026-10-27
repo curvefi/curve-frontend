@@ -3,7 +3,6 @@ import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stella
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import { getSingleCoinWithdrawIndex } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
 
@@ -18,13 +17,13 @@ export const {
     amounts,
     decimals,
     account,
-    isBalanced,
+    mode,
     maximumBurn,
     supply,
     maxAmounts,
     lpAmount,
     maxLpAmount,
-    maxWithdrawIndex,
+    tokenIndex,
     seedLock,
     expected,
     slippage,
@@ -36,13 +35,13 @@ export const {
       amounts,
       decimals,
       account,
-      isBalanced,
+      mode,
       maximumBurn,
       supply,
       maxAmounts,
       lpAmount,
       maxLpAmount,
-      maxWithdrawIndex,
+      tokenIndex,
       seedLock,
       expected,
       slippage,
@@ -51,23 +50,23 @@ export const {
     network,
     pool,
     account,
-    isBalanced,
+    mode,
     amounts,
     decimals,
     maximumBurn,
     lpAmount,
-    maxLpAmount,
-    maxWithdrawIndex,
+    tokenIndex,
     slippage,
   }: WithdrawSimulationQuery) => {
-    if (isBalanced) {
+    // todo: use switch
+    if (mode === 'balanced') {
       return simulateContractCall<bigint[]>(
         network,
         pool,
         'remove_liquidity',
         [
           account,
-          BigInt(toWei(lpAmount, LP_TOKEN_DECIMALS)),
+          BigInt(toWei(lpAmount!, LP_TOKEN_DECIMALS)),
           amounts.map((amount, index) =>
             BigInt(toWei(calculateMinimumReceived(amount!, slippage, decimals[index]), decimals[index])),
           ),
@@ -77,8 +76,7 @@ export const {
         account,
       )
     }
-    const index = getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount })
-    if (index == null) {
+    if (mode === 'unbalanced') {
       return simulateContractCall<bigint>(
         network,
         pool,
@@ -98,9 +96,14 @@ export const {
       'remove_liquidity_one_coin',
       [
         account,
-        BigInt(toWei(lpAmount, LP_TOKEN_DECIMALS)),
-        index,
-        BigInt(toWei(calculateMinimumReceived(amounts[index]!, slippage, decimals[index]), decimals[index])),
+        BigInt(toWei(lpAmount!, LP_TOKEN_DECIMALS)),
+        tokenIndex!,
+        BigInt(
+          toWei(
+            calculateMinimumReceived(amounts[tokenIndex!]!, slippage, decimals[tokenIndex!]),
+            decimals[tokenIndex!],
+          ),
+        ),
         account,
       ],
       account,

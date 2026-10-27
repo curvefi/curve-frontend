@@ -1,4 +1,5 @@
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
+import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
@@ -14,7 +15,7 @@ import { t } from '@ui/lib/i18n'
 import { StellarUrls } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
-import { WithdrawTab } from '../withdraw/WithdrawTab'
+import { OneCoinWithdrawTab } from '../withdraw/OneCoinWithdrawTab'
 import { PoolAdvancedDetails } from './PoolAdvancedDetails'
 import { useLitePool } from './useLitePool'
 import { usePoolComposition } from './usePoolComposition'
@@ -23,7 +24,14 @@ import { UserPosition } from './UserPosition'
 
 const menu = [
   { value: 'deposit', label: t`Deposit`, component: DepositTab },
-  { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    subTabs: [
+      { value: 'withdraw-one-coin', label: t`One coin`, component: OneCoinWithdrawTab },
+      { value: 'withdraw-advanced', label: t`Advanced`, component: AdvancedWithdrawTab },
+    ],
+  },
   { value: 'swap', label: t`Swap`, component: SwapTab },
 ]
 

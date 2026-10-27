@@ -14,11 +14,7 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 type WithdrawMaxQuery = PoolQuery & { index: number; decimals: number; lpAmount: Decimal }
 type WithdrawMaxParams = FieldsOf<WithdrawMaxQuery>
 
-export const {
-  getQueryOptions: getWithdrawMaxAmountQueryOptions,
-  fetchQuery: fetchWithdrawMaxAmount,
-  invalidate: invalidateWithdrawMaxAmount,
-} = queryFactory({
+export const { useQuery: useWithdrawMaxAmount, invalidate: invalidateWithdrawMaxAmount } = queryFactory({
   queryKey: ({ network, pool, index, decimals, lpAmount }: WithdrawMaxParams) =>
     ({ name: 'calc_withdraw_one_coin', network, pool, index, decimals, lpAmount }) as const,
   queryFn: async ({ network, pool, index, decimals, lpAmount }: WithdrawMaxQuery) => {

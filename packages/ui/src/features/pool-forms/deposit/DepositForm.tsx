@@ -52,6 +52,7 @@ export const DepositForm = <TValues extends PoolDepositForm>({
       </Alert>
     )}
     <PoolTokenInputs
+      form={form}
       tokens={tokens}
       disabled={inputsDisabled}
       maxAmounts={maxAmounts}

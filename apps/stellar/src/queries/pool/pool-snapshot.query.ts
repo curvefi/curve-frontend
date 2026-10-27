@@ -1,9 +1,10 @@
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { fetchPoolInfo } from '@/stellar/queries/pool/pool-info.query'
 import type { PoolParams, PoolQuery } from '@/stellar/queries/query-types'
 import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { queryFactory } from '@ui/features/queries/factory'
-import { decimal, decimalDiv, decimalPercent } from '@ui/lib/decimal'
+import { decimal, decimalDiv, decimalPercent, fromWei } from '@ui/lib/decimal'
 
 type PoolSnapshot = {
   active_balances: bigint[]
@@ -25,10 +26,10 @@ type PoolSnapshot = {
   d_time: bigint
 }
 
-export const { useQuery: usePoolSnapshot } = queryFactory({
-  queryKey: ({ network, pool }: PoolParams) => ({ name: 'pool_snapshot', network, pool }) as const,
+export const { useQuery: usePoolSnapshot, invalidate: invalidatePoolSnapshot } = queryFactory({
+  queryKey: ({ network, pool }: PoolParams) => ({ name: 'pool_snapshot', network, pool, version: 2 }) as const,
   queryFn: async ({ network, pool }: PoolQuery) => {
-    const [snapshot, { scales }] = await Promise.all([
+    const [snapshot, { scales, coin_decimals }] = await Promise.all([
       readContract<PoolSnapshot>(network, pool, 'pool_snapshot'),
       fetchPoolInfo({ network, pool }),
     ])
@@ -37,6 +38,8 @@ export const { useQuery: usePoolSnapshot } = queryFactory({
     const amplificationScale = decimal(scales.amplification_scale)!
     const feeDenominator = decimal(scales.fee_denominator)!
     return {
+      active_balances: snapshot.active_balances.map((balance, index) => fromWei(balance, coin_decimals[index])),
+      lp_supply: fromWei(snapshot.lp_supply, LP_TOKEN_DECIMALS),
       A: decimalDiv(decimal(snapshot.current_scaled_amplification)!, amplificationScale),
       initial_A: decimalDiv(decimal(initial_scaled_amplification)!, amplificationScale),
       future_A: decimalDiv(decimal(target_scaled_amplification)!, amplificationScale),
