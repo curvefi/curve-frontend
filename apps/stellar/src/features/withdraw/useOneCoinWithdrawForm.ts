@@ -17,7 +17,6 @@ import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import {
   getOneCoinWithdrawParams,
   type OneCoinWithdrawFormValues,
-  type WithdrawMutation,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
@@ -25,13 +24,14 @@ import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawQuoteParams } from './types'
 import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 
-const userDefaultValues = { amount: undefined, isMax: false }
+const userDefaultValues = { amount: undefined }
 const formOptions = {
   validation: oneCoinWithdrawFormValidationSuite,
   defaultValues: {
     ...userDefaultValues,
     tokenIndex: 0,
-    maxAmount: undefined,
+    maxWithdrawAmount: undefined,
+    poolReserve: undefined,
     maxLpAmount: undefined,
     decimals: undefined,
     supply: undefined,
@@ -46,6 +46,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const snapshot = usePoolSnapshot(poolParams)
+  const { lp_supply: supply, active_balances: reserves } = snapshot.data ?? {}
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
@@ -56,27 +57,24 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index]?.data, lpAmount: lpBalance.data }),
   )
   const max = !maximum.error && maximum.data != null && +maximum.data > 0 ? maximum : undefined
-  const [debounced, isDebouncing] = useFormDebounce<OneCoinWithdrawFormValues, 'amount' | 'isMax'>(
-    values,
-    userDefaultValues,
-  )
+  const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams, account }
   const { expectedLp, maximumLp } = useWithdrawLp(params)
   const priceImpact = useWithdrawPriceImpact(params, expectedLp)
 
   useFormSync(form, {
     decimals: decimalsData,
-    supply: snapshot.data?.lp_supply,
+    supply,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    maxAmount: snapshot.data?.active_balances[index],
+    maxWithdrawAmount: max?.data,
+    poolReserve: reserves?.[index],
     maximumBurn: maximumLp.data,
   })
-  useFormSync(form, { amount: max?.data }, values.isMax && max?.data != null)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])
 
   const {
-    mutate,
+    onSubmit,
     isPending: isWithdrawing,
     error,
   } = useWithdrawMutation({
@@ -98,24 +96,21 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     lpBalance: q(lpBalance),
     priceImpact,
     isPending,
-    inputDisabled: isPending || !tokens?.[index]?.data || !snapshot.data?.lp_supply || !+snapshot.data.lp_supply,
+    inputDisabled: isPending || !tokens?.[index]?.data || !supply || !+supply,
     isDisabled:
       isPending ||
       isDebouncing ||
       !formState.isValid ||
       shouldBlockTransaction(priceImpact) ||
-      (values.isMax && (!max || maximum.isLoading)),
+      (params.mode === 'one-coin' && (!max || maximum.isLoading)),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error,
     formErrors: formState.visibleErrors,
-    onSubmit: form.handleSubmit(values =>
-      mutate({ ...getOneCoinWithdrawParams(values), expected: expectedLp.data } as WithdrawMutation),
-    ),
+    onSubmit: form.handleSubmit(values => onSubmit(getOneCoinWithdrawParams(values))),
     onSlippageChange: (slippage: Decimal) => form.update({ slippage }),
     onCoinChange: (tokenIndex: number) => form.update({ ...userDefaultValues, tokenIndex }),
-    onAmountChange: (amount: Decimal | undefined) => form.update({ amount, isMax: false }),
-    onMax: () => max && form.update({ amount: max.data, isMax: true }),
+    onAmountChange: (amount: Decimal | undefined) => form.update({ amount }),
   }
 }

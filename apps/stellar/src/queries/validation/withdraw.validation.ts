@@ -116,21 +116,23 @@ export const advancedWithdrawFormValidationSuite = createValidationSuite((values
 )
 
 export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values: OneCoinWithdrawFormValues) => {
-  const { amount, maxAmount, isMax, maxLpAmount, maximumBurn, supply, seedLock, slippage } = values
+  const { amount, poolReserve, maxLpAmount, maximumBurn, supply, seedLock, slippage } = values
+  const params = getOneCoinWithdrawParams(values)
+  const isFull = params.mode === 'one-coin'
   validateSlippage({ slippage })
   validateAmount('amount', amount, true)
   test('amount', 'Enter an amount to withdraw', () => {
     enforce(amount).isDecimal().gt(0)
   })
-  test('maxAmount', 'Maximum withdrawal is unavailable', () => {
-    enforce(maxAmount).isDecimal().gte(0)
+  test('poolReserve', 'Pool reserve is unavailable', () => {
+    enforce(poolReserve).isDecimal().gte(0)
   })
   test('amount', 'Amount exceeds the maximum withdrawal', () => {
-    enforce(maybes([amount, maxAmount], (amount, maxAmount) => new BigNumber(amount).lte(maxAmount))).isTruthy()
+    enforce(maybes([amount, poolReserve], (amount, reserve) => new BigNumber(amount).lte(reserve))).isTruthy()
   })
-  validateBudget({ lpAmount: isMax ? maxLpAmount : maximumBurn, maxLpAmount, supply, seedLock })
-  validateMaximumBurn({ lpAmount: maxLpAmount, maximumBurn, isExactBurn: isMax })
-  validateOneCoinSelection(getOneCoinWithdrawParams(values))
+  validateBudget({ lpAmount: isFull ? maxLpAmount : maximumBurn, maxLpAmount, supply, seedLock })
+  validateMaximumBurn({ lpAmount: maxLpAmount, maximumBurn, isExactBurn: isFull })
+  validateOneCoinSelection(params)
 })
 
 const validateWithdraw = (params: WithdrawSimulationQuery) => {

@@ -6,7 +6,7 @@ import type { WithdrawMode, WithdrawMutation } from '@ui/features/pool-forms/wit
 import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
-export type WithdrawSimulationQuery = QuoteQuery & UserQuery & WithdrawMutation
+export type WithdrawSimulationQuery = QuoteQuery & UserQuery & WithdrawMutation & { expected: Decimal }
 export type WithdrawSimulationParams = FieldsOf<DeepPartial<WithdrawSimulationQuery>>
 export type WithdrawQuoteParams = WithdrawSimulationParams &
   PoolQuery &

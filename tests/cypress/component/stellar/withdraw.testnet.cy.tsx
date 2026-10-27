@@ -27,6 +27,7 @@ import {
 } from '@cy/support/helpers/stellar/withdraw.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
+import type { Decimal } from '@primitives/decimal.utils'
 import { decimalMinus, decimalSum } from '@ui/lib/decimal'
 
 describe('Stellar testnet withdraw', () => {
@@ -168,13 +169,18 @@ describe('Stellar testnet withdraw', () => {
     })
 
     // Reuse liquidity across tests; the full withdrawal must remain last.
-    it('returns from Max to manual amounts, then withdraws Max without LP dust', () => {
+    it('returns from Max to manual amounts, then withdraws a manually entered maximum without LP dust', () => {
       mountWithdraw()
       const coin = oneOf(...state.coins)
       selectWithdrawMax(state, coin)
+      poolInput(coin.address).find('input').invoke('val').as('maximumWithdrawal', { type: 'static' })
       writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.02, coin.decimals))
       checkPartialWithdrawQuote(state, state.lp.balance)
-      selectWithdrawMax(state, coin)
+      cy.get<Decimal>('@maximumWithdrawal').then(amount => {
+        writePoolAmount(coin.address, amount)
+        poolInput(coin.address).find('input').should('have.value', amount)
+      })
+      checkWithdrawDetail('projected-lp', '0')
       submitWithdrawAndCheck(state)
       mountWithdraw({ advanced: true })
       cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').should('not.be.checked')

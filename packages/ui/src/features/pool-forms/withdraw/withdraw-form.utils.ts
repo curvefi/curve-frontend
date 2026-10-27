@@ -1,4 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
+import { decimalEqual } from '@ui/lib/decimal'
 import { getPoolAmounts, getPoolMaxAmounts, type PoolTokenFields } from '../pool-form.utils'
 
 export type WithdrawMode = 'balanced' | 'unbalanced' | 'one-coin'
@@ -15,7 +17,6 @@ export type WithdrawMutation = {
   supply: Decimal
   seedLock: Decimal
   maximumBurn: Decimal
-  expected: Decimal
 }
 
 type WithdrawQuoteFields = {
@@ -30,8 +31,8 @@ type WithdrawQuoteFields = {
 export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
   amount: Decimal | undefined
   tokenIndex: number
-  isMax: boolean
-  maxAmount: Decimal | undefined
+  maxWithdrawAmount: Decimal | undefined
+  poolReserve: Decimal | undefined
 }
 
 export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
@@ -40,17 +41,20 @@ export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
 export const getOneCoinWithdrawParams = ({
   amount,
   tokenIndex,
-  isMax,
-  maxAmount,
+  maxWithdrawAmount,
+  poolReserve,
   ...quote
-}: OneCoinWithdrawFormValues) => ({
-  ...quote,
-  mode: isMax ? ('one-coin' as const) : ('unbalanced' as const),
-  tokenIndex,
-  lpAmount: isMax ? quote.maxLpAmount : undefined,
-  amounts: quote.decimals?.map((_, index) => (index === tokenIndex ? amount : '0')),
-  maxAmounts: quote.decimals?.map((_, index) => (index === tokenIndex ? maxAmount : '0')),
-})
+}: OneCoinWithdrawFormValues) => {
+  const isFull = maybes([amount, maxWithdrawAmount], decimalEqual)
+  return {
+    ...quote,
+    mode: isFull ? ('one-coin' as const) : ('unbalanced' as const),
+    tokenIndex,
+    lpAmount: isFull ? quote.maxLpAmount : undefined,
+    amounts: quote.decimals?.map((_, index) => (index === tokenIndex ? amount : '0')),
+    maxAmounts: quote.decimals?.map((_, index) => (index === tokenIndex ? poolReserve : '0')),
+  }
+}
 
 export const getAdvancedWithdrawParams = (values: AdvancedWithdrawFormValues) => ({
   ...values,

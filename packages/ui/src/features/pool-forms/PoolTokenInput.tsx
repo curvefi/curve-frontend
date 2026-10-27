@@ -3,11 +3,12 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { useFormContext, useFormSync } from '@ui/features/forms'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { useFormSync, type FieldPathByValue, type UseFormReturn } from '@ui/features/forms'
+import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
+import type { QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
-import { LargeTokenInput, type LargeTokenInputProps } from '../forms/controls/LargeTokenInput/LargeTokenInput'
-import { poolAmountField, type PoolForm, poolMaxAmountField } from './pool-form.utils'
+import type { LargeTokenInputProps } from '../forms/controls/LargeTokenInput/LargeTokenInput'
+import { poolAmountField, poolMaxAmountField, type PoolForm, type PoolTokenFields } from './pool-form.utils'
 
 export type PoolToken = {
   blockchainId: string | undefined
@@ -17,7 +18,8 @@ export type PoolToken = {
   usdRate: number | undefined
 }
 
-export const PoolTokenInput = ({
+export const PoolTokenInput = <TValues extends PoolForm>({
+  form,
   token: { blockchainId, address, symbol, usdRate },
   index,
   disabled,
@@ -27,6 +29,7 @@ export const PoolTokenInput = ({
   onMax,
   onValueChange,
 }: {
+  form: UseFormReturn<TValues> & Pick<UseFormReturn<PoolTokenFields>, 'update'>
   token: PoolToken
   index: number
   disabled: boolean
@@ -40,27 +43,28 @@ export const PoolTokenInput = ({
   /** Applies the amount edit and any dependent form updates. */
   onValueChange: (index: number, value: Decimal | undefined) => void
 }) => {
-  const { update, values, formState } = useFormContext<PoolForm>() // todo: pass form via prop after migration to tanstack forms
-  const { errors, touchedFields } = formState
+  const { values } = form
   const field = poolAmountField(index)
+  const maxField = poolMaxAmountField(index)
   const amount = values[field]
-  const fieldError = touchedFields[field] ? (errors[field] ?? errors[poolMaxAmountField(index)]) : undefined
-  useFormSync({ update }, { [poolMaxAmountField(index)]: max?.data }, !!max)
-  useFormSync({ update }, { [field]: max?.data }, isMaxSelected && max?.data != null)
-  const error = fieldError ?? max?.error
+  useFormSync<PoolTokenFields>(form, {
+    [maxField]: max ? max.data : values[maxField],
+    [field]: isMaxSelected ? max?.data : amount,
+  })
   return (
-    <LargeTokenInput
-      name={field}
+    <FormTokenInput
+      form={form}
+      name={field as FieldPathByValue<TValues, Decimal | undefined>}
+      max={max}
+      maxField={maxField as FieldPathByValue<TValues, Decimal | undefined>}
+      onMax={onMax && (() => onMax(index))}
       tokenSelector={
         <TokenLabel blockchainId={blockchainId} address={address} label={symbol} size="mui-md" disabled={disabled} />
       }
-      balance={q({ data: amount, error: error ?? null, isLoading: false })}
       onBalance={useCallback((value: Decimal | undefined) => onValueChange(index, value), [index, onValueChange])}
       disabled={disabled}
       inputBalanceUsd={maybes([amount, usdRate], decimalMultiply)}
       walletBalance={walletBalance}
-      maxBalance={max && { balance: max, chips: 'max', onMax: onMax && (() => onMax(index)) }}
-      message={error?.message}
       testId={`pool-token-input-${address}`}
     />
   )

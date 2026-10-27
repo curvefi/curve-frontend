@@ -25,7 +25,6 @@ import {
 } from '@ui/features/pool-forms/pool-form.utils'
 import {
   getAdvancedWithdrawParams,
-  type WithdrawMutation,
   type AdvancedWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
@@ -52,13 +51,12 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const snapshot = usePoolSnapshot(poolParams)
-  const supply = mapQuery(snapshot, snapshot => snapshot.lp_supply)
+  const { lp_supply: supply, active_balances: reserves } = snapshot.data ?? {}
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
-  const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
+  const { tokens, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
-  const reserves = mapQuery(snapshot, snapshot => snapshot.active_balances)
   const userDefaultValues = useShallow((tokenCount: number | undefined) => ({
     ...maybe(tokenCount, getPoolDefaultValues),
     lpAmount: undefined,
@@ -80,21 +78,21 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
 
   useFormSync(form, {
     decimals: decimalsData,
-    supply: supply.data,
+    supply,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
     maximumBurn: maximumLp.data,
     ...maybe(tokenAddresses.data, addresses =>
-      fromEntries(addresses.map((_, index) => [poolMaxAmountField(index), reserves.data?.[index]])),
+      fromEntries(addresses.map((_, index) => [poolMaxAmountField(index), reserves?.[index]])),
     ),
   })
 
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues, network, pool, account]) // cannot useFormSync with a flexible number of fields
 
   const {
-    mutate,
+    onSubmit,
     isPending: isWithdrawing,
-    error: withdrawError,
+    error,
   } = useWithdrawMutation({
     ...poolParams,
     account,
@@ -103,30 +101,28 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onReset: () => reset(userDefaultValues),
   })
 
-  const state = snapshot.data
-  const amountsUsd = state?.active_balances.map((amount, index) =>
+  const amountsUsd = reserves?.map((amount, index) =>
     maybe(tokens?.[index]?.data?.usdRate, rate => decimalMultiply(amount, rate)),
   )
-  const precision = completeArray(form.values.decimals)
-  const canBalance = state && precision && +state.lp_supply > 0 && state.active_balances.every(balance => +balance > 0)
+  const precision = completeArray(values.decimals)
+  const canBalance = supply && reserves && precision && +supply && reserves.every(b => +b)
   const getBalancedUpdates = (lpAmount: Decimal | undefined) => ({
     lpAmount,
     ...(lpAmount && canBalance
       ? fromEntries(
-          getBalancedWithdrawAmounts(lpAmount, state.active_balances, state.lp_supply, precision).map((amount, i) => [
+          getBalancedWithdrawAmounts(lpAmount, reserves, supply, precision).map((amount, i) => [
             poolAmountField(i),
             amount,
           ]),
         )
-      : maybe(decimals, decimals => getPoolDefaultValues(decimals.length))),
+      : maybe(tokenCount, getPoolDefaultValues)),
   })
   const isPending = formState.isSubmitting || isWithdrawing
   return {
-    supportsBalanced: true,
     canBalance,
     lpAmountUsd:
-      state && +state.lp_supply > 0 && isComplete(amountsUsd)
-        ? maybes([values.lpAmount, decimalDiv(decimalSum(...amountsUsd), state.lp_supply)], decimalMultiply)
+      supply && +supply > 0 && isComplete(amountsUsd)
+        ? maybes([values.lpAmount, decimalDiv(decimalSum(...amountsUsd), supply)], decimalMultiply)
         : undefined,
     onLpChange: (lpAmount: Decimal | undefined) => form.update(getBalancedUpdates(lpAmount)),
     onBalancedChange: (isBalanced: boolean) =>
@@ -136,30 +132,23 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
         ...(values.isBalanced &&
           canBalance &&
           getBalancedUpdates(
-            maybe(amount, amount =>
-              getBalancedWithdrawLp(amount, precision[index], state.active_balances[index], state.lp_supply),
-            ),
+            maybe(amount, amount => getBalancedWithdrawLp(amount, precision[index], reserves[index], supply)),
           )),
         [poolAmountField(index)]: amount,
       }),
     form,
-    decimals,
     expectedLp,
     maximumLp,
     priceImpact,
     params,
-    supply: q(supply),
     lpBalance: q(lpBalance),
-    onSubmit: form.handleSubmit(values =>
-      mutate({ ...getAdvancedWithdrawParams(values), expected: expectedLp.data } as WithdrawMutation),
-    ),
+    onSubmit: form.handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
-    snapshot,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
-    error: withdrawError,
+    error,
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
     tokens,
