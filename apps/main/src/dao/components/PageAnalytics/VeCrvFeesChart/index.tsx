@@ -18,7 +18,6 @@ export const VeCrvFeesChart = ({ data }: { data: VeCrvFee[] }) => (
       <EvmChartStateWrapper
         query={constQ(data)}
         height={DAO_CHART_HEIGHT}
-        isEmpty={data.length === 0}
         errorState={{ description: t`Unable to fetch veCRV fees data.` }}
       >
         {fees => <FeesBarChart height={DAO_CHART_HEIGHT} data={fees} />}

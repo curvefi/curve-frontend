@@ -77,7 +77,6 @@ export const TopLockers = () => {
         <EvmChartStateWrapper
           query={rows}
           height={DAO_COMPACT_CHART_HEIGHT}
-          isEmpty={rows.data?.length === 0}
           errorState={{
             description: t`Unable to fetch veCRV holders data.`,
             onReload: () => Promise.all([holders.refetch(), stats.refetch()]),

@@ -3,14 +3,15 @@ import { useMemo, memo } from 'react'
 import type {
   BandsChartOption,
   BandsChartToken,
-  BandsData,
   BandsPriceRange,
   BandsRangeOverlay,
+  ChartDataPoint,
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
 import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box, useTheme } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -23,7 +24,8 @@ import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 import { TooltipContent } from './TooltipContent'
 
 type BandsChartProps = {
-  bands: QueryProp<BandsData>
+  bands: QueryProp<ChartDataPoint[]>
+  oraclePrice: Decimal | undefined
   collateralToken: BandsChartToken
   borrowToken: BandsChartToken
   newLiquidationRange?: LlammaLiquididationRange | null
@@ -33,7 +35,7 @@ type BandsChartProps = {
   priceRange?: { min: number; max: number }
 }
 
-type BandsChartContentProps = BandsData & Omit<BandsChartProps, 'bands' | 'height'>
+type BandsChartContentProps = Omit<BandsChartProps, 'bands' | 'height'> & { chartData: ChartDataPoint[] }
 
 // These fields are named from the LLAMMA band orientation, not from screen position:
 // lowerBandPriceDown is the visual upper/current-top boundary, and upperBandPriceUp
@@ -61,7 +63,6 @@ const BandsChartContent = ({
   collateralToken,
   borrowToken,
   chartData,
-  userBandsBalances,
   newLiquidationRange,
   liqRangeCurrentVisible = true,
   liqRangeNewVisible = true,
@@ -70,7 +71,7 @@ const BandsChartContent = ({
 }: BandsChartContentProps) => {
   const palette = useBandsChartPalette()
   const derived = useDerivedChartData(chartData)
-  const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
+  const userBandsPriceRange = useUserBandsPriceRange(chartData)
   const rangeOverlays: BandsRangeOverlay[] = useMemo(() => {
     const currentRange = liqRangeCurrentVisible ? toUserBandsPriceRange(userBandsPriceRange) : null
     const newRange = liqRangeNewVisible ? toBandsPriceRange(newLiquidationRange) : null
@@ -149,11 +150,10 @@ const BandsChartComponent = ({ bands, height, ...overlay }: BandsChartProps) => 
     <EvmChartStateWrapper
       query={bands}
       height={height}
-      isEmpty={bands.data?.chartData.length === 0}
       emptyState={{ description: t`No active bands for this market` }}
       errorState={{ description: t`Failed to load bands chart data` }}
     >
-      {data => <BandsChartContent {...data} {...overlay} />}
+      {chartData => <BandsChartContent chartData={chartData} {...overlay} />}
     </EvmChartStateWrapper>
   </Box>
 )
