@@ -2,8 +2,8 @@ import type { CB } from 'vest-utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { queryFactory, type QueryKeyObject } from '@ui/features/queries/factory'
-import { type DeepPartial, DISABLED_Q } from '@ui/features/queries/util'
-import type { FieldName, FieldsOf } from '@ui/lib/validation/types'
+import { DISABLED_Q } from '@ui/features/queries/util'
+import type { FieldName } from '@ui/lib/validation/types'
 
 /** Some queries require a hydrated instance of curve-js, which we'll gate through the `enabled` property with `isHydrated`. */
 const useHydratedQuery = <TParams, TData>(
@@ -24,12 +24,11 @@ export const hydratedQueryFactory = <
   TQuery extends object,
   const TKey extends QueryKeyObject,
   TData,
-  TParams extends FieldsOf<DeepPartial<TQuery>> = FieldsOf<TQuery>,
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >(
-  options: Parameters<typeof queryFactory<TQuery, TKey, TData, TParams, TField, TCallback>>[0],
+  options: Parameters<typeof queryFactory<TQuery, TKey, TData, TField, TCallback>>[0],
 ) => {
   const { useQuery, ...helpers } = queryFactory(options)
-  return { ...helpers, useQuery: (params: TParams, enabled?: boolean) => useHydratedQuery(useQuery, params, enabled) }
+  return { ...helpers, useQuery: (...params: Parameters<typeof useQuery>) => useHydratedQuery(useQuery, ...params) }
 }

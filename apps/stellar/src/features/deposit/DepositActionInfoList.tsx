@@ -25,11 +25,11 @@ export const DepositActionInfoList = ({
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
   const quote = useExpectedLp({ ...queryParams, isDeposit: true })
   const minimum = mapQuery(quote, value => calculateMinimumMint(value, slippage))
-  const simulation = useDepositSimulation({ ...queryParams, minMint: minimum.data })
+  const simulation = useDepositSimulation({ ...queryParams, minMint: minimum })
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
   const lpDecimals = useTokenDecimals({ ...params, token: pool })
-  const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals.data })
+  const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals })
   const seedLock = combineQueries([config, supply], ({ seedLock }, value) =>
     decimalEqual(value, '0') ? seedLock : null,
   )
