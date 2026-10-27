@@ -60,7 +60,7 @@ export const AdvancedWithdrawForm = ({
       onValueChange={onTokenChange}
     />
     <CheckboxField
-      label={t`Withdraw unbalanced`}
+      label={t`Withdraw custom balances`}
       checked={!form.values.isBalanced}
       onChange={event => onBalancedChange(!event.target.checked)}
       disabled={isPending || !canBalance}

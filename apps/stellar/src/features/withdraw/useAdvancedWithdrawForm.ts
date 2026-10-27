@@ -105,7 +105,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     maybe(tokens?.[index]?.data?.usdRate, rate => decimalMultiply(amount, rate)),
   )
   const precision = completeArray(values.decimals)
-  const canBalance = supply && reserves && precision && +supply && reserves.every(b => +b)
+  const canBalance = supply && reserves && precision && !!+supply && reserves.every(b => +b)
   const getBalancedUpdates = (lpAmount: Decimal | undefined) => ({
     lpAmount,
     ...(lpAmount && canBalance
