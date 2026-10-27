@@ -3,6 +3,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
 
+export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
+export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
+
 /** Health percentage thresholds used for color coding and label display */
 export const HEALTH_THRESHOLDS = {
   /** Below this value, the position is in hard liquidation */

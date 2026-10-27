@@ -1,4 +1,5 @@
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { usePositionPnl } from '@/llamalend/hooks/usePositionPnl'
 import {
   formatCollateralNotional,
   isPositionLeveraged,
@@ -24,11 +25,9 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
-import { getLeverageValueColor } from './market-position-details.utils'
+import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } from './market-position-details.utils'
+import { PnlMetrics } from './PnlMetrics'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
-
-const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
-const METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
 
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
@@ -43,6 +42,11 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
   const oraclePrice = useMarketOraclePrice(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
+  const positionPnl = usePositionPnl(params)
+  const collateralUsdRate = useTokenUsdRate(
+    { chainId: params.chainId, tokenAddress: collateralToken?.address },
+    !!positionPnl,
+  )
 
   const { collateral, stablecoin: borrowed } = userStateValue ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
@@ -55,7 +59,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   return (
     <MetricsGrid variant="mobileRows">
       <Metric
-        category={METRIC_CATEGORY}
+        category={BORROW_METRIC_CATEGORY}
         label={t`Collateral value`}
         value={collateralValue}
         valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
@@ -77,21 +81,21 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               )}
             />
           ),
-          ...METRIC_TOOLTIP,
+          ...BORROW_METRIC_TOOLTIP,
         }}
       />
       <Metric
-        category={METRIC_CATEGORY}
+        category={BORROW_METRIC_CATEGORY}
         label={t`Total debt`}
         {...tokenMetric({
           value: mapQuery(userState, ({ debt }) => debt),
           symbol: borrowToken?.symbol,
           usdRate: q(borrowUsdRate),
         })}
-        valueTooltip={{ title: t`Total Debt`, body: <TotalDebtTooltipContent />, ...METRIC_TOOLTIP }}
+        valueTooltip={{ title: t`Total Debt`, body: <TotalDebtTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
       />
       <Metric
-        category={METRIC_CATEGORY}
+        category={BORROW_METRIC_CATEGORY}
         label={t`Liquidation threshold`}
         value={mapQuery(userPrices, p => p?.[1])}
         valueOptions={{ abbreviate: false, unit: { symbol: priceUnit, position: 'suffix' } }}
@@ -105,7 +109,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               priceUnit={priceUnit}
             />
           ),
-          ...METRIC_TOOLTIP,
+          ...BORROW_METRIC_TOOLTIP,
         }}
         notional={mapQuery(rangeToLiquidation, v =>
           maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
@@ -113,22 +117,37 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
       />
       {leverage && (
         <Metric
-          category={METRIC_CATEGORY}
+          category={BORROW_METRIC_CATEGORY}
           label={t`Leverage`}
           value={leverage}
           valueOptions={{ unit: 'multiplier', fallback: '-', color: getLeverageValueColor(leverage.data) }}
           valueTooltip={
-            isEquityLeverage ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...METRIC_TOOLTIP } : undefined
+            isEquityLeverage
+              ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...BORROW_METRIC_TOOLTIP }
+              : undefined
           }
+        />
+      )}
+      {positionPnl && (
+        <PnlMetrics
+          {...positionPnl}
+          borrowSymbol={borrowToken?.symbol}
+          collateralSymbol={collateralToken?.symbol}
+          borrowUsdRate={q(borrowUsdRate)}
+          collateralUsdRate={q(collateralUsdRate)}
         />
       )}
       {equityLeverage && (
         <Metric
-          category={METRIC_CATEGORY}
+          category={BORROW_METRIC_CATEGORY}
           label={t`Est. leveraged APR`}
           value={equityLeverage.currentApr}
           valueOptions={{ unit: 'percentage', fallback: '-' }}
-          valueTooltip={{ title: t`Est. leveraged APR`, body: <EstLeveragedAprTooltipContent />, ...METRIC_TOOLTIP }}
+          valueTooltip={{
+            title: t`Est. leveraged APR`,
+            body: <EstLeveragedAprTooltipContent />,
+            ...BORROW_METRIC_TOOLTIP,
+          }}
           notional={mapQuery(equityLeverage.yieldMultiplier, multiplier =>
             maybe(multiplier, value => ({
               value,
