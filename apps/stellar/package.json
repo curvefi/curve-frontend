@@ -25,7 +25,7 @@
     "@tanstack/router-core": "1.171.38",
     "vite-plugin-svgr": "5.2.0",
     "vite-plugin-vercel": "11.1.1",
-    "wrangler": "4.151.1"
+    "wrangler": "4.153.0"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "11.8.0",
