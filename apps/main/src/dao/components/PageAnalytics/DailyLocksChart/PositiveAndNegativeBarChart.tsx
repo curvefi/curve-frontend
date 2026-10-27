@@ -1,8 +1,8 @@
 import type { VeCrvLock } from '@/dao/entities/vecrv-locks'
-import { formatChartAxisNumber, getChartSignedValueColor } from '@evm-ui/shared/ui/Chart/chart.utils'
-import { EChartsBarChart } from '@evm-ui/shared/ui/Chart/EChartsBarChart'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
+import { formatChartAxisNumber, getChartSignedValueColor } from '@ui/features/charts/chart.utils'
+import { EChartsBarChart } from '@ui/features/charts/EChartsBarChart'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
 type PositiveAndNegativeBarChartProps = { data: VeCrvLock[]; height: number }

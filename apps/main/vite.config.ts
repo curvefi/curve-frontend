@@ -34,6 +34,7 @@ export default defineConfig(({ command }) => ({
     sourcemap: true,
     rollupOptions: {
       onwarn: (warn, handler) =>
+        (warn.code === 'MODULE_LEVEL_DIRECTIVE' && warn.message.includes('"use no memo"')) || // React Compiler consumes "use no memo" before bundling
         (warn.code === 'INVALID_ANNOTATION' && warn.id?.includes('/node_modules/ox/_esm/core/')) || // ignore `ox` /*#__PURE__*/ annotations
         (warn.code === 'EVAL' && warn.id?.endsWith('/apps/main/src/main.tsx')) // required eval()
           ? undefined

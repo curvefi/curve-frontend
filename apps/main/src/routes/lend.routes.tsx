@@ -1,6 +1,8 @@
 import type { MarketUrlParams } from '@/lend/types/lend.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { NETWORK_SWITCH_UNAVAILABLE } from '@ui/features/layout/switch-chain/switch-policies'
 import { redirectTo } from '@ui/hooks/router'
+import { t } from '@ui/lib/i18n'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 
@@ -14,6 +16,9 @@ const PageVault = lazyRouteComponent(() => import('@/lend/components/PageVault/P
 const lendLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'lend', component: LendLayout })
 
 const layoutProps = { getParentRoute: () => lendLayoutRoute }
+
+const toastTitle = (networkName?: string) =>
+  networkName ? t`This market is only available on ${networkName}` : NETWORK_SWITCH_UNAVAILABLE
 
 export const lendRoutes = lendLayoutRoute.addChildren([
   ...createSharedRoutes('lend', layoutProps),
@@ -29,6 +34,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market',
+    staticData: { networkSwitch: { type: 'locked', toastTitle } },
     component: LendMarketPage,
     head: ({ params: { market } }: { params: MarketUrlParams }) => ({
       meta: [{ title: `${market} - Curve Llamalend` }],
@@ -54,6 +60,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market/vault',
+    staticData: { networkSwitch: { type: 'locked', toastTitle } },
     component: PageVault,
     head: ({ params: { market } }: { params: MarketUrlParams }) => ({
       meta: [{ title: `Supply - ${market} - Curve Llamalend` }],

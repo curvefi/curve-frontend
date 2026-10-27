@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
+import { usePoolCampaigns } from '@/dex/hooks/usePoolCampaigns'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import { useLitePoolChains, usePoolChains, usePoolList } from '@/dex/queries/pool-list.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type { LitePool, V2Pool } from '@curvefi/prices-api/pools'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { usePoolCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { usePoolsFilters } from '@ui/features/pool-list/hooks/usePoolsFilters'
@@ -15,7 +15,7 @@ import { usePoolsSorting } from '@ui/features/pool-list/hooks/usePoolsSorting'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { PoolsTableProps } from '@ui/features/pool-list/PoolsTable'
 import type { PoolsTableData } from '@ui/features/pool-list/types'
-import { litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
+import { isActiveLitePool, litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
 import { DISABLED_Q, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
 import { type UserPoolPositions, useUserPoolPositions } from './useUserPoolPositions'
@@ -65,6 +65,7 @@ export const usePoolsTable = (
       chainId,
       page: pagination.pagination.pageIndex + 1,
       pageSize: POOLS_PAGE_SIZE,
+      activePoolsFilter: filters.activePoolsFilter.isSelected,
       searchString: filters.searchText || undefined,
       ...(!isLite && filters.apiParams),
       sortBy: sorting.sortBy,
@@ -87,6 +88,13 @@ export const usePoolsTable = (
     ),
   )
 
+  // userHasPositions depends on all enrichedPools so can only filter afterwards.
+  // filtering also happens for lite networks locally as the migration to server-side filtering isn't done yet
+  const filteredQuery =
+    isLite && filters.activePoolsFilter.isSelected
+      ? mapQuery(enrichedPools, pools => pools.filter(isActiveLitePool))
+      : enrichedPools
+
   return {
     pagination,
     filters,
@@ -102,7 +110,7 @@ export const usePoolsTable = (
     pageCount: isLite ? 1 : (poolList.data?.pageCount ?? -1),
     userHasPositions: enrichedPools.data?.some(({ userPosition }) => userPosition && +userPosition.lpBalance > 0),
     tableQuery: poolListSupport.data
-      ? enrichedPools
+      ? filteredQuery
       : q({
           data: undefined,
           isLoading: poolListSupport.isLoading,

@@ -11,6 +11,8 @@ import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
+export { replaceNetworkInPath } from '@ui/features/layout/routes'
+
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
   PAGE_POOLS: '/pools',
@@ -121,12 +123,6 @@ export const routeToPage = (
   }
 }
 
-export const replaceNetworkInPath = (path: string, blockchainId: string) => {
-  const [, app, _network, ...rest] = path.split('/')
-  if (!app) return path // if no app, return original path
-  return ['', app, blockchainId, ...rest].join('/')
-}
-
 export const getCurrentApp = (path: string | null): AppName => {
   const [, app] = path?.split('/') ?? []
   return AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
@@ -142,14 +138,17 @@ export const getCurrentNetwork = (path: string): string | undefined => {
   return blockchainId
 }
 
-export const createChainOption = (network: NetworkDef, currentApp: AppName): ChainListOption => ({
+export const createChainOption = (network: NetworkDef, href: string): ChainListOption => ({
   ...network,
   name: getChainName(network.chainId),
   isConfigured: isChainConfigured(network.chainId),
   isLite: isLiteChain(network.chainId),
   isTestnet: isTestnet(network.chainId),
-  href: getInternalUrl(currentApp, network.blockchainId),
+  href,
 })
 
-export const createChainOptions = (supportedNetworks: NetworkMapping, currentApp: AppName): ChainListOption[] =>
-  recordValues(supportedNetworks).map(network => createChainOption(network, currentApp))
+export const createChainOptions = (
+  supportedNetworks: NetworkMapping,
+  getHref: (blockchainId: string) => string,
+): ChainListOption[] =>
+  recordValues(supportedNetworks).map(network => createChainOption(network, getHref(network.blockchainId)))

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import type { ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
-import { LegendLine } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { ChartLineDashPattern } from './chart.utils'
+import { LegendLine } from './LegendSet'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 

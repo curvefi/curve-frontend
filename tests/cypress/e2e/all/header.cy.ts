@@ -1,17 +1,10 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
-import {
-  APP_ROUTES,
-  AppRoute,
-  CRVUSD_PAGE_MARKETS_ROUTE,
-  DEFAULT_PAGES,
-  getRouteApp,
-  getRouteTestId,
-  oneAppRoute,
-} from '@cy/support/routes'
+import { AppRoute, CRVUSD_PAGE_MARKETS_ROUTE, getRouteTestId, oneAppRoute } from '@cy/support/routes'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import {
   oneDesktopViewport,
   oneMobileOrTabletViewport,
+  oneMobileViewport,
   oneViewport,
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
@@ -94,21 +87,6 @@ describe('Header', () => {
         })
       })
     })
-
-    it('should change chains', () => {
-      const routeApp = getRouteApp(route)
-      if (['dao', 'crvusd'].includes(routeApp)) {
-        // only ethereum supported
-        cy.get(`[data-testid='btn-change-chain']`).click()
-        cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
-        cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/ethereum`)
-        return
-      }
-      switchEthToArbitrum()
-      const [app, page] = DEFAULT_PAGES[routeApp]
-      cy.url().should('match', new RegExp(`.*/${app}/arbitrum${page}/?$`.replaceAll('/', '\\/')))
-      cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/arbitrum`)
-    })
   })
 
   describe('mobile or tablet', () => {
@@ -182,21 +160,6 @@ describe('Header', () => {
         })
       })
     })
-
-    it('should change chains', () => {
-      if (['dao', 'crvusd'].includes(getRouteApp(route))) {
-        // only ethereum supported
-        cy.get(`[data-testid='btn-change-chain']`).click()
-        cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
-        cy.get(`[data-testid='menu-toggle']`).click()
-        cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/ethereum/pools`)
-        return
-      }
-
-      switchEthToArbitrum()
-      cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/arbitrum/pools`)
-    })
   })
 
   describe('Phishing Warning Banner', () => {
@@ -237,20 +200,46 @@ describe('Header', () => {
     })
   })
 
-  describe('chain selector', () => {
-    beforeEach(() => {
-      ;[width, height] = oneDesktopViewport()
-      cy.viewport(width, height)
-      const route = APP_ROUTES.dex() as unknown as AppRoute
-      cy.visitWithoutTestConnector(route)
-      waitIsLoaded(route)
-    })
+  ;([oneDesktopViewport(), oneMobileViewport()] as const).forEach(([viewportWidth, viewportHeight, viewport]) => {
+    it(`updates the ${viewport} header links after switching networks`, () => {
+      cy.viewport(viewportWidth, viewportHeight)
+      cy.visitWithoutTestConnector('/dex/ethereum/pools', { onBeforeLoad: dismissHeaderBanners })
+      switchEthToArbitrum()
+      cy.location('pathname').should('match', /^\/dex\/arbitrum\/pools\/?$/)
 
-    it('should have no missing wagmi chains alert', () => {
-      cy.get(`[data-testid='chain-icon-ethereum']`, TIMEOUTS['ui.render']).should('be.visible')
-      cy.get(`[data-testid='btn-change-chain']`).click()
-      cy.get(`[data-testid='missing-chain-config']`).should('not.exist')
+      if (viewport === 'desktop') {
+        cy.get('[data-testid="app-link-dex"]')
+          .invoke('attr', 'href')
+          .should('match', /^\/dex\/arbitrum\/?$/)
+      } else {
+        cy.get('[data-testid="menu-toggle"]').click()
+        cy.get('[data-testid="sidebar-item-pools"]').should('have.attr', 'href', '/dex/arbitrum/pools')
+      }
     })
+  })
+
+  it('shows the market network without offering to switch a vault to another chain', () => {
+    ;[width, height] = oneDesktopViewport()
+    cy.viewport(width, height)
+    const path = '/lend/ethereum/markets/0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617/vault'
+    cy.visitWithoutTestConnector(path, { onBeforeLoad: dismissHeaderBanners })
+    cy.get('[data-testid="form-market-page"]', TIMEOUTS['ui.render']).should('be.visible')
+    cy.get('header [data-testid="chain-icon-ethereum"]').should('be.visible')
+    cy.get('header [data-testid="network-lock"]').should('be.visible')
+    cy.get('header [data-testid="btn-change-chain"]').click()
+    cy.get('[data-testid="alert-eth-only"]').should('contain.text', 'This market is only available on Ethereum')
+    cy.get('[role="dialog"]').should('not.exist')
+    cy.location('pathname').should('match', new RegExp(`^${path}/?$`))
+  })
+
+  it('explains the Ethereum-only savings network without opening a selector', () => {
+    ;[width, height] = oneDesktopViewport()
+    cy.viewport(width, height)
+    cy.visitWithoutTestConnector('/crvusd/ethereum/scrvUSD', { onBeforeLoad: dismissHeaderBanners })
+    cy.get('header [data-testid="btn-change-chain"]', TIMEOUTS['ui.render']).click()
+    cy.get('[data-testid="alert-eth-only"]').should('be.visible')
+    cy.get('[data-testid^="menu-item-chain-"]').should('not.exist')
+    cy.location('pathname').should('match', /^\/crvusd\/ethereum\/scrvUSD\/?$/)
   })
 
   const dismissHeaderBanners = (win: Cypress.AUTWindow) => {
@@ -266,6 +255,7 @@ describe('Header', () => {
   function switchEthToArbitrum() {
     cy.get(`[data-testid='chain-icon-ethereum']`, TIMEOUTS['ui.render']).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
+    cy.get(`[data-testid='missing-chain-config']`).should('not.exist')
     cy.get(`[data-testid='menu-item-chain-arbitrum']`).click()
     cy.get(`[data-testid^='menu-item-chain-']`, TIMEOUTS['ui.render']).should('not.exist')
     cy.get(`[data-testid='chain-icon-arbitrum']`).should('be.visible')
