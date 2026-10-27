@@ -10,11 +10,12 @@ type V2PoolListNetwork = 'ethereum' | 'taiko'
 export const visitV2PoolList = ({
   network = 'ethereum',
   viewport = DESKTOP_VIEWPORT,
-}: { network?: V2PoolListNetwork; viewport?: readonly [number, number] } = {}) => {
+  active = true,
+}: { network?: V2PoolListNetwork; viewport?: readonly [number, number]; active?: boolean } = {}) => {
   const isMobile = viewport[0] < 600
 
   cy.viewport(viewport[0], viewport[1])
-  cy.visitWithoutTestConnector(`dex/${network}/pools/`)
+  cy.visitWithoutTestConnector(`dex/${network}/pools/${active ? '' : '?active=no'}`)
   cy.wait('@dex-v2-platforms', TIMEOUTS['mock.curveCore.platforms'])
   cy.wait(['@dex-v2-prices-chains'], TIMEOUTS['mock.prices.chains'])
   if (network === 'taiko') {

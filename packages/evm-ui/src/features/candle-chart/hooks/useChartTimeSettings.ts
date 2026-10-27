@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DEFAULT_TIME_OPTION } from '../constants'
+import { DEFAULT_TIME_OPTION } from '@ui/features/charts/chart.utils'
 import type { TimeOption } from '../types'
 
 type TimeUnit = 'minute' | 'hour' | 'day'
