@@ -5,7 +5,7 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
-import { tryGetPool } from '@/dex/pool.utils'
+import { usePool } from '@/dex/queries/pool.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -14,7 +14,7 @@ import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { constQ, loadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ, mapQuery } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
@@ -27,8 +27,9 @@ export const PagePool = () => {
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
+  const lookup = usePool({ chainId, poolAddress })
   // We want to have a loading state during hydration (pool is unavailable until then)
-  const pool = isHydrated ? constQ(tryGetPool(poolAddress, curveApi) ?? null) : loadingQ(undefined)
+  const pool = isHydrated ? lookup : loadingQ(undefined)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
@@ -54,11 +55,12 @@ export const PagePool = () => {
     )
 
   // Strict check with null as `undefined` means unresolved; null means 'doesn't exist'.
-  if (pool.data === null || !poolAddress)
+  if (pool.data === null || !poolAddress || (!pool.data && pool.error))
     return (
       <ErrorPage
-        title="404"
-        subtitle={t`Pool Not Found`}
+        title={pool.error ? t`Error` : '404'}
+        subtitle={pool.error?.message ?? t`Pool Not Found`}
+        error={pool.error}
         continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
         userAddress={curveApi?.signerAddress}
       />
