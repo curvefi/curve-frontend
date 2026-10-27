@@ -2,7 +2,7 @@ import { isUndefined, omitBy } from 'lodash'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
-import { isEmpty, maybe, notFalsy, type Nullish } from '@primitives/objects.utils'
+import { fromEntries, isEmpty, maybe, notFalsy, type Nullish, objectKeys } from '@primitives/objects.utils'
 import {
   type DefaultError,
   keepPreviousData as keepPreviousDataTanstack,
@@ -12,11 +12,11 @@ import {
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
 import { useQuery, type QueryOptions } from '@ui/features/queries/query-hooks'
-import type { DeepPartial } from '@ui/features/queries/util'
+import { type DeepPartial, type FieldsOrQueries, toQuery, toValue } from '@ui/features/queries/util'
 import { logError, logQuery, logSuccess } from '@ui/lib/logging'
 import { formatTimeDiff } from '@ui/lib/time'
 import { validate } from '@ui/lib/validation/lib'
-import { FieldName, FieldsOf } from '@ui/lib/validation/types'
+import { FieldName, type FieldsOf } from '@ui/lib/validation/types'
 
 /** Make sure we only use simple types for query keys, safe for caching and logging. */
 type QueryKeyItem = string | number | boolean | Nullish | readonly QueryKeyItem[]
@@ -67,11 +67,16 @@ async function runQuery<TData, TQuery>(
   }
 }
 
+const unwrapFields = <T extends object>(params: FieldsOrQueries<T>): FieldsOf<T> =>
+  fromEntries(objectKeys(params).map(key => [key, toValue(params[key])])) as FieldsOf<T>
+
+type Params<T extends object> = FieldsOf<DeepPartial<T>>
+type QParams<T extends object> = FieldsOrQueries<Params<T>>
+
 export function queryFactory<
   TQuery extends object,
   const TKey extends QueryKeyObject,
   TData,
-  TParams extends FieldsOf<DeepPartial<TQuery>> = FieldsOf<TQuery>,
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
@@ -84,29 +89,29 @@ export function queryFactory<
   keepPreviousData,
   ...options
 }: {
-  queryKey: (params: TParams) => TKey
+  queryKey: (params: Params<TQuery>) => TKey
   validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
   category: QueryCategory
-  dependencies?: (params: TParams) => readonly QueryKeyObject[]
+  dependencies?: (params: Params<TQuery>) => readonly QueryKeyObject[]
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
   keepPreviousData?: boolean | ((previous: TKey, current: TKey) => boolean)
 }) {
-  const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
+  const internalKey = (params: Params<TQuery>): InternalQueryKey<TKey> => [queryKey(params)]
 
   const queryFn = async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
     await runQuery(queryKey, query, disableLog)
 
   const getQueryOptions = (
-    params: TParams,
+    params: Params<TQuery>,
     enabled = true,
   ): QueryOptions<TData, DefaultError, TData, InternalQueryKey<TKey>> => ({
     ...QUERY_CATEGORIES[category],
     queryKey: internalKey(params),
     queryFn,
-    enabled: enabled && isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)),
+    enabled: enabled && isEmpty(validate<Params<TQuery>, typeof validationSuite>(validationSuite, params)),
     dependencies: maybe(dependencies, deps => () => deps(params)),
     retry: (failureCount, error) =>
       !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
@@ -126,10 +131,10 @@ export function queryFactory<
   return {
     queryKey,
     getQueryOptions,
-    getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(internalKey(params)),
-    setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(internalKey(params), data),
+    getQueryData: (params: Params<TQuery>): TData | undefined => queryClient.getQueryData(internalKey(params)),
+    setQueryData: (params: Params<TQuery>, data: TData) => queryClient.setQueryData<TData>(internalKey(params), data),
     fetchQuery: (
-      params: TParams,
+      params: Params<TQuery>,
       options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>>,
     ) =>
       queryClient.query<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>({
@@ -141,19 +146,23 @@ export function queryFactory<
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
-    refetchQuery: (params: TParams) =>
+    refetchQuery: (params: Params<TQuery>) =>
       queryClient.query<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>({
         ...getQueryOptions(params),
         ...options,
         staleTime: 0,
       }),
-    useQuery: (params: TParams, enabled?: boolean) => useQuery(getQueryOptions(params, enabled)),
+    useQuery: (params: QParams<TQuery>, enabled?: boolean) => {
+      const s = useQuery(getQueryOptions(unwrapFields(params), enabled))
+      s.isLoading = s.isLoading || Object.values(params).some(p => toQuery(p).isLoading)
+      return s
+    },
     /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */
-    invalidate: (params: TParams, { partial = false } = {}) =>
+    invalidate: (params: Params<TQuery>, { partial = false } = {}) =>
       queryClient.invalidateQueries({
         queryKey: partial ? [omitBy(queryKey(params), isUndefined)] : internalKey(params),
       }),
     /** Removes all the cached data for the query **/
-    reset: (params: TParams) => queryClient.resetQueries({ queryKey: internalKey(params) }),
+    reset: (params: Params<TQuery>) => queryClient.resetQueries({ queryKey: internalKey(params) }),
   } as const
 }

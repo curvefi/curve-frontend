@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
-import { objectKeys } from '@primitives/objects.utils'
+import { type Nullish, objectKeys } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { type QueryOptions } from '@ui/features/queries/query-hooks'
+import type { FieldName } from '@ui/lib/validation/types'
 
 export type Range<T> = [T, T]
 
@@ -54,6 +55,9 @@ export type Query<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'error'>
 /** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
 export type QueryProp<T> = Query<T> & { readonly __brand: 'QueryProp' }
 export type QueryOrValue<T> = QueryProp<T> | T
+
+// todo: make all fields required
+export type FieldsOrQueries<T extends object> = { [K in FieldName<T>]?: Query<T[K]> | T[K] | Nullish }
 
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
