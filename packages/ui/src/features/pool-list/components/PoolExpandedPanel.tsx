@@ -17,7 +17,7 @@ import { formatToken } from '@ui/lib/tokens'
 import { ClaimablesTooltipContent } from '../cells/ClaimablesTooltipContent'
 import { NetRateTooltipContent } from '../cells/NetRateTooltipContent'
 import { ClaimablesIcons, RewardIcons } from '../cells/RewardIcons'
-import { getBaseApr, isVolatileRate } from '../cells/utils'
+import { getNetRateTooltipData, isVolatileRate } from '../cells/utils'
 import { POOL_TITLES } from '../columns/column.titles'
 import { PoolColumnId } from '../columns/columns.enum'
 import type { PoolRow, PoolTableMeta, PoolTableVariant } from '../types'
@@ -84,10 +84,8 @@ export const PoolExpandedPanel = ({
   meta: PoolTableMeta
 }) => {
   const currentDate = useCurrentDate()
-  const baseRate = getBaseApr(pool, 'daily')
   const netRate = pool.netApr
   const claimables = pool.userPosition?.claimables
-  const volatileBaseRate = isVolatileRate(baseRate)
 
   return (
     <Grid container spacing={Spacing.md}>
@@ -96,11 +94,11 @@ export const PoolExpandedPanel = ({
           category={PRIMARY_METRIC_CATEGORY}
           label={POOL_TITLES[PoolColumnId.NetRate]}
           value={netRate || null}
-          valueOptions={getRateValueOptions(netRate, { volatile: volatileBaseRate })}
+          valueOptions={getRateValueOptions(netRate, { volatile: isVolatileRate(netRate) })}
           valueTooltip={
             netRate
               ? {
-                  body: <NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatileBaseRate} />,
+                  body: <NetRateTooltipContent {...getNetRateTooltipData(pool)} crvToken={crvToken} />,
                   clickable: true,
                   placement: 'top',
                   title: t`Net APR`,
