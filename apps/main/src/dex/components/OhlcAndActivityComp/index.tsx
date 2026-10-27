@@ -4,7 +4,7 @@ import type { Pool } from '@curvefi/prices-api/pools'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
 import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
 import { PoolTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolTradesExpandedPanel'
-import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
+import { OhlcChart } from '@evm-ui/features/candle-chart/OhlcChart'
 import Stack from '@mui/material/Stack'
 import { Tabs } from '@ui/components/Tabs/Tabs'
 import { TIME_OPTIONS } from '@ui/features/charts/chart.utils'
@@ -56,7 +56,7 @@ const ChartTab = ({
       timeOption={{ options: TIME_OPTIONS, activeOption: ohlcChartProps.timeOption, setActiveOption: setTimeOption }}
       isLoading={isLoading}
     />
-    <ChartWrapper {...ohlcChartProps} />
+    <OhlcChart {...ohlcChartProps} />
   </Stack>
 )
 
