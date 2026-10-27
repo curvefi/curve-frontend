@@ -1,4 +1,5 @@
 import type { EChartsOption } from 'echarts-for-react'
+import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type BandsChartToken = { symbol: string; address: string } | undefined
@@ -22,6 +23,12 @@ export type ChartDataPoint = {
   userBandBorrowedAmount?: Decimal
   userBandTotalValue?: Decimal
   isLiquidationBand: boolean
+}
+
+export type BandsData = {
+  chartData: ChartDataPoint[]
+  userBandsBalances: FetchedBandsBalances[]
+  oraclePrice: string | undefined
 }
 
 export type BandsChartPalette = {

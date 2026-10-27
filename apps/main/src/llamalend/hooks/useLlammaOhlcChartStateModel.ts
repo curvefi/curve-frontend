@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
-import type { OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { useChartLegendToggles } from '@evm-ui/features/candle-chart/hooks/useChartLegendToggles'
 import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useChartTimeSettings'
 import { useLiquidationRange } from '@evm-ui/features/candle-chart/hooks/useLiquidationRange'
 import { useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
+import type { OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@evm-ui/features/candle-chart/types'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import type { QueryProp, Range } from '@ui/features/queries/util'
+import { q, type QueryProp, type Range } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
@@ -134,12 +134,9 @@ export const useLlammaOhlcChartStateModel = ({
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart.md,
-    isLoading,
+    series: q({ data: { ohlcData, oraclePriceData }, isLoading, error: currentError }),
     isEmpty: oraclePoolsChartQuery.data?.ohlcData?.length === 0,
-    emptyMessage,
-    error: currentError,
-    ohlcData,
-    oraclePriceData,
+    emptyState: { description: emptyMessage },
     liquidationRange: selectedLiqRange.data,
     timeOption,
     selectedChartKey,

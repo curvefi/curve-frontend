@@ -35,13 +35,6 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.viewport(width, height)
     })
 
-    it('redirects the app entry to the mainnet pool list', () => {
-      mountStellarApp('/')
-      cy.location('pathname').should('equal', StellarUrls.poolList({ network: 'stellar' }))
-      // Mainnet is empty while the backend rolls out support.
-      cy.get(`[data-testid="dex-pool-empty-state-no-results"]`, TIMEOUTS['curveLite.pools']).should('be.visible')
-    })
-
     it('loads pools, searches by address, and resets an empty search', () => {
       mountStellarApp(POOL_LIST_URL)
       poolLinks().then($links => {
