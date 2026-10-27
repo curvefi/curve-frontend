@@ -64,7 +64,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('shows pools while Merkl campaigns are still loading', () => {
-      mockCampaigns([], 30_000)
+      mockCampaigns([], TIMEOUTS['curveLite.pools'].timeout)
       mountStellarApp(POOL_LIST_URL)
       poolLinks()
         .first()

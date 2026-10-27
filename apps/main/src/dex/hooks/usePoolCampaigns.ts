@@ -10,7 +10,7 @@ import { groupCampaignsByAddress } from '@ui/features/campaigns/campaigns.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
 
-const getOptions = (formatAddress: (address: string) => Address, enabled = true) =>
+const getMerklOptions = (formatAddress: (address: string) => Address, enabled = true) =>
   queryOptions({ ...getCampaignsPoolsMerklOptions({}, enabled), select: groupCampaignsByAddress(formatAddress) })
 
 /**
@@ -18,10 +18,10 @@ const getOptions = (formatAddress: (address: string) => Address, enabled = true)
  */
 export const usePoolCampaigns = ({ blockchainId }: { blockchainId: string }) =>
   useQueries({
-    queries: [getCampaignsExternalOptions(getAddress), getOptions(getAddress)],
+    queries: [getCampaignsExternalOptions(getAddress), getMerklOptions(getAddress)],
     combine: useCallback(
       ([external, merklPools]: QueriesResults<
-        [ReturnType<typeof getCampaignsExternalOptions>, ReturnType<typeof getOptions>]
+        [ReturnType<typeof getCampaignsExternalOptions>, ReturnType<typeof getMerklOptions>]
       >) => ({
         ...combineQueryState(external, merklPools),
         // Combine campaigns with an optional network filter
