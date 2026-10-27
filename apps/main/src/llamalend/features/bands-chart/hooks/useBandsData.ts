@@ -29,7 +29,5 @@ export const useBandsData = ({
   const marketBands = useMarketBandsBalances({ chainId, marketId, liquidationBand: liquidationBand.data }, enabled)
 
   const chartData = useProcessedBandsData({ marketBandsBalances: marketBands.data, userBandsBalances: userBands.data })
-  const { isLoading, error } = combineQueryState(market, loanExists, liquidationBand, userBands, marketBands)
-
-  return q({ data: chartData, isLoading, error })
+  return q({ data: chartData, ...combineQueryState(market, loanExists, liquidationBand, userBands, marketBands) })
 }
