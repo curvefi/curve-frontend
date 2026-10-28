@@ -13,7 +13,7 @@ import { getPool } from '../pool.utils'
 
 export const {
   useQuery: useUserLitePoolPositions,
-  queryKey: getUserLitePoolPositionsQueryKey,
+  reset: resetUserLitePoolPositions,
   invalidate: invalidateUserLitePoolPositions,
 } = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>

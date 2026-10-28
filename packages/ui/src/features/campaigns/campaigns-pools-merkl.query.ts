@@ -2,7 +2,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { fetchMerklRewards } from './merkl'
 
-export const { getQueryOptions: getCampaignsPoolsMerklOptions, queryKey: getCampaignsPoolsMerklQueryKey } =
+export const { getQueryOptions: getCampaignsPoolsMerklOptions, reset: resetCampaignsPoolsMerkl } =
   queryFactory({
     queryKey: () => ({ name: 'campaigns-pools-merkl', version: 2 }) as const,
     queryFn: async () =>
