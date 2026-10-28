@@ -2,7 +2,8 @@ import {
   type ApiCollateralEvent,
   getOpenPositionEvents,
 } from '@/llamalend/features/user-position-history/collateral-events.utils'
-import type { Decimal } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { formatNumber, type NumberFormatCategory } from '@primitives/number.utils'
 import { maybe, type Nullish } from '@primitives/objects.utils'
 import {
   decimal,
@@ -136,3 +137,7 @@ export const getPositionPnlAndRoe = ({
         ? getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral)
         : null,
   }
+
+/** Formats a PNL or ROE value with a + sign when it is positive */
+export const formatSigned = (value: Amount, category: NumberFormatCategory) =>
+  `${Number(value) > 0 ? '+' : ''}${formatNumber(value, category)}`

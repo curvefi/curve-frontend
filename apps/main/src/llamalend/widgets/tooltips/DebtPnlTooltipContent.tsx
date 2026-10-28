@@ -1,5 +1,4 @@
-import { formatSigned } from '@/llamalend/pnl-format.utils'
-import type { PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
+import { formatSigned, type PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'

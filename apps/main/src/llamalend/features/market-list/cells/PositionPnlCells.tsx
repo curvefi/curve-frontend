@@ -1,4 +1,4 @@
-import { formatSigned } from '@/llamalend/pnl-format.utils'
+import { formatSigned } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { DebtPnlTooltipContent } from '@/llamalend/widgets/tooltips/DebtPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
