@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { getStellarTransactionFees, StellarFetchRetry } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit.tech/stellar-wallets-kit/types'
@@ -110,12 +110,16 @@ const sendPoolDeployment = async (
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
 export const deployTestPool = async ({ factory: factoryAddress, deployer, coins }: TestnetConfig) => {
-  const factory = await contract.Client.from<Factory>({
-    contractId: factoryAddress,
-    publicKey: deployer.address,
-    networkPassphrase: Networks.TESTNET,
-    rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
-  })
+  const factory = await retry(
+    () =>
+      contract.Client.from<Factory>({
+        contractId: factoryAddress,
+        publicKey: deployer.address,
+        networkPassphrase: Networks.TESTNET,
+        rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
+      }),
+    StellarFetchRetry,
+  )
   const { result: implementation } = await factory.implementation({ coin_count: coins.length, implementation_index: 0 })
   const { wasm_hash } = assert(implementation, 'Missing pool implementation')
   return retry(
