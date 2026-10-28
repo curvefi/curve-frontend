@@ -20,4 +20,5 @@ jobs:
           cache: yarn
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - run: yarn workspace @curvefi/prices-api test:endpoints

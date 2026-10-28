@@ -24,6 +24,7 @@ jobs:
           path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - name: Optimize dependencies
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
