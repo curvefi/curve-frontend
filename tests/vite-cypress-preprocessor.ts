@@ -65,7 +65,6 @@ export const vitePreprocessor = () => {
                 external: ['node:worker_threads'],
                 output: {
                   format: 'iife', // avoid top-level imports in the runner
-                  inlineDynamicImports: true, // force a single bundle per spec
                   entryFileNames: filename, // keep original name for Cypress loader
                   manualChunks: undefined,
                 },
