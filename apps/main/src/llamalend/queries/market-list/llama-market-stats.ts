@@ -1,8 +1,8 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
-import { getPositionCashFlowsOptions } from '@/llamalend/features/user-position-history/queries/position-cash-flows'
+import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
-import type { PositionCashFlows } from '@/llamalend/position-pnl.utils'
+import type { PositionCapital } from '@/llamalend/position-pnl.utils'
 import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -51,13 +51,13 @@ export type MarketStats = ReturnType<typeof normalizeMarketStats>
 type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
-  cashFlows: QueryProp<PositionCashFlows>
+  capital: QueryProp<PositionCapital>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
-  cashFlows: DISABLED_Q,
+  capital: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -109,11 +109,11 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     combine: results => results.map(result => q<BorrowStats>(result)),
   })
   const isPositionPnlEnabled = useLlamalendPositionPnl()
-  const cashFlowsQueries = useQueries({
+  const capitalQueries = useQueries({
     queries: useMemo(
       () =>
         statsEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
-          getPositionCashFlowsOptions(
+          getPositionCapitalOptions(
             type,
             { contractAddress: controllerAddress, userAddress, blockchainId },
             isPositionPnlEnabled,
@@ -121,7 +121,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         ),
       [statsEntries, userAddress, isPositionPnlEnabled],
     ),
-    combine: results => results.map(result => q<PositionCashFlows>(result)),
+    combine: results => results.map(result => q<PositionCapital>(result)),
   })
   const tokenPriceQueries = useQueries({
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
@@ -130,7 +130,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
-    const cashFlowsByMarket = new Map(statsEntries.map(({ market }, index) => [market, cashFlowsQueries[index]]))
+    const capitalByMarket = new Map(statsEntries.map(({ market }, index) => [market, capitalQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
@@ -149,9 +149,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
             collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
           },
-          cashFlows: cashFlowsByMarket.get(market) ?? DISABLED_Q,
+          capital: capitalByMarket.get(market) ?? DISABLED_Q,
         },
       }
     })
-  }, [markets, statsEntries, statsQueries, cashFlowsQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [markets, statsEntries, statsQueries, capitalQueries, tokenPriceEntries, tokenPriceQueries])
 }

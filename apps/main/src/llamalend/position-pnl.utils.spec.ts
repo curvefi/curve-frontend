@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { UserCollateralEvent } from '@curvefi/prices-api/lending'
 import { fromDate } from '@curvefi/prices-api/timestamp'
-import { getPositionPnl, toPositionCashFlows } from './position-pnl.utils'
+import { getPositionPnl, toPositionCapital } from './position-pnl.utils'
 
 const USER = '0x00000000000000000000000000000000000000aa'
 const LIQUIDATOR = '0x00000000000000000000000000000000000000bb'
@@ -71,7 +71,7 @@ const pnlAt = (
   getPositionPnl({
     equity: `${collateral * oraclePrice - debt}`,
     oraclePrice: `${oraclePrice}`,
-    cashFlows: toPositionCashFlows({ events }),
+    capital: toPositionCapital({ events }),
     hasRoe,
   })
 
@@ -191,7 +191,7 @@ describe('liquidations', () => {
       oraclePrice: 1500,
       liquidation: { liquidator: LIQUIDATOR },
     })
-    expect(toPositionCashFlows({ events: [open, liquidated] })).toEqual(toPositionCashFlows({ events: [open] }))
+    expect(toPositionCapital({ events: [open, liquidated] })).toEqual(toPositionCapital({ events: [open] }))
   })
 
   it('counts what a self-liquidation took from the wallet', () => {
@@ -205,24 +205,24 @@ describe('liquidations', () => {
       },
     })
     // 10,000 debt − 500 stablecoin − 2 × 1,500 collateral
-    expect(Number(toPositionCashFlows({ events: [open, selfLiquidated] })?.debt.netInvested)).toBe(10_000 + 6500)
+    expect(Number(toPositionCapital({ events: [open, selfLiquidated] })?.debt.netInvested)).toBe(10_000 + 6500)
   })
 })
 
-describe('cash flows', () => {
+describe('capital', () => {
   it('only counts events after the last closed position', () => {
     const closed = [
       event({ collateralChange: 5, loanChange: 1000, oraclePrice: 1000 }),
       event({ collateralChange: -5, loanChange: -1000, oraclePrice: 3000, isPositionClosed: true }),
     ]
     const open = event({ collateralChange: 10, loanChange: 10_000, oraclePrice: 2000 })
-    expect(toPositionCashFlows({ events: [...closed, open] })).toEqual(toPositionCashFlows({ events: [open] }))
+    expect(toPositionCapital({ events: [...closed, open] })).toEqual(toPositionCapital({ events: [open] }))
   })
 
   it('is null without events in the open position', () => {
-    expect(toPositionCashFlows({ events: [] })).toBeNull()
+    expect(toPositionCapital({ events: [] })).toBeNull()
     expect(
-      toPositionCashFlows({ events: [event({ loanChange: -1000, oraclePrice: 2000, isPositionClosed: true })] }),
+      toPositionCapital({ events: [event({ loanChange: -1000, oraclePrice: 2000, isPositionClosed: true })] }),
     ).toBeNull()
     expect(pnlAt([], { collateral: 10, debt: 10_000, oraclePrice: 2000 })).toBeNull()
   })

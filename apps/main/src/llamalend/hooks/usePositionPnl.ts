@@ -1,6 +1,6 @@
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { usePositionCashFlows } from '@/llamalend/features/user-position-history/queries/position-cash-flows'
+import { usePositionCapital } from '@/llamalend/features/user-position-history/queries/position-capital'
 import { isLegacyMintController } from '@/llamalend/markets.constants'
 import { getPositionPnl, type PositionPnl } from '@/llamalend/position-pnl.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
@@ -21,13 +21,13 @@ export function usePositionPnl(params: UserMarketParams): PositionPnlQueries | n
   const blockchainId = BlockchainIds[chainId]
   const position = q(useUserState(params, isEnabled))
   const oraclePrice = q(useMarketOraclePrice(params, isEnabled))
-  const cashFlows = q(
-    usePositionCashFlows(marketType, { blockchainId, contractAddress: controllerAddress, userAddress }, isEnabled),
+  const capital = q(
+    usePositionCapital(marketType, { blockchainId, contractAddress: controllerAddress, userAddress }, isEnabled),
   )
   const hasRoe = !isLegacyMintController(blockchainId, controllerAddress)
   const equity = combineQueries([position, oraclePrice], getEquity)
-  const pnl = combineQueries([equity, oraclePrice, cashFlows], (equity, oraclePrice, cashFlows) =>
-    getPositionPnl({ equity, oraclePrice, cashFlows, hasRoe }),
+  const pnl = combineQueries([equity, oraclePrice, capital], (equity, oraclePrice, capital) =>
+    getPositionPnl({ equity, oraclePrice, capital, hasRoe }),
   )
   return isEnabled ? { equity, pnl } : null
 }

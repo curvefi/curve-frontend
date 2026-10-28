@@ -33,14 +33,14 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
 
 /** PNL of the borrow position in USD, with the ROE below it */
 export const PnlCell = ({ getValue, row }: PositionCellProps) => {
-  const { stats, prices, cashFlows } = row.original.positionQueries
-  const error = stats.error ?? cashFlows.error
+  const { stats, prices, capital } = row.original.positionQueries
+  const error = stats.error ?? capital.error
   const pnlUsd = getValue()
   const roe = getUserPnlRoe(row.original)
   return error ? (
     <ErrorCell error={error} />
   ) : (
-    <WithSkeleton loading={stats.isLoading || cashFlows.isLoading || prices.collateral.isLoading} {...skeletonProps}>
+    <WithSkeleton loading={stats.isLoading || capital.isLoading || prices.collateral.isLoading} {...skeletonProps}>
       <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
         <Typography variant="tableCellValueStrong" color={getChangeColor(pnlUsd ?? 0, 'success', 'error')}>
           {formatNumber(pnlUsd, 'usd.notional')}

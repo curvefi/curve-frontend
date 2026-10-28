@@ -16,16 +16,16 @@ import {
   ZERO,
 } from '@ui/lib/decimal'
 
-/** Sums over the open position, in one token */
-type CashFlows = {
+/** The user's own capital in the open position, in one token. The ROE divides by netInvested + max(walletBorrowed, 0). */
+type Capital = {
   /** Value moved from the user's wallet into the position, negative when the user received more than they put in */
   netInvested: Decimal
-  /** Borrowed tokens sent to the user's wallet, net of repays */
+  /** Borrowed tokens sent to the user's wallet, net of repays: negative when wallet repays exceed them, e.g. after a zap borrow */
   walletBorrowed: Decimal
 }
 
-/** Cash flows of the open position in the debt token, and in the collateral token at each event's oracle price */
-export type PositionCashFlows = { debt: CashFlows; collateral: CashFlows | null } | null
+/** Own capital of the open position in the debt token, and in the collateral token at each event's oracle price */
+export type PositionCapital = { debt: Capital; collateral: Capital | null } | null
 
 type PnlRoe = { pnl: Decimal; roe: Decimal | null }
 
@@ -80,8 +80,8 @@ const plain = ({ collateralChange, loanChange, oraclePrice }: ApiCollateralEvent
 const getEventFlow = (event: ApiCollateralEvent): EventFlow =>
   selfLiquidation(event) ?? liquidation(event) ?? zapDeposit(event) ?? zapRepay(event) ?? plain(event)
 
-/** Folds the collateral events of the open position into its cash flows. Null when the open position has no events. */
-export const toPositionCashFlows = ({ events }: { events: ApiCollateralEvent[] }): PositionCashFlows => {
+/** Folds the collateral events of the open position into its own capital. Null when the open position has no events. */
+export const toPositionCapital = ({ events }: { events: ApiCollateralEvent[] }): PositionCapital => {
   const openEvents = getOpenPositionEvents(events)
   if (!openEvents.length) return null
   const flows = openEvents.map(event => ({ price: toDecimal(event.oraclePrice), ...getEventFlow(event) }))
@@ -97,28 +97,28 @@ export const toPositionCashFlows = ({ events }: { events: ApiCollateralEvent[] }
   }
 }
 
-const getPnlRoe = (equity: Decimal, { netInvested, walletBorrowed }: CashFlows, hasRoe: boolean): PnlRoe => {
+const getPnlRoe = (equity: Decimal, { netInvested, walletBorrowed }: Capital, hasRoe: boolean): PnlRoe => {
   const pnl = decimalMinus(equity, netInvested)
-  const capital = decimalSum(netInvested, decimalGreaterThan(walletBorrowed, ZERO) ? walletBorrowed : ZERO)
-  return { pnl, roe: hasRoe && decimalGreaterThan(capital, ZERO) ? decimalPercent(pnl, capital) : null }
+  const totalCapital = decimalSum(netInvested, decimalGreaterThan(walletBorrowed, ZERO) ? walletBorrowed : ZERO)
+  return { pnl, roe: hasRoe && decimalGreaterThan(totalCapital, ZERO) ? decimalPercent(pnl, totalCapital) : null }
 }
 
-/** PNL and ROE of the open position from its equity (in the debt token) and its cash flows. Null without cash flows. */
+/** PNL and ROE of the open position from its equity (in the debt token) and its own capital. Null without capital. */
 export const getPositionPnl = ({
   equity,
   oraclePrice,
-  cashFlows,
+  capital,
   hasRoe,
 }: {
   equity: Decimal
   oraclePrice: Decimal
-  cashFlows: PositionCashFlows
+  capital: PositionCapital
   hasRoe: boolean
 }): PositionPnl | null =>
-  cashFlows && {
-    debt: getPnlRoe(equity, cashFlows.debt, hasRoe),
+  capital && {
+    debt: getPnlRoe(equity, capital.debt, hasRoe),
     collateral:
-      cashFlows.collateral && !decimalEqual(oraclePrice, ZERO)
-        ? getPnlRoe(decimalDiv(equity, oraclePrice), cashFlows.collateral, hasRoe)
+      capital.collateral && !decimalEqual(oraclePrice, ZERO)
+        ? getPnlRoe(decimalDiv(equity, oraclePrice), capital.collateral, hasRoe)
         : null,
   }

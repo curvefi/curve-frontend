@@ -63,11 +63,11 @@ export const getUserEquityUsd = (row: LlamaMarketRow) =>
 
 /** PNL of the open borrow position, undefined until its stats and collateral events load */
 const getUserPnl = (row: LlamaMarketRow) =>
-  maybes([getUserEquity(row), row.positionQueries.cashFlows.data], ({ equity, oraclePrice }, cashFlows) =>
+  maybes([getUserEquity(row), row.positionQueries.capital.data], ({ equity, oraclePrice }, capital) =>
     getPositionPnl({
       equity,
       oraclePrice,
-      cashFlows,
+      capital,
       hasRoe: !isLegacyMintController(row.blockchainId, row.controllerAddress),
     }),
   )
