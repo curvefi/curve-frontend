@@ -12,6 +12,7 @@ import {
   decimalGreaterThan,
   decimalMinus,
   decimalMultiply,
+  decimalNegate,
   decimalPercent,
   decimalSum,
   ZERO,
@@ -29,7 +30,7 @@ type Capital = {
 }
 
 /** Own capital of the open position in the debt token, and in the collateral token at each event's oracle price */
-export type PositionCapital = { debt: Capital; collateral: Capital | null } | null
+export type PositionCapital = { debt: Capital; collateral: Capital } | null
 
 /** PNL and ROE (%) in one token. ROE divides the PNL by own capital: netInvested + max(walletBorrowed, 0) */
 type PnlAndRoe = { pnl: Decimal; roe: Decimal | null }
@@ -70,16 +71,18 @@ const zapDeposit = ({ leverage, oraclePrice }: ApiCollateralEvent) =>
       )
     : undefined
 
-const zapRepay = ({ leverage, oraclePrice, loanChange }: ApiCollateralEvent) =>
+const zapRepay = ({ leverage, oraclePrice, loanChange }: ApiCollateralEvent): EventFlow | undefined =>
   leverage?.eventType === 'Repay'
-    ? ownFlow(
-        decimalMinus(
+    ? {
+        flow: decimalMinus(
           decimalMultiply(toDecimal(leverage.userCollateral), oraclePrice),
           toDecimal(loanChange),
           toDecimal(leverage.borrowedFromStateCollateral),
           toDecimal(leverage.borrowedFromUserCollateral),
         ),
-      )
+        // Borrowed tokens the wallet paid into the zap repay, like a plain repay from the wallet
+        walletBorrowed: decimalNegate(toDecimal(leverage.userBorrowed)),
+      }
     : undefined
 
 const plain = ({ collateralChange, loanChange, oraclePrice }: ApiCollateralEvent): EventFlow => ({
@@ -102,15 +105,15 @@ export const toPositionCapital = ({ events }: { events: ApiCollateralEvent[] }):
   const openEvents = getOpenPositionEvents(events)
   if (!openEvents.length) return null
   const flows = openEvents.map(event => ({ price: toDecimal(event.oraclePrice), ...getEventFlow(event) }))
+  // Without an oracle price an event's collateral can't be valued, in either token
+  if (flows.some(({ price }) => decimalEqual(price, ZERO))) return null
   const sum = (toValue: (flow: (typeof flows)[number]) => Decimal) => decimalSum(...flows.map(toValue))
   return {
     debt: { netInvested: sum(({ flow }) => flow), walletBorrowed: sum(({ walletBorrowed }) => walletBorrowed) },
-    collateral: flows.some(({ price }) => decimalEqual(price, ZERO))
-      ? null
-      : {
-          netInvested: sum(({ flow, price }) => decimalDiv(flow, price)),
-          walletBorrowed: sum(({ walletBorrowed, price }) => decimalDiv(walletBorrowed, price)),
-        },
+    collateral: {
+      netInvested: sum(({ flow, price }) => decimalDiv(flow, price)),
+      walletBorrowed: sum(({ walletBorrowed, price }) => decimalDiv(walletBorrowed, price)),
+    },
   }
 }
 
@@ -132,10 +135,9 @@ export const getPositionPnlAndRoe = ({
 }): PositionPnlAndRoe | null =>
   capital && {
     debt: getPnlAndRoe(equity, capital.debt),
-    collateral:
-      capital.collateral && !decimalEqual(oraclePrice, ZERO)
-        ? getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral)
-        : null,
+    collateral: decimalEqual(oraclePrice, ZERO)
+      ? null
+      : getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral),
   }
 
 /** Formats a PNL or ROE value with a + sign when it is positive */

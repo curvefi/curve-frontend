@@ -169,6 +169,19 @@ describe('zap borrow sequence with a 1% swap cost', () => {
   it('does not count a zap repay as a withdrawal', () =>
     expectPnl(pnlAt(after(3), { collateral: 21.4, debt: 23_763, oraclePrice: 2100 }), { pnl: 1177, roe: 5.885 }))
 
+  it('counts a zap repay paid from the wallet like a plain repay', () => {
+    const open = event({ collateralChange: 10, loanChange: 10_000, oraclePrice: 2000 })
+    const plainRepay = event({ loanChange: -5000, oraclePrice: 2000 })
+    const zapRepay = event({
+      loanChange: -5000,
+      oraclePrice: 2000,
+      leverage: { eventType: 'Repay', userBorrowed: 5000 },
+    })
+    const position = { collateral: 10, debt: 5000, oraclePrice: 2200 }
+    expectPnl(pnlAt([open, zapRepay], position), { pnl: 2000, roe: 10 })
+    expect(toPositionCapital({ events: [open, zapRepay] })).toEqual(toPositionCapital({ events: [open, plainRepay] }))
+  })
+
   it('counts plain collateral moves after the zap', () => {
     expectPnl(pnlAt(after(4), { collateral: 23.4, debt: 23_763, oraclePrice: 1900 }), { pnl: -3103, roe: -13.04 })
     expectPnl(pnlAt(after(5), { collateral: 20.4, debt: 23_763, oraclePrice: 2300 }), { pnl: 6257, roe: 37.02 })
@@ -221,13 +234,10 @@ describe('capital', () => {
     expect(pnlAt([], { collateral: 10, debt: 10_000, oraclePrice: 2000 })).toBeNull()
   })
 
-  it('has no collateral values when an event has no oracle price', () => {
-    const events = [event({ collateralChange: 10, loanChange: 10_000, oraclePrice: 0 })]
-    const pnl = pnlAt(events, { collateral: 10, debt: 10_000, oraclePrice: 2200 })
-    expect(pnl?.collateral).toBeNull()
-    // the deposit counts as worth 0: N = 10 × 0 − 10,000
-    expect(Number(pnl?.debt.pnl)).toBe(12_000 + 10_000)
-  })
+  it('is null when an event has no oracle price', () =>
+    expect(
+      toPositionCapital({ events: [event({ collateralChange: 10, loanChange: 10_000, oraclePrice: 0 })] }),
+    ).toBeNull())
 
   it('has no collateral values at a zero oracle price', () =>
     expect(
