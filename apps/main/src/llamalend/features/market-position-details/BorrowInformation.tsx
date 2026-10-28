@@ -17,6 +17,7 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
@@ -149,12 +150,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             ...BORROW_METRIC_TOOLTIP,
           }}
           notional={mapQuery(equityLeverage.yieldMultiplier, multiplier =>
-            maybe(multiplier, value => ({
-              value,
-              unit: { symbol: t`× yield`, position: 'suffix' as const },
-              abbreviate: false,
-              maximumFractionDigits: 2,
-            })),
+            maybe(multiplier, value => t`${formatNumber(value, 'multiplier')} yield`),
           )}
         />
       )}

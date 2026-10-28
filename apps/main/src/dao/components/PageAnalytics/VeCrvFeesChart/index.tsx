@@ -3,6 +3,7 @@ import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box } from '@legacy-ui/Box'
+import { constQ } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { FeesBarChart } from './FeesBarChart'
 
@@ -15,13 +16,11 @@ export const VeCrvFeesChart = ({ data }: { data: VeCrvFee[] }) => (
     </TitleRow>
     <Content>
       <EvmChartStateWrapper
+        query={constQ(data)}
         height={DAO_CHART_HEIGHT}
-        isLoading={false}
-        isEmpty={data.length === 0}
-        error={null}
-        errorMessage={t`Unable to fetch veCRV fees data.`}
+        errorState={{ description: t`Unable to fetch veCRV fees data.` }}
       >
-        <FeesBarChart height={DAO_CHART_HEIGHT} data={data} />
+        {fees => <FeesBarChart height={DAO_CHART_HEIGHT} data={fees} />}
       </EvmChartStateWrapper>
     </Content>
   </Wrapper>

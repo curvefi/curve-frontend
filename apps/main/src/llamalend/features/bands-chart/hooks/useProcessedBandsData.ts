@@ -8,9 +8,12 @@ type ProcessedBandsData = {
   userBandsBalances: FetchedBandsBalances[] | undefined
 }
 
+/** User band fields are only set on points merged from the user's bands. */
+export const isUserBand = (band: ChartDataPoint) => band.userBandCollateralAmount !== undefined
+
 export const useProcessedBandsData = ({ marketBandsBalances, userBandsBalances }: ProcessedBandsData) =>
   useMemo(() => {
-    if (!marketBandsBalances) return []
+    if (!marketBandsBalances) return undefined
 
     const userBands = userBandsBalances ?? []
 

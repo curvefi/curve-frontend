@@ -110,7 +110,7 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[], now:
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: MarketHistoricalRatesChartProps) => {
-  const { chainId, marketId, controllerAddress, apiMarket } = useMarketContext()
+  const { chainId, marketId, apiMarket } = useMarketContext()
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series
   const [visibleSeries, setVisibleSeries] = useState<RateSeriesKey[]>(() => activeSeriesConfig.map(({ key }) => key))
@@ -142,14 +142,14 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
     ),
   )
 
-  const chartData = useMemo<RateChartPoint[]>(() => {
+  const chartData = mapQuery(ratePoints, (ratePoints): RateChartPoint[] => {
     const cutoff = new Date(dataUpdatedAt.getTime() - TIME_OPTION_MS[timeOption])
     return addMovingAverages(
-      (ratePoints.data ?? []).filter(({ timestamp }) => timestamp >= cutoff.getTime()),
+      ratePoints.filter(({ timestamp }) => timestamp >= cutoff.getTime()),
       d => d.rate,
       d => d.timestamp,
     )
-  }, [ratePoints.data, timeOption, dataUpdatedAt])
+  })
 
   const averageRates = useMappedQuery(
     ratePoints,
@@ -214,22 +214,23 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={chartData}
           height={Height.chart.sm}
-          isLoading={snapshots.isLoading || !controllerAddress}
-          error={snapshots.error}
-          errorMessage={t`Unable to fetch historical rates data.`}
+          errorState={{ description: t`Unable to fetch historical rates data.` }}
         >
-          <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
-            data={chartData}
-            height={Height.chart.sm}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={HistoricalRatesTooltip}
-          />
+          {data => (
+            <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
+              yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={HistoricalRatesTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>

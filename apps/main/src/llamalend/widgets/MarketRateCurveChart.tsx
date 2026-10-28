@@ -61,7 +61,11 @@ export const MarketRateCurveChart = () => {
   const {
     design: { Color },
   } = useTheme()
-  const rateCurve = useRateCurve({ blockchainId, contractAddress: controllerAddress })
+  // the rate curve query stays idle until the market provides the controller address
+  const rateCurve = combineQueries(
+    [q(useRateCurve({ blockchainId, contractAddress: controllerAddress })), fallbackQ(marketQuery, apiMarket)],
+    rateCurve => rateCurve,
+  )
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalDebt = fallbackQ(
     q(useMarketTotalDebt({ chainId, marketId })),
@@ -152,24 +156,25 @@ export const MarketRateCurveChart = () => {
           />
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={chartData}
           height={Height.chart.sm}
-          isLoading={chartData.isLoading}
-          error={chartData.error}
-          errorMessage={t`Unable to fetch rate curve data.`}
+          errorState={{ description: t`Unable to fetch rate curve data.` }}
         >
-          <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
-            data={chartData.data ?? []}
-            height={Height.chart.sm}
-            xKey="utilization"
-            series={series}
-            visibleSeries={visibleSeries}
-            xAxisType="value"
-            markLines={markLines}
-            xTickFormatter={value => formatNumber(+value, 'percent.rate')}
-            yTickFormatter={value => formatNumber(+value, 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={RateCurveTooltip}
-          />
+          {data => (
+            <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="utilization"
+              series={series}
+              visibleSeries={visibleSeries}
+              xAxisType="value"
+              markLines={markLines}
+              xTickFormatter={value => formatNumber(+value, 'percent.rate')}
+              yTickFormatter={value => formatNumber(+value, 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={RateCurveTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}

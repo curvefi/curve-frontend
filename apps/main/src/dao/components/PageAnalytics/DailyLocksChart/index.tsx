@@ -3,27 +3,25 @@ import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useVeCrvLocksQuery } from '@/dao/entities/vecrv-locks'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import Box from '@mui/material/Box'
+import { q } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
 
 const DAILY_LOCKS_DAYS = 100
 
 export const DailyLocks = () => {
-  const { data: locks, isLoading, error, refetch } = useVeCrvLocksQuery({ days: DAILY_LOCKS_DAYS })
+  const locks = useVeCrvLocksQuery({ days: DAILY_LOCKS_DAYS })
 
   return (
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <BoxTitle>{t`Daily veCRV Locks Last ${DAILY_LOCKS_DAYS} Days`}</BoxTitle>
       <Content>
         <EvmChartStateWrapper
+          query={q(locks)}
           height={DAO_CHART_HEIGHT}
-          isLoading={isLoading}
-          isEmpty={locks?.length === 0}
-          error={error}
-          errorMessage={t`Unable to fetch daily veCRV locks.`}
-          refreshData={refetch}
+          errorState={{ description: t`Unable to fetch daily veCRV locks.`, onReload: locks.refetch }}
         >
-          {locks && <PositiveAndNegativeBarChart height={DAO_CHART_HEIGHT} data={locks} />}
+          {data => <PositiveAndNegativeBarChart height={DAO_CHART_HEIGHT} data={data} />}
         </EvmChartStateWrapper>
       </Content>
     </Box>

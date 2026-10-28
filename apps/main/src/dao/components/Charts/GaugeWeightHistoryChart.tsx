@@ -13,6 +13,7 @@ import {
 } from '@ui/features/charts/ChartTooltipComponents'
 import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
 import type { LegendItem } from '@ui/features/charts/LegendSet'
+import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
@@ -26,7 +27,7 @@ type GaugeWeightHistoryChartProps = { gaugeAddress: Address; height?: number }
 
 export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart.lg }: GaugeWeightHistoryChartProps) => {
   const lineColor = useTheme().design.Chart.Lines[1]
-  const { data = [], isLoading, isSuccess, error, refetch } = useGaugeWeightHistoryQuery({ gaugeAddress })
+  const history = useGaugeWeightHistoryQuery({ gaugeAddress })
 
   const series: LineSeriesConfig<GaugeWeightSeriesKey>[] = [
     { key: 'weightRelative', label: SERIES_LABEL, color: lineColor },
@@ -36,47 +37,46 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart.lg
   return (
     <Stack sx={{ flexGrow: 1, gap: Spacing.md }}>
       <EvmChartStateWrapper
+        query={q(history)}
         height={height}
-        isLoading={isLoading}
-        isEmpty={isSuccess && data.length === 0}
-        error={error}
-        errorMessage={ERROR_MESSAGE}
-        refreshData={() => void refetch()}
+        errorState={{ description: ERROR_MESSAGE, onReload: () => void history.refetch() }}
       >
-        <EChartsLineChart<GaugeWeightHistoryData, GaugeWeightSeriesKey, 'timestamp'>
-          data={data}
-          height={height}
-          xKey="timestamp"
-          series={series}
-          xTickFormatter={value => formatDate(value)}
-          yTickFormatter={value => formatNumber(+value, 'percent.value')}
-          yPaddingRatio={0.1}
-          renderTooltip={({ datum, visibleSeries }) => (
-            <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
-              <ChartTooltipSeriesGroup>
-                <ChartTooltipDataRow
-                  label={t`Gauge Weight`}
-                  value={formatNumber(datum.weight, { abbreviate: true, fallback: '-' })}
-                />
-                {visibleSeries.map(activeSeries => (
+        {data => (
+          <EChartsLineChart<GaugeWeightHistoryData, GaugeWeightSeriesKey, 'timestamp'>
+            data={data}
+            height={height}
+            xKey="timestamp"
+            series={series}
+            xTickFormatter={value => formatDate(value)}
+            yTickFormatter={value => formatNumber(+value, 'percent.value')}
+            yPaddingRatio={0.1}
+            renderTooltip={({ datum, visibleSeries }) => (
+              <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
+                <ChartTooltipSeriesGroup>
                   <ChartTooltipDataRow
-                    key={activeSeries.key}
-                    label={activeSeries.label}
-                    value={formatNumber(datum[activeSeries.key], {
-                      unit: 'percentage',
-                      abbreviate: false,
-                      fallback: '-',
-                    })}
+                    label={t`Gauge Weight`}
+                    value={formatNumber(datum.weight, { abbreviate: true, fallback: '-' })}
                   />
-                ))}
-                <ChartTooltipDataRow
-                  label={t`Emissions (CRV)`}
-                  value={formatNumber(datum.emissions, { abbreviate: true, fallback: '-' })}
-                />
-              </ChartTooltipSeriesGroup>
-            </ChartTooltipShell>
-          )}
-        />
+                  {visibleSeries.map(activeSeries => (
+                    <ChartTooltipDataRow
+                      key={activeSeries.key}
+                      label={activeSeries.label}
+                      value={formatNumber(datum[activeSeries.key], {
+                        unit: 'percentage',
+                        abbreviate: false,
+                        fallback: '-',
+                      })}
+                    />
+                  ))}
+                  <ChartTooltipDataRow
+                    label={t`Emissions (CRV)`}
+                    value={formatNumber(datum.emissions, { abbreviate: true, fallback: '-' })}
+                  />
+                </ChartTooltipSeriesGroup>
+              </ChartTooltipShell>
+            )}
+          />
+        )}
       </EvmChartStateWrapper>
       <ChartFooter legendSets={legendSets} />
     </Stack>

@@ -16,7 +16,7 @@ import { LegendLine } from '@ui/features/charts/LegendSet'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { Reds } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useResizeObserver } from '@ui/hooks/useResizeObserver'
@@ -57,8 +57,8 @@ export const LiquidityDensityChart = ({
   const { data: profileData, isLoading: profileLoading, error: profileError } = profile
   const { data: oracle, isLoading: oracleLoading, error: oracleError } = oraclePrice
   const { data: center, isLoading: centerLoading, error: centerError } = centerPrice
-  const { isConnected } = useConnection()
   const theme = useTheme()
+  const { isConnected } = useConnection()
   const { Chart, Color, Layer } = theme.design
   const { spot, samples } = profileData ?? {}
   const priceLabel = t`USD per ${inputSymbol}`
@@ -104,6 +104,14 @@ export const LiquidityDensityChart = ({
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [width] = useResizeObserver(containerRef, { dimension: 'width' })
+  const option = useLiquidityDensityChartOption({
+    profile,
+    markers,
+    liquidityLabel,
+    tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
+      <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
+    )),
+  })
 
   return (
     <Stack data-testid="liquidity-density-chart" sx={{ gap: Spacing.sm }}>
@@ -158,36 +166,32 @@ export const LiquidityDensityChart = ({
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
         <EvmChartStateWrapper
+          query={mapQuery(profile, ({ samples }) => samples)}
           height={CHART_HEIGHT}
-          isLoading={profileLoading}
-          error={profileError}
-          errorMessage={t`Unable to fetch liquidity density.`}
-          isEmpty={!samples?.length}
-          {...(isConnected
-            ? {
-                emptyMessage: t`Liquidity density is unavailable for this pool.`,
-                emptyTestId: 'liquidity-density-unavailable',
-              }
-            : {
-                emptyTitle: t`Connect wallet`,
-                emptyMessage: t`Please connect your wallet to view liquidity density.`,
-                emptyTestId: 'liquidity-density-connect-wallet',
-              })}
+          emptyState={
+            isConnected
+              ? {
+                  description: t`Liquidity density is unavailable for this pool.`,
+                  testId: 'liquidity-density-unavailable',
+                }
+              : {
+                  title: t`Connect wallet`,
+                  description: t`Please connect your wallet to view liquidity density.`,
+                  testId: 'liquidity-density-connect-wallet',
+                  button: { type: 'connect-wallet' },
+                }
+          }
+          errorState={{ description: t`Unable to fetch liquidity density.` }}
         >
-          <ReactECharts
-            option={useLiquidityDensityChartOption({
-              profile,
-              markers,
-              liquidityLabel,
-              tooltipFormatter: useEChartsTooltip(samples, theme, sample => (
-                <LiquidityDensityTooltip sample={sample} spot={spot} inputSymbol={inputSymbol} />
-              )),
-            })}
-            opts={{ renderer: 'svg' }}
-            notMerge
-            autoResize={false}
-            style={{ width: width || '100%', height: CHART_HEIGHT }}
-          />
+          {() => (
+            <ReactECharts
+              option={option}
+              opts={{ renderer: 'svg' }}
+              notMerge
+              autoResize={false}
+              style={{ width: width || '100%', height: CHART_HEIGHT }}
+            />
+          )}
         </EvmChartStateWrapper>
       </Box>
       <ChartFooter
