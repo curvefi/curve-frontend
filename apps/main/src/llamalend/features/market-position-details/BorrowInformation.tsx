@@ -1,5 +1,5 @@
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { usePositionPnl } from '@/llamalend/hooks/usePositionPnl'
+import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import {
   formatCollateralNotional,
   isPositionLeveraged,
@@ -43,7 +43,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
   const oraclePrice = useMarketOraclePrice(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
-  const positionPnl = usePositionPnl(params)
+  const positionPnl = usePositionPnlAndEquity(params)
   const collateralUsdRate = useTokenUsdRate(
     { chainId: params.chainId, tokenAddress: collateralToken?.address },
     !!positionPnl,

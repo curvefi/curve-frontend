@@ -2,7 +2,7 @@ import { sum } from 'lodash'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { isLegacyMintController } from '@/llamalend/markets.constants'
-import { getPositionPnl } from '@/llamalend/position-pnl.utils'
+import { getPositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
@@ -64,7 +64,7 @@ export const getUserEquityUsd = (row: LlamaMarketRow) =>
 /** PNL of the open borrow position, undefined until its stats and collateral events load */
 const getUserPnl = (row: LlamaMarketRow) =>
   maybes([getUserEquity(row), row.positionQueries.capital.data], ({ equity, oraclePrice }, capital) =>
-    getPositionPnl({
+    getPositionPnlAndRoe({
       equity,
       oraclePrice,
       capital,

@@ -1,6 +1,6 @@
-import type { PositionPnlQueries } from '@/llamalend/hooks/usePositionPnl'
+import type { PositionPnlAndEquityQueries } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import { tokenMetric } from '@/llamalend/llama.utils'
-import type { PositionPnl } from '@/llamalend/position-pnl.utils'
+import type { PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import type { Amount } from '@primitives/decimal.utils'
@@ -15,13 +15,13 @@ import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP } from './market-position
 const formatSigned = (value: Amount, category: NumberFormatCategory) =>
   `${Number(value) > 0 ? '+' : ''}${formatNumber(value, category)}`
 
-const formatDebtPnl = ({ pnl, roe }: PositionPnl['debt'], symbol: string) => {
+const formatDebtPnl = ({ pnl, roe }: PositionPnlAndRoe['debt'], symbol: string) => {
   const amount = `${formatSigned(pnl, 'token.amount')} ${symbol}`
   const roePercent = maybe(roe, roe => ` (${formatSigned(roe, 'percent.value')})`) ?? ''
   return t`In ${symbol}: ${amount}${roePercent}`
 }
 
-type PnlMetricsProps = PositionPnlQueries & {
+type PnlMetricsProps = PositionPnlAndEquityQueries & {
   borrowSymbol: string | undefined
   collateralSymbol: string | undefined
   borrowUsdRate: QueryProp<Amount>

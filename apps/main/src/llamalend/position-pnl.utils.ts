@@ -16,7 +16,7 @@ import {
   ZERO,
 } from '@ui/lib/decimal'
 
-/** The user's own capital in the open position, in one token. The ROE divides by netInvested + max(walletBorrowed, 0). */
+/** The user's own capital in the open position, in one token. */
 type Capital = {
   /** Value moved from the user's wallet into the position, negative when the user received more than they put in */
   netInvested: Decimal
@@ -27,10 +27,10 @@ type Capital = {
 /** Own capital of the open position in the debt token, and in the collateral token at each event's oracle price */
 export type PositionCapital = { debt: Capital; collateral: Capital | null } | null
 
-type PnlRoe = { pnl: Decimal; roe: Decimal | null }
+type PnlAndRoe = { pnl: Decimal; roe: Decimal | null }
 
 /** PNL and ROE (%) of the open position, in the debt token and in the collateral token */
-export type PositionPnl = { debt: PnlRoe; collateral: PnlRoe | null }
+export type PositionPnlAndRoe = { debt: PnlAndRoe; collateral: PnlAndRoe | null }
 
 /** An event's own flow and wallet borrow, in the debt token at the event's oracle price */
 type EventFlow = { flow: Decimal; walletBorrowed: Decimal }
@@ -97,14 +97,14 @@ export const toPositionCapital = ({ events }: { events: ApiCollateralEvent[] }):
   }
 }
 
-const getPnlRoe = (equity: Decimal, { netInvested, walletBorrowed }: Capital, hasRoe: boolean): PnlRoe => {
+const getPnlAndRoe = (equity: Decimal, { netInvested, walletBorrowed }: Capital, hasRoe: boolean): PnlAndRoe => {
   const pnl = decimalMinus(equity, netInvested)
   const totalCapital = decimalSum(netInvested, decimalGreaterThan(walletBorrowed, ZERO) ? walletBorrowed : ZERO)
   return { pnl, roe: hasRoe && decimalGreaterThan(totalCapital, ZERO) ? decimalPercent(pnl, totalCapital) : null }
 }
 
 /** PNL and ROE of the open position from its equity (in the debt token) and its own capital. Null without capital. */
-export const getPositionPnl = ({
+export const getPositionPnlAndRoe = ({
   equity,
   oraclePrice,
   capital,
@@ -114,11 +114,11 @@ export const getPositionPnl = ({
   oraclePrice: Decimal
   capital: PositionCapital
   hasRoe: boolean
-}): PositionPnl | null =>
+}): PositionPnlAndRoe | null =>
   capital && {
-    debt: getPnlRoe(equity, capital.debt, hasRoe),
+    debt: getPnlAndRoe(equity, capital.debt, hasRoe),
     collateral:
       capital.collateral && !decimalEqual(oraclePrice, ZERO)
-        ? getPnlRoe(decimalDiv(equity, oraclePrice), capital.collateral, hasRoe)
+        ? getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral, hasRoe)
         : null,
   }

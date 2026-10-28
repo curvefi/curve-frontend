@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { UserCollateralEvent } from '@curvefi/prices-api/lending'
 import { fromDate } from '@curvefi/prices-api/timestamp'
-import { getPositionPnl, toPositionCapital } from './position-pnl.utils'
+import { getPositionPnlAndRoe, toPositionCapital } from './position-pnl.utils'
 
 const USER = '0x00000000000000000000000000000000000000aa'
 const LIQUIDATOR = '0x00000000000000000000000000000000000000bb'
@@ -68,7 +68,7 @@ const pnlAt = (
     hasRoe = true,
   }: { collateral: number; debt: number; oraclePrice: number; hasRoe?: boolean },
 ) =>
-  getPositionPnl({
+  getPositionPnlAndRoe({
     equity: `${collateral * oraclePrice - debt}`,
     oraclePrice: `${oraclePrice}`,
     capital: toPositionCapital({ events }),
