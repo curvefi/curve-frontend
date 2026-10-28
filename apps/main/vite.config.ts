@@ -78,6 +78,9 @@ export default defineConfig(({ command }) => ({
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, './src') },
+      { find: '@api-server', replacement: resolve(__dirname, '../../packages/api-server/src') },
+      { find: '@merkl-api', replacement: resolve(__dirname, '../merkl-api/src') },
+      { find: '@router-api', replacement: resolve(__dirname, '../router-api/src') },
       { find: '@legacy-ui', replacement: resolve(__dirname, '../../packages/legacy-ui/src/') },
       { find: '@evm-ui', replacement: resolve(__dirname, '../../packages/evm-ui/src') },
       { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src') },

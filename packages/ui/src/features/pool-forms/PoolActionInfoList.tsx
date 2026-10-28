@@ -23,12 +23,9 @@ type PoolActionInfoListProps = {
   expectedLpLabel?: string
   expectedLpTestId?: string
   minimumLp?: QueryProp<Decimal>
-  maximumLp?: QueryProp<Decimal>
   currentLp?: QueryProp<Decimal>
   currentLpTestId?: string
   projectedLp?: QueryProp<Decimal>
-  projectedLpLabel?: string
-  projectedLpTestId?: string
   seedLock?: QueryProp<Decimal | null>
   exchangeRate?: QueryProp<Decimal>
   minimumReceived?: QueryProp<Decimal>
@@ -47,12 +44,9 @@ export const PoolActionInfoList = ({
   expectedLpLabel,
   expectedLpTestId,
   minimumLp,
-  maximumLp,
   currentLp,
   currentLpTestId,
   projectedLp,
-  projectedLpLabel,
-  projectedLpTestId,
   seedLock,
   exchangeRate,
   minimumReceived,
@@ -72,16 +66,9 @@ export const PoolActionInfoList = ({
     {currentLp && currentLpTestId && (
       <ActionInfo
         testId={currentLpTestId}
-        label={t`Current LP balance`}
+        label={t`LP balance`}
         value={mapQuery(currentLp, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
-    {projectedLp && projectedLpLabel && projectedLpTestId && (
-      <ActionInfo
-        testId={projectedLpTestId}
-        label={projectedLpLabel}
-        value={mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
+        futureValue={projectedLp && mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
         size="small"
       />
     )}
@@ -129,14 +116,6 @@ export const PoolActionInfoList = ({
         testId="pool-deposit-minimum-lp"
         label={t`Minimum LP received`}
         value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
-        size="small"
-      />
-    )}
-    {maximumLp && (
-      <ActionInfo
-        testId="pool-withdraw-maximum-lp"
-        label={t`Maximum LP burned`}
-        value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
         size="small"
       />
     )}

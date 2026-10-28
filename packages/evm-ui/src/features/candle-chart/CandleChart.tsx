@@ -3,6 +3,7 @@ import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from
 import { sortBy } from 'lodash'
 import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
 import { CHART_LINE_WIDTHS } from '@ui/features/charts/chart.utils'
 import { useLatestValueRef } from '@ui/hooks/useLatestValueRef'
@@ -87,7 +88,7 @@ type Props = {
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
-  latestOraclePrice?: number
+  latestOraclePrice?: Decimal
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
@@ -625,18 +626,16 @@ export const CandleChart = ({
 
   // Update latest oracle price when it changes (comes from on chain to keep the last data point as up to date as possible)
   useEffect(() => {
+    const value = Number(latestOraclePrice)
     if (
       latestOraclePrice == null ||
       !oraclePriceSeriesRef.current ||
       !oraclePriceData ||
-      oraclePriceData[oraclePriceData.length - 1].value === latestOraclePrice
+      oraclePriceData[oraclePriceData.length - 1].value === value
     )
       return
 
-    oraclePriceSeriesRef.current.update({
-      time: oraclePriceData[oraclePriceData.length - 1].time,
-      value: latestOraclePrice,
-    })
+    oraclePriceSeriesRef.current.update({ time: oraclePriceData[oraclePriceData.length - 1].time, value })
   }, [latestOraclePrice, oraclePriceData])
 
   // Set series order effect - ensure proper layering

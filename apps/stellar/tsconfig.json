@@ -4,12 +4,15 @@
     "types": ["node"],
     "paths": {
       "@/stellar/*": ["./src/*"],
+      "@api-server/*": ["../../packages/api-server/src/*"],
+      "@merkl-api/*": ["../merkl-api/src/*"],
       "@ui": ["../../packages/ui/src/index.ts"],
       "@ui/*": ["../../packages/ui/src/*"],
+      "@external-rewards": ["../../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]
     }
   },
-  "include": ["src", "../../packages/ui/src/**/*.d.ts"]
+  "include": ["src", "_api", "../../packages/ui/src/**/*.d.ts"]
 }

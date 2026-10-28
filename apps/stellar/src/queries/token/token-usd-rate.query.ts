@@ -1,8 +1,13 @@
+import { useCallback, useMemo } from 'react'
+import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import type { TokenParams, TokenQuery } from '@/stellar/queries/query-types'
+import type { NetworkParams, TokenParams, TokenQuery } from '@/stellar/queries/query-types'
 import { tokenValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'
+import { combineQueriesToObject } from '@ui/features/queries/combine'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { useQueries } from '@ui/features/queries/query-hooks'
+import type { Query } from '@ui/features/queries/util'
 
 /** This is part of the response from the stellar api, it only includes the used fields **/
 type AssetPriceResponse = {
@@ -43,3 +48,20 @@ export const { useQuery: useTokenUsdRate, getQueryOptions: getTokenUsdRateQueryO
   category: 'global.tokenRate',
   validationSuite: tokenValidationSuite,
 })
+
+export const useTokenUsdRates = (
+  { network, tokenAddresses = [] }: NetworkParams & { tokenAddresses?: StellarContract[] },
+  enabled = true,
+) => {
+  const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
+  return useQueries({
+    queries: useMemo(
+      () => uniqueAddresses.map(token => getTokenUsdRateQueryOptions({ network, token }, enabled)),
+      [network, uniqueAddresses, enabled],
+    ),
+    combine: useCallback(
+      (results: Query<number>[]) => combineQueriesToObject(results, uniqueAddresses),
+      [uniqueAddresses],
+    ),
+  })
+}

@@ -170,22 +170,23 @@ export const CrvUsdPriceChart = () => {
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={q({ data: chartData, isLoading: showLoading, error: priceHistory.error })}
           height={Height.chart.sm}
-          isLoading={showLoading}
-          error={priceHistory.error}
-          errorMessage={t`Unable to fetch historical crvUSD peg data.`}
+          errorState={{ description: t`Unable to fetch historical crvUSD peg data.` }}
         >
-          <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
-            data={chartData}
-            height={Height.chart.sm}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
-            yPaddingRatio={0.25}
-            renderTooltip={CrvUsdPriceTooltip}
-          />
+          {data => (
+            <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | string) => formatDate(value)}
+              yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
+              yPaddingRatio={0.25}
+              renderTooltip={CrvUsdPriceTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}

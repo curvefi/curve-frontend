@@ -18,7 +18,7 @@ const TokenOptionSkeleton = () => (
   </Skeleton>
 )
 
-const SwapTokenOption = ({
+const PoolTokenOption = ({
   token: { data: token, isLoading, error },
   onToken,
   index,
@@ -40,21 +40,21 @@ const SwapTokenOption = ({
     )
   )
 
-export const SwapTokenList = ({
+export const PoolTokenList = ({
   tokens,
-  calculatedIndex,
+  excludedIndex,
   onToken,
 }: {
   tokens: QueryProp<TokenOption>[] | undefined
-  calculatedIndex: number
+  excludedIndex?: number
   onToken: (index: number) => void
 }) => (
   <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
     {tokens?.map(
       (token, index) =>
-        index !== calculatedIndex && (
+        index !== excludedIndex && (
           // eslint-disable-next-line @eslint-react/no-array-index-key -- The index is the correct identifier for pools
-          <SwapTokenOption key={index} token={token} onToken={onToken} index={index} />
+          <PoolTokenOption key={index} token={token} onToken={onToken} index={index} />
         ),
     ) ?? <TokenOptionSkeleton />}
   </MenuList>

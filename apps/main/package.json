@@ -18,14 +18,15 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
+    "@curvefi/api-server": "workspace:^",
     "@curvefi/evm-ui": "workspace:^",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",
     "merkl-api": "workspace:^",
     "router-api": "workspace:^",
     "vest": "6.3.4",
-    "vite-plugin-vercel": "11.1.1",
-    "wrangler": "4.151.1"
+    "vite-plugin-vercel": "11.2.0",
+    "wrangler": "4.153.0"
   },
   "devDependencies": {
     "@sentry/vite-plugin": "11.8.0",
