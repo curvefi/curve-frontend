@@ -45,8 +45,13 @@ export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => po
 const getUserEquity = ({ positionQueries }: LlamaMarketRow) =>
   maybe(positionQueries.stats.data, ({ collateral, borrowToken, borrowed, oraclePrice }) => {
     const price = decimal(oraclePrice)!
-    const position = { collateral: decimal(collateral)!, stablecoin: decimal(borrowToken)!, debt: decimal(borrowed)! }
-    return { equity: getEquity(position, price), oraclePrice: price }
+    return {
+      equity: getEquity(
+        { collateral: decimal(collateral)!, stablecoin: decimal(borrowToken)!, debt: decimal(borrowed)! },
+        price,
+      ),
+      oraclePrice: price,
+    }
   })
 
 /** Equity in USD, at the borrowed token's USD rate */
