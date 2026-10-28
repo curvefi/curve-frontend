@@ -7,7 +7,7 @@ const MIN_USD_PRICE_IMPACT_WARN = 1000
 
 export type PriceImpact = { priceImpact: Decimal | undefined; tokenInUsd: Decimal | undefined }
 
-export type PriceImpactLevel = 'caution' | 'warning' | 'error'
+export type PriceImpactLevel = 'success' | 'caution' | 'warning' | 'error'
 
 /** Compare values in the same units. Negative impact represents a bonus. */
 export const calculatePriceImpact = (value: Decimal, referenceValue: Decimal) =>
@@ -20,7 +20,7 @@ const PRICE_IMPACT_THRESHOLDS = {
   error: '1',
   warning: '0.75',
   caution: '0.5',
-} as const satisfies Record<'critical' | PriceImpactLevel, Decimal>
+} as const satisfies Record<'critical' | Exclude<PriceImpactLevel, 'success'>, Decimal>
 
 const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | Nullish) =>
   !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
@@ -30,10 +30,10 @@ export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | Nulli
 
 /** Returns a percentage-only emphasis level without applying the USD significance filter. */
 export const getPriceImpactLevel = (priceImpact: PriceImpact | Decimal | Nullish): PriceImpactLevel | null => {
+  const percent = getPriceImpactPercent(priceImpact) ?? '0'
+  if (decimalGreaterThan('0', percent)) return 'success' // negative price impact represents a bonus
   const level =
-    recordEntries(PRICE_IMPACT_THRESHOLDS).find(([, threshold]) =>
-      decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', threshold),
-    )?.[0] ?? null
+    recordEntries(PRICE_IMPACT_THRESHOLDS).find(([, threshold]) => decimalGreaterThan(percent, threshold))?.[0] ?? null
   return level === 'critical' ? 'error' : level
 }
 

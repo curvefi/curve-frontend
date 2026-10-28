@@ -1,7 +1,7 @@
 import { usePoolContext } from '@/dex/features/pool-context'
-import { PointsCampaignsTable } from '@evm-ui/features/points-campaigns/PointsCampaignsTable'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
+import { PointsCampaignsTable } from '@ui/features/points-campaigns/PointsCampaignsTable'
 import { t } from '@ui/lib/i18n'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 

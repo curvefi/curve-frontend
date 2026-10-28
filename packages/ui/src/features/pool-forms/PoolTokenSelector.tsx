@@ -1,23 +1,25 @@
 import { shortenString } from '@primitives/string.utils'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
-import { SwapTokenList } from '@ui/features/pool-forms/swap/SwapTokenList'
+import { PoolTokenList } from '@ui/features/pool-forms/PoolTokenList'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { useSwitch } from '@ui/hooks/useSwitch'
 
-export function SwapTokenSelector({
+export function PoolTokenSelector({
   tokens,
   onToken,
-  calculatedIndex,
+  excludedIndex,
   selectedIndex,
   disabled,
   label,
+  testId,
 }: {
   tokens: QueryProp<PoolToken>[] | undefined
   selectedIndex: number
   disabled: boolean
   label: string
-  calculatedIndex: number
+  excludedIndex?: number
+  testId?: string
   onToken: (index: number) => void
 }) {
   const [isOpen, onOpen, onClose] = useSwitch(false)
@@ -37,8 +39,13 @@ export function SwapTokenSelector({
       onOpen={onOpen}
       onClose={onClose}
       size="small"
+      testId={testId}
     >
-      <SwapTokenList tokens={options} calculatedIndex={calculatedIndex} onToken={onToken} />
+      <PoolTokenList
+        tokens={options}
+        excludedIndex={excludedIndex}
+        onToken={index => index !== selectedIndex && onToken(index)}
+      />
     </TokenSelector>
   )
 }

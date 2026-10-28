@@ -57,10 +57,11 @@ export const checkDepositDetail = (
   detail: 'expected-lp' | 'minimum-lp' | 'current-lp' | 'projected-lp' | 'seed-lock',
   amount: Decimal,
 ) =>
-  getActionValue(`pool-deposit-${detail}`, detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation').should(
-    'equal',
-    formatNumber(amount, 'token.balance'),
-  )
+  getActionValue(
+    `pool-deposit-${detail === 'projected-lp' ? 'current-lp' : detail}`,
+    detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation',
+    detail === 'current-lp' ? 'previous' : 'value',
+  ).should('equal', formatNumber(amount, 'token.balance'))
 
 export const checkDepositBalances = ({ coins, lp }: PoolState) => {
   checkDepositDetail('current-lp', lp.balance)
@@ -97,7 +98,7 @@ export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
 /** Submit through the form and check its LP and token balance refresh. */
 export const submitDepositAndCheck = (state: PoolState, amounts: PoolAmounts) => {
   depositSubmit().should('be.enabled')
-  return getActionValue('pool-deposit-projected-lp', 'stellar.simulation')
+  return getActionValue('pool-deposit-current-lp', 'stellar.simulation')
     .should(value => expect(Number(value)).to.be.greaterThan(+state.lp.balance))
     .then(projected => {
       submitDepositForm(state)

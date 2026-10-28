@@ -1,52 +1,33 @@
 import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketBandsBalances } from '@/llamalend/queries/bands/market-bands-balances.query'
 import { useUserBandsBalances } from '@/llamalend/queries/bands/user-bands-balances.query'
 import { useMarketLiquidationBand } from '@/llamalend/queries/market/market-liquidation-band.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { combineQueryState } from '@ui/features/queries/combine'
+import { q, type QueryProp } from '@ui/features/queries/util'
 
 export const useBandsData = ({
   chainId,
-  marketId,
+  market,
   enabled = true,
 }: {
   chainId: IChainId
-  marketId: string | undefined
+  market: QueryProp<MarketTemplate>
   enabled?: boolean
 }) => {
+  const marketId = market.data?.id
   const { address: userAddress } = useConnection()
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
-    { chainId, marketId, userAddress },
+  const loanExists = useLoanExists({ chainId, marketId, userAddress }, enabled)
+  const liquidationBand = useMarketLiquidationBand({ chainId, marketId }, enabled)
+  const userBands = useUserBandsBalances(
+    { chainId, marketId, userAddress, loanExists: loanExists.data, liquidationBand: liquidationBand.data },
     enabled,
   )
-  const { data: liquidationBand, isLoading: isLiquidationBandLoading } = useMarketLiquidationBand(
-    { chainId, marketId },
-    enabled,
-  )
-  const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useUserBandsBalances(
-    { chainId, marketId, userAddress, loanExists, liquidationBand },
-    enabled,
-  )
-  const {
-    data: marketBandsBalances,
-    isLoading: isMarketBandsBalancesLoading,
-    error: marketBandsBalancesError,
-  } = useMarketBandsBalances({ chainId, marketId, liquidationBand }, enabled)
-  const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice(
-    { chainId, marketId },
-    enabled,
-  )
+  const marketBands = useMarketBandsBalances({ chainId, marketId, liquidationBand: liquidationBand.data }, enabled)
 
-  const processedChartData = useProcessedBandsData({ marketBandsBalances, userBandsBalances })
-
-  const isLoading =
-    isLiquidationBandLoading ||
-    isMarketBandsBalancesLoading ||
-    isMarketOraclePriceLoading ||
-    isLoanExistsLoading ||
-    isUserBandsBalancesLoading
-
-  return { isLoading, error: marketBandsBalancesError, chartData: processedChartData, userBandsBalances, oraclePrice }
+  const chartData = useProcessedBandsData({ marketBandsBalances: marketBands.data, userBandsBalances: userBands.data })
+  return q({ data: chartData, ...combineQueryState(market, loanExists, liquidationBand, userBands, marketBands) })
 }

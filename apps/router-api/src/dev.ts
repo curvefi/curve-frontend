@@ -1,4 +1,4 @@
-import { startDevServer } from '@curvefi/api-server'
+import { startDevServer } from '@api-server/server'
 import { createRouterApiServer } from './server'
 
 void startDevServer({

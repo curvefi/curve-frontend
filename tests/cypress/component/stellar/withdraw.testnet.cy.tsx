@@ -1,7 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { WithdrawTab } from '@/stellar/features/withdraw/WithdrawTab'
-import { oneBool, oneDecimal, oneInt, oneOf } from '@cy/support/generators'
-import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
+import { OneCoinWithdrawTab } from '@/stellar/features/withdraw/OneCoinWithdrawTab'
+import { oneDecimal, oneOf } from '@cy/support/generators'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import {
   checkPoolInputError,
@@ -28,185 +28,163 @@ import {
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { decimalMinus, decimalSum } from '@ui/lib/decimal'
 
 describe('Stellar testnet withdraw', () => {
   skipTestsAfterFailure()
-
-  let testnetConfig: TestnetConfig
+  let config: TestnetConfig
   let pool: StellarContract
   let state: WithdrawState
-
   const refreshState = () =>
-    cy.then(TIMEOUTS['stellar.read'], () => fetchWithdrawState(pool, testnetConfig)).then(fresh => (state = fresh))
-
+    cy.then(TIMEOUTS['stellar.read'], () => fetchWithdrawState(pool, config)).then(fresh => (state = fresh))
+  const mountWithdraw = ({ advanced = false, connected = true } = {}) => {
+    const Tab = advanced ? AdvancedWithdrawTab : OneCoinWithdrawTab
+    cy.mount(
+      <StellarTestWrapper address={connected ? config.deployer.address : undefined}>
+        <Tab network={TEST_NETWORK} pool={pool} />
+      </StellarTestWrapper>,
+    )
+  }
   before(() => {
     getTestnetConfig()
-      .then(async config => {
-        testnetConfig = config
-        await connectTestWallet(config)
+      .then(async value => {
+        config = value
+        await connectTestWallet(value)
       })
-      .then(TIMEOUTS['stellar.deployPool'], () => deployTestPool(testnetConfig))
-      .then(deployedPool => (pool = deployedPool))
+      .then(TIMEOUTS['stellar.deployPool'], () => deployTestPool(config))
+      .then(deployed => (pool = deployed))
       .then(refreshState)
   })
 
-  const mountWithdraw = ({ connected = true } = {}) => {
-    cy.mount(
-      <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
-        <WithdrawTab network={TEST_NETWORK} pool={pool} />
-      </StellarTestWrapper>,
-    )
-    if (connected) checkWithdrawBalances(state)
-  }
-
-  it('disables unseeded withdrawals and requires a connected wallet', () => {
-    expect(state.supply).to.equal('0')
+  it('disables unseeded withdrawals and requires a wallet', () => {
     mountWithdraw()
-    withdrawLpInput().find('input').should('be.disabled')
     withdrawSubmit().should('be.disabled')
+    cy.get('[data-testid^="pool-token-input-"] input:visible').should('be.disabled')
     mountWithdraw({ connected: false })
     cy.get('[data-testid="pool-withdraw-connect-wallet"]').should('be.enabled')
-    withdrawSubmit().should('not.exist')
   })
 
-  describe('seeded pool', () => {
-    // Reuse liquidity across tests; the full withdrawal must remain last.
+  describe('Advanced', () => {
     before(() =>
       cy
-        .then(TIMEOUTS['stellar.seedPool'], () => seedPoolAndTransferMostLpToIssuer(pool, testnetConfig))
-        .then(refreshState),
+        .then(TIMEOUTS['stellar.deployPool'], () => deployTestPool(config))
+        .then(deployed => (pool = deployed))
+        .then(TIMEOUTS['stellar.seedPool'], () => seedPoolAndTransferMostLpToIssuer(pool, config)),
     )
+    beforeEach(refreshState)
 
-    it('fills balanced outputs with LP Max and preserves edits until the next LP change', () => {
-      mountWithdraw()
-      withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
-      withdrawLpInput().find('input').should('have.value', state.lp.balance)
-      state.coins.map(({ address, decimals }, index) =>
+    it('validates and synchronizes balanced amounts, then withdraws independently of slippage', () => {
+      mountWithdraw({ advanced: true })
+      withdrawLpInput().should('be.visible')
+      cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').should('not.be.checked')
+      checkWithdrawBalances(state)
+      for (const [amount, message] of [
+        ['0', 'Enter an LP amount'],
+        [decimalSum(state.lp.balance, '1'), 'Insufficient LP balance'],
+      ] as const) {
+        writeWithdrawLp(amount)
+        withdrawLpInput().find('[data-testid="helper-message-error"]').should('contain.text', message)
+        withdrawSubmit().should('be.disabled')
+      }
+      const amount = oneDecimal(+state.lp.balance * 0.1, +state.lp.balance * 0.2, state.lp.decimals)
+      writeWithdrawLp(amount)
+      withdrawLpInput().find('[data-testid="helper-message-error"]').should('not.exist')
+      readPoolAmounts(state.coins).then(amounts => {
+        cy.get('[data-testid="slippage-settings-button"]').click()
+        cy.get('[data-testid="slippage-input"] input').clear().type('1')
+        cy.get('[data-testid="slippage-save-button"]').click()
+        state.coins.map(({ address }, index) => poolInput(address).find('input').should('have.value', amounts[index]))
+      })
+      withdrawLpInput().find('input').should('have.value', amount)
+      checkWithdrawDetail('projected-lp', decimalMinus(state.lp.balance, amount))
+      state.coins.map(({ address, decimals }, i) =>
         poolInput(address)
           .find('input')
           .should(input =>
-            expect(+input.val()!).to.be.closeTo(
-              (+state.reserves[index] * +state.lp.balance) / +state.supply,
-              10 ** -decimals,
-            ),
+            expect(+input.val()!).to.be.closeTo((+state.reserves[i] * +amount) / +state.supply, 10 ** -decimals),
           ),
       )
-      checkWithdrawDetail('expected-lp', state.lp.balance)
-      checkWithdrawDetail('maximum-lp', state.lp.balance)
-      checkWithdrawDetail('projected-lp', '0')
-      const coinIndex = oneInt(state.coins.length)
-      const { address, decimals } = state.coins[coinIndex]
-      const balancedOutput = (+state.reserves[coinIndex] * +state.lp.balance) / +state.supply
-      const editedAmount = oneDecimal(balancedOutput * 0.1, balancedOutput * 0.2, decimals)
-      readPoolAmounts(state.coins).then(amounts => {
-        writePoolAmount(address, editedAmount)
-        state.coins.map((coin, index) =>
-          poolInput(coin.address)
-            .find('input')
-            .should('have.value', coin.address === address ? editedAmount : amounts[index]),
-        )
-      })
-      withdrawLpInput().find('input').should('have.value', state.lp.balance)
-      withdrawSubmit().should('be.enabled')
-      // LP Max must restore balanced mode even though the LP amount is already at Max.
-      withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
-      checkWithdrawDetail('expected-lp', state.lp.balance)
-      checkWithdrawDetail('projected-lp', '0')
-      writeWithdrawLp(oneDecimal(+state.lp.balance * 0.4, +state.lp.balance * 0.6, state.lp.decimals))
-      poolInput(address).find('input').should('not.have.value', editedAmount)
+      const coin = oneOf(...state.coins)
+      const i = state.coins.indexOf(coin)
+      const output = oneDecimal(
+        ((+state.reserves[i] * +amount) / +state.supply) * 0.4,
+        ((+state.reserves[i] * +amount) / +state.supply) * 0.6,
+        coin.decimals,
+      )
+      writePoolAmount(coin.address, output)
+      cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').should('not.be.checked')
+      withdrawLpInput()
+        .find('input')
+        .should(input => expect(+input.val()!).to.be.lessThan(+amount))
+      submitWithdrawAndCheck(state)
     })
 
-    it('rejects invalid amounts and withdraws corrected amounts', () => {
+    it('switches to independent outputs, rejects excessive amounts and withdraws corrected amounts', () => {
+      mountWithdraw({ advanced: true })
+      withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
+      checkWithdrawDetail('projected-lp', '0')
+      readPoolAmounts(state.coins).then(amounts => {
+        cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').check(TIMEOUTS['stellar.read'])
+        cy.get('[data-testid="pool-withdraw-lp-input"]').should('not.exist')
+        const amount = oneDecimal(+amounts[0] * 0.1, +amounts[0] * 0.2, state.coins[0].decimals)
+        writePoolAmount(state.coins[0].address, amount)
+        state.coins.map(({ address }, i) =>
+          poolInput(address)
+            .find('input')
+            .should('have.value', i === 0 ? amount : amounts[i]),
+        )
+        withdrawSubmit().should('be.enabled')
+      })
       const coin = oneOf(...state.coins)
-      const lpBudget = oneDecimal(+state.lp.balance * 0.1, +state.lp.balance * 0.2, state.lp.decimals)
-      const overBudgetOutput = oneDecimal(+lpBudget * 2, +lpBudget * 3, coin.decimals)
-      const correctedOutput = oneDecimal(+lpBudget * 0.1, +lpBudget * 0.2, coin.decimals)
-      mountWithdraw()
-
-      // Sample one invalid LP amount before correcting it for the withdrawal.
-      withdrawSubmit().should('be.disabled')
-      const invalidLp = oneOf<{ amount: Decimal; message: string }>(
-        { amount: '0', message: 'Enter an LP amount' },
-        { amount: decimalSum(state.lp.balance, oneDecimal(1, 10)), message: 'Insufficient LP balance' },
-      )
-      writeWithdrawLp(invalidLp.amount)
-      withdrawLpInput().find('[data-testid="helper-message-error"]').should('contain.text', invalidLp.message)
-      withdrawSubmit().should('be.disabled')
-
-      // Output validation: zero, above the token maximum, and above the LP budget.
-      writeWithdrawLp(lpBudget)
-      state.coins.forEach(({ address }) => writePoolAmount(address, '0'))
-      cy.get('[data-testid="loan-form-error-root"]').should('contain.text', 'Enter an amount to withdraw')
-      withdrawSubmit().should('be.disabled')
-
-      writePoolAmount(coin.address, decimalSum(state.reserves[state.coins.indexOf(coin)], oneDecimal(1, 10)))
+      writePoolAmount(coin.address, decimalSum(state.reserves[state.coins.indexOf(coin)], '1'))
       checkPoolInputError(coin.address, 'Amount exceeds the maximum withdrawal')
       withdrawSubmit().should('be.disabled')
-
-      writePoolAmount(coin.address, overBudgetOutput)
-      cy.get('[data-testid="loan-form-error-root"]', TIMEOUTS['ui.render']).should(
-        'contain.text',
-        'Maximum LP required exceeds the LP amount',
-      )
-      withdrawSubmit().should('be.disabled')
-      poolInput(coin.address).find('input').should('have.value', overBudgetOutput)
-
-      // Recovery: correcting the amount clears errors and enables withdrawal.
-      writePoolAmount(coin.address, correctedOutput)
-      checkPartialWithdrawQuote(state, lpBudget)
-      withdrawLpInput().find('[data-testid="helper-message-error"]').should('not.exist')
-      state.coins.map(({ address }) =>
-        poolInput(address).find('[data-testid="helper-message-error"]').should('not.exist'),
-      )
-      cy.get('[data-testid="loan-form-error-root"]').should('not.exist')
-      checkEstimatedTxCost({ category: 'stellar.simulation' })
-      submitWithdrawAndCheck(state).then(refreshState)
-    })
-
-    it('withdraws a partial LP amount independently of slippage', () => {
-      mountWithdraw()
-      const lpAmount = oneDecimal(+state.lp.balance * 0.1, +state.lp.balance * 0.9, state.lp.decimals)
-      const remainingLp = decimalMinus(state.lp.balance, lpAmount)
-      cy.log(`Withdraw balanced ${lpAmount} LP; remaining ${remainingLp}`)
-      writeWithdrawLp(lpAmount)
-      checkWithdrawDetail('expected-lp', lpAmount)
-      readPoolAmounts(state.coins).then(amounts => {
-        cy.get('[data-testid="slippage-settings-button"]').click()
-        cy.get('[data-testid="slippage-input"]').find('input').clear()
-        cy.get('[data-testid="slippage-input"]')
-          .find('input')
-          .type(oneDecimal(+SLIPPAGE.stable.presets[1], +SLIPPAGE.stable.max))
-        cy.get('[data-testid="slippage-save-button"]').click()
-        state.coins.map(({ address }, index) => poolInput(address).find('input').should('have.value', amounts[index]))
-        checkWithdrawDetail('expected-lp', lpAmount)
-        checkWithdrawDetail('maximum-lp', lpAmount)
-        checkWithdrawDetail('projected-lp', remainingLp)
-        submitWithdrawAndCheck(state)
-        withdrawLpInput().find('[data-testid="balance-value"]').should('have.attr', 'data-value', remainingLp)
-        refreshState()
-      })
-    })
-
-    it('withdraws the full LP balance without leaving LP dust', () => {
-      const coin = oneOf(...state.coins)
-      const balanced = oneBool()
-      cy.log(`Withdraw Max into ${balanced ? 'balanced outputs' : coin.symbol}`)
-      mountWithdraw()
-      selectWithdrawMax(state, coin)
-      writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.05, coin.decimals))
-      withdrawLpInput().find('input').should('have.value', state.lp.balance)
-      checkPartialWithdrawQuote(state, state.lp.balance)
-      if (balanced) {
-        withdrawLpInput().find('[data-testid="input-chip-Max"]').click()
-        checkWithdrawDetail('expected-lp', state.lp.balance)
-        checkWithdrawDetail('maximum-lp', state.lp.balance)
-        checkWithdrawDetail('projected-lp', '0')
-      } else {
-        selectWithdrawMax(state, coin)
-      }
+      writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.02, coin.decimals))
+      cy.get('[data-testid="pool-withdraw-lp-input"]').should('not.exist')
       submitWithdrawAndCheck(state)
+    })
+  })
+
+  describe('One coin', () => {
+    beforeEach(refreshState)
+
+    it('resets on token changes, rejects invalid amounts and withdraws corrected manual amounts', () => {
+      mountWithdraw()
+      selectWithdrawMax(state, state.coins[0])
+      cy.get('[data-testid="withdraw-token-select"]').click()
+      cy.get(`[data-testid="token-option-${state.coins[1].address.toLowerCase()}"]`).click()
+      poolInput(state.coins[1].address).find('input').should('have.value', '')
+      poolInput(state.coins[0].address).should('not.exist')
+      withdrawSubmit().should('be.disabled')
+      const coin = state.coins[1]
+      writePoolAmount(coin.address, '0')
+      withdrawSubmit().should('be.disabled')
+      writePoolAmount(coin.address, decimalSum(state.reserves[1], '1'))
+      checkPoolInputError(coin.address, 'Amount exceeds the maximum withdrawal')
+      withdrawSubmit().should('be.disabled')
+      writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.02, coin.decimals))
+      checkPartialWithdrawQuote(state, state.lp.balance)
+      poolInput(coin.address).find('[data-testid="helper-message-error"]').should('not.exist')
+      submitWithdrawAndCheck(state)
+    })
+
+    // Reuse liquidity across tests; the full withdrawal must remain last.
+    it('returns from Max to manual amounts, then withdraws a manually entered maximum without LP dust', () => {
+      mountWithdraw()
+      const coin = oneOf(...state.coins)
+      selectWithdrawMax(state, coin)
+      poolInput(coin.address).find('input').invoke('val').as('maximumWithdrawal', { type: 'static' })
+      writePoolAmount(coin.address, oneDecimal(+state.lp.balance * 0.01, +state.lp.balance * 0.02, coin.decimals))
+      checkPartialWithdrawQuote(state, state.lp.balance)
+      cy.get<Decimal>('@maximumWithdrawal').then(amount => {
+        writePoolAmount(coin.address, amount)
+        poolInput(coin.address).find('input').should('have.value', amount)
+      })
+      checkWithdrawDetail('projected-lp', '0')
+      submitWithdrawAndCheck(state)
+      mountWithdraw({ advanced: true })
+      cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').should('not.be.checked')
+      withdrawLpInput().find('[data-testid="balance-value"]').should('have.attr', 'data-value', '0')
     })
   })
 })

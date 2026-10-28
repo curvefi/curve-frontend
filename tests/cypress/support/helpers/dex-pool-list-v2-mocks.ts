@@ -1,5 +1,6 @@
 import { orderBy } from 'lodash'
 import type { PoolType } from '@curvefi/prices-api/pools'
+import { createMerklOpportunity } from '@cy/support/helpers/campaign-mocks'
 import { UnexpectedApiRequest } from '@cy/support/ui'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
@@ -60,7 +61,6 @@ type RawLitePool = {
 const address = (suffix: string): Address => `0x${suffix.padStart(40, '0')}`
 const EXTRA_REWARD_ADDRESS = address('3001')
 const ALERT_TOKEN_ADDRESS: Address = '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d'
-const MOCK_ICON = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22/%3E'
 const MINUTE_SECONDS = 60
 const DAY_SECONDS = 24 * 60 * 60
 const YEAR_SECONDS = 365 * DAY_SECONDS
@@ -272,42 +272,11 @@ export const V2_POOL_FIXTURES = {
   liteZeroTvl: LITE_POOL_ZERO_TVL,
 } as const
 
-type MerklOpportunityParams = {
-  identifier: string
-  pool: Pick<RawLitePool | V2PoolFixture, 'address' | 'chain_id' | 'name'>
-  apr: number
-  symbol: string
-  platform: string
-  tokenAddress?: Address
-}
-
-const createMerklOpportunity = ({
-  identifier,
-  pool,
-  apr,
-  symbol,
-  platform,
-  tokenAddress = address(identifier.replace(/\D/g, '') || '5000'),
-}: MerklOpportunityParams) => ({
-  type: 'POOL',
-  identifier,
-  name: `${platform} campaign`,
-  description: `${platform} rewards for providing liquidity.`,
-  howToSteps: [`Provide liquidity to ${pool.name}.`],
-  action: 'POOL',
-  apr,
-  explorerAddress: pool.address,
-  tags: [platform],
-  chain: { id: pool.chain_id, name: pool.chain_id === Number(Chain.Ethereum) ? 'Ethereum' : 'Taiko' },
-  rewardsRecord: {
-    breakdowns: [{ token: { chainId: pool.chain_id, address: tokenAddress, symbol, icon: MOCK_ICON }, value: 100 }],
-  },
-})
-
 const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-apr-1',
     pool: V2_POOL_FIXTURES.showcase,
+    network: 'Ethereum',
     apr: 3,
     symbol: 'RWD',
     platform: 'V2 APR',
@@ -316,6 +285,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-points-1',
     pool: V2_POOL_FIXTURES.showcase,
+    network: 'Ethereum',
     apr: 0,
     symbol: '',
     platform: 'V2 Points',
@@ -323,6 +293,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-points-2',
     pool: V2_POOL_FIXTURES.showcase,
+    network: 'Ethereum',
     apr: 0,
     symbol: 'XP',
     platform: 'V2 XP',
@@ -330,6 +301,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-points-3',
     pool: V2_POOL_FIXTURES.showcase,
+    network: 'Ethereum',
     apr: 0,
     symbol: 'STAR',
     platform: 'V2 Stars',
@@ -337,6 +309,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-killed-apr-1',
     pool: V2_POOL_FIXTURES.killed,
+    network: 'Ethereum',
     apr: 3,
     symbol: 'KAPR',
     platform: 'V2 Killed APR',
@@ -344,6 +317,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-killed-points-1',
     pool: V2_POOL_FIXTURES.killed,
+    network: 'Ethereum',
     apr: 0,
     symbol: 'KP',
     platform: 'V2 Killed Points',
@@ -351,6 +325,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-lite-apr-1',
     pool: V2_POOL_FIXTURES.lite,
+    network: 'Taiko',
     apr: 6,
     symbol: 'TAPR',
     platform: 'V2 Taiko APR',
@@ -358,6 +333,7 @@ const DEX_MERKL_OPPORTUNITIES = [
   createMerklOpportunity({
     identifier: 'v2-lite-points-1',
     pool: V2_POOL_FIXTURES.lite,
+    network: 'Taiko',
     apr: 0,
     symbol: 'TP',
     platform: 'V2 Taiko Points',

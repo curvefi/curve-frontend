@@ -10,8 +10,6 @@
     "test": "yarn run --top-level test --project @curvefi/api-server",
     "test:watch": "yarn run --top-level test:watch --project @curvefi/api-server"
   },
-  "main": "src/index.ts",
-  "types": "src/index.ts",
   "dependencies": {
     "fastify": "5.12.7"
   }

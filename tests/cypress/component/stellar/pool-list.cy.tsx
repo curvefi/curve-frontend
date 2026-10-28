@@ -3,9 +3,11 @@ import { STELLAR_CONTRACT_PATTERN, type StellarContract } from '@/stellar/featur
 import { router } from '@/stellar/routes'
 import { StellarUrls } from '@/stellar/routes/routes'
 import { oneOf } from '@cy/support/generators'
+import { mockCampaigns, mockCampaignsError } from '@cy/support/helpers/campaign-mocks'
 import { expandFirstRowOnMobile, openDrawer, withExpandedPanelDrawer } from '@cy/support/helpers/data-table.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { oneViewport } from '@cy/support/ui'
+import { getCampaignsPoolsMerklQueryKey } from '@ui/features/campaigns/campaigns-pools-merkl.query'
 import { PoolColumnId } from '@ui/features/pool-list/columns/columns.enum'
 import { queryClient } from '@ui/features/queries/query-client'
 
@@ -33,13 +35,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       queryClient.clear()
       cy.clearLocalStorage()
       cy.viewport(width, height)
-    })
-
-    it('redirects the app entry to the mainnet pool list', () => {
-      mountStellarApp('/')
-      cy.location('pathname').should('equal', StellarUrls.poolList({ network: 'stellar' }))
-      // Mainnet is empty while the backend rolls out support.
-      cy.get(`[data-testid="dex-pool-empty-state-no-results"]`, TIMEOUTS['curveLite.pools']).should('be.visible')
+      mockCampaigns()
     })
 
     it('loads pools, searches by address, and resets an empty search', () => {
@@ -58,6 +54,33 @@ testCases.forEach(([width, height, breakpoint]) => {
         search().should('have.value', '')
         poolLinks().should('have.length', count)
       })
+    })
+
+    it('shows pools while Merkl campaigns are still loading', () => {
+      mockCampaigns([], TIMEOUTS['curveLite.pools'].timeout)
+      mountStellarApp(POOL_LIST_URL)
+      poolLinks()
+        .first()
+        .should('be.visible')
+        .and(() => {
+          expect(queryClient.getQueryState([getCampaignsPoolsMerklQueryKey({})])?.status).to.equal('pending')
+        })
+      cy.get(`[data-testid="data-table-cell-${PoolColumnId.Tvl}"]`).first().should('be.visible').and('not.be.empty')
+    })
+
+    it('keeps pools searchable while showing a Merkl campaigns error', () => {
+      mockCampaignsError()
+      mountStellarApp(POOL_LIST_URL)
+      cy.get('[data-testid="error-message"]', TIMEOUTS['ui.render']).should('be.visible')
+      poolLinks()
+        .first()
+        .then($link => {
+          const href = $link.attr('href')!
+          search().type(href.split('/').at(-1)!)
+          poolLinks().should('have.length', 1).and('have.attr', 'href', href)
+        })
+      cy.get(`[data-testid="data-table-cell-${PoolColumnId.Tvl}"]`).should('be.visible').and('not.be.empty')
+      cy.get('[data-testid="error-message"]').should('be.visible')
     })
 
     it('sorts the list by TVL', () => {
