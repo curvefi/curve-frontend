@@ -29,9 +29,7 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
     <ErrorCell error={stats.error} />
   ) : (
     <WithSkeleton loading={stats.isLoading || prices.borrowed.isLoading} {...skeletonProps}>
-      <Typography variant="tableCellValue" color="textPrimary">
-        {formatNumber(getValue(), 'usd.notional')}
-      </Typography>
+      <Typography variant="tableCellValue">{formatNumber(getValue(), 'usd.notional')}</Typography>
     </WithSkeleton>
   )
 }
@@ -48,15 +46,13 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   ) : (
     <WithSkeleton loading={stats.isLoading || capital.isLoading} {...skeletonProps}>
       <Tooltip
-        clickable
         title={pnl && t`PNL (ROE %)`}
         body={maybe(pnl, ({ debt }) => (
           <DebtPnlTooltipContent pnl={debt} symbol={assets.borrowed.symbol} />
         ))}
-        placement="top"
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography variant="tableCellValueStrong" color="textPrimary">
+          <Typography variant="tableCellValueStrong">
             {maybe(
               pnl?.collateral?.pnl,
               value => `${formatSigned(value, 'token.amount')} ${assets.collateral.symbol}`,
