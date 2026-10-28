@@ -456,9 +456,14 @@ export const CandleChart = ({
     oraclePriceSeriesRef.current.applyOptions({
       autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
         const info = original()
-        return isOracleOnlyChart && info?.priceRange
-          ? { ...info, priceRange: { minValue: 1, maxValue: Math.max(1, info.priceRange.maxValue) } }
-          : info
+        if (!isOracleOnlyChart || !info?.priceRange) return info
+
+        // Ensure a minimum span (price range, or delta) of 1, using [1, 2] when the maximum is below 2.
+        const { minValue, maxValue } = info.priceRange
+        if (maxValue - minValue >= 1) return info
+
+        const max = Math.max(2, maxValue)
+        return { ...info, priceRange: { minValue: max - 1, maxValue: max } }
       },
     })
 
