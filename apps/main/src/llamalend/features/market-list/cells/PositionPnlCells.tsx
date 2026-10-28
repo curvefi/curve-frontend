@@ -20,8 +20,9 @@ const skeletonProps = { variant: 'text', width: 40, sx: { marginInlineStart: 'au
 /** Equity of the borrow position in USD */
 export const EquityCell = ({ getValue, row }: PositionCellProps) => {
   const { stats, prices } = row.original.positionQueries
-  if (stats.error) return <ErrorCell error={stats.error} />
-  return (
+  return stats.error ? (
+    <ErrorCell error={stats.error} />
+  ) : (
     <WithSkeleton loading={stats.isLoading || prices.borrowed.isLoading} {...skeletonProps}>
       <Typography variant="tableCellValue" color="textPrimary">
         {formatNumber(getValue(), 'usd.notional')}
@@ -36,8 +37,9 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const error = stats.error ?? cashFlows.error
   const pnlUsd = getUserPnlUsd(row.original)
   const roe = getValue()
-  if (error) return <ErrorCell error={error} />
-  return (
+  return error ? (
+    <ErrorCell error={error} />
+  ) : (
     <WithSkeleton loading={stats.isLoading || cashFlows.isLoading || prices.collateral.isLoading} {...skeletonProps}>
       <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
         <Typography variant="tableCellValueStrong" color={getChangeColor(pnlUsd ?? 0, 'success', 'error')}>
