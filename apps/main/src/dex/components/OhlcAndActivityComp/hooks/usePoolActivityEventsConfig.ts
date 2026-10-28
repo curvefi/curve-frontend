@@ -13,7 +13,7 @@ import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ, mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -46,7 +46,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   // Transform liquidity data with block explorer URLs and pool tokens
   const liquidityWithUrls = useCombinedQueries(
-    [poolLiquidityEvents, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    [poolLiquidityEvents, poolPriceApi, loadingQ(isHydrated || undefined)],
     useCallback(
       liquidityData =>
         maybe(network, blockchainId =>

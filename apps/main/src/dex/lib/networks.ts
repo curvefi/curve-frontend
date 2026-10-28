@@ -234,9 +234,14 @@ const liteSwap: Record<number, NonNullable<NetworkConfig['swap']>> = {
   [Chain.Arc]: { fromAddress: ethAddress, toAddress: ARC_USDC_ADDRESS },
 }
 
+/** Lite networks are fetched from the prices api, which includes non-evm testnets. There's no realiable way to filter these out except for a hardcoded list. */
+const NON_EVM_CHAINS = ['stellar', 'stellar-testnet']
+
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
+    if (NON_EVM_CHAINS.includes(blockchainId)) return prev
+
     const isUpgraded = !isLiteChain(chainId) // Upgraded means this is a lite network but is not classified as such any longer
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)

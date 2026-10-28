@@ -18,7 +18,7 @@ import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
-import { constQ, fakeLoadingQ, q } from '@ui/features/queries/util'
+import { constQ, loadingQ, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ActivityTable } from './ActivityTable'
@@ -323,7 +323,7 @@ export const LendMarketActivity: LendStory = {
 }
 
 const LoadingStateComponent = () => {
-  const table = useCurveTable({ query: fakeLoadingQ<PoolTradeRow[]>(undefined), columns: POOL_TRADES_COLUMNS })
+  const table = useCurveTable({ query: loadingQ<PoolTradeRow[]>(undefined), columns: POOL_TRADES_COLUMNS })
   return (
     <ActivityTable
       table={table}

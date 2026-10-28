@@ -39,7 +39,6 @@ export const PoolAdvancedDetails = ({
           mapQuery(litePool, pool => notFalsy(t`Stableswap`, pool?.isMetaPool && t`Metapool`).join(', ')),
           constQ(t`Stableswap`),
         ),
-        poolId: mapQuery(litePool, pool => pool?.id),
       }}
       contracts={{ poolAddress: asAddress(pool), lpTokenAddress: asAddress(pool) }}
       prices={{ tokenSymbols, tokenAddresses: tokenAddresses?.map(asAddress) }}

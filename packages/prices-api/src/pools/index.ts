@@ -23,6 +23,16 @@ export async function getPool(blockchainId: Chain, poolAddr: string, options?: O
   return Schema.getPoolResponse.parse(response)
 }
 
+export async function getPoolV2(
+  { chainId, poolAddress }: { chainId: number; poolAddress: Address },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const response = await fetch(`${host}/v2/pools/${chainId}/${poolAddress}`, { signal: options?.signal })
+
+  return Schema.getPoolV2Response.parse(response)
+}
+
 export async function listPoolChains(options?: Options) {
   const host = getHost(options)
   const response = await fetch(`${host}/v2/pools/chains/`)

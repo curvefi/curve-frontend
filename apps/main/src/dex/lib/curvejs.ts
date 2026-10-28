@@ -22,15 +22,6 @@ const helpers = { waitForTransaction, waitForTransactions }
 
 const USE_API = true
 
-export const fetchNewPools = async (curve: CurveApi) =>
-  await Promise.all([
-    curve.factory.fetchNewPools(),
-    curve.cryptoFactory.fetchNewPools(),
-    curve.twocryptoFactory.fetchNewPools(),
-    curve.tricryptoFactory.fetchNewPools(),
-    curve.stableNgFactory.fetchNewPools(),
-  ])
-
 export const fetchPools = async (curve: CurveApi) => {
   await Promise.all([
     curve.factory.fetchPools(USE_API),
@@ -40,22 +31,6 @@ export const fetchPools = async (curve: CurveApi) => {
     curve.tricryptoFactory.fetchPools(USE_API),
     curve.stableNgFactory.fetchPools(USE_API),
   ])
-
-  if (!curve.isNoRPC) {
-    await fetchNewPools(curve)
-  }
-}
-
-// curve
-const network = {
-  getTVL: (curve: CurveApi) => {
-    log('getChainTVL', curve.chainId)
-    return curve.getTVL()
-  },
-  getVolume: (curve: CurveApi) => {
-    log('getChainVolume', curve.chainId)
-    return curve.getVolume()
-  },
 }
 
 const router = {
@@ -1008,4 +983,4 @@ function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
   }
 }
 
-export const curvejsApi = { helpers, network, router, poolDeposit, poolWithdraw, poolSwap }
+export const curvejsApi = { helpers, router, poolDeposit, poolWithdraw, poolSwap }
