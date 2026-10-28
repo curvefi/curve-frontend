@@ -13,7 +13,6 @@ import type { Address } from '@primitives/address.utils'
 import { maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
-import { q } from '@ui/features/queries/util'
 import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -31,7 +30,7 @@ export const AmountTokenInput = ({
   blockchainId: NetworkEnum
   disabled: boolean
 }) => {
-  const { update: updateForm, formState, values, isTouched } = useFormContext<DepositRewardFormValues>()
+  const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
   const { rewardTokenId, amount } = values
 
   const [isOpen, openModal, closeModal] = useSwitch()
@@ -89,12 +88,8 @@ export const AmountTokenInput = ({
     <FormTokenInput
       form={{ values, formState }}
       name="amount"
+      relatedFields={['rewardTokenId']}
       label={t`Amount to deposit`}
-      balance={q({
-        data: amount,
-        isLoading: false,
-        error: isTouched('rewardTokenId') ? (formState.errors.rewardTokenId ?? null) : null,
-      })}
       onBalance={useCallback(amount => updateForm({ amount }), [updateForm])}
       walletBalance={
         userAddress && {

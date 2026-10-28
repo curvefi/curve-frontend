@@ -127,7 +127,8 @@ export const LoanFormTokenInput = <
       balance={q({ data: value, isLoading: value == null, error: balanceError })}
       onBalance={onBalance}
       {...(!hideBalance && { walletBalance })}
-      max={max && { balance: max, field: max.fieldName, chips: 'range', onMax: max.onMax }}
+      {...(max && { relatedFields: [max.fieldName] })}
+      max={max && { balance: max, chips: 'range', onMax: max.onMax }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
       message={message ?? maxMessage}
       disabled={disabled}

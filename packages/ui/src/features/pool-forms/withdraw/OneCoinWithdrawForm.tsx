@@ -41,7 +41,8 @@ export const OneCoinWithdrawForm = ({
       <FormTokenInput
         form={form}
         name="amount"
-        max={max && { balance: max, field: 'poolReserve' }}
+        relatedFields={['poolReserve']}
+        max={max && { balance: max }}
         balance={token && mapQuery(token, () => form.values.amount)}
         label={t`Amount to withdraw`}
         testId={`pool-token-input-${token?.data?.address}`}

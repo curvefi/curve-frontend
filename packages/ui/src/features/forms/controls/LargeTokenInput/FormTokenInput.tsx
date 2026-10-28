@@ -1,11 +1,13 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import type { FieldPathByValue, FieldValues, UseFormReturn } from '@ui/features/forms'
+import { notFalsyArray } from '@primitives/objects.utils'
+import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui/features/forms'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
 /**
  * Binds a token input to a form value, using balance query loading/error state and an optional maximum.
  * Touched-field errors take precedence over query errors, which take precedence over the helper message.
+ * Related-field errors appear when either the input or the related field is touched.
  */
 export const FormTokenInput = <TValues extends FieldValues>({
   form: {
@@ -13,6 +15,7 @@ export const FormTokenInput = <TValues extends FieldValues>({
     formState: { errors, touchedFields },
   },
   name,
+  relatedFields,
   max,
   balance,
   message,
@@ -20,14 +23,18 @@ export const FormTokenInput = <TValues extends FieldValues>({
 }: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
   form: Pick<UseFormReturn<TValues>, 'values' | 'formState'>
   name: FieldPathByValue<TValues, Decimal | undefined>
-  max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & {
-    balance: QueryProp<Decimal>
-    field?: FieldPathByValue<TValues, Decimal | undefined>
-  }
+  relatedFields?: FieldPath<TValues>[]
+  max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
   balance?: QueryProp<Decimal>
 }) => {
-  const fieldError = name in touchedFields ? (errors[name] ?? (max?.field ? errors[max.field] : undefined)) : undefined
-  const error = fieldError ?? balance?.error ?? max?.balance.error ?? null
+  const error =
+    notFalsyArray([name], relatedFields)
+      .filter(field => name in touchedFields || field in touchedFields)
+      .map(field => errors[field])
+      .find(Boolean) ??
+    balance?.error ??
+    max?.balance.error ??
+    null
   return (
     <LargeTokenInput
       {...props}
