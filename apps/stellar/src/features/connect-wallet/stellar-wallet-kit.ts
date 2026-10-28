@@ -6,7 +6,7 @@ import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { activeModule } from '@creit.tech/stellar-wallets-kit/state'
 import { type ISupportedWallet, KitEventType } from '@creit.tech/stellar-wallets-kit/types'
 import { assert } from '@primitives/objects.utils'
-import { retry } from '@primitives/promise.utils'
+import { retry, type RetryOptions } from '@primitives/promise.utils'
 import {
   Address,
   BASE_FEE,
@@ -33,6 +33,12 @@ const RESOURCE_FEE_BUFFER_PERCENT = 20n
 const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
 /** TTL renewal can become payable after simulation. Keep the 20% buffer for larger simulated fees. */
 const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 600_000n
+
+export const StellarFetchRetry = {
+  retries: 2,
+  delay: () => 1000,
+  shouldRetry: (error: unknown) => /failed to fetch|fetch failed|network ?error/i.test((error as Error).message),
+} satisfies RetryOptions
 
 export const initWallet = (onError: (error: Error) => void) => {
   const modules = defaultModules()
@@ -113,17 +119,21 @@ export async function simulateContractCall<T>(
   args: ContractArgument[] = [],
   account?: StellarAddress,
 ) {
-  const transaction = await contract.AssembledTransaction.build<T>({
-    contractId,
-    method,
-    args: args.map(encodeContractArgument),
-    publicKey: account,
-    address: account,
-    networkPassphrase: PASSPHRASES[network],
-    rpcUrl: STELLAR_NETWORKS[network].rpcUrl,
-    fee: MAX_INCLUSION_FEE.toString(),
-    parseResultXdr: value => scValToNative(value) as T,
-  })
+  const transaction = await retry(
+    () =>
+      contract.AssembledTransaction.build<T>({
+        contractId,
+        method,
+        args: args.map(encodeContractArgument),
+        publicKey: account,
+        address: account,
+        networkPassphrase: PASSPHRASES[network],
+        rpcUrl: STELLAR_NETWORKS[network].rpcUrl,
+        fee: MAX_INCLUSION_FEE.toString(),
+        parseResultXdr: value => scValToNative(value) as T,
+      }),
+    StellarFetchRetry,
+  )
   void transaction.simulationData // The SDK getter throws if simulation failed or requires state restoration.
   return transaction
 }
