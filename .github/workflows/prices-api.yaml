@@ -23,11 +23,16 @@ jobs:
           cache: yarn
           registry-url: 'https://registry.npmjs.org'
 
-      - name: 'Build and publish'
+      - name: 'Install dependencies'
         working-directory: packages/prices-api
+        timeout-minutes: 3
         run: |
           yarn config set npmRegistryServer "https://registry.npmjs.org"
           yarn config set npmAuthToken "${{ secrets.NPM_TOKEN }}"
           yarn install --immutable
+
+      - name: 'Build and publish'
+        working-directory: packages/prices-api
+        run: |
           yarn build
           yarn npm publish --access public

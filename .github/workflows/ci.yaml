@@ -25,6 +25,7 @@ jobs:
           cache: yarn
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - run: yarn check-supply-chain
 
   lint:
@@ -59,6 +60,7 @@ jobs:
           path: .cache/typecheck
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - run: yarn lint
       - run: yarn format:check
         if: success() || failure()
@@ -78,6 +80,7 @@ jobs:
           cache: yarn
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - run: yarn build # make sure the build works + uploads source maps to Sentry
       - run: yarn test
         env:
@@ -106,6 +109,7 @@ jobs:
           path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
@@ -148,6 +152,7 @@ jobs:
           path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
@@ -206,6 +211,7 @@ jobs:
           path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
@@ -268,6 +274,7 @@ jobs:
 
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - name: Build app
         run: |
           set -o pipefail # fail tee if the main command fails
