@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from 'react'
-import { useConnect, useConnectors, type Connector } from 'wagmi'
-import { ConnectorAlreadyConnectedError, ProviderNotFoundError } from 'wagmi'
+import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
+import { ConnectorAlreadyConnectedError } from 'wagmi'
 import { useGlobalState } from '@evm-ui/hooks/useGlobalState'
 import type { Provider } from '@evm-ui/utils/ethers'
 import { IS_CYPRESS } from '@ui/lib/env'
@@ -22,19 +22,15 @@ export const useWallet = () => {
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
   const { mutateAsync: connectAsync } = useConnect()
+  const { mutateAsync: disconnectAsync, connectors: connectedConnectors } = useDisconnect()
 
-  /** Disconnects all connectors, since we don't know which one is connected and wagmi auto-connects to the next one */
-  const disconnect = useCallback(
-    async () =>
-      await Promise.all(
-        connectors.map(c =>
-          c.disconnect().catch((e: unknown) => {
-            if (!(e instanceof ProviderNotFoundError)) throw e // Ignore connectors without a provider
-          }),
-        ),
-      ),
-    [connectors],
-  )
+  /**
+   * Disconnects every connected wallet, otherwise wagmi switches to the next connected one.
+   * Other wallets are left alone, as some open a popup when asked to disconnect.
+   */
+  const disconnect = useCallback(async () => {
+    for (const connector of connectedConnectors) await disconnectAsync({ connector })
+  }, [connectedConnectors, disconnectAsync])
 
   // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(
