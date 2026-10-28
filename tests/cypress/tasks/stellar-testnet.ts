@@ -2,6 +2,7 @@
 import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assert } from '@primitives/objects.utils'
+import { retry, type RetryOptions } from '@primitives/promise.utils'
 import {
   Asset,
   BASE_FEE,
@@ -16,6 +17,12 @@ import {
 import type { TestnetAccount } from '../support/helpers/stellar/stellar-testnet.config'
 
 const INITIAL_TOKEN_BALANCE = '100'
+const stellarAccountRetries = (publicKey: string) =>
+  ({
+    retries: 10,
+    delay: () => 1000,
+    shouldRetry: (error: unknown) => (error as Error).message === `Account not found: ${publicKey}`,
+  }) satisfies RetryOptions
 const { timeout: FUNDING_TRANSACTION_EXPIRY_SECONDS } = TIMEOUTS['stellar.fundWallet']
 
 /** Required fields from the STELLAR_TESTNET_CONFIG deployment JSON. */
@@ -26,8 +33,10 @@ export const createTestnetDeployer = async (config: TestnetDeployment, rpcUrl: s
   const wallet = Keypair.random()
   const publicKey = wallet.publicKey()
   const server = new rpc.Server(rpcUrl)
-  await server.fundAddress(publicKey)
-  const account = await server.getAccount(publicKey)
+  await server.fundAddress(publicKey).catch((error: Error) => {
+    if (!error.message.endsWith('transaction status NOT_FOUND')) throw error // account for rpc delays seeing the transaction
+  })
+  const account = await retry(() => server.getAccount(publicKey), stellarAccountRetries(publicKey))
   const { issuer, coins } = config
   const assets = await Promise.all(
     coins.map(async contractId => {
