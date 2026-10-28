@@ -44,7 +44,7 @@ export const PoolCompositionCard = ({
             <FooterRow
               visibleColumns={table.getVisibleLeafColumns()}
               totalUsd={totalUsd}
-              hasBalance={mapQuery(rows, data => data.some(r => r.marketShare.data && +r.marketShare.data))}
+              hasBalance={mapQuery(rows, data => data.some(r => r.marketShare != null && +r.marketShare))}
             />
           )
         }
