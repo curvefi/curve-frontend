@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-imports -- This module wraps Stellar wallet and contract SDK access. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { StableSwapErrors } from '@/stellar/lib/errors'
+import { STABLE_SWAP_ERRORS } from '@/stellar/lib/errors'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
@@ -129,8 +129,7 @@ export async function simulateContractCall<T>(
     parseResultXdr: value => scValToNative(value) as T,
   })
   try {
-    // The SDK getter throws if simulation failed or requires state restoration.
-    void transaction.simulationData
+    void transaction.simulationData // The SDK getter throws if simulation failed or requires state restoration.
   } catch (e) {
     throw convertStellarError(transaction.simulation?.events, contractId) ?? e
   }
@@ -174,23 +173,25 @@ export async function sendStellarTransaction<T>(
       shouldRetry: error => (error as Error).message.includes('TRY_AGAIN_LATER'),
     },
   )
+
   const confirmation = sent.getTransactionResponse
   if (confirmation?.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
-    const contractId = transaction.options.contractId as StellarContract
-    const events = (confirmation as rpc.Api.GetFailedTransactionResponse)?.diagnosticEventsXdr
+    const { diagnosticEventsXdr, resultXdr, status } = (confirmation as rpc.Api.GetFailedTransactionResponse) ?? {}
     throw (
-      convertStellarError(events, contractId) ??
-      new Error(`Stellar transaction did not succeed: ${confirmation?.status ?? 'Missing confirmation'}`, {
-        cause: confirmation,
-      })
+      convertStellarError(diagnosticEventsXdr, transaction.options.contractId as StellarContract) ??
+      new Error(
+        `Transaction failed: ${maybe(resultXdr, r => JSON.stringify(r.result)) ?? status ?? 'Missing confirmation'}`,
+        { cause: confirmation },
+      )
     )
   }
+
   const result = sent.result // Reading the result checks confirmed execution, not just submission.
   const response = assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
   return { result, response }
 }
 
-export const convertStellarError = (events: DiagnosticEvent[] | undefined, contract: StellarContract) =>
+const convertStellarError = (events: DiagnosticEvent[] | undefined, contract: StellarContract) =>
   maybe(events, events =>
     maybe(
       humanizeEvents(events)
@@ -203,8 +204,8 @@ export const convertStellarError = (events: DiagnosticEvent[] | undefined, contr
         .findLast(Boolean),
       code =>
         maybe(
-          StableSwapErrors.find(item => item.code === code),
-          ({ title, description, code }) => new NoRetryError(`${title}: ${description} (code ${code})`),
+          STABLE_SWAP_ERRORS.find(item => item.code === code),
+          ({ title, description, code }) => new NoRetryError(`${title}(${code}): ${description}`),
         ),
     ),
   )

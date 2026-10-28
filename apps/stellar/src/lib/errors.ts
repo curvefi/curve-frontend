@@ -1,6 +1,6 @@
 type Error = { code: number; title: string; description: string }
 
-export const StableSwapErrors = [
+export const STABLE_SWAP_ERRORS = [
   {
     title: 'InputCoinCountMismatch',
     code: 10000,
