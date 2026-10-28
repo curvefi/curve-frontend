@@ -65,14 +65,14 @@ const pnlAt = (
     collateral,
     debt,
     oraclePrice,
-    hasRoe = true,
-  }: { collateral: number; debt: number; oraclePrice: number; hasRoe?: boolean },
+    roeEnabled = true,
+  }: { collateral: number; debt: number; oraclePrice: number; roeEnabled?: boolean },
 ) =>
   getPositionPnlAndRoe({
     equity: `${collateral * oraclePrice - debt}`,
     oraclePrice: `${oraclePrice}`,
     capital: toPositionCapital({ events }),
-    hasRoe,
+    roeEnabled,
   })
 
 const expectPnl = (
@@ -266,7 +266,7 @@ describe('ROE', () => {
         collateral: 10,
         debt: 10_000,
         oraclePrice: 2200,
-        hasRoe: false,
+        roeEnabled: false,
       }),
       { pnl: 2000, roe: null, pnlC: 0.4545, roeC: null },
     ))

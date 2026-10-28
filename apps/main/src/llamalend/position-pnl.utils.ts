@@ -97,10 +97,10 @@ export const toPositionCapital = ({ events }: { events: ApiCollateralEvent[] }):
   }
 }
 
-const getPnlAndRoe = (equity: Decimal, { netInvested, walletBorrowed }: Capital, hasRoe: boolean): PnlAndRoe => {
+const getPnlAndRoe = (equity: Decimal, { netInvested, walletBorrowed }: Capital, roeEnabled: boolean): PnlAndRoe => {
   const pnl = decimalMinus(equity, netInvested)
   const totalCapital = decimalSum(netInvested, decimalGreaterThan(walletBorrowed, ZERO) ? walletBorrowed : ZERO)
-  return { pnl, roe: hasRoe && decimalGreaterThan(totalCapital, ZERO) ? decimalPercent(pnl, totalCapital) : null }
+  return { pnl, roe: roeEnabled && decimalGreaterThan(totalCapital, ZERO) ? decimalPercent(pnl, totalCapital) : null }
 }
 
 /** PNL and ROE of the open position from its equity (in the debt token) and its own capital. Null without capital. */
@@ -108,17 +108,17 @@ export const getPositionPnlAndRoe = ({
   equity,
   oraclePrice,
   capital,
-  hasRoe,
+  roeEnabled,
 }: {
   equity: Decimal
   oraclePrice: Decimal
   capital: PositionCapital
-  hasRoe: boolean
+  roeEnabled: boolean
 }): PositionPnlAndRoe | null =>
   capital && {
-    debt: getPnlAndRoe(equity, capital.debt, hasRoe),
+    debt: getPnlAndRoe(equity, capital.debt, roeEnabled),
     collateral:
       capital.collateral && !decimalEqual(oraclePrice, ZERO)
-        ? getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral, hasRoe)
+        ? getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral, roeEnabled)
         : null,
   }

@@ -1,7 +1,6 @@
 import { sum } from 'lodash'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
-import { calculateLtv } from '@/llamalend/llama.utils'
-import { isLegacyMintController } from '@/llamalend/markets.constants'
+import { calculateLtv, isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
@@ -68,7 +67,8 @@ const getUserPnl = (row: LlamaMarketRow) =>
       equity,
       oraclePrice,
       capital,
-      hasRoe: !isLegacyMintController(row.blockchainId, row.controllerAddress),
+      // The prices API reports V0 zap borrows as plain wallet borrows: PNL stays right, but ROE would count them as own capital
+      roeEnabled: !isZapV0MintMarket(row.blockchainId, row.controllerAddress),
     }),
   )
 

@@ -1,7 +1,7 @@
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { usePositionCapital } from '@/llamalend/features/user-position-history/queries/position-capital'
-import { isLegacyMintController } from '@/llamalend/markets.constants'
+import { isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoe, type PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
@@ -24,10 +24,15 @@ export function usePositionPnlAndEquity(params: UserMarketParams): PositionPnlAn
   const capital = q(
     usePositionCapital(marketType, { blockchainId, contractAddress: controllerAddress, userAddress }, isEnabled),
   )
-  const hasRoe = !isLegacyMintController(blockchainId, controllerAddress)
   const equity = combineQueries([position, oraclePrice], getEquity)
   const pnl = combineQueries([equity, oraclePrice, capital], (equity, oraclePrice, capital) =>
-    getPositionPnlAndRoe({ equity, oraclePrice, capital, hasRoe }),
+    getPositionPnlAndRoe({
+      equity,
+      oraclePrice,
+      capital,
+      // The prices API reports V0 zap borrows as plain wallet borrows: PNL stays right, but ROE would count them as own capital
+      roeEnabled: !isZapV0MintMarket(blockchainId, controllerAddress),
+    }),
   )
   return isEnabled ? { equity, pnl } : null
 }
