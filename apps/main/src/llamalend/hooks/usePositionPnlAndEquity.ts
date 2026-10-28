@@ -10,7 +10,7 @@ import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { DISABLED_Q, q, type QueryProp } from '@ui/features/queries/util'
 
 export type PositionPnlAndEquityQueries = { equity: QueryProp<Decimal>; pnl: QueryProp<PositionPnlAndRoe | null> }
 
@@ -21,17 +21,17 @@ export function usePositionPnlAndEquity(params: UserMarketParams): PositionPnlAn
   const blockchainId = BlockchainIds[chainId]
   const position = q(useUserState(params, isEnabled))
   const oraclePrice = q(useMarketOraclePrice(params, isEnabled))
+  // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
+  const isPnlEnabled = isEnabled && !isZapV0MintMarket(blockchainId, controllerAddress)
   const capital = q(
-    usePositionCapital(
-      marketType,
-      { blockchainId, contractAddress: controllerAddress, userAddress },
-      // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
-      isEnabled && !isZapV0MintMarket(blockchainId, controllerAddress),
-    ),
+    usePositionCapital(marketType, { blockchainId, contractAddress: controllerAddress, userAddress }, isPnlEnabled),
   )
   const equity = combineQueries([position, oraclePrice], getEquity)
-  const pnl = combineQueries([equity, oraclePrice, capital], (equity, oraclePrice, capital) =>
-    getPositionPnlAndRoe({ equity, oraclePrice, capital }),
-  )
+  // A disabled query still selects the events another query loaded, like the activity history
+  const pnl = isPnlEnabled
+    ? combineQueries([equity, oraclePrice, capital], (equity, oraclePrice, capital) =>
+        getPositionPnlAndRoe({ equity, oraclePrice, capital }),
+      )
+    : DISABLED_Q
   return isEnabled ? { equity, pnl } : null
 }

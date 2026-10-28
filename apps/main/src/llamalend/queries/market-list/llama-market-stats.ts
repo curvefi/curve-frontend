@@ -109,13 +109,16 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     combine: results => results.map(result => q<BorrowStats>(result)),
   })
   const isPositionPnlEnabled = useLlamalendPositionPnl()
+  // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
+  const capitalEntries = statsEntries.filter(
+    ({ market }) => !isZapV0MintMarket(market.blockchainId, market.controllerAddress),
+  )
   const capitalQueries = useQueries({
-    queries: statsEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
+    queries: capitalEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
       getPositionCapitalOptions(
         type,
         { contractAddress: controllerAddress, userAddress, blockchainId },
-        // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
-        isPositionPnlEnabled && !isZapV0MintMarket(blockchainId, controllerAddress),
+        isPositionPnlEnabled,
       ),
     ),
     combine: results => results.map(result => q<PositionCapital>(result)),
@@ -127,7 +130,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
-    const capitalByMarket = new Map(statsEntries.map(({ market }, index) => [market, capitalQueries[index]]))
+    const capitalByMarket = new Map(capitalEntries.map(({ market }, index) => [market, capitalQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
@@ -150,5 +153,5 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         },
       }
     })
-  }, [markets, statsEntries, statsQueries, capitalQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [markets, statsEntries, statsQueries, capitalEntries, capitalQueries, tokenPriceEntries, tokenPriceQueries])
 }
