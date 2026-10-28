@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { getPositionCashFlowsOptions } from '@/llamalend/features/user-position-history/queries/position-cash-flows'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
 import type { PositionCashFlows } from '@/llamalend/position-pnl.utils'
+import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
@@ -99,11 +100,7 @@ const createTokenPriceEntries = (markets: LlamaMarket[]) =>
  * The summary, table cells, and TanStack accessors consume the same query results. Rebuilding the enriched row array
  * as queries resolve invalidates TanStack's row value cache so asynchronously loaded values are re-sorted.
  */
-export const useLlamaMarketRows = (
-  markets: LlamaMarket[],
-  userAddress: Address | undefined,
-  { isPositionPnlEnabled }: { isPositionPnlEnabled: boolean },
-): LlamaMarketRow[] => {
+export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address | undefined): LlamaMarketRow[] => {
   const statsEntries = useMemo(() => createStatsEntries(markets, userAddress), [markets, userAddress])
   const tokenPriceEntries = useMemo(() => createTokenPriceEntries(markets), [markets])
 
@@ -111,6 +108,7 @@ export const useLlamaMarketRows = (
     queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
     combine: results => results.map(result => q<BorrowStats>(result)),
   })
+  const isPositionPnlEnabled = useLlamalendPositionPnl()
   const cashFlowsQueries = useQueries({
     queries: useMemo(
       () =>
