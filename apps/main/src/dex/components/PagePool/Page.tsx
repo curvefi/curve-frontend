@@ -29,7 +29,7 @@ export const PagePool = () => {
 
   const lookup = usePool({ chainId, poolAddress })
   // We want to have a loading state during hydration (pool is unavailable until then)
-  const pool = isHydrated ? lookup : loadingQ(undefined)
+  const pool = isHydrated || lookup.error ? lookup : loadingQ(undefined)
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(

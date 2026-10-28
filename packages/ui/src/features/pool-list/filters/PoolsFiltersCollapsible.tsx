@@ -1,14 +1,9 @@
-import Stack from '@mui/material/Stack'
 import { getRangeFilterLabel } from '@ui/features/tables/filters'
 import { TableActiveFilterGroups, type TableActiveFilterGroup } from '@ui/features/tables/TableActiveFilterGroups'
 import { TableActiveFiltersBar } from '@ui/features/tables/TableActiveFiltersBar'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { PoolsChips } from '../chips/PoolsChips'
-import { POOL_DEFAULT_TVL_MIN, type PoolsFiltersProps, type usePoolsFilters } from '../hooks/usePoolsFilters'
+import { POOL_DEFAULT_TVL_MIN, type PoolsFiltersProps } from '../hooks/usePoolsFilters'
 import { getPoolsTvlLabelRange, parsePoolsRangeFilter, PoolFilterId } from './utils'
-
-const { Spacing } = SizesAndSpaces
 
 // Show the hidden default TVL min in active range chips once a max bound is active.
 const getTvlFilterLabel = (serializedRange: string | undefined) => {
@@ -20,14 +15,12 @@ const getTvlFilterLabel = (serializedRange: string | undefined) => {
 }
 
 type PoolsFiltersCollapsibleProps = {
-  activePoolsFilter: ReturnType<typeof usePoolsFilters>['activePoolsFilter']
   hasActiveFilters: boolean
   isLite: boolean
   resetFilters: () => void
 } & PoolsFiltersProps
 
 export const PoolsFiltersCollapsible = ({
-  activePoolsFilter,
   columnFiltersById,
   hasActiveFilters,
   isLite,
@@ -74,19 +67,15 @@ export const PoolsFiltersCollapsible = ({
   ]
 
   return (
-    <>
-      <Stack sx={{ padding: Spacing.sm, paddingTop: 0, display: { tablet: 'none' } }}>
-        <PoolsChips isLite={isLite} activePoolsFilter={activePoolsFilter} />
-      </Stack>
-      {!isLite && hasActiveFilters && (
-        <TableActiveFiltersBar
-          hasActiveFilters={hasActiveFilters}
-          resetFilters={resetFilters}
-          testId="dex-pool-filters-collapsible"
-        >
-          <TableActiveFilterGroups groups={activeFilterGroups} />
-        </TableActiveFiltersBar>
-      )}
-    </>
+    !isLite &&
+    hasActiveFilters && (
+      <TableActiveFiltersBar
+        hasActiveFilters={hasActiveFilters}
+        resetFilters={resetFilters}
+        testId="dex-pool-filters-collapsible"
+      >
+        <TableActiveFilterGroups groups={activeFilterGroups} />
+      </TableActiveFiltersBar>
+    )
   )
 }
