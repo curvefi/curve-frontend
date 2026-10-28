@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from 'react'
 import { useConnect, useConnectors, type Connector } from 'wagmi'
-import { ConnectorAlreadyConnectedError } from 'wagmi'
+import { ConnectorAlreadyConnectedError, ProviderNotFoundError } from 'wagmi'
 import { useGlobalState } from '@evm-ui/hooks/useGlobalState'
 import type { Provider } from '@evm-ui/utils/ethers'
 import { IS_CYPRESS } from '@ui/lib/env'
@@ -23,10 +23,24 @@ export const useWallet = () => {
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
   const { mutateAsync: connectAsync } = useConnect()
 
-  // disconnect by calling disconnect on all connectors, since we don't know which one is connected.
-  // this is a workaround the fact that multiInjectedProviderDiscovery auto-connects to the next available injected provider,
-  // which is not what we want when disconnecting.
-  const disconnect = useCallback(async () => await Promise.all(connectors.map(c => c.disconnect())), [connectors])
+  /**
+   * Disconnects by calling `disconnect` on all connectors, since we don't know which one is connected.
+   * This works around `multiInjectedProviderDiscovery` auto-connecting to the next available injected provider,
+   * which is not what we want when disconnecting.
+   * Connectors without a provider (e.g. Safe outside an iframe) throw `ProviderNotFoundError`, which is ignored
+   * because they have nothing to disconnect.
+   */
+  const disconnect = useCallback(
+    async () =>
+      await Promise.all(
+        connectors.map(c =>
+          c.disconnect().catch((e: unknown) => {
+            if (!(e instanceof ProviderNotFoundError)) throw e
+          }),
+        ),
+      ),
+    [connectors],
+  )
 
   // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(
