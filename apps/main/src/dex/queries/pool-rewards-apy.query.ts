@@ -66,6 +66,7 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
     if (baseApyResult.status === 'rejected') {
       if (p.inApi) resp.error.base = true
     } else {
+      // Curve-js converts numbers to string with .toFixed(8) for unknown reason. We probably want to replace this with `decimal` soon.
       resp.base.day = new BigNumber(resp.base.day).toFixed(8)
       resp.base.week = new BigNumber(resp.base.week).toFixed(8)
     }
@@ -132,6 +133,7 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
 
 const poolPricesApiRewardsApy = (pool: V2PoolDetails) => ({
   base: {
+    // Curve-js converts numbers to string with .toFixed(8) for unknown reason. We probably want to replace this with `decimal` soon.
     day: new BigNumber(pool.baseDailyApr ?? 0).toFixed(8),
     week: new BigNumber(pool.baseWeeklyApr ?? 0).toFixed(8),
   },
