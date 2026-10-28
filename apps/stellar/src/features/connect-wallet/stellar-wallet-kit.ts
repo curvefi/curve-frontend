@@ -214,8 +214,8 @@ const convertStellarError = (events: DiagnosticEvent[] | undefined, contract: St
         .findLast(Boolean),
       code =>
         maybe(
-          STABLE_SWAP_ERRORS.find(item => item.code === code),
-          ({ title, description, code }) => new NoRetryError(`${title}(${code}): ${description}`),
+          STABLE_SWAP_ERRORS[code as keyof typeof STABLE_SWAP_ERRORS],
+          ({ title, description }) => new NoRetryError(`${title}(${code}): ${description}`),
         ),
     ),
   )
