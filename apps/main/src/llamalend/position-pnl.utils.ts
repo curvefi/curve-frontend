@@ -20,25 +20,35 @@ import {
 type Capital = {
   /** Value moved from the user's wallet into the position, negative when the user received more than they put in */
   netInvested: Decimal
-  /** Borrowed tokens sent to the user's wallet, net of repays: negative when wallet repays exceed them, e.g. after a zap borrow */
+  /**
+   * Borrowed tokens sent to the wallet, minus the ones repaid from it.
+   * Negative when the wallet repaid more than it received, e.g. a zap-opened loan repaid with wallet funds.
+   */
   walletBorrowed: Decimal
 }
 
 /** Own capital of the open position in the debt token, and in the collateral token at each event's oracle price */
 export type PositionCapital = { debt: Capital; collateral: Capital | null } | null
 
+/** PNL and ROE (%) in one token. ROE divides the PNL by own capital: netInvested + max(walletBorrowed, 0) */
 type PnlAndRoe = { pnl: Decimal; roe: Decimal | null }
 
 /** PNL and ROE (%) of the open position, in the debt token and in the collateral token */
 export type PositionPnlAndRoe = { debt: PnlAndRoe; collateral: PnlAndRoe | null }
 
-/** An event's own flow and wallet borrow, in the debt token at the event's oracle price */
+/**
+ * What one event did to the user's own capital, in the debt token at the event's oracle price.
+ * `flow`: value the wallet put into the position, negative when the position paid the wallet.
+ * `walletBorrowed`: borrowed tokens the event sent to the wallet, negative for repays from it.
+ */
 type EventFlow = { flow: Decimal; walletBorrowed: Decimal }
 
 const toDecimal = (value: number | Nullish) => decimal(value) ?? ZERO
 
+/** For events whose borrowed tokens never reach the wallet (zaps, liquidations): only the flow counts */
 const ownFlow = (flow: Decimal): EventFlow => ({ flow, walletBorrowed: ZERO })
 
+/** The user liquidates their own loan (the app's close position): the wallet pays the debt the AMM crvUSD does not cover and gets the collateral back */
 const selfLiquidation = ({ liquidation, user, oraclePrice }: ApiCollateralEvent) =>
   liquidation?.liquidator.toLowerCase() === user.toLowerCase()
     ? ownFlow(
@@ -76,7 +86,13 @@ const plain = ({ collateralChange, loanChange, oraclePrice }: ApiCollateralEvent
   walletBorrowed: toDecimal(loanChange),
 })
 
-/** First match wins. Only plain events borrow to the wallet: zap borrows buy collateral, liquidations repay debt. */
+/**
+ * Rules in order, the first match wins:
+ * - a self-liquidation is also a liquidation, so it is checked first
+ * - zap events also carry collateral and loan changes that include the swapped amounts, so they read the zap fields instead
+ * - anything else is a plain deposit, withdrawal, borrow or repay
+ * Only plain events send borrowed tokens to the wallet: a zap borrow buys collateral and a liquidation repays debt.
+ */
 const getEventFlow = (event: ApiCollateralEvent): EventFlow =>
   selfLiquidation(event) ?? liquidation(event) ?? zapDeposit(event) ?? zapRepay(event) ?? plain(event)
 

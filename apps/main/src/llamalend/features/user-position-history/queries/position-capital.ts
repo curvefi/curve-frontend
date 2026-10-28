@@ -11,7 +11,7 @@ const selectCapital = <TData extends { events: ApiCollateralEvent[] }, TKey exte
   options: QueryOptions<TData, DefaultError, TData, TKey>,
 ): QueryOptions<TData, DefaultError, PositionCapital, TKey> => ({ ...options, select: toPositionCapital })
 
-/** Own capital of the open position, selected from the collateral events query the activity tab also uses */
+/** Own capital of the open position, selected from the collateral events query */
 export const getPositionCapitalOptions = (marketType: MarketType, params: UserContractParams, enabled?: boolean) =>
   ({
     [MarketType.Lend]: selectCapital(getUserLendCollateralEventsOptions(params, enabled)),
