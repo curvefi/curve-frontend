@@ -11964,6 +11964,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
+    "@curvefi/api-server": "workspace:^"
     "@curvefi/evm-ui": "workspace:^"
     "@curvefi/legacy-ui": "workspace:^"
     "@curvefi/ui": "workspace:^"
@@ -14449,6 +14450,7 @@ __metadata:
   resolution: "stellar@workspace:apps/stellar"
   dependencies:
     "@creit.tech/stellar-wallets-kit": "npm:2.7.1"
+    "@curvefi/api-server": "workspace:^"
     "@curvefi/ui": "workspace:^"
     "@sentry/vite-plugin": "npm:11.8.0"
     "@stellar/stellar-sdk": "npm:17.3.0"
@@ -14459,6 +14461,7 @@ __metadata:
     "@tanstack/router-core": "npm:1.171.38"
     "@types/node": "npm:26.6.5"
     "@vitejs/plugin-react": "npm:6.1.2"
+    merkl-api: "workspace:^"
     vite: "npm:8.3.3"
     vite-plugin-svgr: "npm:5.2.0"
     vite-plugin-vercel: "npm:11.2.0"

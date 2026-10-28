@@ -27,6 +27,7 @@ export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
 export const TooltipValueLink = ({ children, href }: { children: ReactNode; href: string }) => (
   <Stack
     component={Link}
+    data-testid="tooltip-value-link"
     href={href}
     rel="noopener noreferrer"
     target="_blank"

@@ -1,4 +1,4 @@
-import { createApiServer } from '@curvefi/api-server'
+import { createApiServer } from '@api-server/server'
 import { getOpportunities } from './routes/opportunities'
 import { OpportunitiesOpts, OPPORTUNITIES_PATH } from './routes/opportunities.schemas'
 
@@ -10,8 +10,6 @@ export const createMerklServer = ({
   pluginTimeout,
 }: CreateMerklServerOptions = {}) => {
   const { MERKL_API_KEY } = env
-
-  if (!MERKL_API_KEY) throw new Error('Missing required environment variable MERKL_API_KEY')
 
   return createApiServer({ serviceName: 'merkl-api', env, logger, pluginTimeout }).get(
     OPPORTUNITIES_PATH,
