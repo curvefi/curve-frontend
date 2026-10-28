@@ -193,6 +193,11 @@ const config = [
               message:
                 'Use getMarketAssetsType from market-assets-type.utils instead of reading the assets type mapping directly.',
             },
+            {
+              regex: '(^|/)markets\\.constants(?:\\.ts)?$',
+              importNames: ['ZAP_V0_MINT_MARKETS'],
+              message: 'Use isZapV0MintMarket from llama.utils instead of reading the V0 zap mint markets directly.',
+            },
           ],
         },
       ],

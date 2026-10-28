@@ -25,7 +25,6 @@ import {
   maybe,
   maybes,
   notFalsy,
-  type PartialRecord,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
@@ -39,7 +38,8 @@ import { t } from '@ui/lib/i18n'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
-import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
+// eslint-disable-next-line no-restricted-imports -- the only reader of ZAP_V0_MINT_MARKETS, through isZapV0MintMarket
+import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS, ZAP_V0_MINT_MARKETS } from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
 import type { MarketBorrowAprTooltipContentProps } from './widgets/tooltips/MarketBorrowAprTooltipContent'
 import type { MarketSupplyRateTooltipContentProps } from './widgets/tooltips/MarketSupplyRateTooltipContent'
@@ -110,18 +110,6 @@ export const isMintMarket = (market: MarketTemplate | Nullish): market is MintMa
 
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   isMintMarket(market) && market.index == null && market.leverageZap !== zeroAddress
-
-/** Legacy mint markets (ids 0 to 5) leverage through their V0 zap */
-const ZAP_V0_MINT_MARKETS: PartialRecord<Chain, Address[]> = {
-  ethereum: [
-    '0x8472a9a7632b173c8cf3a86d3afec50c35548e76', // sfrxETH
-    '0x100daa78fc509db39ef7d04de0c1abd299f4c6ce', // wstETH
-    '0x4e59541306910ad6dc1dac0ac9dfb29bd9f15c67', // WBTC
-    '0xa920de414ea4ab66b97da1bfe9e6eca7d4219635', // ETH
-    '0xec0820efafc41d8943ee8de495fc9ba8495b15cf', // sfrxETH v2
-    '0x1c91da0223c763d2e0173243eadaa0a2ea47e704', // tBTC
-  ],
-}
 
 export const isZapV0MintMarket = (blockchainId: Chain | undefined, controllerAddress: Address | undefined) =>
   !!blockchainId &&
