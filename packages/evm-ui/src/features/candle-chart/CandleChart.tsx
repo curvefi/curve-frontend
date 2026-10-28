@@ -1,4 +1,12 @@
-import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
+import type {
+  AutoscaleInfo,
+  IChartApi,
+  Time,
+  ISeriesApi,
+  LineWidth,
+  IPriceLine,
+  CustomSeriesWhitespaceData,
+} from 'lightweight-charts'
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import { sortBy } from 'lodash'
 import { useEffect, useRef, type RefObject } from 'react'
@@ -439,16 +447,25 @@ export const CandleChart = ({
 
   useInitialChartRightOffset({ chartRef, hasSeriesData })
 
-  // Update oracle price data when it changes
+  // Update oracle price data and scaling when they change
   useEffect(() => {
     if (!oraclePriceSeriesRef.current || !oraclePriceData) return
+
+    const isOracleOnlyChart = ohlcData?.length === 0
+
+    oraclePriceSeriesRef.current.applyOptions({
+      autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
+        const info = original()
+        return isOracleOnlyChart && info?.priceRange
+          ? { ...info, priceRange: { minValue: 1, maxValue: Math.max(1, info.priceRange.maxValue) } }
+          : info
+      },
+    })
 
     oraclePriceSeriesRef.current.setData(oraclePriceData)
     // Oracle data drives historical pagination only for fallback-only charts.
     // In candle charts, candle updates restore the viewport; restoring here can
     // consume the pending range before the candle page arrives.
-    const isOracleOnlyChart = ohlcData?.length === 0
-
     if (isOracleOnlyChart) {
       restoreVisibleRangeAfterDataUpdate()
     }
