@@ -61,7 +61,7 @@ export const getUserEquityUsd = (row: LlamaMarketRow) =>
   )
 
 /** PNL of the open borrow position, undefined until its stats and collateral events load */
-const getUserPnl = (row: LlamaMarketRow) =>
+export const getUserPnl = (row: LlamaMarketRow) =>
   maybes([getUserEquity(row), row.positionQueries.capital.data], ({ equity, oraclePrice }, capital) =>
     getPositionPnlAndRoe({
       equity,
@@ -72,15 +72,8 @@ const getUserPnl = (row: LlamaMarketRow) =>
     }),
   )
 
-/** ROE in the collateral token, in percent */
+/** ROE in the collateral token, in percent: the PNL column sorts by it */
 export const getUserPnlRoe = (row: LlamaMarketRow) => maybe(getUserPnl(row)?.collateral?.roe, Number)
-
-/** PNL in USD, from the collateral-token PNL at the collateral's USD rate: the PNL column sorts by it */
-export const getUserPnlUsd = (row: LlamaMarketRow) =>
-  maybes(
-    [getUserPnl(row)?.collateral?.pnl, row.positionQueries.prices.collateral.data],
-    (pnl, rate) => Number(pnl) * rate,
-  )
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied
