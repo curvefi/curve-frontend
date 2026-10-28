@@ -50,6 +50,7 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
         body={maybe(pnl, ({ debt }) => (
           <DebtPnlTooltipContent pnl={debt} symbol={assets.borrowed.symbol} />
         ))}
+        placement="top"
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellValueStrong">
