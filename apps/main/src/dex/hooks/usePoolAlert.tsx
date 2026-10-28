@@ -57,7 +57,11 @@ const geistFinanceAlert = (): PoolAlert => ({
 })
 
 const yPrismaAlert = (): PoolAlert => {
-  const prismaPoolHref = getInternalUrl('dex', 'ethereum', `${ROUTE.PAGE_POOLS}/factory-v2-372`)
+  const prismaPoolHref = getInternalUrl(
+    'dex',
+    'ethereum',
+    `${ROUTE.PAGE_POOLS}/0x69833361991ed76f9e8dbbcdf9ea1520febfb4a7`,
+  )
   return {
     isDisableDeposit: true,
     isInformationOnly: true,
