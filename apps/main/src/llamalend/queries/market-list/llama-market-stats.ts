@@ -1,7 +1,7 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
-import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
+import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
 import type { PositionCapital } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -114,7 +114,8 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
       getPositionCapitalOptions(
         type,
         { contractAddress: controllerAddress, userAddress, blockchainId },
-        isPositionPnlEnabled,
+        // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
+        isPositionPnlEnabled && !isZapV0MintMarket(blockchainId, controllerAddress),
       ),
     ),
     combine: results => results.map(result => q<PositionCapital>(result)),

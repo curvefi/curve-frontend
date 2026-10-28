@@ -61,18 +61,12 @@ const event = ({
 /** PNL of a position holding `collateral` with `debt` and no borrowed tokens in the AMM, at `oraclePrice` */
 const pnlAt = (
   events: UserCollateralEvent[],
-  {
-    collateral,
-    debt,
-    oraclePrice,
-    roeEnabled = true,
-  }: { collateral: number; debt: number; oraclePrice: number; roeEnabled?: boolean },
+  { collateral, debt, oraclePrice }: { collateral: number; debt: number; oraclePrice: number },
 ) =>
   getPositionPnlAndRoe({
     equity: `${collateral * oraclePrice - debt}`,
     oraclePrice: `${oraclePrice}`,
     capital: toPositionCapital({ events }),
-    roeEnabled,
   })
 
 const expectPnl = (
@@ -259,15 +253,4 @@ describe('ROE', () => {
       roeC: 13.33,
     })
   })
-
-  it('is null when the market has no ROE', () =>
-    expectPnl(
-      pnlAt([event({ collateralChange: 10, loanChange: 10_000, oraclePrice: 2000 })], {
-        collateral: 10,
-        debt: 10_000,
-        oraclePrice: 2200,
-        roeEnabled: false,
-      }),
-      { pnl: 2000, roe: null, pnlC: 0.4545, roeC: null },
-    ))
 })

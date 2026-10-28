@@ -22,17 +22,16 @@ export function usePositionPnlAndEquity(params: UserMarketParams): PositionPnlAn
   const position = q(useUserState(params, isEnabled))
   const oraclePrice = q(useMarketOraclePrice(params, isEnabled))
   const capital = q(
-    usePositionCapital(marketType, { blockchainId, contractAddress: controllerAddress, userAddress }, isEnabled),
+    usePositionCapital(
+      marketType,
+      { blockchainId, contractAddress: controllerAddress, userAddress },
+      // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
+      isEnabled && !isZapV0MintMarket(blockchainId, controllerAddress),
+    ),
   )
   const equity = combineQueries([position, oraclePrice], getEquity)
   const pnl = combineQueries([equity, oraclePrice, capital], (equity, oraclePrice, capital) =>
-    getPositionPnlAndRoe({
-      equity,
-      oraclePrice,
-      capital,
-      // The prices API reports V0 zap borrows as plain wallet borrows: PNL stays right, but ROE would count them as own capital
-      roeEnabled: !isZapV0MintMarket(blockchainId, controllerAddress),
-    }),
+    getPositionPnlAndRoe({ equity, oraclePrice, capital }),
   )
   return isEnabled ? { equity, pnl } : null
 }
