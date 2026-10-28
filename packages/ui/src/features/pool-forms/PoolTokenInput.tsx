@@ -55,9 +55,13 @@ export const PoolTokenInput = <TValues extends PoolForm>({
     <FormTokenInput
       form={form}
       name={field as FieldPathByValue<TValues, Decimal | undefined>}
-      max={max}
-      maxField={maxField as FieldPathByValue<TValues, Decimal | undefined>}
-      onMax={onMax && (() => onMax(index))}
+      max={
+        max && {
+          balance: max,
+          field: maxField as FieldPathByValue<TValues, Decimal | undefined>,
+          onMax: onMax && (() => onMax(index)),
+        }
+      }
       tokenSelector={
         <TokenLabel blockchainId={blockchainId} address={address} label={symbol} size="mui-md" disabled={disabled} />
       }

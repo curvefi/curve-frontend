@@ -42,8 +42,7 @@ export const AdvancedWithdrawForm = ({
       <FormTokenInput
         form={form}
         name="lpAmount"
-        max={lpBalance}
-        maxField="maxLpAmount"
+        max={{ balance: lpBalance, field: 'maxLpAmount' }}
         label={t`LP amount`}
         inputBalanceUsd={lpAmountUsd}
         onBalance={onLpChange}

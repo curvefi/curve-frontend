@@ -1,7 +1,7 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
+import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { PoolTokenSelector } from '@ui/features/pool-forms/PoolTokenSelector'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -29,15 +29,12 @@ export const SwapTokenInput = ({
 }) => {
   const { amountField: name, amountIndexField, calculatedIndexField } = SWAP_FIELDS[side]
   const { label, testId, selectorLabel } = INPUT_BY_SIDE[side]
-  const {
-    values,
-    formState: { errors },
-  } = form
+  const { values } = form
   const { data: token, error: tokenError } = tokens?.[values[amountIndexField]] ?? {}
-  const error = (form.isTouched('inputAmount', 'outputAmount') ? errors[name] : undefined) ?? tokenError
 
   return (
-    <LargeTokenInput
+    <FormTokenInput
+      form={form}
       name={name}
       label={label}
       testId={testId}
@@ -51,15 +48,14 @@ export const SwapTokenInput = ({
           onToken={index => form.update({ [amountIndexField]: index })}
         />
       }
-      balance={q({ ...balance, data: values[name], error: error ?? balance.error })}
+      balance={q({ ...balance, error: tokenError ?? balance.error })}
       onBalance={amount => {
         const updates: Partial<SwapFormValues> = { [name]: amount, editedSide: side }
         form.update(updates)
       }}
       inputBalanceUsd={maybes([values[name], token?.usdRate], decimalMultiply)}
       walletBalance={token && { symbol: token.symbol, balance: token.balance }}
-      {...(side === 'pay' && token && { maxBalance: { balance: token.balance, chips: 'max' } })}
-      message={error?.message}
+      {...(side === 'pay' && token && { max: { balance: token.balance } })}
       disabled={disabled}
     />
   )

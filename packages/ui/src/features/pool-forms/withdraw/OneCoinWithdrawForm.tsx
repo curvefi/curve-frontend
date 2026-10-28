@@ -6,7 +6,7 @@ import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
 import type { PoolFormProps } from '@ui/features/pool-forms/pool-form.types'
 import { PoolTokenSelector } from '@ui/features/pool-forms/PoolTokenSelector'
-import type { QueryProp } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { OneCoinWithdrawFormValues } from './withdraw-form.utils'
@@ -41,9 +41,8 @@ export const OneCoinWithdrawForm = ({
       <FormTokenInput
         form={form}
         name="amount"
-        max={max}
-        maxField="poolReserve"
-        error={token?.error}
+        max={max && { balance: max, field: 'poolReserve' }}
+        balance={token && mapQuery(token, () => form.values.amount)}
         label={t`Amount to withdraw`}
         testId={`pool-token-input-${token?.data?.address}`}
         inputBalanceUsd={maybes([form.values.amount, token?.data?.usdRate], decimalMultiply)}

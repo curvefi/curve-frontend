@@ -3,8 +3,10 @@ import type { FieldPathByValue, FieldValues, UseFormReturn } from '@ui/features/
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
-// TODO: Reuse in LoanFormTokenInput, SwapTokenInput, RefuelForm and deposit-gauge-reward/AmountTokenInput;
-// preserve their wallet queries, related-field errors and calculated-input loading states.
+/**
+ * Binds a token input to a form value, using balance query loading/error state and an optional maximum.
+ * Touched-field errors take precedence over query errors, which take precedence over the helper message.
+ */
 export const FormTokenInput = <TValues extends FieldValues>({
   form: {
     values,
@@ -12,27 +14,27 @@ export const FormTokenInput = <TValues extends FieldValues>({
   },
   name,
   max,
-  maxField,
-  onMax,
-  error: queryError,
+  balance,
+  message,
   ...props
-}: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance' | 'message'> & {
-  form: UseFormReturn<TValues>
+}: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
+  form: Pick<UseFormReturn<TValues>, 'values' | 'formState'>
   name: FieldPathByValue<TValues, Decimal | undefined>
-  max?: QueryProp<Decimal>
-  maxField?: FieldPathByValue<TValues, Decimal | undefined>
-  onMax?: (amount: Decimal | undefined) => void
-  error?: Error | null
+  max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & {
+    balance: QueryProp<Decimal>
+    field?: FieldPathByValue<TValues, Decimal | undefined>
+  }
+  balance?: QueryProp<Decimal>
 }) => {
-  const fieldError = name in touchedFields ? (errors[name] ?? (maxField ? errors[maxField] : undefined)) : undefined
-  const error = fieldError ?? queryError ?? max?.error
+  const fieldError = name in touchedFields ? (errors[name] ?? (max?.field ? errors[max.field] : undefined)) : undefined
+  const error = fieldError ?? balance?.error ?? max?.balance.error ?? null
   return (
     <LargeTokenInput
       {...props}
       name={name}
-      balance={q({ data: values[name], error: error ?? null, isLoading: false })}
-      maxBalance={max && { balance: max, chips: 'max', onMax }}
-      message={error?.message}
+      balance={q({ data: values[name], error, isLoading: balance?.isLoading ?? false })}
+      maxBalance={max && { balance: max.balance, chips: max.chips ?? 'max', onMax: max.onMax }}
+      message={error?.message ?? message}
     />
   )
 }
