@@ -56,10 +56,7 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
         placement="top"
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography
-            variant="tableCellValueStrong"
-            color={getChangeColor(Number(pnl?.collateral?.pnl ?? 0), 'success', 'error')}
-          >
+          <Typography variant="tableCellValueStrong" color="textPrimary">
             {maybe(
               pnl?.collateral?.pnl,
               value => `${formatSigned(value, 'token.amount')} ${assets.collateral.symbol}`,
