@@ -65,7 +65,6 @@ export const TIMEOUTS = {
   'mock.prices.markets': standard, // /v1/lending/markets and /v1/crvusd/markets
   'mock.prices.snapshots': standard, // Market historical-rate snapshots and their charts.
   'mock.prices.charts': standard, // Intercepted LLAMMA/oracle OHLC data.
-  'mock.curveCore.platforms': standard, // api-core.curve.finance/v1/getPlatforms
   'mock.curveLite.platforms': standard, // api2.curve.finance/get_platforms
   'mock.curveLite.pools': standard, // api2.curve.finance/get_pools/:chainId
   'mock.merkl.opportunities': standard, // /api/merkl/v1/opportunities
