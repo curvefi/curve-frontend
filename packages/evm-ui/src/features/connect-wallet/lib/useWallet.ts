@@ -23,19 +23,13 @@ export const useWallet = () => {
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
   const { mutateAsync: connectAsync } = useConnect()
 
-  /**
-   * Disconnects by calling `disconnect` on all connectors, since we don't know which one is connected.
-   * This works around `multiInjectedProviderDiscovery` auto-connecting to the next available injected provider,
-   * which is not what we want when disconnecting.
-   * Connectors without a provider (e.g. Safe outside an iframe) throw `ProviderNotFoundError`, which is ignored
-   * because they have nothing to disconnect.
-   */
+  /** Disconnects all connectors, since we don't know which one is connected and wagmi auto-connects to the next one */
   const disconnect = useCallback(
     async () =>
       await Promise.all(
         connectors.map(c =>
           c.disconnect().catch((e: unknown) => {
-            if (!(e instanceof ProviderNotFoundError)) throw e
+            if (!(e instanceof ProviderNotFoundError)) throw e // Ignore connectors without a provider
           }),
         ),
       ),
