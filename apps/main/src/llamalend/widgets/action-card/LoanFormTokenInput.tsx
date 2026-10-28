@@ -103,10 +103,11 @@ export const LoanFormTokenInput = <
 
   const onBalance = useCallback(
     (v?: Decimal) => {
+      if (v && max?.onMax && v === max.data) return max.onMax()
       updateForm({ [name]: v } as FormUpdates<TFieldValues>)
       onValueChange?.(v)
     },
-    [name, onValueChange, updateForm],
+    [max, name, onValueChange, updateForm],
   )
   return (
     <FormTokenInput
