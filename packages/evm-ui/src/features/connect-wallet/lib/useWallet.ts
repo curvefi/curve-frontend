@@ -28,9 +28,10 @@ export const useWallet = () => {
    * Disconnects every connected wallet, otherwise wagmi switches to the next connected one.
    * Other wallets are left alone, as some open a popup when asked to disconnect.
    */
-  const disconnect = useCallback(async () => {
-    for (const connector of connectedConnectors) await disconnectAsync({ connector })
-  }, [connectedConnectors, disconnectAsync])
+  const disconnect = useCallback(
+    async () => await Promise.all(connectedConnectors.map(connector => disconnectAsync({ connector }))),
+    [connectedConnectors, disconnectAsync],
+  )
 
   // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(
