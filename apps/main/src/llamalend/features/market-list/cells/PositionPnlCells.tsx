@@ -7,7 +7,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { getUserPnlUsd } from '../user-position.utils'
+import { getUserPnlRoe } from '../user-position.utils'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -31,12 +31,12 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
   )
 }
 
-/** PNL of the borrow position in USD, with the ROE below it. The column value is the ROE, used for sorting. */
+/** PNL of the borrow position in USD, with the ROE below it */
 export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const { stats, prices, cashFlows } = row.original.positionQueries
   const error = stats.error ?? cashFlows.error
-  const pnlUsd = getUserPnlUsd(row.original)
-  const roe = getValue()
+  const pnlUsd = getValue()
+  const roe = getUserPnlRoe(row.original)
   return error ? (
     <ErrorCell error={error} />
   ) : (

@@ -67,10 +67,10 @@ const getUserPnl = (row: LlamaMarketRow) =>
     }),
   )
 
-/** ROE in the collateral token, in percent: the PNL column sorts by it */
+/** ROE in the collateral token, in percent */
 export const getUserPnlRoe = (row: LlamaMarketRow) => maybe(getUserPnl(row)?.collateral?.roe, Number)
 
-/** PNL in USD, from the collateral-token PNL at the collateral's USD rate */
+/** PNL in USD, from the collateral-token PNL at the collateral's USD rate: the PNL column sorts by it */
 export const getUserPnlUsd = (row: LlamaMarketRow) =>
   maybes(
     [getUserPnl(row)?.collateral?.pnl, row.positionQueries.prices.collateral.data],
