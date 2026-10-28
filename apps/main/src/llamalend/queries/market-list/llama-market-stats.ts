@@ -110,16 +110,12 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
   })
   const isPositionPnlEnabled = useLlamalendPositionPnl()
   const capitalQueries = useQueries({
-    queries: useMemo(
-      () =>
-        statsEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
-          getPositionCapitalOptions(
-            type,
-            { contractAddress: controllerAddress, userAddress, blockchainId },
-            isPositionPnlEnabled,
-          ),
-        ),
-      [statsEntries, userAddress, isPositionPnlEnabled],
+    queries: statsEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
+      getPositionCapitalOptions(
+        type,
+        { contractAddress: controllerAddress, userAddress, blockchainId },
+        isPositionPnlEnabled,
+      ),
     ),
     combine: results => results.map(result => q<PositionCapital>(result)),
   })
