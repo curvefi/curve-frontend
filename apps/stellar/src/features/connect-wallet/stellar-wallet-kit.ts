@@ -1,16 +1,18 @@
 /* eslint-disable no-restricted-imports -- This module wraps Stellar wallet and contract SDK access. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
+import { StableSwapErrors } from '@/stellar/lib/errors'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { activeModule } from '@creit.tech/stellar-wallets-kit/state'
 import { type ISupportedWallet, KitEventType } from '@creit.tech/stellar-wallets-kit/types'
-import { assert } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { retry } from '@primitives/promise.utils'
 import {
   Address,
   BASE_FEE,
   contract,
+  humanizeEvents,
   nativeToScVal,
   Networks,
   rpc,
@@ -21,6 +23,8 @@ import {
   TransactionBuilder,
   xdr,
 } from '@stellar/stellar-sdk'
+import { DiagnosticEvent } from '@stellar/stellar-sdk/xdr'
+import { NoRetryError } from '@ui/features/queries/factory'
 
 export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
@@ -124,7 +128,12 @@ export async function simulateContractCall<T>(
     fee: MAX_INCLUSION_FEE.toString(),
     parseResultXdr: value => scValToNative(value) as T,
   })
-  void transaction.simulationData // The SDK getter throws if simulation failed or requires state restoration.
+  try {
+    // The SDK getter throws if simulation failed or requires state restoration.
+    void transaction.simulationData
+  } catch (e) {
+    throw convertStellarError(transaction.simulation?.events, contractId) ?? e
+  }
   return transaction
 }
 
@@ -151,8 +160,8 @@ export async function sendStellarTransaction<T>(
 ) {
   const { sorobanData } = getStellarTransactionFees(transaction)
   const sent = await retry(
-    () =>
-      transaction.signAndSend({
+    async () =>
+      await transaction.signAndSend({
         signTransaction: (envelope, options) => {
           const tx = applyResourceFeeBuffer(envelope, transaction, sorobanData)
           return signTransaction(tx.toXdr(), options)
@@ -167,14 +176,35 @@ export async function sendStellarTransaction<T>(
   )
   const confirmation = sent.getTransactionResponse
   if (confirmation?.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
-    // The SDK tries to decode an undefined return value for failed transactions, hiding the actual failure.
-    const reason =
-      confirmation && 'resultXdr' in confirmation
-        ? JSON.stringify(confirmation.resultXdr.result)
-        : (confirmation?.status ?? 'Missing confirmation')
-    throw new Error(`Stellar transaction did not succeed: ${reason}`, { cause: confirmation })
+    const contractId = transaction.options.contractId as StellarContract
+    const events = (confirmation as rpc.Api.GetFailedTransactionResponse)?.diagnosticEventsXdr
+    throw (
+      convertStellarError(events, contractId) ??
+      new Error(`Stellar transaction did not succeed: ${confirmation?.status ?? 'Missing confirmation'}`, {
+        cause: confirmation,
+      })
+    )
   }
   const result = sent.result // Reading the result checks confirmed execution, not just submission.
   const response = assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
   return { result, response }
 }
+
+export const convertStellarError = (events: DiagnosticEvent[] | undefined, contract: StellarContract) =>
+  maybe(events, events =>
+    maybe(
+      humanizeEvents(events)
+        .map(
+          ({ type, topics, contractId }) =>
+            contractId === contract &&
+            type === 'diagnostic' &&
+            (topics as ['error', { type: 'contract'; code: number }])?.[1].code,
+        )
+        .findLast(Boolean),
+      code =>
+        maybe(
+          StableSwapErrors.find(item => item.code === code),
+          ({ title, description, code }) => new NoRetryError(`${title}: ${description} (code ${code})`),
+        ),
+    ),
+  )
