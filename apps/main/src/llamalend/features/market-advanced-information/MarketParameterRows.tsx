@@ -8,7 +8,7 @@ import { evmAddressDisplay } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
-import { fakeLoadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { loadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -72,5 +72,5 @@ export const MarketIdRow = ({ chainId, marketId }: { chainId: IChainId; marketId
       display={evmAddressDisplay}
     />
   ) : (
-    <ActionInfo testId={MARKET_ID.testId} label={MARKET_ID.label} value={fakeLoadingQ(marketId)} />
+    <ActionInfo testId={MARKET_ID.testId} label={MARKET_ID.label} value={loadingQ(marketId)} />
   )

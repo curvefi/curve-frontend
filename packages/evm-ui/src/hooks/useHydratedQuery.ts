@@ -11,12 +11,12 @@ const useHydratedQuery = <TParams, TData>(
   params: TParams,
   enabled = true,
 ) => {
-  const { isHydrated } = useCurve()
+  const { isHydrated, error: initializationError } = useCurve()
   const { data, error, isLoading, isPending, isFetching } = useQuery(params, isHydrated && enabled)
   return isHydrated
     ? { data, error, isLoading, isPending, isFetching }
     : // Cached results can belong to the previous Curve instance while hydration is in progress.
-      { ...DISABLED_Q, isPending: true, isFetching: false }
+      { ...DISABLED_Q, error: initializationError ?? null, isPending: !initializationError, isFetching: false }
 }
 
 /** Creates a query whose hook waits for hydration, preserving the imperative query helpers. */

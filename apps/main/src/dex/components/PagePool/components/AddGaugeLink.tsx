@@ -7,7 +7,7 @@ import {
 } from '@/dex/components/PageDeployGauge/constants'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
-import type { PoolUrlParams } from '@/dex/types/main.types'
+import type { PoolAddressParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
 import { RouterLink } from '@ui/components/RouterLink'
@@ -25,7 +25,7 @@ export const AddGaugeLink = () => {
   const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
   const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
 
-  const params = useParams<PoolUrlParams>()
+  const params = useParams<PoolAddressParams>()
   const deployGaugePath = getPath(params, `/deploy-gauge`)
 
   const handleClick = () => {

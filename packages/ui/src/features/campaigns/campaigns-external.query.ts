@@ -44,7 +44,7 @@ const REWARDS = campaigns.flatMap(campaign =>
  *
  * @returns TanStack Query result with all active campaigns grouped by pool address
  */
-const { getQueryOptions, queryKey } = queryFactory({
+const { getQueryOptions, reset } = queryFactory({
   queryKey: () => ({ name: 'campaigns-external', version: 1 }) as const,
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async () => {
@@ -59,7 +59,7 @@ const { getQueryOptions, queryKey } = queryFactory({
   category: 'global.campaigns',
 })
 
-export const getCampaignsExternalQueryKey = queryKey
+export const resetCampaignsExternal = reset
 
 export const getCampaignsExternalOptions = (getAddress: (address: string) => Address, enabled = true) =>
   queryOptions({ ...getQueryOptions({}, enabled), select: groupCampaignsByAddress(getAddress) })

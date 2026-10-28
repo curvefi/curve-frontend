@@ -1,4 +1,4 @@
-import { getAddress } from 'viem'
+import { getAddress, type Address } from 'viem'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
@@ -13,18 +13,18 @@ import { getPool } from '../pool.utils'
 
 export const {
   useQuery: useUserLitePoolPositions,
-  queryKey: getUserLitePoolPositionsQueryKey,
+  reset: resetUserLitePoolPositions,
   invalidate: invalidateUserLitePoolPositions,
 } = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
     ({ name: 'getUserLitePoolPositions', chainId, userAddress }) as const,
   queryFn: async ({ userAddress }: UserChainQuery) => {
     const curve = requireLib('curveApi')
-    const poolIds = await curve.getUserPoolListByLiquidity(userAddress)
-    const { results } = await PromisePool.for(poolIds)
+    const poolAddresses = (await curve.getUserPoolListByLiquidity(userAddress)) as Address[]
+    const { results } = await PromisePool.for(poolAddresses)
       .withConcurrency(10)
-      .process(async poolId => {
-        const pool = getPool(poolId, curve)
+      .process(async poolAddress => {
+        const pool = getPool(poolAddress, curve)
         const { lpToken, gauge } = (await pool.wallet.lpTokenBalances(userAddress)) as Record<string, string>
         const totalBalance = decimalSum(decimal(lpToken), decimal(gauge ?? ZERO))
         return { address: getAddress(pool.address), lpTokenAddress: getAddress(pool.lpToken), totalBalance }

@@ -72,17 +72,10 @@ describe('GET opportunities', () => {
     }
   })
 
-  it('requires a Merkl API key only when handling a request', async () => {
-    const server = createMerklServer({ env: { NODE_ENV: 'test', LOG_LEVEL: 'silent' } })
-
-    try {
-      await server.ready()
-      const response = await server.inject({ url: '/api/merkl/v1/opportunities' })
-      expect(response.statusCode).toBe(500)
-      expect(response.json()).toMatchObject({ message: 'Missing required environment variable MERKL_API_KEY' })
-    } finally {
-      await server.close()
-    }
+  it('requires a Merkl API key', () => {
+    expect(() => createMerklServer({ env: { NODE_ENV: 'test', LOG_LEVEL: 'silent' } })).toThrow(
+      'Missing required environment variable MERKL_API_KEY',
+    )
   })
 
   it('rejects unsupported main protocol IDs', async () => {

@@ -1,6 +1,6 @@
 import { zip } from 'lodash'
 import { useMemo } from 'react'
-import { zeroAddress } from 'viem'
+import { isAddress, zeroAddress, type Address } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import { getTokens, tryGetPool } from '@/dex/pool.utils'
@@ -19,6 +19,9 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+const formatRoute = (route: Route) =>
+  route.name || (isAddress(route.poolId, { strict: false }) ? shortenAddress(route.poolId) : route.poolId)
+
 export const DetailInfoTradeRouteRoute = ({
   params,
   route,
@@ -29,14 +32,17 @@ export const DetailInfoTradeRouteRoute = ({
   params: UrlParams
   route: Route
   tokens: TokenMapper | undefined
-  poolId: string
+  poolId: string // The router may or may not return the pool id as string, it's a bit uncertain at this point during migration.
   swapCustomRouteRedirect: string | undefined
 }) => {
   const inputToken = getToken(tokens, route.inputCoinAddress)?.symbol ?? shortenAddress(route.inputCoinAddress)
   const outputToken = getToken(tokens, route.outputCoinAddress)?.symbol ?? shortenAddress(route.outputCoinAddress)
 
   const { curveApi, isHydrated } = useCurve()
-  const pool = useMemo(() => (isHydrated ? tryGetPool(poolId, curveApi) : undefined), [poolId, curveApi, isHydrated])
+  const pool = useMemo(
+    () => (isHydrated ? tryGetPool(poolId as Address, curveApi) : undefined),
+    [poolId, curveApi, isHydrated],
+  )
   const { tokens: poolTokens, tokenAddresses } = useMemo(
     () => maybe(pool, pool => getTokens(pool, { wrapped: false })) ?? { tokens: undefined, tokenAddresses: undefined },
     [pool],
@@ -47,7 +53,7 @@ export const DetailInfoTradeRouteRoute = ({
       label={
         swapCustomRouteRedirect ? (
           <ExternalLink $noStyles href={swapCustomRouteRedirect} target="_blank">
-            {route.name || route.poolId}
+            {formatRoute(route)}
           </ExternalLink>
         ) : route.routeUrlId ? (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
@@ -66,7 +72,7 @@ export const DetailInfoTradeRouteRoute = ({
               target="_blank"
               sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
             >
-              {route.name || route.poolId}
+              {formatRoute(route)}
             </RouterLink>
           </Stack>
         ) : (

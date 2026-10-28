@@ -17,11 +17,7 @@ const calculateExpectedLp = (quote: Decimal): Decimal =>
     .plus(`1e-${LP_TOKEN_DECIMALS}`)
     .toFixed() as Decimal
 
-export const {
-  useQuery: useExpectedLp,
-  invalidate: invalidateExpectedLp,
-  fetchQuery: fetchExpectedLp,
-} = queryFactory({
+export const { useQuery: useExpectedLp, invalidate: invalidateExpectedLp } = queryFactory({
   queryKey: ({
     network,
     pool,
