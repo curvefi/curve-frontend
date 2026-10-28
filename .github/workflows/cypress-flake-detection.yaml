@@ -111,6 +111,7 @@ jobs:
           path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
 
       - name: Optimize component dependencies
         if: inputs.suite == 'component'

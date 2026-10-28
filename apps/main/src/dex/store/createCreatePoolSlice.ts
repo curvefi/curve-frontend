@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
-import { zeroAddress } from 'viem'
+import { zeroAddress, type Address } from 'viem'
 import type { StoreApi } from 'zustand'
 import {
   CRYPTOSWAP,
@@ -38,7 +38,6 @@ import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'
-import { fetchNewPools } from '../lib/curvejs'
 import { tryGetPool } from '../pool.utils'
 import { getBasePools } from '../queries/base-pools.query'
 
@@ -810,14 +809,14 @@ export const createCreatePoolSlice = (
           const successNotificationMessage = t`Pool ${poolName} deployment successful.`
           notify(successNotificationMessage, 'success')
 
-          const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
+          // Despite curve-js calling it poolId, its value nowadays is actually the pool address.
+          const poolId = (await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)) as Address
           set(
             produce((state: State) => {
               state.createPool.transactionState.poolId = poolId
             }),
           )
 
-          await fetchNewPools(curve) // not sure if this is still necessary but keeping it for safety, will be replaced in the future anyway
           const pool = tryGetPool(poolId)
           if (pool) {
             set(
@@ -889,14 +888,13 @@ export const createCreatePoolSlice = (
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
             notify(successNotificationMessage, 'success')
 
-            const poolId = await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)
+            const poolId = (await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)) as Address
             set(
               produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
 
-            await fetchNewPools(curve)
             const pool = tryGetPool(poolId)
             if (pool) {
               set(
@@ -972,14 +970,13 @@ export const createCreatePoolSlice = (
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
             notify(successNotificationMessage, 'success')
 
-            const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
+            const poolId = (await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)) as Address
             set(
               produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
 
-            await fetchNewPools(curve)
             const pool = tryGetPool(poolId)
             if (pool) {
               set(
@@ -1074,14 +1071,13 @@ export const createCreatePoolSlice = (
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
             notify(successNotificationMessage, 'success')
 
-            const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
+            const poolId = (await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)) as Address
             set(
               produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
 
-            await fetchNewPools(curve)
             const pool = tryGetPool(poolId)
             if (pool) {
               set(
@@ -1167,14 +1163,13 @@ export const createCreatePoolSlice = (
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
             notify(successNotificationMessage, 'success')
 
-            const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
+            const poolId = (await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)) as Address
             set(
               produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
 
-            await fetchNewPools(curve)
             const pool = tryGetPool(poolId)
             if (pool) {
               set(

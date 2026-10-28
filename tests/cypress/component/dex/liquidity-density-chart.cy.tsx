@@ -7,7 +7,9 @@ import {
 import { oneOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
-import { allViewports, SUBPIXEL_TOLERANCE } from '@cy/support/ui'
+import { allViewports } from '@cy/support/ui'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import { peakPrice } from '@ui/features/pools/liquidity-density/curve'
 import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
@@ -16,6 +18,7 @@ import type { LiquiditySample } from '@ui/features/pools/liquidity-density/types
 import { constQ } from '@ui/features/queries/util'
 import { ThemeProvider } from '@ui/features/themes/ThemeProvider'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
+import '@ui/styles/fonts.css'
 
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
 const tokenProfile = liquidityProfile(cryptoCurve, [1, 0])!
@@ -38,6 +41,7 @@ const CHART = '[data-testid="liquidity-density-chart"]'
 const PLOT = '[data-testid="liquidity-density-plot"]'
 const LEGEND = '[data-testid="liquidity-density-legend"]'
 const TOOLTIP = '[data-testid="liquidity-density-tooltip"]'
+const LABEL_BOUNDS_TOLERANCE = 2 // Text layout bounds can exceed painted glyphs; allow 2 CSS pixels at label edges.
 
 const mountChart = ({
   theme = 'light',
@@ -46,7 +50,11 @@ const mountChart = ({
   cy.mount(
     <ComponentTestWrapper config={mockedWagmiConfig} autoConnect={false}>
       <ThemeProvider theme={theme}>
-        <LiquidityDensityChart {...chartProps} {...props} />
+        <Card size="small">
+          <CardContent>
+            <LiquidityDensityChart {...chartProps} {...props} />
+          </CardContent>
+        </Card>
       </ThemeProvider>
     </ComponentTestWrapper>,
   )
@@ -77,7 +85,7 @@ const fillAt = (chart: ECharts, price: number, depth: number) => {
     ?.getAttribute('fill')
 }
 
-/** Check rendered label bounds, including rotation, without depending on their text. */
+/** Check label layout bounds, including rotation, without depending on their text. */
 const expectChartLabelsVisible = (chart: ECharts) => {
   const labels = chart
     .getZr()
@@ -88,10 +96,10 @@ const expectChartLabelsVisible = (chart: ECharts) => {
     // Copy local bounds before applying the transform into chart pixels.
     const bounds = label.getBoundingRect().clone()
     if (label.transform) bounds.applyTransform(label.transform)
-    expect(bounds.x).to.be.at.least(-SUBPIXEL_TOLERANCE)
-    expect(bounds.y).to.be.at.least(-SUBPIXEL_TOLERANCE)
-    expect(bounds.x + bounds.width).to.be.at.most(chart.getWidth() + SUBPIXEL_TOLERANCE)
-    expect(bounds.y + bounds.height).to.be.at.most(chart.getHeight() + SUBPIXEL_TOLERANCE)
+    expect(bounds.x).to.be.at.least(-LABEL_BOUNDS_TOLERANCE)
+    expect(bounds.y).to.be.at.least(-LABEL_BOUNDS_TOLERANCE)
+    expect(bounds.x + bounds.width).to.be.at.most(chart.getWidth() + LABEL_BOUNDS_TOLERANCE)
+    expect(bounds.y + bounds.height).to.be.at.most(chart.getHeight() + LABEL_BOUNDS_TOLERANCE)
   })
 }
 

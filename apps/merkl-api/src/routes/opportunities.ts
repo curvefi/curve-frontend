@@ -3,7 +3,7 @@ import type { OpportunitiesQuery } from './opportunities.schemas'
 
 const MERKL_OPPORTUNITIES_URL = 'https://api.merkl.xyz/v4/opportunities'
 
-type MerklConfig = { MERKL_API_KEY?: string }
+type MerklConfig = { MERKL_API_KEY: string }
 
 const buildMerklOpportunitiesUrl = (query: OpportunitiesQuery) => {
   const url = new URL(MERKL_OPPORTUNITIES_URL)
@@ -16,8 +16,6 @@ const buildMerklOpportunitiesUrl = (query: OpportunitiesQuery) => {
 export const getOpportunities =
   ({ MERKL_API_KEY }: MerklConfig) =>
   async (request: FastifyRequest<{ Querystring: OpportunitiesQuery }>, reply: FastifyReply) => {
-    if (!MERKL_API_KEY) throw new Error('Missing required environment variable MERKL_API_KEY')
-
     const url = buildMerklOpportunitiesUrl(request.query)
     const headers = { accept: 'application/json', 'X-API-Key': MERKL_API_KEY }
 

@@ -1,4 +1,4 @@
-import { PoolAlert, type PoolUrlParams } from '@/dex/types/main.types'
+import { PoolAlert, type PoolAddressParams } from '@/dex/types/main.types'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type EstimatedGas = { loading: boolean; estimatedGas: number | null; error?: string | null }
@@ -13,7 +13,7 @@ export type Slippage = {
 
 export type Seed = { isSeed: boolean | null; loaded: boolean }
 
-export type PageTransferProps = { params: PoolUrlParams }
+export type PageTransferProps = { params: PoolAddressParams }
 
 export type TransferProps = { poolAlert: PoolAlert | null; maxSlippage: Decimal; seed: Seed } & PageTransferProps
 

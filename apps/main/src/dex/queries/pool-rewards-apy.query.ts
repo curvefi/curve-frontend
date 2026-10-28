@@ -1,14 +1,17 @@
 import { BigNumber } from 'bignumber.js'
 import { test } from 'vest'
 import { fetchNetworks } from '@/dex/entities/networks'
+import { fetchPoolPricesApi } from '@/dex/queries/pool-prices-api.query'
 import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { V2PoolDetails } from '@curvefi/prices-api/pools'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -63,6 +66,7 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
     if (baseApyResult.status === 'rejected') {
       if (p.inApi) resp.error.base = true
     } else {
+      // Curve-js converts numbers to string with .toFixed(8) for unknown reason. We probably want to replace this with `decimal` soon.
       resp.base.day = new BigNumber(resp.base.day).toFixed(8)
       resp.base.week = new BigNumber(resp.base.week).toFixed(8)
     }
@@ -127,6 +131,30 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
   return resp
 }
 
+const poolPricesApiRewardsApy = (pool: V2PoolDetails) => ({
+  base: {
+    // Curve-js converts numbers to string with .toFixed(8) for unknown reason. We probably want to replace this with `decimal` soon.
+    day: new BigNumber(pool.baseDailyApr ?? 0).toFixed(8),
+    week: new BigNumber(pool.baseWeeklyApr ?? 0).toFixed(8),
+  },
+  other: pool.extraRewardsApr.flatMap(({ address, apr, decimals, name, symbol, price }) =>
+    notFalsy(
+      address &&
+        apr > 0 && {
+          apy: apr,
+          decimals: decimals ?? undefined,
+          gaugeAddress: pool.gauges[0],
+          name: name ?? undefined,
+          symbol: symbol || name || address,
+          tokenAddress: address,
+          tokenPrice: price ?? undefined,
+        },
+    ),
+  ),
+  crv: [pool.crvApr ?? 0, pool.crvAprBoosted ?? 0],
+  error: {} as Record<string, boolean>,
+})
+
 type PoolRewardsApyQuery = PoolQuery<ChainId> & { useApi: boolean }
 type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
 
@@ -135,6 +163,12 @@ const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQu
   queryKey: ({ chainId, poolAddress, useApi }: PoolRewardsApyParams) =>
     ({ name: 'rewardsApy', chainId, poolAddress, useApi }) as const,
   queryFn: async ({ chainId, poolAddress, useApi }: PoolRewardsApyQuery) => {
+    // poolAllRewardsApy has a `useApi` too, but due to migration woes that only works for lite networks atm.
+    // This whole query needs a redo, but we need a stop-gap solution to fix yield breakdown not working without wallet.
+    if (useApi && !isLiteChain(chainId)) {
+      return poolPricesApiRewardsApy(await fetchPoolPricesApi({ chainId, poolAddress }))
+    }
+
     const pool = requireLib('curveApi').getPool(poolAddress)
     const networks = await fetchNetworks()
     return await poolAllRewardsApy(networks[chainId], pool, useApi)

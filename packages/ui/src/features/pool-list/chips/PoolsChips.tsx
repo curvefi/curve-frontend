@@ -1,12 +1,9 @@
-import Grid from '@mui/material/Grid'
+import { SelectableChip } from '@ui/components/SelectableChip'
 import { Tooltip } from '@ui/components/Tooltip'
-import { GridChip } from '@ui/features/tables/chips/GridChip'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { ActiveIcon } from '@ui/icons/ActiveIcon'
 import { t } from '@ui/lib/i18n'
 import { ACTIVE_POOL_DAYS } from '@ui/lib/time'
-
-const { Spacing } = SizesAndSpaces
 
 export const PoolsChips = ({
   activePoolsFilter,
@@ -15,26 +12,24 @@ export const PoolsChips = ({
   activePoolsFilter: { isSelected: boolean; toggle: () => void }
   isLite: boolean
 }) => (
-  <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
-    <Tooltip
-      title={t`Active pools`}
-      body={
-        isLite
-          ? t`Only show pools with TVL above $0.`
-          : t`Only show pools with TVL above $0 that are at least ${ACTIVE_POOL_DAYS} days old.`
-      }
-      placement="top"
-    >
-      <GridChip
-        label={t`Active`}
-        selected={activePoolsFilter.isSelected}
-        aria-pressed={activePoolsFilter.isSelected}
-        selectableChipSize="medium"
-        variant="ghost"
-        toggle={activePoolsFilter.toggle}
-        icon={<ActiveIcon />}
-        data-testid="chip-active"
-      />
-    </Tooltip>
-  </Grid>
+  <Tooltip
+    title={t`Active pools`}
+    body={
+      isLite
+        ? t`Only show pools with TVL above $0.`
+        : t`Only show pools with TVL above $0 that are at least ${ACTIVE_POOL_DAYS} days old.`
+    }
+    placement="top"
+  >
+    <SelectableChip
+      label={!useIsMobile() && t`Active`}
+      selected={activePoolsFilter.isSelected}
+      aria-pressed={activePoolsFilter.isSelected}
+      size="medium"
+      variant="ghost"
+      toggle={activePoolsFilter.toggle}
+      icon={<ActiveIcon />}
+      data-testid="chip-active"
+    />
+  </Tooltip>
 )

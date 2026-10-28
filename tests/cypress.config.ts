@@ -9,6 +9,9 @@ const testSeed = (process.env.TEST_SEED = process.env.TEST_SEED?.trim() || rando
 console.info(`Cypress test seed: ${testSeed}`)
 
 export default defineConfig({
+  // Temporary workaround for Chrome network stalls/reloads.
+  // https://github.com/cypress-io/cypress/issues/34969 https://github.com/cypress-io/cypress/issues/34158
+  forceHttp1: true,
   defaultCommandTimeout: 5000,
   pageLoadTimeout: 20000,
   video: true,

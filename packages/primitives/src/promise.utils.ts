@@ -48,7 +48,7 @@ export const waitFor = async (
   await handleTimeout<void>(waitUntil(), timeout, message)
 }
 
-type RetryOptions = {
+export type RetryOptions = {
   retries: number
   delay: (attempt: number) => number
   shouldRetry: (error: unknown) => boolean
