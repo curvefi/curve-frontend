@@ -1,4 +1,4 @@
-import { createApiServer } from '@curvefi/api-server'
+import { createApiServer } from '@api-server/server'
 import { getPoolAddresses } from './pools/addresses'
 import { AddressesOpts, ADDRESSES_PATH, type AddressesQuery } from './pools/addresses.schemas'
 import { getRoutes } from './routes/routes'

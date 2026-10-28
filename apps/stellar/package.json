@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "2.7.1",
+    "@curvefi/api-server": "workspace:^",
     "@curvefi/ui": "workspace:^",
     "@stellar/stellar-sdk": "17.3.0",
     "@tanstack/react-query": "5.104.3",
@@ -23,6 +24,7 @@
     "@tanstack/react-router": "1.170.45",
     "@tanstack/react-router-devtools": "1.167.2",
     "@tanstack/router-core": "1.171.38",
+    "merkl-api": "workspace:^",
     "vite-plugin-svgr": "5.2.0",
     "vite-plugin-vercel": "11.2.0",
     "wrangler": "4.153.0"

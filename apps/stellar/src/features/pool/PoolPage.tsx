@@ -1,3 +1,4 @@
+import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
@@ -63,6 +64,7 @@ export const PoolPage = () => {
       }}
     >
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
+      <PoolCampaigns {...params} />
       <PoolCompositionCard {...composition} />
       <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} litePool={litePool} />
     </DetailPageLayout>
