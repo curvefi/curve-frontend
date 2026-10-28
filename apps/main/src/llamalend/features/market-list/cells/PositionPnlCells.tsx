@@ -14,8 +14,8 @@ const { Spacing } = SizesAndSpaces
 
 type PositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>
 
-/** Same size as the LtvCell skeleton, right aligned in the numeric column */
-const skeletonProps = { variant: 'text', width: 40, sx: { marginInlineStart: 'auto' } } as const
+// The skeleton is a block, so the cell's text alignment does not move it: the auto margin pushes it to the right
+const skeletonProps = { width: 40, sx: { marginInlineStart: 'auto' } } as const
 
 /** Equity of the borrow position in USD */
 export const EquityCell = ({ getValue, row }: PositionCellProps) => {
