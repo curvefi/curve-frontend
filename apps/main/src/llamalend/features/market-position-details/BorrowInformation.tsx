@@ -17,7 +17,7 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import { formatNumber } from '@primitives/number.utils'
+import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
@@ -121,7 +121,11 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           category={BORROW_METRIC_CATEGORY}
           label={t`Leverage`}
           value={leverage}
-          valueOptions={{ unit: 'multiplier', fallback: '-', color: getLeverageValueColor(leverage.data) }}
+          valueOptions={{
+            unit: 'multiplier',
+            fallback: UNAVAILABLE_NOTATION,
+            color: getLeverageValueColor(leverage.data),
+          }}
           valueTooltip={
             isEquityLeverage
               ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...BORROW_METRIC_TOOLTIP }
@@ -143,7 +147,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           category={BORROW_METRIC_CATEGORY}
           label={t`Est. leveraged APR`}
           value={equityLeverage.currentApr}
-          valueOptions={{ unit: 'percentage', fallback: '-' }}
+          valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
           valueTooltip={{
             title: t`Est. leveraged APR`,
             body: <EstLeveragedAprTooltipContent />,

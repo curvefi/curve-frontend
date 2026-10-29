@@ -20,7 +20,7 @@ import {
 
 /** The user's own capital in the open position, in one token. */
 type Capital = {
-  /** Value moved from the user's wallet into the position, negative when the user received more than they put in */
+  /** Value moved from the user's wallet into the position, negative once they withdrew more than they put in, e.g. after taking profit */
   netInvested: Decimal
   /**
    * Borrowed tokens sent to the wallet, minus the ones repaid from it.

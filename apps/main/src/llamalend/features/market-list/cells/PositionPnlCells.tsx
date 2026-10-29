@@ -4,7 +4,7 @@ import { DebtPnlTooltipContent } from '@/llamalend/widgets/tooltips/DebtPnlToolt
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
+import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -57,13 +57,13 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
             {maybe(
               pnl?.collateral?.pnl,
               value => `${formatSigned(value, 'token.amount')} ${assets.collateral.symbol}`,
-            ) ?? '-'}
+            ) ?? UNAVAILABLE_NOTATION}
           </Typography>
-          {roe != null && (
+          {maybe(roe, roe => (
             <Typography variant="tableCellSupport" color={getChangeColor(roe, 'success', 'error')}>
               {formatSigned(roe, 'percent.value')}
             </Typography>
-          )}
+          ))}
         </Stack>
       </Tooltip>
     </WithSkeleton>

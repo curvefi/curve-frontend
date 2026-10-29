@@ -4,6 +4,7 @@ import { DebtPnlTooltipContent } from '@/llamalend/widgets/tooltips/DebtPnlToolt
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import type { Amount } from '@primitives/decimal.utils'
+import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -45,7 +46,7 @@ export const PnlMetrics = ({
         label={t`PNL (ROE %)`}
         labelTooltip={{ title: t`PNL (ROE %)`, body: <PnlTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...pnlMetric}
-        valueOptions={{ ...pnlMetric.valueOptions, fallback: '-' }}
+        valueOptions={{ ...pnlMetric.valueOptions, fallback: UNAVAILABLE_NOTATION }}
         change={maybe(pnl.data?.collateral?.roe, Number)}
         valueTooltip={maybe(pnl.data?.debt, debt => ({
           title: t`PNL (ROE %)`,
