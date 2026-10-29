@@ -1,11 +1,12 @@
 import { FastifyBaseLogger } from 'fastify'
+import { getAddress } from 'viem'
 import { createCurve, type default as curveApi } from '@curvefi/api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
 import { resolveRpc } from './network-metadata'
 
 export type CurveJS = typeof curveApi
 type ChainId = number
-type CurveInstance = { curve: CurveJS; blacklist: Set<string> }
+type CurveInstance = { curve: CurveJS; blacklist: Set<string>; poolAddresses: string[] }
 
 const instances: Partial<Record<ChainId, Promise<CurveInstance>>> = {}
 
@@ -30,13 +31,17 @@ async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
   const factories = FACTORIES.map(key => curve[key])
   const fetchAllPools = async ({ initial = false }: { initial?: boolean } = {}) => {
     try {
-      const [poolFilters] = await Promise.all([
-        getPoolFilters(),
-        ...factories.map(async factory => {
-          await factory.fetchPools()
+      const [poolFilters] = await Promise.all([getPoolFilters(), ...factories.map(factory => factory.fetchPools())])
+
+      // Fetch pool addresses before calling fetchNewPools, because the frontend's API might not be able to resolve these newer pools yet.
+      const poolsData = curve.getPoolsData()
+      instance.poolAddresses = curve.getPoolList().map(id => getAddress(poolsData[id].swap_address))
+
+      await Promise.all(
+        factories.map(async factory => {
           if ('fetchNewPools' in factory) await factory.fetchNewPools()
         }),
-      ])
+      )
 
       const blacklist = poolFilters
         .filter(({ chainId }) => chainId === curve.chainId)
@@ -70,7 +75,7 @@ export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
     const curve = createCurve()
     const { url } = await resolveRpc(chainId, curve)
     await curve.init('JsonRpc', { url }, { chainId })
-    const instance: CurveInstance = { curve, blacklist: new Set() }
+    const instance: CurveInstance = { curve, blacklist: new Set(), poolAddresses: [] }
     await fetchPools(instance, log)
     return instance
   })().catch(error => {
