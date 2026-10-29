@@ -11,8 +11,8 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-le
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
-import { EstLeveragedAprTooltipContent } from '@/llamalend/widgets/tooltips/EstLeveragedAprTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
+import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
@@ -145,14 +145,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
       {equityLeverage && (
         <Metric
           category={BORROW_METRIC_CATEGORY}
-          label={t`Est. leveraged APR`}
-          value={equityLeverage.currentApr}
+          label={t`Looped APR`}
+          value={equityLeverage.currentLoopedApr}
           valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
-          valueTooltip={{
-            title: t`Est. leveraged APR`,
-            body: <EstLeveragedAprTooltipContent />,
-            ...BORROW_METRIC_TOOLTIP,
-          }}
+          valueTooltip={{ title: t`Looped APR`, body: <LoopedAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
           notional={mapQuery(equityLeverage.yieldMultiplier, multiplier =>
             maybe(multiplier, value => t`${formatNumber(value, 'multiplier')} yield`),
           )}

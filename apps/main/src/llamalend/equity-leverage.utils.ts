@@ -25,7 +25,7 @@ export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => 
 export type MarketYields = { collateralYieldApr: Decimal | null; borrowedYieldApr: Decimal; borrowRewardsApr: Decimal }
 
 /** Estimated APR on the equity, or null when the equity is zero or a required rate is unknown. */
-export const getEquityLeverageApr = (
+export const getLoopedApr = (
   position: UserState,
   oraclePrice: Decimal,
   borrowApr: Decimal | undefined,

@@ -6,7 +6,7 @@ import {
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
-import { EstLeveragedAprTooltipContent } from '@/llamalend/widgets/tooltips/EstLeveragedAprTooltipContent'
+import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -50,8 +50,8 @@ export type LoanActionInfoListProps = {
   /** @deprecated Return on equity inputs, collateral leverage path only */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
-  prevLeveragedApr?: QueryProp<Decimal | null>
-  leveragedApr?: QueryProp<Decimal | null>
+  prevLoopedApr?: QueryProp<Decimal | null>
+  loopedApr?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
@@ -93,8 +93,8 @@ export const LoanActionInfoList = ({
   leverageValue,
   prevCollateralLeverageValue,
   collateralLeverageValue,
-  prevLeveragedApr,
-  leveragedApr,
+  prevLoopedApr,
+  loopedApr,
   prevLeverageCollateral,
   leverageCollateral,
   prevLeverageTotalCollateral,
@@ -242,18 +242,18 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {(prevLeveragedApr ?? leveragedApr) ? (
+          {(prevLoopedApr ?? loopedApr) ? (
             <ActionInfo
-              label={t`Est. leveraged APR`}
-              labelTooltip={{ title: t`Est. leveraged APR`, body: <EstLeveragedAprTooltipContent /> }}
+              label={t`Looped APR`}
+              labelTooltip={{ title: t`Looped APR`, body: <LoopedAprTooltipContent /> }}
               value={
-                leveragedApr?.data !== undefined && prevLeveragedApr
-                  ? mapQuery(prevLeveragedApr, data => formatNumber(data, 'percent.rate'))
+                loopedApr?.data !== undefined && prevLoopedApr
+                  ? mapQuery(prevLoopedApr, data => formatNumber(data, 'percent.rate'))
                   : DISABLED_Q
               }
-              futureValue={mapQuery(leveragedApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              futureValue={mapQuery(loopedApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
               size="small"
-              testId="borrow-leveraged-apr"
+              testId="borrow-looped-apr"
             />
           ) : (
             collateralApy &&

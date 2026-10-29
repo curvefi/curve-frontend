@@ -1,6 +1,6 @@
 import {
   getEquityLeverage,
-  getEquityLeverageApr,
+  getLoopedApr,
   getYieldMultiplier,
   type MarketYields,
 } from '@/llamalend/equity-leverage.utils'
@@ -26,20 +26,20 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, DISABLED_Q, futureOrCurrentQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalGreaterThan, decimalMinus, decimalSum, ZERO } from '@ui/lib/decimal'
 
-/** Leverage and est. leveraged APR of the open position (current) and of the position after the action (future) */
+/** Leverage and looped APR of the open position (current) and of the position after the action (future) */
 export type EquityLeverage = {
   current: QueryProp<Decimal | null>
   future: QueryProp<Decimal | null>
-  currentApr: QueryProp<Decimal | null>
-  futureApr: QueryProp<Decimal | null>
+  currentLoopedApr: QueryProp<Decimal | null>
+  futureLoopedApr: QueryProp<Decimal | null>
   yieldMultiplier: QueryProp<Decimal | null>
 }
 
 const getApr = (position: UserState | null, oraclePrice: Decimal, { borrowApr }: MarketRates, yields: MarketYields) =>
-  position && getEquityLeverageApr(position, oraclePrice, borrowApr, yields)
+  position && getLoopedApr(position, oraclePrice, borrowApr, yields)
 
 /**
- * Equity leverage, est. leveraged APR and yield multiplier of the open position and of the position after the action.
+ * Equity leverage, looped APR and yield multiplier of the open position and of the position after the action.
  * Returns null when it is not shown: disabled, or neither the open position nor the action borrows through the zap.
  */
 export function useEquityLeverage(
@@ -75,16 +75,16 @@ export function useEquityLeverage(
     q(useMarketFutureRates({ ...params, chainId, debtDelta }, isEnabled)),
     currentRates,
   )
-  const currentApr = combineQueries([position, oraclePrice, currentRates, marketYields], getApr)
+  const currentLoopedApr = combineQueries([position, oraclePrice, currentRates, marketYields], getApr)
   const equityLeverage = {
     current: combineQueries([position, oraclePrice], getEquityLeverage),
     future: combineQueries(
       [futurePositionQuery, oraclePrice],
       (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
     ),
-    currentApr,
-    futureApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, marketYields], getApr),
-    yieldMultiplier: combineQueries([currentApr, marketYields], (apr, { collateralYieldApr }) =>
+    currentLoopedApr,
+    futureLoopedApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, marketYields], getApr),
+    yieldMultiplier: combineQueries([currentLoopedApr, marketYields], (apr, { collateralYieldApr }) =>
       getYieldMultiplier(apr, collateralYieldApr),
     ),
   }

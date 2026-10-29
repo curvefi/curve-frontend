@@ -1,7 +1,7 @@
 import { TooltipDescription, TooltipFormula, TooltipFraction, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
-export const EstLeveragedAprTooltipContent = () => (
+export const LoopedAprTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`Estimated yearly return on your equity.`} />
     <TooltipDescription text={t`It's an estimate: yields, rates and rewards change over time.`} />
