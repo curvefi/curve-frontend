@@ -205,6 +205,16 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     hasFactory: true,
   },
+  [Chain.Hyperliquid]: {
+    swap: {
+      fromAddress: ethAddress,
+      toAddress: '0x5555555555555555555555555555555555555555', // WHYPE
+    },
+    stableswapFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    hasFactory: true,
+  },
 }).reduce(
   (prev, [key, config]) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
