@@ -1,6 +1,8 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
+import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
+import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
 import { MarketRateType } from '@evm-ui/types/market'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
@@ -134,14 +136,17 @@ export const MARKET_COLUMNS = columnHelper.columns([
     id: MarketColumnId.UserEquity,
     header: MARKET_TITLES[MarketColumnId.UserEquity],
     cell: EquityCell,
-    meta: { type: 'numeric' },
+    meta: {
+      type: 'numeric',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.UserEquity], body: <EquityTooltipContent /> },
+    },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPnlRoe, {
     id: MarketColumnId.UserPnl,
     header: MARKET_TITLES[MarketColumnId.UserPnl],
     cell: PnlCell,
-    meta: { type: 'numeric' },
+    meta: { type: 'numeric', tooltip: { title: MARKET_TITLES[MarketColumnId.UserPnl], body: <PnlTooltipContent /> } },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionHealth, {
