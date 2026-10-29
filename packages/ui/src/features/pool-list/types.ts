@@ -57,6 +57,7 @@ type PoolUserPosition = {
   /** Both staked and unstaked */
   lpBalance: Decimal
   depositsUsd: QueryProp<Decimal>
+  boost: QueryProp<Decimal | null>
   /** Rows are derived outside the query cache, so query errors can remain Error instances. */
   claimables: QueryProp<PoolClaimables>
   claimablesUsd: QueryProp<Decimal>
