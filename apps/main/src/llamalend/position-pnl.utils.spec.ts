@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { UserCollateralEvent } from '@curvefi/prices-api/lending'
 import { fromDate } from '@curvefi/prices-api/timestamp'
-import { getPositionPnlAndRoe, toPositionCapital } from './position-pnl.utils'
+import { getPositionPnlAndRoi, toPositionCapital } from './position-pnl.utils'
 
 const USER = '0x00000000000000000000000000000000000000aa'
 const LIQUIDATOR = '0x00000000000000000000000000000000000000bb'
@@ -63,7 +63,7 @@ const pnlAt = (
   events: UserCollateralEvent[],
   { collateral, debt, oraclePrice }: { collateral: number; debt: number; oraclePrice: number },
 ) =>
-  getPositionPnlAndRoe({
+  getPositionPnlAndRoi({
     equity: `${collateral * oraclePrice - debt}`,
     oraclePrice: `${oraclePrice}`,
     capital: toPositionCapital({ events }),
@@ -71,14 +71,14 @@ const pnlAt = (
 
 const expectPnl = (
   pnl: ReturnType<typeof pnlAt>,
-  expected: { pnl: number; roe: number | null; pnlC?: number; roeC?: number | null },
+  expected: { pnl: number; roi: number | null; pnlC?: number; roiC?: number | null },
 ) => {
   expect(Number(pnl?.debt.pnl)).toBeCloseTo(expected.pnl, 0)
-  if (expected.roe == null) expect(pnl?.debt.roe).toBeNull()
-  else expect(Number(pnl?.debt.roe)).toBeCloseTo(expected.roe, 2)
+  if (expected.roi == null) expect(pnl?.debt.roi).toBeNull()
+  else expect(Number(pnl?.debt.roi)).toBeCloseTo(expected.roi, 2)
   if (expected.pnlC != null) expect(Number(pnl?.collateral?.pnl)).toBeCloseTo(expected.pnlC, 4)
-  if (expected.roeC === null) expect(pnl?.collateral?.roe).toBeNull()
-  else if (expected.roeC != null) expect(Number(pnl?.collateral?.roe)).toBeCloseTo(expected.roeC, 2)
+  if (expected.roiC === null) expect(pnl?.collateral?.roi).toBeNull()
+  else if (expected.roiC != null) expect(Number(pnl?.collateral?.roi)).toBeCloseTo(expected.roiC, 2)
 }
 
 describe('plain borrow sequence', () => {
@@ -94,49 +94,49 @@ describe('plain borrow sequence', () => {
   it('opens at zero PNL', () =>
     expectPnl(pnlAt(after(1), { collateral: 10, debt: 10_000, oraclePrice: 2000 }), {
       pnl: 0,
-      roe: 0,
+      roi: 0,
       pnlC: 0,
-      roeC: 0,
+      roiC: 0,
     }))
 
   it('gains when the price rises', () =>
     expectPnl(pnlAt(after(1), { collateral: 10, debt: 10_000, oraclePrice: 2200 }), {
       pnl: 2000,
-      roe: 10,
+      roi: 10,
       pnlC: 0.4545,
-      roeC: 4.545,
+      roiC: 4.545,
     }))
 
   it('keeps PNL through a wallet borrow', () =>
     expectPnl(pnlAt(after(2), { collateral: 10, debt: 15_000, oraclePrice: 2200 }), {
       pnl: 2000,
-      roe: 10,
+      roi: 10,
       pnlC: 0.4545,
-      roeC: 4.55,
+      roiC: 4.55,
     }))
 
   it('keeps PNL through a repay', () =>
     expectPnl(pnlAt(after(3), { collateral: 10, debt: 9000, oraclePrice: 2100 }), {
       pnl: 1000,
-      roe: 5,
+      roi: 5,
       pnlC: 0.1299,
-      roeC: 1.3,
+      roiC: 1.3,
     }))
 
   it('counts added collateral as invested', () =>
     expectPnl(pnlAt(after(4), { collateral: 12, debt: 9000, oraclePrice: 1900 }), {
       pnl: -1000,
-      roe: -4.2,
+      roi: -4.2,
       pnlC: -0.3213,
-      roeC: -2.68,
+      roiC: -2.68,
     }))
 
   it('counts removed collateral as returned', () =>
     expectPnl(pnlAt(after(5), { collateral: 9, debt: 9000, oraclePrice: 2300 }), {
       pnl: 3800,
-      roe: 22.49,
+      roi: 22.49,
       pnlC: 0.5025,
-      roeC: 5.58,
+      roiC: 5.58,
     }))
 })
 
@@ -161,13 +161,13 @@ describe('zap borrow sequence with a 1% swap cost', () => {
   const after = (count: number) => steps.slice(0, count)
 
   it('loses the swap cost on open', () =>
-    expectPnl(pnlAt(after(1), { collateral: 19.9, debt: 20_000, oraclePrice: 2000 }), { pnl: -200, roe: -1 }))
+    expectPnl(pnlAt(after(1), { collateral: 19.9, debt: 20_000, oraclePrice: 2000 }), { pnl: -200, roi: -1 }))
 
   it('does not count a zap borrow as own capital', () =>
-    expectPnl(pnlAt(after(2), { collateral: 24.4, debt: 30_000, oraclePrice: 2200 }), { pnl: 3680, roe: 18.4 }))
+    expectPnl(pnlAt(after(2), { collateral: 24.4, debt: 30_000, oraclePrice: 2200 }), { pnl: 3680, roi: 18.4 }))
 
   it('does not count a zap repay as a withdrawal', () =>
-    expectPnl(pnlAt(after(3), { collateral: 21.4, debt: 23_763, oraclePrice: 2100 }), { pnl: 1177, roe: 5.885 }))
+    expectPnl(pnlAt(after(3), { collateral: 21.4, debt: 23_763, oraclePrice: 2100 }), { pnl: 1177, roi: 5.885 }))
 
   it('counts a zap repay paid from the wallet like a plain repay', () => {
     const open = event({ collateralChange: 10, loanChange: 10_000, oraclePrice: 2000 })
@@ -178,13 +178,13 @@ describe('zap borrow sequence with a 1% swap cost', () => {
       leverage: { eventType: 'Repay', userBorrowed: 5000 },
     })
     const position = { collateral: 10, debt: 5000, oraclePrice: 2200 }
-    expectPnl(pnlAt([open, zapRepay], position), { pnl: 2000, roe: 10 })
+    expectPnl(pnlAt([open, zapRepay], position), { pnl: 2000, roi: 10 })
     expect(toPositionCapital({ events: [open, zapRepay] })).toEqual(toPositionCapital({ events: [open, plainRepay] }))
   })
 
   it('counts plain collateral moves after the zap', () => {
-    expectPnl(pnlAt(after(4), { collateral: 23.4, debt: 23_763, oraclePrice: 1900 }), { pnl: -3103, roe: -13.04 })
-    expectPnl(pnlAt(after(5), { collateral: 20.4, debt: 23_763, oraclePrice: 2300 }), { pnl: 6257, roe: 37.02 })
+    expectPnl(pnlAt(after(4), { collateral: 23.4, debt: 23_763, oraclePrice: 1900 }), { pnl: -3103, roi: -13.04 })
+    expectPnl(pnlAt(after(5), { collateral: 20.4, debt: 23_763, oraclePrice: 2300 }), { pnl: 6257, roi: 37.02 })
   })
 })
 
@@ -249,7 +249,7 @@ describe('capital', () => {
     ).toBeNull())
 })
 
-describe('ROE', () => {
+describe('ROI', () => {
   it('is null when own capital is not positive', () => {
     // removed more collateral value than deposited: N = 9,000 − 15,000, K = N + 1,000 = −5,000
     const events = [
@@ -258,9 +258,9 @@ describe('ROE', () => {
     ]
     expectPnl(pnlAt(events, { collateral: 5, debt: 1000, oraclePrice: 3000 }), {
       pnl: 20_000,
-      roe: null,
+      roi: null,
       pnlC: 0.6667,
-      roeC: 13.33,
+      roiC: 13.33,
     })
   })
 })

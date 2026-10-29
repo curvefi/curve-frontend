@@ -19,7 +19,7 @@ type PnlMetricsProps = PositionPnlAndEquityQueries & {
   collateralUsdRate: QueryProp<Amount>
 }
 
-/** Equity in the borrowed token and PNL (ROE %) in the collateral token, each with its USD value */
+/** Equity in the borrowed token and PNL (ROI %) in the collateral token, each with its USD value */
 export const PnlMetrics = ({
   equity,
   pnl,
@@ -43,13 +43,13 @@ export const PnlMetrics = ({
       />
       <Metric
         category={BORROW_METRIC_CATEGORY}
-        label={t`PNL (ROE %)`}
-        labelTooltip={{ title: t`PNL (ROE %)`, body: <PnlTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
+        label={t`PNL (ROI %)`}
+        labelTooltip={{ title: t`PNL (ROI %)`, body: <PnlTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...pnlMetric}
         valueOptions={{ ...pnlMetric.valueOptions, fallback: UNAVAILABLE_NOTATION }}
-        change={maybe(pnl.data?.collateral?.roe, Number)}
+        change={maybe(pnl.data?.collateral?.roi, Number)}
         valueTooltip={maybe(pnl.data?.debt, debt => ({
-          title: t`PNL (ROE %)`,
+          title: t`PNL (ROI %)`,
           body: <DebtPnlTooltipContent pnl={debt} symbol={borrowSymbol ?? UNAVAILABLE_TOKEN_SYMBOL} />,
           ...BORROW_METRIC_TOOLTIP,
         }))}

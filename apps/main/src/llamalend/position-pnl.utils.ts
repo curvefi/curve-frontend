@@ -32,11 +32,11 @@ type Capital = {
 /** Own capital of the open position in the debt token, and in the collateral token at each event's oracle price */
 export type PositionCapital = { debt: Capital; collateral: Capital } | null
 
-/** PNL and ROE (%) in one token. ROE divides the PNL by own capital: netInvested + max(walletBorrowed, 0) */
-type PnlAndRoe = { pnl: Decimal; roe: Decimal | null }
+/** PNL and ROI (%) in one token. ROI divides the PNL by own capital: netInvested + max(walletBorrowed, 0) */
+type PnlAndRoi = { pnl: Decimal; roi: Decimal | null }
 
-/** PNL and ROE (%) of the open position, in the debt token and in the collateral token */
-export type PositionPnlAndRoe = { debt: PnlAndRoe; collateral: PnlAndRoe | null }
+/** PNL and ROI (%) of the open position, in the debt token and in the collateral token */
+export type PositionPnlAndRoi = { debt: PnlAndRoi; collateral: PnlAndRoi | null }
 
 /**
  * What one event did to the user's own capital, in the debt token at the event's oracle price.
@@ -117,14 +117,14 @@ export const toPositionCapital = ({ events }: { events: ApiCollateralEvent[] }):
   }
 }
 
-const getPnlAndRoe = (equity: Decimal, { netInvested, walletBorrowed }: Capital): PnlAndRoe => {
+const getPnlAndRoi = (equity: Decimal, { netInvested, walletBorrowed }: Capital): PnlAndRoi => {
   const pnl = decimalMinus(equity, netInvested)
   const totalCapital = decimalSum(netInvested, decimalGreaterThan(walletBorrowed, ZERO) ? walletBorrowed : ZERO)
-  return { pnl, roe: decimalGreaterThan(totalCapital, ZERO) ? decimalPercent(pnl, totalCapital) : null }
+  return { pnl, roi: decimalGreaterThan(totalCapital, ZERO) ? decimalPercent(pnl, totalCapital) : null }
 }
 
-/** PNL and ROE of the open position from its equity (in the debt token) and its own capital. Null without capital. */
-export const getPositionPnlAndRoe = ({
+/** PNL and ROI of the open position from its equity (in the debt token) and its own capital. Null without capital. */
+export const getPositionPnlAndRoi = ({
   equity,
   oraclePrice,
   capital,
@@ -132,14 +132,14 @@ export const getPositionPnlAndRoe = ({
   equity: Decimal
   oraclePrice: Decimal
   capital: PositionCapital
-}): PositionPnlAndRoe | null =>
+}): PositionPnlAndRoi | null =>
   capital && {
-    debt: getPnlAndRoe(equity, capital.debt),
+    debt: getPnlAndRoi(equity, capital.debt),
     collateral: decimalEqual(oraclePrice, ZERO)
       ? null
-      : getPnlAndRoe(decimalDiv(equity, oraclePrice), capital.collateral),
+      : getPnlAndRoi(decimalDiv(equity, oraclePrice), capital.collateral),
   }
 
-/** Formats a PNL or ROE value with a + sign when it is positive */
+/** Formats a PNL or ROI value with a + sign when it is positive */
 export const formatSigned = (value: Amount, category: NumberFormatCategory) =>
   `${Number(value) > 0 ? '+' : ''}${formatNumber(value, category)}`

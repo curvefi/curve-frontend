@@ -34,19 +34,19 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
   )
 }
 
-/** PNL of the borrow position in the collateral token, with the ROE below it and the debt-token PNL on hover */
+/** PNL of the borrow position in the collateral token, with the ROI below it and the debt-token PNL on hover */
 export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const { positionQueries, assets } = row.original
   const { stats, capital } = positionQueries
   const error = stats.error ?? capital.error
   const pnl = getUserPnl(row.original)
-  const roe = getValue()
+  const roi = getValue()
   return error ? (
     <ErrorCell error={error} />
   ) : (
     <WithSkeleton loading={stats.isLoading || capital.isLoading} {...skeletonProps}>
       <Tooltip
-        title={pnl && t`PNL (ROE %)`}
+        title={pnl && t`PNL (ROI %)`}
         body={maybe(pnl, ({ debt }) => (
           <DebtPnlTooltipContent pnl={debt} symbol={assets.borrowed.symbol} />
         ))}
@@ -59,9 +59,9 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
               value => `${formatSigned(value, 'token.amount')} ${assets.collateral.symbol}`,
             ) ?? UNAVAILABLE_NOTATION}
           </Typography>
-          {maybe(roe, roe => (
-            <Typography variant="tableCellSupport" color={getChangeColor(roe, 'success', 'error')}>
-              {formatSigned(roe, 'percent.value')}
+          {maybe(roi, roi => (
+            <Typography variant="tableCellSupport" color={getChangeColor(roi, 'success', 'error')}>
+              {formatSigned(roi, 'percent.value')}
             </Typography>
           ))}
         </Stack>

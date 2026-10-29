@@ -37,5 +37,5 @@ export const useLiquidityDensityChart = useStableChannel
 /** LlamaLend leverage as collateral value ÷ equity */
 export const useLlamalendEquityLeverage = useBetaChannel
 
-/** LlamaLend equity and PNL (ROE %) of borrow positions */
+/** LlamaLend equity and PNL (ROI %) of borrow positions */
 export const useLlamalendPositionPnl = useBetaChannel
