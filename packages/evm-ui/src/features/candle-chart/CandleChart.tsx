@@ -458,12 +458,11 @@ export const CandleChart = ({
         const info = original()
         if (!isOracleOnlyChart || !info?.priceRange) return info
 
-        // Ensure a minimum span (price range, or delta) of 1, using [1, 2] when the maximum is below 2.
+        // Ensure a minimum span (price range, or delta) of 1, adding +1 to the min if that's not the case.
         const { minValue, maxValue } = info.priceRange
         if (maxValue - minValue >= 1) return info
 
-        const max = Math.max(2, maxValue)
-        return { ...info, priceRange: { minValue: max - 1, maxValue: max } }
+        return { ...info, priceRange: { minValue, maxValue: minValue + 1 } }
       },
     })
 
