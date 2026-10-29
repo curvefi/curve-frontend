@@ -1,18 +1,18 @@
 import { formatSigned } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { DebtPnlTooltipContent } from '@/llamalend/widgets/tooltips/DebtPnlTooltipContent'
+import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { getUserPnl } from '../user-position.utils'
+import { getUserPnl, getUserPnlUsd } from '../user-position.utils'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -34,30 +34,32 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
   )
 }
 
-/** PNL of the borrow position in the collateral token, with the ROI below it and the debt-token PNL on hover */
+/** PNL of the borrow position in USD (collateral-token PNL at its USD rate), with the ROI below it and the PNL per token on hover */
 export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const { positionQueries, assets } = row.original
-  const { stats, capital } = positionQueries
+  const { stats, capital, prices } = positionQueries
   const error = stats.error ?? capital.error
   const pnl = getUserPnl(row.original)
   const roi = getValue()
   return error ? (
     <ErrorCell error={error} />
   ) : (
-    <WithSkeleton loading={stats.isLoading || capital.isLoading} {...skeletonProps}>
+    <WithSkeleton loading={stats.isLoading || capital.isLoading || prices.collateral.isLoading} {...skeletonProps}>
       <Tooltip
         title={pnl && t`PNL (ROI %)`}
-        body={maybe(pnl, ({ debt }) => (
-          <DebtPnlTooltipContent pnl={debt} symbol={assets.borrowed.symbol} />
+        body={maybe(pnl, ({ collateral, debt }) => (
+          <TokenPnlTooltipContent
+            breakdown={notFalsy(collateral && { pnl: collateral, symbol: assets.collateral.symbol }, {
+              pnl: debt,
+              symbol: assets.borrowed.symbol,
+            })}
+          />
         ))}
         placement="top"
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellValueStrong">
-            {maybe(
-              pnl?.collateral?.pnl,
-              value => `${formatSigned(value, 'token.amount')} ${assets.collateral.symbol}`,
-            ) ?? UNAVAILABLE_NOTATION}
+            {maybe(getUserPnlUsd(row.original), value => formatSigned(value, 'usd.notional')) ?? UNAVAILABLE_NOTATION}
           </Typography>
           {maybe(roi, roi => (
             <Typography variant="tableCellSupport" color={getChangeColor(roi, 'success', 'error')}>

@@ -1,8 +1,8 @@
 import type { PositionPnlAndEquityQueries } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import { tokenMetric } from '@/llamalend/llama.utils'
-import { DebtPnlTooltipContent } from '@/llamalend/widgets/tooltips/DebtPnlTooltipContent'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
+import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import type { Amount } from '@primitives/decimal.utils'
 import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -50,7 +50,9 @@ export const PnlMetrics = ({
         change={maybe(pnl.data?.collateral?.roi, Number)}
         valueTooltip={maybe(pnl.data?.debt, debt => ({
           title: t`PNL (ROI %)`,
-          body: <DebtPnlTooltipContent pnl={debt} symbol={borrowSymbol ?? UNAVAILABLE_TOKEN_SYMBOL} />,
+          body: (
+            <TokenPnlTooltipContent breakdown={[{ pnl: debt, symbol: borrowSymbol ?? UNAVAILABLE_TOKEN_SYMBOL }]} />
+          ),
           ...BORROW_METRIC_TOOLTIP,
         }))}
       />
