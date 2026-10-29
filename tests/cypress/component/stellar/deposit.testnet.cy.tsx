@@ -1,5 +1,5 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { DepositTab } from '@/stellar/features/deposit/DepositTab'
+import { AdvancedDepositTab, OneCoinDepositTab } from '@/stellar/features/deposit/DepositTab'
 import { oneDecimal, oneInt, oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
@@ -53,14 +53,15 @@ describe('Stellar testnet deposit', () => {
     cy.then(TIMEOUTS['stellar.read'], () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh)),
   )
 
-  const mountDeposit = ({ connected = true } = {}) => {
+  const mountDeposit = ({ connected = true, oneCoin = false } = {}) => {
     mockLitePool(pool)
+    const Component = oneCoin ? OneCoinDepositTab : AdvancedDepositTab
     cy.mount(
       <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
-        <DepositTab network={TEST_NETWORK} pool={pool} />
+        <Component network={TEST_NETWORK} pool={pool} />
       </StellarTestWrapper>,
     )
-    if (connected) checkDepositBalances(state)
+    if (connected) checkDepositBalances({ ...state, coins: oneCoin ? [state.coins[0]] : state.coins })
   }
 
   it('rejects an empty deposit and amounts exceeding a wallet balance', () => {
@@ -159,11 +160,13 @@ describe('Stellar testnet deposit', () => {
   })
 
   it('deposits a single coin', () => {
-    mountDeposit()
+    mountDeposit({ oneCoin: true })
     const coin = oneOf(...state.coins)
     const amounts: PoolAmounts = { [coin.symbol]: oneDecimal(0.001, 0.01, coin.decimals) }
     cy.log(`Deposit ${coin.symbol}`)
-    writePoolForm(state.coins, amounts)
-    submitDepositAndCheck(state, amounts)
+    cy.get('[data-testid="deposit-token-select"]').click()
+    cy.get(`[data-testid="token-option-${coin.address.toLowerCase()}"]`).click()
+    poolInput(coin.address).find('input[type="text"]').type(amounts[coin.symbol]).blur()
+    submitDepositAndCheck({ ...state, coins: [coin] }, amounts)
   })
 })

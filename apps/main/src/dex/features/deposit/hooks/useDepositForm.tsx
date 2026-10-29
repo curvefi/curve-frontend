@@ -58,7 +58,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   )
   const form = useForm<DepositFormValues>({
     validation: depositFormValidationSuite,
-    defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false },
+    defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false, tokenIndex: 0 },
   })
   const { formState, handleSubmit, update, reset, values } = form
   const { connect, connectState, wallet } = useWallet()
@@ -81,7 +81,10 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
-  useEffect(() => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false }), [isWrapped, tokenCount, update])
+  useEffect(
+    () => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false, tokenIndex: 0 }),
+    [isWrapped, tokenCount, update],
+  )
 
   useEffect(() => {
     if (isSeed.data && canDepositWrapped) update({ isWrapped: true })

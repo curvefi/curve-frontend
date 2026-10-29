@@ -1,11 +1,15 @@
 import type { PoolQuery } from '@/stellar/queries/query-types'
-import { DepositForm } from '@ui/features/pool-forms/deposit/DepositForm'
+import { AdvancedDepositForm } from '@ui/features/pool-forms/deposit/AdvancedDepositForm'
+import { OneCoinDepositForm } from '@ui/features/pool-forms/deposit/OneCoinDepositForm'
 import { DepositActionInfoList } from './DepositActionInfoList'
 import { useDepositForm } from './useDepositForm'
 
-export const DepositTab = (params: PoolQuery) => {
+const DepositTab = ({ oneCoin, ...params }: PoolQuery & { oneCoin: boolean }) => {
   const { params: queryParams, onSlippageChange, ...form } = useDepositForm(params)
-  return (
-    <DepositForm {...form} footer={<DepositActionInfoList {...queryParams} onSlippageChange={onSlippageChange} />} />
-  )
+  const Component = oneCoin ? OneCoinDepositForm : AdvancedDepositForm
+  return <Component {...form} footer={<DepositActionInfoList {...queryParams} onSlippageChange={onSlippageChange} />} />
 }
+
+export const OneCoinDepositTab = (params: PoolQuery) => <DepositTab {...params} oneCoin />
+
+export const AdvancedDepositTab = (params: PoolQuery) => <DepositTab {...params} oneCoin={false} />

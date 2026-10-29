@@ -9,7 +9,7 @@ import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStak
 import { LegacyFormDeposit } from '@/dex/components/PagePool/Deposit/components/LegacyFormDeposit'
 import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
   getDepositTabAlert,
   getSlippageType,
@@ -21,7 +21,7 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
-import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
+import { AdvancedDepositTab, OneCoinDepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
@@ -61,10 +61,7 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
-const FormDeposit = (props: TransferProps) =>
-  useNewPoolForms() ? <DepositTab {...props} /> : <LegacyFormDeposit {...props} />
-
-const menu = [
+const legacyMenu = [
   {
     value: 'deposit',
     label: t`Deposit`,
@@ -72,7 +69,7 @@ const menu = [
       {
         value: 'DEPOSIT',
         label: t`Deposit`,
-        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDeposit} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={LegacyFormDeposit} {...props} />,
       },
       {
         value: 'STAKE',
@@ -125,11 +122,34 @@ const menu = [
   },
 ] as const satisfies FormTab<TransferTabsParams>[]
 
+const menu: FormTab<TransferTabsParams>[] = legacyMenu.map(tab =>
+  tab.value === 'deposit'
+    ? {
+        ...tab,
+        subTabs: [
+          {
+            value: 'deposit-one-coin',
+            label: t`One coin`,
+            visible: ({ seed }) => seed.loaded && seed.isSeed === false,
+            component: props => <TabGuard alert={getDepositTabAlert} otherwise={OneCoinDepositTab} {...props} />,
+          },
+          {
+            value: 'DEPOSIT',
+            label: t`Advanced`,
+            component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
+          },
+          ...tab.subTabs.slice(1),
+        ],
+      }
+    : tab,
+)
+
 /** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
-type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
+type PoolRouteState = { defaultTab?: (typeof legacyMenu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
+  const newPoolForms = useNewPoolForms()
   const {
     chainId,
     blockchainId,
@@ -236,7 +256,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             }
           />
         }
-        formTabs={{ content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} /> }}
+        formTabs={{
+          content: tabParams && (
+            <FormTabs menu={newPoolForms ? menu : legacyMenu} params={tabParams} defaultValue={defaultTab} />
+          ),
+        }}
       >
         <CampaignRewardsBanner />
         <UserPosition />

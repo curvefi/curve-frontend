@@ -1,17 +1,19 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { DepositForm } from '@ui/features/pool-forms/deposit/DepositForm'
+import { AdvancedDepositForm } from '@ui/features/pool-forms/deposit/AdvancedDepositForm'
+import { OneCoinDepositForm } from '@ui/features/pool-forms/deposit/OneCoinDepositForm'
 import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositActionInfoList } from './DepositActionInfoList'
 
-export const DepositTab = ({ maxSlippage }: TransferProps) => {
+const DepositTab = ({ maxSlippage, oneCoin }: TransferProps & { oneCoin: boolean }) => {
   const {
     pool: { data: pool },
   } = usePoolContext()
   const { params, ...form } = useDepositForm({ maxSlippage })
+  const Component = oneCoin ? OneCoinDepositForm : AdvancedDepositForm
   return (
-    <DepositForm
+    <Component
       {...form}
       footer={
         <DepositActionInfoList
@@ -24,3 +26,7 @@ export const DepositTab = ({ maxSlippage }: TransferProps) => {
     />
   )
 }
+
+export const OneCoinDepositTab = (props: TransferProps) => <DepositTab {...props} oneCoin />
+
+export const AdvancedDepositTab = (props: TransferProps) => <DepositTab {...props} oneCoin={false} />

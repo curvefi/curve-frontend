@@ -73,11 +73,13 @@ export const submitPoolDepositAndCheck = ({
   userAddress,
   amounts,
   pool: { coins, lpToken },
+  oneCoinIndex,
 }: {
   publicRpcUrl: string
   userAddress: Address
   amounts: readonly Decimal[]
   pool: DepositTestPool
+  oneCoinIndex?: number
 }) => {
   const client = createPublicClient({ transport: http(publicRpcUrl) })
   const readBalances = () =>
@@ -93,8 +95,8 @@ export const submitPoolDepositAndCheck = ({
       { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
       'tenderly.submit',
     )
-    coins.forEach(({ address }) => {
-      poolDepositInput(address).should('have.value', '')
+    coins.forEach(({ address }, index) => {
+      if (oneCoinIndex == null || index === oneCoinIndex) poolDepositInput(address).should('have.value', '')
     })
     poolDepositSubmit().should('be.disabled')
 
@@ -103,10 +105,11 @@ export const submitPoolDepositAndCheck = ({
         const spent = parseUnits(amounts[index], coin.decimals)
         expect(before[index] - after[index], `${coin.symbol} spent`).to.equal(spent)
         const { address, decimals } = coin
-        cy.get(
-          `[data-testid="pool-token-input-${address}"] [data-testid="balance-value"]`,
-          TIMEOUTS['tenderly.balances'],
-        ).should(v => expect(v.attr('data-value')).to.equal(formatUnits(after[index], decimals)))
+        if (oneCoinIndex == null || index === oneCoinIndex)
+          cy.get(
+            `[data-testid="pool-token-input-${address}"] [data-testid="balance-value"]`,
+            TIMEOUTS['tenderly.balances'],
+          ).should(v => expect(v.attr('data-value')).to.equal(formatUnits(after[index], decimals)))
       })
       const lpIndex = coins.length
       expect(after[lpIndex] > before[lpIndex], 'LP tokens received').to.equal(true)

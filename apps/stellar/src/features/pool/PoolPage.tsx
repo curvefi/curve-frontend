@@ -3,8 +3,10 @@ import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
+import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
+import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import type { RouterState } from '@ui/components/RouterLink'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
@@ -16,7 +18,7 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { StellarUrls } from '../../routes/routes'
-import { DepositTab } from '../deposit/DepositTab'
+import { AdvancedDepositTab, OneCoinDepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
 import { OneCoinWithdrawTab } from '../withdraw/OneCoinWithdrawTab'
 import { PoolAdvancedDetails } from './PoolAdvancedDetails'
@@ -26,7 +28,19 @@ import { usePoolTokens } from './usePoolTokens'
 import { UserPosition } from './UserPosition'
 
 const menu = [
-  { value: 'deposit', label: t`Deposit`, component: DepositTab },
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    subTabs: [
+      {
+        value: 'deposit-one-coin',
+        label: t`One coin`,
+        component: OneCoinDepositTab,
+        visible: ({ isSeed }: PoolQuery & { isSeed: boolean | undefined }) => isSeed === false,
+      },
+      { value: 'deposit-advanced', label: t`Advanced`, component: AdvancedDepositTab },
+    ],
+  },
   {
     value: 'withdraw',
     label: t`Withdraw`,
@@ -44,6 +58,7 @@ export const PoolPage = () => {
   const { address: account } = useWallet()
   const params = { network, pool }
   const config = usePoolConfig(params)
+  const supply = usePoolSupply(params)
   const { query: litePool, isMissing } = useLitePool(params)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, symbols, decimals } = usePoolTokens({ network, account, tokenAddresses }) ?? {}
@@ -63,7 +78,13 @@ export const PoolPage = () => {
       }
       formTabs={{
         placement: 'inline',
-        content: <FormTabs menu={menu} params={{ network, pool }} defaultValue={defaultTab?.toString()} />,
+        content: (
+          <FormTabs
+            menu={menu}
+            params={{ network, pool, isSeed: maybe(supply.data, supply => !+supply) }}
+            defaultValue={defaultTab?.toString()}
+          />
+        ),
       }}
     >
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
