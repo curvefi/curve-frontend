@@ -3,6 +3,7 @@ import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdra
 import { OneCoinWithdrawTab } from '@/stellar/features/withdraw/OneCoinWithdrawTab'
 import { oneDecimal, oneOf } from '@cy/support/generators'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
+import { mockLitePool } from '@cy/support/helpers/stellar/mock-lite-pool'
 import {
   checkPoolInputError,
   poolInput,
@@ -39,6 +40,7 @@ describe('Stellar testnet withdraw', () => {
     cy.then(TIMEOUTS['stellar.read'], () => fetchWithdrawState(pool, config)).then(fresh => (state = fresh))
   const mountWithdraw = ({ advanced = false, connected = true } = {}) => {
     const Tab = advanced ? AdvancedWithdrawTab : OneCoinWithdrawTab
+    mockLitePool(pool)
     cy.mount(
       <StellarTestWrapper address={connected ? config.deployer.address : undefined}>
         <Tab network={TEST_NETWORK} pool={pool} />

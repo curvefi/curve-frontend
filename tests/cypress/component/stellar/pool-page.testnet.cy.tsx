@@ -5,6 +5,7 @@ import { StellarUrls } from '@/stellar/routes/routes'
 import { mockPoolCampaigns } from '@cy/support/helpers/campaign-mocks'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { checkDepositBalances, seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
+import { mockLitePool } from '@cy/support/helpers/stellar/mock-lite-pool'
 import { fetchPoolState, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
@@ -13,7 +14,6 @@ import { createComponentTestRouter } from '@cy/support/routes'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { oneViewport, skipTestsAfterFailure } from '@cy/support/ui'
 import { RouterProvider } from '@tanstack/react-router'
-import { getCampaignsPoolsMerklQueryKey } from '@ui/features/campaigns/campaigns-pools-merkl.query'
 import { queryClient } from '@ui/features/queries/query-client'
 
 describe('Stellar testnet pool page', () => {
@@ -24,7 +24,9 @@ describe('Stellar testnet pool page', () => {
   let state: PoolState
   const [width, height, breakpoint] = oneViewport()
 
-  const mountPoolPage = () => {
+  const mountPoolPage = ({ isMissing = false } = {}) => {
+    if (!isMissing) mockLitePool(pool)
+    queryClient.clear()
     cy.mount(
       <StellarTestWrapper address={testnetConfig.deployer.address}>
         <RouterProvider
@@ -82,7 +84,6 @@ describe('Stellar testnet pool page', () => {
   })
 
   it('shows pool campaigns with APR, points, and issuer links for the current network', () => {
-    queryClient.removeQueries({ queryKey: [getCampaignsPoolsMerklQueryKey({})] })
     mockPoolCampaigns({ address: pool, name: 'Stellar test pool' }, state.coins[0].address, [
       { apr: 7, symbol: 'RWD', network: TEST_NETWORK, chainId: STELLAR_NETWORKS[TEST_NETWORK].chainId },
       { apr: 0, symbol: 'PTS', network: TEST_NETWORK, chainId: STELLAR_NETWORKS[TEST_NETWORK].chainId },
@@ -102,5 +103,12 @@ describe('Stellar testnet pool page', () => {
     cy.get('[data-testid="tooltip-value-link"]')
       .should('be.visible')
       .and('have.attr', 'href', `https://app.merkl.xyz/opportunities/${TEST_NETWORK}/POOL/${pool}-RWD`)
+  })
+
+  it('shows an error if the pool is missing from the API', () => {
+    mountPoolPage({ isMissing: true })
+    cy.get('[data-testid="error-title"]').should('be.visible').and('have.text', '404')
+    cy.get('[data-testid="error-subtitle"]').should('have.text', 'Pool Not Found')
+    cy.get('[data-testid^="tab-"]').should('not.exist')
   })
 })
