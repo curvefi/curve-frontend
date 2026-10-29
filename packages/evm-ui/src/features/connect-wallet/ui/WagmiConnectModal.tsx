@@ -38,7 +38,7 @@ const WalletIcon = ({ connector }: { connector: WalletChoice }) =>
     Icon ? (
       <Icon sx={WALLET_ICON_SIZE} />
     ) : connector.icon ? (
-      <Box component="img" src={connector.icon} alt={connector.name} sx={{ width: IconSize.xl, height: IconSize.xl }} />
+      <Box component="img" src={connector.icon} alt={connector.name} sx={WALLET_ICON_SIZE} />
     ) : (
       <DefaultWalletIcon sx={WALLET_ICON_SIZE} />
     ))(WALLET_ICONS[connector.id])
