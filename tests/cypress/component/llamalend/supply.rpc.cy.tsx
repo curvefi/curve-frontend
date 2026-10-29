@@ -1,14 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { oneBool, oneOf } from '@cy/support/generators'
+import { oneBool } from '@cy/support/generators'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupLlammalendTestCaseMocks } from '@cy/support/helpers/llamalend/mock-market.helpers'
-import {
-  checkClaimDetailsLoaded,
-  prepareClaimRewards,
-  submitClaimAndSettle,
-  validateClaimTabState,
-} from '@cy/support/helpers/llamalend/supply/claim.helpers'
+import { claimSupplyRewards, prepareClaimRewards } from '@cy/support/helpers/llamalend/supply/claim.helpers'
 import {
   checkDepositDetailsLoaded,
   submitDepositForm,
@@ -20,12 +15,18 @@ import {
   submitStakeForm,
   touchStakeForm,
 } from '@cy/support/helpers/llamalend/supply/stake.helpers'
-import { fundUserForSupplySetup } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
+import {
+  pickSupplyTestMarket,
+  SUPPLY_DEPOSIT,
+  SUPPLY_PARTIAL_WITHDRAW,
+  SUPPLY_TEST_CHAIN_ID,
+  type SupplyTestMarket,
+} from '@cy/support/helpers/llamalend/supply/supply-markets.helpers'
+import { fundUserWithCrvUsd } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import {
   checkCurrentStakedAmount,
   checkCurrentSuppliedAmount,
   selectMaxSupplyInput,
-  SUPPLY_TEST_MARKETS,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   checkUnstakeDetailsLoaded,
@@ -43,144 +44,120 @@ import { skipTestsAfterFailure } from '@cy/support/ui'
 import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 
-const testCases = [oneOf(...SUPPLY_TEST_MARKETS)]
+describe('Lend Market Supply', () => {
+  skipTestsAfterFailure()
 
-testCases.forEach(
-  ({
-    id,
-    label,
-    chainId,
-    borrowedTokenAddress,
-    gaugeAddress,
-    deposit,
-    partialWithdraw,
-    borrowedTokenDecimals,
-    hasClaimableRewards = false,
-  }) => {
-    describe(label, () => {
-      skipTestsAfterFailure()
+  const hasApi = oneBool() // tests must work with or without api access
+  const privateKey = generatePrivateKey()
+  const { address } = privateKeyToAccount(privateKey)
+  const getVirtualNetwork = createVirtualTestnet(uuid => ({
+    slug: `supply-integration-${uuid}`,
+    display_name: `SupplyIntegration (${uuid})`,
+    chain_id: SUPPLY_TEST_CHAIN_ID,
+    fork_config: { block_number: 'latest' },
+  }))
 
-      const hasApi = oneBool() // tests must work with or without api access
-      const privateKey = generatePrivateKey()
-      const { address } = privateKeyToAccount(privateKey)
-      const getVirtualNetwork = createVirtualTestnet(uuid => ({
-        slug: `supply-integration-${uuid}`,
-        display_name: `SupplyIntegration (${uuid})`,
-        chain_id: chainId,
-        fork_config: { block_number: 'latest' },
-      }))
+  let market: SupplyTestMarket // picked once the fork exists
+  const suppliedAfterDeposit = SUPPLY_DEPOSIT
+  const suppliedAfterPartialWithdraw = new BigNumber(SUPPLY_DEPOSIT).minus(SUPPLY_PARTIAL_WITHDRAW).toFixed() as Decimal
+  const SupplyTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
+    <LlammalendTestCase
+      type="supply"
+      tab={tab}
+      vnet={getVirtualNetwork()}
+      account={privateKey}
+      chainId={SUPPLY_TEST_CHAIN_ID}
+      marketId={market.id}
+      userAddress={address}
+      marketType={MarketType.Lend}
+    />
+  )
 
-      const suppliedAfterDeposit = deposit
-      const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
-      const SupplyTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
-        <LlammalendTestCase
-          type="supply"
-          tab={tab}
-          vnet={getVirtualNetwork()}
-          account={privateKey}
-          chainId={chainId}
-          marketId={id}
-          userAddress={address}
-          marketType={MarketType.Lend}
-        />
-      )
-
-      before(() => {
-        fundUserForSupplySetup({
-          vnet: getVirtualNetwork(),
-          userAddress: address,
-          borrowedTokenAddress,
-          borrowedAmount: '1000',
-          borrowedTokenDecimals,
-        })
-      })
-
-      beforeEach(() => {
-        setupLlammalendTestCaseMocks({ hasApi })
-      })
-
-      it('deposits into the vault', () => {
-        cy.mount(<SupplyTestWrapper tab="deposit" />)
-        writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0', hasApi })
-        submitDepositForm({})
-        touchDepositForm()
-        checkCurrentSuppliedAmount(suppliedAfterDeposit)
-      })
-
-      it('partially withdraws from the vault', () => {
-        cy.mount(<SupplyTestWrapper tab="withdraw" />)
-        writeWithdrawForm({ amount: partialWithdraw })
-        checkWithdrawDetailsLoaded({
-          suppliedAssets: suppliedAfterPartialWithdraw,
-          prevSuppliedAssets: suppliedAfterDeposit,
-          hasApi,
-        })
-        submitWithdrawForm()
-        touchWithdrawForm()
-        checkCurrentSuppliedAmount(suppliedAfterPartialWithdraw)
-      })
-
-      it('redeems the remaining vault balance', () => {
-        cy.mount(<SupplyTestWrapper tab="withdraw" />)
-        selectMaxSupplyInput('withdraw')
-        checkWithdrawDetailsLoaded({
-          suppliedAssets: '0',
-          prevSuppliedAssets: suppliedAfterPartialWithdraw,
-          expectedButtonText: 'Withdraw All',
-          hasApi,
-        })
-        submitWithdrawForm()
-        touchWithdrawForm()
-        checkCurrentSuppliedAmount('0')
-      })
-
-      it('deposits into the vault again', () => {
-        cy.mount(<SupplyTestWrapper tab="deposit" />)
-        writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0', hasApi })
-        submitDepositForm({})
-        touchDepositForm()
-        checkCurrentSuppliedAmount(suppliedAfterDeposit)
-      })
-
-      it('stakes into the gauge', () => {
-        cy.mount(<SupplyTestWrapper tab="stake" />)
-        selectMaxSupplyInput('stake')
-        checkStakeDetailsLoaded({
-          prevVaultShares: '0',
-          suppliedAssets: suppliedAfterDeposit,
-          prevSuppliedAssets: '0',
-          expectedButtonText: 'Approve & Stake',
-          hasApi,
-        })
-        submitStakeForm()
-        touchStakeForm()
-        checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
-      })
-
-      it('claims rewards', () => {
-        prepareClaimRewards({ vnet: getVirtualNetwork(), userAddress: address, gaugeAddress })
-
-        cy.mount(<SupplyTestWrapper tab="claim" />)
-        if (!hasClaimableRewards) {
-          validateClaimTabState()
-          return
-        }
-        // only claim CRV rewards, no markets with external rewards yet
-        checkClaimDetailsLoaded({ hasOtherRewards: false, hasApi })
-        submitClaimAndSettle('crv', { waitForEmptyState: true })
-        validateClaimTabState()
-      })
-
-      it('unstakes from the gauge', () => {
-        cy.mount(<SupplyTestWrapper tab="unstake" />)
-        selectMaxSupplyInput('unstake')
-        checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
-        submitUnstakeForm()
-        touchUnstakeForm()
-        checkCurrentStakedAmount({ expectedAmountSupplied: '0' })
-      })
+  before(() => {
+    pickSupplyTestMarket(getVirtualNetwork()).then(picked => {
+      market = picked
+      cy.log(`Market: ${market.id}`)
     })
-  },
-)
+    fundUserWithCrvUsd({ vnet: getVirtualNetwork(), userAddress: address, crvUsdAmount: '1000', ethAmount: '1' })
+  })
+
+  beforeEach(() => {
+    setupLlammalendTestCaseMocks({ hasApi })
+  })
+
+  it('deposits into the vault', () => {
+    cy.mount(<SupplyTestWrapper tab="deposit" />)
+    writeDepositForm({ amount: SUPPLY_DEPOSIT })
+    checkDepositDetailsLoaded({ suppliedAssets: SUPPLY_DEPOSIT, prevSuppliedAssets: '0', hasApi })
+    submitDepositForm({})
+    touchDepositForm()
+    checkCurrentSuppliedAmount(suppliedAfterDeposit)
+  })
+
+  it('partially withdraws from the vault', () => {
+    cy.mount(<SupplyTestWrapper tab="withdraw" />)
+    writeWithdrawForm({ amount: SUPPLY_PARTIAL_WITHDRAW })
+    checkWithdrawDetailsLoaded({
+      suppliedAssets: suppliedAfterPartialWithdraw,
+      prevSuppliedAssets: suppliedAfterDeposit,
+      hasApi,
+    })
+    submitWithdrawForm()
+    touchWithdrawForm()
+    checkCurrentSuppliedAmount(suppliedAfterPartialWithdraw)
+  })
+
+  it('redeems the remaining vault balance', () => {
+    cy.mount(<SupplyTestWrapper tab="withdraw" />)
+    selectMaxSupplyInput('withdraw')
+    checkWithdrawDetailsLoaded({
+      suppliedAssets: '0',
+      prevSuppliedAssets: suppliedAfterPartialWithdraw,
+      expectedButtonText: 'Withdraw All',
+      hasApi,
+    })
+    submitWithdrawForm()
+    touchWithdrawForm()
+    checkCurrentSuppliedAmount('0')
+  })
+
+  it('deposits into the vault again', () => {
+    cy.mount(<SupplyTestWrapper tab="deposit" />)
+    writeDepositForm({ amount: SUPPLY_DEPOSIT })
+    checkDepositDetailsLoaded({ suppliedAssets: SUPPLY_DEPOSIT, prevSuppliedAssets: '0', hasApi })
+    submitDepositForm({})
+    touchDepositForm()
+    checkCurrentSuppliedAmount(suppliedAfterDeposit)
+  })
+
+  it('stakes into the gauge', () => {
+    cy.mount(<SupplyTestWrapper tab="stake" />)
+    selectMaxSupplyInput('stake')
+    checkStakeDetailsLoaded({
+      prevVaultShares: '0',
+      suppliedAssets: suppliedAfterDeposit,
+      prevSuppliedAssets: '0',
+      expectedButtonText: 'Approve & Stake',
+      hasApi,
+    })
+    submitStakeForm()
+    touchStakeForm()
+    checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
+  })
+
+  it('claims rewards', () => {
+    const { gaugeAddress } = market
+    prepareClaimRewards({ vnet: getVirtualNetwork(), userAddress: address, gaugeAddress })
+    cy.mount(<SupplyTestWrapper tab="claim" />)
+    claimSupplyRewards({ vnet: getVirtualNetwork(), userAddress: address, gaugeAddress, hasApi })
+  })
+
+  it('unstakes from the gauge', () => {
+    cy.mount(<SupplyTestWrapper tab="unstake" />)
+    selectMaxSupplyInput('unstake')
+    checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
+    submitUnstakeForm()
+    touchUnstakeForm()
+    checkCurrentStakedAmount({ expectedAmountSupplied: '0' })
+  })
+})
