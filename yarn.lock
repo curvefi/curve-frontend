@@ -487,15 +487,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/api@npm:2.71.2":
-  version: 2.71.2
-  resolution: "@curvefi/api@npm:2.71.2"
+"@curvefi/api@npm:2.71.3":
+  version: 2.71.3
+  resolution: "@curvefi/api@npm:2.71.3"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:^10.0.2"
     ethers: "npm:^6.16.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/c7cd72bb0e5a9b7f8526f95175201d950e37b5b9172d48cf5ecf4a7b80e0297ec054e5aff6943db765e601c9bd3a0c11cadaa49fe9abdb3524c679b2f9a90b77
+  checksum: 10c0/901acf44799b6d9bc569cc66f1aab8abd564c57186103eb53ff1eac90e0384f9619ede01090d813e89b5a18cbc33deb75d78137f56de18c5ef012cc47a1b0745
   languageName: node
   linkType: hard
 
@@ -553,7 +553,7 @@ __metadata:
   resolution: "@curvefi/evm-ui@workspace:packages/evm-ui"
   dependencies:
     "@coinbase/wallet-sdk": "npm:4.4.0"
-    "@curvefi/api": "npm:2.71.2"
+    "@curvefi/api": "npm:2.71.3"
     "@curvefi/legacy-ui": "workspace:^"
     "@curvefi/llamalend-api": "npm:2.6.3"
     "@curvefi/ui": "workspace:^"
@@ -13846,7 +13846,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
-    "@curvefi/api": "npm:2.71.2"
+    "@curvefi/api": "npm:2.71.3"
     "@curvefi/api-server": "workspace:^"
     "@curvefi/prices-api": "workspace:^"
     bignumber.js: "npm:10.0.2"
