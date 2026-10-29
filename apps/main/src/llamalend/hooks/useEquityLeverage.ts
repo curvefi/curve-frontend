@@ -35,8 +35,12 @@ export type EquityLeverage = {
   yieldMultiplier: QueryProp<Decimal | null>
 }
 
-const getApr = (position: UserState | null, oraclePrice: Decimal, { borrowApr }: MarketRates, yields: MarketYields) =>
-  position && getLoopedApr(position, oraclePrice, borrowApr, yields)
+const getPositionLoopedApr = (
+  position: UserState | null,
+  oraclePrice: Decimal,
+  { borrowApr }: MarketRates,
+  yields: MarketYields,
+) => position && getLoopedApr(position, oraclePrice, borrowApr, yields)
 
 /**
  * Equity leverage, looped APR and yield multiplier of the open position and of the position after the action.
@@ -75,7 +79,7 @@ export function useEquityLeverage(
     q(useMarketFutureRates({ ...params, chainId, debtDelta }, isEnabled)),
     currentRates,
   )
-  const currentLoopedApr = combineQueries([position, oraclePrice, currentRates, marketYields], getApr)
+  const currentLoopedApr = combineQueries([position, oraclePrice, currentRates, marketYields], getPositionLoopedApr)
   const equityLeverage = {
     current: combineQueries([position, oraclePrice], getEquityLeverage),
     future: combineQueries(
@@ -83,7 +87,10 @@ export function useEquityLeverage(
       (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
     ),
     currentLoopedApr,
-    futureLoopedApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, marketYields], getApr),
+    futureLoopedApr: combineQueries(
+      [futurePositionQuery, oraclePrice, futureRates, marketYields],
+      getPositionLoopedApr,
+    ),
     yieldMultiplier: combineQueries([currentLoopedApr, marketYields], (apr, { collateralYieldApr }) =>
       getYieldMultiplier(apr, collateralYieldApr),
     ),

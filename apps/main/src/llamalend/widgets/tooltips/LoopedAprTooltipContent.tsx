@@ -3,13 +3,13 @@ import { t } from '@ui/lib/i18n'
 
 export const LoopedAprTooltipContent = () => (
   <TooltipWrapper>
-    <TooltipDescription text={t`Estimated yearly return on your equity.`} />
+    <TooltipDescription text={t`Estimated yearly yield on your equity, after borrowing costs.`} />
     <TooltipDescription text={t`It's an estimate: yields, rates and rewards change over time.`} />
-    <TooltipDescription text={t`Below it, the yield multiplier: this APR divided by the collateral yield.`} />
+    <TooltipDescription text={t`Below it, the yield multiplier: the looped APR divided by the collateral yield.`} />
     <TooltipFormula
       formula={
         <>
-          {t`APR =`}
+          {t`Looped APR =`}
           <TooltipFraction numerator={t`Yield earned − net borrow cost`} denominator={t`Equity`} />
         </>
       }
