@@ -76,7 +76,7 @@ describe('Lend Market Supply', () => {
   before(() => {
     pickSupplyTestMarket(getVirtualNetwork()).then(picked => {
       market = picked
-      cy.log(`Market: ${market.id}`)
+      cy.task('log', `Supply test market: ${market.id}`)
     })
     fundUserWithCrvUsd({ vnet: getVirtualNetwork(), userAddress: address, crvUsdAmount: '1000', ethAmount: '1' })
   })
