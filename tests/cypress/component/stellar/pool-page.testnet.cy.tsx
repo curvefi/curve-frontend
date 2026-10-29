@@ -14,6 +14,7 @@ import { createComponentTestRouter } from '@cy/support/routes'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { oneViewport, skipTestsAfterFailure } from '@cy/support/ui'
 import { RouterProvider } from '@tanstack/react-router'
+import { queryClient } from '@ui/features/queries/query-client'
 
 describe('Stellar testnet pool page', () => {
   skipTestsAfterFailure()
@@ -25,6 +26,7 @@ describe('Stellar testnet pool page', () => {
 
   const mountPoolPage = ({ isMissing = false } = {}) => {
     if (!isMissing) mockLitePool(pool)
+    queryClient.clear()
     cy.mount(
       <StellarTestWrapper address={testnetConfig.deployer.address}>
         <RouterProvider
