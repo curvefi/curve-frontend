@@ -1,176 +1,135 @@
-type Error = { code: number; title: string; description: string }
-
-export const STABLE_SWAP_ERRORS = [
-  {
+export const STABLE_SWAP_ERRORS = {
+  10000: {
     title: 'InputCoinCountMismatch',
-    code: 10000,
     description:
       'A per-coin vector (constructor `tokens`/`asset_types`, or an `amounts`/`min_amounts`) is not exactly `COINS` long.',
   },
-  { title: 'InputCoinIndexOutOfRange', code: 10001, description: 'Coin index is not in `0..COINS`.' },
-  { title: 'InputDuplicateCoinIndex', code: 10002, description: 'A swap needs two different coins.' },
-  {
+  10001: { title: 'InputCoinIndexOutOfRange', description: 'Coin index is not in `0..COINS`.' },
+  10002: { title: 'InputDuplicateCoinIndex', description: 'A swap needs two different coins.' },
+  10003: {
     title: 'InputZeroAmount',
-    code: 10003,
     description: 'The input amount is zero (vs `MarketLpRoundsToZero`, which is nonzero but too small).',
   },
-  { title: 'InputNegativeAmount', code: 10004, description: "A negative amount; the engine's arithmetic is unsigned." },
-  { title: 'InputFeeOutOfRange', code: 10005, description: '`fee` is outside `0..=MAX_FEE`.' },
-  { title: 'InputAdminFeeOutOfRange', code: 10006, description: '`admin_fee` is outside `0..FEE_DENOMINATOR`.' },
-  {
+  10004: { title: 'InputNegativeAmount', description: "A negative amount; the engine's arithmetic is unsigned." },
+  10005: { title: 'InputFeeOutOfRange', description: '`fee` is outside `0..=MAX_FEE`.' },
+  10006: { title: 'InputAdminFeeOutOfRange', description: '`admin_fee` is outside `0..FEE_DENOMINATOR`.' },
+  10007: {
     title: 'InputOffpegMultiplierOutOfRange',
-    code: 10007,
     description: '`offpeg_fee_multiplier` is unsupported or would make the dynamic fee exceed its maximum.',
   },
-  { title: 'InputAmplificationOutOfRange', code: 10008, description: 'Amplification is outside `1..MAX_A`.' },
-  { title: 'InputRampDurationTooShort', code: 10009, description: 'A ramp must run at least `MIN_RAMP_TIME`.' },
-  {
-    title: 'InputTooManyDecimals',
-    code: 10010,
-    description: 'A coin reports more decimals than `PRECISION_DECIMALS`.',
-  },
-  {
+  10008: { title: 'InputAmplificationOutOfRange', description: 'Amplification is outside `1..MAX_A`.' },
+  10009: { title: 'InputRampDurationTooShort', description: 'A ramp must run at least `MIN_RAMP_TIME`.' },
+  10010: { title: 'InputTooManyDecimals', description: 'A coin reports more decimals than `PRECISION_DECIMALS`.' },
+  10011: {
     title: 'InputDuplicateCoinAddress',
-    code: 10011,
     description: 'The same token address appears more than once in the coin list.',
   },
-  { title: 'InputReceiverIsPool', code: 10012, description: 'The payout receiver is the pool itself.' },
-  {
+  10012: { title: 'InputReceiverIsPool', description: 'The payout receiver is the pool itself.' },
+  10013: {
     title: 'InputCallerIsPool',
-    code: 10013,
     description: 'The pool named itself as the caller, which would spend or burn its own locked liquidity.',
   },
-  { title: 'InputMetadataTooLong', code: 10014, description: "The LP token's `name` or `symbol` is too long." },
-  {
+  10014: { title: 'InputMetadataTooLong', description: "The LP token's `name` or `symbol` is too long." },
+  10015: {
     title: 'InputMinLockedLiquidityOutOfRange',
-    code: 10015,
     description: '`min_locked_liquidity` is negative. Zero is legal and means the pool locks nothing.',
   },
-  { title: 'InputOracleWindowOutOfRange', code: 10016, description: 'An oracle averaging window is zero.' },
-  { title: 'StateNotInitialized', code: 10200, description: 'Called before the constructor ran.' },
-  {
-    title: 'StateLpSupplyEmpty',
-    code: 10201,
-    description: 'The operation needs liquidity, and the LP supply is zero.',
-  },
-  { title: 'StateReserveEmpty', code: 10202, description: 'A reserve is zero; the invariant is undefined there.' },
-  {
+  10016: { title: 'InputOracleWindowOutOfRange', description: 'An oracle averaging window is zero.' },
+  10200: { title: 'StateNotInitialized', description: 'Called before the constructor ran.' },
+  10201: { title: 'StateLpSupplyEmpty', description: 'The operation needs liquidity, and the LP supply is zero.' },
+  10202: { title: 'StateReserveEmpty', description: 'A reserve is zero; the invariant is undefined there.' },
+  10203: {
     title: 'StateRampTooSoon',
-    code: 10203,
     description: 'A ramp was requested before `MIN_RAMP_TIME` elapsed since the last one.',
   },
-  {
+  10204: {
     title: 'StateAmplificationChangeTooLarge',
-    code: 10204,
     description: 'The ramp would change amplification by more than `MAX_A_CHANGE`× from its current value.',
   },
-  { title: 'StatePoolTooImbalanced', code: 10205, description: 'Reserves exceed the supported imbalance.' },
-  {
+  10205: { title: 'StatePoolTooImbalanced', description: 'Reserves exceed the supported imbalance.' },
+  10206: {
     title: 'StateNotFactoryDeployed',
-    code: 10206,
     description: "The stored Factory and salt do not derive this contract's address: not a Factory deployment.",
   },
-  {
+  10207: {
     title: 'StateDonationNotNeeded',
-    code: 10207,
     description: 'Donations are disabled when the current spread and invariant checks pass.',
   },
-  { title: 'StateOracleNotInitialized', code: 10208, description: 'Oracle reads require nonzero LP supply.' },
-  {
+  10208: { title: 'StateOracleNotInitialized', description: 'Oracle reads require nonzero LP supply.' },
+  10300: {
     title: 'MarketSlippageExceeded',
-    code: 10300,
     description: 'The caller would get less, or pay more, than the bound they set.',
   },
-  {
+  10301: {
     title: 'MarketLpRoundsToZero',
-    code: 10301,
     description: 'A real input too small to mint or burn any LP; a larger one may succeed.',
   },
-  {
+  10302: {
     title: 'MarketBurnExceedsSupply',
-    code: 10302,
     description: 'The LP burn exceeds total supply — a claim on more than the pool holds.',
   },
-  {
+  10303: {
     title: 'MarketInsufficientLpBalance',
-    code: 10303,
     description: 'The burner does not hold the LP being burned (vs `MarketBurnExceedsSupply`, the whole pool).',
   },
-  {
+  10304: {
     title: 'MarketInsufficientLiquidity',
-    code: 10304,
     description: 'The requested output or withdrawal exceeds what the coin reserve can pay; retry with less.',
   },
-  {
+  10305: {
     title: 'MarketInitialDepositTooSmall',
-    code: 10305,
     description: 'Initial deposit is too small to fund the locked liquidity, a larger one may succeed.',
   },
-  {
+  10306: {
     title: 'MarketDonationAboveLimit',
-    code: 10306,
     description: "A donation would put a coin's normalized balance (`xp`) above the prior pool maximum.",
   },
-  {
+  10400: {
     title: 'ExtTokenPullFailed',
-    code: 10400,
     description: "A coin's token rejected a transfer *into* the pool (payer's balance/allowance/trustline).",
   },
-  {
+  10401: {
     title: 'ExtTokenPushFailed',
-    code: 10401,
     description: "A coin's token rejected a transfer *out of* the pool. Not the caller's fault; escalate.",
   },
-  {
+  10402: {
     title: 'ExtTokenUnusable',
-    code: 10402,
     description:
       "A coin's token gave an unusable response — trapped or undecodable. Its foreign error code is discarded, not re-raised.",
   },
-  { title: 'ExtTokenBadMetadata', code: 10403, description: "A coin's token would not report usable `decimals`." },
-  {
+  10403: { title: 'ExtTokenBadMetadata', description: "A coin's token would not report usable `decimals`." },
+  10404: {
     title: 'ExtFactoryUnavailable',
-    code: 10404,
     description: 'The bound Factory could not be reached to resolve admin / fee receiver.',
   },
-  { title: 'ExtTrustlineCreationFailed', code: 10405, description: 'A missing SAC trustline could not be opened.' },
-  {
+  10405: { title: 'ExtTrustlineCreationFailed', description: 'A missing SAC trustline could not be opened.' },
+  10501: {
     title: 'UnimplementedRateOracle',
-    code: 10501,
     description: 'This implementation supports only `ASSET_TYPE_PLAIN`, with no rate-oracle `methods` or `oracles`.',
   },
-  {
-    title: 'MathNotConverged',
-    code: 10800,
-    description: 'Newton iteration did not converge inside its cap; retry smaller.',
-  },
-  {
+  10800: { title: 'MathNotConverged', description: 'Newton iteration did not converge inside its cap; retry smaller.' },
+  10801: {
     title: 'MathArithmetic',
-    code: 10801,
     description:
       'Checked arithmetic overflowed or underflowed. Reserve exhaustion on a withdrawal is `MarketInsufficientLiquidity` (10304), not this — that condition is caught before the math.',
   },
-  { title: 'Internal', code: 10900, description: 'A postcondition this contract guarantees did not hold.' },
-  {
+  10900: { title: 'Internal', description: 'A postcondition this contract guarantees did not hold.' },
+  10901: {
     title: 'InternalStorageMalformed',
-    code: 10901,
     description: "Stored pool vectors disagree with this wasm's coin count.",
   },
-  {
+  10902: {
     title: 'InternalStoredParamsInvalid',
-    code: 10902,
     description: "The engine rejected the pool's own stored params (fee, `A`, admin fee, or rate).",
   },
-  {
+  10903: {
     title: 'InternalLpSupplyDrift',
-    code: 10903,
     description: "The LP token's `total_supply` diverged from the engine's `lp_supply`.",
   },
-  { title: 'InternalValueUnrepresentable', code: 10904, description: 'An engine value did not fit a host `i128`.' },
-  {
+  10904: { title: 'InternalValueUnrepresentable', description: 'An engine value did not fit a host `i128`.' },
+  10905: {
     title: 'InternalVirtualPriceDropped',
-    code: 10905,
     description:
       "The planned transition would have lowered the invariant per LP token — LP principal leaking out. The engine's guardrail refused the plan; nothing was written.",
   },
-] satisfies Error[]
+} as const

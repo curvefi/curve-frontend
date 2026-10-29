@@ -144,10 +144,10 @@ export const PoolsTable = ({
           searchText={searchText}
           onSearch={onSearch}
           chips={<PoolsChips isLite={isLite} activePoolsFilter={activePoolsFilter} />}
+          chipsPlacement={isMobile ? 'toolbar' : 'row'}
           collapsibleFilters={{
             collapsible: (
               <PoolsFiltersCollapsible
-                activePoolsFilter={activePoolsFilter}
                 isLite={isLite}
                 hasActiveFilters={hasActiveFilters}
                 resetFilters={resetFilters}
