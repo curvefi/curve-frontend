@@ -7,7 +7,7 @@ import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 /**
  * Binds a token input to a form value, using balance query loading/error state and an optional maximum.
  * Touched-field errors take precedence over query errors, which take precedence over the helper message.
- * Related-field errors appear when either the input or the related field is touched.
+ * Related-field errors appear when either the input or the related field is touched, unless ignoreTouched is set.
  */
 export const FormTokenInput = <TValues extends FieldValues>({
   form: {
@@ -23,15 +23,18 @@ export const FormTokenInput = <TValues extends FieldValues>({
 }: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
   form: Pick<UseFormReturn<TValues>, 'values' | 'formState'>
   name: FieldPathByValue<TValues, Decimal | undefined>
-  relatedFields?: FieldPath<TValues>[]
+  relatedFields?: (FieldPath<TValues> | { field: FieldPath<TValues>[]; ignoreTouched: true })[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
   balance?: QueryProp<Decimal>
 }) => {
   const error =
     notFalsyArray([name], relatedFields)
-      .filter(field => name in touchedFields || field in touchedFields)
-      .map(field => errors[field])
-      .find(Boolean) ??
+      .map(f =>
+        typeof f === 'string'
+          ? (name in touchedFields || f in touchedFields) && errors[f]
+          : f.field.map(name => errors[name]).find(Boolean),
+      )
+      .find(error => !!error) ??
     balance?.error ??
     max?.balance.error ??
     null
