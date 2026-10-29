@@ -1,9 +1,11 @@
+import { StellarErrorPage } from '@/stellar/components/StellarErrorPage'
 import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
-import type { PoolQuery } from '@/stellar/queries/query-types'
+import { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
+import { Loading } from '@ui/components/Loading'
 import type { RouterState } from '@ui/components/RouterLink'
 import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
@@ -42,17 +44,18 @@ export const PoolPage = () => {
   const { address: account } = useWallet()
   const params = { network, pool }
   const config = usePoolConfig(params)
-  const { query: litePool } = useLitePool(params)
+  const { query: litePool, isMissing } = useLitePool(params)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, symbols, decimals } = usePoolTokens({ network, account, tokenAddresses }) ?? {}
   const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals })
+  const tokenName = useTokenName({ network, token: pool })
 
-  return (
+  return litePool.data ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
           backHref={StellarUrls.poolList({ network })}
-          title={q(useTokenName({ network, token: pool }))}
+          title={q(tokenName)}
           tokens={tokens}
           blockchainId={network}
           rightItems={<PoolHeaderMetrics tvl={composition.totalUsd} />}
@@ -68,5 +71,14 @@ export const PoolPage = () => {
       <PoolCompositionCard {...composition} />
       <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} litePool={litePool} />
     </DetailPageLayout>
+  ) : isMissing || litePool.error ? (
+    <StellarErrorPage
+      title={litePool.error ? t`Error` : '404'}
+      subtitle={litePool.error?.message ?? t`Pool Not Found`}
+      error={litePool.error}
+      continueUrl={StellarUrls.poolList({ network })}
+    />
+  ) : (
+    <Loading />
   )
 }

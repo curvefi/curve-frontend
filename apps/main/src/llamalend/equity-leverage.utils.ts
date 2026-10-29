@@ -11,18 +11,14 @@ import {
   ZERO,
 } from '@ui/lib/decimal'
 
-/** Collateral at the oracle price plus the borrowed tokens in the AMM, in the borrowed token */
-const getPositionValue = ({ collateral, stablecoin }: UserState, oraclePrice: Decimal) =>
-  decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
-
 /** What the position returns if closed now at the oracle price, in the borrowed token */
-export const getEquity = (position: UserState, oraclePrice: Decimal) =>
-  decimalMinus(getPositionValue(position, oraclePrice), position.debt)
+export const getEquity = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) =>
+  decimalMinus(decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin), debt)
 
-/** How many times its equity the position is worth, or null when the equity is zero. */
+/** Collateral value divided by the equity, or null when the equity is zero. The borrowed tokens in the AMM only count in the equity. */
 export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => {
   const equity = getEquity(position, oraclePrice)
-  return decimalEqual(equity, ZERO) ? null : decimalDiv(getPositionValue(position, oraclePrice), equity)
+  return decimalEqual(equity, ZERO) ? null : decimalDiv(decimalMultiply(position.collateral, oraclePrice), equity)
 }
 
 /** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. Null when unknown. */
