@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { getStellarTransactionFees, StellarFetchRetry } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { StellarFetchRetry } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
+import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType, Networks } from '@creit.tech/stellar-wallets-kit/types'

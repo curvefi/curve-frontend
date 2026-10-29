@@ -141,8 +141,6 @@ const config = [
             // forbid importing from the api apps in app source code
             { target: ['apps/main/src/**'], from: 'apps/router-api' },
             { target: ['apps/main/src/**'], from: 'apps/merkl-api' },
-            // forbid `wagmi` external dependency package imports, except from feature
-            { target: ['apps/**', 'packages/**', '!packages/evm-ui/src/features/forms/**'], from: 'wagmi' },
           ],
         },
       ],
@@ -181,10 +179,6 @@ const config = [
               importNames: ['enforce'],
               message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
-            ...['@stellar/stellar-sdk', '@creit.tech/stellar-wallets-kit/sdk'].map(name => ({
-              name,
-              message: 'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
-            })),
           ],
           patterns: [
             {
@@ -237,6 +231,23 @@ const config = [
   },
 
   // Override (replaces legacy `overrides`)
+  {
+    files: ['apps/**', 'packages/**'],
+    ignores: ['packages/evm-ui/src/features/forms/**'],
+    rules: { 'import-x/no-internal-modules': ['error', { forbid: ['wagmi', 'wagmi/**'] }] },
+  },
+  {
+    ignores: ['apps/stellar/src/features/connect-wallet/stellar-wallet-kit/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'warn',
+        ...['@stellar/stellar-sdk', '@creit.tech/stellar-wallets-kit/sdk'].map(name => ({
+          selector: `:matches(ImportDeclaration, ExportNamedDeclaration, ExportAllDeclaration)[source.value='${name}']`,
+          message: 'Wrap all calls to the stellar wallet kit in `stellar-wallet-kit`.',
+        })),
+      ],
+    },
+  },
   {
     ignores: ['packages/ui/src/features/queries/query-hooks.ts'],
     rules: {

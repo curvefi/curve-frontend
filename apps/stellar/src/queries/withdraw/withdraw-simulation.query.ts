@@ -1,4 +1,4 @@
-import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'

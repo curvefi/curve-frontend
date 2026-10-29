@@ -1,4 +1,4 @@
-import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { DepositParams, DepositQuery } from '@/stellar/features/deposit/types'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { depositValidationSuite } from '@/stellar/queries/validation/deposit.validation'
