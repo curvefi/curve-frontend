@@ -3,7 +3,9 @@ import { t } from '@ui/lib/i18n'
 
 export const LeverageTooltipContent = () => (
   <TooltipWrapper>
-    <TooltipDescription text={t`Your collateral value divided by your equity.`} />
+    <TooltipDescription
+      text={t`Your exposure to the collateral token: your collateral value divided by your equity.`}
+    />
     <TooltipDescription
       text={t`It moves with price: it rises when collateral falls and drops when collateral gains.`}
     />
