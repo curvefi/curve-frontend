@@ -11,7 +11,7 @@ import {
   ZERO,
 } from '@ui/lib/decimal'
 
-/** Collateral at the oracle price plus the borrowed tokens in the AMM, minus the debt, in the borrowed token */
+/** What the position returns if closed now at the oracle price, in the borrowed token */
 const getEquity = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) =>
   decimalMinus(decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin), debt)
 
