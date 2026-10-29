@@ -12,7 +12,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { getUserPnl, getUserPnlUsd } from '../user-position.utils'
+import { getUserPnl } from '../user-position.utils'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -40,7 +40,7 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const { stats, capital, prices } = positionQueries
   const error = stats.error ?? capital.error
   const pnl = getUserPnl(row.original)
-  const roi = getValue()
+  const roi = maybe(pnl?.collateral?.roi, Number)
   return error ? (
     <ErrorCell error={error} />
   ) : (
@@ -59,7 +59,7 @@ export const PnlCell = ({ getValue, row }: PositionCellProps) => {
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellValueStrong">
-            {maybe(getUserPnlUsd(row.original), value => formatSigned(value, 'usd.notional')) ?? UNAVAILABLE_NOTATION}
+            {maybe(getValue(), value => formatSigned(value, 'usd.notional')) ?? UNAVAILABLE_NOTATION}
           </Typography>
           {maybe(roi, roi => (
             <Typography variant="tableCellSupport" color={getChangeColor(roi, 'success', 'error')}>

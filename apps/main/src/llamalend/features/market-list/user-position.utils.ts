@@ -65,15 +65,12 @@ export const getUserPnl = (row: LlamaMarketRow) =>
     getPositionPnlAndRoi({ equity, oraclePrice, capital }),
   )
 
-/** PNL in the collateral token, in USD at the collateral token's USD rate */
+/** PNL in the collateral token, in USD at the collateral token's USD rate: the PNL column sorts by it */
 export const getUserPnlUsd = (row: LlamaMarketRow) =>
   maybes(
     [getUserPnl(row)?.collateral?.pnl, row.positionQueries.prices.collateral.data],
     (pnl, rate) => Number(pnl) * rate,
   )
-
-/** ROI in the collateral token, in percent: the PNL column sorts by it */
-export const getUserPnlRoi = (row: LlamaMarketRow) => maybe(getUserPnl(row)?.collateral?.roi, Number)
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied

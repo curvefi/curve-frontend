@@ -36,7 +36,7 @@ import {
   getUserBorrowedUsd,
   getUserCollateralUsd,
   getUserEquityUsd,
-  getUserPnlRoi,
+  getUserPnlUsd,
   getUserPositionHealth,
   getUserPositionLtv,
 } from '../user-position.utils'
@@ -142,7 +142,7 @@ export const MARKET_COLUMNS = columnHelper.columns([
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(getUserPnlRoi, {
+  columnHelper.accessor(getUserPnlUsd, {
     id: MarketColumnId.UserPnl,
     header: MARKET_TITLES[MarketColumnId.UserPnl],
     cell: PnlCell,
