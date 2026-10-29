@@ -159,7 +159,8 @@ testCases.forEach(
         checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
       })
 
-      it('claims rewards', () => {
+      // TODO: unskip once markets are picked by gauge emissions, some test gauges lost all CRV emissions
+      it.skip('claims rewards', () => {
         prepareClaimRewards({ vnet: getVirtualNetwork(), userAddress: address, gaugeAddress })
 
         cy.mount(<SupplyTestWrapper tab="claim" />)
