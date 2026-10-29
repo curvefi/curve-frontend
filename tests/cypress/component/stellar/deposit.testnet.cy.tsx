@@ -13,6 +13,7 @@ import {
   depositSubmit,
   submitDepositAndCheck,
 } from '@cy/support/helpers/stellar/deposit.helpers'
+import { mockLitePool } from '@cy/support/helpers/stellar/mock-lite-pool'
 import {
   checkPoolInputError,
   checkPoolPriceImpact,
@@ -53,6 +54,7 @@ describe('Stellar testnet deposit', () => {
   )
 
   const mountDeposit = ({ connected = true } = {}) => {
+    mockLitePool(pool)
     cy.mount(
       <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
         <DepositTab network={TEST_NETWORK} pool={pool} />

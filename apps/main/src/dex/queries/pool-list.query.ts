@@ -91,14 +91,14 @@ export const { useQuery: usePoolList } = queryFactory({
   keepPreviousData: (previous, current) => previous.chainId === current.chainId,
 })
 
-export const { useQuery: usePoolChains, queryKey: getPoolChainsQueryKey } = queryFactory({
+export const { useQuery: usePoolChains, reset: resetPoolChains } = queryFactory({
   queryKey: () => ({ name: 'listPoolChains' }) as const,
   queryFn: () => listPoolChains(),
   validationSuite: EmptyValidationSuite,
   category: 'dex.network',
 })
 
-export const { useQuery: useLitePoolChains, queryKey: getLitePoolChainsQueryKey } = queryFactory({
+export const { useQuery: useLitePoolChains, reset: resetLitePoolChains } = queryFactory({
   queryKey: () => ({ name: 'listLitePoolChains', version: 2 }) as const,
   queryFn: () => listLitePoolChains(),
   validationSuite: EmptyValidationSuite,
