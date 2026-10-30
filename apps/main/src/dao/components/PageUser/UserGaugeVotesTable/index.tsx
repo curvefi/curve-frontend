@@ -62,10 +62,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
             >
               {formatNumber(gaugeVote.weight / 100, 'percent.value')}
             </TableData>
-            <TableDataLink
-              href={DAO_ROUTES.PAGE_GAUGE({ app: 'dao', blockchainId: 'ethereum', gaugeAddress: gaugeVote.gauge })}
-              className="right-padding"
-            >
+            <TableDataLink href={DAO_ROUTES.PAGE_GAUGE({ gaugeAddress: gaugeVote.gauge })} className="right-padding">
               {shortenAddress(gaugeVote.gauge)}
             </TableDataLink>
           </TableRowWrapper>

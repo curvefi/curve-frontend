@@ -35,10 +35,7 @@ export const PegKeeperAdvancedDetails = ({
       label={t`Pool`}
       value={shortenAddress(poolAddress, { digits: 2 })}
       valueTooltip={
-        <ExternalLink
-          href={DEX_ROUTES.PAGE_POOL({ app: 'dex', blockchainId: 'ethereum', poolAddress })}
-          label={t`View pool`}
-        />
+        <ExternalLink href={DEX_ROUTES.PAGE_POOL({ blockchainId: 'ethereum', poolAddress })} label={t`View pool`} />
       }
       copyValue={poolAddress}
       format={getAddress}

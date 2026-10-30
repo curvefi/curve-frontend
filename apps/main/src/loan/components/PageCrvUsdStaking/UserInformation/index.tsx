@@ -38,7 +38,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           </Typography>
           <Typography variant="bodyMRegular">
             {t`We recommend using Curve's`}{' '}
-            <RouterLink href={DEX_ROUTES.PAGE_SWAP({ app: 'dex', blockchainId: network })}>swap</RouterLink>
+            <RouterLink href={DEX_ROUTES.PAGE_SWAP({ blockchainId: network })}>swap</RouterLink>
             {t`, or alternatively an aggregator like`}{' '}
             <Link href="https://swap.cow.fi/#/1/swap/WETH/scrvUSD">Cowswap</Link>.
           </Typography>

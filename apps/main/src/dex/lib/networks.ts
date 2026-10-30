@@ -11,10 +11,7 @@ import { Chain } from '@primitives/network.utils'
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
     swap: { fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', toAddress: ethAddress },
-    swapCustomRouteRedirect: { 'sfrxeth-llamma': CRVUSD_ROUTES.PAGE_MARKETS({
-      app: 'crvusd',
-      blockchainId: 'ethereum',
-    }) },
+    swapCustomRouteRedirect: { 'sfrxeth-llamma': CRVUSD_ROUTES.PAGE_MARKETS({ blockchainId: 'ethereum' }) },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
       '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',

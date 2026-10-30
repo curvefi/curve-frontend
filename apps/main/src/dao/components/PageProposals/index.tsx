@@ -90,7 +90,7 @@ export const Proposals = () => {
 
   const push = useNavigate()
   const handleProposalClick = useCallback(
-    (proposalId: string) => push(DAO_ROUTES.PAGE_PROPOSAL({ app: 'dao', blockchainId: 'ethereum', proposalId })),
+    (proposalId: string) => push(DAO_ROUTES.PAGE_PROPOSAL({ proposalId })),
     [push],
   )
 

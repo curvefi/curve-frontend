@@ -18,7 +18,7 @@ import { UserPositionSummary } from './UserPositionsSummary'
 type UserPositionsTableProps = { onReload: () => Promise<unknown>; tableQuery: QueryProp<LlamaMarketsTableResult> }
 
 const buildVaultUrl = (market: LlamaMarket) =>
-  LEND_MARKET_ROUTES.PAGE_VAULT({ app: 'lend', blockchainId: market.blockchainId, marketId: market.controllerAddress })
+  LEND_MARKET_ROUTES.PAGE_VAULT({ blockchainId: market.blockchainId, marketId: market.controllerAddress })
 
 export const UserPositionsTables = ({
   onReload,

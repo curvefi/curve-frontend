@@ -18,7 +18,6 @@ export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> 
           id: 'earn',
           label: t`Earn`,
           href: LEND_MARKET_ROUTES.PAGE_VAULT({
-            app: 'lend',
             blockchainId: market.blockchainId,
             marketId: market.controllerAddress,
           }),

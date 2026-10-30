@@ -7,7 +7,7 @@ import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row: { original: pool } }) => (
   <PoolExpandedPanelActionsUi
     poolAddress={pool.address}
-    path={ROUTE.PAGE_POOL({ app: 'dex', blockchainId: pool.blockchainId, poolAddress: pool.address })}
+    path={ROUTE.PAGE_POOL({ blockchainId: pool.blockchainId, poolAddress: pool.address })}
     formatAddress={getAddress}
   />
 )

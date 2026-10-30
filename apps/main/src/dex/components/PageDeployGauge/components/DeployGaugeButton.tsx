@@ -37,7 +37,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
   const deployGauge = useStore(state => state.deployGauge.deployGauge)
   const { connectState, connect: connectWallet } = useWallet()
   const isLoadingApi = !pageLoaded
-  const connectEthPath = DEX_ROUTES.PAGE_DEPLOY_GAUGE({ app: 'dex', blockchainId: 'ethereum' })
+  const connectEthPath = DEX_ROUTES.PAGE_DEPLOY_GAUGE({ blockchainId: 'ethereum' })
 
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const handleClick = async () => {

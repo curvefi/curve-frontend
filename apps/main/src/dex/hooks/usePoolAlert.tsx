@@ -57,7 +57,6 @@ const geistFinanceAlert = (): PoolAlert => ({
 
 const yPrismaAlert = (): PoolAlert => {
   const prismaPoolHref = DEX_ROUTES.PAGE_POOL({
-    app: 'dex',
     blockchainId: 'ethereum',
     poolAddress: '0x69833361991ed76f9e8dbbcdf9ea1520febfb4a7',
   })

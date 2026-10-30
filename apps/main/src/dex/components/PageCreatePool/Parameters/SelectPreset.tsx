@@ -273,7 +273,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                 {t`Can't find the pool preset you want? Check out`}
                 <StyledExternalLink
                   target="_blank"
-                  href={DEX_ROUTES.PAGE_POOLS({ app: 'dex', blockchainId: params.network })}
+                  href={DEX_ROUTES.PAGE_POOLS({ blockchainId: params.network })}
                 >{t`existing pools`}</StyledExternalLink>
                 {t`with similar assets for inspiration (or use`}
                 <StyledExternalLink href="https://github.com/curveresearch/curvesim" target="_blank">

@@ -59,7 +59,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
               {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
             </Box>
           ) : (
-            <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress })}>
+            <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress })}>
               <Box flex flexAlignItems="end">
                 {userEns ? (
                   <UserIdentifier>{userEns}</UserIdentifier>

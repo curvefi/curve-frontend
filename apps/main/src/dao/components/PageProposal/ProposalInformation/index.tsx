@@ -25,9 +25,7 @@ export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink
-          href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: proposer! })}
-        >
+        <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress: proposer! })}>
           {shortenAddress(proposer)}
         </StyledInternalLink>
       </Box>

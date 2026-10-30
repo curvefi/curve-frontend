@@ -67,11 +67,7 @@ export const DetailInfoTradeRouteRoute = ({
               />
             )}
             <RouterLink
-              href={ROUTE.PAGE_POOL({
-                app: 'dex',
-                blockchainId: params.network,
-                poolAddress: route.routeUrlId as Address,
-              })}
+              href={ROUTE.PAGE_POOL({ blockchainId: params.network, poolAddress: route.routeUrlId as Address })}
               target="_blank"
               sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
             >

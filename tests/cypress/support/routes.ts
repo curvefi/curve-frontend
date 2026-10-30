@@ -16,10 +16,7 @@ import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
 const DEFAULT_NETWORK = 'ethereum'
 
-export const CRVUSD_PAGE_MARKETS_ROUTE = `${CRVUSD_ROUTES.PAGE_MARKETS({
-  app: 'crvusd',
-  blockchainId: DEFAULT_NETWORK,
-})}/`.slice(1)
+export const CRVUSD_PAGE_MARKETS_ROUTE = `${CRVUSD_ROUTES.PAGE_MARKETS({ blockchainId: DEFAULT_NETWORK })}/`.slice(1)
 
 export const APP_ROUTES = {
   dex: () =>
@@ -31,31 +28,36 @@ export const APP_ROUTES = {
       DEX_ROUTES.PAGE_COMPENSATION,
       DEX_ROUTES.PAGE_LEGAL,
       DEX_ROUTES.PAGE_INTEGRATIONS,
-    )({ app: 'dex', blockchainId: DEFAULT_NETWORK }).slice(1),
+    )({ blockchainId: DEFAULT_NETWORK }).slice(1),
   lend: () =>
     oneOf(
       // The market list redirects to llamalend, so visit a market instead.
-      oneValueOf(LEND_MARKET_ROUTES)({ app: 'lend', blockchainId: DEFAULT_NETWORK, marketId: WBTC_LEND_POOL }),
-      LEND_ROUTES.PAGE_LEGAL({ app: 'lend', blockchainId: DEFAULT_NETWORK }),
-      LEND_ROUTES.PAGE_INTEGRATIONS({ app: 'lend', blockchainId: DEFAULT_NETWORK }),
+      oneValueOf(LEND_MARKET_ROUTES)({ blockchainId: DEFAULT_NETWORK, marketId: WBTC_LEND_POOL }),
+      LEND_ROUTES.PAGE_LEGAL({ blockchainId: DEFAULT_NETWORK }),
+      LEND_ROUTES.PAGE_INTEGRATIONS({ blockchainId: DEFAULT_NETWORK }),
     ).slice(1),
   crvusd: () =>
     oneOf(
-      CRVUSD_ROUTES.PAGE_MARKET({ app: 'crvusd', blockchainId: DEFAULT_NETWORK, collateralId: 'WBTC' }),
-      CRVUSD_ROUTES.PAGE_CRVUSD_STAKING({ app: 'crvusd', blockchainId: DEFAULT_NETWORK }),
-      CRVUSD_ROUTES.PAGE_PSR({ app: 'crvusd', blockchainId: DEFAULT_NETWORK }),
-      CRVUSD_ROUTES.PAGE_LEGAL({ app: 'crvusd', blockchainId: DEFAULT_NETWORK }),
-      CRVUSD_ROUTES.PAGE_INTEGRATIONS({ app: 'crvusd', blockchainId: DEFAULT_NETWORK }),
+      CRVUSD_ROUTES.PAGE_MARKET({ blockchainId: DEFAULT_NETWORK, collateralId: 'WBTC' }),
+      CRVUSD_ROUTES.PAGE_CRVUSD_STAKING({ blockchainId: DEFAULT_NETWORK }),
+      CRVUSD_ROUTES.PAGE_PSR({ blockchainId: DEFAULT_NETWORK }),
+      CRVUSD_ROUTES.PAGE_LEGAL({ blockchainId: DEFAULT_NETWORK }),
+      CRVUSD_ROUTES.PAGE_INTEGRATIONS({ blockchainId: DEFAULT_NETWORK }),
     ).slice(1),
-  llamalend: () => oneValueOf(LLAMALEND_ROUTES)({ app: 'llamalend', blockchainId: DEFAULT_NETWORK }).slice(1),
+  llamalend: () =>
+    oneOf(
+      LLAMALEND_ROUTES.PAGE_MARKETS,
+      LLAMALEND_ROUTES.PAGE_LEGAL,
+      LLAMALEND_ROUTES.PAGE_INTEGRATIONS,
+    )({ blockchainId: DEFAULT_NETWORK }).slice(1),
   dao: () =>
     oneOf(
-      DAO_ROUTES.PAGE_PROPOSALS({ app: 'dao', blockchainId: DEFAULT_NETWORK }),
-      DAO_ROUTES.PAGE_GAUGES({ app: 'dao', blockchainId: DEFAULT_NETWORK }),
-      DAO_ROUTES.PAGE_VECRV({ app: 'dao', blockchainId: DEFAULT_NETWORK }),
-      DAO_ROUTES.PAGE_ANALYTICS({ app: 'dao', blockchainId: DEFAULT_NETWORK }),
-      DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: DEFAULT_NETWORK, userAddress: oneAddress() }),
-      DAO_ROUTES.PAGE_LEGAL({ app: 'dao', blockchainId: DEFAULT_NETWORK }),
+      DAO_ROUTES.PAGE_PROPOSALS(),
+      DAO_ROUTES.PAGE_GAUGES(),
+      DAO_ROUTES.PAGE_VECRV(),
+      DAO_ROUTES.PAGE_ANALYTICS(),
+      DAO_ROUTES.PAGE_USER({ userAddress: oneAddress() }),
+      DAO_ROUTES.PAGE_LEGAL(),
     ).slice(1),
 }
 
@@ -73,8 +75,8 @@ export const getRouteApp = (route: AppRoute) => route.split('/')[0] as AppName
 export const DEFAULT_PAGES = {
   dex: ['dex', DEX_ROUTES.PAGE_SWAP],
   dao: ['dao', DAO_ROUTES.PAGE_PROPOSALS],
-  crvusd: ['llamalend', CRVUSD_ROUTES.PAGE_MARKETS],
-  lend: ['llamalend', LEND_ROUTES.PAGE_MARKETS],
+  crvusd: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
+  lend: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
   llamalend: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
 } as const
 

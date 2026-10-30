@@ -58,8 +58,6 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
           <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
             <TableDataLink
               href={DAO_ROUTES.PAGE_PROPOSAL({
-                app: 'dao',
-                blockchainId: 'ethereum',
                 proposalId: `${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
               })}
               className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}

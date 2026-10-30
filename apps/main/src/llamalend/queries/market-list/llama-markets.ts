@@ -227,7 +227,7 @@ const convertLendingVault = (
     },
     lendingPosition,
     type: marketType,
-    url: LEND_MARKET_ROUTES.PAGE_LOAN({ app: 'lend', blockchainId, marketId: controller }),
+    url: LEND_MARKET_ROUTES.PAGE_LOAN({ blockchainId, marketId: controller }),
     deprecatedMessage:
       DEPRECATED_LLAMAS[marketType][blockchainId]?.[controller]?.message ??
       lowSolvencyDeprecatedMessage(solvencyPercent),
@@ -361,7 +361,7 @@ const convertMintMarket = (
     },
     type: marketType,
     deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[address]?.message ?? null,
-    url: CRVUSD_ROUTES.PAGE_MARKET({ app: 'crvusd', blockchainId: chain, collateralId: name }),
+    url: CRVUSD_ROUTES.PAGE_MARKET({ blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
     leverage,

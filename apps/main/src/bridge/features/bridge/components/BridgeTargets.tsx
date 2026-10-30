@@ -136,9 +136,7 @@ export const BridgeTargets = ({
         {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
-          options={createChainOptions(networks, blockchainId =>
-            BRIDGE_ROUTES.PAGE_BRIDGES({ app: 'bridge', blockchainId }),
-          )}
+          options={createChainOptions(networks, blockchainId => BRIDGE_ROUTES.PAGE_BRIDGES({ blockchainId }))}
           selectedNetworkId={getCurrentNetwork(usePathname())}
           tvls={tvls}
           onNetwork={chainId => {

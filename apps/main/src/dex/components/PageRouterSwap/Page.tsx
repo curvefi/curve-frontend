@@ -58,7 +58,7 @@ export const PageRouterSwap = () => {
   useEffect(() => {
     if (!isConnecting && chainId && hasRouter != null) {
       if (!hasRouter) {
-        push(ROUTE.PAGE_POOLS({ app: 'dex', blockchainId: props.network }))
+        push(ROUTE.PAGE_POOLS({ blockchainId: props.network }))
         return
       }
 

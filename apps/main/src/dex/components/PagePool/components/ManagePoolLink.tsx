@@ -23,7 +23,7 @@ export const ManagePoolLink = ({ chainId, poolAddress }: { chainId: number; pool
     hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
       <Button
         component={RouterLink}
-        href={DEX_ROUTES.PAGE_MANAGE_POOL({ app: 'dex', blockchainId, poolAddress })}
+        href={DEX_ROUTES.PAGE_MANAGE_POOL({ blockchainId, poolAddress })}
         variant="inline"
         color="ghost"
         sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}

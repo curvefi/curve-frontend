@@ -2,11 +2,7 @@ import { DEX_ROUTES } from '@evm-ui/shared/routes'
 
 export const LARGE_RATE = 5000
 
-const MAIN_ROUTE = {
-  ...DEX_ROUTES,
-  PAGE_LOCKER: '/locker',
-  PAGE_404: '/404',
-}
+const MAIN_ROUTE = { ...DEX_ROUTES, PAGE_LOCKER: '/locker', PAGE_404: '/404' }
 
 export const ROUTE = {
   ...MAIN_ROUTE,

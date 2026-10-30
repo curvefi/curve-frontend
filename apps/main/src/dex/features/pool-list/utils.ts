@@ -45,7 +45,7 @@ export const enrichPoolRow = (
     blockchainId,
     campaigns,
     hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
-    url: DEX_ROUTES.PAGE_POOL({ app: 'dex', blockchainId, poolAddress: pool.address }),
+    url: DEX_ROUTES.PAGE_POOL({ blockchainId, poolAddress: pool.address }),
     userPosition,
   }
 }

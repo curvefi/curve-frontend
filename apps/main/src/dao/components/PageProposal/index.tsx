@@ -86,10 +86,7 @@ export const Proposal = () => {
 
   return (
     <DetailPageLayout formTabs={null}>
-      <BackButton
-        path={DAO_ROUTES.PAGE_PROPOSALS({ app: 'dao', blockchainId: 'ethereum' })}
-        label={t`Back to proposals`}
-      />
+      <BackButton path={DAO_ROUTES.PAGE_PROPOSALS()} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">

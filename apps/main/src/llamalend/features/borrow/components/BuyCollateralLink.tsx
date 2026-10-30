@@ -35,8 +35,8 @@ export const BuyCollateralLink = ({
         <ExternalLink
           href={
             poolAddress
-              ? DEX_ROUTES.PAGE_POOL({ app: 'dex', blockchainId, poolAddress })
-              : DEX_ROUTES.PAGE_SWAP({ app: 'dex', blockchainId, to: token.address })
+              ? DEX_ROUTES.PAGE_POOL({ blockchainId, poolAddress })
+              : DEX_ROUTES.PAGE_SWAP({ blockchainId, to: token.address })
           }
           label={t`Get ${token.symbol}`}
           fullWidth

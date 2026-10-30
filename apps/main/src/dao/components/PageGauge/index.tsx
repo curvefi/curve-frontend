@@ -26,7 +26,7 @@ export const Gauge = () => {
 
   return (
     <DetailPageLayout formTabs={null}>
-      <BackButton path={DAO_ROUTES.PAGE_GAUGES({ app: 'dao', blockchainId: 'ethereum' })} label={t`Back to gauges`} />
+      <BackButton path={DAO_ROUTES.PAGE_GAUGES()} label={t`Back to gauges`} />
       <Stack sx={{ gap: PAGE_SPACING, backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />

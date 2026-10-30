@@ -72,7 +72,7 @@ export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTable
             {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
           <TableDataLink
-            href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: gaugeVote.user as Address })}
+            href={DAO_ROUTES.PAGE_USER({ userAddress: gaugeVote.user as Address })}
             className="right-padding"
           >
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]

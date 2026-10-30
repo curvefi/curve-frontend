@@ -26,7 +26,7 @@ export const AddGaugeLink = () => {
   const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
 
   const params = useParams<PoolAddressParams>()
-  const deployGaugePath = DEX_ROUTES.PAGE_DEPLOY_GAUGE({ app: 'dex', blockchainId: params.network })
+  const deployGaugePath = DEX_ROUTES.PAGE_DEPLOY_GAUGE({ blockchainId: params.network })
 
   const handleClick = () => {
     if (!pool || !tokens) return

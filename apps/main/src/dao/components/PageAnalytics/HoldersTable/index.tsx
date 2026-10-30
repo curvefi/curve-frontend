@@ -67,7 +67,7 @@ export const TopHoldersTable = () => {
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
             <StyledTableDataLink
               className="align-left"
-              href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: holder.user as Address })}
+              href={DAO_ROUTES.PAGE_USER({ userAddress: holder.user as Address })}
             >
               <span>{index + 1}.</span>
               <span style={{ textDecoration: 'underline' }}>{formatHolderName(holder.user)}</span>

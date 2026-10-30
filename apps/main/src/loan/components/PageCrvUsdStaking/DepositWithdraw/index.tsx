@@ -14,7 +14,7 @@ const ScrvUsdMenu = [
     value: 'swap',
     label: t`Swap`,
     href: ({ network }: NetworkUrlParams) =>
-      DEX_ROUTES.PAGE_SWAP({ app: 'dex', blockchainId: network, from: CRVUSD_ADDRESS, to: SCRVUSD_VAULT_ADDRESS }),
+      DEX_ROUTES.PAGE_SWAP({ blockchainId: network, from: CRVUSD_ADDRESS, to: SCRVUSD_VAULT_ADDRESS }),
   },
 ] satisfies FormTab<NetworkUrlParams>[]
 

@@ -110,8 +110,6 @@ export const GaugeListItem = ({
             </ExternalLinkIconButton>
             <InternalLinkButton
               to={DAO_ROUTES.PAGE_GAUGE({
-                app: 'dao',
-                blockchainId: 'ethereum',
                 gaugeAddress: (gaugeData.effective_address ?? gaugeData.address) as Address,
               })}
             >

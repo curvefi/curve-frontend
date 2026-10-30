@@ -49,9 +49,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
               <DataRow key={`${vote.txHash}-${vote.supports}`}>
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
                   <VoteMarker supports={vote.supports} />
-                  <StyledInternalLink
-                    href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: vote.voter })}
-                  >
+                  <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress: vote.voter })}>
                     {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>

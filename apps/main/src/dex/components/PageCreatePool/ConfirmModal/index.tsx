@@ -164,11 +164,7 @@ export const ConfirmModal = ({
                         <SuccessInfo>{t`Visit the new pool to deposit liquidity.`}</SuccessInfo>
                         <StyledLinkButtonWrapper>
                           <MuiButton
-                            href={ROUTE.PAGE_POOL({
-                              app: 'dex',
-                              blockchainId: params.network,
-                              poolAddress: poolId as Address,
-                            })}
+                            href={ROUTE.PAGE_POOL({ blockchainId: params.network, poolAddress: poolId as Address })}
                             component={RouterLink}
                             onClick={() => resetState()}
                           >

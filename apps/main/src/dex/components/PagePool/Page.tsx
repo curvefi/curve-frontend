@@ -46,7 +46,7 @@ export const PagePool = () => {
           t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`,
           t`If you believe this pool has been incorrectly flagged, contact us.`,
         ]}
-        navUrl={ROUTE.PAGE_POOLS({ app: 'dex', blockchainId: props.network })}
+        navUrl={ROUTE.PAGE_POOLS({ blockchainId: props.network })}
         navTitle={t`Go back to pools`}
         contactUrl={CURVE_SOCIALS.telegram.en}
         contactTitle={t`Contact us`}
@@ -60,7 +60,7 @@ export const PagePool = () => {
         title={pool.error ? t`Error` : '404'}
         subtitle={pool.error?.message ?? t`Pool Not Found`}
         error={pool.error}
-        continueUrl={ROUTE.PAGE_POOLS({ app: 'dex', blockchainId: props.network })}
+        continueUrl={ROUTE.PAGE_POOLS({ blockchainId: props.network })}
         userAddress={curveApi?.signerAddress}
       />
     )

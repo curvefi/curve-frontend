@@ -58,7 +58,7 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <WithWrapper shouldWrap={isNewLlamaMarketDetailPage} Wrapper={Stack}>
       <PageHeader
-        backHref={LLAMALEND_ROUTES.PAGE_MARKETS({ app: 'llamalend', blockchainId })}
+        backHref={LLAMALEND_ROUTES.PAGE_MARKETS({ blockchainId })}
         title={title}
         subtitle={subtitle}
         titleLoading={isLoading}

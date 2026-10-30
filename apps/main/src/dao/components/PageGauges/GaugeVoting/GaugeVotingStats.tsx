@@ -37,9 +37,7 @@ export const GaugeVotingStats = () => {
           loading={userGaugeWeightsLoading}
           title="User"
           data={
-            <StyledInternalLink
-              href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: userAddress! })}
-            >
+            <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress: userAddress! })}>
               <MetricsColumnData>{userEns ?? shortenAddress(userAddress)}</MetricsColumnData>
             </StyledInternalLink>
           }
