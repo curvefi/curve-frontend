@@ -10,11 +10,9 @@ import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { fromEntries, maybe, maybes, recordEntries } from '@primitives/objects.utils'
+import { maybe, maybes, recordEntries } from '@primitives/objects.utils'
 import { useFormContext } from '@ui/features/forms'
-import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
-import { q } from '@ui/features/queries/util'
+import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { useSwitch } from '@ui/hooks/useSwitch'
@@ -34,8 +32,6 @@ export const AmountTokenInput = ({
 }) => {
   const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
   const { rewardTokenId, amount } = values
-  const { amount: amountError, rewardTokenId: rewardTokenIdError } = fromEntries(formState.visibleErrors)
-  const error = amountError ?? rewardTokenIdError
 
   const [isOpen, openModal, closeModal] = useSwitch()
 
@@ -89,10 +85,11 @@ export const AmountTokenInput = ({
   )
 
   return (
-    <LargeTokenInput
+    <FormTokenInput
+      form={{ values, formState }}
       name="amount"
+      relatedFields={['rewardTokenId']}
       label={t`Amount to deposit`}
-      balance={q({ data: decimal(amount), isLoading: false, error: amountError ? Error(amountError) : null })}
       onBalance={useCallback(amount => updateForm({ amount }), [updateForm])}
       walletBalance={
         userAddress && {
@@ -103,7 +100,7 @@ export const AmountTokenInput = ({
           buttonTestId: 'max',
         }
       }
-      maxBalance={{ balance: rewardTokenBalance, chips: 'max' }}
+      max={rewardTokenBalance && { balance: rewardTokenBalance }}
       inputBalanceUsd={maybes([amount, decimal(tokenUsdRate?.data)], decimalMultiply)}
       disabled={disabled}
       testId="deposit-amount"
@@ -125,8 +122,6 @@ export const AmountTokenInput = ({
           </TokenSelector>
         )
       }
-    >
-      {error && <HelperMessage message={error} isError />}
-    </LargeTokenInput>
+    />
   )
 }

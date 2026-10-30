@@ -1,38 +1,52 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import type { FieldPathByValue, FieldValues, UseFormReturn } from '@ui/features/forms'
+import { notFalsyArray } from '@primitives/objects.utils'
+import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui/features/forms'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
-// TODO: Reuse in LoanFormTokenInput, SwapTokenInput, RefuelForm and deposit-gauge-reward/AmountTokenInput;
-// preserve their wallet queries, related-field errors and calculated-input loading states.
+/**
+ * Binds a token input to a form value, using balance query loading/error state and an optional maximum.
+ * Touched-field errors take precedence over query errors, which take precedence over the helper message.
+ * Related-field errors appear when either the input or the related field is touched, unless ignoreTouched is set.
+ */
 export const FormTokenInput = <TValues extends FieldValues>({
   form: {
     values,
     formState: { errors, touchedFields },
   },
   name,
+  relatedFields,
   max,
-  maxField,
-  onMax,
-  error: queryError,
+  balance,
+  message,
   ...props
-}: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance' | 'message'> & {
-  form: UseFormReturn<TValues>
+}: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
+  form: Pick<UseFormReturn<TValues>, 'values' | 'formState'>
   name: FieldPathByValue<TValues, Decimal | undefined>
-  max?: QueryProp<Decimal>
-  maxField?: FieldPathByValue<TValues, Decimal | undefined>
-  onMax?: (amount: Decimal | undefined) => void
-  error?: Error | null
+  relatedFields?: (FieldPath<TValues> | { field: FieldPath<TValues>[]; ignoreTouched: boolean })[]
+  max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
+  balance?: QueryProp<Decimal>
 }) => {
-  const fieldError = name in touchedFields ? (errors[name] ?? (maxField ? errors[maxField] : undefined)) : undefined
-  const error = fieldError ?? queryError ?? max?.error
+  const error =
+    notFalsyArray([name], relatedFields)
+      .map(f =>
+        typeof f === 'string'
+          ? (name in touchedFields || f in touchedFields) && errors[f]
+          : f.field
+              .map(field => (f.ignoreTouched || name in touchedFields || field in touchedFields) && errors[field])
+              .find(Boolean),
+      )
+      .find(error => !!error) ??
+    balance?.error ??
+    max?.balance.error ??
+    null
   return (
     <LargeTokenInput
       {...props}
       name={name}
-      balance={q({ data: values[name], error: error ?? null, isLoading: false })}
-      maxBalance={max && { balance: max, chips: 'max', onMax }}
-      message={error?.message}
+      balance={q({ data: values[name], error, isLoading: balance?.isLoading ?? false })}
+      maxBalance={max && { balance: max.balance, chips: max.chips ?? 'max', onMax: max.onMax }}
+      message={error?.message ?? message}
     />
   )
 }

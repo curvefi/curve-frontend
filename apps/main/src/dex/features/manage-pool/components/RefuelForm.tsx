@@ -2,13 +2,10 @@ import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { EvmFormButton } from '@evm-ui/features/forms/EvmFormButton'
 import Stack from '@mui/material/Stack'
-import { maybe } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { Form } from '@ui/features/forms/components/Form'
-import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
-import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
+import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
-import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -43,9 +40,9 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
       }
     >
       <Stack sx={{ gap: Spacing.sm }}>
-        <LargeTokenInput
+        <FormTokenInput
+          form={form}
           name="tokenAAmount"
-          balance={q({ data: values.tokenAAmount, isLoading: false, error: maybe(tokenA.amountError, Error) ?? null })}
           onBalance={tokenAAmount => form.update({ tokenAAmount })}
           walletBalance={tokenA}
           inputBalanceUsd={decimal(
@@ -59,19 +56,11 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
               tooltip={tokenA.symbol}
             />
           }
-        >
-          {tokenA.amountError && (
-            <HelperMessage
-              message={tokenA.amountError}
-              onNumberClick={tokenAAmount => form.update({ tokenAAmount })}
-              isError
-            />
-          )}
-        </LargeTokenInput>
+        />
 
-        <LargeTokenInput
+        <FormTokenInput
+          form={form}
           name="tokenBAmount"
-          balance={q({ data: values.tokenBAmount, isLoading: false, error: maybe(tokenB.amountError, Error) ?? null })}
           onBalance={tokenBAmount => form.update({ tokenBAmount })}
           walletBalance={tokenB}
           inputBalanceUsd={decimal(
@@ -85,15 +74,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
               tooltip={tokenB.symbol}
             />
           }
-        >
-          {tokenB.amountError && (
-            <HelperMessage
-              message={tokenB.amountError}
-              onNumberClick={tokenBAmount => form.update({ tokenBAmount })}
-              isError
-            />
-          )}
-        </LargeTokenInput>
+        />
       </Stack>
 
       <EvmFormButton
