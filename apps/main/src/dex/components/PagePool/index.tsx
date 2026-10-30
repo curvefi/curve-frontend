@@ -38,7 +38,7 @@ import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
-import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { MAINNET_CRV } from '@evm-ui/utils/address'
 import Stack from '@mui/material/Stack'
 import { zip } from '@primitives/array.utils'
@@ -208,7 +208,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       <DetailPageLayout
         header={
           <PoolDetailsHeader
-            backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
+            backHref={DEX_ROUTES.PAGE_POOLS({ app: 'dex', blockchainId })}
             title={mapQuery(pool, pool => pool.name)}
             tokens={
               combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>

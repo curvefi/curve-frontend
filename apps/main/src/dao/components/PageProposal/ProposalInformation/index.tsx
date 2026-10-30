@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils/address'
 import { Box } from '@legacy-ui/Box'
@@ -14,6 +13,7 @@ import { TIME_FRAMES } from '@ui/lib/time'
 type ProposalInformationProps = { proposal: ProposalData | null }
 
 export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
+  const proposer = proposal?.proposer
   const timestamp = proposal?.timestamp
   const [createdDate, endDate] = useMemo(
     () =>
@@ -25,8 +25,10 @@ export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.proposer}`)}>
-          {shortenAddress(proposal?.proposer)}
+        <StyledInternalLink
+          href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: proposer! })}
+        >
+          {shortenAddress(proposer)}
         </StyledInternalLink>
       </Box>
       <Box>

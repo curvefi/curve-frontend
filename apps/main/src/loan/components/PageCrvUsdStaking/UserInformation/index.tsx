@@ -1,5 +1,5 @@
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -38,7 +38,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           </Typography>
           <Typography variant="bodyMRegular">
             {t`We recommend using Curve's`}{' '}
-            <RouterLink href={getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}>swap</RouterLink>
+            <RouterLink href={DEX_ROUTES.PAGE_SWAP({ app: 'dex', blockchainId: network })}>swap</RouterLink>
             {t`, or alternatively an aggregator like`}{' '}
             <Link href="https://swap.cow.fi/#/1/swap/WETH/scrvUSD">Cowswap</Link>.
           </Typography>

@@ -3,7 +3,6 @@ import { styled } from 'styled-components'
 import { useConnection, useEnsName } from 'wagmi'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
@@ -60,7 +59,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
               {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
             </Box>
           ) : (
-            <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
+            <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress })}>
               <Box flex flexAlignItems="end">
                 {userEns ? (
                   <UserIdentifier>{userEns}</UserIdentifier>

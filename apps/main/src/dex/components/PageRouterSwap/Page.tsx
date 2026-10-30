@@ -5,7 +5,6 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { getToken, useTokens } from '@/dex/queries/tokens.query'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -59,7 +58,7 @@ export const PageRouterSwap = () => {
   useEffect(() => {
     if (!isConnecting && chainId && hasRouter != null) {
       if (!hasRouter) {
-        push(getPath(props, `${ROUTE.PAGE_POOLS}`))
+        push(ROUTE.PAGE_POOLS({ app: 'dex', blockchainId: props.network }))
         return
       }
 

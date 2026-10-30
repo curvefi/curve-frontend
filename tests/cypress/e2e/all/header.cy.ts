@@ -9,7 +9,6 @@ import {
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
-import { LEND_ROUTES } from '@evm-ui/shared/routes'
 import { TIME_FRAMES } from '@ui/lib/time'
 
 const BORDER = 1
@@ -263,6 +262,6 @@ describe('Header', () => {
 
   function isLendMarketDetailRoute(route: AppRoute) {
     const [app, , page, marketId] = route.split('/')
-    return app === 'lend' && page === LEND_ROUTES.PAGE_MARKETS.replace(/^\//, '') && !!marketId
+    return app === 'lend' && page === 'markets' && !!marketId
   }
 })

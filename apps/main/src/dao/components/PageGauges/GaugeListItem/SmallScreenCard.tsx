@@ -101,7 +101,11 @@ export const SmallScreenCard = ({
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap="var(--spacing-3)" flexAlignItems="center" margin="var(--spacing-2) auto">
             <InternalLinkButton
-              to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}
+              to={DAO_ROUTES.PAGE_GAUGE({
+                app: 'dao',
+                blockchainId: 'ethereum',
+                gaugeAddress: gaugeData.effective_address as Address,
+              })}
             >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>

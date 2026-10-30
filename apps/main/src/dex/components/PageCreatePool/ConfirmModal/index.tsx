@@ -13,13 +13,13 @@ import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import { ROUTE } from '@/dex/constants'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { ModalPendingTx } from '@legacy-ui/ModalPendingTx'
 import { Spinner } from '@legacy-ui/Spinner/Spinner'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import MuiButton from '@mui/material/Button'
+import type { Address } from '@primitives/address.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { useParams } from '@ui/hooks/router'
 import { CheckedIcon } from '@ui/icons/CheckedIcon'
@@ -164,7 +164,11 @@ export const ConfirmModal = ({
                         <SuccessInfo>{t`Visit the new pool to deposit liquidity.`}</SuccessInfo>
                         <StyledLinkButtonWrapper>
                           <MuiButton
-                            href={getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}`)}
+                            href={ROUTE.PAGE_POOL({
+                              app: 'dex',
+                              blockchainId: params.network,
+                              poolAddress: poolId as Address,
+                            })}
                             component={RouterLink}
                             onClick={() => resetState()}
                           >

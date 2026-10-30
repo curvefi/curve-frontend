@@ -11,9 +11,9 @@ import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'
@@ -37,8 +37,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
   const deployGauge = useStore(state => state.deployGauge.deployGauge)
   const { connectState, connect: connectWallet } = useWallet()
   const isLoadingApi = !pageLoaded
-  const restFullPathname = useRestFullPathname()
-  const connectEthPath = getPath({ network: 'ethereum' }, `/${restFullPathname}`)
+  const connectEthPath = DEX_ROUTES.PAGE_DEPLOY_GAUGE({ app: 'dex', blockchainId: 'ethereum' })
 
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const handleClick = async () => {

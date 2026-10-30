@@ -4,9 +4,9 @@ import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/Pagi
 import { TOP_HOLDERS } from '@/dao/constants'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { formatDate } from '@primitives/date.utils'
 import { t } from '@ui/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
@@ -71,7 +71,10 @@ export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTable
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
             {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
-          <TableDataLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`)} className="right-padding">
+          <TableDataLink
+            href={DAO_ROUTES.PAGE_USER({ app: 'dao', blockchainId: 'ethereum', userAddress: gaugeVote.user as Address })}
+            className="right-padding"
+          >
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
               : shortenAddress(gaugeVote.user)}

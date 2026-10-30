@@ -11,7 +11,7 @@ import {
 } from '@/llamalend/llama.utils'
 import { computeTotalRate, getSupplyApyMetrics, sumCampaignsApr, sumCampaignsApy } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
-import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@evm-ui/shared/routes'
+import { CRVUSD_ROUTES, LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -227,7 +227,7 @@ const convertLendingVault = (
     },
     lendingPosition,
     type: marketType,
-    url: getInternalUrl('lend', blockchainId, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
+    url: LEND_MARKET_ROUTES.PAGE_LOAN({ app: 'lend', blockchainId, marketId: controller }),
     deprecatedMessage:
       DEPRECATED_LLAMAS[marketType][blockchainId]?.[controller]?.message ??
       lowSolvencyDeprecatedMessage(solvencyPercent),
@@ -361,7 +361,7 @@ const convertMintMarket = (
     },
     type: marketType,
     deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[address]?.message ?? null,
-    url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
+    url: CRVUSD_ROUTES.PAGE_MARKET({ app: 'crvusd', blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
     leverage,

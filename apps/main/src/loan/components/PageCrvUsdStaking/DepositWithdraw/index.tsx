@@ -1,6 +1,6 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { t } from '@ui/lib/i18n'
@@ -14,7 +14,7 @@ const ScrvUsdMenu = [
     value: 'swap',
     label: t`Swap`,
     href: ({ network }: NetworkUrlParams) =>
-      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
+      DEX_ROUTES.PAGE_SWAP({ app: 'dex', blockchainId: network, from: CRVUSD_ADDRESS, to: SCRVUSD_VAULT_ADDRESS }),
   },
 ] satisfies FormTab<NetworkUrlParams>[]
 

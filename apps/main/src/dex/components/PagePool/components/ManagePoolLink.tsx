@@ -1,8 +1,7 @@
-import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
-import { getInternalUrl } from '@evm-ui/shared/routes'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import Button from '@mui/material/Button'
 import type { Address } from '@primitives/address.utils'
 import { RouterLink } from '@ui/components/RouterLink'
@@ -24,7 +23,7 @@ export const ManagePoolLink = ({ chainId, poolAddress }: { chainId: number; pool
     hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
       <Button
         component={RouterLink}
-        href={getInternalUrl('dex', blockchainId, `${ROUTE.PAGE_POOLS}/${poolAddress}/manage-pool`)}
+        href={DEX_ROUTES.PAGE_MANAGE_POOL({ app: 'dex', blockchainId, poolAddress })}
         variant="inline"
         color="ghost"
         sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}

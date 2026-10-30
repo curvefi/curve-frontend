@@ -3,8 +3,9 @@ import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { APP_LINK } from '@evm-ui/shared/routes'
+import { APP_LINK, type NavigationItem } from '@evm-ui/shared/routes'
 import { type NetworkDef } from '@legacy-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
@@ -40,16 +41,21 @@ export function useDexRoutes({ chainId }: NetworkDef) {
       ...(HIDE_ROUTER_SWAP.includes(chainId)
         ? []
         : network
-          ? [{ app: 'dex' as const, route: _createSwapPath(network.swap), label: () => t`Swap` }]
+          ? [
+              {
+                app: 'dex',
+                route: params =>
+                  ROUTE.PAGE_SWAP({
+                    ...params,
+                    from: network.swap?.fromAddress as Address,
+                    to: network.swap?.toAddress as Address,
+                  }),
+                label: () => t`Swap`,
+              } satisfies NavigationItem,
+            ]
           : [swapRoute]),
       ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
     ],
     [chainId, network],
   )
-}
-
-function _createSwapPath(routerDefault?: Record<string, string>) {
-  const from = routerDefault?.fromAddress
-  const to = routerDefault?.toAddress
-  return `${ROUTE.PAGE_SWAP}/${from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''}`
 }

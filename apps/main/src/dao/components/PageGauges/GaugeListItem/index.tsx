@@ -108,7 +108,13 @@ export const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address ?? gaugeData.address}`}>
+            <InternalLinkButton
+              to={DAO_ROUTES.PAGE_GAUGE({
+                app: 'dao',
+                blockchainId: 'ethereum',
+                gaugeAddress: (gaugeData.effective_address ?? gaugeData.address) as Address,
+              })}
+            >
               {t`VISIT GAUGE`}
             </InternalLinkButton>
           </Box>

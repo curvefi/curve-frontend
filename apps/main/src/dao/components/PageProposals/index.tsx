@@ -5,7 +5,6 @@ import {
   type ProposalData,
   useProposalsMapperQuery,
 } from '@/dao/entities/proposals-mapper'
-import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Stack from '@mui/material/Stack'
@@ -91,7 +90,7 @@ export const Proposals = () => {
 
   const push = useNavigate()
   const handleProposalClick = useCallback(
-    (proposalId: string) => push(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${proposalId}`)),
+    (proposalId: string) => push(DAO_ROUTES.PAGE_PROPOSAL({ app: 'dao', blockchainId: 'ethereum', proposalId })),
     [push],
   )
 

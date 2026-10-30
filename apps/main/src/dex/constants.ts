@@ -4,10 +4,7 @@ export const LARGE_RATE = 5000
 
 const MAIN_ROUTE = {
   ...DEX_ROUTES,
-  PAGE_DEPLOY_GAUGE: '/deploy-gauge',
   PAGE_LOCKER: '/locker',
-  PAGE_INTEGRATIONS: '/integrations',
-  PAGE_COMPENSATION: '/compensation',
   PAGE_404: '/404',
 }
 
