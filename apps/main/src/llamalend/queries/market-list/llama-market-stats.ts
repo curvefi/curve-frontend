@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
-import { getPositionPnlAndRoe, type PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
+import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
@@ -62,7 +62,9 @@ type UserPositionQueries = {
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
   /** Equity in USD, at the borrowed token's USD rate */
   equityUsd: QueryProp<number>
-  pnl: QueryProp<PositionPnlAndRoe>
+  pnl: QueryProp<PositionPnlAndRoi>
+  /** PNL in the debt token, in USD at the borrowed token's USD rate */
+  pnlUsd: QueryProp<number>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
@@ -70,6 +72,7 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
   equityUsd: DISABLED_Q,
   pnl: DISABLED_Q,
+  pnlUsd: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -158,6 +161,13 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
         collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
       }
+      const pnl = combineQueries(
+        [stats, capitalByMarket.get(market) ?? DISABLED_Q],
+        ({ equity, oraclePrice }, capital) =>
+          maybes([equity, oraclePrice], (equity, oraclePrice) =>
+            getPositionPnlAndRoi({ equity, oraclePrice, capital }),
+          ),
+      )
       return {
         ...market,
         positionQueries: {
@@ -166,10 +176,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
           equityUsd: combineQueries([stats, prices.borrowed], ({ equity }, rate) =>
             maybe(equity, equity => Number(equity) * rate),
           ),
-          pnl: combineQueries([stats, capitalByMarket.get(market) ?? DISABLED_Q], ({ equity, oraclePrice }, capital) =>
-            maybes([equity, oraclePrice], (equity, oraclePrice) =>
-              getPositionPnlAndRoe({ equity, oraclePrice, capital }),
-            ),
+          pnl,
+          pnlUsd: combineQueries([pnl, prices.borrowed], (pnl, rate) =>
+            maybe(pnl, ({ debt }) => Number(debt.pnl) * rate),
           ),
         },
       }

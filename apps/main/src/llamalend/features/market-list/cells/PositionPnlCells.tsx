@@ -1,10 +1,9 @@
-import { formatSigned } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { DebtPnlTooltipContent } from '@/llamalend/widgets/tooltips/DebtPnlTooltipContent'
+import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -33,32 +32,31 @@ export const EquityCell = ({ row }: PositionCellProps) => {
   )
 }
 
-/** PNL of the borrow position in the collateral token, with the ROE below it and the debt-token PNL on hover */
-export const PnlCell = ({ getValue, row }: PositionCellProps) => {
+/** PNL of the borrow position in USD (debt-token PNL at its USD rate), with its ROI below it and the PNL per token on hover */
+export const PnlCell = ({ row }: PositionCellProps) => {
   const { positionQueries, assets } = row.original
-  const { data: pnl, isLoading, error } = positionQueries.pnl
-  const roe = getValue()
+  const { data: pnlUsd, isLoading, error } = positionQueries.pnlUsd
+  const pnl = positionQueries.pnl.data
+  const roi = maybe(pnl?.debt.roi, Number)
   return error ? (
     <ErrorCell error={error} />
   ) : (
     <WithSkeleton loading={isLoading} {...skeletonProps}>
       <Tooltip
-        title={pnl && t`PNL (ROE %)`}
-        body={maybe(pnl, ({ debt }) => (
-          <DebtPnlTooltipContent pnl={debt} symbol={assets.borrowed.symbol} />
+        title={pnl && t`PNL (ROI %)`}
+        body={maybe(pnl, ({ collateral, debt }) => (
+          <TokenPnlTooltipContent
+            debt={{ pnl: debt, symbol: assets.borrowed.symbol }}
+            collateral={maybe(collateral, pnl => ({ pnl, symbol: assets.collateral.symbol }))}
+          />
         ))}
         placement="top"
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography variant="tableCellValueStrong">
-            {maybe(
-              pnl?.collateral?.pnl,
-              value => `${formatSigned(value, 'token.amount')} ${assets.collateral.symbol}`,
-            ) ?? UNAVAILABLE_NOTATION}
-          </Typography>
-          {maybe(roe, roe => (
-            <Typography variant="tableCellSupport" color={getChangeColor(roe, 'success', 'error')}>
-              {formatSigned(roe, 'percent.value')}
+          <Typography variant="tableCellValueStrong">{formatNumber(pnlUsd, 'usd.delta')}</Typography>
+          {maybe(roi, roi => (
+            <Typography variant="tableCellSupport" color={getChangeColor(roi, 'success', 'error')}>
+              {formatNumber(roi, 'percent.delta')}
             </Typography>
           ))}
         </Stack>

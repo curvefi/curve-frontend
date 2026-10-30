@@ -2,7 +2,7 @@ import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { usePositionCapital } from '@/llamalend/features/user-position-history/queries/position-capital'
 import { isZapV0MintMarket } from '@/llamalend/llama.utils'
-import { getPositionPnlAndRoe, type PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
+import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
@@ -11,7 +11,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, type QueryProp } from '@ui/features/queries/util'
 
-export type PositionPnlAndEquityQueries = { equity: QueryProp<Decimal>; pnl: QueryProp<PositionPnlAndRoe | null> }
+export type PositionPnlAndEquityQueries = { equity: QueryProp<Decimal>; pnl: QueryProp<PositionPnlAndRoi | null> }
 
 /** Equity and PNL of the open borrow position */
 export function usePositionPnlAndEquity(params: UserMarketParams): PositionPnlAndEquityQueries | null {
@@ -30,7 +30,7 @@ export function usePositionPnlAndEquity(params: UserMarketParams): PositionPnlAn
   // A disabled query still selects the events another query loaded, like the activity history
   const pnl = isPnlEnabled
     ? combineQueries([equity, oraclePrice, capital], (equity, oraclePrice, capital) =>
-        getPositionPnlAndRoe({ equity, oraclePrice, capital }),
+        getPositionPnlAndRoi({ equity, oraclePrice, capital }),
       )
     : DISABLED_Q
   return isEnabled ? { equity, pnl } : null

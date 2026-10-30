@@ -169,7 +169,7 @@ export const getMarketCampaigns = (
 
 /**
  * Yields from the latest snapshot and the borrow campaign rewards of a market.
- * No collateral yield means no est. leveraged APR; no borrowed-token yield or no campaign counts as 0%.
+ * No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%.
  */
 export const getMarketYields = (
   snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
