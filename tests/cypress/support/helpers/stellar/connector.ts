@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
+/* eslint-disable no-restricted-syntax -- Single SDK boundary for Stellar test wallet signing and fixture deployment. */
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { StellarFetchRetry } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'

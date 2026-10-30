@@ -233,8 +233,8 @@ const config = [
   // Override (replaces legacy `overrides`)
   {
     files: ['apps/**', 'packages/**'],
-    ignores: ['packages/evm-ui/src/features/forms/**'],
-    rules: { 'import-x/no-internal-modules': ['error', { forbid: ['wagmi', 'wagmi/**'] }] },
+    ignores: ['packages/evm-ui/src/features/forms/**', 'packages/ui/src/features/forms/**'],
+    rules: { 'import-x/no-internal-modules': ['error', { forbid: ['react-hook-form', 'react-hook-form/**'] }] },
   },
   {
     ignores: ['apps/stellar/src/features/connect-wallet/stellar-wallet-kit/**'],
