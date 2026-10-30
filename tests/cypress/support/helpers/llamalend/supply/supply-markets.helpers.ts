@@ -52,8 +52,10 @@ const CONTROLLER_V2_ABI = parseAbi([
   'function available_balance() view returns (uint256)',
   'function admin_fees() view returns (uint256)',
 ])
+// The view getter returns 0 for weeks not checkpointed yet, the write version checkpoints first.
+// It's declared view so it's simulated with eth_call and batched like the other reads.
 const GAUGE_CONTROLLER_ABI = parseAbi([
-  'function gauge_relative_weight(address addr, uint256 time) view returns (uint256)',
+  'function gauge_relative_weight_write(address addr, uint256 time) view returns (uint256)',
 ])
 const WEEK = 7n * 24n * 60n * 60n
 
@@ -117,7 +119,7 @@ const hasCrvEmissions = async (client: PublicClient, gaugeAddress: Address, time
       client.readContract({
         address: GAUGE_CONTROLLER,
         abi: GAUGE_CONTROLLER_ABI,
-        functionName: 'gauge_relative_weight',
+        functionName: 'gauge_relative_weight_write',
         args: [gaugeAddress, time],
       }),
     ),
