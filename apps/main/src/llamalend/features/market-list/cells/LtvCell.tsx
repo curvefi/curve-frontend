@@ -10,10 +10,10 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
 export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
-  const { stats, prices } = row.original.positionQueries
+  const { stats } = row.original.positionQueries
   const ltv = getValue()
 
-  if (stats.isLoading || prices.borrowed.isLoading || prices.collateral.isLoading) {
+  if (stats.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'end' }}>
         <Typography variant="tableCellValue" sx={{ textAlign: 'right' }}>
@@ -23,7 +23,7 @@ export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, Llama
     )
   }
 
-  if (!ltv || stats.error || prices.borrowed.error || prices.collateral.error) {
+  if (!ltv || stats.error) {
     return (
       <Typography variant="tableCellValue" color="textSecondary" sx={{ textAlign: 'right' }}>
         -

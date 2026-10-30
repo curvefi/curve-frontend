@@ -1,8 +1,7 @@
 import { sum } from 'lodash'
-import { calculateLtv } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -25,16 +24,14 @@ export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
   )
 }
 
-export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
-  const stats = positionQueries.stats.data
-  const borrowedUsdRate = positionQueries.prices.borrowed.data
-  const collateralUsdRate = positionQueries.prices.collateral.data
-  return maybes(
-    [stats, borrowedUsdRate, collateralUsdRate],
-    (stats, borrowedRate, collateralRate) =>
-      calculateLtv(stats.borrowed, stats.collateral, stats.borrowToken, borrowedRate, collateralRate) || undefined,
+/** Debt over the collateral at the oracle price plus the tokens converted in soft liquidation, as on the position card */
+export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data, ({ borrowed, collateral, borrowToken, oraclePrice }) =>
+    maybe(oraclePrice, price => {
+      const collateralValue = collateral * +price + borrowToken
+      return borrowed && collateralValue ? (borrowed / collateralValue) * 100 : undefined
+    }),
   )
-}
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
 

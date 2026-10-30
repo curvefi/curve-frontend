@@ -373,20 +373,6 @@ export const getMonetaryPolicy = <T extends MarketTemplate | Nullish>(
  * @param collateralTokenUsdRate - The USD rate of the collateral token.
  * @returns The loan-to-value ratio of the market.
  */
-export const calculateLtv = (
-  debtAmount: number,
-  collateralAmount: number,
-  collateralBorrowTokenAmount: number,
-  borrowTokenUsdRate: number | Nullish,
-  collateralTokenUsdRate: number | Nullish,
-) => {
-  const collateralValue =
-    collateralAmount * (collateralTokenUsdRate ?? 0) + collateralBorrowTokenAmount * (borrowTokenUsdRate ?? 0)
-  const debtValue = debtAmount * (borrowTokenUsdRate ?? 0)
-  if (collateralValue === 0 || debtValue === 0) return 0
-  return (debtValue / collateralValue) * 100
-}
-
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,
