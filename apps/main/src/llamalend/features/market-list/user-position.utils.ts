@@ -65,7 +65,7 @@ export const getUserPnl = (row: LlamaMarketRow) =>
     getPositionPnlAndRoi({ equity, oraclePrice, capital }),
   )
 
-/** PNL in the debt token, in USD at the borrowed token's USD rate: the PNL column sorts by it */
+/** PNL in the debt token, in USD at the borrowed token's USD rate */
 export const getUserPnlUsd = (row: LlamaMarketRow) =>
   maybes([getUserPnl(row)?.debt.pnl, row.positionQueries.prices.borrowed.data], (pnl, rate) => Number(pnl) * rate)
 
