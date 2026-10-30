@@ -1,10 +1,9 @@
-import { formatSigned } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
+import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
@@ -54,12 +53,10 @@ export const PnlCell = ({ row }: PositionCellProps) => {
         placement="top"
       >
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography variant="tableCellValueStrong">
-            {maybe(pnlUsd, value => formatSigned(value, 'usd.notional')) ?? UNAVAILABLE_NOTATION}
-          </Typography>
+          <Typography variant="tableCellValueStrong">{formatNumber(pnlUsd, 'usd.delta')}</Typography>
           {maybe(roi, roi => (
             <Typography variant="tableCellSupport" color={getChangeColor(roi, 'success', 'error')}>
-              {formatSigned(roi, 'percent.value')}
+              {formatNumber(roi, 'percent.delta')}
             </Typography>
           ))}
         </Stack>
