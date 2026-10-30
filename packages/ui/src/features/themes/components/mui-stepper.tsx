@@ -7,8 +7,6 @@ import { CheckIcon } from '@ui/icons/CheckIcon'
 
 const { Sizing, Spacing, IconSize, FontSize } = SizesAndSpaces
 
-export const defineMuiStepper = (): Components['MuiStepper'] => ({ defaultProps: { orientation: 'vertical' } })
-
 export const defineMuiStepLabel = (
   { Button, Text }: DesignSystem,
   typography: TypographyVariantsOptions,

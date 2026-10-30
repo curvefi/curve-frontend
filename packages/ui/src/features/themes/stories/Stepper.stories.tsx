@@ -22,7 +22,7 @@ const meta: Meta<typeof Stepper> = {
   title: 'UI/Components/Stepper',
   component: Stepper,
   globals: { theme: 'chad' },
-  args: { activeStep: 0 },
+  args: { activeStep: 0, orientation: 'vertical' },
   render: args => <StepperStory {...args} />,
 }
 
@@ -32,14 +32,14 @@ export const States: Story = {
   render: args => (
     <Stack direction="row" sx={{ gap: Spacing.xxl, padding: Spacing.xl, flexWrap: 'wrap' }}>
       <StepperStory {...args} />
-      <Stepper activeStep={3} nonLinear>
+      <Stepper orientation="vertical" activeStep={3} nonLinear>
         {labels.map((label, index) => (
           <Step key={label} completed={index !== 3}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
-      <StepperStory activeStep={labels.length} />
+      <StepperStory orientation="vertical" activeStep={labels.length} />
     </Stack>
   ),
 }
@@ -47,5 +47,6 @@ export const States: Story = {
 export const Default: Story = {}
 export const InProgress: Story = { args: { activeStep: 3 } }
 export const Completed: Story = { args: { activeStep: labels.length } }
+export const Horizontal: Story = { args: { orientation: 'horizontal', activeStep: 2 } }
 
 export default meta
