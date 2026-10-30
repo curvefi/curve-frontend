@@ -10,13 +10,16 @@ export const LoopedAprTooltipContent = () => (
       formula={
         <>
           {t`Looped APR =`}
-          <TooltipFraction numerator={t`Yield earned − net borrow cost`} denominator={t`Equity`} />
+          <TooltipFraction numerator={t`Y − B`} denominator={t`E`} />
         </>
       }
       terms={[
-        { symbol: t`Yield earned`, label: t`yield on your collateral and on the tokens converted in soft liquidation` },
-        { symbol: t`Net borrow cost`, label: t`interest on your debt minus borrow rewards` },
-        { symbol: t`Equity`, label: t`collateral + converted tokens − debt` },
+        {
+          symbol: 'Y',
+          label: t`yield earned: yield on your collateral and on the tokens converted in soft liquidation`,
+        },
+        { symbol: 'B', label: t`net borrow cost: interest on your debt minus borrow rewards` },
+        { symbol: 'E', label: t`equity: collateral + converted tokens − debt` },
       ]}
     />
   </TooltipWrapper>
