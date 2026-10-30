@@ -145,7 +145,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
           valueTooltip={{ title: t`Looped APR`, body: <LoopedAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
           notional={mapQuery(equityLeverage.yieldMultiplier, multiplier =>
-            maybe(multiplier, value => t`${formatNumber(value, 'multiplier')} yield`),
+            maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
           )}
         />
       )}
