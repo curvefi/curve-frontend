@@ -5,6 +5,8 @@ export enum MarketColumnId {
   UserBoostMultiplier = 'userBoostMultiplier', // only for supply positions
   UserCollateral = 'userCollateral',
   UserLtv = 'userLtv',
+  UserEquity = 'userEquity',
+  UserPnl = 'userPnl',
   UserEarnings = 'userEarnings', // only for lend markets
   UserDeposited = 'userDeposited', // only for lend markets
   BorrowRate = 'rates_borrow',

@@ -1,6 +1,8 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
+import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
+import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
 import { MarketRateType } from '@evm-ui/types/market'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
@@ -15,6 +17,7 @@ import { MarketTitleCell } from '../cells/MarketTitleCell'
 import { MaxLeverageCell } from '../cells/MaxLeverageCell'
 import { MaxReturnOnEquityCell } from '../cells/MaxReturnOnEquityCell'
 import { PercentCell } from '../cells/PercentCell'
+import { EquityCell, PnlCell } from '../cells/PositionPnlCells'
 import { PriceCell } from '../cells/PriceCell'
 import { RateCell } from '../cells/RateCell/RateCell'
 import { SolvencyCell } from '../cells/SolvencyCell'
@@ -32,6 +35,8 @@ import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationH
 import {
   getUserBorrowedUsd,
   getUserCollateralUsd,
+  getUserEquityUsd,
+  getUserPnlRoe,
   getUserPositionHealth,
   getUserPositionLtv,
 } from '../user-position.utils'
@@ -125,6 +130,23 @@ export const MARKET_COLUMNS = columnHelper.columns([
     header: MARKET_TITLES[MarketColumnId.UserLtv],
     cell: LtvCell,
     meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserEquityUsd, {
+    id: MarketColumnId.UserEquity,
+    header: MARKET_TITLES[MarketColumnId.UserEquity],
+    cell: EquityCell,
+    meta: {
+      type: 'numeric',
+      tooltip: { title: MARKET_TITLES[MarketColumnId.UserEquity], body: <EquityTooltipContent /> },
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor(getUserPnlRoe, {
+    id: MarketColumnId.UserPnl,
+    header: MARKET_TITLES[MarketColumnId.UserPnl],
+    cell: PnlCell,
+    meta: { type: 'numeric', tooltip: { title: MARKET_TITLES[MarketColumnId.UserPnl], body: <PnlTooltipContent /> } },
     sortUndefined: 'last',
   }),
   columnHelper.accessor(getUserPositionHealth, {

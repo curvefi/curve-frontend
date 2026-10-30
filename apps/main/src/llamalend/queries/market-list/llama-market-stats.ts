@@ -1,14 +1,20 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
-import { getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
+import { getEquity } from '@/llamalend/equity-leverage.utils'
+import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
+import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
+import { getPositionPnlAndRoe, type PositionPnlAndRoe } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
 import type { Chain } from '@curvefi/prices-api'
+import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
 import { DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
@@ -24,6 +30,7 @@ const getTokenPriceKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chai
 
 const normalizeMarketStats = (stats: BorrowStats) => {
   const collateralBorrowTokenAmount = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
+  const oraclePrice = decimal(stats.oraclePrice)
   return {
     status: getLiquidationStatus(
       decimal(stats.health),
@@ -39,6 +46,12 @@ const normalizeMarketStats = (stats: BorrowStats) => {
      * During soft liquidation part of the deposited collateral is converted into the borrow token.
      */
     borrowToken: collateralBorrowTokenAmount,
+    oraclePrice,
+    /** In the borrowed token */
+    equity: maybes(
+      [decimal(stats.collateral), decimal(collateralBorrowTokenAmount), decimal(stats.debt), oraclePrice],
+      (collateral, stablecoin, debt, oraclePrice) => getEquity({ collateral, stablecoin, debt }, oraclePrice),
+    ),
   }
 }
 
@@ -47,11 +60,16 @@ export type MarketStats = ReturnType<typeof normalizeMarketStats>
 type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
+  /** Equity in USD, at the borrowed token's USD rate */
+  equityUsd: QueryProp<number>
+  pnl: QueryProp<PositionPnlAndRoe>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
+  equityUsd: DISABLED_Q,
+  pnl: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -102,13 +120,29 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
     combine: results => results.map(result => q<BorrowStats>(result)),
   })
+  const isPositionPnlEnabled = useLlamalendPositionPnl()
+  // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
+  const capitalEntries = statsEntries.filter(
+    ({ market }) => !isZapV0MintMarket(market.blockchainId, market.controllerAddress),
+  )
+  const capitalQueries = useQueries({
+    queries: capitalEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
+      getPositionCapitalOptions(
+        type,
+        { contractAddress: controllerAddress, userAddress, blockchainId },
+        isPositionPnlEnabled,
+      ),
+    ),
+    combine: results => results.map(q),
+  })
   const tokenPriceQueries = useQueries({
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
-    combine: results => results.map(result => q<TokenPrice>(result)),
+    combine: results => results.map(q),
   })
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
+    const capitalByMarket = new Map(capitalEntries.map(({ market }, index) => [market, capitalQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
@@ -119,16 +153,26 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     return markets.map(market => {
       if (!market.userHasPositions) return { ...market, positionQueries: EMPTY_POSITION_QUERIES }
 
+      const stats = mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats)
+      const prices = {
+        borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
+        collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
+      }
       return {
         ...market,
         positionQueries: {
-          stats: mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats),
-          prices: {
-            borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
-            collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
-          },
+          stats,
+          prices,
+          equityUsd: combineQueries([stats, prices.borrowed], ({ equity }, rate) =>
+            maybe(equity, equity => Number(equity) * rate),
+          ),
+          pnl: combineQueries([stats, capitalByMarket.get(market) ?? DISABLED_Q], ({ equity, oraclePrice }, capital) =>
+            maybes([equity, oraclePrice], (equity, oraclePrice) =>
+              getPositionPnlAndRoe({ equity, oraclePrice, capital }),
+            ),
+          ),
         },
       }
     })
-  }, [markets, statsEntries, statsQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [markets, statsEntries, statsQueries, capitalEntries, capitalQueries, tokenPriceEntries, tokenPriceQueries])
 }

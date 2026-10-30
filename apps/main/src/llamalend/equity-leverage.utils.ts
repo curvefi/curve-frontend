@@ -12,7 +12,7 @@ import {
 } from '@ui/lib/decimal'
 
 /** What the position returns if closed now at the oracle price, in the borrowed token */
-const getEquity = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) =>
+export const getEquity = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) =>
   decimalMinus(decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin), debt)
 
 /** Collateral value divided by the equity, or null when the equity is zero. The borrowed tokens in the AMM only count in the equity. */

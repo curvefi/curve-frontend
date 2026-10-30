@@ -2,7 +2,7 @@ import { sum } from 'lodash'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -37,6 +37,12 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 }
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+
+export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
+
+/** ROE in the collateral token, in percent: the PNL column sorts by it */
+export const getUserPnlRoe = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.pnl.data?.collateral?.roe, Number)
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied
