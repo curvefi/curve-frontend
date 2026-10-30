@@ -44,10 +44,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const oraclePrice = useMarketOraclePrice(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
   const positionPnl = usePositionPnlAndEquity(params)
-  const collateralUsdRate = useTokenUsdRate(
-    { chainId: params.chainId, tokenAddress: collateralToken?.address },
-    !!positionPnl,
-  )
 
   const { collateral, stablecoin: borrowed } = userStateValue ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
@@ -139,7 +135,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           borrowSymbol={borrowToken?.symbol}
           collateralSymbol={collateralToken?.symbol}
           borrowUsdRate={q(borrowUsdRate)}
-          collateralUsdRate={q(collateralUsdRate)}
         />
       )}
       {equityLeverage && (

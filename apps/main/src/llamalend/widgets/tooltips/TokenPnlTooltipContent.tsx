@@ -4,19 +4,15 @@ import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipCompon
 import { t } from '@ui/lib/i18n'
 
 /** PNL and ROI of the position in one token, with that token's symbol */
-export type TokenPnl = { pnl: PositionPnlAndRoi['debt']; symbol: string }
+type TokenPnl = { pnl: PositionPnlAndRoi['debt']; symbol: string }
 
 const formatTokenPnl = ({ pnl: { pnl, roi }, symbol }: TokenPnl) =>
-  t`In ${symbol}: ${notFalsy(
-    `${formatSigned(pnl, 'token.amount')} ${symbol}`,
-    roi && `(${formatSigned(roi, 'percent.value')})`,
-  ).join(' ')}`
+  notFalsy(`${formatSigned(pnl, 'token.amount')} ${symbol}`, roi && `(${formatSigned(roi, 'percent.value')})`).join(' ')
 
-/** One line per token: the PNL in that token and its ROI */
-export const TokenPnlTooltipContent = ({ breakdown }: { breakdown: TokenPnl[] }) => (
+/** The PNL in the debt token, and in the collateral token: the result compared with just holding the collateral */
+export const TokenPnlTooltipContent = ({ debt, collateral }: { debt?: TokenPnl; collateral?: TokenPnl }) => (
   <TooltipWrapper>
-    {breakdown.map(tokenPnl => (
-      <TooltipDescription key={tokenPnl.symbol} text={formatTokenPnl(tokenPnl)} />
-    ))}
+    {debt && <TooltipDescription text={t`In ${debt.symbol}: ${formatTokenPnl(debt)}`} />}
+    {collateral && <TooltipDescription text={t`Vs holding ${collateral.symbol}: ${formatTokenPnl(collateral)}`} />}
   </TooltipWrapper>
 )

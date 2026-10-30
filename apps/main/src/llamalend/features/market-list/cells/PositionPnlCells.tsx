@@ -5,7 +5,7 @@ import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -34,25 +34,23 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
   )
 }
 
-/** PNL of the borrow position in USD (collateral-token PNL at its USD rate), with the ROI below it and the PNL per token on hover */
+/** PNL of the borrow position in USD (debt-token PNL at its USD rate), with its ROI below it and the PNL per token on hover */
 export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const { positionQueries, assets } = row.original
   const { stats, capital, prices } = positionQueries
   const error = stats.error ?? capital.error
   const pnl = getUserPnl(row.original)
-  const roi = maybe(pnl?.collateral?.roi, Number)
+  const roi = maybe(pnl?.debt.roi, Number)
   return error ? (
     <ErrorCell error={error} />
   ) : (
-    <WithSkeleton loading={stats.isLoading || capital.isLoading || prices.collateral.isLoading} {...skeletonProps}>
+    <WithSkeleton loading={stats.isLoading || capital.isLoading || prices.borrowed.isLoading} {...skeletonProps}>
       <Tooltip
         title={pnl && t`PNL (ROI %)`}
         body={maybe(pnl, ({ collateral, debt }) => (
           <TokenPnlTooltipContent
-            breakdown={notFalsy(collateral && { pnl: collateral, symbol: assets.collateral.symbol }, {
-              pnl: debt,
-              symbol: assets.borrowed.symbol,
-            })}
+            debt={{ pnl: debt, symbol: assets.borrowed.symbol }}
+            collateral={maybe(collateral, pnl => ({ pnl, symbol: assets.collateral.symbol }))}
           />
         ))}
         placement="top"

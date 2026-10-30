@@ -16,22 +16,14 @@ type PnlMetricsProps = PositionPnlAndEquityQueries & {
   borrowSymbol: string | undefined
   collateralSymbol: string | undefined
   borrowUsdRate: QueryProp<Amount>
-  collateralUsdRate: QueryProp<Amount>
 }
 
-/** Equity in the borrowed token and PNL (ROI %) in the collateral token, each with its USD value */
-export const PnlMetrics = ({
-  equity,
-  pnl,
-  borrowSymbol,
-  collateralSymbol,
-  borrowUsdRate,
-  collateralUsdRate,
-}: PnlMetricsProps) => {
+/** Equity and PNL (ROI %) in the borrowed token, each with its USD value, and the PNL against holding the collateral on hover */
+export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrowUsdRate }: PnlMetricsProps) => {
   const pnlMetric = tokenMetric({
-    value: mapQuery(pnl, pnl => pnl?.collateral?.pnl ?? null),
-    symbol: collateralSymbol,
-    usdRate: collateralUsdRate,
+    value: mapQuery(pnl, pnl => pnl?.debt.pnl ?? null),
+    symbol: borrowSymbol,
+    usdRate: borrowUsdRate,
   })
   return (
     <>
@@ -47,11 +39,13 @@ export const PnlMetrics = ({
         labelTooltip={{ title: t`PNL (ROI %)`, body: <PnlTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...pnlMetric}
         valueOptions={{ ...pnlMetric.valueOptions, fallback: UNAVAILABLE_NOTATION }}
-        change={maybe(pnl.data?.collateral?.roi, Number)}
-        valueTooltip={maybe(pnl.data?.debt, debt => ({
+        change={maybe(pnl.data?.debt.roi, Number)}
+        valueTooltip={maybe(pnl.data?.collateral, collateral => ({
           title: t`PNL (ROI %)`,
           body: (
-            <TokenPnlTooltipContent breakdown={[{ pnl: debt, symbol: borrowSymbol ?? UNAVAILABLE_TOKEN_SYMBOL }]} />
+            <TokenPnlTooltipContent
+              collateral={{ pnl: collateral, symbol: collateralSymbol ?? UNAVAILABLE_TOKEN_SYMBOL }}
+            />
           ),
           ...BORROW_METRIC_TOOLTIP,
         }))}
