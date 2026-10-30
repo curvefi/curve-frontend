@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
-import { useShallow } from 'zustand/react/shallow'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
@@ -9,7 +8,7 @@ import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStak
 import { LegacyFormDeposit } from '@/dex/components/PagePool/Deposit/components/LegacyFormDeposit'
 import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferTabsParams } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
   getDepositTabAlert,
   getSlippageType,
@@ -43,6 +42,7 @@ import { MAINNET_CRV } from '@evm-ui/utils/address'
 import Stack from '@mui/material/Stack'
 import { zip } from '@primitives/array.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
@@ -50,7 +50,7 @@ import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdown'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { constQ, fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
@@ -58,8 +58,6 @@ import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { PoolAlertBanner } from '../PoolAlertBanner'
-
-const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
 const legacyMenu = [
   {
@@ -126,13 +124,13 @@ const menu = [
   {
     value: 'seed-pool',
     label: t`Seed pool`,
-    visible: ({ seed }) => seed.isSeed === true,
+    visible: ({ seed }) => seed.data === true,
     component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
   },
   {
     value: 'deposit',
     label: t`Deposit`,
-    visible: ({ seed }) => seed.isSeed === false,
+    visible: ({ seed }) => seed.data === false,
     subTabs: [
       {
         value: 'deposit-one-coin',
@@ -159,7 +157,7 @@ const menu = [
   {
     value: 'withdraw',
     label: t`Withdraw`,
-    visible: ({ seed }) => seed.isSeed === false,
+    visible: ({ seed }) => seed.data === false,
     subTabs: [
       {
         value: 'WITHDRAW',
@@ -173,13 +171,13 @@ const menu = [
   {
     value: 'swap',
     label: t`Swap`,
-    visible: ({ seed }) => seed.isSeed === false,
+    visible: ({ seed }) => seed.data === false,
     component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
   },
   {
     value: 'manage-gauge',
     label: t`Gauge`,
-    visible: p => p.seed.isSeed === false && (!!p.isGaugeManager || !!p.isRewardsDistributor),
+    visible: p => p.seed.data === false && (!!p.isGaugeManager || !!p.isRewardsDistributor),
     subTabs: [
       {
         value: 'add_reward',
@@ -236,18 +234,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       mapQuery(currencyReserves, reserves => reserves.tokens.map(({ balance }) => +balance)),
       mapQuery(pricesApiPoolData, pool => pool.balances),
     ),
-    // Need useShallow as mapQuery creates a new object every render, causing infinite rerenders in combination with usePreviousValue.
-    // Less complex than using useMappedQuery upstream for the fallback queries.
-    useShallow((balances: number[] | undefined) =>
-      balances?.length ? { isSeed: balances.every(balance => balance === 0), loaded: true } : null,
-    ),
+    balances => (balances?.length ? balances.every(balance => balance === 0) : null),
   )
 
   // Keep the last loaded status while reserve data is temporarily unavailable, including wrapped-mode changes.
-  const seed = usePreviousValue(currentSeed.data) ?? DEFAULT_SEED
+  const seed = q({ ...currentSeed, data: usePreviousValue(currentSeed.data) })
 
   useEffect(() => {
-    if (currentSeed.data?.isSeed && hasWrapped(pool.data)) setIsWrapped(true)
+    if (currentSeed.data && hasWrapped(pool.data)) setIsWrapped(true)
   }, [currentSeed.data, pool.data, setIsWrapped])
 
   const { signerAddress } = curve ?? {}
@@ -310,8 +304,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         }
         formTabs={{
-          content: (!newPoolForms || seed.loaded) && (
-            <FormTabs menu={newPoolForms ? menu : legacyMenu} params={tabParams} defaultValue={defaultTab} />
+          content: newPoolForms ? (
+            seed.data == null ? (
+              seed.error && <AlertDisableForm>{seed.error.message}</AlertDisableForm>
+            ) : (
+              <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />
+            )
+          ) : (
+            <FormTabs menu={legacyMenu} params={tabParams} defaultValue={defaultTab} />
           ),
         }}
       >

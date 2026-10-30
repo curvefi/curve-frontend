@@ -65,11 +65,11 @@ export const FormUnstake = ({ seed }: TransferProps) => {
         pool,
         { isWrapped, ...updatedFormValues },
         null,
-        seed.isSeed,
+        seed.data,
         '',
       )
     },
-    [config, curve, isWrapped, pool, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, pool, seed.data, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
@@ -142,19 +142,19 @@ export const FormUnstake = ({ seed }: TransferProps) => {
       updateFormValues({})
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, seed.isSeed, signerAddress])
+  }, [chainId, poolAddress, seed.data, signerAddress])
 
   // steps
   useEffect(() => {
-    if (curve && pool && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, seed.isSeed)
+    if (curve && pool && seed.data != null) {
+      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, seed.data)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [chainId, poolAddress, signerAddress, formValues, formStatus])
 
-  const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
+  const isDisabled = seed.data == null || seed.data || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
   const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })

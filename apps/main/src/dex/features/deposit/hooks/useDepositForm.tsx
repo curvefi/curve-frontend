@@ -81,7 +81,10 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
-  useEffect(() => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false }), [isWrapped, tokenCount, update])
+  useEffect(
+    () => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false, tokenIndex: 0 }),
+    [isWrapped, tokenCount, update],
+  )
 
   useEffect(() => {
     if (isSeed.data && canDepositWrapped) update({ isWrapped: true })

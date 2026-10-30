@@ -92,11 +92,11 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
         pool,
         { isWrapped, ...updatedFormValues },
         loadMaxAmount,
-        seed.isSeed,
+        seed.data,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, isWrapped, maxSlippage, pool, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, maxSlippage, pool, seed.data, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -220,7 +220,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // max Slippage
   useEffect(() => {
@@ -260,7 +260,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
   ])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const disableForm = !seed.loaded || formStatus.formProcessing
+  const disableForm = seed.data == null || formStatus.formProcessing
 
   const estLpTokenReceivedUsdAmount = useMemo(() => {
     if (formLpTokenExpected.expected && formLpTokenExpected.virtualPrice) {
@@ -278,7 +278,7 @@ export const LegacyFormDeposit = ({ maxSlippage, poolAlert, seed }: TransferProp
         formValues={formValues}
         haveSigner={haveSigner}
         blockchainId={network?.blockchainId ?? ''}
-        isSeed={seed.isSeed}
+        isSeed={seed.data}
         updateFormValues={updateFormValues}
       />
 

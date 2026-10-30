@@ -24,6 +24,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 import { range } from '@primitives/objects.utils'
 import type { DepositType } from '@ui/features/pool-forms/deposit/deposit-form.utils'
+import { constQ } from '@ui/features/queries/util'
 
 const FUND_AMOUNT = '100'
 const SINGLE_COIN_AMOUNTS = ['0', '12.5', '0'] as const
@@ -49,7 +50,7 @@ describe('Pool Deposit (RPC)', () => {
         type={type}
         maxSlippage="0.5"
         poolAlert={null}
-        seed={{ isSeed: false, loaded: true }}
+        seed={constQ(false)}
         params={{ network: defaultNetworks[CHAIN_ID].blockchainId, poolAddress: pool.address }}
       />
     </PoolTestCase>

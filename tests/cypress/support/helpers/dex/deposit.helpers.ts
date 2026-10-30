@@ -96,7 +96,7 @@ export const submitPoolDepositAndCheck = ({
       'tenderly.submit',
     )
     coins.forEach(({ address }, index) => {
-      if (index === tokenIndex) poolDepositInput(address).should('have.value', '')
+      if (tokenIndex == null || index === tokenIndex) poolDepositInput(address).should('have.value', '')
     })
     poolDepositSubmit().should('be.disabled')
 
@@ -105,7 +105,7 @@ export const submitPoolDepositAndCheck = ({
         const spent = parseUnits(amounts[index], coin.decimals)
         expect(before[index] - after[index], `${coin.symbol} spent`).to.equal(spent)
         const { address, decimals } = coin
-        if (index === tokenIndex)
+        if (tokenIndex == null || index === tokenIndex)
           cy.get(
             `[data-testid="pool-token-input-${address}"] [data-testid="balance-value"]`,
             TIMEOUTS['tenderly.balances'],

@@ -32,7 +32,7 @@ export const OneCoinDepositForm = <TValues extends PoolDepositForm>(props: Depos
             tokens={tokens}
             selectedIndex={index}
             onToken={tokenIndex =>
-              form.update({ ...getPoolDefaultValues(tokens?.length ?? 0), isBalanced: false, tokenIndex })
+              form.update({ ...getPoolDefaultValues(tokens!.length), isBalanced: false, tokenIndex })
             }
             disabled={isPending}
             label={t`Deposit token`}

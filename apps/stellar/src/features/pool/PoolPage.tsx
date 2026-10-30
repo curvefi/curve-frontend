@@ -6,9 +6,9 @@ import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
-import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import type { RouterState } from '@ui/components/RouterLink'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
@@ -81,13 +81,12 @@ export const PoolPage = () => {
       }
       formTabs={{
         placement: 'inline',
-        content: !supply.isLoading && (
-          <FormTabs
-            menu={menu}
-            params={{ ...params, isSeed: maybe(supply.data, supply => !+supply) }}
-            defaultValue={defaultTab?.toString()}
-          />
-        ),
+        content:
+          supply.data == null ? (
+            supply.error && <AlertDisableForm>{supply.error.message}</AlertDisableForm>
+          ) : (
+            <FormTabs menu={menu} params={{ ...params, isSeed: !+supply.data }} defaultValue={defaultTab?.toString()} />
+          ),
       }}
     >
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
