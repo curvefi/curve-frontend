@@ -112,9 +112,9 @@ export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   isMintMarket(market) && market.index == null && market.leverageZap !== zeroAddress
 
 export const isZapV0MintMarket = (blockchainId: Chain | undefined, controllerAddress: Address | undefined) =>
-  !!blockchainId &&
-  !!controllerAddress &&
-  !!ZAP_V0_MINT_MARKETS[blockchainId]?.includes(controllerAddress.toLowerCase() as Address)
+  maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
+    ZAP_V0_MINT_MARKETS[blockchainId]?.includes(controllerAddress.toLowerCase() as Address),
+  )
 
 const hasV1Deleverage = (market: MarketTemplate) =>
   isMintMarket(market) && market.index == null && market.deleverageZap !== zeroAddress

@@ -1,8 +1,9 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
+import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
-import type { PositionCapital } from '@/llamalend/position-pnl.utils'
+import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
@@ -12,6 +13,8 @@ import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.quer
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
 import { DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
@@ -27,6 +30,7 @@ const getTokenPriceKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chai
 
 const normalizeMarketStats = (stats: BorrowStats) => {
   const collateralBorrowTokenAmount = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
+  const oraclePrice = decimal(stats.oraclePrice)
   return {
     status: getLiquidationStatus(
       decimal(stats.health),
@@ -42,7 +46,12 @@ const normalizeMarketStats = (stats: BorrowStats) => {
      * During soft liquidation part of the deposited collateral is converted into the borrow token.
      */
     borrowToken: collateralBorrowTokenAmount,
-    oraclePrice: stats.oraclePrice,
+    oraclePrice,
+    /** In the borrowed token */
+    equity: maybes(
+      [decimal(stats.collateral), decimal(collateralBorrowTokenAmount), decimal(stats.debt), oraclePrice],
+      (collateral, stablecoin, debt, oraclePrice) => getEquity({ collateral, stablecoin, debt }, oraclePrice),
+    ),
   }
 }
 
@@ -51,13 +60,19 @@ export type MarketStats = ReturnType<typeof normalizeMarketStats>
 type UserPositionQueries = {
   stats: QueryProp<MarketStats>
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
-  capital: QueryProp<PositionCapital>
+  /** Equity in USD, at the borrowed token's USD rate */
+  equityUsd: QueryProp<number>
+  pnl: QueryProp<PositionPnlAndRoi>
+  /** PNL in the debt token, in USD at the borrowed token's USD rate */
+  pnlUsd: QueryProp<number>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   stats: DISABLED_Q,
   prices: { borrowed: DISABLED_Q, collateral: DISABLED_Q },
-  capital: DISABLED_Q,
+  equityUsd: DISABLED_Q,
+  pnl: DISABLED_Q,
+  pnlUsd: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -121,11 +136,11 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         isPositionPnlEnabled,
       ),
     ),
-    combine: results => results.map(result => q<PositionCapital>(result)),
+    combine: results => results.map(q),
   })
   const tokenPriceQueries = useQueries({
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
-    combine: results => results.map(result => q<TokenPrice>(result)),
+    combine: results => results.map(q),
   })
 
   return useMemo(() => {
@@ -141,15 +156,30 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     return markets.map(market => {
       if (!market.userHasPositions) return { ...market, positionQueries: EMPTY_POSITION_QUERIES }
 
+      const stats = mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats)
+      const prices = {
+        borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
+        collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
+      }
+      const pnl = combineQueries(
+        [stats, capitalByMarket.get(market) ?? DISABLED_Q],
+        ({ equity, oraclePrice }, capital) =>
+          maybes([equity, oraclePrice], (equity, oraclePrice) =>
+            getPositionPnlAndRoi({ equity, oraclePrice, capital }),
+          ),
+      )
       return {
         ...market,
         positionQueries: {
-          stats: mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats),
-          prices: {
-            borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
-            collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
-          },
-          capital: capitalByMarket.get(market) ?? DISABLED_Q,
+          stats,
+          prices,
+          equityUsd: combineQueries([stats, prices.borrowed], ({ equity }, rate) =>
+            maybe(equity, equity => Number(equity) * rate),
+          ),
+          pnl,
+          pnlUsd: combineQueries([pnl, prices.borrowed], (pnl, rate) =>
+            maybe(pnl, ({ debt }) => Number(debt.pnl) * rate),
+          ),
         },
       }
     })

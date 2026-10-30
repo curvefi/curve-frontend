@@ -1,13 +1,10 @@
 import { sum } from 'lodash'
-import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
-import { getPositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
@@ -41,33 +38,10 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
 
-const getUserEquity = ({ positionQueries }: LlamaMarketRow) =>
-  maybe(positionQueries.stats.data, ({ collateral, borrowToken, borrowed, oraclePrice }) =>
-    maybes(
-      [decimal(collateral), decimal(borrowToken), decimal(borrowed), decimal(oraclePrice)],
-      (collateral, stablecoin, debt, oraclePrice) => ({
-        equity: getEquity({ collateral, stablecoin, debt }, oraclePrice),
-        oraclePrice,
-      }),
-    ),
-  )
-
-/** Equity in USD, at the borrowed token's USD rate */
-export const getUserEquityUsd = (row: LlamaMarketRow) =>
-  maybes(
-    [getUserEquity(row)?.equity, row.positionQueries.prices.borrowed.data],
-    (equity, rate) => Number(equity) * rate,
-  )
-
-/** PNL of the open borrow position, undefined until its stats and collateral events load */
-export const getUserPnl = (row: LlamaMarketRow) =>
-  maybes([getUserEquity(row), row.positionQueries.capital.data], ({ equity, oraclePrice }, capital) =>
-    getPositionPnlAndRoi({ equity, oraclePrice, capital }),
-  )
+export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
 
 /** PNL in the debt token, in USD at the borrowed token's USD rate */
-export const getUserPnlUsd = (row: LlamaMarketRow) =>
-  maybes([getUserPnl(row)?.debt.pnl, row.positionQueries.prices.borrowed.data], (pnl, rate) => Number(pnl) * rate)
+export const getUserPnlUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.pnlUsd.data
 
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied

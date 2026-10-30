@@ -50,8 +50,8 @@ const toDecimal = (value: number | Nullish) => decimal(value) ?? ZERO
 /** For events whose borrowed tokens never reach the wallet (zaps, liquidations): only the flow counts */
 const ownFlow = (flow: Decimal): EventFlow => ({ flow, walletBorrowed: ZERO })
 
-/** The user liquidates their own loan (the app's close position): the wallet pays the debt the AMM crvUSD does not cover and gets the collateral back */
-const selfLiquidation = ({ liquidation, user, oraclePrice }: ApiCollateralEvent) =>
+/** The user closes the position through a liquidation of their own loan: the wallet pays the debt the AMM crvUSD does not cover and gets the collateral back */
+const closePositionFlow = ({ liquidation, user, oraclePrice }: ApiCollateralEvent) =>
   liquidation?.liquidator.toLowerCase() === user.toLowerCase()
     ? ownFlow(
         decimalMinus(
@@ -62,16 +62,16 @@ const selfLiquidation = ({ liquidation, user, oraclePrice }: ApiCollateralEvent)
       )
     : undefined
 
-const liquidation = ({ liquidation }: ApiCollateralEvent) => maybe(liquidation, () => ownFlow(ZERO))
+const liquidationFlow = ({ liquidation }: ApiCollateralEvent) => maybe(liquidation, () => ownFlow(ZERO))
 
-const zapDeposit = ({ leverage, oraclePrice }: ApiCollateralEvent) =>
+const zapDepositFlow = ({ leverage, oraclePrice }: ApiCollateralEvent) =>
   leverage?.eventType === 'Deposit'
     ? ownFlow(
         decimalSum(decimalMultiply(toDecimal(leverage.userCollateral), oraclePrice), toDecimal(leverage.userBorrowed)),
       )
     : undefined
 
-const zapRepay = ({ leverage, oraclePrice, loanChange }: ApiCollateralEvent): EventFlow | undefined =>
+const zapRepayFlow = ({ leverage, oraclePrice, loanChange }: ApiCollateralEvent): EventFlow | undefined =>
   leverage?.eventType === 'Repay'
     ? {
         flow: decimalMinus(
@@ -85,20 +85,20 @@ const zapRepay = ({ leverage, oraclePrice, loanChange }: ApiCollateralEvent): Ev
       }
     : undefined
 
-const plain = ({ collateralChange, loanChange, oraclePrice }: ApiCollateralEvent): EventFlow => ({
+const plainFlow = ({ collateralChange, loanChange, oraclePrice }: ApiCollateralEvent): EventFlow => ({
   flow: decimalMinus(decimalMultiply(toDecimal(collateralChange), oraclePrice), toDecimal(loanChange)),
   walletBorrowed: toDecimal(loanChange),
 })
 
 /**
  * Rules in order, the first match wins:
- * - a self-liquidation is also a liquidation, so it is checked first
+ * - closing the position is also a liquidation, so it is checked first
  * - zap events also carry collateral and loan changes that include the swapped amounts, so they read the zap fields instead
  * - anything else is a plain deposit, withdrawal, borrow or repay
  * Only plain events send borrowed tokens to the wallet: a zap borrow buys collateral and a liquidation repays debt.
  */
 const getEventFlow = (event: ApiCollateralEvent): EventFlow =>
-  selfLiquidation(event) ?? liquidation(event) ?? zapDeposit(event) ?? zapRepay(event) ?? plain(event)
+  closePositionFlow(event) ?? liquidationFlow(event) ?? zapDepositFlow(event) ?? zapRepayFlow(event) ?? plainFlow(event)
 
 /** Folds the collateral events of the open position into its own capital. Null when the open position has no events. */
 export const toPositionCapital = ({ events }: { events: ApiCollateralEvent[] }): PositionCapital => {
@@ -135,9 +135,7 @@ export const getPositionPnlAndRoi = ({
 }): PositionPnlAndRoi | null =>
   capital && {
     debt: getPnlAndRoi(equity, capital.debt),
-    collateral: decimalEqual(oraclePrice, ZERO)
-      ? null
-      : getPnlAndRoi(decimalDiv(equity, oraclePrice), capital.collateral),
+    collateral: +oraclePrice ? getPnlAndRoi(decimalDiv(equity, oraclePrice), capital.collateral) : null,
   }
 
 /** Formats a PNL or ROI value with a + sign when it is positive */
