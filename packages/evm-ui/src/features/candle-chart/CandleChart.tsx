@@ -1,7 +1,15 @@
-import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
+import type {
+  AutoscaleInfo,
+  IChartApi,
+  Time,
+  ISeriesApi,
+  LineWidth,
+  IPriceLine,
+  CustomSeriesWhitespaceData,
+} from 'lightweight-charts'
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import { sortBy } from 'lodash'
-import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { Box } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
@@ -73,6 +81,55 @@ type LiquidationRangeSeriesApi = ISeriesApi<
 
 const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
 
+const getSeriesAppearance = (variant: 'current' | 'new' | 'historical', colors: ChartColors) => {
+  if (variant === 'current') {
+    return {
+      seriesOptions: {
+        fillColor: colors.rangeBackground,
+        fillOpacity: 1,
+        topLineColor: colors.rangeLineTop,
+        bottomLineColor: colors.rangeLineBottom,
+        lineWidth: 2,
+        lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
+        showTopLine: false,
+        showBottomLine: false,
+      },
+      priceLineColorTop: colors.rangeLineTop,
+      priceLineColorBottom: colors.rangeLineBottom,
+    }
+  }
+
+  if (variant === 'new') {
+    return {
+      seriesOptions: {
+        fillColor: colors.rangeBackgroundFuture,
+        fillOpacity: 1,
+        topLineColor: colors.rangeLineFutureTop,
+        bottomLineColor: colors.rangeLineFutureBottom,
+        lineWidth: 2,
+        lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
+        showTopLine: false,
+        showBottomLine: false,
+      },
+      priceLineColorTop: colors.rangeLineFutureTop,
+      priceLineColorBottom: colors.rangeLineFutureBottom,
+    }
+  }
+
+  return {
+    seriesOptions: {
+      fillColor: colors.rangeBackground,
+      fillOpacity: 1,
+      topLineColor: colors.rangeLineBottom,
+      bottomLineColor: colors.rangeLineBottom,
+      lineWidth: 2,
+      lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
+      showTopLine: true,
+      showBottomLine: true,
+    },
+  }
+}
+
 type Props = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
@@ -135,66 +192,6 @@ export const CandleChart = ({
   const ohlcDataRef = useLatestValueRef(ohlcData)
 
   const hasSeriesData = !!ohlcData?.length || (oraclePriceData?.length ?? 0) > 0
-  const memoizedColors = useMemo(() => colors, [colors])
-
-  const getSeriesAppearance = useCallback(
-    (variant: 'current' | 'new' | 'historical') => {
-      if (variant === 'current') {
-        return {
-          seriesOptions: {
-            fillColor: memoizedColors.rangeBackground,
-            fillOpacity: 1,
-            topLineColor: memoizedColors.rangeLineTop,
-            bottomLineColor: memoizedColors.rangeLineBottom,
-            lineWidth: 2,
-            lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
-            showTopLine: false,
-            showBottomLine: false,
-          },
-          priceLineColorTop: memoizedColors.rangeLineTop,
-          priceLineColorBottom: memoizedColors.rangeLineBottom,
-        }
-      }
-
-      if (variant === 'new') {
-        return {
-          seriesOptions: {
-            fillColor: memoizedColors.rangeBackgroundFuture,
-            fillOpacity: 1,
-            topLineColor: memoizedColors.rangeLineFutureTop,
-            bottomLineColor: memoizedColors.rangeLineFutureBottom,
-            lineWidth: 2,
-            lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
-            showTopLine: false,
-            showBottomLine: false,
-          },
-          priceLineColorTop: memoizedColors.rangeLineFutureTop,
-          priceLineColorBottom: memoizedColors.rangeLineFutureBottom,
-        }
-      }
-
-      return {
-        seriesOptions: {
-          fillColor: memoizedColors.rangeBackground,
-          fillOpacity: 1,
-          topLineColor: memoizedColors.rangeLineBottom,
-          bottomLineColor: memoizedColors.rangeLineBottom,
-          lineWidth: 2,
-          lineStyle: LIQUIDATION_RANGE_LINE_STYLE,
-          showTopLine: true,
-          showBottomLine: true,
-        },
-      }
-    },
-    [
-      memoizedColors.rangeBackground,
-      memoizedColors.rangeBackgroundFuture,
-      memoizedColors.rangeLineBottom,
-      memoizedColors.rangeLineFutureBottom,
-      memoizedColors.rangeLineFutureTop,
-      memoizedColors.rangeLineTop,
-    ],
-  )
 
   const { handleVisibleLogicalRangeChange, restoreVisibleRangeAfterDataUpdate } = useHistoricalChartPagination({
     candlestickSeriesRef,
@@ -228,13 +225,10 @@ export const CandleChart = ({
     if (!chartRef.current) return
 
     chartRef.current.applyOptions({
-      layout: {
-        background: { type: ColorType.Solid, color: memoizedColors.backgroundColor },
-        textColor: memoizedColors.textColor,
-      },
-      grid: { vertLines: { color: memoizedColors.gridLine }, horzLines: { color: memoizedColors.gridLine } },
+      layout: { background: { type: ColorType.Solid, color: colors.backgroundColor }, textColor: colors.textColor },
+      grid: { vertLines: { color: colors.gridLine }, horzLines: { color: colors.gridLine } },
     })
-  }, [memoizedColors.backgroundColor, memoizedColors.textColor, memoizedColors.gridLine])
+  }, [colors.backgroundColor, colors.textColor, colors.gridLine])
 
   // Update timeScale visibility when timeOption changes
   useEffect(() => {
@@ -253,16 +247,12 @@ export const CandleChart = ({
           width: 4 as LineWidth,
           color: '#C3BCDB44',
           style: LineStyle.Solid,
-          labelBackgroundColor: memoizedColors.cursorLabel,
+          labelBackgroundColor: colors.cursorLabel,
         },
-        horzLine: {
-          color: memoizedColors.cursorLabel,
-          labelBackgroundColor: memoizedColors.cursorLabel,
-          style: LineStyle.Dashed,
-        },
+        horzLine: { color: colors.cursorLabel, labelBackgroundColor: colors.cursorLabel, style: LineStyle.Dashed },
       },
     })
-  }, [memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
+  }, [colors.cursorLabel, colors.cursorVertLine])
 
   // Liquidation range series effect - create/destroy series based on visibility
   useEffect(() => {
@@ -305,7 +295,7 @@ export const CandleChart = ({
 
       ref.current = series
       const variant = index === 0 ? 'current' : 'new'
-      const appearance = getSeriesAppearance(variant)
+      const appearance = getSeriesAppearance(variant, colors)
       series.applyOptions(appearance.seriesOptions)
       priceLinesRef.current = {
         top: series.createPriceLine({
@@ -333,7 +323,7 @@ export const CandleChart = ({
         lineWidth: 2,
         lineStyle: LineStyle.Solid,
       })
-      series.applyOptions(getSeriesAppearance('historical').seriesOptions)
+      series.applyOptions(getSeriesAppearance('historical', colors).seriesOptions)
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       historicalRangeSeriesRef.current.push(series)
     })
@@ -342,7 +332,7 @@ export const CandleChart = ({
       removePrimarySeries()
       removeHistoricalSeries()
     }
-  }, [liqRangeCurrentVisible, liqRangeNewVisible, liquidationRange, getSeriesAppearance])
+  }, [liqRangeCurrentVisible, liqRangeNewVisible, liquidationRange, colors])
 
   // OHLC series effect - only create once when chart is ready
   useEffect(() => {
@@ -351,11 +341,11 @@ export const CandleChart = ({
     candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
       priceLineStyle: LineStyle.LargeDashed,
       priceLineVisible: !hideCandleSeriesLabel,
-      upColor: memoizedColors.green,
-      downColor: memoizedColors.red,
+      upColor: colors.green,
+      downColor: colors.red,
       borderVisible: false,
-      wickUpColor: memoizedColors.green,
-      wickDownColor: memoizedColors.red,
+      wickUpColor: colors.green,
+      wickDownColor: colors.red,
       lastValueVisible: !hideCandleSeriesLabel,
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
@@ -415,19 +405,19 @@ export const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red, ohlcDataRef])
+  }, [hideCandleSeriesLabel, colors.green, colors.red, ohlcDataRef])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {
     if (!candlestickSeriesRef.current) return
 
     candlestickSeriesRef.current.applyOptions({
-      upColor: memoizedColors.green,
-      downColor: memoizedColors.red,
-      wickUpColor: memoizedColors.green,
-      wickDownColor: memoizedColors.red,
+      upColor: colors.green,
+      downColor: colors.red,
+      wickUpColor: colors.green,
+      wickDownColor: colors.red,
     })
-  }, [memoizedColors.green, memoizedColors.red])
+  }, [colors.green, colors.red])
 
   // Oracle price series effect - only create once when chart is ready
   useEffect(() => {
@@ -457,16 +447,29 @@ export const CandleChart = ({
 
   useInitialChartRightOffset({ chartRef, hasSeriesData })
 
-  // Update oracle price data when it changes
+  // Update oracle price data and scaling when they change
   useEffect(() => {
     if (!oraclePriceSeriesRef.current || !oraclePriceData) return
+
+    const isOracleOnlyChart = ohlcData?.length === 0
+
+    oraclePriceSeriesRef.current.applyOptions({
+      autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
+        const info = original()
+        if (!isOracleOnlyChart || !info?.priceRange) return info
+
+        // Ensure a minimum span (price range, or delta) of 1, adding +1 to the min if that's not the case.
+        const { minValue, maxValue } = info.priceRange
+        if (maxValue - minValue >= 1) return info
+
+        return { ...info, priceRange: { minValue, maxValue: minValue + 1 } }
+      },
+    })
 
     oraclePriceSeriesRef.current.setData(oraclePriceData)
     // Oracle data drives historical pagination only for fallback-only charts.
     // In candle charts, candle updates restore the viewport; restoring here can
     // consume the pending range before the candle page arrives.
-    const isOracleOnlyChart = ohlcData?.length === 0
-
     if (isOracleOnlyChart) {
       restoreVisibleRangeAfterDataUpdate()
     }
@@ -476,8 +479,8 @@ export const CandleChart = ({
   useEffect(() => {
     if (!oraclePriceSeriesRef.current) return
 
-    oraclePriceSeriesRef.current.applyOptions({ color: memoizedColors.oraclePrice, visible: oraclePriceVisible })
-  }, [memoizedColors.oraclePrice, oraclePriceVisible])
+    oraclePriceSeriesRef.current.applyOptions({ color: colors.oraclePrice, visible: oraclePriceVisible })
+  }, [colors.oraclePrice, oraclePriceVisible])
 
   const { scheduleEmitPriceRange } = useVisiblePriceRangeSync({
     chartRef,
@@ -591,7 +594,7 @@ export const CandleChart = ({
     }
 
     if (liqRangeCurrentVisible) {
-      const appearance = getSeriesAppearance('current')
+      const appearance = getSeriesAppearance('current', colors)
       applySeriesOptions(currentRangeSeriesRef.current, appearance.seriesOptions)
 
       currentRangePriceLinesRef.current.top?.applyOptions({
@@ -605,7 +608,7 @@ export const CandleChart = ({
     }
 
     if (liqRangeNewVisible) {
-      const appearance = getSeriesAppearance('new')
+      const appearance = getSeriesAppearance('new', colors)
       applySeriesOptions(newRangeSeriesRef.current, appearance.seriesOptions)
 
       newRangePriceLinesRef.current.top?.applyOptions({
@@ -618,11 +621,11 @@ export const CandleChart = ({
       })
     }
 
-    const historicalAppearance = getSeriesAppearance('historical')
+    const historicalAppearance = getSeriesAppearance('historical', colors)
     historicalRangeSeriesRef.current.forEach(series => {
       applySeriesOptions(series, historicalAppearance.seriesOptions)
     })
-  }, [liqRangeCurrentVisible, liqRangeNewVisible, getSeriesAppearance, liquidationRange?.historical])
+  }, [liqRangeCurrentVisible, liqRangeNewVisible, colors, liquidationRange?.historical])
 
   // Update latest oracle price when it changes (comes from on chain to keep the last data point as up to date as possible)
   useEffect(() => {

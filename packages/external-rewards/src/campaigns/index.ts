@@ -1,7 +1,6 @@
 import Aegis from './Aegis.json'
 import Apyx from './Apyx.json'
 import Axis from './Axis.json'
-import DTrinity from './DTrinity.json'
 import Etherfi from './Etherfi.json'
 import Falcon from './Falcon.json'
 import Fraxtal from './Fraxtal.json'
@@ -25,7 +24,6 @@ export {
   Symbiotic,
   Fraxtal,
   Lombard,
-  DTrinity,
   Fx,
   Infinifi,
   Falcon,
