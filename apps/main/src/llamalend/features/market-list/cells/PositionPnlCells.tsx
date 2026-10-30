@@ -12,7 +12,6 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { getUserPnl } from '../user-position.utils'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -23,13 +22,13 @@ type PositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, number 
 const skeletonProps = { width: 40, sx: { marginInlineStart: 'auto' } } as const
 
 /** Equity of the borrow position in USD */
-export const EquityCell = ({ getValue, row }: PositionCellProps) => {
-  const { stats, prices } = row.original.positionQueries
-  return stats.error ? (
-    <ErrorCell error={stats.error} />
+export const EquityCell = ({ row }: PositionCellProps) => {
+  const { data: equityUsd, isLoading, error } = row.original.positionQueries.equityUsd
+  return error ? (
+    <ErrorCell error={error} />
   ) : (
-    <WithSkeleton loading={stats.isLoading || prices.borrowed.isLoading} {...skeletonProps}>
-      <Typography variant="tableCellValue">{formatNumber(getValue(), 'usd.notional')}</Typography>
+    <WithSkeleton loading={isLoading} {...skeletonProps}>
+      <Typography variant="tableCellValue">{formatNumber(equityUsd, 'usd.notional')}</Typography>
     </WithSkeleton>
   )
 }
@@ -37,14 +36,12 @@ export const EquityCell = ({ getValue, row }: PositionCellProps) => {
 /** PNL of the borrow position in the collateral token, with the ROE below it and the debt-token PNL on hover */
 export const PnlCell = ({ getValue, row }: PositionCellProps) => {
   const { positionQueries, assets } = row.original
-  const { stats, capital } = positionQueries
-  const error = stats.error ?? capital.error
-  const pnl = getUserPnl(row.original)
+  const { data: pnl, isLoading, error } = positionQueries.pnl
   const roe = getValue()
   return error ? (
     <ErrorCell error={error} />
   ) : (
-    <WithSkeleton loading={stats.isLoading || capital.isLoading} {...skeletonProps}>
+    <WithSkeleton loading={isLoading} {...skeletonProps}>
       <Tooltip
         title={pnl && t`PNL (ROE %)`}
         body={maybe(pnl, ({ debt }) => (
