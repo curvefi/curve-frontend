@@ -1,11 +1,10 @@
 import type { PoolQuery } from '@/stellar/queries/query-types'
-import { DepositForm } from '@ui/features/pool-forms/deposit/DepositForm'
+import { depositForms, type DepositType } from '@ui/features/pool-forms/deposit/deposit-form.utils'
 import { DepositActionInfoList } from './DepositActionInfoList'
 import { useDepositForm } from './useDepositForm'
 
-export const DepositTab = (params: PoolQuery) => {
+export const DepositTab = ({ type, ...params }: PoolQuery & { type: DepositType }) => {
   const { params: queryParams, onSlippageChange, ...form } = useDepositForm(params)
-  return (
-    <DepositForm {...form} footer={<DepositActionInfoList {...queryParams} onSlippageChange={onSlippageChange} />} />
-  )
+  const Component = depositForms[type]
+  return <Component {...form} footer={<DepositActionInfoList {...queryParams} onSlippageChange={onSlippageChange} />} />
 }

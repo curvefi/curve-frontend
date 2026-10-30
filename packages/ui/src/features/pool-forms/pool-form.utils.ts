@@ -15,7 +15,7 @@ export type PoolTokenFields = Record<PoolAmountField | PoolMaxAmountField, Decim
 export type PoolForm = PoolTokenFields & { isBalanced: boolean; decimals: (number | undefined)[] | undefined }
 
 /** Shared fields used by liquidity-deposit forms. */
-export type PoolDepositForm = PoolForm & { isWrapped: boolean }
+export type PoolDepositForm = PoolForm & { isWrapped: boolean; tokenIndex: number }
 
 export const poolAmountField = (index: number): PoolAmountField => `amount_${index}`
 

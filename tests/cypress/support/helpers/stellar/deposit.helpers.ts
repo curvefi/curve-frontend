@@ -90,7 +90,7 @@ export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
     'stellar.confirmation',
   )
   coins.forEach(({ address }) => {
-    poolInput(address).find('input').should('have.value', '')
+    poolInput(address).find('input[type="text"]').should('have.value', '')
   })
   depositSubmit().should('be.disabled')
 }

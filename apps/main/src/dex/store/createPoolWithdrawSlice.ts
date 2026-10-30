@@ -22,6 +22,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { shortenAddress } from '@evm-ui/utils'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
+import type { Nullish } from '@primitives/objects.utils'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
@@ -60,7 +61,7 @@ export type PoolWithdrawSlice = {
     fetchWithdrawLpToken: (props: FetchWithdrawProps) => Promise<void>
     fetchWithdrawCustom: (props: FetchWithdrawProps) => Promise<void>
     fetchClaimable: (activeKey: string, chainId: ChainId, pool: PoolTemplate) => Promise<void>
-    setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
+    setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | Nullish, maxSlippage: string) => Promise<void>
 
     // steps
     fetchEstGasApproval: (activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>

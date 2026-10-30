@@ -13,7 +13,7 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT } from '@/dex/components/PagePool/Swap/utils'
-import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
+import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { usePoolContext } from '@/dex/features/pool-context'
@@ -45,7 +45,7 @@ import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeToken
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { useLayoutStore } from '@ui/features/layout/store'
-import { q, toQuery } from '@ui/features/queries/util'
+import { q, toQuery, type QueryProp } from '@ui/features/queries/util'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { notify } from '@ui/features/toast/Toast/notify'
@@ -63,7 +63,11 @@ export const Swap = ({
   maxSlippage,
   poolAlert,
   seed,
-}: Pick<PageTransferProps, 'params'> & { poolAlert: PoolAlert | null; maxSlippage: Decimal; seed: Seed }) => {
+}: Pick<PageTransferProps, 'params'> & {
+  poolAlert: PoolAlert | null
+  maxSlippage: Decimal
+  seed: QueryProp<boolean | null>
+}) => {
   const {
     blockchainId,
     chainId,
@@ -151,11 +155,11 @@ export const Swap = ({
         pool,
         { isWrapped, ...updatedFormValues },
         isGetMaxFrom,
-        seed.isSeed,
+        seed.data,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, isWrapped, pool, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, pool, seed.data, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
@@ -314,7 +318,7 @@ export const Swap = ({
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // maxSlippage
   useEffect(() => {
@@ -324,7 +328,7 @@ export const Swap = ({
 
   // steps
   useEffect(() => {
-    if (curve && pool && seed.isSeed !== null) {
+    if (curve && pool && seed.data != null) {
       const updatedSteps = getSteps(
         activeKey,
         config,
@@ -335,7 +339,7 @@ export const Swap = ({
         exchangeOutput,
         confirmedLoss,
         steps,
-        seed.isSeed,
+        seed.data,
         maxSlippage,
         userFromBalance.isLoading || userToBalance.isLoading,
       )
@@ -353,7 +357,7 @@ export const Swap = ({
     formStatus,
     formValues,
     maxSlippage,
-    seed.isSeed,
+    seed.data,
     userFromBalance.isLoading,
     userToBalance.isLoading,
   ])
@@ -366,7 +370,7 @@ export const Swap = ({
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
+  const isDisabled = seed.data == null || seed.data || formStatus.formProcessing
 
   const setFromAmount = useCallback(
     (value?: Decimal) => updateFormValues({ isFrom: true, fromAmount: value ?? '', toAmount: '' }, null, null),
