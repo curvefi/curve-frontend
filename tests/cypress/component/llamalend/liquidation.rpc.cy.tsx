@@ -34,7 +34,8 @@ const BORROW = '800' as const
 const IMPROVE_HEALTH_AMOUNT = '200' as const
 const RESET_WALLET_AMOUNT = '25' as const
 
-describe('Manage liquidation', () => {
+/** Skipping this for the moment as it's a very expensive test that blows up our Tenderly quota. Need to find a cheaper way. The test itself is fine. */
+describe.skip('Manage liquidation', () => {
   skipTestsAfterFailure()
 
   const chainId = Chain.Optimism // Atm llv2 is only deployed on optimism
