@@ -26,12 +26,12 @@ const ARBITRUM_USDC = '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
 const ARBITRUM_USDT = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
 const ARBITRUM_WETH_CRVUSD = '0xB5c6082d3307088C98dA8D79991501E113e6365d'
 
-const CHAIN_ID_PLASMA = '9745'
-const CORN_USDT0 = '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb'
-const CORN_SUSDE = '0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2'
+const CHAIN_ID_ROBINHOOD = '4663'
+const ROBINHOOD_GREEN = '0x355bB7F0f6c730e4460d620420a300fa08FF82F3'
+const ROBINHOOD_USDG = '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168'
 
 const USD_DECIMALS = 6
-const USDT0_DECIMALS = 6
+const USDG_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
 type SuccessCase = { query: QueryString; expectedRoutes?: number; retry?: TestOptions['retry'] }
@@ -61,15 +61,13 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
       },
     },
     */
-    'plasma amountIn': {
+    'robinhood amountIn': {
       query: {
-        chainId: CHAIN_ID_PLASMA,
-        tokenIn: [CORN_USDT0],
-        tokenOut: [CORN_SUSDE],
-        amountIn: [toWei('10', USDT0_DECIMALS)],
+        chainId: CHAIN_ID_ROBINHOOD,
+        tokenIn: [ROBINHOOD_USDG],
+        tokenOut: [ROBINHOOD_GREEN],
+        amountIn: [toWei('10', USDG_DECIMALS)],
       },
-      // The public Plasma RPC reports its request limit directly or through curve-js' stored-rates wrapper.
-      retry: { count: 2, delay: 1_000, condition: /CALL_EXCEPTION|Failed to get stored rates/ },
     },
   },
   enso: {
