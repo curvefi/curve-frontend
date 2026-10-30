@@ -36,7 +36,7 @@ export const SwapTokenInput = ({
     <FormTokenInput
       form={form}
       name={name}
-      relatedFields={[{ field: [name], ignoreTouched: true }]}
+      relatedFields={[{ field: [name], ignoreTouched: form.isTouched('inputAmount', 'outputAmount') }]}
       label={label}
       testId={testId}
       tokenSelector={

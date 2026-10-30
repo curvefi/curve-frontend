@@ -23,7 +23,7 @@ export const FormTokenInput = <TValues extends FieldValues>({
 }: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
   form: Pick<UseFormReturn<TValues>, 'values' | 'formState'>
   name: FieldPathByValue<TValues, Decimal | undefined>
-  relatedFields?: (FieldPath<TValues> | { field: FieldPath<TValues>[]; ignoreTouched: true })[]
+  relatedFields?: (FieldPath<TValues> | { field: FieldPath<TValues>[]; ignoreTouched: boolean })[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
   balance?: QueryProp<Decimal>
 }) => {
@@ -32,7 +32,9 @@ export const FormTokenInput = <TValues extends FieldValues>({
       .map(f =>
         typeof f === 'string'
           ? (name in touchedFields || f in touchedFields) && errors[f]
-          : f.field.map(name => errors[name]).find(Boolean),
+          : f.field
+              .map(field => (f.ignoreTouched || name in touchedFields || field in touchedFields) && errors[field])
+              .find(Boolean),
       )
       .find(error => !!error) ??
     balance?.error ??
