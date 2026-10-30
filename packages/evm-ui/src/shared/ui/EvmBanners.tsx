@@ -79,6 +79,15 @@ export const EvmBanners = ({
           {t`Fantom Retirement`}
         </Banner>
       )}
+      {currentApp === 'bridge' && (
+        <Banner
+          severity="warning"
+          subtitle={t`LayerZero has paused its services after the Binance exploit. Bridged crvUSD may be delayed until it resumes.`}
+          testId="layerzero-paused-banner"
+        >
+          {t`FastBridge is paused`}
+        </Banner>
+      )}
     </GlobalBanner>
   )
 }
