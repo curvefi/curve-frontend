@@ -4,9 +4,10 @@ import { Column, PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
-import { formatHolderName, getEthPath } from '@/dao/utils'
+import { formatHolderName } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { sortBy } from '@primitives/array.utils'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -64,7 +65,10 @@ export const TopHoldersTable = () => {
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
-            <StyledTableDataLink className="align-left" href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${holder.user}`)}>
+            <StyledTableDataLink
+              className="align-left"
+              href={DAO_ROUTES.PAGE_USER({ userAddress: holder.user as Address })}
+            >
               <span>{index + 1}.</span>
               <span style={{ textDecoration: 'underline' }}>{formatHolderName(holder.user)}</span>
             </StyledTableDataLink>

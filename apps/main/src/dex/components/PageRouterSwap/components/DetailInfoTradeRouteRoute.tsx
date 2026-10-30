@@ -6,7 +6,6 @@ import { ROUTE } from '@/dex/constants'
 import { getTokens, tryGetPool } from '@/dex/pool.utils'
 import { getToken, type TokenMapper } from '@/dex/queries/tokens.query'
 import type { UrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -68,7 +67,7 @@ export const DetailInfoTradeRouteRoute = ({
               />
             )}
             <RouterLink
-              href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}`)}
+              href={ROUTE.PAGE_POOL({ blockchainId: params.network, poolAddress: route.routeUrlId as Address })}
               target="_blank"
               sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
             >

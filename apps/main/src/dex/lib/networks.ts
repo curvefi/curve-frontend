@@ -4,14 +4,14 @@ import { ChainId, NetworkConfig, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
-import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { CRVUSD_ROUTES } from '@evm-ui/shared/routes'
 import { ARC_USDC_ADDRESS, CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
     swap: { fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', toAddress: ethAddress },
-    swapCustomRouteRedirect: { 'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS) },
+    swapCustomRouteRedirect: { 'sfrxeth-llamma': CRVUSD_ROUTES.PAGE_MARKETS({ blockchainId: 'ethereum' }) },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
       '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',

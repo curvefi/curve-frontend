@@ -1,7 +1,6 @@
-import { type AppName, getInternalUrl } from '@evm-ui/shared/routes'
+import { type AppName, APP_ROUTES } from '@evm-ui/shared/routes'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
-import { PAGE_INTEGRATIONS } from '@ui/features/layout/routes'
 import { getSearchString } from '@ui/hooks/router'
 import { t, Trans } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
@@ -95,7 +94,7 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
             {t`), a list of applications reportedly built on top of the Curve ecosystem (`}
             <RouterLink
               color="textSecondary"
-              href={getInternalUrl(currentApp, network, PAGE_INTEGRATIONS)}
+              href={APP_ROUTES[currentApp].PAGE_INTEGRATIONS({ blockchainId: network })}
               target="_blank"
             >
               {t`Integrations - Curve`}

@@ -4,7 +4,6 @@ import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBox
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
@@ -38,7 +37,7 @@ export const GaugeVotingStats = () => {
           loading={userGaugeWeightsLoading}
           title="User"
           data={
-            <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
+            <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress: userAddress! })}>
               <MetricsColumnData>{userEns ?? shortenAddress(userAddress)}</MetricsColumnData>
             </StyledInternalLink>
           }

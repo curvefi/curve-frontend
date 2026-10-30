@@ -5,7 +5,6 @@ import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/Pagi
 import { useUserGaugeVoteQuery, invalidateUserGaugeVoteQuery } from '@/dao/entities/user-gauge-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
 import type { UserGaugeVote } from '@curvefi/prices-api/gauge'
 import { DAO_ROUTES } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
@@ -63,7 +62,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
             >
               {formatNumber(gaugeVote.weight / 100, 'percent.value')}
             </TableData>
-            <TableDataLink href={getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`)} className="right-padding">
+            <TableDataLink href={DAO_ROUTES.PAGE_GAUGE({ gaugeAddress: gaugeVote.gauge })} className="right-padding">
               {shortenAddress(gaugeVote.gauge)}
             </TableDataLink>
           </TableRowWrapper>

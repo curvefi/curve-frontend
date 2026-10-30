@@ -8,7 +8,6 @@ import { useChainId } from '@/dex/hooks/useChainId'
 import { usePool } from '@/dex/queries/pool.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
@@ -47,7 +46,7 @@ export const PagePool = () => {
           t`Access through the Curve interface is blocked to help protect you from unsafe deposits. Pools may be blacklisted because of deprecated or exploited assets, misconfiguration, or malicious deployers.`,
           t`If you believe this pool has been incorrectly flagged, contact us.`,
         ]}
-        navUrl={getPath(props, ROUTE.PAGE_POOLS)}
+        navUrl={ROUTE.PAGE_POOLS({ blockchainId: props.network })}
         navTitle={t`Go back to pools`}
         contactUrl={CURVE_SOCIALS.telegram.en}
         contactTitle={t`Contact us`}
@@ -61,7 +60,7 @@ export const PagePool = () => {
         title={pool.error ? t`Error` : '404'}
         subtitle={pool.error?.message ?? t`Pool Not Found`}
         error={pool.error}
-        continueUrl={getPath(props, ROUTE.PAGE_POOLS)}
+        continueUrl={ROUTE.PAGE_POOLS({ blockchainId: props.network })}
         userAddress={curveApi?.signerAddress}
       />
     )

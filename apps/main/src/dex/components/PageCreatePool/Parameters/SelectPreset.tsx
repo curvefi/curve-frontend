@@ -11,7 +11,6 @@ import { ModalDialog } from '@/dex/components/PageCreatePool/ConfirmModal/ModalD
 import { CRYPTOSWAP, FXSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { useStore } from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { DEX_ROUTES } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
@@ -274,7 +273,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                 {t`Can't find the pool preset you want? Check out`}
                 <StyledExternalLink
                   target="_blank"
-                  href={getPath(params, DEX_ROUTES.PAGE_POOLS)}
+                  href={DEX_ROUTES.PAGE_POOLS({ blockchainId: params.network })}
                 >{t`existing pools`}</StyledExternalLink>
                 {t`with similar assets for inspiration (or use`}
                 <StyledExternalLink href="https://github.com/curveresearch/curvesim" target="_blank">

@@ -1,4 +1,5 @@
-import { APP_LINK, type AppName, type NavigationItem, LEND_MARKET_ROUTES, LEND_ROUTES } from '@evm-ui/shared/routes'
+import { APP_LINK, type AppName, type NavigationItem, LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
+import type { Address } from '@primitives/address.utils'
 import { useMatchRoute } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
@@ -6,19 +7,14 @@ import { t } from '@ui/lib/i18n'
 const LEND_APP: AppName = 'lend'
 const CRVUSD_APP: AppName = 'crvusd'
 
-// TODO: duplicate of getVaultPathname and getLoanPathname in @/lend/utils/utilsRouter.ts and in llamalend/queries/market-list/llama-markets.ts.
-// First they need to be refactored outside the lend app.
-const buildLendMarketPath = ({ marketId, action }: { marketId: string; action: string }) =>
-  `${LEND_ROUTES.PAGE_MARKETS}/${marketId}${action}`
-
 /** Returns the routes for the Llamalend market subnav.
  * For the llamalend app it's the "Markets", "Savings crvUSD" and "Peg Stability Reserves" routes
  * For the lend app it's the "Borrow" and "Supply" routes
  * For the crvusd app it's empty array (default to Borrow page, no need for the subnav)
  */
 export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): NavigationItem[] => {
-  const params = useMatchRoute<{ app: AppName; marketId: string }>({
-    to: `$app/$network${LEND_ROUTES.PAGE_MARKETS}/$marketId`,
+  const params = useMatchRoute<{ app: AppName; marketId: Address }>({
+    to: '$app/$network/markets/$marketId',
     fuzzy: true, // allows to match longer routes like .../vault
   })
 
@@ -26,13 +22,13 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
     return [
       {
         app: LEND_APP,
-        route: buildLendMarketPath({ marketId: params.marketId, action: LEND_MARKET_ROUTES.PAGE_LOAN }),
+        route: network => LEND_MARKET_ROUTES.PAGE_LOAN({ ...network, marketId: params.marketId }),
         label: () => t`Borrow`,
         matchMode: 'exact',
       },
       {
         app: LEND_APP,
-        route: buildLendMarketPath({ marketId: params.marketId, action: LEND_MARKET_ROUTES.PAGE_VAULT }),
+        route: network => LEND_MARKET_ROUTES.PAGE_VAULT({ ...network, marketId: params.marketId }),
         label: () => t`Supply`,
         matchMode: 'exact',
       },

@@ -9,11 +9,11 @@ import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConne
 import { type TvlSource, useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
 import {
   APP_LINK,
+  APP_ROUTES,
   AppMenuOption,
   type AppName,
   createChainOption,
   createChainOptions,
-  getInternalUrl,
   LlamalendApps,
   routeToPage,
 } from '@evm-ui/shared/routes'
@@ -68,9 +68,9 @@ const HIDE_CHAINS: number[] = [Chain.ZkSync, Chain.Mantle]
 
 /** Resolves the given links based on current network and pathname */
 const resolveLinks = ({ blockchainId, pathname }: { blockchainId: string; pathname: string }) =>
-  mapRecord(APP_LINK, (_menu, { label, routes }) => ({
+  mapRecord(APP_LINK, (_menu, { label, routes, routes: [route] }) => ({
     label,
-    href: getInternalUrl(routes[0].app, blockchainId),
+    href: APP_ROUTES[route.app].ROOT({ blockchainId }),
     pages: routes.map(route => routeToPage(route, { blockchainId, pathname })),
   }))
 
@@ -95,7 +95,9 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
 
   const currentMenu = APP_TO_MENU[currentApp]
   const routeContext = { blockchainId, pathname: location.pathname }
-  const formatUrl = (page: string) => getInternalUrl(currentApp, blockchainId, page)
+  const routes = APP_ROUTES[currentApp]
+  const formatUrl = (page: '/legal' | '/integrations') =>
+    (page === '/legal' ? routes.PAGE_LEGAL : routes.PAGE_INTEGRATIONS)({ blockchainId })
 
   const networkSwitch = useMatches().findLast(match => match.staticData.networkSwitch)?.staticData.networkSwitch ?? {
     type: 'same-page',

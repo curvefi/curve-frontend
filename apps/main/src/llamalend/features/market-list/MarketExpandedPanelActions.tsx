@@ -17,14 +17,17 @@ export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> 
         market.type === MarketType.Lend && {
           id: 'earn',
           label: t`Earn`,
-          href: market.url + LEND_MARKET_ROUTES.PAGE_VAULT,
+          href: LEND_MARKET_ROUTES.PAGE_VAULT({
+            blockchainId: market.blockchainId,
+            marketId: market.controllerAddress,
+          }),
           testId: 'llama-market-go-to-vault',
         },
         { id: 'borrow', label: t`Borrow`, href: market.url, testId: 'llama-market-go-to-borrow' },
       ),
       ...extraPanels,
     ],
-    [extraPanels, market.type, market.url],
+    [extraPanels, market.type, market.url, market.blockchainId, market.controllerAddress],
   )
 
   return <ExpandedPanelActions actions={actions} />

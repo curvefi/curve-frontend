@@ -1,5 +1,5 @@
 import type { Chain as PricesChain } from '@curvefi/prices-api'
-import { createChainOptions, getCurrentNetwork, getInternalUrl } from '@evm-ui/shared/routes'
+import { BRIDGE_ROUTES, createChainOptions, getCurrentNetwork } from '@evm-ui/shared/routes'
 import { requireBlockchainId } from '@evm-ui/utils/network'
 import type { NetworkDef } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
@@ -136,7 +136,7 @@ export const BridgeTargets = ({
         {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
-          options={createChainOptions(networks, blockchainId => getInternalUrl('bridge', blockchainId))}
+          options={createChainOptions(networks, blockchainId => BRIDGE_ROUTES.PAGE_BRIDGES({ blockchainId }))}
           selectedNetworkId={getCurrentNetwork(usePathname())}
           tvls={tvls}
           onNetwork={chainId => {

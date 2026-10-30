@@ -1,8 +1,8 @@
 import { ChainId, type NetworkUrlParams } from '@/loan/types/loan.types'
-import { getInternalUrl, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
+import { LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
 import { Chain } from '@primitives/network.utils'
 
 export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
-  getInternalUrl('llamalend', network, LLAMALEND_ROUTES.PAGE_MARKETS)
+  LLAMALEND_ROUTES.PAGE_MARKETS({ blockchainId: network })
 
 export const getChainId = ({ network }: NetworkUrlParams) => ({ ethereum: Chain.Ethereum as const })[network] as ChainId
