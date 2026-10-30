@@ -1,5 +1,7 @@
 import { groupBy } from 'lodash'
 import { useMemo } from 'react'
+import { getAddress } from 'viem'
+import { LEGACY_POOLS } from '@/routes/dex.routes'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
@@ -20,8 +22,8 @@ type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
 // Temporary (?) workaround: these pools have broken behavior that breaks multicall
 const CLAIMABLES_BLACKLIST: Partial<Record<Chain, Set<Address>>> = {
   [Chain.Ethereum]: new Set([
-    // REUSD/3Crv: reward token 0xdBd34485773B0C9aDAC1B61b64e7c59049EB0944 reverts on symbol() and decimals().
-    '0xC61557C5d177bd7DC889A3b621eEC333e168f68A',
+    '0xC61557C5d177bd7DC889A3b621eEC333e168f68A', // REUSD/3Crv: reward token 0xdBd34485773B0C9aDAC1B61b64e7c59049EB0944 reverts on symbol() and decimals().
+    ...Object.keys(LEGACY_POOLS).map(getAddress), // Old pools that are not in Prices API (we redirect to https://classic.curve.finance/)
   ]),
   [Chain.Polygon]: new Set([
     '0x2FB12dA70a17802200A512DE31dc0B1b2Da03b4c', // CRV2USD
