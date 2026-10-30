@@ -33,3 +33,6 @@ export const useMarketMobileFormDrawer = useStableChannel
 export const useNewPoolForms = useBetaChannel
 
 export const useLiquidityDensityChart = useStableChannel
+
+/** LlamaLend leverage as collateral value ÷ equity */
+export const useLlamalendEquityLeverage = useBetaChannel

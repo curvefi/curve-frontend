@@ -1,3 +1,4 @@
+import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -9,38 +10,62 @@ import { decimalSum } from '@ui/lib/decimal'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
-  leverageValue: Query<Decimal | null>
-  prevLeverageValue: Query<Decimal | null>
+  collateralLeverageValue: Query<Decimal | null>
+  prevCollateralLeverageValue: Query<Decimal | null>
+  isEquityLeverage: boolean
+  equityLeverage: EquityLeverage | null
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   collateralDelta?: Decimal // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
-export const getLeverageInfoFields = ({
-  leverageEnabled,
-  collateralDelta,
-  leverageValue,
-  prevLeverageValue,
+/** @deprecated Collateral leverage rows, replaced by the equity leverage */
+const getCollateralLeverageFields = ({
+  collateralLeverageValue,
+  prevCollateralLeverageValue,
   prevCollateral,
   leverageTotalCollateral,
-}: LeverageInfoFieldsOptions) =>
-  ({
+}: LeverageInfoFieldsOptions) => ({
+  leverageValue: q(collateralLeverageValue),
+  prevLeverageValue: q(prevCollateralLeverageValue),
+  collateralLeverageValue: q(collateralLeverageValue),
+  prevCollateralLeverageValue: q(prevCollateralLeverageValue),
+  prevLeverageCollateral: {
+    data: calculateLeverageCollateral(prevCollateral.data, prevCollateralLeverageValue.data),
+    ...combineQueryState(prevCollateral, prevCollateralLeverageValue),
+  },
+  leverageCollateral: {
+    data: calculateLeverageCollateral(leverageTotalCollateral.data, collateralLeverageValue.data),
+    ...combineQueryState(leverageTotalCollateral, collateralLeverageValue),
+  },
+})
+
+export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
+  const {
+    leverageEnabled,
+    collateralDelta,
+    prevCollateralLeverageValue,
+    isEquityLeverage,
+    equityLeverage,
+    prevCollateral,
+    leverageTotalCollateral,
+  } = options
+  return {
     // we show the leverage info even when the leverage is disabled for the current action
-    ...(leverageEnabled || isPositionLeveraged(prevLeverageValue.data)
+    ...(leverageEnabled || (isEquityLeverage ? equityLeverage : isPositionLeveraged(prevCollateralLeverageValue.data))
       ? {
           leverageEnabled: true,
-          leverageValue: q(leverageValue),
-          prevLeverageValue: q(prevLeverageValue),
-          prevLeverageCollateral: {
-            data: calculateLeverageCollateral(prevCollateral.data, prevLeverageValue.data),
-            ...combineQueryState(prevCollateral, prevLeverageValue),
-          },
-          leverageCollateral: {
-            data: calculateLeverageCollateral(leverageTotalCollateral.data, leverageValue.data),
-            ...combineQueryState(leverageTotalCollateral, leverageValue),
-          },
+          ...(isEquityLeverage
+            ? equityLeverage && {
+                leverageValue: equityLeverage.future,
+                prevLeverageValue: equityLeverage.current,
+                leveragedApr: equityLeverage.futureApr,
+                prevLeveragedApr: equityLeverage.currentApr,
+              }
+            : getCollateralLeverageFields(options)),
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
         }
       : { prevCollateral, collateral: mapQuery(prevCollateral, prev => maybes([prev, collateralDelta], decimalSum)) }),
-  }) satisfies Partial<LoanActionInfoListProps>
+  } satisfies Partial<LoanActionInfoListProps>
+}

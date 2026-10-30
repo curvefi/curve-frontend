@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useAddCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
@@ -13,6 +14,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
@@ -40,6 +42,10 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
+  const collateral = mapQuery(
+    prevCollateral,
+    stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
+  )
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -60,18 +66,17 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
           isOpen && !!userCollateral,
         ),
       )}
-      collateral={mapQuery(
-        prevCollateral,
-        stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
-      )}
+      collateral={collateral}
       prices={q(useAddCollateralPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       {...getLeverageInfoFields({
         leverageEnabled: false,
-        leverageValue: useAddCollateralFutureLeverage(params, isOpen),
-        prevLeverageValue: useUserCurrentLeverage(params, isOpen),
+        collateralLeverageValue: useAddCollateralFutureLeverage(params, isOpen),
+        prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
+        isEquityLeverage: useLlamalendEquityLeverage(),
+        equityLeverage: useAddCollateralEquityLeverage(params, isOpen),
         prevCollateral,
-        leverageTotalCollateral: prevCollateral,
+        leverageTotalCollateral: collateral,
         collateralDelta: userCollateral,
       })}
       {...prevLoanState}

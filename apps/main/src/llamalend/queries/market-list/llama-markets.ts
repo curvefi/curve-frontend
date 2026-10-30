@@ -9,7 +9,13 @@ import {
   createGetBadDebtMarket,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
-import { computeTotalRate, getSupplyApyMetrics, sumCampaignsApr, sumCampaignsApy } from '@/llamalend/rates.utils'
+import {
+  computeTotalRate,
+  getMarketCampaigns,
+  getSupplyApyMetrics,
+  sumCampaignsApr,
+  sumCampaignsApy,
+} from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
@@ -158,7 +164,12 @@ const convertLendingVault = (
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
     extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate, 'llamalend.rewards')) : null
-  const rewards = [...(campaigns[vault] ?? []), ...(campaigns[controller] ?? [])]
+  const rewards = getMarketCampaigns(campaigns, {
+    marketType,
+    controllerAddress: controller,
+    vaultAddress: vault,
+    ammAddress: llamma,
+  })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
@@ -286,7 +297,12 @@ const convertMintMarket = (
   const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
-  const rewards = [...(campaigns[address] ?? []), ...(campaigns[llamma] ?? [])]
+  const rewards = getMarketCampaigns(campaigns, {
+    marketType,
+    controllerAddress: address,
+    vaultAddress: null,
+    ammAddress: llamma,
+  })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
