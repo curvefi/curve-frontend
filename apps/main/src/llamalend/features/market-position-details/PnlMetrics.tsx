@@ -40,11 +40,12 @@ export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrow
         {...pnlMetric}
         valueOptions={{ ...pnlMetric.valueOptions, fallback: UNAVAILABLE_NOTATION }}
         change={maybe(pnl.data?.debt.roi, Number)}
-        valueTooltip={maybe(pnl.data?.collateral, collateral => ({
+        valueTooltip={maybe(pnl.data, ({ debt, collateral }) => ({
           title: t`PNL (ROI %)`,
           body: (
             <TokenPnlTooltipContent
-              collateral={{ pnl: collateral, symbol: collateralSymbol ?? UNAVAILABLE_TOKEN_SYMBOL }}
+              debt={{ pnl: debt, symbol: borrowSymbol ?? UNAVAILABLE_TOKEN_SYMBOL }}
+              collateral={maybe(collateral, pnl => ({ pnl, symbol: collateralSymbol ?? UNAVAILABLE_TOKEN_SYMBOL }))}
             />
           ),
           ...BORROW_METRIC_TOOLTIP,
