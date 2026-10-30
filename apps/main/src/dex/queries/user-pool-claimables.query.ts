@@ -48,8 +48,13 @@ export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChai
 const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) =>
     ({ ...getUserPoolClaimablesQueryKey({ chainId, userAddress }), poolAddresses }) as const,
-  queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
+  queryFn: async ({ userAddress, poolAddresses: allPoolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
+
+    // Skip unresolved pools so one missing pool cannot fail the entire claimables batch.
+    // This can happen as the user positions v2 endpoint can return more pools than loaded in by curve-js which uses the v1 pools endpoint.
+    const knownPoolAddresses = new Set(Object.values(curve.getPoolsData()).map(pool => pool.swap_address.toLowerCase()))
+    const poolAddresses = allPoolAddresses.filter(address => knownPoolAddresses.has(address.toLowerCase()))
 
     // This is a very heavy function call, so we want to avoid many retries.
     const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress).catch(error => {
