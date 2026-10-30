@@ -18,7 +18,7 @@ type PnlMetricsProps = PositionPnlAndEquityQueries & {
   borrowUsdRate: QueryProp<Amount>
 }
 
-/** Equity and PNL (ROI %) in the borrowed token, each with its USD value, and the PNL against holding the collateral on hover */
+/** Equity and PNL (ROI %) in the borrowed token, each with its USD value */
 export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrowUsdRate }: PnlMetricsProps) => {
   const pnlMetric = tokenMetric({
     value: mapQuery(pnl, pnl => pnl?.debt.pnl ?? null),
