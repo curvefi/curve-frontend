@@ -14042,14 +14042,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"seroval@npm:^1.6.7":
-  version: 1.6.8
-  resolution: "seroval@npm:1.6.8"
-  checksum: 10c0/c65f4ca1bd712d89c70c86df41bedc8270ee33cc8365c867761a9fe6310ab3b8c0fc43a48f6c1cea3cf9b5cc362714e7325e5f9275407303e4c51dfcebeb98b2
-  languageName: node
-  linkType: hard
-
-"seroval@npm:~1.6.8":
+"seroval@npm:^1.6.7, seroval@npm:~1.6.8":
   version: 1.6.12
   resolution: "seroval@npm:1.6.12"
   checksum: 10c0/f13160fe35803d3b12fb9bc161a06deee1e5b91b2773de9ea5cec5001de4f77a3c89b25f163f2f8577f9c9eadfe6ec9ada13eaa2debdf0205553cc8cb059083c
@@ -14719,11 +14712,11 @@ __metadata:
   linkType: hard
 
 "systeminformation@npm:^5.31.1":
-  version: 5.33.14
-  resolution: "systeminformation@npm:5.33.14"
+  version: 5.33.17
+  resolution: "systeminformation@npm:5.33.17"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10c0/fa9464bd85c7fb36d0a95abbdfaa93bc60dd9dd533b4839f46c603c0ee7c53cc361e4f3ebfda2373c7d8c875fadae796f08cd7faa0adccf358b95f55980b4ef2
+  checksum: 10c0/72f54ff1306c11fee324522623b90705a5a917bedf6bce58a02c36d868e9d1839660889eb79bb82bcf2193bcab738323f8d9304455a379ade66d777083aa5a05
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
