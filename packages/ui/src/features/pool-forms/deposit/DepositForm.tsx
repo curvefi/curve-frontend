@@ -22,26 +22,23 @@ export type DepositFormProps<TValues extends PoolDepositForm = PoolDepositForm> 
   maxAmounts: QueryProp<Decimal>[] | undefined
 }
 
-export const DepositForm = <TValues extends PoolDepositForm>(
-  props: DepositFormProps<TValues> & { children: ReactNode },
-) => {
-  const {
-    form,
-    tokens,
-    onSubmit,
-    isPending,
-    isLoading,
-    isDisabled,
-    wallet,
-    userAddress,
-    error,
-    formErrors,
-    footer,
-    canDepositWrapped,
-    inputsDisabled,
-    maxAmounts,
-    children,
-  } = props
+export const DepositForm = <TValues extends PoolDepositForm>({
+  form,
+  tokens,
+  onSubmit,
+  isPending,
+  isLoading,
+  isDisabled,
+  wallet,
+  userAddress,
+  error,
+  formErrors,
+  footer,
+  canDepositWrapped,
+  inputsDisabled,
+  maxAmounts,
+  children,
+}: DepositFormProps<TValues> & { children: ReactNode }) => {
   useFormSync<PoolDepositForm>(form, {
     ...maybe(maxAmounts, amounts => fromEntries(amounts.map((max, index) => [poolMaxAmountField(index), max.data]))),
   })

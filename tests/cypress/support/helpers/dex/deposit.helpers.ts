@@ -73,13 +73,13 @@ export const submitPoolDepositAndCheck = ({
   userAddress,
   amounts,
   pool: { coins, lpToken },
-  oneCoinIndex,
+  tokenIndex,
 }: {
   publicRpcUrl: string
   userAddress: Address
   amounts: readonly Decimal[]
   pool: DepositTestPool
-  oneCoinIndex?: number
+  tokenIndex?: number
 }) => {
   const client = createPublicClient({ transport: http(publicRpcUrl) })
   const readBalances = () =>
@@ -96,7 +96,7 @@ export const submitPoolDepositAndCheck = ({
       'tenderly.submit',
     )
     coins.forEach(({ address }, index) => {
-      if (oneCoinIndex == null || index === oneCoinIndex) poolDepositInput(address).should('have.value', '')
+      if (index === tokenIndex) poolDepositInput(address).should('have.value', '')
     })
     poolDepositSubmit().should('be.disabled')
 
@@ -105,7 +105,7 @@ export const submitPoolDepositAndCheck = ({
         const spent = parseUnits(amounts[index], coin.decimals)
         expect(before[index] - after[index], `${coin.symbol} spent`).to.equal(spent)
         const { address, decimals } = coin
-        if (oneCoinIndex == null || index === oneCoinIndex)
+        if (index === tokenIndex)
           cy.get(
             `[data-testid="pool-token-input-${address}"] [data-testid="balance-value"]`,
             TIMEOUTS['tenderly.balances'],

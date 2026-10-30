@@ -1,5 +1,5 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { AdvancedDepositTab, OneCoinDepositTab } from '@/stellar/features/deposit/DepositTab'
+import { DepositTab } from '@/stellar/features/deposit/DepositTab'
 import { oneDecimal, oneInt, oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
@@ -30,6 +30,7 @@ import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stella
 import { StellarTestWrapper } from '@cy/support/helpers/stellar/StellarTestWrapper'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
+import type { DepositType } from '@ui/features/pool-forms/deposit/deposit-form.utils'
 import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 
 describe('Stellar testnet deposit', () => {
@@ -53,19 +54,18 @@ describe('Stellar testnet deposit', () => {
     cy.then(TIMEOUTS['stellar.read'], () => fetchPoolState(pool, testnetConfig)).then(fresh => (state = fresh)),
   )
 
-  const mountDeposit = ({ connected = true, oneCoin = false } = {}) => {
+  const mountDeposit = ({ connected = true, type = 'advanced' }: { connected?: boolean; type?: DepositType } = {}) => {
     mockLitePool(pool)
-    const Component = oneCoin ? OneCoinDepositTab : AdvancedDepositTab
     cy.mount(
       <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
-        <Component network={TEST_NETWORK} pool={pool} />
+        <DepositTab network={TEST_NETWORK} pool={pool} type={type} />
       </StellarTestWrapper>,
     )
-    if (connected) checkDepositBalances({ ...state, coins: oneCoin ? [state.coins[0]] : state.coins })
   }
 
   it('rejects an empty deposit and amounts exceeding a wallet balance', () => {
     mountDeposit()
+    checkDepositBalances(state)
     depositSubmit().should('be.disabled')
     const coin = oneOf(...state.coins)
     writePoolAmount(coin.address, '0')
@@ -80,6 +80,7 @@ describe('Stellar testnet deposit', () => {
 
   it('requires every seed coin and seeds the pool', () => {
     mountDeposit()
+    checkDepositBalances(state)
     expect(state.supply).to.equal('0')
     const coin = oneOf(...state.coins)
     const amounts = allCoinDeposit(state.coins)
@@ -123,6 +124,7 @@ describe('Stellar testnet deposit', () => {
 
   it('deposits balanced amounts', () => {
     mountDeposit()
+    checkDepositBalances(state)
     const coinIndex = oneInt(state.coins.length)
     const coin = state.coins[coinIndex]
     const unit = oneDecimal(0.0001, 0.001)
@@ -160,12 +162,13 @@ describe('Stellar testnet deposit', () => {
   })
 
   it('deposits a single coin', () => {
-    mountDeposit({ oneCoin: true })
+    mountDeposit({ type: 'one-coin' })
     const coin = oneOf(...state.coins)
     const amounts: PoolAmounts = { [coin.symbol]: oneDecimal(0.001, 0.01, coin.decimals) }
     cy.log(`Deposit ${coin.symbol}`)
     cy.get('[data-testid="deposit-token-select"]').click()
     cy.get(`[data-testid="token-option-${coin.address.toLowerCase()}"]`).click()
+    checkDepositBalances({ ...state, coins: [coin] })
     poolInput(coin.address).find('input[type="text"]').type(amounts[coin.symbol]).blur()
     submitDepositAndCheck({ ...state, coins: [coin] }, amounts)
   })

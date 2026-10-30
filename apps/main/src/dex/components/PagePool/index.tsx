@@ -122,30 +122,83 @@ const legacyMenu = [
   },
 ] as const satisfies FormTab<TransferTabsParams>[]
 
-const menu: FormTab<TransferTabsParams>[] = legacyMenu.map(tab =>
-  tab.value === 'deposit'
-    ? {
-        ...tab,
-        subTabs: [
-          {
-            value: 'deposit-one-coin',
-            label: t`One coin`,
-            visible: ({ seed }) => seed.loaded && seed.isSeed === false,
-            component: props => <TabGuard alert={getDepositTabAlert} otherwise={OneCoinDepositTab} {...props} />,
-          },
-          {
-            value: 'DEPOSIT',
-            label: t`Advanced`,
-            component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
-          },
-          ...tab.subTabs.slice(1),
-        ],
-      }
-    : tab,
-)
+const menu = [
+  {
+    value: 'seed-pool',
+    label: t`Seed pool`,
+    visible: ({ seed }) => seed.isSeed === true,
+    component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
+  },
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    visible: ({ seed }) => seed.isSeed === false,
+    subTabs: [
+      {
+        value: 'deposit-one-coin',
+        label: t`One coin`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={OneCoinDepositTab} {...props} />,
+      },
+      {
+        value: 'DEPOSIT',
+        label: t`Advanced`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
+      },
+      {
+        value: 'STAKE',
+        label: t`Stake`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormStake} {...props} />,
+      },
+      {
+        value: 'DEPOSIT_STAKE',
+        label: t`Deposit & Stake`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
+      },
+    ],
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    visible: ({ seed }) => seed.isSeed === false,
+    subTabs: [
+      {
+        value: 'WITHDRAW',
+        label: t`Withdraw`,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
+      },
+      { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
+      { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
+    ],
+  },
+  {
+    value: 'swap',
+    label: t`Swap`,
+    visible: ({ seed }) => seed.isSeed === false,
+    component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
+  },
+  {
+    value: 'manage-gauge',
+    label: t`Gauge`,
+    visible: p => p.seed.isSeed === false && (!!p.isGaugeManager || !!p.isRewardsDistributor),
+    subTabs: [
+      {
+        value: 'add_reward',
+        label: t`Add Reward`,
+        visible: p => !!p.isGaugeManager,
+        component: () => <AddRewardToken />,
+      },
+      {
+        value: 'deposit_reward',
+        label: t`Deposit Reward`,
+        visible: p => !!p.isRewardsDistributor,
+        component: () => <DepositReward />,
+      },
+    ],
+  },
+] as const satisfies FormTab<TransferTabsParams>[]
 
 /** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
-type PoolRouteState = { defaultTab?: (typeof legacyMenu)[number]['value'] }
+type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
@@ -257,7 +310,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         }
         formTabs={{
-          content: tabParams && (
+          content: (!newPoolForms || seed.loaded) && (
             <FormTabs menu={newPoolForms ? menu : legacyMenu} params={tabParams} defaultValue={defaultTab} />
           ),
         }}

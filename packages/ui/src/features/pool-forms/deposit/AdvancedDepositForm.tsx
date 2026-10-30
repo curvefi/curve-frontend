@@ -1,8 +1,7 @@
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import { isComplete } from '@primitives/array.utils'
-import { fromEntries, notFalsyArray } from '@primitives/objects.utils'
-import type { QueryProp } from '@ui/features/queries/util'
+import { fromEntries } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { getBalancedAmounts } from '../balanced-amounts.utils'
 import { poolAmountField, type PoolDepositForm } from '../pool-form.utils'
@@ -43,9 +42,7 @@ export const AdvancedDepositForm = <TValues extends PoolDepositForm>(props: Depo
         reserves={reserves}
         isConnected={wallet.isConnected}
         disabled={
-          isPending ||
-          isSeed.data !== false ||
-          notFalsyArray<QueryProp<unknown>>(tokens, [reserves], maxAmounts).some(q => q.isLoading)
+          isPending || isSeed.data === true || (wallet.isConnected && !maxAmounts?.every(({ data }) => data != null))
         }
       />
     </DepositForm>

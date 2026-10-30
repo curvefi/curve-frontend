@@ -81,10 +81,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
-  useEffect(
-    () => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false, tokenIndex: 0 }),
-    [isWrapped, tokenCount, update],
-  )
+  useEffect(() => update({ ...getPoolDefaultValues(tokenCount), isBalanced: false }), [isWrapped, tokenCount, update])
 
   useEffect(() => {
     if (isSeed.data && canDepositWrapped) update({ isWrapped: true })
@@ -114,8 +111,8 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     reserves: mapQuery(reserves, reserves => reserves.tokens.map(t => t.balance)),
     isSeed,
     canDepositWrapped,
-    // Unfortunately, curve.js requires a wallet. Seed deposit derives amounts from the first.
-    inputsDisabled: !wallet || isPending || (isSeed.data !== false && ('first-only' as const)),
+    // Seed deposit derives amounts from the first.
+    inputsDisabled: isPending || (isSeed.data !== false && ('first-only' as const)),
     tokens,
     maxAmounts: useDepositMaxAmounts({ params: queryParams, tokenAddresses, balances, nativeToken }),
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },

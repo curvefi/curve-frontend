@@ -6,17 +6,14 @@ import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getPoolDefaultValues, poolAmountField, poolMaxAmountField, type PoolDepositForm } from '../pool-form.utils'
 import { PoolTokenSelector } from '../PoolTokenSelector'
-import { AdvancedDepositForm } from './AdvancedDepositForm'
 import { DepositForm, type DepositFormProps } from './DepositForm'
 
 export const OneCoinDepositForm = <TValues extends PoolDepositForm>(props: DepositFormProps<TValues>) => {
-  const { form, tokens, maxAmounts, inputsDisabled, isPending, isSeed } = props
+  const { form, tokens, maxAmounts, inputsDisabled, isPending } = props
   const index = form.values.tokenIndex
   const token = tokens?.[index]
   const field = poolAmountField(index)
-  return isSeed.data !== false ? (
-    <AdvancedDepositForm {...props} />
-  ) : (
+  return (
     <DepositForm {...props}>
       <FormTokenInput
         form={form}

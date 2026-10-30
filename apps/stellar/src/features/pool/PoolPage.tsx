@@ -9,7 +9,7 @@ import { useTokenName } from '@/stellar/queries/token/token-name.query'
 import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import type { RouterState } from '@ui/components/RouterLink'
-import { FormTabs } from '@ui/features/forms/tabs/FormTabs'
+import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
@@ -18,7 +18,7 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { StellarUrls } from '../../routes/routes'
-import { AdvancedDepositTab, OneCoinDepositTab } from '../deposit/DepositTab'
+import { DepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
 import { OneCoinWithdrawTab } from '../withdraw/OneCoinWithdrawTab'
 import { PoolAdvancedDetails } from './PoolAdvancedDetails'
@@ -29,28 +29,31 @@ import { UserPosition } from './UserPosition'
 
 const menu = [
   {
+    value: 'seed-pool',
+    label: t`Seed pool`,
+    visible: ({ isSeed }) => isSeed === true,
+    component: props => <DepositTab {...props} type="advanced" />,
+  },
+  {
     value: 'deposit',
     label: t`Deposit`,
+    visible: ({ isSeed }) => !isSeed,
     subTabs: [
-      {
-        value: 'deposit-one-coin',
-        label: t`One coin`,
-        component: OneCoinDepositTab,
-        visible: ({ isSeed }: PoolQuery & { isSeed: boolean | undefined }) => isSeed === false,
-      },
-      { value: 'deposit-advanced', label: t`Advanced`, component: AdvancedDepositTab },
+      { value: 'deposit-one-coin', label: t`One coin`, component: props => <DepositTab {...props} type="one-coin" /> },
+      { value: 'deposit-advanced', label: t`Advanced`, component: props => <DepositTab {...props} type="advanced" /> },
     ],
   },
   {
     value: 'withdraw',
     label: t`Withdraw`,
+    visible: ({ isSeed }) => !isSeed,
     subTabs: [
       { value: 'withdraw-one-coin', label: t`One coin`, component: OneCoinWithdrawTab },
       { value: 'withdraw-advanced', label: t`Advanced`, component: AdvancedWithdrawTab },
     ],
   },
-  { value: 'swap', label: t`Swap`, component: SwapTab },
-]
+  { value: 'swap', label: t`Swap`, component: SwapTab, visible: ({ isSeed }) => !isSeed },
+] as const satisfies FormTab<PoolQuery & { isSeed: boolean | undefined }>[]
 
 export const PoolPage = () => {
   const { network, pool } = useParams<PoolQuery>()
@@ -78,10 +81,10 @@ export const PoolPage = () => {
       }
       formTabs={{
         placement: 'inline',
-        content: (
+        content: !supply.isLoading && (
           <FormTabs
             menu={menu}
-            params={{ network, pool, isSeed: maybe(supply.data, supply => !+supply) }}
+            params={{ ...params, isSeed: maybe(supply.data, supply => !+supply) }}
             defaultValue={defaultTab?.toString()}
           />
         ),
