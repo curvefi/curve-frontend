@@ -1,10 +1,10 @@
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserPoolParams, UserPoolQuery } from '@evm-ui/queries/query-types'
 import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { Chain } from '@primitives/network.utils'
 import { combineQueriesToObject } from '@ui/features/queries/combine'
 import { queryClient } from '@ui/features/queries/query-client'
 import { useQueries } from '@ui/features/queries/query-hooks'
@@ -40,11 +40,13 @@ export const useUserPoolBoosts = (
   enabled = true,
 ) => {
   const { isHydrated } = useCurve()
-  const isEnabled = enabled && isHydrated && chainId === Number(Chain.Ethereum)
 
   return useQueries({
     queries: poolAddresses.map(poolAddress =>
-      getUserPoolBoostQueryOptions({ chainId, userAddress, poolAddress }, isEnabled),
+      getUserPoolBoostQueryOptions(
+        { chainId, userAddress, poolAddress },
+        enabled && isHydrated && chainId != null && !isLiteChain(chainId),
+      ),
     ),
     combine: results =>
       combineQueriesToObject(
