@@ -27,7 +27,7 @@ const toastTitle = (networkName?: string) =>
   networkName ? t`This pool is only available on ${networkName}` : NETWORK_SWITCH_UNAVAILABLE
 
 // Temporary fallback until these legacy pools are supported in the current UI.
-const LEGACY_POOLS: Record<string, string> = {
+export const LEGACY_POOLS: Record<string, string> = {
   '0x80466c64868e1ab14a1ddf27a676c3fcbe638fe5': 'tricrypto',
   '0xe7a24ef0c5e95ffb0f6684b813a78f2a3ad7d171': 'linkusd',
 }

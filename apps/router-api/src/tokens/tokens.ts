@@ -5,7 +5,6 @@ import type { IPoolData } from '@curvefi/api/lib/interfaces'
 import { zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { type CurveJS, loadCurve } from '../curve-router/curvejs'
-import { getPoolsData } from '../curve-router/pool-data'
 import type { TokensQuery } from './tokens.schemas'
 
 const MIN_POOL_TVL = 100 // in dollars
@@ -27,10 +26,13 @@ export const getPoolTvl = async (curve: CurveJS, { is_llamma, swap_address }: IP
 export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQuery }>) => {
   const { curve, blacklist } = await loadCurve(request.query.chainId, request.log)
   const { DECIMALS: decimals, NATIVE_TOKEN: nativeToken } = curve.getNetworkConstants()
+  const poolsData = curve.getPoolsData()
 
   const pools = notFalsy(
     ...(await Promise.all(
-      getPoolsData(curve)
+      curve
+        .getPoolList()
+        .map(id => poolsData[id])
         .filter(({ swap_address }) => !blacklist.has(swap_address.toLowerCase()))
         .map(async pool => (await getPoolTvl(curve, pool)) > MIN_POOL_TVL && pool),
     )),
