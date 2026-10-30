@@ -201,8 +201,8 @@ describe('liquidations', () => {
     expect(toPositionCapital({ events: [open, liquidated] })).toEqual(toPositionCapital({ events: [open] }))
   })
 
-  it('counts what a self-liquidation took from the wallet', () => {
-    const selfLiquidated = event({
+  it('counts what closing the position took from the wallet', () => {
+    const closed = event({
       oraclePrice: 1500,
       liquidation: {
         liquidator: USER.toUpperCase().replace('0X', '0x') as typeof USER,
@@ -212,7 +212,7 @@ describe('liquidations', () => {
       },
     })
     // 10,000 debt − 500 stablecoin − 2 × 1,500 collateral
-    expect(Number(toPositionCapital({ events: [open, selfLiquidated] })?.debt.netInvested)).toBe(10_000 + 6500)
+    expect(Number(toPositionCapital({ events: [open, closed] })?.debt.netInvested)).toBe(10_000 + 6500)
   })
 })
 
