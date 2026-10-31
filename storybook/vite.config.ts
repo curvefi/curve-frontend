@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
-import { reactCompiler } from '../react-compiler.config'
+import { reactCompiler } from '../react-compiler.config.mts'
 
 const rootDir = dirname(fileURLToPath(import.meta.url))
 

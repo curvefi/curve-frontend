@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { vercel } from 'vite-plugin-vercel/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
-import { reactCompiler } from '../../react-compiler.config'
+import { reactCompiler } from '../../react-compiler.config.mts'
 
 const {
   API_PROXY_TARGET,

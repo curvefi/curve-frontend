@@ -115,7 +115,7 @@ jobs:
 
       - name: Optimize component dependencies
         if: inputs.suite == 'component'
-        run: yarn vite optimize --config vite.config.ts
+        run: yarn vite optimize --config vite.config.mts
         working-directory: tests
 
       - name: Build app
