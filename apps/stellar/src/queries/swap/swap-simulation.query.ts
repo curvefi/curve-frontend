@@ -1,4 +1,4 @@
-import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { SwapParams, SwapQuery } from '@/stellar/features/swap/types'
 import { swapValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import { queryFactory } from '@ui/features/queries/factory'

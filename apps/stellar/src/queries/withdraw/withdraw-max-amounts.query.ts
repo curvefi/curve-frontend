@@ -1,5 +1,5 @@
 import { test } from 'vest'
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { validateAmount } from '@/stellar/queries/validation/liquidity.validation'

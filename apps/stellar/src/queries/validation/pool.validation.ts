@@ -1,6 +1,7 @@
 import { test } from 'vest'
 import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
-import { isAccountAddress, isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
+import { isAccountAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import type { PoolDecimalsQuery, PoolParams, TokenQuery, UserQuery } from '@/stellar/queries/query-types'
 import type { Nullish } from '@primitives/objects.utils'

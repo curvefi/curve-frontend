@@ -2,7 +2,7 @@ import {
   sendStellarTransaction,
   type StellarTransaction,
   type StellarTransactionResponse,
-} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { assert } from '@primitives/objects.utils'
 import {

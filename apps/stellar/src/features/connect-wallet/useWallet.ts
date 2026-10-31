@@ -1,6 +1,6 @@
 import { createContext, use } from 'react'
 import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
-import type { WalletConnector } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import type { WalletConnector } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { assert } from '@primitives/objects.utils'
 
 type WalletContextValue = {

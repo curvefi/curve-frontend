@@ -7,7 +7,7 @@ import {
   onWalletAddressChanged,
   refreshSupportedWallets,
   type WalletConnector,
-} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { WalletContext } from './useWallet'
 
