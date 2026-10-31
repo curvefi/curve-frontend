@@ -18,6 +18,7 @@ import { defineMuiChip } from './mui-chip'
 import { defineMuiMenuItem } from './mui-menu-item'
 import { defineMuiRadio } from './mui-radio'
 import { defineMuiSelect } from './mui-select'
+import { defineMuiStepConnector, defineMuiStepLabel } from './mui-stepper'
 import { defineMuiSwitch } from './mui-switch'
 import { defineMuiTab, defineMuiTabs } from './mui-tabs'
 import { defineMuiTooltip } from './mui-tooltip'
@@ -125,6 +126,8 @@ export const createComponents = (
   MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: defineMuiSlider(design),
   MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
+  MuiStepConnector: defineMuiStepConnector(design),
+  MuiStepLabel: defineMuiStepLabel(design, typography),
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
   MuiTableCell: { styleOverrides: { root: { borderBlockEnd: 'none' } } },
