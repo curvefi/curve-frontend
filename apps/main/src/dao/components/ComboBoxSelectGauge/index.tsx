@@ -42,7 +42,7 @@ export const ComboBoxGauges = ({
 
   const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress ?? '',
+    userAddress,
   })
   const gauges = Object.values(gaugeMapper ?? {})
     .filter(

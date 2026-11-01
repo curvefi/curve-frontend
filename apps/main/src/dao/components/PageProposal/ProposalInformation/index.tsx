@@ -23,12 +23,14 @@ export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
 
   return (
     <Wrapper>
-      <Box>
-        <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink href={daoPages.user({ userAddress: proposer! })}>
-          {shortenAddress(proposer)}
-        </StyledInternalLink>
-      </Box>
+      {proposer && (
+        <Box>
+          <MetricsTitle>{t`Proposer`}</MetricsTitle>
+          <StyledInternalLink href={daoPages.user({ userAddress: proposer })}>
+            {shortenAddress(proposer)}
+          </StyledInternalLink>
+        </Box>
+      )}
       <Box>
         <MetricsTitle>{t`Created`}</MetricsTitle>
         <VoteInformationData>{createdDate}</VoteInformationData>

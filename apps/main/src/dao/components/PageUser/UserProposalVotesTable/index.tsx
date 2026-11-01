@@ -10,12 +10,13 @@ import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { daoPages } from '@evm-ui/shared/routes'
 import Box from '@mui/material/Box'
+import type { Address } from '@primitives/address.utils'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 import { VOTES_LABELS } from '../constants'
 
-type UserProposalVotesTableProps = { userAddress: string; tableMinWidth: number }
+type UserProposalVotesTableProps = { userAddress: Address; tableMinWidth: number }
 
 const sortUserProposalVotes = (
   userProposalVotes: UserProposalVoteFormatted[],
