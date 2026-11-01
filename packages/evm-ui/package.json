@@ -29,7 +29,7 @@
     "dayjs": "1.11.23",
     "ethers": "6.17.0",
     "lightweight-charts": "5.2.1",
-    "viem": "2.57.12",
+    "viem": "2.57.7",
     "wagmi": "3.7.9"
   },
   "devDependencies": {
