@@ -37,6 +37,7 @@ jobs:
         timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
+          DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.
           NODE_ENV: test
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-rpc
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
