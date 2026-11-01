@@ -3,6 +3,7 @@ import { sendStellarTransaction, simulateContractCall } from '@/stellar/features
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { oneDecimal } from '@cy/support/generators'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { retryTestnetSetup } from '@cy/support/helpers/stellar/connector'
 import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
@@ -25,14 +26,16 @@ export const seedTestPool = async (pool: StellarContract, { coins, deployer: { a
       return BigInt(toWei(decimalMultiply(unit, index + 1), decimals))
     }),
   )
-  const transaction = await simulateContractCall<bigint>(
-    TEST_NETWORK,
-    pool,
-    'add_liquidity',
-    [account, amounts, 0n, account],
-    account,
-  )
-  return sendStellarTransaction(transaction)
+  return retryTestnetSetup(async () => {
+    const transaction = await simulateContractCall<bigint>(
+      TEST_NETWORK,
+      pool,
+      'add_liquidity',
+      [account, amounts, 0n, account],
+      account,
+    )
+    return sendStellarTransaction(transaction)
+  })
 }
 
 export const depositBalancedCheckbox = () =>

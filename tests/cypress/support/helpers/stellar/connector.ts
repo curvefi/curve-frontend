@@ -10,8 +10,17 @@ import { retry } from '@primitives/promise.utils'
 import { BASE_FEE, contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 
-const POOL_DEPLOYMENT_RETRIES = 5
-const POOL_DEPLOYMENT_RETRY_DELAY_MS = Duration.StellarPoolDeploymentRetry
+/** Rebuild and sign on every attempt so rejected transactions get a fresh sequence and simulation. */
+export const retryTestnetSetup = <T>(
+  buildAndSend: () => Promise<T>,
+  shouldRetry: (error: unknown) => boolean = () => false,
+) =>
+  retry(buildAndSend, {
+    retries: 5,
+    // Spread retries across ledger closes so competing deployments do not keep colliding.
+    delay: () => Duration.StellarPoolDeploymentRetry * (1 + Math.random()),
+    shouldRetry: error => /\b(TRY_AGAIN_LATER|tx_bad_seq)\b/.test((error as Error).message) || shouldRetry(error),
+  })
 
 /** Register a real keypair wallet through the wallet kit's module interface. */
 export const connectTestWallet = ({ deployer }: TestnetConfig) => {
@@ -122,7 +131,7 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins 
   )
   const { result: implementation } = await factory.implementation({ coin_count: coins.length, implementation_index: 0 })
   const { wasm_hash } = assert(implementation, 'Missing pool implementation')
-  return retry(
+  return retryTestnetSetup(
     async () => {
       // Concurrent deployments advance the factory counter, changing the pool address and footprint.
       const transaction = await factory.deploy_plain_pool(
@@ -146,13 +155,6 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins 
       )
       return sendPoolDeployment(transaction, Keypair.fromSecret(deployer.secret))
     },
-    {
-      retries: POOL_DEPLOYMENT_RETRIES,
-      // Spread retries across ledger closes so competing deployments do not keep colliding.
-      delay: () => POOL_DEPLOYMENT_RETRY_DELAY_MS * (1 + Math.random()),
-      shouldRetry: error =>
-        (error as Error).message.includes('TRY_AGAIN_LATER') ||
-        isPoolDeploymentFootprintConflict((error as Error).cause as rpc.Api.GetTransactionResponse | undefined),
-    },
+    error => isPoolDeploymentFootprintConflict((error as Error).cause as rpc.Api.GetTransactionResponse | undefined),
   )
 }
