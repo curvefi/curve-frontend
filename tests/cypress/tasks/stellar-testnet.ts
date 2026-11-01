@@ -44,7 +44,6 @@ export const createTestnetDeployer = async (config: TestnetDeployment, rpcUrl: s
         contractId,
         method: 'symbol',
         args: [],
-        publicKey,
         networkPassphrase: Networks.TESTNET,
         rpcUrl,
         parseResultXdr: scValToNative,
