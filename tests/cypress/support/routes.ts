@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
+import { oneAddress, oneOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
 import { crvUsdPages, daoPages, dexPages, lendPages, llamalendRoutes } from '@evm-ui/shared/routes'
 import { assert } from '@primitives/objects.utils'
@@ -22,20 +22,21 @@ export const APP_ROUTES = {
       dexPages.integrations,
     )({ blockchainId: DEFAULT_NETWORK }),
   lend: () =>
+    // The market list redirects to llamalend, so visit a market instead.
     oneOf(
-      // The market list redirects to llamalend, so visit a market instead.
-      oneValueOf(lendPages)({ blockchainId: DEFAULT_NETWORK, marketId: WBTC_LEND_POOL }),
-      lendPages.legal({ blockchainId: DEFAULT_NETWORK }),
-      lendPages.integrations({ blockchainId: DEFAULT_NETWORK }),
-    ),
+      lendPages.market,
+      lendPages.vault,
+      lendPages.legal,
+      lendPages.integrations,
+    )({ blockchainId: DEFAULT_NETWORK, marketId: WBTC_LEND_POOL }),
   crvusd: () =>
     oneOf(
-      crvUsdPages.market({ blockchainId: DEFAULT_NETWORK, collateralId: 'WBTC' }),
-      crvUsdPages.crvUsdStaking({ blockchainId: DEFAULT_NETWORK }),
-      crvUsdPages.psr({ blockchainId: DEFAULT_NETWORK }),
-      crvUsdPages.legal({ blockchainId: DEFAULT_NETWORK }),
-      crvUsdPages.integrations({ blockchainId: DEFAULT_NETWORK }),
-    ),
+      crvUsdPages.market,
+      crvUsdPages.crvUsdStaking,
+      crvUsdPages.psr,
+      crvUsdPages.legal,
+      crvUsdPages.integrations,
+    )({ blockchainId: DEFAULT_NETWORK, collateralId: 'WBTC' }),
   llamalend: () =>
     oneOf(
       llamalendRoutes.markets,
@@ -44,13 +45,13 @@ export const APP_ROUTES = {
     )({ blockchainId: DEFAULT_NETWORK }),
   dao: () =>
     oneOf(
-      daoPages.proposals(),
-      daoPages.gauges(),
-      daoPages.veCrv(),
-      daoPages.analytics(),
-      daoPages.user({ userAddress: oneAddress() }),
-      daoPages.legal(),
-    ),
+      daoPages.proposals,
+      daoPages.gauges,
+      daoPages.veCrv,
+      daoPages.analytics,
+      daoPages.user,
+      daoPages.legal,
+    )({ userAddress: oneAddress() }),
 }
 
 /**
