@@ -8,7 +8,7 @@ import { type NetworkDef } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { notFalsyArray } from '@primitives/objects.utils'
+import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { useNetworkByChain } from '../entities/networks'
 
@@ -37,25 +37,23 @@ const HIDE_ROUTER_SWAP = [Chain.Mantle]
 export function useDexRoutes({ chainId }: NetworkDef) {
   const { data: network } = useNetworkByChain({ chainId })
   return useMemo(
-    () => [
-      ...(HIDE_ROUTER_SWAP.includes(chainId)
-        ? []
-        : network
-          ? [
-              {
+    () =>
+      notFalsy<NavigationItem>(
+        !HIDE_ROUTER_SWAP.includes(chainId) &&
+          (network
+            ? {
                 app: 'dex',
                 route: params =>
-                  ROUTE.PAGE_SWAP({
+                  ROUTE.swap({
                     ...params,
                     from: network.swap?.fromAddress as Address,
                     to: network.swap?.toAddress as Address,
                   }),
                 label: () => t`Swap`,
-              } satisfies NavigationItem,
-            ]
-          : [swapRoute]),
-      ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
-    ],
+              }
+            : swapRoute),
+        ...dexRoutes,
+      ),
     [chainId, network],
   )
 }

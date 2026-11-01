@@ -4,7 +4,7 @@ import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/Pagi
 import { TOP_HOLDERS } from '@/dao/constants'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { formatDate } from '@primitives/date.utils'
@@ -71,10 +71,7 @@ export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTable
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
             {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
-          <TableDataLink
-            href={DAO_ROUTES.PAGE_USER({ userAddress: gaugeVote.user as Address })}
-            className="right-padding"
-          >
+          <TableDataLink href={daoPages.user({ userAddress: gaugeVote.user as Address })} className="right-padding">
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
               : shortenAddress(gaugeVote.user)}

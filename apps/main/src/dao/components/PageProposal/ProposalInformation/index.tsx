@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils/address'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link'
@@ -25,7 +25,7 @@ export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress: proposer! })}>
+        <StyledInternalLink href={daoPages.user({ userAddress: proposer! })}>
           {shortenAddress(proposer)}
         </StyledInternalLink>
       </Box>

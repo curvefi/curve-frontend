@@ -58,7 +58,7 @@ export const PageRouterSwap = () => {
   useEffect(() => {
     if (!isConnecting && chainId && hasRouter != null) {
       if (!hasRouter) {
-        push(ROUTE.PAGE_POOLS({ blockchainId: props.network }))
+        push(ROUTE.pools({ blockchainId: props.network }))
         return
       }
 

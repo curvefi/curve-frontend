@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { PoolAlert } from '@/dex/types/main.types'
-import { DEX_ROUTES } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import { InlineLink } from '@ui/components/InlineLink'
 import { t, Trans } from '@ui/lib/i18n'
 import { PoolAlertMessage } from '../components/pool-alert-messages'
@@ -56,7 +56,7 @@ const geistFinanceAlert = (): PoolAlert => ({
 })
 
 const yPrismaAlert = (): PoolAlert => {
-  const prismaPoolHref = DEX_ROUTES.PAGE_POOL({
+  const prismaPoolHref = dexPages.pool({
     blockchainId: 'ethereum',
     poolAddress: '0x69833361991ed76f9e8dbbcdf9ea1520febfb4a7',
   })

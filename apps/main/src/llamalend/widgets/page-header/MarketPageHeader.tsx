@@ -3,7 +3,7 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { getTokenOrPair } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
-import { LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
+import { llamalendRoutes } from '@evm-ui/shared/routes'
 import { MarketType } from '@evm-ui/types/market'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -58,7 +58,7 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <WithWrapper shouldWrap={isNewLlamaMarketDetailPage} Wrapper={Stack}>
       <PageHeader
-        backHref={LLAMALEND_ROUTES.PAGE_MARKETS({ blockchainId })}
+        backHref={llamalendRoutes.markets({ blockchainId })}
         title={title}
         subtitle={subtitle}
         titleLoading={isLoading}

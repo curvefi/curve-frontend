@@ -8,7 +8,7 @@ import {
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolAddressParams } from '@/dex/types/main.types'
-import { DEX_ROUTES } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import Button from '@mui/material/Button'
 import { RouterLink } from '@ui/components/RouterLink'
 import { useParams } from '@ui/hooks/router'
@@ -26,7 +26,7 @@ export const AddGaugeLink = () => {
   const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
 
   const params = useParams<PoolAddressParams>()
-  const deployGaugePath = DEX_ROUTES.PAGE_DEPLOY_GAUGE({ blockchainId: params.network })
+  const deployGaugePath = dexPages.gaugeDeployment({ blockchainId: params.network })
 
   const handleClick = () => {
     if (!pool || !tokens) return

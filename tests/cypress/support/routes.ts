@@ -1,64 +1,56 @@
 import type { ReactNode } from 'react'
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
-import {
-  CRVUSD_ROUTES,
-  DAO_ROUTES,
-  DEX_ROUTES,
-  LEND_ROUTES,
-  LEND_MARKET_ROUTES,
-  LLAMALEND_ROUTES,
-} from '@evm-ui/shared/routes'
+import { crvUsdPages, daoPages, dexPages, lendPages, llamalendRoutes } from '@evm-ui/shared/routes'
 import { assert } from '@primitives/objects.utils'
 import { createMemoryHistory, createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
-import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 
 const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
 const DEFAULT_NETWORK = 'ethereum'
 
-export const CRVUSD_PAGE_MARKETS_ROUTE = `${CRVUSD_ROUTES.PAGE_MARKETS({ blockchainId: DEFAULT_NETWORK })}/`.slice(1)
+export const CRVUSD_PAGE_MARKETS_ROUTE = `${crvUsdPages.markets({ blockchainId: DEFAULT_NETWORK })}/`
 
 export const APP_ROUTES = {
   dex: () =>
     oneOf(
-      DEX_ROUTES.PAGE_SWAP,
-      DEX_ROUTES.PAGE_POOLS,
-      DEX_ROUTES.PAGE_CREATE_POOL,
-      DEX_ROUTES.PAGE_DEPLOY_GAUGE,
-      DEX_ROUTES.PAGE_COMPENSATION,
-      DEX_ROUTES.PAGE_LEGAL,
-      DEX_ROUTES.PAGE_INTEGRATIONS,
-    )({ blockchainId: DEFAULT_NETWORK }).slice(1),
+      dexPages.swap,
+      dexPages.pools,
+      dexPages.poolCreation,
+      dexPages.gaugeDeployment,
+      dexPages.compensation,
+      dexPages.legal,
+      dexPages.integrations,
+    )({ blockchainId: DEFAULT_NETWORK }),
   lend: () =>
     oneOf(
       // The market list redirects to llamalend, so visit a market instead.
-      oneValueOf(LEND_MARKET_ROUTES)({ blockchainId: DEFAULT_NETWORK, marketId: WBTC_LEND_POOL }),
-      LEND_ROUTES.PAGE_LEGAL({ blockchainId: DEFAULT_NETWORK }),
-      LEND_ROUTES.PAGE_INTEGRATIONS({ blockchainId: DEFAULT_NETWORK }),
-    ).slice(1),
+      oneValueOf(lendPages)({ blockchainId: DEFAULT_NETWORK, marketId: WBTC_LEND_POOL }),
+      lendPages.legal({ blockchainId: DEFAULT_NETWORK }),
+      lendPages.integrations({ blockchainId: DEFAULT_NETWORK }),
+    ),
   crvusd: () =>
     oneOf(
-      CRVUSD_ROUTES.PAGE_MARKET({ blockchainId: DEFAULT_NETWORK, collateralId: 'WBTC' }),
-      CRVUSD_ROUTES.PAGE_CRVUSD_STAKING({ blockchainId: DEFAULT_NETWORK }),
-      CRVUSD_ROUTES.PAGE_PSR({ blockchainId: DEFAULT_NETWORK }),
-      CRVUSD_ROUTES.PAGE_LEGAL({ blockchainId: DEFAULT_NETWORK }),
-      CRVUSD_ROUTES.PAGE_INTEGRATIONS({ blockchainId: DEFAULT_NETWORK }),
-    ).slice(1),
+      crvUsdPages.market({ blockchainId: DEFAULT_NETWORK, collateralId: 'WBTC' }),
+      crvUsdPages.crvUsdStaking({ blockchainId: DEFAULT_NETWORK }),
+      crvUsdPages.psr({ blockchainId: DEFAULT_NETWORK }),
+      crvUsdPages.legal({ blockchainId: DEFAULT_NETWORK }),
+      crvUsdPages.integrations({ blockchainId: DEFAULT_NETWORK }),
+    ),
   llamalend: () =>
     oneOf(
-      LLAMALEND_ROUTES.PAGE_MARKETS,
-      LLAMALEND_ROUTES.PAGE_LEGAL,
-      LLAMALEND_ROUTES.PAGE_INTEGRATIONS,
-    )({ blockchainId: DEFAULT_NETWORK }).slice(1),
+      llamalendRoutes.markets,
+      llamalendRoutes.legal,
+      llamalendRoutes.integrations,
+    )({ blockchainId: DEFAULT_NETWORK }),
   dao: () =>
     oneOf(
-      DAO_ROUTES.PAGE_PROPOSALS(),
-      DAO_ROUTES.PAGE_GAUGES(),
-      DAO_ROUTES.PAGE_VECRV(),
-      DAO_ROUTES.PAGE_ANALYTICS(),
-      DAO_ROUTES.PAGE_USER({ userAddress: oneAddress() }),
-      DAO_ROUTES.PAGE_LEGAL(),
-    ).slice(1),
+      daoPages.proposals(),
+      daoPages.gauges(),
+      daoPages.veCrv(),
+      daoPages.analytics(),
+      daoPages.user({ userAddress: oneAddress() }),
+      daoPages.legal(),
+    ),
 }
 
 /**
@@ -67,20 +59,20 @@ export const APP_ROUTES = {
 export const oneAppRoute = () => APP_ROUTES[oneAppPath() || 'dex']() as AppRoute
 type AppName = Exclude<AppPath, ''>
 
-export type AppRoute = `${AppName}/${string}`
+export type AppRoute = `/${AppName}/${string}`
 
 /** Gets the app name from a given route */
-export const getRouteApp = (route: AppRoute) => route.split('/')[0] as AppName
+export const getRouteApp = (route: AppRoute) => route.split('/')[1] as AppName
 
 export const DEFAULT_PAGES = {
-  dex: ['dex', DEX_ROUTES.PAGE_SWAP],
-  dao: ['dao', DAO_ROUTES.PAGE_PROPOSALS],
-  crvusd: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
-  lend: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
-  llamalend: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
+  dex: ['dex', dexPages.swap],
+  dao: ['dao', daoPages.proposals],
+  crvusd: ['llamalend', llamalendRoutes.markets],
+  lend: ['llamalend', llamalendRoutes.markets],
+  llamalend: ['llamalend', llamalendRoutes.markets],
 } as const
 
-const COMMON_ROUTE_TEST_IDS = { [PAGE_LEGAL]: 'legal-page', [PAGE_INTEGRATIONS]: 'integrations-page' }
+const COMMON_ROUTE_TEST_IDS = { '/legal': 'legal-page', '/integrations': 'integrations-page' }
 
 const ROUTE_TEST_IDS = {
   dex: {
@@ -116,7 +108,7 @@ export const getRouteTestId = (route: AppRoute) => {
   const app = getRouteApp(route)
   const appRoutes = ROUTE_TEST_IDS[app]
   // extract part after /{app}/{network}
-  const afterNetwork = assert(route.replace(/^\w+\/ethereum/, ''), `No route after network from ${route}`)
+  const afterNetwork = assert(route.replace(/^\/\w+\/ethereum/, ''), `No route after network from ${route}`)
   const [, testId] = Object.entries(appRoutes).find(([route]) => afterNetwork.startsWith(route)) ?? []
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
   return assert(testId, `No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)

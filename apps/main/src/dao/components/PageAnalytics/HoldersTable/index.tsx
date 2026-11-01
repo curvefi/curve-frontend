@@ -5,7 +5,7 @@ import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/Pagi
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { formatHolderName } from '@/dao/utils'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { sortBy } from '@primitives/array.utils'
@@ -65,10 +65,7 @@ export const TopHoldersTable = () => {
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
-            <StyledTableDataLink
-              className="align-left"
-              href={DAO_ROUTES.PAGE_USER({ userAddress: holder.user as Address })}
-            >
+            <StyledTableDataLink className="align-left" href={daoPages.user({ userAddress: holder.user as Address })}>
               <span>{index + 1}.</span>
               <span style={{ textDecoration: 'underline' }}>{formatHolderName(holder.user)}</span>
             </StyledTableDataLink>

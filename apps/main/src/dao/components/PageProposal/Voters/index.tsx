@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { VoteMarker } from '@/dao/components/VoteMarker'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink, InternalLink } from '@legacy-ui/Link'
@@ -49,7 +49,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
               <DataRow key={`${vote.txHash}-${vote.supports}`}>
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
                   <VoteMarker supports={vote.supports} />
-                  <StyledInternalLink href={DAO_ROUTES.PAGE_USER({ userAddress: vote.voter })}>
+                  <StyledInternalLink href={daoPages.user({ userAddress: vote.voter })}>
                     {vote.topHolder || shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>

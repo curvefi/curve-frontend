@@ -8,7 +8,7 @@ import {
 } from '@/dao/entities/user-proposal-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import Box from '@mui/material/Box'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
@@ -57,9 +57,7 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
         renderRow={(proposalVote, index) => (
           <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
             <TableDataLink
-              href={DAO_ROUTES.PAGE_PROPOSAL({
-                proposalId: `${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
-              })}
+              href={daoPages.proposal({ proposalId: `${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}` })}
               className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}
             >
               #{proposalVote.voteId}

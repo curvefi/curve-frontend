@@ -6,7 +6,7 @@ import { useUserGaugeVoteQuery, invalidateUserGaugeVoteQuery } from '@/dao/entit
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import type { UserGaugeVote } from '@curvefi/prices-api/gauge'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import { formatDate } from '@primitives/date.utils'
@@ -62,7 +62,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
             >
               {formatNumber(gaugeVote.weight / 100, 'percent.value')}
             </TableData>
-            <TableDataLink href={DAO_ROUTES.PAGE_GAUGE({ gaugeAddress: gaugeVote.gauge })} className="right-padding">
+            <TableDataLink href={daoPages.gauge({ gaugeAddress: gaugeVote.gauge })} className="right-padding">
               {shortenAddress(gaugeVote.gauge)}
             </TableDataLink>
           </TableRowWrapper>

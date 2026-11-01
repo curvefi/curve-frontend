@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { getChainNativeCurrency } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import { BRIDGE_ROUTES } from '@evm-ui/shared/routes'
+import { bridgePages } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS, requireBlockchainId } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
 import { Form } from '@ui/features/forms/components/Form'
@@ -84,9 +84,7 @@ export const BridgeForm = ({
         isConnected={isConnected}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
         onAmount={amount => form.update({ amount })}
-        onChangeNetwork={() =>
-          navigate(BRIDGE_ROUTES.PAGE_BRIDGES({ blockchainId: requireBlockchainId(fromChainId as Chain) }))
-        }
+        onChangeNetwork={() => navigate(bridgePages.root({ blockchainId: requireBlockchainId(fromChainId as Chain) }))}
       />
 
       <FormAlerts

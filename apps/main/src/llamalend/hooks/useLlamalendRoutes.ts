@@ -1,4 +1,4 @@
-import { APP_LINK, type AppName, type NavigationItem, LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
+import { APP_LINK, type AppName, type NavigationItem, lendPages } from '@evm-ui/shared/routes'
 import type { Address } from '@primitives/address.utils'
 import { useMatchRoute } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
@@ -22,13 +22,13 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
     return [
       {
         app: LEND_APP,
-        route: network => LEND_MARKET_ROUTES.PAGE_LOAN({ ...network, marketId: params.marketId }),
+        route: network => lendPages.market({ ...network, marketId: params.marketId }),
         label: () => t`Borrow`,
         matchMode: 'exact',
       },
       {
         app: LEND_APP,
-        route: network => LEND_MARKET_ROUTES.PAGE_VAULT({ ...network, marketId: params.marketId }),
+        route: network => lendPages.vault({ ...network, marketId: params.marketId }),
         label: () => t`Supply`,
         matchMode: 'exact',
       },

@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
+import { lendPages } from '@evm-ui/shared/routes'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -18,7 +18,7 @@ import { UserPositionSummary } from './UserPositionsSummary'
 type UserPositionsTableProps = { onReload: () => Promise<unknown>; tableQuery: QueryProp<LlamaMarketsTableResult> }
 
 const buildVaultUrl = (market: LlamaMarket) =>
-  LEND_MARKET_ROUTES.PAGE_VAULT({ blockchainId: market.blockchainId, marketId: market.controllerAddress })
+  lendPages.vault({ blockchainId: market.blockchainId, marketId: market.controllerAddress })
 
 export const UserPositionsTables = ({
   onReload,

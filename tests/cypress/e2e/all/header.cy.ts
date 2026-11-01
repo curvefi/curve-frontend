@@ -261,7 +261,7 @@ describe('Header', () => {
   }
 
   function isLendMarketDetailRoute(route: AppRoute) {
-    const [app, , page, marketId] = route.split('/')
+    const [, app, , page, marketId] = route.split('/')
     return app === 'lend' && page === 'markets' && !!marketId
   }
 })

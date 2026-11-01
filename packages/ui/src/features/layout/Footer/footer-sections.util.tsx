@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
+import type { SectionLinks } from '@ui/features/layout/routes'
 import { BrandAssetsIcon } from '@ui/icons/BrandAssetsIcon'
 import { BugIcon } from '@ui/icons/BugIcon'
 import { CrvHubIcon } from '@ui/icons/CrvHubIcon'
@@ -23,7 +23,7 @@ export type FooterLink = { label: string; href: string; icon?: ReactNode; target
 
 export type FooterSection = { title: string; links: FooterLink[] }
 
-export const getFooterSections = (getInternalUrl: (page: typeof PAGE_LEGAL | typeof PAGE_INTEGRATIONS) => string) => [
+export const getFooterSections = ({ legalHref, integrationsHref }: SectionLinks) => [
   {
     title: t`Community`,
     links: [
@@ -41,9 +41,9 @@ export const getFooterSections = (getInternalUrl: (page: typeof PAGE_LEGAL | typ
     links: [
       { label: t`News`, href: EXTERNAL_LINKS.curve.news, icon: <NewsIcon /> },
       { label: t`Documentation`, href: EXTERNAL_LINKS.curve.docs, icon: <DocsIcon /> },
-      { label: t`Integrations`, href: getInternalUrl(PAGE_INTEGRATIONS), icon: <IntegrationsIcon /> },
+      { label: t`Integrations`, href: integrationsHref, icon: <IntegrationsIcon /> },
       { label: t`Github`, href: EXTERNAL_LINKS.github.curvefi, icon: <GitHubIcon /> },
-      { label: t`Legal`, href: getInternalUrl(PAGE_LEGAL), icon: <RiskDisclaimersIcon /> },
+      { label: t`Legal`, href: legalHref, icon: <RiskDisclaimersIcon /> },
       { label: t`Brand Assets`, href: EXTERNAL_LINKS.brand.assets, icon: <BrandAssetsIcon /> },
     ],
   },

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
+import { lendPages } from '@evm-ui/shared/routes'
 import { MarketType } from '@evm-ui/types/market'
 import { notFalsy } from '@primitives/objects.utils'
 import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
@@ -17,10 +17,7 @@ export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> 
         market.type === MarketType.Lend && {
           id: 'earn',
           label: t`Earn`,
-          href: LEND_MARKET_ROUTES.PAGE_VAULT({
-            blockchainId: market.blockchainId,
-            marketId: market.controllerAddress,
-          }),
+          href: lendPages.vault({ blockchainId: market.blockchainId, marketId: market.controllerAddress }),
           testId: 'llama-market-go-to-vault',
         },
         { id: 'borrow', label: t`Borrow`, href: market.url, testId: 'llama-market-go-to-borrow' },

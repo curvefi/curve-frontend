@@ -13,7 +13,7 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
-import { DEX_ROUTES } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import Grid from '@mui/material/Grid'
 import { formatNumber } from '@primitives/number.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
@@ -61,7 +61,7 @@ export const ManagePool = () => {
       <DetailPageLayout
         header={
           <PoolDetailsHeader
-            backHref={DEX_ROUTES.PAGE_POOL({ blockchainId, poolAddress })}
+            backHref={dexPages.pool({ blockchainId, poolAddress })}
             title={mapQuery(pool, pool => pool.name)}
             tokens={pool.data?.coins.map(constQ)}
             blockchainId={blockchainId}

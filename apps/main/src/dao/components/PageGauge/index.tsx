@@ -1,7 +1,7 @@
 import { GaugeWeightHistoryChart } from '@/dao/components/Charts/GaugeWeightHistoryChart'
 import { useGauges } from '@/dao/queries/gauges.query'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
@@ -26,7 +26,7 @@ export const Gauge = () => {
 
   return (
     <DetailPageLayout formTabs={null}>
-      <BackButton path={DAO_ROUTES.PAGE_GAUGES()} label={t`Back to gauges`} />
+      <BackButton path={daoPages.gauges()} label={t`Back to gauges`} />
       <Stack sx={{ gap: PAGE_SPACING, backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />

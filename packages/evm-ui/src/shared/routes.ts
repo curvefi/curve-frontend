@@ -18,97 +18,93 @@ export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 
 export type AppName = (typeof AppNames)[number]
 export type AppMenuOption = 'dex' | 'llamalend' | 'dao' | 'bridge' | 'analytics'
 
-type NetworkParams = { app: AppName; blockchainId: string }
-type AppNetworkParams = Omit<NetworkParams, 'app'>
+type ChainParams = { blockchainId: string }
 
-const internalUrl = ({ app, blockchainId }: NetworkParams) => ['', app, blockchainId].join('/')
+const appRoot = ({ app, blockchainId }: { app: AppName; blockchainId: string }) => ['', app, blockchainId].join('/')
 
-const sharedRoutes = (app: AppName) => {
-  const ROOT = ({ blockchainId }: AppNetworkParams) => internalUrl({ app, blockchainId })
-  return {
-    ROOT,
-    PAGE_LEGAL: (network: AppNetworkParams) => [ROOT(network), 'legal'].join('/'),
-    PAGE_INTEGRATIONS: (network: AppNetworkParams) => [ROOT(network), 'integrations'].join('/'),
-  }
+export const dexPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'dex', blockchainId }),
+  legal: (network: ChainParams) => [dexPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [dexPages.root(network), 'integrations'].join('/'),
+  swap: ({ from, to, ...network }: ChainParams & { from?: Address; to?: Address }) =>
+    [dexPages.root(network), 'swap'].join('/') + addQueryString({ from, to }),
+  pools: (network: ChainParams) => [dexPages.root(network), 'pools'].join('/'),
+  pool: ({ poolAddress, ...network }: ChainParams & { poolAddress: Address }) =>
+    [dexPages.pools(network), poolAddress].join('/'),
+  poolManagement: (params: ChainParams & { poolAddress: Address }) => [dexPages.pool(params), 'manage-pool'].join('/'),
+  poolCreation: (network: ChainParams) => [dexPages.root(network), 'create-pool'].join('/'),
+  gaugeDeployment: (network: ChainParams) => [dexPages.root(network), 'deploy-gauge'].join('/'),
+  compensation: (network: ChainParams) => [dexPages.root(network), 'compensation'].join('/'),
+} as const
+
+export const lendPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'lend', blockchainId }),
+  legal: (network: ChainParams) => [lendPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [lendPages.root(network), 'integrations'].join('/'),
+  markets: (network: ChainParams) => [lendPages.root(network), 'markets'].join('/'),
+  market: ({ marketId, ...network }: ChainParams & { marketId: Address }) =>
+    [lendPages.markets(network), marketId].join('/'),
+  vault: (params: ChainParams & { marketId: Address }) => [lendPages.market(params), 'vault'].join('/'),
+} as const
+
+export const crvUsdPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'crvusd', blockchainId }),
+  legal: (network: ChainParams) => [crvUsdPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [crvUsdPages.root(network), 'integrations'].join('/'),
+  markets: (network: ChainParams) => [crvUsdPages.root(network), 'markets'].join('/'),
+  market: ({ collateralId, ...network }: ChainParams & { collateralId: string }) =>
+    [crvUsdPages.markets(network), collateralId].join('/'),
+  crvUsdStaking: (network: ChainParams) => [crvUsdPages.root(network), 'scrvUSD'].join('/'),
+  psr: (network: ChainParams) => [crvUsdPages.root(network), 'psr'].join('/'),
+} as const
+
+export const llamalendRoutes = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'llamalend', blockchainId }),
+  legal: (network: ChainParams) => [llamalendRoutes.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [llamalendRoutes.root(network), 'integrations'].join('/'),
+  markets: (network: ChainParams) => [llamalendRoutes.root(network), 'markets'].join('/'),
+} as const
+
+export const daoPages = {
+  root: () => appRoot({ app: 'dao', blockchainId: 'ethereum' }),
+  proposals: () => [daoPages.root(), 'proposals'].join('/'),
+  proposal: ({ proposalId }: { proposalId: string }) => [daoPages.proposals(), proposalId].join('/'),
+  gauges: () => [daoPages.root(), 'gauges'].join('/'),
+  gauge: ({ gaugeAddress }: { gaugeAddress: Address }) => [daoPages.gauges(), gaugeAddress].join('/'),
+  veCrv: () => [daoPages.root(), 'vecrv'].join('/'),
+  analytics: () => [daoPages.root(), 'analytics'].join('/'),
+  user: ({ userAddress }: { userAddress: Address }) => [daoPages.root(), 'user', userAddress].join('/'),
+  discussion: () => EXTERNAL_LINKS.curve.gov,
+  legal: () => [daoPages.root(), 'legal'].join('/'),
+  integrations: () => [daoPages.root(), 'integrations'].join('/'),
+} as const
+
+const analyticsPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'analytics', blockchainId }),
+  legal: (network: ChainParams) => [analyticsPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [analyticsPages.root(network), 'integrations'].join('/'),
+  home: (network: ChainParams) => [analyticsPages.root(network), 'home'].join('/'),
 }
 
-export const DEX_ROUTES = {
-  ...sharedRoutes('dex'),
-  PAGE_SWAP: ({ from, to, ...network }: AppNetworkParams & { from?: Address; to?: Address }) =>
-    [DEX_ROUTES.ROOT(network), 'swap'].join('/') + addQueryString({ from, to }),
-  PAGE_POOLS: (network: AppNetworkParams) => [DEX_ROUTES.ROOT(network), 'pools'].join('/'),
-  PAGE_POOL: ({ poolAddress, ...network }: AppNetworkParams & { poolAddress: Address }) =>
-    [DEX_ROUTES.ROOT(network), 'pools', poolAddress].join('/'),
-  PAGE_MANAGE_POOL: ({ poolAddress, ...network }: AppNetworkParams & { poolAddress: Address }) =>
-    [DEX_ROUTES.ROOT(network), 'pools', poolAddress, 'manage-pool'].join('/'),
-  PAGE_CREATE_POOL: (network: AppNetworkParams) => [DEX_ROUTES.ROOT(network), 'create-pool'].join('/'),
-  PAGE_DEPLOY_GAUGE: (network: AppNetworkParams) => [DEX_ROUTES.ROOT(network), 'deploy-gauge'].join('/'),
-  PAGE_COMPENSATION: (network: AppNetworkParams) => [DEX_ROUTES.ROOT(network), 'compensation'].join('/'),
-} as const
-
-export const LEND_ROUTES = {
-  ...sharedRoutes('lend'),
-  PAGE_MARKETS: (network: AppNetworkParams) => [LEND_ROUTES.ROOT(network), 'markets'].join('/'),
-} as const
-
-export const LEND_MARKET_ROUTES = {
-  PAGE_LOAN: ({ marketId, ...network }: AppNetworkParams & { marketId: Address }) =>
-    [LEND_ROUTES.ROOT(network), 'markets', marketId].join('/'),
-  PAGE_VAULT: ({ marketId, ...network }: AppNetworkParams & { marketId: Address }) =>
-    [LEND_ROUTES.ROOT(network), 'markets', marketId, 'vault'].join('/'),
-} as const
-
-export const CRVUSD_ROUTES = {
-  ...sharedRoutes('crvusd'),
-  PAGE_MARKETS: (network: AppNetworkParams) => [CRVUSD_ROUTES.ROOT(network), 'markets'].join('/'),
-  PAGE_MARKET: ({ collateralId, ...network }: AppNetworkParams & { collateralId: string }) =>
-    [CRVUSD_ROUTES.ROOT(network), 'markets', collateralId].join('/'),
-  PAGE_CRVUSD_STAKING: (network: AppNetworkParams) => [CRVUSD_ROUTES.ROOT(network), 'scrvUSD'].join('/'),
-  PAGE_PSR: (network: AppNetworkParams) => [CRVUSD_ROUTES.ROOT(network), 'psr'].join('/'),
-} as const
-
-export const LLAMALEND_ROUTES = {
-  ...sharedRoutes('llamalend'),
-  PAGE_MARKETS: (network: AppNetworkParams) => [LLAMALEND_ROUTES.ROOT(network), 'markets'].join('/'),
-} as const
-
-export const DAO_ROUTES = {
-  ROOT: () => internalUrl({ app: 'dao', blockchainId: 'ethereum' }),
-  PAGE_PROPOSALS: () => [DAO_ROUTES.ROOT(), 'proposals'].join('/'),
-  PAGE_PROPOSAL: ({ proposalId }: { proposalId: string }) => [DAO_ROUTES.ROOT(), 'proposals', proposalId].join('/'),
-  PAGE_GAUGES: () => [DAO_ROUTES.ROOT(), 'gauges'].join('/'),
-  PAGE_GAUGE: ({ gaugeAddress }: { gaugeAddress: Address }) => [DAO_ROUTES.ROOT(), 'gauges', gaugeAddress].join('/'),
-  PAGE_VECRV: () => [DAO_ROUTES.ROOT(), 'vecrv'].join('/'),
-  PAGE_ANALYTICS: () => [DAO_ROUTES.ROOT(), 'analytics'].join('/'),
-  PAGE_USER: ({ userAddress }: { userAddress: Address }) => [DAO_ROUTES.ROOT(), 'user', userAddress].join('/'),
-  DISCUSSION: () => EXTERNAL_LINKS.curve.gov,
-  PAGE_LEGAL: () => [DAO_ROUTES.ROOT(), 'legal'].join('/'),
-  PAGE_INTEGRATIONS: () => [DAO_ROUTES.ROOT(), 'integrations'].join('/'),
-} as const
-
-const ANALYTICS_ROUTES = {
-  ...sharedRoutes('analytics'),
-  PAGE_HOME: (network: AppNetworkParams) => [ANALYTICS_ROUTES.ROOT(network), 'home'].join('/'),
+export const bridgePages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'bridge', blockchainId }),
+  legal: (network: ChainParams) => [bridgePages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [bridgePages.root(network), 'integrations'].join('/'),
 }
 
-export const BRIDGE_ROUTES = {
-  ...sharedRoutes('bridge'),
-  PAGE_BRIDGES: (network: AppNetworkParams) => BRIDGE_ROUTES.ROOT(network),
-}
-
-export const APP_ROUTES = {
-  dex: DEX_ROUTES,
-  lend: LEND_ROUTES,
-  crvusd: CRVUSD_ROUTES,
-  llamalend: LLAMALEND_ROUTES,
-  dao: DAO_ROUTES,
-  analytics: ANALYTICS_ROUTES,
-  bridge: BRIDGE_ROUTES,
+export const Pages = {
+  dex: dexPages,
+  lend: lendPages,
+  crvusd: crvUsdPages,
+  llamalend: llamalendRoutes,
+  dao: daoPages,
+  analytics: analyticsPages,
+  bridge: bridgePages,
 } as const
 
 export type NavigationItem = {
   app: AppName
-  route: (params: AppNetworkParams) => string
+  route: (params: ChainParams) => string
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
   matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
@@ -122,34 +118,31 @@ export const APP_LINK: Record<AppMenuOption, AppNavigation> = {
   dex: {
     label: 'DEX',
     routes: [
-      { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Swap` },
-      { app: 'dex', route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
-      { app: 'dex', route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
+      { app: 'dex', route: dexPages.swap, label: () => t`Swap` },
+      { app: 'dex', route: dexPages.pools, label: () => t`Pools` },
+      { app: 'dex', route: dexPages.poolCreation, label: () => t`Pool Creation` },
     ],
   },
   llamalend: {
     label: 'Llamalend',
     routes: [
-      { app: 'llamalend', route: LLAMALEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PSR, label: () => t`Peg Stability Reserves` },
+      { app: 'llamalend', route: llamalendRoutes.markets, label: () => t`Markets` },
+      { app: 'crvusd', route: crvUsdPages.crvUsdStaking, label: () => t`Savings crvUSD` },
+      { app: 'crvusd', route: crvUsdPages.psr, label: () => t`Peg Stability Reserves` },
     ],
   },
   dao: {
     label: 'Governance',
     routes: [
-      { app: 'dao', route: DAO_ROUTES.PAGE_VECRV, label: () => t`Lock CRV` },
-      { app: 'dao', route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
-      { app: 'dao', route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
-      { app: 'dao', route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
-      { app: 'dao', route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
+      { app: 'dao', route: daoPages.veCrv, label: () => t`Lock CRV` },
+      { app: 'dao', route: daoPages.proposals, label: () => t`Proposals` },
+      { app: 'dao', route: daoPages.gauges, label: () => t`Gauges` },
+      { app: 'dao', route: daoPages.analytics, label: () => t`Analytics` },
+      { app: 'dao', route: daoPages.discussion, label: () => t`Discussion`, target: '_blank' },
     ],
   },
-  bridge: { label: t`Bridge`, routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridge` }] },
-  analytics: {
-    label: 'Analytics',
-    routes: [{ app: 'analytics', route: ANALYTICS_ROUTES.PAGE_HOME, label: () => t`Home` }],
-  },
+  bridge: { label: t`Bridge`, routes: [{ app: 'bridge', route: bridgePages.root, label: () => t`Bridge` }] },
+  analytics: { label: 'Analytics', routes: [{ app: 'analytics', route: analyticsPages.home, label: () => t`Home` }] },
 }
 
 const removeTrailingSlash = (pathname: string) => pathname.replace(/\/$/, '')
