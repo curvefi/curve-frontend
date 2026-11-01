@@ -54,7 +54,7 @@ export const PoolPage = () => {
     <DetailPageLayout
       header={
         <PoolDetailsHeader
-          backHref={StellarPages.poolList({ network })}
+          backHref={StellarPages.pools({ network })}
           title={q(tokenName)}
           tokens={tokens}
           blockchainId={network}
@@ -76,7 +76,7 @@ export const PoolPage = () => {
       title={litePool.error ? t`Error` : '404'}
       subtitle={litePool.error?.message ?? t`Pool Not Found`}
       error={litePool.error}
-      continueUrl={StellarPages.poolList({ network })}
+      continueUrl={StellarPages.pools({ network })}
     />
   ) : (
     <Loading />

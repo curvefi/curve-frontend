@@ -13,7 +13,7 @@ import { queryClient } from '@ui/features/queries/query-client'
 
 const NETWORK = 'stellar-testnet'
 // Testnet pools have no USD prices, so include pools with zero TVL.
-const POOL_LIST_URL = `${StellarPages.poolList({ network: NETWORK })}?active=no`
+const POOL_LIST_URL = `${StellarPages.pools({ network: NETWORK })}?active=no`
 const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', TIMEOUTS['curveLite.pools'])
 const search = () => cy.get('[data-testid="table-text-search-dex-pool-list"] input')
 
