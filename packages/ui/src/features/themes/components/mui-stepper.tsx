@@ -43,6 +43,7 @@ export const defineMuiStepLabel = (
 
 export const defineMuiStepConnector = ({ Button, Layer }: DesignSystem): Components['MuiStepConnector'] => ({
   styleOverrides: {
+    horizontal: { ...handleBreakpoints({ minWidth: Sizing.xs }) },
     vertical: {
       display: 'flex',
       justifyContent: 'center',
