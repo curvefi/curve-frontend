@@ -1,5 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, maybes } from '@primitives/objects.utils'
+import { fromEntries, maybe, maybes } from '@primitives/objects.utils'
 import type { FieldPathByValue } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -32,7 +32,7 @@ export const OneCoinDepositForm = <TValues extends PoolDepositForm>(props: Depos
             tokens={tokens}
             selectedIndex={index}
             onToken={tokenIndex =>
-              form.update({ ...getPoolDefaultValues(tokens!.length), isBalanced: false, tokenIndex })
+              form.update({ ...maybe(tokens, t => getPoolDefaultValues(t.length)), isBalanced: false, tokenIndex })
             }
             disabled={isPending}
             label={t`Deposit token`}
