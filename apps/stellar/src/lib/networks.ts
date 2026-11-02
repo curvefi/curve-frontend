@@ -1,7 +1,15 @@
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 
+// Each factory pins a registered pool implementation; index 0 is the initial plain-pool implementation.
 export const STELLAR_NETWORKS = {
   stellar: {
+    factories: [
+      {
+        type: 'stableswap',
+        implementationIndex: 0,
+        address: 'CC2DWZ5RDSC5BZKEDQ5BABNUATX5EFJ4GCOENDXULEDVBHH2OKXFKYS5',
+      },
+    ],
     name: 'Stellar',
     chainId: 1500,
     isTestnet: false,
@@ -15,6 +23,13 @@ export const STELLAR_NETWORKS = {
     explorerUrl: 'https://stellar.expert/explorer/public/',
   },
   'stellar-testnet': {
+    factories: [
+      {
+        type: 'stableswap',
+        implementationIndex: 0,
+        address: 'CDCOYFMUZZQRKQ533O5WKAG3OHIPMYUBCRLPVW45UAKPK5ZPUGMMWXNO',
+      },
+    ],
     name: 'Stellar testnet',
     chainId: 1501,
     isTestnet: true,

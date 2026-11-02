@@ -52,7 +52,10 @@ export const StellarNetworkAwareLayout = () => {
 
   const chain = CHAIN_OPTIONS.find(chain => chain.blockchainId === network) ?? PLACEHOLDERS.chain
   const formatUrl = (page: string) => `${chain.href}${page}`
-  const pages = [{ label: t`Pools`, href: formatUrl('/pools') }]
+  const pages = [
+    { label: t`Pools`, href: formatUrl('/pools') },
+    { label: t`Create pool`, href: formatUrl('/create-pool') },
+  ]
   const userAddress = asAddress(address)
   return (
     <ErrorBoundary title={t`Root route error`} userAddress={userAddress}>
