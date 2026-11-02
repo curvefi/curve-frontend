@@ -36,6 +36,7 @@ const config = [
       '**/*.config.js',
       '**/*.config.ts',
       '**/*.config.mjs',
+      '**/*.config.mts',
       '**/storybook-static/**',
       'node_modules/**',
       '**/*.js',

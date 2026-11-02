@@ -26,7 +26,7 @@ jobs:
       - run: yarn install --immutable
         timeout-minutes: 3
       - name: Optimize dependencies
-        run: yarn vite optimize --config vite.config.ts
+        run: yarn vite optimize --config vite.config.mts
         working-directory: tests
 
       - run: |
