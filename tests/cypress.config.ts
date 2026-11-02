@@ -38,6 +38,11 @@ export default defineConfig({
         deployerPromise = undefined
       })
       on('task', {
+        // cy.log only reaches the command log, this prints to the terminal (and CI output)
+        log: (message: string) => {
+          console.info(message)
+          return null
+        },
         getStellarTestnetConfig: async (rpcUrl: string): Promise<TestnetConfig> => {
           const deployment: TestnetDeployment = assert(
             config.env.STELLAR_TESTNET_CONFIG,
