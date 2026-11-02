@@ -75,9 +75,7 @@ const testCases = [
 describe('BorrowMoreForm (mocked)', () => {
   beforeEach(() => {
     setupMockedLlamalendComponentTest()
-    cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', {
-      fixture: 'minting-snapshots.json',
-    })
+    cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', { fixture: 'minting-snapshots.json' })
     mockLendingSnapshots('ethereum')
     mockCollateralEvents()
     cy.intercept({ pathname: '/api/merkl/v1/opportunities' }, { body: [] })
