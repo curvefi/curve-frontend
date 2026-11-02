@@ -1,6 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, maybe, maybes } from '@primitives/objects.utils'
-import type { FieldPathByValue } from '@ui/features/forms'
+import type { FieldPath, FieldPathByValue } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -18,10 +18,10 @@ export const OneCoinDepositForm = <TValues extends PoolDepositForm>(props: Depos
       <FormTokenInput
         form={form}
         name={field as FieldPathByValue<TValues, Decimal | undefined>}
-        max={maxAmounts?.[index]}
-        maxField={poolMaxAmountField(index) as FieldPathByValue<TValues, Decimal | undefined>}
+        max={maybe(maxAmounts?.[index], balance => ({ balance }))}
+        relatedFields={[poolMaxAmountField(index) as FieldPath<TValues>]}
         label={t`Deposit`}
-        error={token?.error}
+        balance={token && { ...token, data: form.values[field] }}
         disabled={inputsDisabled !== false}
         inputBalanceUsd={maybes([form.values[field], token?.data?.usdRate], decimalMultiply)}
         walletBalance={token?.data && { symbol: token.data.symbol, balance: token.data.balance }}
