@@ -51,7 +51,7 @@ function visitAndWait(
   }: { network?: string; query?: Record<string, string> } & Partial<Cypress.VisitOptions> = {},
 ) {
   cy.viewport(width, height)
-  cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
+  cy.visitWithoutTestConnector(`/dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   waitForPoolListResponse()
   if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')

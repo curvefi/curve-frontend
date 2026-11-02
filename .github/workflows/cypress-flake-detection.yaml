@@ -115,7 +115,7 @@ jobs:
 
       - name: Optimize component dependencies
         if: inputs.suite == 'component'
-        run: yarn vite optimize --config vite.config.ts
+        run: yarn vite optimize --config vite.config.mts
         working-directory: tests
 
       - name: Build app
@@ -148,6 +148,7 @@ jobs:
           BROWSER: ${{ matrix.browser }}
           CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
           ELECTRON_ENABLE_LOGGING: true
+          DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.
           NODE_ENV: test
           SPEC_OVERRIDE: ${{ inputs.specs }}
           SUITE: ${{ inputs.suite }}

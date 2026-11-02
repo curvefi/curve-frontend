@@ -6,45 +6,14 @@ import { waitFor } from '@primitives/promise.utils'
 const GAUGE_ABI = parseAbi([
   'function add_reward(address _reward_token, address _distributor)',
   'function manager() view returns (address)',
-  'function set_gauge_manager(address _manager)',
   'function reward_data(address _reward_token) view returns (address token, address distributor, uint256 period_finish, uint256 rate, uint256 last_update, uint256 integral)',
 ])
 
-const getGaugeManager = ({ publicRpcUrl, gaugeAddress }: { publicRpcUrl: string; gaugeAddress: Address }) =>
+export const getGaugeManager = ({ publicRpcUrl, gaugeAddress }: { publicRpcUrl: string; gaugeAddress: Address }) =>
   cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     return await client.readContract({ address: gaugeAddress, abi: GAUGE_ABI, functionName: 'manager' })
   })
-
-export const setGaugeManager = ({
-  adminRpcUrl,
-  publicRpcUrl,
-  gaugeAddress,
-  currentManagerAddress,
-  nextManagerAddress,
-}: {
-  adminRpcUrl: string
-  publicRpcUrl: string
-  gaugeAddress: Address
-  currentManagerAddress: Address
-  nextManagerAddress: Address
-}) => {
-  const client = createPublicClient({ transport: http(publicRpcUrl) })
-
-  return getGaugeManager({ publicRpcUrl, gaugeAddress }).then(managerAddress => {
-    if (managerAddress === nextManagerAddress) return
-
-    expect(managerAddress).to.equal(currentManagerAddress)
-
-    return sendAdminTransaction({
-      adminRpcUrl,
-      client,
-      from: currentManagerAddress,
-      to: gaugeAddress,
-      data: encodeFunctionData({ abi: GAUGE_ABI, functionName: 'set_gauge_manager', args: [nextManagerAddress] }),
-    })
-  })
-}
 
 export const addGaugeReward = ({
   adminRpcUrl,

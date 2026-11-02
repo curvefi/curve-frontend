@@ -39,6 +39,7 @@ import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
+import type { Nullish } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
@@ -67,7 +68,7 @@ export type PoolDepositSlice = {
     fetchMaxAmount: (config: Config, activeKey: string, chainId: ChainId, userAddress: Address, pool: PoolTemplate, loadMaxAmount: LoadMaxAmount, maxSlippage: string) => Promise<Amount[]>
     fetchSeedAmount: (pool: PoolTemplate, formValues: FormValues) => Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
     fetchSlippage: (activeKey: string, formType: FormType, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<void>
-    setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
+    setFormValues: (formType: FormType, config: Config, curve: CurveApi | null, poolId: string, pool: PoolTemplate | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | Nullish, maxSlippage: string) => Promise<void>
 
     // steps
     fetchEstGasApproval: (activeKey: string, chainId: ChainId, formType: FormType, pool: PoolTemplate, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse>
@@ -235,7 +236,7 @@ export const createPoolDepositSlice = (
         formValues: cloneDeep(cFormValues),
       })
 
-      if (!curve || !pool || isSeed === null || cFormValues.isWrapped === null) return
+      if (!curve || !pool || isSeed == null || cFormValues.isWrapped === null) return
 
       const { chainId, signerAddress } = curve
 

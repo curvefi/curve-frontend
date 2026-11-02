@@ -1,4 +1,4 @@
-import { getAddress, parseUnits } from 'viem'
+import { getAddress, parseUnits, type Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
@@ -14,7 +14,7 @@ import {
   expectErc20BalanceChange,
   expectGaugeRewardDistributor,
   getErc20Balance,
-  setGaugeManager,
+  getGaugeManager,
 } from '@cy/support/helpers/dex/gauge.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import {
@@ -34,7 +34,6 @@ import { constQ } from '@ui/features/queries/util'
 
 const POOL_ADDRESS = '0x159a866f13f3931e256946ad7d921d18acbc599f'
 const GAUGE_ADDRESS = '0x456ba8aa2aa07c26a6b5d5a6a029ab754fb851c2'
-const MANAGER_ADDRESS = '0xE13aDC278c252e04DCBdca8eDced2C973Db994fA'
 const REWARD_TOKEN_SYMBOL = 'USDe'
 const REWARD_TOKEN_ADDRESS = '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3'
 const REWARD_DISTRIBUTOR_ADDRESS = '0x427Caf62D66fCec08FA55F0991DBCA66a8BfA7E7'
@@ -87,6 +86,7 @@ describe('Gauge Management (RPC)', () => {
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
   let adminRpcUrl: string, publicRpcUrl: string
+  let managerAddress: Address
 
   const getVirtualNetwork = createVirtualTestnet(uuid => ({
     slug: `gauge-management-${uuid}`,
@@ -101,21 +101,17 @@ describe('Gauge Management (RPC)', () => {
     adminRpcUrl = rpcUrls.adminRpcUrl
     publicRpcUrl = rpcUrls.publicRpcUrl
 
-    fundEth({ adminRpcUrl, amountWei: FUND_AMOUNT, recipientAddresses: [MANAGER_ADDRESS, address] })
-    setGaugeManager({
-      adminRpcUrl,
-      publicRpcUrl,
-      gaugeAddress: GAUGE_ADDRESS,
-      currentManagerAddress: MANAGER_ADDRESS,
-      nextManagerAddress: address,
-    })
-    addGaugeReward({
-      adminRpcUrl,
-      publicRpcUrl,
-      gaugeAddress: GAUGE_ADDRESS,
-      managerAddress: address,
-      rewardTokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
-      distributorAddress: address,
+    getGaugeManager({ publicRpcUrl, gaugeAddress: GAUGE_ADDRESS }).then(manager => {
+      managerAddress = manager
+      fundEth({ adminRpcUrl, amountWei: FUND_AMOUNT, recipientAddresses: [managerAddress] })
+      addGaugeReward({
+        adminRpcUrl,
+        publicRpcUrl,
+        gaugeAddress: GAUGE_ADDRESS,
+        managerAddress,
+        rewardTokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
+        distributorAddress: address,
+      })
     })
   })
 
@@ -138,7 +134,7 @@ describe('Gauge Management (RPC)', () => {
   })
 
   it('adds a gauge reward token', () => {
-    cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={privateKey} form="addReward" />)
+    cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={managerAddress} form="addReward" />)
 
     cy.get('[data-testid="add-reward-token-selector"]', TIMEOUTS['ui.render'])
       .should('contain', 'DAI')

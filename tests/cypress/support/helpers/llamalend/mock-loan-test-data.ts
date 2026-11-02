@@ -26,4 +26,4 @@ export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({
   userState: async () => ({ collateral: '0', borrowed: '0', debt: '0', N: '0' }),
 })
 
-export const fakeCollateralEvents: UserCollateralEvents = { events: [], originalLeverage: `1` }
+export const fakeCollateralEvents: UserCollateralEvents = { events: [], originalLeverage: `1`, isZapLeveraged: false }

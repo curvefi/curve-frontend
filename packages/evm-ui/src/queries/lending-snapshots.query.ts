@@ -26,7 +26,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
               getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: fetchOnChain, ...range }),
           }),
     )
-    return response.toReversed()
+    return response.toReversed() // prices API returns snapshots newest first
   },
   validationSuite: contractValidationSuite,
   category: 'global.snapshots',

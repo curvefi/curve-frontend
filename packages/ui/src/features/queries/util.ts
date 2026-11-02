@@ -79,6 +79,10 @@ export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(
     queries.find(q => q.isLoading) ??
     queries[0]) as QueryProp<TQueries[number]['data']>
 
+/** The future query, or the current one while the future query is idle (disabled, e.g. empty inputs) */
+export const futureOrCurrentQ = <T>(future: QueryProp<T>, current: QueryProp<T>) =>
+  future.data === undefined && !future.isLoading && !future.error ? current : future
+
 /**
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.

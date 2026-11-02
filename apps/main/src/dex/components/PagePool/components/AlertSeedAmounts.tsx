@@ -4,22 +4,22 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import type { Seed } from '@/dex/components/PagePool/types'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { hasWrapped } from '@/dex/pool.utils'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { formatNumber } from '@primitives/number.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
-export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
+export const AlertSeedAmounts = ({ seed }: { seed: QueryProp<boolean | null> }) => {
   const {
     pool: { data: pool },
   } = usePoolContext()
   const [seedAmounts, setSeedAmounts] = useState<string[]>([])
 
-  const { isSeed, loaded } = seed
+  const { data: isSeed } = seed
 
   const getSeedRatio = useCallback(async (pool: PoolTemplate) => {
     try {
@@ -40,9 +40,9 @@ export const AlertSeedAmounts = ({ seed }: { seed: Seed }) => {
   }, [])
 
   useEffect(() => {
-    if (!!pool && loaded && isSeed) void getSeedRatio(pool)
+    if (pool && isSeed) void getSeedRatio(pool)
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [pool?.id, loaded, isSeed])
+  }, [pool?.id, isSeed])
 
   const seedAmountsLength = seedAmounts.length
 

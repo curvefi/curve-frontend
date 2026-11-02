@@ -7,11 +7,11 @@ import { SLIPPAGE, type SlippageType } from '@ui/features/forms/slippage/slippag
 const TRICRYPTO_ADDRESS = '0x7f86bf177dd4f3494b841a37e810a34dd56c829b' as const
 
 describe('Pool page', () => {
-  const path: AppRoute = `dex/${oneOf(
+  const path: AppRoute = `/dex/${oneOf(
     `ethereum/pools/${TRICRYPTO_ADDRESS}`,
     'ethereum/pools/0xa632d59b9b804a956bfaa9b48af3a1b74808fc1f',
     'arbitrum/pools/0x7f90122bf0700f9e7e1f688fe926940e8839f353',
-    'plasma/pools/0x1e8d78e9b3f0152d54d32904b7933f1cfe439df1',
+    'robinhood/pools/0x1E8D78e9b3f0152D54d32904B7933f1cFE439Df1',
   )}`
   const slippageType: SlippageType = path.includes(TRICRYPTO_ADDRESS) ? 'crypto' : 'stable'
   const slippageConfig = SLIPPAGE[slippageType]
