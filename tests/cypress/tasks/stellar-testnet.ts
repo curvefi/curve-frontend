@@ -1,8 +1,8 @@
-/* eslint-disable no-restricted-imports -- Node-side Stellar test account provisioning. */
 import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assert } from '@primitives/objects.utils'
 import { retry, type RetryOptions } from '@primitives/promise.utils'
+// eslint-disable-next-line no-restricted-syntax
 import {
   Asset,
   BASE_FEE,
