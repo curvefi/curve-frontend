@@ -15,6 +15,7 @@ import {
 } from '@/dao/types/dao.types'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { waitForTransaction } from '@evm-ui/utils/ethers'
+import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
@@ -51,7 +52,7 @@ export type GaugesSlice = {
     setSelectGaugeFilterValue: (filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions) => void
     setSelectedGauge: (gauge: GaugeFormattedData | null) => void
 
-    castVote: (userAddress: string, gaugeAddress: string, voteWeight: number) => Promise<void>
+    castVote: (userAddress: Address, gaugeAddress: string, voteWeight: number) => Promise<void>
 
     setStateByKey: <T>(key: StateKey, value: T) => void
     setStateByKeys: (SliceState: Partial<SliceState>) => void
@@ -190,7 +191,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
       get()[SLICE_KEY].setStateByKey('selectedGauge', gauge)
     },
 
-    castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
+    castVote: async (userAddress: Address, gaugeAddress: string, voteWeight: number) => {
       const curve = getLib('curveApi')
       const { provider } = useWallet.getState()
       const address = getGauges({})?.[gaugeAddress].address

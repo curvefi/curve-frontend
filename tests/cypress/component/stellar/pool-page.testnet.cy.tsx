@@ -1,7 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { PoolPage } from '@/stellar/features/pool/PoolPage'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import { StellarUrls } from '@/stellar/routes/routes'
+import { StellarPages } from '@/stellar/routes/routes'
 import { mockPoolCampaigns } from '@cy/support/helpers/campaign-mocks'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { checkDepositBalances, seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
@@ -33,7 +33,7 @@ describe('Stellar testnet pool page', () => {
           router={createComponentTestRouter({
             component: PoolPage,
             path: 'dex/$network/pools/$pool',
-            initialEntry: StellarUrls.pool({ network: TEST_NETWORK, pool }),
+            initialEntry: StellarPages.pool({ network: TEST_NETWORK, pool }),
           })}
         />
       </StellarTestWrapper>,

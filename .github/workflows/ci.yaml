@@ -123,6 +123,7 @@ jobs:
         timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.
           NODE_ENV: test
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.iteration }}
 
@@ -167,6 +168,7 @@ jobs:
         timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
+          DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.
           NODE_ENV: test
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-rpc
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
@@ -225,6 +227,7 @@ jobs:
         timeout-minutes: 10 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
+          DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.
           NODE_ENV: test
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-stellar-${{ matrix.browser }}-${{ matrix.iteration }}
           CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording

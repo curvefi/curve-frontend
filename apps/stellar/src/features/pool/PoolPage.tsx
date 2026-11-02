@@ -15,7 +15,7 @@ import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
-import { StellarUrls } from '../../routes/routes'
+import { StellarPages } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
 import { OneCoinWithdrawTab } from '../withdraw/OneCoinWithdrawTab'
@@ -54,7 +54,7 @@ export const PoolPage = () => {
     <DetailPageLayout
       header={
         <PoolDetailsHeader
-          backHref={StellarUrls.poolList({ network })}
+          backHref={StellarPages.pools({ network })}
           title={q(tokenName)}
           tokens={tokens}
           blockchainId={network}
@@ -76,7 +76,7 @@ export const PoolPage = () => {
       title={litePool.error ? t`Error` : '404'}
       subtitle={litePool.error?.message ?? t`Pool Not Found`}
       error={litePool.error}
-      continueUrl={StellarUrls.poolList({ network })}
+      continueUrl={StellarPages.pools({ network })}
     />
   ) : (
     <Loading />

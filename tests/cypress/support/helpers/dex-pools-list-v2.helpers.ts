@@ -15,7 +15,7 @@ export const visitV2PoolList = ({
   const isMobile = viewport[0] < 600
 
   cy.viewport(viewport[0], viewport[1])
-  cy.visitWithoutTestConnector(`dex/${network}/pools/${active ? '' : '?active=no'}`)
+  cy.visitWithoutTestConnector(`/dex/${network}/pools/${active ? '' : '?active=no'}`)
   cy.wait('@dex-v2-lite-pool-chains', TIMEOUTS['mock.curveLite.platforms'])
   cy.wait(['@dex-v2-prices-chains'], TIMEOUTS['mock.prices.chains'])
   if (network === 'taiko') {

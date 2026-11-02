@@ -9,11 +9,11 @@ import { WagmiConnectModal } from '@evm-ui/features/connect-wallet/ui/WagmiConne
 import { type TvlSource, useNetworksTVL } from '@evm-ui/queries/prices-networks.query'
 import {
   APP_LINK,
+  Pages,
   AppMenuOption,
   type AppName,
   createChainOption,
   createChainOptions,
-  getInternalUrl,
   LlamalendApps,
   routeToPage,
 } from '@evm-ui/shared/routes'
@@ -68,9 +68,9 @@ const HIDE_CHAINS: number[] = [Chain.ZkSync, Chain.Mantle]
 
 /** Resolves the given links based on current network and pathname */
 const resolveLinks = ({ blockchainId, pathname }: { blockchainId: string; pathname: string }) =>
-  mapRecord(APP_LINK, (_menu, { label, routes }) => ({
+  mapRecord(APP_LINK, (_menu, { label, routes, routes: [route] }) => ({
     label,
-    href: getInternalUrl(routes[0].app, blockchainId),
+    href: Pages[route.app].root({ blockchainId }),
     pages: routes.map(route => routeToPage(route, { blockchainId, pathname })),
   }))
 
@@ -95,7 +95,11 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
 
   const currentMenu = APP_TO_MENU[currentApp]
   const routeContext = { blockchainId, pathname: location.pathname }
-  const formatUrl = (page: string) => getInternalUrl(currentApp, blockchainId, page)
+  const routes = Pages[currentApp]
+  const sectionLinks = {
+    legalHref: routes.legal({ blockchainId }),
+    integrationsHref: routes.integrations({ blockchainId }),
+  }
 
   const networkSwitch = useMatches().findLast(match => match.staticData.networkSwitch)?.staticData.networkSwitch ?? {
     type: 'same-page',
@@ -125,14 +129,14 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
           appStats={useAppStats(currentApp, network)}
           pages={useAppRoutes(network)[currentMenu].map(route => routeToPage(route, routeContext))}
           links={resolveLinks(routeContext)}
-          sections={getHeaderSections(formatUrl)}
+          sections={getHeaderSections(sectionLinks)}
           tvls={useNetworksTVL(TVL_SOURCES[currentMenu])}
           connectWalletProps={{ disconnect, address, addressLabel, isConnecting, isConnected, connect }}
         />
       }
       userAddress={address}
       connectModal={<WagmiConnectModal />}
-      footer={<Footer sections={getFooterSections(formatUrl)} />}
+      footer={<Footer sections={getFooterSections(sectionLinks)} />}
     >
       {children}
     </PageLayout>

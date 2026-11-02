@@ -44,10 +44,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
   const barColors = useMemo(() => createChartSeriesColorScale(theme), [theme])
   const getBarColor = useCallback((_: unknown, index: number) => barColors[index % barColors.length], [barColors])
   const { address: userAddress } = useConnection()
-  const userVotes = useUserGaugeWeightVotesQuery({
-    chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress ?? '',
-  })
+  const userVotes = useUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress }) // DAO is only used on mainnet
   const gauges = useGauges({})
   const userVoteRows = useCombinedQueries([userVotes, gauges], toUserVoteRows)
   const gaugeRows = useMappedQuery(gauges, toTopGaugeRows)

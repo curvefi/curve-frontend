@@ -1,6 +1,7 @@
 import { z } from 'zod/v4'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
+import { leverage } from '../lending/schema'
 import { address, camelizeKeys, chain, decimal, timestamp } from '../schemas'
 
 const token = z
@@ -181,6 +182,7 @@ const collateralEvent = z
       })
       .transform(camelizeKeys)
       .nullable(),
+    leverage: leverage.nullable().optional(),
     n1: z.number(),
     n2: z.number(),
     oracle_price: z.number(),
