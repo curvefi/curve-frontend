@@ -24,7 +24,7 @@ describe('Pool page', () => {
     cy.get('[data-testid="borrow-slippage-value"]', TIMEOUTS['ui.render']).contains(
       formatSlippage(slippageConfig.default),
     )
-    cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).should('be.enabled').click()
+    cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).click()
     const [isPreset, value] = oneOf<[boolean, string]>(
       [true, oneOf(...slippageConfig.presets)],
       [false, oneFloat(Number(slippageConfig.min), Number(slippageConfig.max)).toFixed(2)],
