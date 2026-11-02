@@ -5,8 +5,7 @@ import {
   type ProposalData,
   useProposalsMapperQuery,
 } from '@/dao/entities/proposals-mapper'
-import { getEthPath } from '@/dao/utils'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
@@ -90,10 +89,7 @@ export const Proposals = () => {
   useScrollToTopOnPageChange({ table, tableTopRef })
 
   const push = useNavigate()
-  const handleProposalClick = useCallback(
-    (proposalId: string) => push(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${proposalId}`)),
-    [push],
-  )
+  const handleProposalClick = useCallback((proposalId: string) => push(daoPages.proposal({ proposalId })), [push])
 
   const rows = table.getRowModel().rows
 

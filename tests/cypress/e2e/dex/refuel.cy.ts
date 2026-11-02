@@ -2,7 +2,7 @@ import type { AppRoute } from '@cy/support/routes'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 
 const REFUEL_POOL_ADDRESS = '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2'
-const REFUEL_ROUTE = `dex/ethereum/pools/${REFUEL_POOL_ADDRESS}/manage-pool` satisfies AppRoute
+const REFUEL_ROUTE = `/dex/ethereum/pools/${REFUEL_POOL_ADDRESS}/manage-pool` satisfies AppRoute
 
 /** Smol helper to reduce amount of repetition */
 const getTestById = (testId: string, options?: Partial<Cypress.Timeoutable>) =>
@@ -11,7 +11,7 @@ const getTestById = (testId: string, options?: Partial<Cypress.Timeoutable>) =>
 describe('Refuel page', () => {
   const visitRefuelPage = () => {
     cy.visitWithoutTestConnector(REFUEL_ROUTE)
-    cy.location('pathname', TIMEOUTS['ui.navigation']).should('equal', `/${REFUEL_ROUTE}`)
+    cy.location('pathname', TIMEOUTS['ui.navigation']).should('equal', REFUEL_ROUTE)
     getTestById('page', TIMEOUTS['ui.render']).should('be.visible')
   }
 

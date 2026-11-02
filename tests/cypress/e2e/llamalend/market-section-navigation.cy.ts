@@ -19,7 +19,7 @@ const PAGE = oneOf(
     { label: 'Mint', path: LOAN_TEST_MARKETS[MarketType.Mint][1].path, rateType: MarketRateType.Borrow },
     { label: 'Lending borrow', path: LEND_PATH, rateType: MarketRateType.Borrow },
     { label: 'Supply', path: `${LEND_PATH}/vault`, rateType: MarketRateType.Supply },
-  ] satisfies { label: string; path: `/${AppRoute}`; rateType: MarketRateType }[]),
+  ] satisfies { label: string; path: AppRoute; rateType: MarketRateType }[]),
 )
 
 const headerBottom = (document: Document) =>
@@ -50,7 +50,7 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
   const selectedSection = oneOf(...sections)
 
   const visit = (hash = '') => {
-    cy.visitWithoutTestConnector(`${PAGE.path.slice(1)}${hash}` as AppRoute)
+    cy.visitWithoutTestConnector(`${PAGE.path}${hash}`)
     cy.get(NAV, TIMEOUTS['ui.render']).should('be.visible')
     sections.forEach(section => {
       cy.get(`#${section}`, TIMEOUTS['ui.render']).should('exist')

@@ -1,7 +1,7 @@
 import { StellarApp } from '@/stellar/App'
 import { STELLAR_CONTRACT_PATTERN, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import { router } from '@/stellar/routes'
-import { StellarUrls } from '@/stellar/routes/routes'
+import { StellarPages } from '@/stellar/routes/routes'
 import { oneOf } from '@cy/support/generators'
 import { mockCampaigns, mockCampaignsError } from '@cy/support/helpers/campaign-mocks'
 import { expandFirstRowOnMobile, openDrawer, withExpandedPanelDrawer } from '@cy/support/helpers/data-table.helpers'
@@ -13,7 +13,7 @@ import { queryClient } from '@ui/features/queries/query-client'
 
 const NETWORK = 'stellar-testnet'
 // Testnet pools have no USD prices, so include pools with zero TVL.
-const POOL_LIST_URL = `${StellarUrls.poolList({ network: NETWORK })}?active=no`
+const POOL_LIST_URL = `${StellarPages.pools({ network: NETWORK })}?active=no`
 const poolLinks = () => cy.get('[data-testid^="table-row-link-"]', TIMEOUTS['curveLite.pools'])
 const search = () => cy.get('[data-testid="table-text-search-dex-pool-list"] input')
 
@@ -155,7 +155,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       }
 
       const pool = STELLAR_CONTRACT_PATTERN.source.slice(1, -1) as StellarContract
-      cy.location('pathname').should('match', new RegExp(`^${StellarUrls.pool({ network: NETWORK, pool })}$`))
+      cy.location('pathname').should('match', new RegExp(`^${StellarPages.pool({ network: NETWORK, pool })}$`))
     })
   })
 })
