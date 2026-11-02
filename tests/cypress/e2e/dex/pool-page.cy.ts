@@ -21,7 +21,9 @@ describe('Pool page', () => {
     cy.visitWithoutTestConnector(path)
     clickTab('tab', 'deposit', TIMEOUTS['ui.render'])
     cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.render']).should('have.class', 'Mui-selected')
-    cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(slippageConfig.default))
+    cy.get('[data-testid="borrow-slippage-value"]', TIMEOUTS['ui.render']).contains(
+      formatSlippage(slippageConfig.default),
+    )
     cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).should('be.enabled').click()
     const [isPreset, value] = oneOf<[boolean, string]>(
       [true, oneOf(...slippageConfig.presets)],

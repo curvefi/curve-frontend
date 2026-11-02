@@ -79,7 +79,7 @@ describe('Pool Deposit (RPC)', () => {
     const amount = oneDecimal(1, 10, coin.decimals)
     const amounts = range(pool.coins.length).map((index): Decimal => (index === to ? amount : '0'))
     const selectCoin = (index: number) => {
-      cy.get('[data-testid="deposit-token-select"]').click()
+      cy.get('[data-testid="deposit-token-select"]', TIMEOUTS['ui.render']).click()
       cy.get(`[data-testid="token-option-${pool.coins[index].address}"]`).click()
     }
     const allowanceParams = { ...getRpcUrls(getVirtualNetwork()), userAddress, tokenAddress: coin.address, pool }
