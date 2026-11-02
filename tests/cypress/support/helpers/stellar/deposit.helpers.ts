@@ -1,5 +1,6 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
+import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { oneDecimal } from '@cy/support/generators'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'

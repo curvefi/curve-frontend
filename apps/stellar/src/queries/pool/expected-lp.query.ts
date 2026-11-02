@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import {
   type ExpectedLpParams,

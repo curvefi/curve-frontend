@@ -1,5 +1,6 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
+import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { fetchPoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import { fetchTokenBalance } from '@/stellar/queries/token/token-balance.query'
