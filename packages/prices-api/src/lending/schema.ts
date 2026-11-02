@@ -77,7 +77,7 @@ const liquidation = z
   })
   .transform(camelizeKeys)
 
-const leverage = z
+export const leverage = z
   .object({
     event_type: z.enum(['Deposit', 'Repay']),
     user: address,

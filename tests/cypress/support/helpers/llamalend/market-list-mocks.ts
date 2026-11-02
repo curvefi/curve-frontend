@@ -61,12 +61,12 @@ const mockEmptyCrvUsdAmms = () =>
   )
 
 /**
- * During component tests, the backend can take a long time to reply when we send a new_hash.
+ * During component tests, the backend can take a long time to reply when we send a new_tx.
  * The transactions do not exist in the backend anyway, since we are in a fork, so we mock an empty response.
  */
-export const mockNewHashCollateralEvents = () => {
+export const mockNewTxCollateralEvents = () => {
   cy.intercept(
-    { method: 'GET', pathname: /^\/v1\/(crvusd|lending)\/collateral_events\/.+/, query: { new_hash: /.+/ } },
+    { method: 'GET', pathname: /^\/v1\/(crvusd|lending)\/collateral_events\/.+/, query: { new_tx: /.+/ } },
     req => {
       const [, , endpoint, , chain, controller, user] = new URL(req.url).pathname.split('/')
       const body = {

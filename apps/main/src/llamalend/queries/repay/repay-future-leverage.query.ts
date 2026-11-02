@@ -5,6 +5,9 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 import { getRepayImplementation } from './repay-query.helpers'
 
+/**
+ * @deprecated Collateral leverage: collateral ÷ collateral deposited by the user, wrong after soft liquidation. Use `useEquityLeverage`.
+ */
 export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutureLeverage } = queryFactory({
   queryKey: ({
     chainId,

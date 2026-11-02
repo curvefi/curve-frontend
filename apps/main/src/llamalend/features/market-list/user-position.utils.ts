@@ -38,6 +38,11 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
 
+export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
+
+/** PNL in the debt token, in USD at the borrowed token's USD rate */
+export const getUserPnlUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.pnlUsd.data
+
 const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied
   const usdRate = positionQueries.prices.borrowed.data
