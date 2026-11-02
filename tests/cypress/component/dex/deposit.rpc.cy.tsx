@@ -2,13 +2,14 @@ import { parseUnits, toHex } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { defaultNetworks } from '@/dex/lib/networks'
-import { oneOf } from '@cy/support/generators'
+import { oneDecimal, oneOf } from '@cy/support/generators'
 import {
   checkBalancedPoolDepositAmounts,
   checkPoolDepositDetailsLoaded,
   DEPOSIT_TEST_POOLS,
   getPoolDepositAllowance,
   getPoolDepositAmounts,
+  poolDepositInput,
   poolDepositSubmit,
   submitPoolDepositAndCheck,
   writePoolDepositForm,
@@ -21,6 +22,9 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
+import { range } from '@primitives/objects.utils'
+import type { DepositType } from '@ui/features/pool-forms/deposit/deposit-form.utils'
+import { constQ } from '@ui/features/queries/util'
 
 const FUND_AMOUNT = '100'
 const SINGLE_COIN_AMOUNTS = ['0', '12.5', '0'] as const
@@ -40,19 +44,20 @@ describe('Pool Deposit (RPC)', () => {
   }))
   const pool = oneOf(...DEPOSIT_TEST_POOLS)
 
-  const TestWrapper = () => (
+  const TestWrapper = ({ type = 'advanced' }: { type?: DepositType }) => (
     <PoolTestCase vnet={getVirtualNetwork()} account={privateKey} chainId={CHAIN_ID} poolAddress={pool.address}>
       <DepositTab
+        type={type}
         maxSlippage="0.5"
         poolAlert={null}
-        seed={{ isSeed: false, loaded: true }}
+        seed={constQ(false)}
         params={{ network: defaultNetworks[CHAIN_ID].blockchainId, poolAddress: pool.address }}
       />
     </PoolTestCase>
   )
 
-  const submitAndCheck = (amounts: readonly Decimal[]) =>
-    submitPoolDepositAndCheck({ ...getRpcUrls(getVirtualNetwork()), userAddress, amounts, pool })
+  const submitAndCheck = (amounts: readonly Decimal[], tokenIndex?: number) =>
+    submitPoolDepositAndCheck({ ...getRpcUrls(getVirtualNetwork()), userAddress, amounts, pool, tokenIndex })
 
   before(() => {
     const { adminRpcUrl } = getRpcUrls(getVirtualNetwork())
@@ -68,21 +73,32 @@ describe('Pool Deposit (RPC)', () => {
   })
 
   it('approves and deposits a single coin, then deposits again with the existing allowance', () => {
-    const [, coin] = pool.coins
+    const from = oneOf(...range(pool.coins.length))
+    const to = oneOf(...range(pool.coins.length).filter(index => index !== from))
+    const coin = pool.coins[to]
+    const amount = oneDecimal(1, 10, coin.decimals)
+    const amounts = range(pool.coins.length).map((index): Decimal => (index === to ? amount : '0'))
+    const selectCoin = (index: number) => {
+      cy.get('[data-testid="deposit-token-select"]').click()
+      cy.get(`[data-testid="token-option-${pool.coins[index].address}"]`).click()
+    }
     const allowanceParams = { ...getRpcUrls(getVirtualNetwork()), userAddress, tokenAddress: coin.address, pool }
     getPoolDepositAllowance(allowanceParams).should('equal', 0n)
 
-    cy.mount(<TestWrapper />)
-    writePoolDepositForm(SINGLE_COIN_AMOUNTS, pool)
+    cy.mount(<TestWrapper type="one-coin" />)
+    selectCoin(from)
+    poolDepositInput(pool.coins[from].address).type(oneDecimal(1, 5)).blur()
+    selectCoin(to)
+    poolDepositInput(coin.address).type(amount).blur()
     checkPoolDepositDetailsLoaded()
-    submitAndCheck(SINGLE_COIN_AMOUNTS)
+    submitAndCheck(amounts, to)
 
     getPoolDepositAllowance(allowanceParams).should(allowance =>
-      expect(allowance >= parseUnits(SINGLE_COIN_AMOUNTS[1], coin.decimals)).to.equal(true),
+      expect(allowance >= parseUnits(amount, coin.decimals)).to.equal(true),
     )
-    writePoolDepositForm(SINGLE_COIN_AMOUNTS, pool)
+    poolDepositInput(coin.address).type(amount).blur()
     checkPoolDepositDetailsLoaded()
-    submitAndCheck(SINGLE_COIN_AMOUNTS)
+    submitAndCheck(amounts, to)
   })
 
   it('deposits all coins with different token decimals', () => {

@@ -12,6 +12,7 @@ import { useStore } from '@/dex/store/useStore'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { zip } from '@primitives/array.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { Amount } from '../../utils'
 
@@ -66,7 +67,7 @@ export const FieldsDeposit = ({
   formProcessing: boolean
   formValues: FormValues
   haveSigner: boolean
-  isSeed: boolean | null
+  isSeed: boolean | Nullish
   updateFormValues: (
     updatedFormValues: Partial<FormValues>,
     loadMaxAmount: LoadMaxAmount | null,
@@ -112,7 +113,7 @@ export const FieldsDeposit = ({
     return tokens.map((token, idx) => ({ token, tokenAddress: tokenAddresses?.[idx], value: '' }))
   }, [formValues.amounts, tokens, tokenAddresses])
 
-  const isDisabled = isSeed === null || isSeed || formProcessing
+  const isDisabled = isSeed == null || isSeed || formProcessing
 
   const afterMaxClick = useCallback(
     (idx: number) => {
@@ -135,7 +136,7 @@ export const FieldsDeposit = ({
           const addressBalanceAmount = userPoolBalances[tokenAddress]?.data
           const haveSameTokenName = tokenCount[token] > 1
           const { value } = amountsInput[idx]
-          const isDisableInput = isSeed === null || formProcessing || (isSeed && idx !== 0)
+          const isDisableInput = isSeed == null || formProcessing || (isSeed && idx !== 0)
 
           return (
             <FieldToken
