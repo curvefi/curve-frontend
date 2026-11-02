@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto'
+import { mkdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { defineConfig } from 'cypress'
 import type { TestnetAccount, TestnetConfig } from './cypress/support/helpers/stellar/stellar-testnet.config'
 import { createTestnetDeployer, type TestnetDeployment } from './cypress/tasks/stellar-testnet'
@@ -34,10 +36,25 @@ export default defineConfig({
     supportFile: 'cypress/support/component.ts',
     setupNodeEvents(on, config) {
       let deployerPromise: Promise<TestnetAccount> | undefined
+      // Capture network failures during module loading in the existing failure artifacts.
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.name === 'chrome' && config.screenshotsFolder) {
+          mkdirSync(config.screenshotsFolder, { recursive: true })
+          launchOptions.args.push(
+            `--log-net-log=${resolve(config.screenshotsFolder, `chrome-netlog-${randomUUID()}.json`)}`,
+          )
+        }
+        return launchOptions
+      })
       on('before:run', () => {
         deployerPromise = undefined
       })
       on('task', {
+        // cy.log only reaches the command log, this prints to the terminal (and CI output)
+        log: (message: string) => {
+          console.info(message)
+          return null
+        },
         getStellarTestnetConfig: async (rpcUrl: string): Promise<TestnetConfig> => {
           const deployment: TestnetDeployment = assert(
             config.env.STELLAR_TESTNET_CONFIG,

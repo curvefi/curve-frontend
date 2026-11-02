@@ -1,6 +1,10 @@
 import type { Theme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
+import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
+
+export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
+export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
 
 /** Health percentage thresholds used for color coding and label display */
 export const HEALTH_THRESHOLDS = {
@@ -62,6 +66,9 @@ export const getHealthValueColor = ({
     resolveHealthFeedbackKey({ health: value == null ? value : Number(value), isFullRepay })
   ]
 }
+
+export const getLeverageValueColor = (leverage: Decimal | Nullish) =>
+  leverage != null && decimalGreaterThan(ZERO, leverage) ? 'error' : undefined
 
 /** Bar and track fills. Health figures use `getHealthValueColor`. */
 export const getHealthTrackColor = ({

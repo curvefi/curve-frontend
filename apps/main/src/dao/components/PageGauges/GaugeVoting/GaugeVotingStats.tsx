@@ -4,45 +4,45 @@ import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBox
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import { getEthPath } from '@/dao/utils'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link/InternalLink'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { maybes } from '@primitives/objects.utils'
 import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { calculateUserPowerStale } from './utils'
+import { checkIsUserPowerStale } from './utils'
 
 export const GaugeVotingStats = () => {
   const { address: userAddress } = useConnection()
   const { data: userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress ?? '',
+    userAddress,
   })
   const { data: userEns } = useEnsName({ address: userAddress })
   const { data: userVeCrv, isLoading: userVeCrvLoading } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
-  const isUserPowerStale = calculateUserPowerStale(
-    +(userVeCrv?.veCrv ?? 0),
-    userGaugeWeightVotes?.powerUsed ?? 0,
-    userGaugeWeightVotes?.veCrvUsed ?? 0,
+  const isUserPowerStale = maybes([userVeCrv, userGaugeWeightVotes], ({ veCrv }, { powerUsed, veCrvUsed }) =>
+    checkIsUserPowerStale(+veCrv, powerUsed, veCrvUsed),
   )
 
   return (
     <UserDataWrapper>
       <Box flex flexWrap="wrap" flexGap="var(--spacing-3)" flexJustifyContent="space-between">
-        <MetricsComp
-          loading={userGaugeWeightsLoading}
-          title="User"
-          data={
-            <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
-              <MetricsColumnData>{userEns ?? shortenAddress(userAddress)}</MetricsColumnData>
-            </StyledInternalLink>
-          }
-        />
+        {userAddress && (
+          <MetricsComp
+            loading={userGaugeWeightsLoading}
+            title="User"
+            data={
+              <StyledInternalLink href={daoPages.user({ userAddress })}>
+                <MetricsColumnData>{userEns ?? shortenAddress(userAddress)}</MetricsColumnData>
+              </StyledInternalLink>
+            }
+          />
+        )}
         <MetricsComp
           loading={userGaugeWeightsLoading}
           title="Power used"

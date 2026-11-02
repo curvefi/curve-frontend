@@ -108,6 +108,8 @@ const createMarketsColumnOptions = ({
           MarketColumnId.UserBorrowed,
           MarketColumnId.UserCollateral,
           MarketColumnId.UserLtv,
+          MarketColumnId.UserEquity,
+          MarketColumnId.UserPnl,
         ],
         active: onlyPositions == MarketRateType.Borrow,
         enabled: hasPositions,

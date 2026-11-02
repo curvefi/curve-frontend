@@ -1,8 +1,10 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getUserProposalVotes, type ProposalType, type UserProposalVote } from '@curvefi/prices-api/proposal'
+import type { UserParams, UserQuery } from '@evm-ui/queries/query-types'
+import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 import { TIME_FRAMES } from '@ui/lib/time'
-import { EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 
 const { WEEK } = TIME_FRAMES
 
@@ -18,7 +20,7 @@ export type UserProposalVoteFormatted = {
 
 type UserProposalVotesMapper = Record<string, UserProposalVoteFormatted>
 
-const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string }) => {
+const _fetchUserProposalVotes = async ({ userAddress }: UserQuery) => {
   const results: UserProposalVote[] = await paginate(
     (page, offset) => getUserProposalVotes(userAddress, page, offset),
     1,
@@ -42,8 +44,8 @@ const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string })
 }
 
 export const { useQuery: useUserProposalVotesQuery, invalidate: invalidateUserProposalVotesQuery } = queryFactory({
-  queryKey: ({ userAddress }: { userAddress: string }) => ({ name: 'user-proposal-votes', userAddress }) as const,
+  queryKey: ({ userAddress }: UserParams) => ({ name: 'user-proposal-votes', userAddress }) as const,
   queryFn: _fetchUserProposalVotes,
   category: 'dao.user',
-  validationSuite: EmptyValidationSuite,
+  validationSuite: createValidationSuite((params: UserParams) => userAddressValidationGroup(params)),
 })

@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 import type { MarketTokens } from '@/llamalend/llama.utils'
-import { UserCollateralEvent as CrvUsdUserCollateralEvent } from '@curvefi/prices-api/crvusd'
-import { UserCollateralEvent as LendingUserCollateralEvent } from '@curvefi/prices-api/lending'
 import type { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import type { UserContractQuery } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'
@@ -11,6 +9,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimalDiv } from '@ui/lib/decimal'
+import { type ApiCollateralEvent, getOpenPositionEvents } from '../collateral-events.utils'
 import {
   invalidateUserCrvUsdCollateralEventsQuery,
   useUserCrvUsdCollateralEventsQuery,
@@ -19,8 +18,6 @@ import {
   invalidateUserLendCollateralEventsQuery,
   useUserLendCollateralEventsQuery,
 } from '../queries/user-lend-collateral-events'
-
-type UserCollateralEventFromApi = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
 
 /**
  * Types:
@@ -53,16 +50,29 @@ const OriginalFields = [
   'txHash',
 ] as const
 
-export type ParsedUserCollateralEvent = Pick<UserCollateralEventFromApi, (typeof OriginalFields)[number]> & {
+export type ParsedUserCollateralEvent = Pick<ApiCollateralEvent, (typeof OriginalFields)[number]> & {
   chainId: number
   type: UserCollateralEventType
 } & Partial<MarketTokens>
 
-export type UserCollateralEvents = { events: ParsedUserCollateralEvent[]; originalLeverage: Decimal }
+export type UserCollateralEvents = {
+  events: ParsedUserCollateralEvent[]
+  /** @deprecated Total deposit ÷ deposit from the user. Use `isZapLeveraged` to know if the position borrowed through the zap. */
+  originalLeverage: Decimal
+  /** The open position borrowed through the leverage zap */
+  isZapLeveraged: boolean
+}
+
+/**
+ * Whether the open position deposited through the leverage zap. Only events after the last closed position count, so a
+ * closed leveraged loan doesn't mark a new plain borrow.
+ */
+const hasZapBorrowInOpenPosition = (events: ApiCollateralEvent[]) =>
+  getOpenPositionEvents(events).some(e => e.leverage?.eventType === 'Deposit')
 
 const parseEventType = (
-  { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: UserCollateralEventFromApi,
-  previousEvent: UserCollateralEventFromApi | undefined,
+  { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: ApiCollateralEvent,
+  previousEvent: ApiCollateralEvent | undefined,
 ): UserCollateralEventType => {
   // when !previousEvent it's the first event. if isPositionClosed, the next 'Borrow' must be 'Open position'
   if (type === 'Borrow' && (!previousEvent || previousEvent.isPositionClosed)) return 'Open Position'
@@ -103,6 +113,7 @@ export const useUserCollateralEvents = ({
           originalLeverage: Number(data.totalDepositFromUserPrecise)
             ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
             : '0', // deposit should only be 0 if there is no loan, this is just a guard for div-by-zero errors
+          isZapLeveraged: hasZapBorrowInOpenPosition(data.events),
           events:
             data.events
               .map((event, index, events) => ({

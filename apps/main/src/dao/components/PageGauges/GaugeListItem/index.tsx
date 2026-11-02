@@ -13,7 +13,7 @@ import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { IconButton } from '@legacy-ui/IconButton'
@@ -108,7 +108,9 @@ export const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address ?? gaugeData.address}`}>
+            <InternalLinkButton
+              to={daoPages.gauge({ gaugeAddress: (gaugeData.effective_address ?? gaugeData.address) as Address })}
+            >
               {t`VISIT GAUGE`}
             </InternalLinkButton>
           </Box>

@@ -28,7 +28,7 @@ describe('Basic Access Test', () => {
 
   // todo: re-enable test once lite api is fixed
   it.skip('should load for lite networks', () => {
-    cy.visitWithoutTestConnector('dex/plasma/pools')
+    cy.visitWithoutTestConnector('/dex/plasma/pools')
     cy.title(TIMEOUTS['ui.navigation']).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/plasma/pools')
     cy.contains(/USDT0\/sUSDe/i, TIMEOUTS['curveLite.pools']).should('be.visible')
