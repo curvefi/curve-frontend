@@ -1,74 +1,12 @@
-import type { Address } from 'viem'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { submitAndExpectToast, type ToastOptions } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
-import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import {
   checkEstimatedTxCost as checkEstimatedTxCostValue,
   DECIMAL_REGEX,
   getActionValue,
 } from '../action-info.helpers'
-
-type SupplyRpcTestMarket = {
-  id: string
-  label: string
-  chainId: LlamaChainId
-  borrowedTokenAddress: Address
-  vaultAddress: Address
-  gaugeAddress: Address
-  deposit: Decimal
-  partialWithdraw: Decimal
-  borrowedTokenDecimals: number
-  // gauge that exposes any claimables
-  hasClaimableRewards?: boolean
-}
-
-const DEFAULT_CHAIN_ID = Chain.Ethereum
-const DEFAULT_BORROWED_TOKEN_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
-const DEFAULT_TOKEN_DECIMALS = 18
-const DEFAULT_DEPOSIT = '12.5'
-const DEFAULT_PARTIAL_WITHDRAW = '2.5'
-
-export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
-  {
-    id: 'one-way-market-11',
-    label: 'sUSDe v2-crvUSD Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x4a7999c55d3a93dAf72EA112985e57c2E3b9e95D',
-    gaugeAddress: '0xae1680ef5efc2486e73d8d5d0f8a8db77da5774e',
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-    hasClaimableRewards: true,
-  },
-  {
-    id: 'one-way-market-12',
-    label: 'WETH-crvUSD Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0x8fb1c7AEDcbBc1222325C39dd5c1D2d23420CAe3',
-    gaugeAddress: '0xf3f6d6d412a77b680ec3a5e35ebb11bbec319739',
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-    hasClaimableRewards: true,
-  },
-  {
-    id: 'one-way-market-41',
-    label: 'sreUSD-crvUSD Lend Market',
-    chainId: DEFAULT_CHAIN_ID,
-    borrowedTokenAddress: DEFAULT_BORROWED_TOKEN_ADDRESS,
-    vaultAddress: '0xC32B0Cf36e06c790A568667A17DE80cba95A5Aad',
-    gaugeAddress: '0x29e9975561fad3a7988ca96361ab5c5317cb32af',
-    deposit: DEFAULT_DEPOSIT,
-    partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
-    borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
-    hasClaimableRewards: true,
-  },
-] as const
 
 type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 export type SupplyActionType = SupplyFormType | 'claim-crv-rewards' | 'claim-other-rewards'

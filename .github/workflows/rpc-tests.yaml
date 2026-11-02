@@ -1,6 +1,11 @@
 name: RPC Tests
 on:
   workflow_dispatch: # triggered manually
+    inputs:
+      specs:
+        description: Optional Cypress spec or glob, defaults to all RPC specs
+        required: false
+        type: string
 env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
@@ -31,13 +36,14 @@ jobs:
 
       - run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:rpc --browser electron 2>&1 | \
+          yarn run cy:run:rpc --browser electron ${SPECS:+--spec "$SPECS"} 2>&1 | \
             tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null # rpc tests are expensive, stick to one browser
         working-directory: tests
         timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test
+          SPECS: ${{ inputs.specs }} # the last --spec wins, so this overrides the script's glob
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-rpc
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}
