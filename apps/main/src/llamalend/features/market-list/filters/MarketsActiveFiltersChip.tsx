@@ -20,11 +20,11 @@ import {
   type TableActiveFilterGroup,
   type TableActiveFilterGroupChipsProps,
 } from '@ui/features/tables/TableActiveFilterGroups'
-import { MARKET_COLUMNS } from '../columns/column.definitions'
 import { MARKET_TITLES } from '../columns/column.titles'
 import { MarketColumnId } from '../columns/columns.enum'
+import { MARKETS_TABLE } from '../columns/markets.table'
 
-const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
+const MARKET_COLUMN_ORDER = new Map(MARKETS_TABLE.columns.map((column, index) => [column.id, index]))
 
 // capitalize all labels except columns containing tokens symbols
 const formatLabel = (label: string, id: MarketColumnId) =>

@@ -9,31 +9,18 @@ import { QueryProp } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsTablet } from '@ui/hooks/useBreakpoints'
-import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { t } from '@ui/lib/i18n'
-import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns/column.constants'
-import { MARKET_COLUMNS } from './columns/column.definitions'
-import { useMarketsVisibility } from './hooks/useMarketsVisibility'
+import { BORROW_TABLE } from './columns/borrow.table'
+import { SUPPLY_TABLE } from './columns/supply.table'
+import { useMarketColumns } from './hooks/useMarketColumns'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
 import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
 
 const { Spacing } = SizesAndSpaces
 
 const TABLE_CONFIG = {
-  [MarketRateType.Borrow]: {
-    title: t`Borrowing`,
-    label: t`borrow`,
-    defaultSort: DEFAULT_SORT_BORROW,
-    sortQueryField: 'userSortBorrow',
-    storageKey: 'My Borrow Positions',
-  },
-  [MarketRateType.Supply]: {
-    title: t`Supplying`,
-    label: t`supply`,
-    defaultSort: DEFAULT_SORT_SUPPLY,
-    sortQueryField: 'userSortSupply',
-    storageKey: 'My Supply Positions',
-  },
+  [MarketRateType.Borrow]: { title: t`Borrowing`, label: t`borrow`, marketTable: BORROW_TABLE },
+  [MarketRateType.Supply]: { title: t`Supplying`, label: t`supply`, marketTable: SUPPLY_TABLE },
 }
 
 type UserPositionsTableProps = {
@@ -45,16 +32,12 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
-  const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
-  const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, {
-    fieldName: sortQueryField,
-    columns: MARKET_COLUMNS,
-  })
-  const { columnVisibility } = useMarketsVisibility(storageKey, sorting, marketRateType)
+  const { title, label, marketTable } = TABLE_CONFIG[marketRateType]
+  const { columns, sorting, onSortingChange, columnVisibility } = useMarketColumns(marketTable)
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const table = useCurveTable({
-    columns: MARKET_COLUMNS,
+    columns,
     query: tableQuery,
     meta: { getRowHref: ({ url }) => url },
     state: { expanded, sorting, columnVisibility },

@@ -67,6 +67,18 @@ export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
     migration,
   )
 
+const EMPTY_COLUMN_CHOICES = {}
+
+export const useTableColumnChoices = (
+  tableTitle: string,
+  migration: MigrationOptions<Partial<Record<string, boolean>>>,
+) =>
+  useLocalStorage<Partial<Record<string, boolean>>>(
+    `table-column-visibility-${kebabCase(tableTitle)}`,
+    EMPTY_COLUMN_CHOICES,
+    migration,
+  )
+
 const FAVORITE_MARKETS_KEY = 'favoriteMarkets'
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>(FAVORITE_MARKETS_KEY) ?? []
 export const useFavoriteMarkets = () => {
