@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getColumnSettings, getColumnVisibility, inGroup, migrateGroupsToChoices } from './market-table'
+import { defineMarketTable, getColumnSettings, getColumnVisibility, inGroup } from './market-table'
 
 const COLUMNS = [
   { id: 'assets', header: 'Assets', enableHiding: false },
@@ -62,39 +62,41 @@ describe('getColumnSettings', () => {
   })
 })
 
-describe('migrateGroupsToChoices', () => {
-  const stored = (options: { columns: string[]; active: boolean }[]) => [
-    { options: options.map(option => ({ ...option, label: 'stored', enabled: true })) },
-  ]
+describe('stored settings migration', () => {
+  const { migration } = defineMarketTable({
+    testId: 'test',
+    defaultSort: [],
+    sortQueryField: 'sort',
+    storageKey: 'Test',
+    storedVariant: 'noPositions',
+    columns: COLUMNS,
+  })
 
-  it('keeps only the choices that differ from the defaults', () =>
+  const migrate = (options: { columns: string[]; active: boolean }[]) =>
+    migration.migrate({
+      noPositions: [{ options: options.map(option => ({ ...option, label: 'stored', enabled: true })) }],
+      hasPositions: [{ options: [{ columns: ['shown'], active: false, label: 'other variant', enabled: true }] }],
+    })
+
+  it('keeps only the choices of its variant that differ from the defaults', () =>
     expect(
-      migrateGroupsToChoices(
-        stored([
-          { columns: ['shown'], active: true },
-          { columns: ['hidden'], active: true },
-          { columns: ['lend'], active: false },
-        ]),
-        COLUMNS,
-      ),
+      migrate([
+        { columns: ['shown'], active: true },
+        { columns: ['hidden'], active: true },
+        { columns: ['lend'], active: false },
+      ]),
     ).toEqual({ hidden: true, lend: false }))
 
   it('splits a choice stored for several columns', () =>
-    expect(migrateGroupsToChoices(stored([{ columns: ['hidden', 'chart'], active: true }]), COLUMNS)).toEqual({
-      hidden: true,
-      chart: true,
-    }))
+    expect(migrate([{ columns: ['hidden', 'chart'], active: true }])).toEqual({ hidden: true, chart: true }))
 
   it('drops columns that are not toggles of the table', () =>
     expect(
-      migrateGroupsToChoices(
-        stored([
-          { columns: ['assets'], active: false },
-          { columns: ['userHealth'], active: true },
-        ]),
-        COLUMNS,
-      ),
+      migrate([
+        { columns: ['assets'], active: false },
+        { columns: ['userHealth'], active: true },
+      ]),
     ).toEqual({}))
 
-  it('starts empty without stored settings', () => expect(migrateGroupsToChoices(undefined, COLUMNS)).toEqual({}))
+  it('starts empty without stored settings', () => expect(migration.migrate({})).toEqual({}))
 })

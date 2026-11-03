@@ -17,7 +17,7 @@ type MarketColumnInput = {
 type MarketColumnShape = MarketColumnInput & { id: string }
 
 /** Columns the user chose to show or hide, every other column follows its default. */
-export type ColumnChoices = Partial<Record<string, boolean>>
+type ColumnChoices = Partial<Record<string, boolean>>
 
 type StoredGroups = Pick<VisibilityGroup<string>, 'options'>[]
 
@@ -51,7 +51,7 @@ export const getColumnSettings = (
   )
 
 /** Before version 10 the full settings of each variant were stored, only keep what differs from the defaults. */
-export const migrateGroupsToChoices = (
+const migrateGroupsToChoices = (
   storedGroups: StoredGroups | undefined,
   columns: readonly MarketColumnShape[],
 ): ColumnChoices => {
@@ -89,13 +89,11 @@ export const defineMarketTable = <TColumn extends MarketColumnInput>({
   const columns = columnInputs.map(column => ({
     ...column,
     id: assert(column.id, 'Market column without id'),
-    // columns without a header only exist for their filter
-    enableSorting: column.header ? column.enableSorting : false,
+    enableSorting: column.header ? column.enableSorting : false, // columns without a header only exist for their filter
   }))
   return {
     ...table,
     columns,
-    /** Filters accepted from the URL, in the shape expected by `useFilters` */
     filterColumns: fromEntries(
       columns.filter(({ filterFn }) => filterFn).map(({ id }) => [id, id as MarketColumnId] as const),
     ),
