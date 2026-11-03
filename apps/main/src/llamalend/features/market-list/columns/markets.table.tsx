@@ -33,7 +33,7 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
   defaultSort: [{ id: MarketColumnId.Tvl, desc: true }],
   sortQueryField: 'sort',
   storageKey: 'Llamalend Markets',
-  deprecatedVariants: ['hasPositions', 'noPositions'],
+  deprecatedVariants: ['hasPositions', 'noPositions'], // used for the v9 -> v10 migration, this will be removed in the future
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Borrow`, [

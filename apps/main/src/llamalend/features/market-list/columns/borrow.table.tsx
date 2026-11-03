@@ -94,7 +94,7 @@ const BORROW_TABLE_OPTIONS = {
 export const BORROW_TABLE: MarketTable = defineMarketTable({
   ...BORROW_TABLE_OPTIONS,
   storageKey: 'My Borrow Positions',
-  deprecatedVariants: [MarketRateType.Borrow],
+  deprecatedVariants: [MarketRateType.Borrow], // used for the v9 -> v10 migration, this will be removed in the future
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Borrow`, [
