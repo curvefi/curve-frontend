@@ -63,7 +63,7 @@ export const getUserPositionLtv = (row: LlamaMarketRow) =>
     Number,
   )
 
-/** Share of the collateral value still in the collateral token, in percent; the rest was converted in soft liquidation */
+/** Share of the collateral value still in the collateral token, in percent, the rest was converted in soft liquidation */
 export const getUserCollateralShare = (row: LlamaMarketRow) =>
   maybe(
     mapPosition(row, (position, price) =>

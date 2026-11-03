@@ -441,10 +441,6 @@ export const isBelowRange = (activeBand: number | Nullish, lowerBoundBand: numbe
  *
  * See https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works.
  */
-/** Full health by default, but band-valued health when it is negative. */
-export const pickDisplayHealth = <T extends Decimal | number>(healthFull: T, healthNotFull: T) =>
-  +healthNotFull < 0 ? healthNotFull : healthFull
-
 export const getDisplayHealth = (
   healthFull: Decimal | number | Nullish,
   healthNotFull: Decimal | number | Nullish,
@@ -452,6 +448,10 @@ export const getDisplayHealth = (
   if (healthFull == null || healthNotFull == null) return null
   return +pickDisplayHealth(healthFull, healthNotFull)
 }
+
+/** Full health by default, but band-valued health when it is negative. */
+export const pickDisplayHealth = <T extends Decimal | number>(healthFull: T, healthNotFull: T) =>
+  +healthNotFull < 0 ? healthNotFull : healthFull
 
 /**
  * healthNotFull is needed here because:

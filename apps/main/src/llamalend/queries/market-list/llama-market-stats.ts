@@ -41,7 +41,6 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       decimal(collateralBorrowTokenAmount),
     ),
     health: getDisplayHealth(stats.healthFull, stats.health) ?? undefined,
-    /** The position card's health factor */
     healthFactor: maybes(
       [decimal(stats.healthFull), decimal(stats.health)],
       (full, notFull) => getHealthValues(full, notFull).healthFactor,
