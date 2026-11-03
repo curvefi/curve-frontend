@@ -20,6 +20,7 @@ import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-br
 import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
 import { noMutableArrayMethodsRule } from './.eslint/no-mutable-array-methods.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
+import { noRedundantCypressAssertionRule } from './.eslint/no-redundant-cypress-assertion.rule.mjs'
 import { noRouterNavigateOnClickRule } from './.eslint/no-router-navigate-on-click.rule.mjs'
 import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
 import { isolatedPackagesRule } from './.eslint/isolated-packages.rule.mjs'
@@ -81,6 +82,7 @@ const config = [
           'no-query-component-props': noQueryComponentPropsRule,
           'no-mutable-array-methods': noMutableArrayMethodsRule,
           'no-redundant-ternary': noRedundantTernaryRule,
+          'no-redundant-cypress-assertion': noRedundantCypressAssertionRule,
           'no-router-navigate-on-click': noRouterNavigateOnClickRule,
           'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
           'isolated-packages': isolatedPackagesRule,
@@ -237,6 +239,10 @@ const config = [
   },
 
   // Override (replaces legacy `overrides`)
+  {
+    files: ['tests/cypress/**/*.{ts,tsx}'],
+    rules: { 'local/no-redundant-cypress-assertion': 'error' },
+  },
   {
     files: ['apps/**', 'packages/**'],
     ignores: ['packages/evm-ui/src/features/forms/**', 'packages/ui/src/features/forms/**'],
