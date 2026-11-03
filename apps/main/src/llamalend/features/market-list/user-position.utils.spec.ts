@@ -58,7 +58,8 @@ describe('borrow position metrics', () => {
     const row = createRow()
     // 0.6% health over the 0.5% gap between the loan and liquidation discounts
     expect(getUserLiquidationBuffer(row)).toBeCloseTo(120)
-    expect(getUserLiquidationBufferAmount(row)).toBeCloseTo(6)
+    // 0.6% of the 5 debt
+    expect(getUserLiquidationBufferAmount(row)).toBeCloseTo(0.03)
   })
 
   it('shows no liquidation buffer without a gap between the discounts', () =>

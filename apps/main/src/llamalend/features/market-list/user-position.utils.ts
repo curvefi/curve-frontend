@@ -38,7 +38,7 @@ const getCollateralValues = ({ positionQueries }: LlamaMarketRow) =>
     maybe(oraclePrice, price => ({ collateral: collateral * +price, converted: borrowToken })),
   )
 
-/** Debt over the collateral value, as on the position card */
+/** Debt over the collateral value at the oracle price, plus the tokens converted in soft liquidation */
 export const getUserPositionLtv = (row: LlamaMarketRow) =>
   maybes([row.positionQueries.stats.data?.borrowed, getCollateralValues(row)], (debt, { collateral, converted }) =>
     debt && collateral + converted ? (debt / (collateral + converted)) * 100 : undefined,
@@ -95,11 +95,10 @@ export const getUserLiquidationBuffer = ({
     maybe(getLiquidationBuffer(health, loanDiscount, liquidationDiscount), Number),
   )
 
-/** The part of the debt the liquidation buffer stands for, in the borrowed token */
-export const getUserLiquidationBufferAmount = (row: LlamaMarketRow) =>
-  maybes(
-    [row.positionQueries.stats.data?.borrowed, getUserLiquidationBuffer(row)],
-    (debt, buffer) => (debt * buffer) / 100,
+/** The part of the debt the band-valued health stands for, in the borrowed token, as the position card's "% of debt" */
+export const getUserLiquidationBufferAmount = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data, ({ borrowed, healthNotFull }) =>
+    maybe(healthNotFull, health => (borrowed * +health) / 100),
   )
 
 export const getUserBandCount = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.bandCount

@@ -364,15 +364,6 @@ export const getMonetaryPolicy = <T extends MarketTemplate | Nullish>(
     m => m.monetaryPolicyAddress,
   )
 
-/**
- * Calculates the loan-to-value ratio of a market.
- * @param debtAmount - The amount of debt in the market.
- * @param collateralAmount - The amount of deposited collateral.
- * @param collateralBorrowTokenAmount - The amount of collateral that has been converted into the borrow token during soft-liquidation.
- * @param borrowTokenUsdRate - The USD rate of the borrow token.
- * @param collateralTokenUsdRate - The USD rate of the collateral token.
- * @returns The loan-to-value ratio of the market.
- */
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,
