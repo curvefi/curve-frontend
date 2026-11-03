@@ -5,6 +5,7 @@ import { constQ, DISABLED_Q } from '@ui/features/queries/util'
 import {
   getUserBandCount,
   getUserCollateralShare,
+  getUserHealthFactor,
   getUserLeverage,
   getUserLiquidationBuffer,
   getUserLiquidationBufferAmount,
@@ -22,6 +23,7 @@ const STATS = {
   borrowToken: 0,
   borrowed: 5,
   oraclePrice: '1' as Decimal,
+  healthFactor: '1.2' as Decimal,
   healthNotFull: '0.6' as Decimal,
   bandCount: 4,
 } satisfies Partial<MarketStats>
@@ -102,6 +104,8 @@ describe('borrow position metrics', () => {
     expect(getUserLoopedApr(row)).toBeUndefined()
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })
+
+  it('shows the health factor of the position card', () => expect(getUserHealthFactor(createRow())).toBe(1.2))
 
   it('shows the band count', () => expect(getUserBandCount(createRow())).toBe(4))
 

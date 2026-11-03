@@ -1,3 +1,4 @@
+import { formatHealthFactor } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -43,6 +44,10 @@ const StatsMetric = ({
     </WithSkeleton>
   )
 }
+
+export const HealthFactorCell = ({ row: { original: row }, getValue }: PositionCellProps) => (
+  <StatsMetric row={row} value={maybe(getValue(), formatHealthFactor) ?? UNAVAILABLE_NOTATION} />
+)
 
 export const LiquidationBufferCell = ({ row: { original: row }, getValue }: PositionCellProps) => (
   <StatsMetric

@@ -10,6 +10,7 @@ import { LtvCell } from '../cells/LtvCell'
 import {
   BandCountCell,
   CollateralCompositionCell,
+  HealthFactorCell,
   LeverageCell,
   LiquidationBufferCell,
   LoopedAprCell,
@@ -22,6 +23,7 @@ import {
   getUserCollateralShare,
   getUserCollateralUsd,
   getUserEquityUsd,
+  getUserHealthFactor,
   getUserLeverage,
   getUserLiquidationBuffer,
   getUserLoopedApr,
@@ -122,7 +124,13 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       adapt(userCollateralColumn, { header: t`Collateral`, meta: { defaultHidden: true } }),
       adapt(userLtvColumn, { header: t`LTV ratio`, meta: { defaultHidden: true } }),
       borrowRateColumn,
-      userHealthColumn,
+      columnHelper.accessor(getUserHealthFactor, {
+        id: MarketColumnId.UserHealth,
+        header: MARKET_TITLES[MarketColumnId.UserHealth],
+        cell: HealthFactorCell,
+        meta: { type: 'numeric' },
+        sortUndefined: 'last',
+      }),
       columnHelper.accessor(getUserLiquidationBuffer, {
         id: MarketColumnId.UserLiquidationBuffer,
         header: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],

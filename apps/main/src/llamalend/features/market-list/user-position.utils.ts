@@ -136,6 +136,9 @@ export const getUserIncentivesApr = ({ rates, rewards, lendingPosition }: LlamaM
 
 export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
 
+export const getUserHealthFactor = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data?.healthFactor, Number)
+
 export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
 
 /** PNL in the debt token, in USD at the borrowed token's USD rate */

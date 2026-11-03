@@ -1,6 +1,7 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
+import { getHealthValues } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
@@ -40,6 +41,11 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       decimal(collateralBorrowTokenAmount),
     ),
     health: getDisplayHealth(stats.healthFull, stats.health) ?? undefined,
+    /** The position card's health factor */
+    healthFactor: maybes(
+      [decimal(stats.healthFull), decimal(stats.health)],
+      (full, notFull) => getHealthValues(full, notFull).healthFactor,
+    ),
     /** Band-valued health in percent of the debt, for the liquidation buffer */
     healthNotFull: decimal(stats.health),
     bandCount: stats.n,
