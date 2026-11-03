@@ -133,7 +133,7 @@ export const getUserIncentivesApr = ({ rates, rewards, lendingPosition }: LlamaM
         (campaignsApr ?? 0)
 }
 
-export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+export const getUserLegacyHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.legacyHealth
 
 export const getUserHealthFactor = ({ positionQueries }: LlamaMarketRow) =>
   maybe(positionQueries.stats.data?.healthFactor, Number)

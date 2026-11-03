@@ -5,7 +5,7 @@ import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprT
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { t } from '@ui/lib/i18n'
-import { HealthCell } from '../cells/HealthCell'
+import { LegacyHealthCell } from '../cells/LegacyHealthCell'
 import { LtvCell } from '../cells/LtvCell'
 import {
   BandCountCell,
@@ -28,7 +28,7 @@ import {
   getUserLiquidationBuffer,
   getUserLoopedApr,
   getUserPnlUsd,
-  getUserPositionHealth,
+  getUserLegacyHealth,
   getUserPositionLtv,
 } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
@@ -79,10 +79,10 @@ const userPnlColumn = columnHelper.accessor(getUserPnlUsd, {
   sortUndefined: 'last',
 })
 
-const userHealthColumn = columnHelper.accessor(getUserPositionHealth, {
+const userLegacyHealthColumn = columnHelper.accessor(getUserLegacyHealth, {
   id: MarketColumnId.UserHealth,
   header: MARKET_TITLES[MarketColumnId.UserHealth],
-  cell: HealthCell,
+  cell: LegacyHealthCell,
   meta: { type: 'numeric' },
   sortUndefined: 'last',
 })
@@ -106,7 +106,7 @@ export const LEGACY_BORROW_TABLE: MarketTable = defineMarketTable({
       userLtvColumn,
       userEquityColumn,
       userPnlColumn,
-      userHealthColumn,
+      userLegacyHealthColumn,
     ]),
   ]),
 })
