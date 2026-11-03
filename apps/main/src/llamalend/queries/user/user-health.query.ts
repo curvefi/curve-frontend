@@ -1,3 +1,4 @@
+import { getLiquidationBuffer } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
@@ -6,7 +7,7 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData, QueryProp } from '@ui/features/queries/util'
-import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui/lib/decimal'
+import { decimalDiv, decimalGreaterThan, decimalMinus, decimalSum, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
@@ -81,7 +82,7 @@ export const useUserHealthValues = (params: UserMarketParams, enabled = true) =>
           /** Raw band-valued margin before full liquidation, as a percentage of debt. */
           healthNotFull: notFull,
           /** Distance from liquidation as a percentage of the liquidation-discount gap. */
-          liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
+          liquidationBuffer: getLiquidationBuffer(notFull, loanDiscount, liquidationDiscount),
           /** Inputs and intermediate values exposed for developer diagnostics. */
           debug: {
             healthFull: full,

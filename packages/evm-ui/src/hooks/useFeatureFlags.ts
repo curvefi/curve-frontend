@@ -39,3 +39,6 @@ export const useLlamalendEquityLeverage = useBetaChannel
 
 /** LlamaLend equity and PNL (ROI %) of borrow positions */
 export const useLlamalendPositionPnl = useBetaChannel
+
+/** LlamaLend borrow and supply position tables with the position card's metrics */
+export const useLlamalendPositionTables = useBetaChannel

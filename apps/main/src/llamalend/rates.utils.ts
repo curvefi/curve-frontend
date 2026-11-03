@@ -167,20 +167,32 @@ export const getMarketCampaigns = (
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
-/**
- * Yields from the latest snapshot and the borrow campaign rewards of a market.
- * No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%.
- */
+/** No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%. */
+const toMarketYields = (
+  collateralYieldApr: number | Nullish,
+  borrowedYieldApr: number | Nullish,
+  campaigns: CampaignRewards[],
+): MarketYields => ({
+  collateralYieldApr: decimal(collateralYieldApr) ?? null,
+  borrowedYieldApr: decimal(borrowedYieldApr) ?? ZERO,
+  borrowRewardsApr: decimal(sumCampaignsApr(campaigns.filter(c => c.action === 'borrow'))) ?? ZERO,
+})
+
+/** Yields from the latest snapshot and the borrow campaign rewards of a market. */
 export const getMarketYields = (
   snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
   campaigns: Record<string, CampaignRewards[]>,
   addresses: MarketCampaignAddresses & { marketType: MarketType },
-): MarketYields => ({
-  collateralYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr)) ?? null,
-  borrowedYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr)) ?? ZERO,
-  borrowRewardsApr:
-    decimal(sumCampaignsApr(getMarketCampaigns(campaigns, addresses).filter(c => c.action === 'borrow'))) ?? ZERO,
-})
+): MarketYields =>
+  toMarketYields(
+    getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr),
+    getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr),
+    getMarketCampaigns(campaigns, addresses),
+  )
+
+/** Yields and borrow campaign rewards of a market in the market list. */
+export const getMarketListYields = ({ assets, rewards }: Pick<LlamaMarket, 'assets' | 'rewards'>) =>
+  toMarketYields(assets.collateral.rebasingYieldApr, assets.borrowed.rebasingYieldApr, rewards)
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0

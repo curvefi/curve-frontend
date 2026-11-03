@@ -48,8 +48,16 @@ export const RateCell = <TValue extends number | null>({
   row: { original: market },
   getValue,
   column: { id },
-}: CellContext<CurveTableFeatures, LlamaMarketRow, TValue>) => {
-  const { rateType, getSubRate } = assert(RATE_COLUMNS[id as MarketColumnId], `RateCell: Unsupported column ID "${id}"`)
+  getSubRate: getCellSubRate,
+}: CellContext<CurveTableFeatures, LlamaMarketRow, TValue> & {
+  /** Replaces the column's support line */
+  getSubRate?: (market: LlamaMarketRow) => string
+}) => {
+  const { rateType, getSubRate: getColumnSubRate } = assert(
+    RATE_COLUMNS[id as MarketColumnId],
+    `RateCell: Unsupported column ID "${id}"`,
+  )
+  const getSubRate = getCellSubRate ?? getColumnSubRate
   const Tooltip = TooltipComponents[rateType][market.type]
   const rate = getValue()
   const rewardsIcons = <RewardsIcons market={market} rateType={rateType} />

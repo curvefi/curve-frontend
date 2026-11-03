@@ -1,24 +1,17 @@
-import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
-import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
-import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { type PositionCellProps, skeletonProps } from './cell.constants'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
-
-type PositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>
-
-// The skeleton is a block, so the cell's text alignment does not move it: the auto margin pushes it to the right
-const skeletonProps = { width: 40, sx: { marginInlineStart: 'auto' } } as const
 
 /** Equity of the borrow position in USD */
 export const EquityCell = ({ row }: PositionCellProps) => {

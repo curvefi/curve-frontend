@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { useLlamalendPositionTables } from '@evm-ui/hooks/useFeatureFlags'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import CardHeader from '@mui/material/CardHeader'
@@ -13,8 +14,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { BORROW_TABLE } from './columns/borrow.table'
-import { SUPPLY_TABLE } from './columns/supply.table'
+import { BETA_BORROW_TABLE, BORROW_TABLE } from './columns/borrow.table'
+import { BETA_SUPPLY_TABLE, SUPPLY_TABLE } from './columns/supply.table'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketColumns } from './hooks/useMarketColumns'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
@@ -23,8 +24,18 @@ import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelAct
 const { Spacing } = SizesAndSpaces
 
 const TABLE_CONFIG = {
-  [MarketRateType.Borrow]: { title: t`Borrowing`, label: t`borrow`, marketTable: BORROW_TABLE },
-  [MarketRateType.Supply]: { title: t`Supplying`, label: t`supply`, marketTable: SUPPLY_TABLE },
+  [MarketRateType.Borrow]: {
+    title: t`Borrowing`,
+    label: t`borrow`,
+    stableTable: BORROW_TABLE,
+    betaTable: BETA_BORROW_TABLE,
+  },
+  [MarketRateType.Supply]: {
+    title: t`Supplying`,
+    label: t`supply`,
+    stableTable: SUPPLY_TABLE,
+    betaTable: BETA_SUPPLY_TABLE,
+  },
 }
 
 type UserPositionsTableProps = {
@@ -36,7 +47,8 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
-  const { title, label, marketTable } = TABLE_CONFIG[marketRateType]
+  const { title, label, stableTable, betaTable } = TABLE_CONFIG[marketRateType]
+  const marketTable = useLlamalendPositionTables() ? betaTable : stableTable
   const { columns, sorting, onSortingChange, sortField, columnVisibility, columnSettings, toggleVisibility } =
     useMarketColumns(marketTable)
   const [expanded, setExpanded] = useState<ExpandedState>({})

@@ -3,19 +3,37 @@ import type { UserContractParams } from '@evm-ui/queries/query-types'
 import { MarketType } from '@evm-ui/types/market'
 import type { DefaultError, QueryKey } from '@tanstack/react-query'
 import { type QueryOptions, useQuery } from '@ui/features/queries/query-hooks'
-import type { ApiCollateralEvent } from '../collateral-events.utils'
+import { type ApiCollateralEvent, hasZapBorrowInOpenPosition } from '../collateral-events.utils'
 import { getUserCrvUsdCollateralEventsOptions } from './user-crvusd-collateral-events'
 import { getUserLendCollateralEventsOptions } from './user-lend-collateral-events'
 
+type PositionEventsSummary = { capital: PositionCapital; isZapLeveraged: boolean }
+
+const toPositionEventsSummary = <TData extends { events: ApiCollateralEvent[] }>(
+  data: TData,
+): PositionEventsSummary => ({
+  capital: toPositionCapital(data),
+  isZapLeveraged: hasZapBorrowInOpenPosition(data.events),
+})
+
+const selectFromEvents = <TData extends { events: ApiCollateralEvent[] }, TKey extends QueryKey, TResult>(
+  options: QueryOptions<TData, DefaultError, TData, TKey>,
+  select: (data: TData) => TResult,
+): QueryOptions<TData, DefaultError, TResult, TKey> => ({ ...options, select })
+
 const selectCapital = <TData extends { events: ApiCollateralEvent[] }, TKey extends QueryKey>(
   options: QueryOptions<TData, DefaultError, TData, TKey>,
-): QueryOptions<TData, DefaultError, PositionCapital, TKey> => ({ ...options, select: toPositionCapital })
+) => selectFromEvents(options, toPositionCapital)
 
-/** Own capital of the open position, selected from the collateral events query */
-export const getPositionCapitalOptions = (marketType: MarketType, params: UserContractParams, enabled?: boolean) =>
+/** Own capital and whether the borrow went through the leverage zap, selected from the collateral events query */
+export const getPositionEventsSummaryOptions = (
+  marketType: MarketType,
+  params: UserContractParams,
+  enabled?: boolean,
+) =>
   ({
-    [MarketType.Lend]: selectCapital(getUserLendCollateralEventsOptions(params, enabled)),
-    [MarketType.Mint]: selectCapital(getUserCrvUsdCollateralEventsOptions(params, enabled)),
+    [MarketType.Lend]: selectFromEvents(getUserLendCollateralEventsOptions(params, enabled), toPositionEventsSummary),
+    [MarketType.Mint]: selectFromEvents(getUserCrvUsdCollateralEventsOptions(params, enabled), toPositionEventsSummary),
   })[marketType]
 
 export const usePositionCapital = (marketType: MarketType, params: UserContractParams, enabled = true) =>
