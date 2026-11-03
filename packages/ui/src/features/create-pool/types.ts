@@ -71,8 +71,7 @@ export type CreatePoolLiquidityProps = {
   poolTypes: readonly PoolType[]
   maxAmounts: QueryProp<Decimal>[] | undefined
   totalDepositValueUsd: QueryProp<Decimal>
-  isPending: boolean
-  isFunded: boolean
+  inputsDisabled: boolean
   userAddress: Address | undefined
 }
 

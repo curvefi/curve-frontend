@@ -19,15 +19,14 @@ export const CreatePoolLiquidity = ({
   poolTypes,
   maxAmounts,
   totalDepositValueUsd,
-  isPending,
-  isFunded,
+  inputsDisabled,
   userAddress,
 }: CreatePoolLiquidityProps) => {
   const poolType = poolTypes.find(type => type.id === values.poolType)
   return (
     <Stack
       component="fieldset"
-      disabled={isPending || isFunded}
+      disabled={inputsDisabled}
       sx={{ border: 0, padding: 0, margin: 0, minWidth: 0, gap: Spacing.sm }}
     >
       <Typography variant="bodySRegular">{poolType?.liquidityDescription}</Typography>
@@ -39,7 +38,7 @@ export const CreatePoolLiquidity = ({
               label={token?.symbol ?? `${t`Token`} ${index + 1}`}
               unit={token?.symbol}
               placeholder={formatNumber(0, 'token.amount')}
-              disabled={isPending || isFunded || !token}
+              disabled={inputsDisabled || !token}
             />
             <ActionInfo
               size="small"
@@ -51,7 +50,7 @@ export const CreatePoolLiquidity = ({
       </Stack>
       <CheckboxField
         checked={values.addLiquidity}
-        disabled={isPending || isFunded}
+        disabled={inputsDisabled}
         label={t`Add this liquidity right after deploy`}
         onChange={event => update({ addLiquidity: event.target.checked })}
       />
@@ -65,6 +64,7 @@ export const CreatePoolLiquidity = ({
           maxSlippage={values.slippage}
           userAddress={userAddress}
           type={poolType.slippageType}
+          disabled={inputsDisabled}
           onChanged={settings => update({ slippage: settings[poolType.slippageType] })}
         />
       )}
