@@ -30,18 +30,21 @@ export type PoolParameters = Pick<
   CreatePoolFormValues,
   'amplification' | 'fee' | 'feeMultiplier' | 'priceOracleAveragingWindow'
 >
+export type PoolParameterRanges = Record<'amplification' | 'fee', { min: number; max: number }>
+
 export type PoolParameter = {
   name: keyof PoolParameters
   label: string
   format: NumberFormatCategory
   unit?: string
-  helperText?: string
   advanced?: boolean
+  summaryLabel?: string
+  showInSummary?: boolean
 }
 
 export type PoolType = {
   id: string
-  disabled?: boolean
+  disabled: boolean
   label: string
   description: string
   liquidityDescription: string
@@ -49,7 +52,11 @@ export type PoolType = {
   defaultPreset: string
   presets: { id: string; label: string; values: PoolParameters }[]
   parameters: PoolParameter[]
-  LiquidityDepthPreview?: ComponentType<{ amplification: Decimal | undefined; tokenCount: number }>
+  CurvePreview?: ComponentType<{
+    amplification: Decimal | undefined
+    tokenCount: number
+    tokenSymbol: string | undefined
+  }>
 }
 
 export type CreatePoolTokenSearchProps = {
@@ -78,6 +85,8 @@ export type CreatePoolLiquidityProps = {
 export type CreatePoolSummaryProps = {
   form: UseFormReturn<CreatePoolFormValues>
   poolTypes: readonly PoolType[]
+  blockchainId: string
+  totalDepositValueUsd: QueryProp<Decimal>
   creationFee: QueryProp<Decimal>
   nativeSymbol: string
   created: { explorerUrl: string } | undefined
@@ -93,4 +102,9 @@ export type CreatePoolSummaryProps = {
 export type CreatePoolFormProps = Omit<PoolFormProps<CreatePoolFormValues>, 'footer' | 'tokens'> &
   CreatePoolTokensProps &
   CreatePoolLiquidityProps &
-  CreatePoolSummaryProps & { completed: Record<(typeof CREATE_POOL_SECTIONS)[number]['value'], boolean> }
+  CreatePoolSummaryProps & {
+    parameterRanges: PoolParameterRanges
+    nameMaxBytes: number
+    symbolMaxBytes: number
+    completed: Record<(typeof CREATE_POOL_SECTIONS)[number]['value'], boolean>
+  }

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -5,23 +6,38 @@ import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { RouterLink } from '@ui/components/RouterLink'
+import { TokenIcon } from '@ui/components/TokenIcon'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { FormButton } from '@ui/features/forms/FormButton'
 import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { EMPTY_POOL_PARAMETERS } from './constants'
 import type { CreatePoolSummaryProps } from './types'
 
 const { Spacing } = SizesAndSpaces
+
+const SummarySection = ({ title, children }: { title: string; children: ReactNode }) => (
+  <Stack>
+    <Typography variant="headingXsBold" color="textSecondary">
+      {title}
+    </Typography>
+    <Divider />
+    {children}
+  </Stack>
+)
 
 export const CreatePoolSummary = ({
   form: { values },
   creationFee,
   nativeSymbol,
   poolTypes,
+  blockchainId,
+  totalDepositValueUsd,
   poolListUrl,
   wallet,
   isPending,
@@ -35,42 +51,70 @@ export const CreatePoolSummary = ({
     <CardHeader title={t`Pool summary`} />
     <CardContent>
       <Stack sx={{ gap: Spacing.sm }}>
-        <ActionInfo
-          size="small"
-          label={t`Type`}
-          value={poolTypes.find(type => type.id === values.poolType)?.label ?? UNAVAILABLE_NOTATION}
-        />
-        <ActionInfo size="small" label={t`Name`} value={values.poolName || UNAVAILABLE_NOTATION} />
-        <ActionInfo size="small" label={t`LP symbol`} value={values.symbol || UNAVAILABLE_NOTATION} />
-        <Divider />
-        {values.tokens.map((token, index) => (
+        <SummarySection title={t`Pool`}>
           <ActionInfo
             size="small"
-            key={poolAmountField(index)}
-            label={`${t`Token`} ${index + 1}`}
-            value={token?.symbol ?? UNAVAILABLE_NOTATION}
+            label={t`Type`}
+            value={poolTypes.find(type => type.id === values.poolType)?.label ?? UNAVAILABLE_NOTATION}
           />
-        ))}
-        <Divider />
-        {poolTypes
-          .find(type => type.id === values.poolType)
-          ?.parameters.filter(parameter => !parameter.advanced)
-          .map(({ name, label, format }) => (
-            <ActionInfo key={name} size="small" label={label} value={formatNumber(values[name], format)} />
-          ))}
-        <Divider />
-        {values.addLiquidity ? (
-          values.tokens.map((token, index) => (
+          <ActionInfo size="small" label={t`Name`} value={values.poolName || UNAVAILABLE_NOTATION} />
+        </SummarySection>
+        <SummarySection title={t`Tokens`}>
+          {values.tokens.map((token, index) => (
             <ActionInfo
               size="small"
               key={poolAmountField(index)}
-              label={token?.symbol ?? `${t`Token`} ${index + 1}`}
-              value={formatNumber(values[poolAmountField(index)], 'token.amount')}
+              label={
+                <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
+                  {token && <TokenIcon blockchainId={blockchainId} address={token.address} size="xs" />}
+                  {token?.symbol ?? `${t`Token`} ${index + 1}`}
+                </Stack>
+              }
+              value={token ? t`Standard` : UNAVAILABLE_NOTATION}
             />
-          ))
-        ) : (
-          <ActionInfo size="small" label={t`Initial liquidity`} value={t`Add later`} />
-        )}
+          ))}
+        </SummarySection>
+        <SummarySection title={t`Parameters`}>
+          {(poolTypes.find(type => type.id === values.poolType)?.parameters ?? EMPTY_POOL_PARAMETERS)
+            .filter(parameter => !parameter.advanced || parameter.showInSummary)
+            .map(({ name, label, summaryLabel, format }) => (
+              <ActionInfo
+                key={name}
+                size="small"
+                label={summaryLabel ?? label}
+                value={values.poolType ? formatNumber(values[name], format) : UNAVAILABLE_NOTATION}
+              />
+            ))}
+        </SummarySection>
+        <SummarySection title={t`Initial liquidity`}>
+          {values.poolType ? (
+            values.addLiquidity ? (
+              <>
+                {values.tokens.map((token, index) => (
+                  <ActionInfo
+                    size="small"
+                    key={poolAmountField(index)}
+                    label={token?.symbol ?? `${t`Token`} ${index + 1}`}
+                    value={
+                      values[poolAmountField(index)]
+                        ? formatNumber(values[poolAmountField(index)], 'token.amount')
+                        : t`Not set`
+                    }
+                  />
+                ))}
+                <ActionInfo
+                  size="small"
+                  label={t`Value`}
+                  value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
+                />
+              </>
+            ) : (
+              <ActionInfo size="small" label={t`Amounts`} value={t`Add later`} />
+            )
+          ) : (
+            <ActionInfo size="small" label={t`Amounts`} value={UNAVAILABLE_NOTATION} />
+          )}
+        </SummarySection>
         {!created && (
           <ActionInfo
             size="small"

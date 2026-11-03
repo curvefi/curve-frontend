@@ -23,7 +23,7 @@ import { CreatePoolTokens } from './CreatePoolTokens'
 import { CreatePoolType } from './CreatePoolType'
 import type { CreatePoolFormProps } from './types'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Width, MaxWidth } = SizesAndSpaces
 
 const Section = ({ index, onFocus, children }: { index: number; onFocus: () => void; children: ReactNode }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
@@ -63,7 +63,7 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
             gridTemplateColumns: {
               mobile: 'minmax(0, 1fr)',
               tablet: 'minmax(0, 1fr) minmax(16rem, 20rem)',
-              desktop: '12rem minmax(0, 32rem) minmax(15rem, 18rem)',
+              desktop: `${Width.column.md}px minmax(0, ${MaxWidth.createPoolForm}) ${MaxWidth.createPoolSummary}`,
             },
             gap: Spacing.md,
             margin: Spacing.md,
@@ -100,6 +100,7 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
             <Section index={2} onFocus={() => setActiveStep(2)}>
               <CreatePoolParameters
                 disabled={inputsDisabled}
+                ranges={props.parameterRanges}
                 poolType={poolTypes.find(type => type.id === form.values.poolType)}
               />
             </Section>
@@ -107,7 +108,13 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
               <CreatePoolLiquidity {...props} />
             </Section>
             <Section index={4} onFocus={() => setActiveStep(4)}>
-              <CreatePoolNameFields disabled={inputsDisabled} />
+              <CreatePoolNameFields
+                disabled={inputsDisabled}
+                nameMaxBytes={props.nameMaxBytes}
+                symbolMaxBytes={props.symbolMaxBytes}
+                poolName={form.values.poolName}
+                symbol={form.values.symbol}
+              />
             </Section>
           </Stack>
           <Stack sx={{ ...sticky, gap: Spacing.md, minWidth: 0 }}>

@@ -29,7 +29,10 @@ export const CreatePoolLiquidity = ({
       disabled={inputsDisabled}
       sx={{ border: 0, padding: 0, margin: 0, minWidth: 0, gap: Spacing.sm }}
     >
-      <Typography variant="bodySRegular">{poolType?.liquidityDescription}</Typography>
+      <Typography variant="bodySRegular">
+        {poolType?.liquidityDescription ??
+          t`Required for Cryptoswap, FXSwap and pools with rate tokens or oracles. Optional for plain Stableswap.`}
+      </Typography>
       <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
         {values.tokens.map((token, index) => (
           <Stack key={poolAmountField(index)}>
@@ -38,26 +41,27 @@ export const CreatePoolLiquidity = ({
               label={token?.symbol ?? `${t`Token`} ${index + 1}`}
               unit={token?.symbol}
               placeholder={formatNumber(0, 'token.amount')}
+              helperText={!token && (index === 0 ? t`Balance shows here` : t`Matched to the price`)}
               disabled={inputsDisabled || !token}
             />
-            <ActionInfo
-              size="small"
-              label={t`Balance`}
-              value={mapQuery(maxAmounts?.[index] ?? DISABLED_Q, value => formatNumber(value, 'token.balance'))}
-            />
+            {token && (
+              <ActionInfo
+                size="small"
+                label={t`Balance`}
+                value={mapQuery(maxAmounts?.[index] ?? DISABLED_Q, value => formatNumber(value, 'token.balance'))}
+              />
+            )}
           </Stack>
         ))}
       </Stack>
-      <CheckboxField
-        checked={values.addLiquidity}
-        disabled={inputsDisabled}
-        label={t`Add this liquidity right after deploy`}
-        onChange={event => update({ addLiquidity: event.target.checked })}
-      />
-      <Typography
-        variant="bodyXsRegular"
-        color="textSecondary"
-      >{t`The deposit is signed once the pool exists.`}</Typography>
+      {poolType && (
+        <CheckboxField
+          checked={values.addLiquidity}
+          disabled={inputsDisabled}
+          label={t`Seed pool after deployment`}
+          onChange={event => update({ addLiquidity: event.target.checked })}
+        />
+      )}
       {poolType && (
         <SlippageToleranceActionInfo
           size="small"
@@ -68,11 +72,13 @@ export const CreatePoolLiquidity = ({
           onChanged={settings => update({ slippage: settings[poolType.slippageType] })}
         />
       )}
-      <ActionInfo
-        size="small"
-        label={t`Pool value at deposit`}
-        value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
-      />
+      {poolType && (
+        <ActionInfo
+          size="small"
+          label={t`Pool TVL at deposit`}
+          value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
+        />
+      )}
     </Stack>
   )
 }
