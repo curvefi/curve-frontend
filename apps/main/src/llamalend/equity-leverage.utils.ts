@@ -7,13 +7,24 @@ import {
   decimalGreaterThan,
   decimalMinus,
   decimalMultiply,
+  decimalPercent,
   decimalSum,
   ZERO,
 } from '@ui/lib/decimal'
 
+/** The collateral at the oracle price plus the tokens converted in soft liquidation, in the borrowed token */
+export const getCollateralValue = (
+  { collateral, stablecoin }: Pick<UserState, 'collateral' | 'stablecoin'>,
+  oraclePrice: Decimal,
+) => decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
+
+/** Debt over the collateral value in percent, or null without collateral value */
+export const getLoanToValue = (debt: Decimal, collateralValue: Decimal) =>
+  decimalEqual(collateralValue, ZERO) ? null : decimalPercent(debt, collateralValue)
+
 /** What the position returns if closed now at the oracle price, in the borrowed token */
-export const getEquity = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) =>
-  decimalMinus(decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin), debt)
+export const getEquity = (position: UserState, oraclePrice: Decimal) =>
+  decimalMinus(getCollateralValue(position, oraclePrice), position.debt)
 
 /** Collateral value divided by the equity, or null when the equity is zero. The borrowed tokens in the AMM only count in the equity. */
 export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => {

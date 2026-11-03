@@ -69,6 +69,12 @@ describe('borrow position metrics', () => {
 
   it('shows the LTV at the oracle price', () => expect(getUserPositionLtv(createRow())).toBeCloseTo(50))
 
+  it('shows no LTV nor collateral composition without collateral value', () => {
+    const row = createRow({ stats: { ...STATS, collateral: 0, borrowToken: 0 } })
+    expect(getUserPositionLtv(row)).toBeUndefined()
+    expect(getUserCollateralShare(row)).toBeUndefined()
+  })
+
   it('counts the converted tokens in the LTV and the collateral composition', () => {
     const row = createRow({ stats: { ...STATS, collateral: 8, borrowToken: 2 } })
     expect(getUserPositionLtv(row)).toBeCloseTo(50)

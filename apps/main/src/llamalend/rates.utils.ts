@@ -136,8 +136,15 @@ export const toNumberOrNull = (value: number | string | Nullish) => maybe(value,
 
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
+/** Null without incentives, as sumBy returns 0 for empty arrays */
+export const sumExtraIncentivesApy = (aprs: number[]) =>
+  aprs.length ? sumBy(aprs, apr => aprToApy(apr, 'llamalend.rewards')) : null
+
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy, 'llamalend.rewards')) : null
+  sumExtraIncentivesApy((rewardsApr ?? []).map(({ apy }) => apy))
+
+/** The CRV reward APR at the boost of the user */
+export const getUserBoostApr = (crvApr: number, boost: Decimal | number) => crvApr * +boost
 
 export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
@@ -256,7 +263,9 @@ export const getSupplyApyMetrics = ({
   const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards') ?? null
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards') ?? null
   const userBoostApy =
-    maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost, 'llamalend.rewards')) ?? null
+    maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) =>
+      aprToApy(getUserBoostApr(apr, boost), 'llamalend.rewards'),
+    ) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy, campaignsApy)
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
 import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -139,8 +140,9 @@ export const PriceCell = ({
   const tooltipTitle =
     getTooltipTitle(columnId) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
-  const totalValue = maybe(market.oraclePrice, oraclePrice =>
-    decimal((stats?.collateral ?? 0) * oraclePrice + (stats?.borrowToken ?? 0)),
+  const totalValue = maybes(
+    [decimal(stats?.collateral), decimal(stats?.borrowToken), decimal(market.oraclePrice)],
+    (collateral, stablecoin, oraclePrice) => getCollateralValue({ collateral, stablecoin }, oraclePrice),
   )
   const totalValueUsd = mapQuery(prices.borrowed, borrowUsdRate =>
     maybe(totalValue, value => decimalMultiply(value, borrowUsdRate)),

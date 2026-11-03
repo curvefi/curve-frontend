@@ -1,5 +1,11 @@
 import { sum, sumBy } from 'lodash'
-import { getEquityLeverage, getLoopedApr, getYieldMultiplier } from '@/llamalend/equity-leverage.utils'
+import {
+  getCollateralValue,
+  getEquityLeverage,
+  getLoanToValue,
+  getLoopedApr,
+  getYieldMultiplier,
+} from '@/llamalend/equity-leverage.utils'
 import { getLiquidationBuffer } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -8,16 +14,17 @@ import {
   getMarketListYields,
   getSupplyApyMetrics,
   getSupplyCampaigns,
+  getUserBoostApr,
   sumCampaignsApr,
   sumCampaignsApy,
+  sumExtraIncentivesApy,
 } from '@/llamalend/rates.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
-import { decimal } from '@ui/lib/decimal'
+import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import { aprToApy } from '@ui/lib/rates.utils'
 
 type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
 
@@ -37,24 +44,6 @@ export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
   )
 }
 
-/** Collateral at the oracle price and the tokens converted in soft liquidation, both in the borrowed token */
-const getCollateralValues = ({ positionQueries }: LlamaMarketRow) =>
-  maybe(positionQueries.stats.data, ({ collateral, borrowToken, oraclePrice }) =>
-    maybe(oraclePrice, price => ({ collateral: collateral * +price, converted: borrowToken })),
-  )
-
-/** Debt over the collateral value at the oracle price, plus the tokens converted in soft liquidation */
-export const getUserPositionLtv = (row: LlamaMarketRow) =>
-  maybes([row.positionQueries.stats.data?.borrowed, getCollateralValues(row)], (debt, { collateral, converted }) =>
-    debt && collateral + converted ? (debt / (collateral + converted)) * 100 : undefined,
-  )
-
-/** Share of the collateral value still in the collateral token, in percent; the rest was converted in soft liquidation */
-export const getUserCollateralShare = (row: LlamaMarketRow) =>
-  maybe(getCollateralValues(row), ({ collateral, converted }) =>
-    collateral + converted ? (collateral / (collateral + converted)) * 100 : undefined,
-  )
-
 /** Maps the position as the position card reads the user state (collateral, borrowed tokens in the AMM, debt) */
 const mapPosition = <R>(
   { positionQueries }: LlamaMarketRow,
@@ -65,6 +54,22 @@ const mapPosition = <R>(
       [decimal(collateral), decimal(borrowToken), decimal(borrowed), oraclePrice],
       (collateral, stablecoin, debt, price) => mapper({ collateral, stablecoin, debt }, price),
     ),
+  )
+
+/** Debt over the collateral value at the oracle price, plus the tokens converted in soft liquidation */
+export const getUserPositionLtv = (row: LlamaMarketRow) =>
+  maybe(
+    mapPosition(row, (position, price) => getLoanToValue(position.debt, getCollateralValue(position, price))),
+    Number,
+  )
+
+/** Share of the collateral value still in the collateral token, in percent; the rest was converted in soft liquidation */
+export const getUserCollateralShare = (row: LlamaMarketRow) =>
+  maybe(
+    mapPosition(row, (position, price) =>
+      getLoanToValue(decimalMultiply(position.collateral, price), getCollateralValue(position, price)),
+    ),
+    Number,
   )
 
 /** Only for zap leveraged positions, like the position card */
@@ -107,9 +112,7 @@ export const getUserSupplyTotalApy = ({ rates, assets, rewards, lendingPosition 
     supplyApy: rates.lendApy,
     crvBoostApr: maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max): Range<number> => [min, max]),
     rebasingYieldApy: assets.borrowed.rebasingYield,
-    extraIncentivesApy: rates.incentives.length
-      ? sumBy(rates.incentives, ({ percentage }) => aprToApy(percentage, 'llamalend.rewards'))
-      : null,
+    extraIncentivesApy: sumExtraIncentivesApy(rates.incentives.map(({ percentage }) => percentage)),
     campaignsApy: sumCampaignsApy(getSupplyCampaigns(rewards)),
     userSupplyBoost: decimal(lendingPosition?.boostMultiplier),
   }).totalUserBoost
@@ -125,7 +128,7 @@ export const getUserIncentivesApr = ({ rates, rewards, lendingPosition }: LlamaM
   const campaignsApr = sumCampaignsApr(getSupplyCampaigns(rewards))
   return rates.lendCrvAprUnboosted == null && !rates.incentives.length && campaignsApr == null
     ? undefined
-    : (rates.lendCrvAprUnboosted ?? 0) * (lendingPosition?.boostMultiplier ?? 1) +
+    : getUserBoostApr(rates.lendCrvAprUnboosted ?? 0, lendingPosition?.boostMultiplier ?? 1) +
         sumBy(rates.incentives, 'percentage') +
         (campaignsApr ?? 0)
 }
