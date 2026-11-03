@@ -2,7 +2,7 @@ import {
   getHealthValues,
   getLiquidationBuffer,
 } from '@/llamalend/features/market-position-details/market-position-details.utils'
-import { pickDisplayHealth } from '@/llamalend/llama.utils'
+import { pickDisplayLegacyHealth } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
@@ -57,7 +57,7 @@ export const {
 export const useLegacyUserHealthValue = (params: UserMarketParams) =>
   combineQueries(
     [useUserHealth({ ...params, isFull: true }), useUserHealth({ ...params, isFull: false })],
-    (full, notFull) => pickDisplayHealth(full, notFull),
+    (full, notFull) => pickDisplayLegacyHealth(full, notFull),
   )
 
 export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {

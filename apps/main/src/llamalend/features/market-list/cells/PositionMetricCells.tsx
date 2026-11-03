@@ -46,7 +46,7 @@ const StatsMetric = ({
 }
 
 export const HealthFactorCell = ({ row: { original: row }, getValue }: PositionCellProps) => (
-  <StatsMetric row={row} value={maybe(getValue(), formatHealthFactor) ?? UNAVAILABLE_NOTATION} />
+  <StatsMetric row={row} value={formatHealthFactor(getValue())} />
 )
 
 export const LiquidationBufferCell = ({ row: { original: row }, getValue }: PositionCellProps) => (

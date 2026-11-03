@@ -73,7 +73,7 @@ type UserPositionQueries = {
   pnl: QueryProp<PositionPnlAndRoi>
   /** PNL in the debt token, in USD at the borrowed token's USD rate */
   pnlUsd: QueryProp<number>
-  /** The open position borrowed through the leverage zap, like the position card's leverage */
+  /** The open position borrowed through the leverage zap */
   isZapLeveraged: QueryProp<boolean>
 }
 

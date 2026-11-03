@@ -111,7 +111,7 @@ describe('borrow position metrics', () => {
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })
 
-  it('shows the health factor of the position card', () => expect(getUserHealthFactor(createRow())).toBe(1.2))
+  it('shows the health factor', () => expect(getUserHealthFactor(createRow())).toBe(1.2))
 
   it('shows the band count', () => expect(getUserBandCount(createRow())).toBe(4))
 

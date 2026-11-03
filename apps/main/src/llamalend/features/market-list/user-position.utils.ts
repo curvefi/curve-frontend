@@ -44,7 +44,7 @@ export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
   )
 }
 
-/** Maps the position as the position card reads the user state (collateral, borrowed tokens in the AMM, debt) */
+/** Maps the position to the user state (collateral, borrowed tokens in the AMM, debt) */
 const mapPosition = <R>(
   { positionQueries }: LlamaMarketRow,
   mapper: (position: UserState, oraclePrice: Decimal) => R,
@@ -72,11 +72,11 @@ export const getUserCollateralShare = (row: LlamaMarketRow) =>
     Number,
   )
 
-/** Only for zap leveraged positions, like the position card */
+/** Only for zap leveraged positions */
 export const getUserLeverage = (row: LlamaMarketRow) =>
   row.positionQueries.isZapLeveraged.data ? maybe(mapPosition(row, getEquityLeverage), Number) : undefined
 
-/** Only for zap leveraged positions, like the position card */
+/** Only for zap leveraged positions */
 const getLoopedAprDecimal = (row: LlamaMarketRow) =>
   row.positionQueries.isZapLeveraged.data
     ? mapPosition(row, (position, price) =>
@@ -98,7 +98,7 @@ export const getUserLiquidationBuffer = ({
     maybe(getLiquidationBuffer(health, loanDiscount, liquidationDiscount), Number),
   )
 
-/** The part of the debt the band-valued health stands for, in the borrowed token, as the position card's "% of debt" */
+/** The part of the debt the band-valued health stands for, in the borrowed token */
 export const getUserLiquidationBufferAmount = ({ positionQueries }: LlamaMarketRow) =>
   maybe(positionQueries.stats.data, ({ borrowed, healthNotFull }) =>
     maybe(healthNotFull, health => (borrowed * +health) / 100),
@@ -106,7 +106,7 @@ export const getUserLiquidationBufferAmount = ({ positionQueries }: LlamaMarketR
 
 export const getUserBandCount = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.bandCount
 
-/** Total supply APY at the user's boost, none without a boost, like the supply position card */
+/** Total supply APY at the user's boost, none without a boost */
 export const getUserSupplyTotalApy = ({ rates, assets, rewards, lendingPosition }: LlamaMarket) =>
   getSupplyApyMetrics({
     supplyApy: rates.lendApy,

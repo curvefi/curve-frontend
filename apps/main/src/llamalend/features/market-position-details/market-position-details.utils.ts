@@ -92,8 +92,8 @@ export const getLiquidationBuffer = (healthNotFull: Decimal, loanDiscount: Decim
 
 const HEALTH_PRECISION_THRESHOLD = 1.1
 
-export const formatHealthFactor = (healthFactor: Decimal | number) =>
-  formatNumber(healthFactor, +healthFactor < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
+export const formatHealthFactor = (healthFactor: Decimal | number | undefined) =>
+  formatNumber(healthFactor, Number(healthFactor) < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
 
 /** Health of a position from its full and band-valued health, both in percent of the debt. */
 export const getHealthValues = (healthFull: Decimal, healthNotFull: Decimal) => {
