@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { Hex } from 'viem'
+import { isLendMarket } from '@/llamalend/llama.utils'
 import { oneDecimal, oneInt } from '@cy/support/generators'
 import { MarketVersion } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalSum } from '@ui/lib/decimal'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
+import { seedLendMarketSolvencyQueries } from '../query-cache.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   createControllerApprovalStubs,
@@ -225,6 +227,8 @@ export const createBorrowMoreScenario = ({
         userPrices: normalStubs.userPrices,
       })
     : createBorrowMoreMintMarket({ normalStubs, expectedCurrentDebt, version: marketVersion })
+
+  if (isLendMarket(market)) seedLendMarketSolvencyQueries({ chainId, market, solvencyPercent: 100 })
 
   return {
     borrow,

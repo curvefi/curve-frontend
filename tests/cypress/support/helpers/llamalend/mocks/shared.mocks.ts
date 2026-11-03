@@ -150,9 +150,11 @@ export const createMockLendLoanMarket = ({
     leverageZapV2,
     getZapAddress: createSyncStub(oneAddress()),
     userPosition: {
+      currentLeverage: createStub(oneDecimal(1.1, 6, 2)),
       ...(userState && { userState }),
       ...(userHealth && { userHealth }),
       ...(userPrices && { userPrices }),
+      ...(loanExists && { userLoanExists: loanExists }),
     },
     ...(loanExists && { loanExists }),
   })
