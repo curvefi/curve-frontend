@@ -85,9 +85,9 @@ describe('borrow position metrics', () => {
     expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows a plain borrow as 1x leverage without a looped APR', () => {
+  it('shows no leverage nor looped APR for a plain borrow', () => {
     const row = createRow({ isZapLeveraged: false })
-    expect(getUserLeverage(row)).toBe(1)
+    expect(getUserLeverage(row)).toBeUndefined()
     expect(getUserLoopedApr(row)).toBeUndefined()
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })

@@ -67,16 +67,9 @@ const mapPosition = <R>(
     ),
   )
 
-/** Like the position card, leverage is the equity leverage of zap leveraged positions, and a plain borrow is 1x */
-export const getUserLeverage = (row: LlamaMarketRow) => {
-  const { data: isZapLeveraged } = row.positionQueries.isZapLeveraged
-  return maybe(
-    mapPosition(row, (position, price) =>
-      isZapLeveraged ? getEquityLeverage(position, price) : isZapLeveraged === false ? '1' : undefined,
-    ),
-    Number,
-  )
-}
+/** Only for zap leveraged positions, like the position card */
+export const getUserLeverage = (row: LlamaMarketRow) =>
+  row.positionQueries.isZapLeveraged.data ? maybe(mapPosition(row, getEquityLeverage), Number) : undefined
 
 /** Only for zap leveraged positions, like the position card */
 const getLoopedAprDecimal = (row: LlamaMarketRow) =>
