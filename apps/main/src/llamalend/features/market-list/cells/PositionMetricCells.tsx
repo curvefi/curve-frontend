@@ -65,7 +65,6 @@ export const LeverageCell = ({ row: { original: row }, getValue }: PositionCellP
     row={row}
     value={formatNumber(getValue(), 'multiplier')}
     dependsOn={row.positionQueries.isZapLeveraged}
-    support={maybe(row.leverage, max => `${t`Max`} ${formatNumber(max, 'multiplier')}`)}
   />
 )
 
