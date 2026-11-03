@@ -67,15 +67,15 @@ export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
     migration,
   )
 
-const EMPTY_COLUMN_CHOICES = {}
+const EMPTY_COLUMN_OVERRIDES = {}
 
-export const useTableColumnChoices = (
+export const useTableColumnOverrides = (
   tableTitle: string,
   migration: MigrationOptions<Partial<Record<string, boolean>>>,
 ) =>
   useLocalStorage<Partial<Record<string, boolean>>>(
     `table-column-visibility-${kebabCase(tableTitle)}`,
-    EMPTY_COLUMN_CHOICES,
+    EMPTY_COLUMN_OVERRIDES,
     migration,
   )
 

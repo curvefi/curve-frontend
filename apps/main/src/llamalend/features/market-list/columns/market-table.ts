@@ -16,8 +16,8 @@ type MarketColumnInput = {
 
 type MarketColumnShape = MarketColumnInput & { id: string }
 
-/** Columns the user chose to show or hide, every other column follows its default. */
-type ColumnChoices = Partial<Record<string, boolean>>
+/** Columns the user changed from their default, every other column follows its default. */
+type ColumnOverrides = Partial<Record<string, boolean>>
 
 type StoredGroups = Pick<VisibilityGroup<string>, 'options'>[]
 
@@ -27,45 +27,49 @@ const canToggle = ({ header, enableHiding }: MarketColumnShape) => !!header && e
 
 const isShownByDefault = ({ header, meta }: MarketColumnShape) => !!header && !meta?.defaultHidden
 
-const isColumnVisible = (column: MarketColumnShape, choices: ColumnChoices) =>
-  canToggle(column) ? (choices[column.id] ?? isShownByDefault(column)) : isShownByDefault(column)
+const isColumnVisible = (column: MarketColumnShape, overrides: ColumnOverrides) =>
+  canToggle(column) ? (overrides[column.id] ?? isShownByDefault(column)) : isShownByDefault(column)
 
-export const getColumnVisibility = (columns: readonly MarketColumnShape[], choices: ColumnChoices) =>
-  fromEntries(columns.map(column => [column.id, isColumnVisible(column, choices)]))
+export const getColumnVisibility = (columns: readonly MarketColumnShape[], overrides: ColumnOverrides) =>
+  fromEntries(columns.map(column => [column.id, isColumnVisible(column, overrides)]))
 
 /** The settings of the visibility popover: one switch per column, named after its header. */
 export const getColumnSettings = (
   columns: readonly MarketColumnShape[],
-  choices: ColumnChoices,
+  overrides: ColumnOverrides,
 ): VisibilityGroup<MarketColumnId>[] =>
-  recordEntries(groupBy(columns.filter(canToggle), ({ meta }) => meta?.settingsGroup ?? '')).map(
-    ([label, groupColumns]) => ({
-      label,
-      options: groupColumns.map(column => ({
-        label: String(column.header),
-        columns: [column.id as MarketColumnId],
-        active: isColumnVisible(column, choices),
-        enabled: true,
-      })),
-    }),
-  )
+  recordEntries(
+    groupBy(columns.filter(canToggle), ({ id, meta }) =>
+      assert(meta?.settingsGroup, `Column without settings group: ${id}`),
+    ),
+  ).map(([label, groupColumns]) => ({
+    label,
+    options: groupColumns.map(column => ({
+      label: String(column.header),
+      columns: [column.id as MarketColumnId],
+      active: isColumnVisible(column, overrides),
+      enabled: true,
+    })),
+  }))
 
-/** Before version 10 the full settings of each variant were stored, only keep what differs from the defaults. */
-const migrateGroupsToChoices = (
-  storedGroups: StoredGroups | undefined,
+/**
+ * Before version 10 every table stored the settings of four variants, and the market list used two of them.
+ * A column is overridden when its stored setting differs from its default in any of the given groups.
+ */
+const migrateGroupsToOverrides = (
+  storedGroups: StoredGroups,
   columns: readonly MarketColumnShape[],
-): ColumnChoices => {
-  const storedOptions = storedGroups?.flatMap(({ options }) => options) ?? []
+): ColumnOverrides => {
+  const storedOptions = storedGroups.flatMap(({ options }) => options)
   return fromEntries(
     columns
       .filter(canToggle)
-      .map(column => ({
-        id: column.id,
-        shownByDefault: isShownByDefault(column),
-        active: storedOptions.find(option => option.columns.includes(column.id))?.active,
-      }))
-      .filter(({ active, shownByDefault }) => active != null && active !== shownByDefault)
-      .map(({ id, active }) => [id, active] as const),
+      .filter(column =>
+        storedOptions.some(
+          ({ columns: ids, active }) => ids.includes(column.id) && active !== isShownByDefault(column),
+        ),
+      )
+      .map(column => [column.id, !isShownByDefault(column)] as const),
   )
 }
 
@@ -75,15 +79,15 @@ export const inGroup = <TColumn extends MarketColumnInput>(settingsGroup: string
 /** A table showing markets, its columns are the only source for what is shown, sorted, filtered and toggled. */
 export const defineMarketTable = <TColumn extends MarketColumnInput>({
   columns: columnInputs,
-  storedVariant,
+  deprecatedVariants,
   ...table
 }: {
   testId: string
   defaultSort: SortingState
   sortQueryField: string
   storageKey: string
-  /** The variant holding the settings of this table before version 10 */
-  storedVariant: string
+  /** The removed variants holding the settings of this table before version 10 */
+  deprecatedVariants: string[]
   columns: TColumn[]
 }) => {
   const columns = columnInputs.map(column => ({
@@ -100,7 +104,10 @@ export const defineMarketTable = <TColumn extends MarketColumnInput>({
     migration: {
       version: STORAGE_VERSION,
       migrate: (oldValue: unknown) =>
-        migrateGroupsToChoices((oldValue as Record<string, StoredGroups | undefined>)[storedVariant], columns),
-    } satisfies MigrationOptions<ColumnChoices>,
+        migrateGroupsToOverrides(
+          deprecatedVariants.flatMap(variant => (oldValue as Record<string, StoredGroups | undefined>)[variant] ?? []),
+          columns,
+        ),
+    } satisfies MigrationOptions<ColumnOverrides>,
   }
 }

@@ -13,7 +13,7 @@ const COLUMNS = [
 ]
 
 describe('getColumnVisibility', () => {
-  it('follows the column list without user choices', () =>
+  it('follows the column list without user overrides', () =>
     expect(getColumnVisibility(COLUMNS, {})).toEqual({
       assets: true,
       shown: true,
@@ -23,19 +23,24 @@ describe('getColumnVisibility', () => {
       chain: false,
     }))
 
-  it('applies user choices over the defaults', () =>
+  it('applies user overrides over the defaults', () =>
     expect(getColumnVisibility(COLUMNS, { shown: false, hidden: true })).toMatchObject({ shown: false, hidden: true }))
 
-  it('ignores choices for columns that cannot be toggled', () =>
+  it('ignores overrides for columns that cannot be toggled', () =>
     expect(getColumnVisibility(COLUMNS, { assets: false, chain: true })).toMatchObject({ assets: true, chain: false }))
 
-  it('ignores choices for columns that are not in the table', () =>
+  it('ignores overrides for columns that are not in the table', () =>
     expect(getColumnVisibility(COLUMNS, { removed: true })).not.toHaveProperty('removed'))
 })
 
 describe('getColumnSettings', () => {
-  const toggles = (choices = {}) =>
-    getColumnSettings(COLUMNS, choices).map(({ label, options }) => ({
+  it('fails for a switch without a group', () =>
+    expect(() => getColumnSettings([{ id: 'loose', header: 'Loose' }], {})).toThrow(
+      'Column without settings group: loose',
+    ))
+
+  const toggles = (overrides = {}) =>
+    getColumnSettings(COLUMNS, overrides).map(({ label, options }) => ({
       label,
       options: options.map(({ label, columns, active }) => ({ label, columns, active })),
     }))
@@ -54,9 +59,9 @@ describe('getColumnSettings', () => {
     ]))
 
   it('agrees with the column visibility', () => {
-    const choices = { shown: false, chart: true }
-    const visibility = getColumnVisibility(COLUMNS, choices)
-    toggles(choices)
+    const overrides = { shown: false, chart: true }
+    const visibility = getColumnVisibility(COLUMNS, overrides)
+    toggles(overrides)
       .flatMap(({ options }) => options)
       .forEach(({ columns: [id], active }) => expect(active).toBe(visibility[id]))
   })
@@ -68,35 +73,59 @@ describe('stored settings migration', () => {
     defaultSort: [],
     sortQueryField: 'sort',
     storageKey: 'Test',
-    storedVariant: 'noPositions',
+    deprecatedVariants: ['hasPositions', 'noPositions'],
     columns: COLUMNS,
   })
 
-  const migrate = (options: { columns: string[]; active: boolean }[]) =>
-    migration.migrate({
-      noPositions: [{ options: options.map(option => ({ ...option, label: 'stored', enabled: true })) }],
-      hasPositions: [{ options: [{ columns: ['shown'], active: false, label: 'other variant', enabled: true }] }],
-    })
+  const stored = (options: { columns: string[]; active: boolean }[]) => [
+    { options: options.map(option => ({ ...option, label: 'stored', enabled: true })) },
+  ]
 
-  it('keeps only the choices of its variant that differ from the defaults', () =>
+  it('starts empty without stored settings', () => expect(migration.migrate({})).toEqual({}))
+
+  it('keeps only the overrides that differ from the defaults', () =>
     expect(
-      migrate([
-        { columns: ['shown'], active: true },
-        { columns: ['hidden'], active: true },
-        { columns: ['lend'], active: false },
-      ]),
+      migration.migrate({
+        noPositions: stored([
+          { columns: ['shown'], active: true },
+          { columns: ['hidden'], active: true },
+          { columns: ['lend'], active: false },
+        ]),
+      }),
     ).toEqual({ hidden: true, lend: false }))
 
-  it('splits a choice stored for several columns', () =>
-    expect(migrate([{ columns: ['hidden', 'chart'], active: true }])).toEqual({ hidden: true, chart: true }))
+  it('keeps overrides made with positions', () =>
+    expect(
+      migration.migrate({
+        hasPositions: stored([{ columns: ['hidden'], active: true }]),
+        noPositions: stored([{ columns: ['hidden'], active: false }]),
+      }),
+    ).toEqual({ hidden: true }))
+
+  it('keeps overrides made without positions', () =>
+    expect(
+      migration.migrate({
+        hasPositions: stored([{ columns: ['shown'], active: true }]),
+        noPositions: stored([{ columns: ['shown'], active: false }]),
+      }),
+    ).toEqual({ shown: false }))
+
+  it('ignores variants the table did not use', () =>
+    expect(migration.migrate({ Borrow: stored([{ columns: ['shown'], active: false }]) })).toEqual({}))
+
+  it('splits a setting stored for several columns', () =>
+    expect(migration.migrate({ noPositions: stored([{ columns: ['hidden', 'chart'], active: true }]) })).toEqual({
+      hidden: true,
+      chart: true,
+    }))
 
   it('drops columns that are not toggles of the table', () =>
     expect(
-      migrate([
-        { columns: ['assets'], active: false },
-        { columns: ['userHealth'], active: true },
-      ]),
+      migration.migrate({
+        noPositions: stored([
+          { columns: ['assets'], active: false },
+          { columns: ['userHealth'], active: true },
+        ]),
+      }),
     ).toEqual({}))
-
-  it('starts empty without stored settings', () => expect(migration.migrate({})).toEqual({}))
 })
