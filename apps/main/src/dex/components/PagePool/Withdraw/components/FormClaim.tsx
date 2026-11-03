@@ -89,8 +89,8 @@ export const FormClaim = ({ seed }: TransferProps) => {
     setTxInfoBar(null)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, pool.id, pool, { isWrapped }, null, seed.isSeed, '')
-  }, [config, curve, isWrapped, pool, seed.isSeed, setFormValues])
+    void setFormValues('CLAIM', config, curve, pool.id, pool, { isWrapped }, null, seed.data, '')
+  }, [config, curve, isWrapped, pool, seed.data, setFormValues])
 
   const handleClaimClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, formStatus: FormStatus) => {
@@ -173,7 +173,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
       updateFormValues()
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // fetch claimable
   useEffect(() => {
@@ -185,13 +185,13 @@ export const FormClaim = ({ seed }: TransferProps) => {
 
   // steps
   useEffect(() => {
-    if (curve && pool && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, seed.isSeed)
+    if (curve && pool && seed.data != null) {
+      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, seed.data)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, pool, slippageConfirmed, signerAddress, formValues, formStatus, seed.isSeed])
+  }, [chainId, pool, slippageConfirmed, signerAddress, formValues, formStatus, seed.data])
 
   const handleBtnClick = (isClaimCrv: boolean, isClaimRewards: boolean) => {
     setTxInfoBar(null)

@@ -1,6 +1,6 @@
 import { uniqBy } from 'lodash'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
-import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { useTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { useTokenSymbol } from '@/stellar/queries/token/token-symbol.query'

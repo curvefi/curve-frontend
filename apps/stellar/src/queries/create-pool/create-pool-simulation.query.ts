@@ -1,6 +1,6 @@
-/* eslint-disable no-restricted-imports -- Factory parameter encoding belongs at the query boundary. */
+ 
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { STELLAR_POOL_LIMITS } from '@/stellar/features/create-pool/constants'
 import type { CreatePoolParams, PoolDeploymentQuery } from '@/stellar/features/create-pool/types'
 import { createPoolValidationSuite } from '@/stellar/queries/validation/create-pool.validation'

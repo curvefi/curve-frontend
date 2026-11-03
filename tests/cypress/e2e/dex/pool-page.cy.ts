@@ -7,7 +7,7 @@ import { SLIPPAGE, type SlippageType } from '@ui/features/forms/slippage/slippag
 const TRICRYPTO_ADDRESS = '0x7f86bf177dd4f3494b841a37e810a34dd56c829b' as const
 
 describe('Pool page', () => {
-  const path: AppRoute = `dex/${oneOf(
+  const path: AppRoute = `/dex/${oneOf(
     `ethereum/pools/${TRICRYPTO_ADDRESS}`,
     'ethereum/pools/0xa632d59b9b804a956bfaa9b48af3a1b74808fc1f',
     'arbitrum/pools/0x7f90122bf0700f9e7e1f688fe926940e8839f353',
@@ -21,8 +21,10 @@ describe('Pool page', () => {
     cy.visitWithoutTestConnector(path)
     clickTab('tab', 'deposit', TIMEOUTS['ui.render'])
     cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.render']).should('have.class', 'Mui-selected')
-    cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(slippageConfig.default))
-    cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).should('be.enabled').click()
+    cy.get('[data-testid="borrow-slippage-value"]', TIMEOUTS['ui.render']).contains(
+      formatSlippage(slippageConfig.default),
+    )
+    cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).click()
     const [isPreset, value] = oneOf<[boolean, string]>(
       [true, oneOf(...slippageConfig.presets)],
       [false, oneFloat(Number(slippageConfig.min), Number(slippageConfig.max)).toFixed(2)],

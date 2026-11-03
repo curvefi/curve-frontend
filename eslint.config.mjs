@@ -20,6 +20,7 @@ import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-br
 import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
 import { noMutableArrayMethodsRule } from './.eslint/no-mutable-array-methods.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
+import { noRedundantCypressAssertionRule } from './.eslint/no-redundant-cypress-assertion.rule.mjs'
 import { noRouterNavigateOnClickRule } from './.eslint/no-router-navigate-on-click.rule.mjs'
 import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
 import { isolatedPackagesRule } from './.eslint/isolated-packages.rule.mjs'
@@ -36,6 +37,7 @@ const config = [
       '**/*.config.js',
       '**/*.config.ts',
       '**/*.config.mjs',
+      '**/*.config.mts',
       '**/storybook-static/**',
       'node_modules/**',
       '**/*.js',
@@ -80,6 +82,7 @@ const config = [
           'no-query-component-props': noQueryComponentPropsRule,
           'no-mutable-array-methods': noMutableArrayMethodsRule,
           'no-redundant-ternary': noRedundantTernaryRule,
+          'no-redundant-cypress-assertion': noRedundantCypressAssertionRule,
           'no-router-navigate-on-click': noRouterNavigateOnClickRule,
           'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
           'isolated-packages': isolatedPackagesRule,
@@ -141,8 +144,6 @@ const config = [
             // forbid importing from the api apps in app source code
             { target: ['apps/main/src/**'], from: 'apps/router-api' },
             { target: ['apps/main/src/**'], from: 'apps/merkl-api' },
-            // forbid `wagmi` external dependency package imports, except from feature
-            { target: ['apps/**', 'packages/**', '!packages/evm-ui/src/features/forms/**'], from: 'wagmi' },
           ],
         },
       ],
@@ -181,10 +182,6 @@ const config = [
               importNames: ['enforce'],
               message: 'Import enforce from @ui/lib/validation/enforce-extension instead.',
             },
-            ...['@stellar/stellar-sdk', '@creit.tech/stellar-wallets-kit/sdk'].map(name => ({
-              name,
-              message: 'Wrap all calls to the stellar wallet kit in stellar-wallet-kit.ts.',
-            })),
           ],
           patterns: [
             {
@@ -192,6 +189,11 @@ const config = [
               importNames: ['MARKET_ASSETS_TYPE_BY_CONTROLLER', '*'],
               message:
                 'Use getMarketAssetsType from market-assets-type.utils instead of reading the assets type mapping directly.',
+            },
+            {
+              regex: '(^|/)markets\\.constants(?:\\.ts)?$',
+              importNames: ['ZAP_V0_MINT_MARKETS'],
+              message: 'Use isZapV0MintMarket from llama.utils instead of reading the V0 zap mint markets directly.',
             },
           ],
         },
@@ -237,6 +239,27 @@ const config = [
   },
 
   // Override (replaces legacy `overrides`)
+  {
+    files: ['tests/cypress/**/*.{ts,tsx}'],
+    rules: { 'local/no-redundant-cypress-assertion': 'error' },
+  },
+  {
+    files: ['apps/**', 'packages/**'],
+    ignores: ['packages/evm-ui/src/features/forms/**', 'packages/ui/src/features/forms/**'],
+    rules: { 'import-x/no-internal-modules': ['error', { forbid: ['react-hook-form', 'react-hook-form/**'] }] },
+  },
+  {
+    ignores: ['apps/stellar/src/features/connect-wallet/stellar-wallet-kit/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'warn',
+        ...['@stellar/stellar-sdk', '@creit.tech/stellar-wallets-kit/sdk'].map(name => ({
+          selector: `:matches(ImportDeclaration, ExportNamedDeclaration, ExportAllDeclaration)[source.value='${name}']`,
+          message: 'Wrap all calls to the stellar wallet kit in `stellar-wallet-kit`.',
+        })),
+      ],
+    },
+  },
   {
     ignores: ['packages/ui/src/features/queries/query-hooks.ts'],
     rules: {

@@ -1,5 +1,5 @@
 import { each, skipWhen, test } from 'vest'
-import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { STELLAR_POOL_LIMITS as limits, STELLAR_POOL_TYPES } from '@/stellar/features/create-pool/constants'
 import type { CreatePoolParams, FactoryImplementationParams } from '@/stellar/features/create-pool/types'
 import { isComplete } from '@primitives/array.utils'

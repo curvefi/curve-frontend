@@ -1,9 +1,9 @@
-/* eslint-disable no-restricted-imports -- Fee-bump envelopes require the Stellar SDK. */
+ 
 import {
   getStellarTransactionFees,
   type StellarTransaction,
   type StellarTransactionResponse,
-} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { assert } from '@primitives/objects.utils'
 import { BASE_FEE, contract, rpc, SorobanDataBuilder, Transaction, TransactionBuilder, xdr } from '@stellar/stellar-sdk'

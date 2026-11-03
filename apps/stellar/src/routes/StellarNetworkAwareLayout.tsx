@@ -23,16 +23,17 @@ import { useParams } from '@ui/hooks/router'
 import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
+import { StellarPages } from './routes'
 
 const DEV_TOOLS = !IS_CYPRESS
 
 const APP = 'dex' as const
-const CHAIN_OPTIONS: ChainListOption[] = recordEntries(STELLAR_NETWORKS).map(([blockchainId, n]) => ({
+const CHAIN_OPTIONS = recordEntries(STELLAR_NETWORKS).map(([blockchainId, n]) => ({
   ...n,
   blockchainId,
   isConfigured: true,
-  href: `/${APP}/${blockchainId}`,
-}))
+  href: StellarPages.root({ network: blockchainId }),
+})) satisfies ChainListOption[]
 
 const PLACEHOLDERS = {
   notImplementedCallback: () => {
@@ -51,10 +52,11 @@ export const StellarNetworkAwareLayout = () => {
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
 
   const chain = CHAIN_OPTIONS.find(chain => chain.blockchainId === network) ?? PLACEHOLDERS.chain
-  const formatUrl = (page: string) => `${chain.href}${page}`
+  const params = { network: chain.blockchainId }
+  const sectionLinks = { legalHref: StellarPages.legal(params), integrationsHref: StellarPages.integrations(params) }
   const pages = [
-    { label: t`Pools`, href: formatUrl('/pools') },
-    { label: t`Create pool`, href: formatUrl('/create-pool') },
+    { label: t`Pools`, href: StellarPages.pools(params) },
+    { label: t`Create pool`, href: StellarPages.createPool(params) },
   ]
   const userAddress = asAddress(address)
   return (
@@ -89,7 +91,7 @@ export const StellarNetworkAwareLayout = () => {
               appStats={PLACEHOLDERS.stats}
               pages={pages}
               links={{ dex: { label: t`DEX`, href: chain.href, pages } }}
-              sections={getHeaderSections(formatUrl)}
+              sections={getHeaderSections(sectionLinks)}
               tvls={PLACEHOLDERS.tvl}
               connectWalletProps={{
                 address: userAddress,
@@ -103,7 +105,7 @@ export const StellarNetworkAwareLayout = () => {
           }
           userAddress={userAddress}
           connectModal={<StellarConnectModal />}
-          footer={<Footer sections={getFooterSections(formatUrl)} />}
+          footer={<Footer sections={getFooterSections(sectionLinks)} />}
         >
           <Outlet />
         </PageLayout>

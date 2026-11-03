@@ -1,7 +1,7 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { PoolPage } from '@/stellar/features/pool/PoolPage'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import { StellarUrls } from '@/stellar/routes/routes'
+import { StellarPages } from '@/stellar/routes/routes'
 import { mockPoolCampaigns } from '@cy/support/helpers/campaign-mocks'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { checkDepositBalances, seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
@@ -33,7 +33,7 @@ describe('Stellar testnet pool page', () => {
           router={createComponentTestRouter({
             component: PoolPage,
             path: 'dex/$network/pools/$pool',
-            initialEntry: StellarUrls.pool({ network: TEST_NETWORK, pool }),
+            initialEntry: StellarPages.pool({ network: TEST_NETWORK, pool }),
           })}
         />
       </StellarTestWrapper>,
@@ -63,6 +63,9 @@ describe('Stellar testnet pool page', () => {
   it('loads a seeded live pool and switches between liquidity actions', () => {
     mountPoolPage()
 
+    cy.get('[data-testid="tab-deposit-one-coin"]').should('have.attr', 'aria-selected', 'true')
+    cy.get('[data-testid^="pool-token-input-"]').should('have.length', 1)
+    cy.get('[data-testid="tab-deposit-advanced"]').click()
     state.coins.forEach(({ address }) => {
       cy.get(`[data-testid="pool-token-input-${address}"]`, TIMEOUTS['ui.render']).should('be.visible')
     })

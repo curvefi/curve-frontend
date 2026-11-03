@@ -7,7 +7,10 @@ import { q } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { useUserCurrentLeverage } from '../user/user-current-leverage.query'
 
-/** Query to get expected leverage after borrow more with leverage enabled. */
+/**
+ * Query to get expected leverage after borrow more with leverage enabled.
+ * @deprecated Collateral leverage: collateral ÷ collateral deposited by the user, wrong after soft liquidation. Use `useEquityLeverage`.
+ */
 export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorrowMoreFutureLeverage } = queryFactory({
   queryKey: ({
     chainId,
@@ -62,7 +65,10 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
   validationSuite: borrowMoreLeverageValidationSuite,
 })
 
-/** Returns the future leverage for borrowing more, when `params` are valid. Otherwise, returns the current leverage */
+/**
+ * Returns the future leverage for borrowing more, when `params` are valid. Otherwise, returns the current leverage
+ * @deprecated Collateral leverage: collateral ÷ collateral deposited by the user, wrong after soft liquidation. Use `useEquityLeverage`.
+ */
 export function useBorrowMoreLeverage(params: BorrowMoreParams) {
   const current = useUserCurrentLeverage(params)
   const future = useBorrowMoreFutureLeverage(params)

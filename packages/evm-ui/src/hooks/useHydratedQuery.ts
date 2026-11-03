@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { CB } from 'vest-utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { UseQueryResult } from '@tanstack/react-query'
@@ -13,10 +14,15 @@ const useHydratedQuery = <TParams, TData>(
 ) => {
   const { isHydrated, error: initializationError } = useCurve()
   const { data, error, isLoading, isPending, isFetching } = useQuery(params, isHydrated && enabled)
-  return isHydrated
-    ? { data, error, isLoading, isPending, isFetching }
-    : // Cached results can belong to the previous Curve instance while hydration is in progress.
-      { ...DISABLED_Q, error: initializationError ?? null, isPending: !initializationError, isFetching: false }
+  // React Compiler skips this hook because useQuery is a parameter, so memoize the result explicitly.
+  return useMemo(
+    () =>
+      isHydrated
+        ? { data, error, isLoading, isPending, isFetching }
+        : // Cached results can belong to the previous Curve instance while hydration is in progress.
+          { ...DISABLED_Q, error: initializationError ?? null, isPending: !initializationError, isFetching: false },
+    [data, error, isLoading, isPending, isFetching, isHydrated, initializationError],
+  )
 }
 
 /** Creates a query whose hook waits for hydration, preserving the imperative query helpers. */

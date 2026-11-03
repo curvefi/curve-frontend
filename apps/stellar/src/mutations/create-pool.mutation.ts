@@ -1,5 +1,5 @@
 import { asStellarContract, type StellarContract } from '@/stellar/features/connect-wallet/address'
-import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import type { CreatedPool } from '@/stellar/features/create-pool/types'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'

@@ -26,6 +26,7 @@ const formOptions = {
   defaultValues: {
     isBalanced: false,
     isWrapped: false,
+    tokenIndex: 0,
     decimals: undefined,
     supply: undefined,
     slippage: SLIPPAGE.stable.default,

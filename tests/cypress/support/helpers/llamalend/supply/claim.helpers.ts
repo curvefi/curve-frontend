@@ -1,4 +1,5 @@
-import { type Address, encodeFunctionData, parseAbi } from 'viem'
+import { type Address, createPublicClient, encodeFunctionData, http, parseAbi } from 'viem'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
@@ -18,6 +19,9 @@ const GAUGE_ABI = parseAbi([
   'function manager() view returns (address)',
   'function add_reward(address _reward_token, address _distributor)',
   'function deposit_reward_token(address _reward_token, uint256 _amount, uint256 _epoch)',
+  'function reward_count() view returns (uint256)',
+  'function reward_tokens(uint256 _index) view returns (address)',
+  'function claimable_reward(address _user, address _reward_token) view returns (uint256)',
 ])
 
 const submitClaimForm = (type: SupplyActionType, isMocked = false) =>
@@ -222,3 +226,60 @@ export function checkClaimTableState({
     cy.contains(formatNumber(totalNotional, 'usd.notional')).should('be.visible')
   }
 }
+
+/** Some gauges also pay external rewards on top of CRV */
+const hasClaimableOtherRewards = ({
+  vnet,
+  userAddress,
+  gaugeAddress,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  gaugeAddress: Address
+}) =>
+  cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
+    const client = createPublicClient({ transport: http(getRpcUrls(vnet).publicRpcUrl) })
+    const count = await client.readContract({ address: gaugeAddress, abi: GAUGE_ABI, functionName: 'reward_count' })
+    const amounts = await Promise.all(
+      Cypress._.range(Number(count)).map(async index =>
+        client.readContract({
+          address: gaugeAddress,
+          abi: GAUGE_ABI,
+          functionName: 'claimable_reward',
+          args: [
+            userAddress,
+            await client.readContract({
+              address: gaugeAddress,
+              abi: GAUGE_ABI,
+              functionName: 'reward_tokens',
+              args: [BigInt(index)],
+            }),
+          ],
+        }),
+      ),
+    )
+    return amounts.some(amount => amount > 0n)
+  })
+
+/** Claims the CRV rewards, and the external rewards if any */
+export const claimSupplyRewards = ({
+  vnet,
+  userAddress,
+  gaugeAddress,
+  hasApi,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  gaugeAddress: Address
+  hasApi: boolean
+}) =>
+  hasClaimableOtherRewards({ vnet, userAddress, gaugeAddress }).then(hasOtherRewards => {
+    checkClaimDetailsLoaded({ hasOtherRewards, hasApi })
+    submitClaimAndSettle('crv', { waitForEmptyState: true })
+    if (hasOtherRewards) {
+      // each claim mines a block, so a few seconds of CRV may be claimable again and the tab can't settle empty
+      submitClaimAndSettle('other', { waitForEmptyState: true })
+    } else {
+      validateClaimTabState()
+    }
+  })

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { asAddress, asStellarContract } from '@/stellar/features/connect-wallet/address'
-import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
 import { rateAdjustedValue } from '@/stellar/lib/amounts'
@@ -10,7 +10,7 @@ import { useCreatePoolSimulation } from '@/stellar/queries/create-pool/create-po
 import type { NetworkQuery } from '@/stellar/queries/query-types'
 import { useTokenUsdRates } from '@/stellar/queries/token/token-usd-rate.query'
 import { createPoolFormValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
-import { StellarUrls } from '@/stellar/routes/routes'
+import { StellarPages } from '@/stellar/routes/routes'
 import { completeArray } from '@primitives/array.utils'
 import { maybe, recordValues, repeat } from '@primitives/objects.utils'
 import { POOL_TYPES } from '@ui/features/create-pool/constants'
@@ -137,7 +137,7 @@ export function useCreatePoolForm({ network }: NetworkQuery): CreatePoolFormProp
     ),
     nativeSymbol: nativeCurrency.symbol,
     created: maybe(created, ({ pool }) => ({ explorerUrl: `${explorerUrl}contract/${pool}` })),
-    poolListUrl: StellarUrls.poolList({ network }),
+    poolListUrl: StellarPages.pools({ network }),
     isFunded: liquidity.isSuccess,
     isDepositing: liquidity.isDepositing,
     isPending,

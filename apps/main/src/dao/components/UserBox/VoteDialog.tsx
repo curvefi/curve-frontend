@@ -36,9 +36,7 @@ export const VoteDialog = ({
 }: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
   const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId, proposalType })
-  const { data: userProposalVotes, isLoading: isLoadingUserProposalVotes } = useUserProposalVotesQuery({
-    userAddress: userAddress ?? '',
-  })
+  const { data: userProposalVotes, isLoading: isLoadingUserProposalVotes } = useUserProposalVotesQuery({ userAddress })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
   const castVote = useStore(state => state.proposals.castVote)

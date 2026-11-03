@@ -1,32 +1,18 @@
-/* eslint-disable no-restricted-imports -- This module wraps Stellar wallet and contract SDK access. */
-import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
-import { STABLE_SWAP_ERRORS } from '@/stellar/lib/errors'
-import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
-import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
+import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
-import { activeModule } from '@creit.tech/stellar-wallets-kit/state'
-import { type ISupportedWallet, KitEventType } from '@creit.tech/stellar-wallets-kit/types'
 import { assert, maybe } from '@primitives/objects.utils'
-import { retry, type RetryOptions } from '@primitives/promise.utils'
+import { retry } from '@primitives/promise.utils'
 import {
-  Address,
   BASE_FEE,
-  contract,
-  humanizeEvents,
-  nativeToScVal,
-  Networks,
+  type contract,
   rpc,
-  scValToNative,
   SorobanDataBuilder,
-  StrKey,
   Transaction,
   TransactionBuilder,
-  xdr,
+  type xdr,
 } from '@stellar/stellar-sdk'
-import { DiagnosticEvent } from '@stellar/stellar-sdk/xdr'
-import { NoRetryError } from '@ui/features/queries/factory'
+import { convertStellarError } from './contract'
 
-export type WalletConnector = ISupportedWallet
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
 export type StellarTransaction<T = unknown> = contract.AssembledTransaction<T>
 export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, 'hash'> & { hash: StellarHex }
@@ -35,62 +21,8 @@ const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
 const MAX_TRANSACTION_FEE = 0xffff_ffffn // The inner transaction fee is uint32; fee-bump envelopes use int64.
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
-export const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
 /** TTL renewal can become payable after simulation. Keep the 20% buffer for larger simulated fees. */
 const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 600_000n
-
-export const StellarFetchRetry = {
-  retries: 2,
-  delay: () => 1000,
-  shouldRetry: (error: unknown) => /failed to fetch|fetch failed|network ?error/i.test((error as Error).message),
-} satisfies RetryOptions
-
-export const initWallet = (onError: (error: Error) => void) => {
-  const modules = defaultModules()
-  StellarWalletsKit.init({ modules })
-  const refreshAddress = () => activeModule.value && void StellarWalletsKit.fetchAddress().catch(onError)
-  modules.forEach(wallet =>
-    wallet.onChange?.(
-      ({ error }) =>
-        activeModule.value === wallet &&
-        (error ? onError(new Error(`${error.code}: ${error.message}`)) : refreshAddress()),
-    ),
-  )
-  refreshAddress()
-  window.addEventListener('focus', refreshAddress) // some wallets e.g., Freighter don't listen to changes, refresh when returning to the app
-  return () => window.removeEventListener('focus', refreshAddress)
-}
-
-export const onWalletAddressChanged = (onChange: (address: StellarAddress | undefined) => void) =>
-  StellarWalletsKit.on(KitEventType.STATE_UPDATED, ({ payload }) =>
-    onChange(payload.address as StellarAddress | undefined),
-  )
-
-export const refreshSupportedWallets = () => StellarWalletsKit.refreshSupportedWallets()
-
-export const connectWallet = async (connector: WalletConnector) => {
-  StellarWalletsKit.setWallet(connector.id)
-  await StellarWalletsKit.fetchAddress()
-}
-
-export const disconnectWallet = () => StellarWalletsKit.disconnect()
-
-export const isContractAddress = (address: string): address is StellarContract => StrKey.isValidContract(address)
-export const isAccountAddress = (address: string): address is StellarAddress => StrKey.isValidEd25519PublicKey(address)
-
-type ContractArgument = StellarAddress | StellarContract | bigint | number | boolean | xdr.ScVal | ContractArgument[]
-
-const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
-  Array.isArray(value)
-    ? xdr.ScVal.scvVec(value.map(encodeContractArgument))
-    : typeof value === 'string'
-      ? new Address(value).toScVal()
-      : nativeToScVal(
-          value,
-          typeof value === 'bigint' ? { type: 'i128' } : typeof value === 'number' ? { type: 'u32' } : {},
-        )
-
-const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
 
 /**
  * Reserve TTL renewal headroom in stroops for each contract data/code entry in the footprint.
@@ -120,7 +52,7 @@ export function getStellarTransactionFees<T>({ options, simulationData: { transa
 }
 
 /** Simulate without SDK assembly: deployment rent can exceed its uint32 fee field. */
-async function simulateStellarTransaction<T>(transaction: StellarTransaction<T>) {
+export async function simulateStellarTransaction<T>(transaction: StellarTransaction<T>) {
   // Building consumes the account sequence; keep this envelope for simulation, retries and submission.
   const raw = (transaction.built ??= assert(transaction.raw, 'Missing transaction').build())
   transaction.simulation = await new rpc.Server(transaction.options.rpcUrl).simulateTransaction(raw)
@@ -131,44 +63,6 @@ async function simulateStellarTransaction<T>(transaction: StellarTransaction<T>)
   }
   return transaction
 }
-
-export async function simulateContractCall<T>(
-  network: StellarNetwork,
-  contractId: StellarContract,
-  method: string,
-  args: ContractArgument[] = [],
-  account?: StellarAddress,
-) {
-  const transaction = await retry(
-    () =>
-      contract.AssembledTransaction.build<T>({
-        contractId,
-        method,
-        args: args.map(encodeContractArgument),
-        publicKey: account,
-        address: account,
-        networkPassphrase: PASSPHRASES[network],
-        rpcUrl: STELLAR_NETWORKS[network].rpcUrl,
-        fee: MAX_INCLUSION_FEE.toString(),
-        simulate: false, // Simulate below: the SDK's automatic assembly overflows for fees requiring a fee bump.
-        parseResultXdr: value => scValToNative(value) as T,
-      }),
-    StellarFetchRetry,
-  )
-  try {
-    await retry(() => simulateStellarTransaction(transaction), StellarFetchRetry)
-  } catch (e) {
-    throw convertStellarError(transaction.simulation?.events, contractId) ?? e
-  }
-  return transaction
-}
-
-export const readContract = async <T>(
-  network: StellarNetwork,
-  contractId: StellarContract,
-  method: string,
-  args: ContractArgument[] = [],
-) => (await simulateContractCall<T>(network, contractId, method, args)).result
 
 /** Apply our TTL buffer while preserving the SDK's refreshed timeout. */
 const applyResourceFeeBuffer = <T>(
@@ -217,22 +111,3 @@ export async function sendStellarTransaction<T>(
   const response = assert(sent.sendTransactionResponse, 'Missing submission response') as StellarTransactionResponse
   return { result, response }
 }
-
-const convertStellarError = (events: DiagnosticEvent[] | undefined, contract: StellarContract) =>
-  maybe(events, events =>
-    maybe(
-      humanizeEvents(events)
-        .map(
-          ({ type, topics, contractId }) =>
-            contractId === contract &&
-            type === 'diagnostic' &&
-            (topics as ['error', { type: 'contract'; code: number }])?.[1].code,
-        )
-        .findLast(Boolean),
-      code =>
-        maybe(
-          STABLE_SWAP_ERRORS[code as keyof typeof STABLE_SWAP_ERRORS],
-          ({ title, description }) => new NoRetryError(`${title}(${code}): ${description}`),
-        ),
-    ),
-  )

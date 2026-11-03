@@ -1,5 +1,4 @@
-export const PAGE_INTEGRATIONS = '/integrations' as const
-export const PAGE_LEGAL = '/legal' as const
+export type SectionLinks = { legalHref: string; integrationsHref: string }
 
 /** Replaces the network segment of an internal URL, preserving its query and fragment. */
 export const replaceNetworkInPath = (path: string, blockchainId: string) => {

@@ -60,13 +60,14 @@ const mockEmptyCrvUsdAmms = () =>
     { body: { success: true, data: { amms: [], totalVolume: 0 }, generatedTimeMs: Date.now() } },
   )
 
-/**
- * During component tests, the backend can take a long time to reply when we send a new_hash.
- * The transactions do not exist in the backend anyway, since we are in a fork, so we mock an empty response.
- */
-export const mockNewHashCollateralEvents = () => {
+/** Empty collateral history, optionally limited to post-transaction refresh requests. */
+export const mockCollateralEvents = (newTxOnly = false) => {
   cy.intercept(
-    { method: 'GET', pathname: /^\/v1\/(crvusd|lending)\/collateral_events\/.+/, query: { new_hash: /.+/ } },
+    {
+      method: 'GET',
+      pathname: /^\/v1\/(crvusd|lending)\/collateral_events\/.+/,
+      ...(newTxOnly && { query: { new_tx: /.+/ } }),
+    },
     req => {
       const [, , endpoint, , chain, controller, user] = new URL(req.url).pathname.split('/')
       const body = {
@@ -91,6 +92,9 @@ export const mockNewHashCollateralEvents = () => {
     },
   )
 }
+
+/** Fork transactions do not exist in the backend, so skip waiting for their events. */
+export const mockNewTxCollateralEvents = () => mockCollateralEvents(true)
 
 export function setupLlamalendListMocks(vaultData = createLendingVaultChainsResponse()) {
   blockUnmockedApis()

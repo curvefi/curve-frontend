@@ -1,4 +1,4 @@
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { FactoryImplementationParams, FactoryImplementationQuery } from '@/stellar/features/create-pool/types'
 import { factoryImplementationValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
 import { assert } from '@primitives/objects.utils'
