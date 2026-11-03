@@ -12,6 +12,7 @@ import {
 import {
   computeTotalRate,
   getMarketCampaigns,
+  getSupplyCampaigns,
   getSupplyApyMetrics,
   sumCampaignsApr,
   sumCampaignsApy,
@@ -172,7 +173,7 @@ const convertLendingVault = (
   })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
-  const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
+  const supplyCampaignsApy = sumCampaignsApy(getSupplyCampaigns(rewards))
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
     crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],

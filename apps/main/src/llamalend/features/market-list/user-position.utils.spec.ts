@@ -162,7 +162,7 @@ describe('supply position metrics', () => {
   })
 
   it('adds the boosted CRV yield to the total supply APY', () => {
-    expect(getUserSupplyTotalApy(createSupplyRow(null))).toBe(5)
+    expect(getUserSupplyTotalApy(createSupplyRow(null))).toBeNull()
     expect(getUserSupplyTotalApy(createSupplyRow(2))).toBeGreaterThan(getUserSupplyTotalApy(createSupplyRow(1)) ?? 0)
   })
 

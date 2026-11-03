@@ -4,10 +4,15 @@ import { getLiquidationBuffer } from '@/llamalend/features/market-position-detai
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user/user-state.query'
-import { getMarketListYields, getSupplyApyMetrics, sumCampaignsApr, sumCampaignsApy } from '@/llamalend/rates.utils'
+import {
+  getMarketListYields,
+  getSupplyApyMetrics,
+  getSupplyCampaigns,
+  sumCampaignsApr,
+  sumCampaignsApy,
+} from '@/llamalend/rates.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
-import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
@@ -103,9 +108,7 @@ export const getUserLiquidationBufferAmount = ({ positionQueries }: LlamaMarketR
 
 export const getUserBandCount = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.bandCount
 
-const getSupplyCampaigns = (rewards: CampaignRewards[]) => rewards.filter(({ action }) => action === 'supply')
-
-/** Total supply APY at the user's boost, as on the supply position card, or without boost when the user has none */
+/** Total supply APY at the user's boost, none without a boost, like the supply position card */
 export const getUserSupplyTotalApy = ({ rates, assets, rewards, lendingPosition }: LlamaMarket) =>
   getSupplyApyMetrics({
     supplyApy: rates.lendApy,
@@ -116,7 +119,7 @@ export const getUserSupplyTotalApy = ({ rates, assets, rewards, lendingPosition 
       : null,
     campaignsApy: sumCampaignsApy(getSupplyCampaigns(rewards)),
     userSupplyBoost: decimal(lendingPosition?.boostMultiplier),
-  }).totalUserBoost ?? rates.lendTotalApyMinBoosted
+  }).totalUserBoost
 
 /** The user's share of the vault's assets, in percent */
 export const getUserSupplyShare = ({ lendingPosition, assets }: LlamaMarketRow) =>

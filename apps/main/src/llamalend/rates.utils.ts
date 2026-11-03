@@ -153,6 +153,8 @@ type MarketCampaignAddresses = {
   ammAddress: Address | Nullish
 }
 
+export const getSupplyCampaigns = (rewards: CampaignRewards[]) => rewards.filter(({ action }) => action === 'supply')
+
 /** Campaigns of a market, from the contracts that reward its market type */
 export const getMarketCampaigns = (
   campaigns: Record<string, CampaignRewards[]>,
