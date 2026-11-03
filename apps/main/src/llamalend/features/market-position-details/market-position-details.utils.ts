@@ -3,12 +3,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { decimalGreaterThan, decimalMinus, decimalPercent, ZERO } from '@ui/lib/decimal'
 
-/** Distance from hard liquidation as a percentage of the gap between the loan and liquidation discounts, all in percent. */
-export const getLiquidationBuffer = (healthNotFull: Decimal, loanDiscount: Decimal, liquidationDiscount: Decimal) => {
-  const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
-  return decimalGreaterThan(discountGap, ZERO) ? decimalPercent(healthNotFull, discountGap) : undefined
-}
-
 export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
 
@@ -88,3 +82,9 @@ export const getHealthTrackColor = ({
   isFullRepay?: boolean
   theme: Theme
 }) => healthFeedbackColors(theme, 'fill')[resolveHealthFeedbackKey({ health, softLiquidation, isFullRepay })]
+
+/** Distance from hard liquidation as a percentage of the gap between the loan and liquidation discounts, all in percent. */
+export const getLiquidationBuffer = (healthNotFull: Decimal, loanDiscount: Decimal, liquidationDiscount: Decimal) => {
+  const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
+  return decimalGreaterThan(discountGap, ZERO) ? decimalPercent(healthNotFull, discountGap) : undefined
+}

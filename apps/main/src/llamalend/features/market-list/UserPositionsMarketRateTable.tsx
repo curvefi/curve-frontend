@@ -14,8 +14,8 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { BETA_BORROW_TABLE, BORROW_TABLE } from './columns/borrow.table'
-import { BETA_SUPPLY_TABLE, SUPPLY_TABLE } from './columns/supply.table'
+import { BORROW_TABLE, LEGACY_BORROW_TABLE } from './columns/borrow.table'
+import { LEGACY_SUPPLY_TABLE, SUPPLY_TABLE } from './columns/supply.table'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketColumns } from './hooks/useMarketColumns'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
@@ -27,14 +27,14 @@ const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {
     title: t`Borrowing`,
     label: t`borrow`,
-    stableTable: BORROW_TABLE,
-    betaTable: BETA_BORROW_TABLE,
+    table: BORROW_TABLE,
+    legacyTable: LEGACY_BORROW_TABLE,
   },
   [MarketRateType.Supply]: {
     title: t`Supplying`,
     label: t`supply`,
-    stableTable: SUPPLY_TABLE,
-    betaTable: BETA_SUPPLY_TABLE,
+    table: SUPPLY_TABLE,
+    legacyTable: LEGACY_SUPPLY_TABLE,
   },
 }
 
@@ -47,8 +47,8 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
-  const { title, label, stableTable, betaTable } = TABLE_CONFIG[marketRateType]
-  const marketTable = useLlamalendPositionTables() ? betaTable : stableTable
+  const { title, label, table: positionTable, legacyTable } = TABLE_CONFIG[marketRateType]
+  const marketTable = useLlamalendPositionTables() ? positionTable : legacyTable
   const { columns, sorting, onSortingChange, sortField, columnVisibility, columnSettings, toggleVisibility } =
     useMarketColumns(marketTable)
   const [expanded, setExpanded] = useState<ExpandedState>({})

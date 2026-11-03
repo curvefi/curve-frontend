@@ -1,7 +1,7 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
-import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
+import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
 import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'

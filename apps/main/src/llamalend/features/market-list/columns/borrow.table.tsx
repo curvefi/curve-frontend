@@ -91,7 +91,7 @@ const BORROW_TABLE_OPTIONS = {
   sortQueryField: 'userSortBorrow',
 }
 
-export const BORROW_TABLE: MarketTable = defineMarketTable({
+export const LEGACY_BORROW_TABLE: MarketTable = defineMarketTable({
   ...BORROW_TABLE_OPTIONS,
   storageKey: 'My Borrow Positions',
   deprecatedVariants: [MarketRateType.Borrow], // used for the v9 -> v10 migration, this will be removed in the future
@@ -109,9 +109,9 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
   ]),
 })
 
-export const BETA_BORROW_TABLE: MarketTable = defineMarketTable({
+export const BORROW_TABLE: MarketTable = defineMarketTable({
   ...BORROW_TABLE_OPTIONS,
-  storageKey: 'My Borrow Positions Beta',
+  storageKey: 'User Borrow Positions',
   deprecatedVariants: [],
   columns: columnHelper.columns([
     assetsColumn,

@@ -1,10 +1,11 @@
+import { formatNetSupplyRate } from '@/llamalend/llama.utils'
 import { MarketRateType } from '@evm-ui/types/market'
 import { t } from '@ui/lib/i18n'
 import { BoostCell } from '../cells/BoostCell'
 import { PercentCell } from '../cells/PercentCell'
 import { PriceCell } from '../cells/PriceCell'
-import { UserSupplyRateCell } from '../cells/RateCell/UserSupplyRateCell'
-import { getUserIncentivesApr, getUserSupplyShare } from '../user-position.utils'
+import { RateCell } from '../cells/RateCell/RateCell'
+import { getUserIncentivesApr, getUserSupplyShare, getUserSupplyTotalApy } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 import { adapt, defineMarketTable, inGroup } from './market-table'
@@ -40,7 +41,7 @@ const SUPPLY_TABLE_OPTIONS = {
   sortQueryField: 'userSortSupply',
 }
 
-export const SUPPLY_TABLE: MarketTable = defineMarketTable({
+export const LEGACY_SUPPLY_TABLE: MarketTable = defineMarketTable({
   ...SUPPLY_TABLE_OPTIONS,
   storageKey: 'My Supply Positions',
   deprecatedVariants: [MarketRateType.Supply], // used for the v9 -> v10 migration, this will be removed in the future
@@ -50,16 +51,21 @@ export const SUPPLY_TABLE: MarketTable = defineMarketTable({
   ]),
 })
 
-export const BETA_SUPPLY_TABLE: MarketTable = defineMarketTable({
+export const SUPPLY_TABLE: MarketTable = defineMarketTable({
   ...SUPPLY_TABLE_OPTIONS,
-  storageKey: 'My Supply Positions Beta',
+  storageKey: 'User Supply Positions',
   deprecatedVariants: [],
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Supply`, [
-      adapt(userDepositedColumn, { header: t`Amount supplied` }),
+      userDepositedColumn,
       userBoostColumn,
-      adapt(supplyRateColumn, { cell: UserSupplyRateCell }),
+      adapt(supplyRateColumn, {
+        // The total APY below the rate includes the boost of the user
+        cell: props => (
+          <RateCell {...props} getSubRate={market => formatNetSupplyRate(getUserSupplyTotalApy(market))} />
+        ),
+      }),
       columnHelper.accessor(getUserSupplyShare, {
         id: MarketColumnId.UserSupplyShare,
         header: MARKET_TITLES[MarketColumnId.UserSupplyShare],
@@ -76,7 +82,7 @@ export const BETA_SUPPLY_TABLE: MarketTable = defineMarketTable({
       }),
       adapt(liquidityUsdColumn, { meta: { defaultHidden: true } }),
       adapt(utilizationColumn, { meta: { defaultHidden: true } }),
-      adapt(solvencyColumn, { header: t`Market solvency` }),
+      solvencyColumn,
     ]),
   ]),
 })
