@@ -13,7 +13,7 @@ import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { loadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -29,10 +29,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
-  const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
-
-  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
-  const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
+  const { tradesColumnVisibility } = usePoolActivityVisibility()
 
   const poolTrades = usePoolTrades({ blockchainId: network, poolAddress, page: apiPage, perPage: DEFAULT_PAGE_SIZE })
   const { data: tradesData } = poolTrades
@@ -41,7 +38,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
 
   // Transform trades data with block explorer URLs
   const tradesWithUrls = useCombinedQueries(
-    [poolTrades, poolPriceApi, loadingQ(isHydrated || undefined)],
+    [poolTrades, loadingQ(isHydrated || undefined)],
     useCallback(
       tradesData =>
         maybe(network, blockchainId => tradesData.trades.map(trade => ({ ...trade, chainId, blockchainId }))),
