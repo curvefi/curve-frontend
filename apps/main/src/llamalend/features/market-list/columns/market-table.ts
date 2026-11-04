@@ -5,6 +5,10 @@ import type { MigrationOptions } from '@ui/features/storage/useStoredState'
 import type { VisibilityGroup } from '@ui/features/tables/visibility.types'
 import type { MarketColumnId } from './columns.enum'
 
+/**
+ * A column of a market table, its fields decide the visibility of the column.
+ * No `header`: only used for filtering. `enableHiding: false`: always shown. `meta.defaultHidden`: starts hidden.
+ */
 type MarketColumn = {
   id: string
   header?: unknown
