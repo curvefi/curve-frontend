@@ -15,7 +15,7 @@ import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { UserPositionsTableData } from '@ui/features/pool-list/types'
 import { claimablesTotalUsd, litePoolToRowData, poolToRowData } from '@ui/features/pool-list/utils'
 import { combineSubQueries, useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, DISABLED_Q, mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
+import { constQ, mapQuery, type Query, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import { decimalCompare, decimalMultiply, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
@@ -49,7 +49,7 @@ export const useUserPositionsTable = (
     positions,
     useCallback(positions => positions.map(({ address }) => address), []),
   )
-  const boosts = useUserPoolBoosts({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
+  const boosts = useUserPoolBoosts({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled && !isLite)
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
 
   const tokenAddresses = useMappedQuery(
@@ -82,14 +82,30 @@ export const useUserPositionsTable = (
                 position,
                 tokenRates[position.lpTokenAddress],
                 { data: claimables.data, isLoading: claimables.isLoading, error: claimables.error },
-                boosts[position.address] ?? DISABLED_Q,
+                mapQuery(
+                  // isPending because we want to show loading state during hydration (but not when the query is disabled)
+                  { data: boosts.data, error: boosts.error, isLoading: enabled && !isLite && boosts.isPending },
+                  values => values[position.address],
+                ),
               ),
             ),
           ])
           .toSorted((a, b) =>
             decimalCompare(b.userPosition?.depositsUsd.data ?? ZERO, a.userPosition?.depositsUsd.data ?? ZERO),
           ),
-      [isLite, network, campaigns.data, tokenRates, boosts, claimables.data, claimables.isLoading, claimables.error],
+      [
+        isLite,
+        network,
+        campaigns.data,
+        tokenRates,
+        claimables.data,
+        claimables.isLoading,
+        claimables.error,
+        boosts.data,
+        boosts.error,
+        boosts.isPending,
+        enabled,
+      ],
     ),
   )
 
