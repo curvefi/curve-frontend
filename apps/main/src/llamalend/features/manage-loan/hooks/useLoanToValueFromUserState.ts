@@ -45,7 +45,6 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
   } = useMarketOraclePrice({ chainId, marketId }, enabled)
 
   return {
-    // Null shows the future LTV as unavailable, undefined would show the current LTV as if it does not change
     data:
       maybes([expectedBorrowed, userState, oraclePrice], (debt, { collateral, convertedBorrowed }, oraclePrice) =>
         getLoanToValue(
@@ -58,7 +57,7 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
             oraclePrice,
           ),
         ),
-      ) ?? null,
+      ) ?? null, // null shows future LTV as unavailable, undefined would show the current LTV as if it does not change
     isLoading: enabled && (isUserLoading || isOraclePriceLoading),
     error: userError ?? oraclePriceError,
   }
