@@ -34,7 +34,13 @@ const poolsToRows = ({ pools }: { pools: V2Pool[] }) => pools.map(poolToRowData)
 const getPoolUserPosition = (poolAddress: Address, positions: UserPoolPositions | undefined) =>
   maybe(
     positions?.find(({ address }) => isAddressEqual(address, poolAddress)),
-    p => ({ lpBalance: p.totalBalance, depositsUsd: DISABLED_Q, claimables: DISABLED_Q, claimablesUsd: DISABLED_Q }),
+    p => ({
+      lpBalance: p.totalBalance,
+      depositsUsd: DISABLED_Q,
+      boost: DISABLED_Q,
+      claimables: DISABLED_Q,
+      claimablesUsd: DISABLED_Q,
+    }),
   )
 
 /** Fetches the selected pool-list source and maps its API rows into table rows. */
