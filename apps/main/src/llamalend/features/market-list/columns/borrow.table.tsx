@@ -8,17 +8,18 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { combineQueries } from '@ui/features/queries/combine'
 import { withQuery } from '@ui/features/tables/withQuery'
 import { t } from '@ui/lib/i18n'
-import { LegacyHealthCell } from '../cells/LegacyHealthCell'
-import { LtvCell } from '../cells/LtvCell'
 import {
   BandCountCell,
   CollateralCompositionCell,
+  EquityCell,
   HealthFactorCell,
   LeverageCell,
   LiquidationBufferCell,
   LoopedAprCell,
-} from '../cells/PositionMetricCells'
-import { EquityCell, PnlCell } from '../cells/PositionPnlCells'
+  LtvCell,
+  PnlCell,
+} from '../cells/BorrowPositionCells'
+import { LegacyHealthCell } from '../cells/LegacyHealthCell'
 import { PriceCell } from '../cells/PriceCell'
 import {
   getUserBandCount,
