@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
-import { ProposalData } from '@/dao/entities/proposals-mapper'
+import type { ProposalData } from '@/dao/utils/proposal'
 import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils/address'
 import { Box } from '@legacy-ui/Box'

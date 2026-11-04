@@ -1,49 +1,11 @@
 import { paginate } from '@curvefi/prices-api/paginate'
-import { getProposals, type Proposal, type ProposalType } from '@curvefi/prices-api/proposal'
+import { getProposals, type Proposal } from '@curvefi/prices-api/proposal'
 import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { TIME_FRAMES } from '@ui/lib/time'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
-
-const { WEEK } = TIME_FRAMES
-
-export type ProposalData = Omit<Proposal, 'timestamp'> & {
-  status: 'Active' | 'Passed' | 'Denied'
-  quorumVeCrv: number
-  currentQuorumPercentage: number
-  timestamp: number
-}
+import { createProposalKey, parseProposalData, type ProposalData } from '../utils/proposal'
 
 type ProposalsMapper = Record<string, ProposalData>
-
-export const createProposalKey = (proposalId: number, proposalType: ProposalType) =>
-  `${proposalId}-${proposalType.toLowerCase()}`
-
-const getProposalStatus = (
-  timestamp: number,
-  quorumVeCrv: number,
-  votesFor: number,
-  votesAgainst: number,
-  minSupport: number,
-): 'Active' | 'Passed' | 'Denied' => {
-  const totalVotes = votesFor + votesAgainst
-  const passedQuorum = votesFor >= quorumVeCrv
-  const passedMinimum = votesFor / totalVotes > minSupport
-
-  if (timestamp + WEEK > Date.now() / 1000) return 'Active'
-  if (passedQuorum && passedMinimum) return 'Passed'
-  return 'Denied'
-}
-
-const parseProposalData = (proposal: Proposal) => {
-  const quorumVeCrv = proposal.quorum * proposal.totalSupply
-  const currentQuorumPercentage = (proposal.votesFor / proposal.totalSupply) * 100
-  const timestamp = new Date(proposal.timestamp).getTime() / 1000
-
-  const status = getProposalStatus(timestamp, quorumVeCrv, proposal.votesFor, proposal.votesAgainst, proposal.support)
-
-  return { ...proposal, status, quorumVeCrv, currentQuorumPercentage, timestamp }
-}
 
 const _fetchProposals = async (): Promise<ProposalsMapper> => {
   const results: Proposal[] = await paginate(

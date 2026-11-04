@@ -2,6 +2,7 @@ import { TOP_HOLDERS } from '@/dao/constants'
 import { getProposal, type ProposalType } from '@curvefi/prices-api/proposal'
 import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { parseProposalData } from '../utils/proposal'
 
 export const { useQuery: useProposal, invalidate: invalidateProposal } = queryFactory({
   queryKey: ({
@@ -25,7 +26,7 @@ export const { useQuery: useProposal, invalidate: invalidateProposal } = queryFa
   }) => {
     const proposal = await getProposal(proposalId, proposalType, txHash)
     const parsedProposal = {
-      ...proposal,
+      ...parseProposalData(proposal),
       votes: proposal.votes
         .map(vote => ({
           ...vote,

@@ -1,10 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
-import {
-  createProposalKey,
-  invalidateProposals,
-  type ProposalData,
-  useProposalsMapperQuery,
-} from '@/dao/entities/proposals-mapper'
+import { invalidateProposals, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { createProposalKey, type ProposalData } from '@/dao/utils/proposal'
 import { daoPages } from '@evm-ui/shared/routes'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import Stack from '@mui/material/Stack'

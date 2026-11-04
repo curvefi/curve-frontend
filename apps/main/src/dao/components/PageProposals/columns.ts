@@ -1,4 +1,4 @@
-import type { ProposalData } from '@/dao/entities/proposals-mapper'
+import type { ProposalData } from '@/dao/utils/proposal'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 
 export enum ProposalColumnId {
