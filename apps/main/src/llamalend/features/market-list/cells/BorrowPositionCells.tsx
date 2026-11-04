@@ -63,20 +63,13 @@ export const PnlCell = ({ row, getValue }: BorrowPositionCellProps) => {
   )
 }
 
-export const LtvCell = ({ getValue }: BorrowPositionCellProps) => {
-  const ltv = getValue()
-  return ltv ? (
-    <Tooltip clickable title={t`LTV`} body={<CurrentLTVTooltipContent />} placement="top">
-      <Typography variant="tableCellValue" color="textPrimary" sx={{ textAlign: 'right' }}>
-        {formatNumber(ltv, 'percent.rate')}
-      </Typography>
-    </Tooltip>
-  ) : (
-    <Typography variant="tableCellValue" color="textSecondary" sx={{ textAlign: 'right' }}>
-      -
+export const LtvCell = ({ getValue }: BorrowPositionCellProps) => (
+  <Tooltip clickable title={t`LTV`} body={<CurrentLTVTooltipContent />} placement="top">
+    <Typography variant="tableCellValue" color="textPrimary" sx={{ textAlign: 'right' }}>
+      {formatNumber(getValue(), 'percent.rate')}
     </Typography>
-  )
-}
+  </Tooltip>
+)
 
 export const HealthFactorCell = ({ getValue }: BorrowPositionCellProps) => (
   <PositionMetric value={formatHealthFactor(getValue())} />
