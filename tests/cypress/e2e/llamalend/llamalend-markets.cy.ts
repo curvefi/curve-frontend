@@ -193,7 +193,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it('should find markets by text', () => {
       cy.get("[data-testid^='table-text-search-'] input").click()
-      cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
+      cy.get("[data-testid='table-text-search-lamalend-markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
       cy.get(`[data-testid='table-row-link-${SFRX_ETH_MARKET}']`).should('not.exist')
@@ -202,7 +202,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it('should persists search filter across reload', () => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
-      cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
+      cy.get("[data-testid='table-text-search-lamalend-markets'] input").should('have.value', 'wstETH crvUSD')
       cy.get(`[data-testid="table-row-link-${WST_ETH_MARKET}"]`).should('exist')
       getTableCellAssets().first().contains('wstETH')
     })

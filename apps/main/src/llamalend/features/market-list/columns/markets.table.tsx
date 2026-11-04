@@ -29,7 +29,7 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
   testId: 'lamalend-markets',
   defaultSort: [{ id: MarketColumnId.Tvl, desc: true }],
   sortQueryField: 'sort',
-  storageKey: 'Llamalend Markets',
+  storageKey: 'llamalend-markets',
   deprecatedVariants: ['hasPositions', 'noPositions'],
   columns: columnHelper.columns([
     assetsColumn,
