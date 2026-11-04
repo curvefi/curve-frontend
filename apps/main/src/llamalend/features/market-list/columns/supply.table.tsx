@@ -5,6 +5,7 @@ import { BoostCell } from '../cells/BoostCell'
 import { PercentCell } from '../cells/PercentCell'
 import { PriceCell } from '../cells/PriceCell'
 import { RateCell } from '../cells/RateCell/RateCell'
+import { UserSupplyRateTooltip } from '../cells/RateCell/SupplyRateLendTooltip'
 import { getUserIncentivesApr, getUserSupplyShare, getUserSupplyTotalApy } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
@@ -61,9 +62,13 @@ export const SUPPLY_TABLE: MarketTable = defineMarketTable({
       userDepositedColumn,
       userBoostColumn,
       adapt(supplyRateColumn, {
-        // The total APY below the rate includes the boost of the user
+        // The total APY below the rate and the tooltip include the boost of the user
         cell: props => (
-          <RateCell {...props} getSubRate={market => formatNetSupplyRate(getUserSupplyTotalApy(market))} />
+          <RateCell
+            {...props}
+            getSubRate={market => formatNetSupplyRate(getUserSupplyTotalApy(market))}
+            Tooltip={UserSupplyRateTooltip}
+          />
         ),
       }),
       columnHelper.accessor(getUserSupplyShare, {

@@ -106,8 +106,8 @@ export const getUserLiquidationBufferAmount = ({ positionQueries }: LlamaMarketR
 
 export const getUserBandCount = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.bandCount
 
-/** Total supply APY at the user's boost, or at the minimum boost when the user has none */
-export const getUserSupplyTotalApy = ({ rates, assets, rewards, lendingPosition }: LlamaMarket) =>
+/** Supply APY metrics at the user's boost */
+export const getUserSupplyApyMetrics = ({ rates, assets, rewards, lendingPosition }: LlamaMarket) =>
   getSupplyApyMetrics({
     supplyApy: rates.lendApy,
     crvBoostApr: maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max): Range<number> => [min, max]),
@@ -115,7 +115,11 @@ export const getUserSupplyTotalApy = ({ rates, assets, rewards, lendingPosition 
     extraIncentivesApy: sumExtraIncentivesApy(rates.incentives.map(({ percentage }) => percentage)),
     campaignsApy: sumCampaignsApy(getSupplyCampaigns(rewards)),
     userSupplyBoost: decimal(lendingPosition?.boostMultiplier),
-  }).totalUserBoost ?? rates.lendTotalApyMinBoosted
+  })
+
+/** Total supply APY at the user's boost, or at the minimum boost when the user has none */
+export const getUserSupplyTotalApy = (market: LlamaMarket) =>
+  getUserSupplyApyMetrics(market).totalUserBoost ?? market.rates.lendTotalApyMinBoosted
 
 /** The user's share of the vault's assets, in percent */
 export const getUserSupplyShare = ({ lendingPosition, assets }: LlamaMarketRow) =>
