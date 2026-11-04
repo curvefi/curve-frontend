@@ -13,11 +13,11 @@ import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import { ErrorCell } from '@ui/features/tables/ErrorCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from '../columns/columns.enum'
-import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
