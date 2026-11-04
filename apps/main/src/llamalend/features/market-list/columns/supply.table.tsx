@@ -12,7 +12,7 @@ export const SUPPLY_TABLE: MarketTable = defineMarketTable({
   defaultSort: [{ id: MarketColumnId.UserDeposited, desc: true }],
   sortQueryField: 'userSortSupply',
   storageKey: 'my-supply-positions',
-  deprecatedVariants: [MarketRateType.Supply],
+  deprecatedVariants: [MarketRateType.Supply], // used for the v9 -> v10 migration, this will be removed in the future
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Supply`, [

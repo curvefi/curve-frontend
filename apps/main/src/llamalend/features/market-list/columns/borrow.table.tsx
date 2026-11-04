@@ -24,7 +24,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
   defaultSort: [{ id: MarketColumnId.UserBorrowed, desc: true }],
   sortQueryField: 'userSortBorrow',
   storageKey: 'my-borrow-positions',
-  deprecatedVariants: [MarketRateType.Borrow],
+  deprecatedVariants: [MarketRateType.Borrow], // used for the v9 -> v10 migration, this will be removed in the future
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Borrow`, [
