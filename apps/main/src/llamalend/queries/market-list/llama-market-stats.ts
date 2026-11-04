@@ -1,7 +1,8 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
-import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
+import { getHealthValues } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
 import { getDisplayLegacyHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
@@ -40,6 +41,13 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       decimal(convertedBorrowed),
     ),
     legacyHealth: getDisplayLegacyHealth(stats.healthFull, stats.health) ?? undefined,
+    healthFactor: maybes(
+      [decimal(stats.healthFull), decimal(stats.health)],
+      (full, notFull) => getHealthValues(full, notFull).healthFactor,
+    ),
+    /** Band-valued health in percent of the debt, for the liquidation buffer */
+    healthNotFull: decimal(stats.health),
+    bandCount: stats.n,
     borrowed: stats.debt,
     collateral: stats.collateral,
     /**
@@ -66,6 +74,8 @@ type UserPositionQueries = {
   pnl: QueryProp<PositionPnlAndRoi>
   /** PNL in the debt token, in USD at the borrowed token's USD rate */
   pnlUsd: QueryProp<number>
+  /** The open position borrowed through the leverage zap */
+  isZapLeveraged: QueryProp<boolean>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
@@ -74,6 +84,7 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   equityUsd: DISABLED_Q,
   pnl: DISABLED_Q,
   pnlUsd: DISABLED_Q,
+  isZapLeveraged: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -126,12 +137,12 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
   })
   const isPositionPnlEnabled = useLlamalendPositionPnl()
   // The prices API reports V0 zap leverage as plain borrows and repays, so their events can't give the position's capital
-  const capitalEntries = statsEntries.filter(
+  const eventsEntries = statsEntries.filter(
     ({ market }) => !isZapV0MintMarket(market.blockchainId, market.controllerAddress),
   )
-  const capitalQueries = useQueries({
-    queries: capitalEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
-      getPositionCapitalOptions(
+  const eventsQueries = useQueries({
+    queries: eventsEntries.map(({ market: { type, controllerAddress, blockchainId } }) =>
+      getPositionEventsSummaryOptions(
         type,
         { contractAddress: controllerAddress, userAddress, blockchainId },
         isPositionPnlEnabled,
@@ -146,7 +157,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
-    const capitalByMarket = new Map(capitalEntries.map(({ market }, index) => [market, capitalQueries[index]]))
+    const eventsByMarket = new Map(eventsEntries.map(({ market }, index) => [market, eventsQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
     )
@@ -162,8 +173,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
         collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
       }
+      const events = eventsByMarket.get(market) ?? DISABLED_Q
       const pnl = combineQueries(
-        [stats, capitalByMarket.get(market) ?? DISABLED_Q],
+        [stats, mapQuery(events, ({ capital }) => capital)],
         ({ equity, oraclePrice }, capital) =>
           maybes([equity, oraclePrice], (equity, oraclePrice) =>
             getPositionPnlAndRoi({ equity, oraclePrice, capital }),
@@ -181,8 +193,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
           pnlUsd: combineQueries([pnl, prices.borrowed], (pnl, rate) =>
             maybe(pnl, ({ debt }) => Number(debt.pnl) * rate),
           ),
+          isZapLeveraged: mapQuery(events, ({ isZapLeveraged }) => isZapLeveraged),
         },
       }
     })
-  }, [markets, statsEntries, statsQueries, capitalEntries, capitalQueries, tokenPriceEntries, tokenPriceQueries])
+  }, [markets, statsEntries, statsQueries, eventsEntries, eventsQueries, tokenPriceEntries, tokenPriceQueries])
 }
