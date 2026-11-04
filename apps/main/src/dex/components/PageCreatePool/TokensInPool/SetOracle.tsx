@@ -93,6 +93,9 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />
+      <WarningBox
+        message={t`Pools with unverified oracles stay hidden on curve.finance until the Curve team verifies the oracle. You can still deploy.`}
+      />
       {oracleFunction !== '' && !validateOracleFunction(oracleFunction) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
