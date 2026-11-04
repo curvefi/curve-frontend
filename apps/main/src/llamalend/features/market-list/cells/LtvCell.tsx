@@ -32,12 +32,7 @@ export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, Llama
   }
 
   return (
-    <Tooltip
-      clickable
-      title={t`LTV`}
-      body={<CurrentLTVTooltipContent debtDenomination="Borrowed amount" />}
-      placement="top"
-    >
+    <Tooltip clickable title={t`LTV`} body={<CurrentLTVTooltipContent />} placement="top">
       <Typography variant="tableCellValue" color="textPrimary" sx={{ textAlign: 'right' }}>
         {formatNumber(ltv, 'percent.rate')}
       </Typography>
