@@ -53,7 +53,6 @@ export const LiquidationBufferCell = ({ row: { original: row }, getValue }: Posi
   <StatsMetric
     row={row}
     value={formatNumber(getValue(), 'percent.value')}
-    dependsOn={row.positionQueries.discounts}
     support={maybe(
       getUserLiquidationBufferAmount(row),
       amount => `${formatNumber(amount, 'token.compact')} ${row.assets.borrowed.symbol}`,

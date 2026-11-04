@@ -8,9 +8,8 @@ import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/positi
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
-import { getUserMarketDiscountsOptions } from '@/llamalend/queries/market-list/user-market-discounts'
 import type { Chain } from '@curvefi/prices-api'
-import { useLlamalendPositionPnl, useLlamalendPositionTables } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
@@ -76,7 +75,6 @@ type UserPositionQueries = {
   pnlUsd: QueryProp<number>
   /** The open position borrowed through the leverage zap */
   isZapLeveraged: QueryProp<boolean>
-  discounts: QueryProp<QueryOptionsData<ReturnType<typeof getUserMarketDiscountsOptions>>>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
@@ -86,7 +84,6 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   pnl: DISABLED_Q,
   pnlUsd: DISABLED_Q,
   isZapLeveraged: DISABLED_Q,
-  discounts: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -156,20 +153,9 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
     combine: results => results.map(q),
   })
-  const isPositionTablesEnabled = useLlamalendPositionTables()
-  const discountsQueries = useQueries({
-    queries: statsEntries.map(({ market: { controllerAddress, blockchainId } }) =>
-      getUserMarketDiscountsOptions(
-        { contractAddress: controllerAddress, userAddress, blockchainId },
-        isPositionTablesEnabled,
-      ),
-    ),
-    combine: results => results.map(q),
-  })
 
   return useMemo(() => {
     const statsByMarket = new Map(statsEntries.map(({ market }, index) => [market, statsQueries[index]]))
-    const discountsByMarket = new Map(statsEntries.map(({ market }, index) => [market, discountsQueries[index]]))
     const eventsByMarket = new Map(eventsEntries.map(({ market }, index) => [market, eventsQueries[index]]))
     const pricesByToken = new Map(
       tokenPriceEntries.map((entry, index) => [getTokenPriceKey(entry), tokenPriceQueries[index]]),
@@ -207,18 +193,8 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             maybe(pnl, ({ debt }) => Number(debt.pnl) * rate),
           ),
           isZapLeveraged: mapQuery(events, ({ isZapLeveraged }) => isZapLeveraged),
-          discounts: discountsByMarket.get(market) ?? DISABLED_Q,
         },
       }
     })
-  }, [
-    markets,
-    statsEntries,
-    statsQueries,
-    eventsEntries,
-    eventsQueries,
-    tokenPriceEntries,
-    tokenPriceQueries,
-    discountsQueries,
-  ])
+  }, [markets, statsEntries, statsQueries, eventsEntries, eventsQueries, tokenPriceEntries, tokenPriceQueries])
 }

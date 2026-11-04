@@ -90,8 +90,11 @@ export const getUserLoopedApr = (row: LlamaMarketRow) => maybe(getLoopedAprDecim
 export const getUserYieldMultiplier = (row: LlamaMarketRow) =>
   maybe(getYieldMultiplier(getLoopedAprDecimal(row) ?? null, getMarketListYields(row).collateralYieldApr), Number)
 
-export const getUserLiquidationBuffer = ({ positionQueries: { stats, discounts } }: LlamaMarketRow) =>
-  maybes([stats.data?.healthNotFull, discounts.data], (health, { loanDiscount, liquidationDiscount }) =>
+export const getUserLiquidationBuffer = ({
+  positionQueries,
+  parameters: { loanDiscount, liquidationDiscount },
+}: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data?.healthNotFull, health =>
     maybe(getLiquidationBuffer(health, loanDiscount, liquidationDiscount), Number),
   )
 
