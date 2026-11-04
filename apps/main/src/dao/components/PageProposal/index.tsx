@@ -5,8 +5,8 @@ import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
-import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { createProposalKey, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { invalidateProposal, useProposal } from '@/dao/queries/proposal.query'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { daoPages } from '@evm-ui/shared/routes'
@@ -48,7 +48,7 @@ export const Proposal = () => {
     isLoading: pricesProposalLoading,
     isError: pricesProposalError,
     isSuccess: pricesProposalSuccess,
-  } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType })
+  } = useProposal({ proposalId: +voteId, proposalType })
   const proposal = proposalsMapper?.[createProposalKey(+voteId, proposalType)] ?? null
 
   const isLoading = pricesProposalLoading || proposalsListLoading
@@ -100,7 +100,7 @@ export const Proposal = () => {
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  onClick={() => void invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
+                  onClick={() => void invalidateProposal({ proposalId: +voteId, proposalType })}
                 />
               </ErrorWrapper>
             )}

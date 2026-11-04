@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
 import { VoteMarker } from '@/dao/components/VoteMarker'
-import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
+import { useProposal } from '@/dao/queries/proposal.query'
 import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
@@ -35,7 +35,7 @@ export const VoteDialog = ({
   proposalType,
 }: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
-  const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId, proposalType })
+  const { data: pricesProposal } = useProposal({ proposalId, proposalType })
   const { data: userProposalVotes, isLoading: isLoadingUserProposalVotes } = useUserProposalVotesQuery({ userAddress })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
