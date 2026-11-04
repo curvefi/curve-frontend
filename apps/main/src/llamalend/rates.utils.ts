@@ -199,6 +199,10 @@ export const getMarketYields = (
     getMarketCampaigns(campaigns, addresses),
   )
 
+/** Yields and borrow campaign rewards of a market in the market list. */
+export const getMarketListYields = ({ assets, rewards }: Pick<LlamaMarket, 'assets' | 'rewards'>) =>
+  toMarketYields(assets.collateral.rebasingYieldApr, assets.borrowed.rebasingYieldApr, rewards)
+
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
     ? sumBy(
