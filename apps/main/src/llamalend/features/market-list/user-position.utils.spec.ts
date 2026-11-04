@@ -46,12 +46,14 @@ const createRow = ({
       collateral: { symbol: 'sDOLA', rebasingYieldApr: collateralYieldApr },
       borrowed: { symbol: 'crvUSD', rebasingYieldApr: null },
     },
-    parameters: { loanDiscount, liquidationDiscount },
+    // The market's own discounts must not be used for a position
+    parameters: { loanDiscount: '50', liquidationDiscount: '1' },
     rates: { borrowApr: 3 },
     rewards: [],
     positionQueries: {
       stats: stats ? constQ(stats) : DISABLED_Q,
       isZapLeveraged: isZapLeveraged == null ? DISABLED_Q : constQ(isZapLeveraged),
+      discounts: constQ({ loanDiscount, liquidationDiscount }),
     },
   }) as unknown as LlamaMarketRow
 
