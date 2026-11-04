@@ -469,8 +469,12 @@ export const getDisplayLegacyHealth = (
   healthNotFull: Decimal | number | Nullish,
 ): number | null => {
   if (healthFull == null || healthNotFull == null) return null
-  return +(+healthNotFull < 0 ? healthNotFull : healthFull)
+  return +pickDisplayLegacyHealth(healthFull, healthNotFull)
 }
+
+/** Full health by default, but band-valued health when it is negative. */
+export const pickDisplayLegacyHealth = <T extends Decimal | number>(healthFull: T, healthNotFull: T) =>
+  +healthNotFull < 0 ? healthNotFull : healthFull
 
 /**
  * healthNotFull is needed here because:
