@@ -464,7 +464,7 @@ export const isBelowRange = (activeBand: number | Nullish, lowerBoundBand: numbe
  *
  * See https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works.
  */
-export const getDisplayHealth = (
+export const getDisplayLegacyHealth = (
   healthFull: Decimal | number | Nullish,
   healthNotFull: Decimal | number | Nullish,
 ): number | null => {

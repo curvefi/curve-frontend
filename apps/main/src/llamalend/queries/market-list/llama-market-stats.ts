@@ -2,7 +2,7 @@ import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
-import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
+import { getDisplayLegacyHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -39,7 +39,7 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       decimal(stats.collateral),
       decimal(convertedBorrowed),
     ),
-    health: getDisplayHealth(stats.healthFull, stats.health) ?? undefined,
+    legacyHealth: getDisplayLegacyHealth(stats.healthFull, stats.health) ?? undefined,
     borrowed: stats.debt,
     collateral: stats.collateral,
     /**

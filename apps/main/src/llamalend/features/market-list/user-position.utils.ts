@@ -37,7 +37,7 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
   )
 }
 
-export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+export const getUserLegacyHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.legacyHealth
 
 export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
 
