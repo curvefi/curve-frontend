@@ -20,6 +20,8 @@ type TokenAmountProps = {
   tokenAddress?: Address | Address[]
   amountLoading?: boolean
   usdLoading?: boolean
+  /** Shown instead of the USD amount when it could not be loaded */
+  usdError?: ReactNode
   tooltipTitle?: ReactNode
   tooltipBody?: ReactNode
   abbreviate?: boolean
@@ -34,6 +36,7 @@ export const TokenAmount = ({
   tokenAddress,
   amountLoading = false,
   usdLoading = false,
+  usdError,
   tooltipTitle,
   tooltipBody,
   abbreviate = true,
@@ -51,13 +54,15 @@ export const TokenAmount = ({
     }}
   >
     <Box sx={{ gridRow: horizontal ? 'auto' : 2 }}>
-      <WithSkeleton loading={usdLoading}>
-        <Tooltip title={formatNumber(amountUsd, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
-          <Typography variant="tableCellSupport" color="textSecondary">
-            {formatNumber(amountUsd, 'usd.notional')}
-          </Typography>
-        </Tooltip>
-      </WithSkeleton>
+      {usdError ?? (
+        <WithSkeleton loading={usdLoading}>
+          <Tooltip title={formatNumber(amountUsd, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
+            <Typography variant="tableCellSupport" color="textSecondary">
+              {formatNumber(amountUsd, 'usd.notional')}
+            </Typography>
+          </Tooltip>
+        </WithSkeleton>
+      )}
     </Box>
     <Box sx={{ gridRow: horizontal ? 'auto' : 1 }}>
       <WithSkeleton loading={amountLoading}>
