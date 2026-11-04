@@ -1,9 +1,12 @@
 import { LIQUIDATION_BUFFER_TOOLTIP } from '@/llamalend/features/market-position-details/tooltips/tooltips'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
+import { combineQueries } from '@ui/features/queries/combine'
+import { withQuery } from '@ui/features/tables/withQuery'
 import { t } from '@ui/lib/i18n'
 import { LegacyHealthCell } from '../cells/LegacyHealthCell'
 import { LtvCell } from '../cells/LtvCell'
@@ -36,6 +39,12 @@ import { MarketColumnId } from './columns.enum'
 import { adapt, defineMarketTable, inGroup } from './market-table'
 import { assetsColumn, borrowRateColumn, columnHelper, type MarketTable } from './shared.columns'
 
+const getStatsQuery = ({ positionQueries: { stats } }: LlamaMarketRow) => stats
+
+/** The leverage metrics are only shown once we know the position is zap leveraged */
+const getLeverageQuery = ({ positionQueries: { stats, isZapLeveraged } }: LlamaMarketRow) =>
+  combineQueries([stats, isZapLeveraged], stats => stats)
+
 const userBorrowedColumn = columnHelper.accessor(getUserBorrowedUsd, {
   id: MarketColumnId.UserBorrowed,
   header: MARKET_TITLES[MarketColumnId.UserBorrowed],
@@ -55,7 +64,7 @@ const userCollateralColumn = columnHelper.accessor(getUserCollateralUsd, {
 const userLtvColumn = columnHelper.accessor(getUserPositionLtv, {
   id: MarketColumnId.UserLtv,
   header: MARKET_TITLES[MarketColumnId.UserLtv],
-  cell: LtvCell,
+  cell: withQuery(getStatsQuery, LtvCell),
   meta: { type: 'numeric' },
   sortUndefined: 'last',
 })
@@ -63,7 +72,7 @@ const userLtvColumn = columnHelper.accessor(getUserPositionLtv, {
 const userEquityColumn = columnHelper.accessor(getUserEquityUsd, {
   id: MarketColumnId.UserEquity,
   header: MARKET_TITLES[MarketColumnId.UserEquity],
-  cell: EquityCell,
+  cell: withQuery(row => row.positionQueries.equityUsd, EquityCell),
   meta: {
     type: 'numeric',
     tooltip: { title: MARKET_TITLES[MarketColumnId.UserEquity], body: <EquityTooltipContent /> },
@@ -74,7 +83,7 @@ const userEquityColumn = columnHelper.accessor(getUserEquityUsd, {
 const userPnlColumn = columnHelper.accessor(getUserPnlUsd, {
   id: MarketColumnId.UserPnl,
   header: MARKET_TITLES[MarketColumnId.UserPnl],
-  cell: PnlCell,
+  cell: withQuery(row => row.positionQueries.pnlUsd, PnlCell),
   meta: { type: 'numeric', tooltip: { title: MARKET_TITLES[MarketColumnId.UserPnl], body: <PnlTooltipContent /> } },
   sortUndefined: 'last',
 })
@@ -82,7 +91,7 @@ const userPnlColumn = columnHelper.accessor(getUserPnlUsd, {
 const userLegacyHealthColumn = columnHelper.accessor(getUserLegacyHealth, {
   id: MarketColumnId.UserHealth,
   header: MARKET_TITLES[MarketColumnId.UserHealth],
-  cell: LegacyHealthCell,
+  cell: withQuery(getStatsQuery, LegacyHealthCell),
   meta: { type: 'numeric' },
   sortUndefined: 'last',
 })
@@ -127,14 +136,14 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       columnHelper.accessor(getUserHealthFactor, {
         id: MarketColumnId.UserHealth,
         header: MARKET_TITLES[MarketColumnId.UserHealth],
-        cell: HealthFactorCell,
+        cell: withQuery(getStatsQuery, HealthFactorCell),
         meta: { type: 'numeric' },
         sortUndefined: 'last',
       }),
       columnHelper.accessor(getUserLiquidationBuffer, {
         id: MarketColumnId.UserLiquidationBuffer,
         header: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
-        cell: LiquidationBufferCell,
+        cell: withQuery(getStatsQuery, LiquidationBufferCell),
         meta: {
           type: 'numeric',
           unit: 'percentage',
@@ -149,7 +158,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       columnHelper.accessor(getUserLeverage, {
         id: MarketColumnId.UserLeverage,
         header: MARKET_TITLES[MarketColumnId.UserLeverage],
-        cell: LeverageCell,
+        cell: withQuery(getLeverageQuery, LeverageCell),
         meta: {
           type: 'numeric',
           tooltip: { title: MARKET_TITLES[MarketColumnId.UserLeverage], body: <LeverageTooltipContent /> },
@@ -160,7 +169,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       columnHelper.accessor(getUserLoopedApr, {
         id: MarketColumnId.UserLoopedApr,
         header: MARKET_TITLES[MarketColumnId.UserLoopedApr],
-        cell: LoopedAprCell,
+        cell: withQuery(getLeverageQuery, LoopedAprCell),
         meta: {
           type: 'numeric',
           unit: 'percentage',
@@ -172,14 +181,14 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       columnHelper.accessor(getUserBandCount, {
         id: MarketColumnId.UserBandCount,
         header: MARKET_TITLES[MarketColumnId.UserBandCount],
-        cell: BandCountCell,
+        cell: withQuery(getStatsQuery, BandCountCell),
         meta: { type: 'numeric', defaultHidden: true },
         sortUndefined: 'last',
       }),
       columnHelper.accessor(getUserCollateralShare, {
         id: MarketColumnId.UserCollateralComposition,
         header: MARKET_TITLES[MarketColumnId.UserCollateralComposition],
-        cell: CollateralCompositionCell,
+        cell: withQuery(getStatsQuery, CollateralCompositionCell),
         meta: { type: 'numeric', unit: 'percentage', defaultHidden: true },
         sortUndefined: 'last',
       }),

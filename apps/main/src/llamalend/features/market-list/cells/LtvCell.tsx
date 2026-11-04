@@ -1,37 +1,13 @@
-import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
-import { Box } from '@mui/material'
-import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
-import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
-import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
+import type { PositionCellProps } from './cell.constants'
 
-export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
-  const { stats } = row.original.positionQueries
+export const LtvCell = ({ getValue }: PositionCellProps) => {
   const ltv = getValue()
-
-  if (stats.isLoading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-        <Typography variant="tableCellValue" sx={{ textAlign: 'right' }}>
-          <Skeleton variant="text" width={40} />
-        </Typography>
-      </Box>
-    )
-  }
-
-  if (!ltv || stats.error) {
-    return (
-      <Typography variant="tableCellValue" color="textSecondary" sx={{ textAlign: 'right' }}>
-        -
-      </Typography>
-    )
-  }
-
-  return (
+  return ltv ? (
     <Tooltip
       clickable
       title={t`LTV`}
@@ -42,5 +18,9 @@ export const LtvCell = ({ getValue, row }: CellContext<CurveTableFeatures, Llama
         {formatNumber(ltv, 'percent.rate')}
       </Typography>
     </Tooltip>
+  ) : (
+    <Typography variant="tableCellValue" color="textSecondary" sx={{ textAlign: 'right' }}>
+      -
+    </Typography>
   )
 }

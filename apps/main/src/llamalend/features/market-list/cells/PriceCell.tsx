@@ -14,11 +14,11 @@ import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import { ErrorCell } from '@ui/features/tables/ErrorCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from '../columns/columns.enum'
-import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -130,10 +130,10 @@ export const PriceCell = ({
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
   const [primaryValue, secondaryValue] = getAssetValues(columnId, stats, lendingPosition) ?? [getValue(), undefined]
   const primaryPriceQuery = columnId === MarketColumnId.UserCollateral ? prices.collateral : prices.borrowed
-  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = primaryPriceQuery
-  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = prices.borrowed
+  const { data: primaryPrice, isLoading: isPrimaryPriceLoading, error: primaryPriceError } = primaryPriceQuery
+  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading, error: secondaryPriceError } = prices.borrowed
 
-  if (usesBorrowStats && statsError) {
+  if (usesBorrowStats && statsError && stats == null) {
     return <ErrorCell error={statsError} />
   }
 
@@ -155,7 +155,13 @@ export const PriceCell = ({
   const hasSecondaryAsset = secondaryAsset && !!secondaryValue
 
   const gridAssets = [
-    { asset: primaryAsset, value: primaryValue, usdValue: primaryUsdValue, isPriceLoading: isPrimaryPriceLoading },
+    {
+      asset: primaryAsset,
+      value: primaryValue,
+      usdValue: primaryUsdValue,
+      isPriceLoading: isPrimaryPriceLoading,
+      priceError: primaryPrice == null && primaryPriceError,
+    },
     ...notFalsyArray(
       hasSecondaryAsset && [
         {
@@ -163,6 +169,7 @@ export const PriceCell = ({
           value: secondaryValue,
           usdValue: secondaryUsdValue,
           isPriceLoading: isSecondaryPriceLoading,
+          priceError: secondaryPrice == null && secondaryPriceError,
         },
       ],
     ),
@@ -170,7 +177,7 @@ export const PriceCell = ({
 
   return (
     <Stack sx={{ gap: hasSecondaryAsset ? Spacing.xs : 0 }}>
-      {gridAssets.map(({ asset, value, usdValue, isPriceLoading }) => (
+      {gridAssets.map(({ asset, value, usdValue, isPriceLoading, priceError }) => (
         <TokenAmount
           key={asset.address}
           amount={value}
@@ -178,7 +185,8 @@ export const PriceCell = ({
           blockchainId={asset.blockchainId}
           tokenAddress={getAddressOrPair(asset.blockchainId, asset.address)}
           amountLoading={usesBorrowStats && isLoadingStats}
-          usdLoading={isPriceLoading}
+          usdLoading={isPriceLoading || (usesBorrowStats && isLoadingStats)}
+          usdError={priceError ? <ErrorCell error={priceError} /> : undefined}
           tooltipTitle={tooltipTitle}
           tooltipBody={tooltipBody}
           horizontal={!!hasSecondaryAsset}

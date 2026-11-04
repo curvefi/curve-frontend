@@ -10,7 +10,6 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { HealthBar } from '../../market-position-details/health/HealthBar'
-import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,11 +18,9 @@ export const LegacyHealthCell = ({
   row,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { assets } = row.original
-  const { data: { status } = {}, error } = row.original.positionQueries.stats
+  const { status } = row.original.positionQueries.stats.data ?? {}
   const legacyHealth = getValue()
   const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
-
-  if (error) return <ErrorCell error={error} />
 
   return maybe(legacyHealth, legacyHealth => (
     <Tooltip
