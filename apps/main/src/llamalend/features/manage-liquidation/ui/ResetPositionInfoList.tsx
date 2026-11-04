@@ -50,8 +50,6 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
             chainId: params.chainId,
             marketId: params.marketId,
             userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
             expectedBorrowed: debt.data,
           },
           isOpen,
