@@ -1,4 +1,5 @@
 import { formatNetSupplyRate } from '@/llamalend/llama.utils'
+import { SupplyIncentivesTooltipContent } from '@/llamalend/widgets/tooltips/SupplyIncentivesTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { t } from '@ui/lib/i18n'
 import { BoostCell } from '../cells/BoostCell'
@@ -82,7 +83,15 @@ export const SUPPLY_TABLE: MarketTable = defineMarketTable({
         id: MarketColumnId.SupplyIncentivesApr,
         header: MARKET_TITLES[MarketColumnId.SupplyIncentivesApr],
         cell: PercentCell,
-        meta: { type: 'numeric', unit: 'percentage', defaultHidden: true },
+        meta: {
+          type: 'numeric',
+          unit: 'percentage',
+          tooltip: {
+            title: MARKET_TITLES[MarketColumnId.SupplyIncentivesApr],
+            body: <SupplyIncentivesTooltipContent />,
+          },
+          defaultHidden: true,
+        },
         sortUndefined: 'last',
       }),
       adapt(liquidityUsdColumn, { meta: { defaultHidden: true } }),
