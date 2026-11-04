@@ -12,8 +12,8 @@ import {
 } from '@ui/lib/decimal'
 
 /** What the position returns if closed now at the oracle price, in the borrowed token */
-export const getEquity = ({ collateral, stablecoin, debt }: UserState, oraclePrice: Decimal) =>
-  decimalMinus(decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin), debt)
+export const getEquity = ({ collateral, convertedBorrowed, debt }: UserState, oraclePrice: Decimal) =>
+  decimalMinus(decimalSum(decimalMultiply(collateral, oraclePrice), convertedBorrowed), debt)
 
 /** Collateral value divided by the equity, or null when the equity is zero. The borrowed tokens in the AMM only count in the equity. */
 export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => {
@@ -31,12 +31,12 @@ export const getLoopedApr = (
   borrowApr: Decimal | undefined,
   { collateralYieldApr, borrowedYieldApr, borrowRewardsApr }: MarketYields,
 ) => {
-  const { collateral, stablecoin, debt } = position
+  const { collateral, convertedBorrowed, debt } = position
   const equity = getEquity(position, oraclePrice)
   if (collateralYieldApr == null || borrowApr == null || decimalEqual(equity, ZERO)) return null
   const earned = decimalSum(
     decimalMultiply(collateral, oraclePrice, collateralYieldApr),
-    decimalMultiply(stablecoin, borrowedYieldApr),
+    decimalMultiply(convertedBorrowed, borrowedYieldApr),
   )
   const borrowCost = decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr))
   return decimalDiv(decimalMinus(earned, borrowCost), equity)

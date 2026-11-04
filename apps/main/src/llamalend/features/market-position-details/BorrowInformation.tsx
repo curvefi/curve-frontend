@@ -45,9 +45,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
   const positionPnl = usePositionPnlAndEquity(params)
 
-  const { collateral, stablecoin: borrowed } = userStateValue ?? {}
+  const { collateral, convertedBorrowed: borrowed } = userStateValue ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
-    decimalSum(decimalMultiply(userState.collateral, oraclePrice), userState.stablecoin),
+    decimalSum(decimalMultiply(userState.collateral, oraclePrice), userState.convertedBorrowed),
   )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
@@ -60,10 +60,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         label={t`Collateral value`}
         value={collateralValue}
         valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
-        notional={mapQuery(userState, ({ collateral, stablecoin }) =>
+        notional={mapQuery(userState, ({ collateral, convertedBorrowed }) =>
           formatCollateralNotional(
             { value: collateral, symbol: collateralToken?.symbol },
-            { value: stablecoin, symbol: borrowToken?.symbol },
+            { value: convertedBorrowed, symbol: borrowToken?.symbol },
           ),
         )}
         valueTooltip={{
