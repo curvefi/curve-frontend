@@ -37,10 +37,10 @@ export const getUserBorrowedUsd = ({ positionQueries }: LlamaMarketRow) => {
 export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
   const stats = positionQueries.stats.data
   const collateralUsdRate = positionQueries.prices.collateral.data
-  const borrowedUsdRate = stats?.borrowToken === 0 ? 0 : positionQueries.prices.borrowed.data
+  const borrowedUsdRate = stats?.convertedBorrowed === 0 ? 0 : positionQueries.prices.borrowed.data
   return maybes(
     [stats, collateralUsdRate, borrowedUsdRate],
-    (stats, collateralRate, borrowedRate) => stats.collateral * collateralRate + stats.borrowToken * borrowedRate,
+    (stats, collateralRate, borrowedRate) => stats.collateral * collateralRate + stats.convertedBorrowed * borrowedRate,
   )
 }
 
@@ -49,10 +49,10 @@ const mapPosition = <R>(
   { positionQueries }: LlamaMarketRow,
   mapper: (position: UserState, oraclePrice: Decimal) => R,
 ) =>
-  maybe(positionQueries.stats.data, ({ collateral, borrowToken, borrowed, oraclePrice }) =>
+  maybe(positionQueries.stats.data, ({ collateral, convertedBorrowed, borrowed, oraclePrice }) =>
     maybes(
-      [decimal(collateral), decimal(borrowToken), decimal(borrowed), oraclePrice],
-      (collateral, stablecoin, debt, price) => mapper({ collateral, stablecoin, debt }, price),
+      [decimal(collateral), decimal(convertedBorrowed), decimal(borrowed), oraclePrice],
+      (collateral, convertedBorrowed, debt, price) => mapper({ collateral, convertedBorrowed, debt }, price),
     ),
   )
 

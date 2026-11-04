@@ -14,9 +14,9 @@ import {
 
 /** The collateral at the oracle price plus the tokens converted in soft liquidation, in the borrowed token */
 export const getCollateralValue = (
-  { collateral, stablecoin }: Pick<UserState, 'collateral' | 'stablecoin'>,
+  { collateral, convertedBorrowed }: Pick<UserState, 'collateral' | 'convertedBorrowed'>,
   oraclePrice: Decimal,
-) => decimalSum(decimalMultiply(collateral, oraclePrice), stablecoin)
+) => decimalSum(decimalMultiply(collateral, oraclePrice), convertedBorrowed)
 
 /** Debt over the collateral value in percent, or null without collateral value */
 export const getLoanToValue = (debt: Decimal, collateralValue: Decimal) =>
@@ -42,12 +42,12 @@ export const getLoopedApr = (
   borrowApr: Decimal | undefined,
   { collateralYieldApr, borrowedYieldApr, borrowRewardsApr }: MarketYields,
 ) => {
-  const { collateral, stablecoin, debt } = position
+  const { collateral, convertedBorrowed, debt } = position
   const equity = getEquity(position, oraclePrice)
   if (collateralYieldApr == null || borrowApr == null || decimalEqual(equity, ZERO)) return null
   const earned = decimalSum(
     decimalMultiply(collateral, oraclePrice, collateralYieldApr),
-    decimalMultiply(stablecoin, borrowedYieldApr),
+    decimalMultiply(convertedBorrowed, borrowedYieldApr),
   )
   const borrowCost = decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr))
   return decimalDiv(decimalMinus(earned, borrowCost), equity)

@@ -51,7 +51,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
             marketId: params.marketId,
             userAddress: params.userAddress,
             expectedBorrowed: debt.data,
-            expectedStablecoin: ZERO, // the reset repays the debt with all the converted tokens
+            expectedConvertedBorrowed: ZERO, // the reset repays the debt with all the converted tokens
           },
           isOpen,
         ),

@@ -49,7 +49,7 @@ const getAssetValues = (
 ) =>
   (
     ({
-      [MarketColumnId.UserCollateral]: [stats?.collateral, stats?.borrowToken],
+      [MarketColumnId.UserCollateral]: [stats?.collateral, stats?.convertedBorrowed],
       [MarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
       [MarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
     }) as Partial<Record<MarketColumnId, [number, number | undefined]>>
@@ -89,7 +89,7 @@ const getTooltipBody = (
             conversionRate: market.oraclePrice,
             symbol: market.assets.collateral.symbol,
           },
-          borrow: { value: decimal(stats?.borrowToken), symbol: market.assets.borrowed.symbol },
+          borrow: { value: decimal(stats?.convertedBorrowed), symbol: market.assets.borrowed.symbol },
           totalValue,
           totalValueUsd,
         }}
@@ -141,8 +141,8 @@ export const PriceCell = ({
     getTooltipTitle(columnId) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
   const totalValue = maybes(
-    [decimal(stats?.collateral), decimal(stats?.borrowToken), decimal(market.oraclePrice)],
-    (collateral, stablecoin, oraclePrice) => getCollateralValue({ collateral, stablecoin }, oraclePrice),
+    [decimal(stats?.collateral), decimal(stats?.convertedBorrowed), decimal(market.oraclePrice)],
+    (collateral, convertedBorrowed, oraclePrice) => getCollateralValue({ collateral, convertedBorrowed }, oraclePrice),
   )
   const totalValueUsd = mapQuery(prices.borrowed, borrowUsdRate =>
     maybe(totalValue, value => decimalMultiply(value, borrowUsdRate)),

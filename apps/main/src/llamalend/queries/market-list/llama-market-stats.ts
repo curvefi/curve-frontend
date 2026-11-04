@@ -30,7 +30,7 @@ type TokenPriceEntry = { chainId: number; tokenAddress: Address }
 const getTokenPriceKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chainId}:${tokenAddress.toLowerCase()}`
 
 const normalizeMarketStats = (stats: BorrowStats) => {
-  const collateralBorrowTokenAmount = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
+  const convertedBorrowed = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
   const oraclePrice = decimal(stats.oraclePrice)
   return {
     status: getLiquidationStatus(
@@ -38,7 +38,7 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       stats.softLiquidation,
       isBelowRange(stats.activeBand, stats.n2),
       decimal(stats.collateral),
-      decimal(collateralBorrowTokenAmount),
+      decimal(convertedBorrowed),
     ),
     legacyHealth: getDisplayLegacyHealth(stats.healthFull, stats.health) ?? undefined,
     healthFactor: maybes(
@@ -53,12 +53,13 @@ const normalizeMarketStats = (stats: BorrowStats) => {
     /**
      * During soft liquidation part of the deposited collateral is converted into the borrow token.
      */
-    borrowToken: collateralBorrowTokenAmount,
+    convertedBorrowed,
     oraclePrice,
     /** In the borrowed token */
     equity: maybes(
-      [decimal(stats.collateral), decimal(collateralBorrowTokenAmount), decimal(stats.debt), oraclePrice],
-      (collateral, stablecoin, debt, oraclePrice) => getEquity({ collateral, stablecoin, debt }, oraclePrice),
+      [decimal(stats.collateral), decimal(convertedBorrowed), decimal(stats.debt), oraclePrice],
+      (collateral, convertedBorrowed, debt, oraclePrice) =>
+        getEquity({ collateral, convertedBorrowed, debt }, oraclePrice),
     ),
   }
 }

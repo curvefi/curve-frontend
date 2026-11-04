@@ -397,7 +397,7 @@ export const updateUserEventsApi = async (
 }
 
 /**
- * Returns the minimum crvUSD stablecoin balance in a user’s AMM bands that must be
+ * Returns the minimum converted crvUSD balance in a user’s AMM bands that must be
  * exceeded before the position is considered to be in soft liquidation.
  *
  * When a user briefly enters and then exits soft liquidation, one or more bands may
@@ -407,7 +407,7 @@ export const updateUserEventsApi = async (
  *
  * However, the threshold must be skipped when the oracle price is within or near the
  * user’s bands (`userIsCloseToLiquidation=true`), because in that case even a tiny
- * stablecoin balance is genuine soft-liquidation activity, not leftover dust. Dust
+ * converted balance is genuine soft-liquidation activity, not leftover dust. Dust
  * only exists when the oracle has moved *far away* from the bands, which is exactly
  * the situation where `userIsCloseToLiquidation` is false.
  *
@@ -533,7 +533,11 @@ export function calculateReturnToWallet({
   collateralSymbol: string
   borrowedSymbol: string
 }): { value: Decimal; symbol: string }[] {
-  const { debt: stateDebt = '0', collateral: stateCollateral = '0', stablecoin: stateBorrowed = '0' } = userState ?? {}
+  const {
+    debt: stateDebt = '0',
+    collateral: stateCollateral = '0',
+    convertedBorrowed: stateBorrowed = '0',
+  } = userState ?? {}
   if (+totalBorrowed > 0) {
     const returnCollateral = decimalMinus(stateCollateral, stateCollateralDelta)
     const returnBorrowed = decimalMinus(decimalSum(totalBorrowed, stateBorrowed), stateDebt)

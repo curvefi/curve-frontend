@@ -32,7 +32,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
     data:
       maybes([debt, collateral, oraclePrice], (debt, collateral, oraclePrice) =>
         // A loan that is not open yet has no collateral converted to the borrowed token by soft liquidation
-        getLoanToValue(debt, getCollateralValue({ collateral, stablecoin: ZERO }, oraclePrice)),
+        getLoanToValue(debt, getCollateralValue({ collateral, convertedBorrowed: ZERO }, oraclePrice)),
       ) ?? null,
     isLoading: isOraclePriceLoading || isExpectedCollateralLoading,
     error: expectCollateralError ?? oraclePriceError ?? null,
