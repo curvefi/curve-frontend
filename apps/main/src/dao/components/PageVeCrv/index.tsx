@@ -29,7 +29,7 @@ export const VeCrv = () => {
   const { network } = useParams<NetworkUrlParams>()
   const { address: userAddress } = useConnection()
   const chainId = networksIdMapper[network]
-  const userVeCrv = useLockerVecrvUser({ chainId, userAddress }, curveApi?.chainId === chainId)
+  const userVeCrv = useLockerVecrvUser({ chainId, userAddress })
   const showMetrics = userAddress && Number(userVeCrv.data?.lockedCrv) > 0
   const { data, error, isLoading } = useLockerLockedAmountAndUnlockTime(
     { chainId, userAddress },
