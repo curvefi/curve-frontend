@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
-import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { POOL_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/pool-trades-columns'
