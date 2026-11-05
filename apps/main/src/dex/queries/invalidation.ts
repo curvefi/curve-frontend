@@ -13,7 +13,7 @@ import { invalidatePoolTotalStaked } from './pool-total-staked.query'
 import { resetUserFullPoolPositions, invalidateUserFullPoolPositions } from './user-full-pool-positions.query'
 import { resetUserLitePoolPositions, invalidateUserLitePoolPositions } from './user-lite-pool-positions.query'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
-import { invalidateUserPoolBoostQuery } from './user-pool-boost.query'
+import { invalidateUserPoolBoostQuery, resetUserPoolBoostQuery } from './user-pool-boost.query'
 import { getUserPoolClaimablesQueryKey } from './user-pool-claimables.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
 import { invalidateUserPoolShareQuery } from './user-pool-share.query'
@@ -44,6 +44,7 @@ export const resetPoolLists = (params: UserChainParams) =>
   Promise.all([
     queryClient.resetQueries({ queryKey: [getPoolListRootQueryKey(params)] }),
     queryClient.resetQueries({ queryKey: [getUserPoolClaimablesQueryKey(params)] }),
+    resetUserPoolBoostQuery(params),
     resetPoolAddresses(params),
     resetLitePoolList(params),
     resetPoolChains(params),

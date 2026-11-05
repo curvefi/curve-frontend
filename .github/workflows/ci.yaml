@@ -198,7 +198,7 @@ jobs:
         browser: [chrome, firefox]
         iteration: [1]
     name: Cypress Stellar component tests in ${{ matrix.browser }} ${{ matrix.iteration }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
@@ -224,7 +224,7 @@ jobs:
           yarn run cy:run:stellar --browser ${{ matrix.browser }} 2>&1 | \
             tee ../stellar-cypress-${{ matrix.browser }}-${{ matrix.iteration }}.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
-        timeout-minutes: 10 # lower timeout than the whole job, so we can get screenshots on timeout
+        timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.

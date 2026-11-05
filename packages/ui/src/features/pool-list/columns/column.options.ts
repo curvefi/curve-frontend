@@ -31,7 +31,7 @@ const createVisibility = ({
 export const POOLS_COLUMN_OPTIONS = {
   full: createVisibility({
     active: [PoolColumnId.NetRate, PoolColumnId.Volume, PoolColumnId.Tvl],
-    disabled: [PoolColumnId.Deposits, PoolColumnId.Claimables],
+    disabled: [PoolColumnId.Deposits, PoolColumnId.Boost, PoolColumnId.Claimables],
     alwaysVisible: [PoolColumnId.PoolName],
   }),
   lite: createVisibility({
@@ -42,18 +42,19 @@ export const POOLS_COLUMN_OPTIONS = {
       PoolColumnId.Volume,
       PoolColumnId.Age,
       PoolColumnId.Deposits,
+      PoolColumnId.Boost,
       PoolColumnId.Claimables,
     ],
     alwaysVisible: [PoolColumnId.PoolName],
   }),
   userPositions: createVisibility({
-    active: [PoolColumnId.NetRate, PoolColumnId.Claimables],
+    active: [PoolColumnId.NetRate, PoolColumnId.Boost, PoolColumnId.Claimables],
     disabled: USER_POSITION_DISABLED_COLUMNS,
     alwaysVisible: [PoolColumnId.PoolName, PoolColumnId.Deposits],
   }),
   residualClaims: createVisibility({
     active: [],
-    disabled: [...USER_POSITION_DISABLED_COLUMNS, PoolColumnId.Deposits],
+    disabled: [...USER_POSITION_DISABLED_COLUMNS, PoolColumnId.Deposits, PoolColumnId.Boost],
     alwaysVisible: [PoolColumnId.PoolName, PoolColumnId.Claimables],
   }),
 }
