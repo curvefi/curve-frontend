@@ -125,7 +125,11 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
           valueTooltip={
             isEquityLeverage
-              ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...BORROW_METRIC_TOOLTIP }
+              ? {
+                  title: t`Leverage`,
+                  body: <LeverageTooltipContent openingLeverage={equityLeverage?.opening} />,
+                  ...BORROW_METRIC_TOOLTIP,
+                }
               : undefined
           }
         />
