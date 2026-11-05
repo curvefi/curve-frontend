@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatDate } from '@primitives/date.utils'
+import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -36,12 +37,12 @@ const getRateValueOptions = (
   abbreviate: !volatile,
   minimumFractionDigits: 2,
   maximumSignificantDigits: undefined,
-  fallback: '-',
+  fallback: UNAVAILABLE_NOTATION,
   disableTooltip: !hasTooltip,
   ...(volatile && { color: 'error', formatter: formatCappedRateValue }),
 })
 
-const PRIMARY_METRIC_SIZE = { full: 6, lite: 6, userPositions: 4, residualClaims: 6 } satisfies Record<
+const PRIMARY_METRIC_SIZE = { full: 6, lite: 6, userPositions: 6, residualClaims: 6 } satisfies Record<
   PoolTableVariant,
   number
 >
@@ -139,6 +140,16 @@ export const PoolExpandedPanel = ({
             value={pool.userPosition?.depositsUsd}
             valueOptions={{ unit: 'dollar' }}
             notional={toQuery(formatToken(pool.userPosition?.lpBalance, 'LP', 'balance'))}
+          />
+        </Grid>
+      )}
+      {variant === 'userPositions' && (
+        <Grid size={PRIMARY_METRIC_SIZE[variant]}>
+          <Metric
+            category={PRIMARY_METRIC_CATEGORY}
+            label={POOL_TITLES[PoolColumnId.Boost]}
+            value={pool.userPosition?.boost}
+            valueOptions={{ unit: 'multiplier', abbreviate: false, fallback: UNAVAILABLE_NOTATION }}
           />
         </Grid>
       )}

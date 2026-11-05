@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
-import { type Token } from '@primitives/address.utils'
-import { fromEntries } from '@primitives/objects.utils'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
-import { getTokenAmountColumnId, PoolLiquidityColumnId } from '../columns/pool-liquidity-columns'
+import { PoolLiquidityColumnId } from '../columns/pool-liquidity-columns'
 import { PoolTradesColumnId } from '../columns/pool-trades-columns'
 
 const createTradesMobileVisibility = (): ColumnVisibilityState => ({
@@ -13,26 +11,23 @@ const createTradesMobileVisibility = (): ColumnVisibilityState => ({
   [PoolTradesColumnId.Time]: false,
 })
 
-const createLiquidityMobileVisibility = (poolTokens: Token[]): ColumnVisibilityState => ({
+const createLiquidityMobileVisibility = (): ColumnVisibilityState => ({
   [PoolLiquidityColumnId.User]: true,
   [PoolLiquidityColumnId.Action]: true,
+  [PoolLiquidityColumnId.TokenAmount]: false,
   [PoolLiquidityColumnId.Time]: false,
-  // Hide all token amount columns on mobile
-  ...fromEntries(poolTokens.map((_, index) => [getTokenAmountColumnId(index), false])),
 })
-
-type UsePoolActivityVisibilityParams = { poolTokens: Token[] }
 
 /**
  * Hook to manage column visibility for the pool activity tables.
  * On mobile, only shows key columns with the rest available in the expanded row.
  */
-export const usePoolActivityVisibility = ({ poolTokens }: UsePoolActivityVisibilityParams) => {
+export const usePoolActivityVisibility = () => {
   const isMobile = useIsMobile()
   const tradesColumnVisibility = useMemo(() => (isMobile ? createTradesMobileVisibility() : undefined), [isMobile])
   const liquidityColumnVisibility = useMemo(
-    () => (isMobile ? createLiquidityMobileVisibility(poolTokens) : undefined),
-    [isMobile, poolTokens],
+    () => (isMobile ? createLiquidityMobileVisibility() : undefined),
+    [isMobile],
   )
 
   return { tradesColumnVisibility, liquidityColumnVisibility }

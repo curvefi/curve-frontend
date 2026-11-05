@@ -82,6 +82,9 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
+      <WarningBox
+        message={t`Pools with unverified oracles stay hidden on curve.finance until the Curve team verifies the oracle. You can still deploy.`}
+      />
       {!isAddress(oracleAddress) && oracleAddress.length > 0 && (
         <WarningBox message={t`Invalid EVM address. Needs to start with '0x', needs to be 42 characters long.`} />
       )}

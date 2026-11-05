@@ -45,7 +45,7 @@ export const seedPoolAndTransferMostLpToIssuer = async (pool: StellarContract, c
 export const withdrawLpInput = () => cy.get('[data-testid="pool-withdraw-lp-input"]', TIMEOUTS['ui.render'])
 export const withdrawSubmit = () => cy.get('[data-testid="pool-withdraw-submit"]', TIMEOUTS['ui.render'])
 export const writeWithdrawLp = (amount: Decimal) => {
-  withdrawLpInput().find('input', TIMEOUTS['stellar.read']).clear()
+  withdrawLpInput().find('input', TIMEOUTS['stellar.read']).clear(TIMEOUTS['stellar.read'])
   withdrawLpInput().find('input').type(amount)
   withdrawLpInput().find('input').blur()
 }
