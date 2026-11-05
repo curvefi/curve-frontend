@@ -13,7 +13,8 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 /**
- * Position opened without leverage, would show a wrong opeieng leverage, so only show it when the possitio is opened with leverage.
+ * A position opened without leverage would show a wrong opening leverage, so it only shows for positions opened with
+ * leverage.
  * There is no loading state: it comes from the same collateral events query as the leverage, so the card metric and the
  * table cell only render once that query has loaded.
  */
