@@ -18,9 +18,10 @@ import {
 } from './user-position.utils'
 
 /** 10 collateral at an oracle price of 1 against 5 debt, earning 6% on the collateral and paying 3% on the debt */
+const POSITION = { collateral: '10' as Decimal, convertedBorrowed: '0' as Decimal, debt: '5' as Decimal }
+
 const STATS = {
-  collateral: 10,
-  convertedBorrowed: 0,
+  position: POSITION,
   borrowed: 5,
   oraclePrice: '1' as Decimal,
   healthFactor: '1.2' as Decimal,
@@ -70,13 +71,13 @@ describe('borrow position metrics', () => {
   it('shows the LTV at the oracle price', () => expect(getUserPositionLtv(createRow())).toBeCloseTo(50))
 
   it('shows no LTV nor collateral composition without collateral value', () => {
-    const row = createRow({ stats: { ...STATS, collateral: 0, convertedBorrowed: 0 } })
+    const row = createRow({ stats: { ...STATS, position: { ...POSITION, collateral: '0' } } })
     expect(getUserPositionLtv(row)).toBeUndefined()
     expect(getUserCollateralShare(row)).toBeUndefined()
   })
 
   it('counts the converted tokens in the LTV and the collateral composition', () => {
-    const row = createRow({ stats: { ...STATS, collateral: 8, convertedBorrowed: 2 } })
+    const row = createRow({ stats: { ...STATS, position: { ...POSITION, collateral: '8', convertedBorrowed: '2' } } })
     expect(getUserPositionLtv(row)).toBeCloseTo(50)
     expect(getUserCollateralShare(row)).toBeCloseTo(80)
   })
