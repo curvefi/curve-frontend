@@ -237,12 +237,12 @@ export const stableswapMinMaxParameters = (swapFee: number) => ({
     min: 0,
     max:
       swapFee === 0
-        ? 0
+        ? Infinity // Zero fees impose no fee-based limit; preserve the selected multiplier.
         : new BigNumber(5)
             .multipliedBy(new BigNumber(10).pow(19))
-            .dividedBy(new BigNumber(swapFee).multipliedBy(new BigNumber(10).pow(10)))
+            .dividedBy(new BigNumber(swapFee).multipliedBy(new BigNumber(10).pow(8)))
             .dividedBy(new BigNumber(10).pow(10))
-            .toNumber(), // (5 * 10 ** 19) / (swapFee * 10 ** 10) / 10 ** 10
+            .toNumber(), // (5 * 10 ** 19) / (swapFee * 10 ** 8) / 10 ** 10
   },
   initialPrice: { min: 0.000000000001, max: 1000000000000 },
 })
