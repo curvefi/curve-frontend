@@ -25,7 +25,8 @@ export default defineConfig({
     ],
   },
   define: {
+    'process.env.STELLAR_STANDALONE': JSON.stringify(process.env.STELLAR_STANDALONE),
     'process.env.CYPRESS_COMPONENT_TEST': '"true"',
-    'process.env.TEST_SEED': JSON.stringify(process.env.TEST_SEED ?? ''),
+    'process.env.TEST_SEED': JSON.stringify(process.env.TEST_SEED),
   },
 })

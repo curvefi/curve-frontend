@@ -8,7 +8,6 @@ import {
   BASE_FEE,
   contract,
   Keypair,
-  Networks,
   Operation,
   rpc,
   scValToNative,
@@ -32,7 +31,9 @@ export type TestnetDeployment = { issuer: TestnetAccount; factory: StellarContra
 export const createTestnetDeployer = async (config: TestnetDeployment, rpcUrl: string): Promise<TestnetAccount> => {
   const wallet = Keypair.random()
   const publicKey = wallet.publicKey()
-  const server = new rpc.Server(rpcUrl)
+  const allowHttp = rpcUrl.startsWith('http://')
+  const server = new rpc.Server(rpcUrl, { allowHttp })
+  const { passphrase: networkPassphrase } = await server.getNetwork()
   await server.fundAddress(publicKey).catch((error: Error) => {
     if (!error.message.endsWith('transaction status NOT_FOUND')) throw error // account for rpc delays seeing the transaction
   })
@@ -44,14 +45,15 @@ export const createTestnetDeployer = async (config: TestnetDeployment, rpcUrl: s
         contractId,
         method: 'symbol',
         args: [],
-        networkPassphrase: Networks.TESTNET,
+        networkPassphrase,
         rpcUrl,
+        allowHttp,
         parseResultXdr: scValToNative,
       })
       return new Asset(symbol, issuer.address)
     }),
   )
-  const builder = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase: Networks.TESTNET })
+  const builder = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase })
   for (const asset of assets) {
     builder.addOperation(Operation.changeTrust({ asset }))
     // Only the transaction source consumes a sequence number; the issuer authorizes each payment.
