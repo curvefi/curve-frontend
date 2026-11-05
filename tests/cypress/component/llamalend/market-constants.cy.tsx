@@ -1,6 +1,6 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamalend/llama.utils'
+import { getMarketLeverageProviders, getMarketLeverageSlippage, hasZapDelegation } from '@/llamalend/llama.utils'
 import { getMarketAddressesByAssetsType } from '@/llamalend/market-assets-type.utils'
 import {
   DEPRECATED_LLAMAS,
@@ -9,7 +9,8 @@ import {
   NO_LEVERAGE_LEND,
 } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { oneOf, oneValueOf } from '@cy/support/generators'
+import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
+import { createMockLendMarket, createMockMintMarket } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 // eslint-disable-next-line no-restricted-imports
@@ -132,6 +133,44 @@ describe('llama market constants', () => {
       'curve',
     ])
     expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.eq(undefined)
+  })
+})
+
+describe('hasZapDelegation', () => {
+  const DELEGATION_ZAP = oneAddress()
+  const OTHER_ZAP = oneAddress()
+  const withZap = (alias: string, zapAddress: Address) => ({
+    llamalend: { constants: { ALIASES: { [alias]: DELEGATION_ZAP } } },
+    getZapAddress: () => zapAddress,
+  })
+
+  it('is true for Mint markets on the Mint delegation zap', () => {
+    const market = createMockMintMarket(withZap('leverage_zap_v2_mint_transient', DELEGATION_ZAP))
+    expect(hasZapDelegation(market)).to.eq(true)
+  })
+
+  it('is false for Mint markets on another zap', () => {
+    const market = createMockMintMarket(withZap('leverage_zap_v2_mint_transient', OTHER_ZAP))
+    expect(hasZapDelegation(market)).to.eq(false)
+  })
+
+  it('ignores the Lend delegation zap on Mint markets', () => {
+    const market = createMockMintMarket(withZap('leverage_zap_v2_transient', DELEGATION_ZAP))
+    expect(hasZapDelegation(market)).to.eq(false)
+  })
+
+  it('is true for LLv2 markets', () => {
+    expect(hasZapDelegation(createMockLendMarket({ version: 'v2' }))).to.eq(true)
+  })
+
+  it('is true for LLv1 markets on the Lend delegation zap', () => {
+    const market = createMockLendMarket({ version: 'v1', ...withZap('leverage_zap_v2_transient', DELEGATION_ZAP) })
+    expect(hasZapDelegation(market)).to.eq(true)
+  })
+
+  it('is false for LLv1 markets on another zap', () => {
+    const market = createMockLendMarket({ version: 'v1', ...withZap('leverage_zap_v2_transient', OTHER_ZAP) })
+    expect(hasZapDelegation(market)).to.eq(false)
   })
 })
 
