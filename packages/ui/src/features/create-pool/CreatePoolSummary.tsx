@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import type { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
@@ -10,13 +11,18 @@ import Typography from '@mui/material/Typography'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
+import { MobileFormTabsDrawer } from '@ui/features/forms/tabs/MobileFormTabsDrawer'
 import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { EMPTY_POOL_PARAMETERS } from './constants'
+import { getCreatePoolTokens } from './create-pool.utils'
 import type { CreatePoolSummaryProps } from './types'
 
 const { Spacing } = SizesAndSpaces
@@ -31,14 +37,15 @@ const SummarySection = ({ title, children }: { title: string; children: ReactNod
   </Stack>
 )
 
-export const CreatePoolSummary = ({
+const SummaryCard = ({
   form: { values },
+  formId,
   creationFee,
-  nativeSymbol,
   poolTypes,
+  network: { nativeCurrency },
   blockchainId,
-  totalDepositValueUsd,
   poolListUrl,
+  totalDepositValueUsd,
   wallet,
   isPending,
   isLoading,
@@ -46,7 +53,7 @@ export const CreatePoolSummary = ({
   created,
   isFunded,
   isDepositing,
-}: CreatePoolSummaryProps) => (
+}: CreatePoolSummaryProps & { formId: string }) => (
   <Card size="small">
     <CardHeader title={t`Pool summary`} />
     <CardContent>
@@ -60,7 +67,7 @@ export const CreatePoolSummary = ({
           <ActionInfo size="small" label={t`Name`} value={values.poolName || UNAVAILABLE_NOTATION} />
         </SummarySection>
         <SummarySection title={t`Tokens`}>
-          {values.tokens.map((token, index) => (
+          {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
             <ActionInfo
               size="small"
               key={poolAmountField(index)}
@@ -90,7 +97,7 @@ export const CreatePoolSummary = ({
           {values.poolType ? (
             values.addLiquidity ? (
               <>
-                {values.tokens.map((token, index) => (
+                {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
                   <ActionInfo
                     size="small"
                     key={poolAmountField(index)}
@@ -119,7 +126,7 @@ export const CreatePoolSummary = ({
           <ActionInfo
             size="small"
             label={t`Estimated deployment fee`}
-            value={mapQuery(creationFee, fee => `${formatNumber(fee, 'token.amount')} ${nativeSymbol}`)}
+            value={mapQuery(creationFee, fee => `${formatNumber(fee, 'token.amount')} ${nativeCurrency.symbol}`)}
           />
         )}
         {created && (
@@ -137,6 +144,7 @@ export const CreatePoolSummary = ({
         {!isFunded && (
           <FormButton
             {...wallet}
+            form={formId}
             pending={isPending}
             loading={isLoading}
             disabled={isDisabled}
@@ -149,3 +157,34 @@ export const CreatePoolSummary = ({
     </CardContent>
   </Card>
 )
+
+export const CreatePoolSummary = (props: CreatePoolSummaryProps & { formId: string }) => {
+  const isMobileDrawer = useIsMobileFormDrawer()
+  return (
+    <WithWrapper
+      shouldWrap={isMobileDrawer}
+      Wrapper={MobileFormTabsDrawer}
+      tabs={[{ value: 'summary', label: t`Pool summary` }]}
+      onSelectTab={noop}
+      omitFormButton={props.isFunded}
+    >
+      <Stack sx={{ gap: Spacing.md, minWidth: 0 }}>
+        <SummaryCard {...props} />
+        <FormAlerts
+          error={props.error}
+          formErrors={props.formErrors}
+          userAddress={props.userAddress}
+          handledErrors={[
+            'amplification',
+            'fee',
+            'feeMultiplier',
+            'priceOracleAveragingWindow',
+            'poolName',
+            'symbol',
+            'slippage',
+          ]}
+        />
+      </Stack>
+    </WithWrapper>
+  )
+}

@@ -11,7 +11,10 @@ import type { PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { decimal } from '@ui/lib/decimal'
 import type { CreatePoolFormValues, PoolParameters } from './types'
 
-/** Binds compact text and numeric inputs to the form, including conversion, labels and field errors. */
+/**
+ * Binds compact text and numeric inputs to the form, including conversion, labels and field errors.
+ * Ideally the text/number components should be children, but I think this solution makes sense to share the error handling.
+ **/
 export const CreatePoolField = ({
   name,
   inputType,

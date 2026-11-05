@@ -1,4 +1,3 @@
-import { noop } from 'lodash'
 import { useCallback, useEffect, useRef } from 'react'
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { DepositForm, DepositMutation } from '@/stellar/features/deposit/types'
@@ -48,7 +47,6 @@ export const useInitialLiquidity = ({
     tokens,
     quote: quote.data,
     minMint: minimum.data,
-    onReset: noop, // Keep the creation summary after funding.
   })
   const onSubmit = useCallback(
     (values: InitialLiquidityForm) => {

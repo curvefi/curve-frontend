@@ -19,7 +19,7 @@ export const initWallet = (onError: (error: Error) => void) => {
     ),
   )
   refreshAddress()
-  window.addEventListener('focus', refreshAddress) // some wallets e.g., Freighter don't listen to changes, refresh when returning to the app
+  window.addEventListener('focus', refreshAddress) // some wallets e.g., Varial don't listen to changes, refresh when returning to the app
   return () => window.removeEventListener('focus', refreshAddress)
 }
 

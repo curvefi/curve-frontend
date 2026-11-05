@@ -8,6 +8,7 @@ import { fetchCreatePoolSimulation } from '@/stellar/queries/create-pool/create-
 import type { NetworkQuery } from '@/stellar/queries/query-types'
 import { createPoolValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
 import { assert } from '@primitives/objects.utils'
+import { getCreatePoolTokens } from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { invalidateLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { useTransactionMutation } from '@ui/features/queries/mutations/useTransactionMutation'
@@ -18,12 +19,7 @@ export const useCreatePoolMutation = ({
   network,
   factory,
   implementationIndex,
-  onSuccess,
-}: NetworkQuery & {
-  factory: StellarContract | undefined
-  implementationIndex: number | undefined
-  onSuccess: (created: CreatedPool) => void
-}) => {
+}: NetworkQuery & { factory: StellarContract | undefined; implementationIndex: number | undefined }) => {
   const { address: account } = useWallet()
   return useTransactionMutation({
     mutationKey: [{ name: 'createPool', network, factory, implementationIndex, account }],
@@ -32,31 +28,32 @@ export const useCreatePoolMutation = ({
       network,
       factory,
       implementationIndex,
-      account: assert(account, 'Connect a Stellar wallet'),
+      account: assert(account, t`Connect a Stellar wallet`),
     }),
     validationSuite: createPoolValidationSuite,
     validationParams: { network, factory, implementationIndex, account },
-    mutationFn: async (values: CreatePoolFormValues, context) => {
+    mutationFn: async (values: CreatePoolFormValues, context): Promise<CreatedPool> => {
       const transaction = await withPendingToast(
         fetchCreatePoolSimulation(
-          { ...values, ...context, coins: values.tokens.map(token => asStellarContract(token!.address)) },
+          {
+            ...values,
+            ...context,
+            coins: getCreatePoolTokens(values, values.tokenCount).map(token => asStellarContract(token!.address)),
+          },
           { staleTime: 0 },
         ),
         t`Preparing pool deployment`,
       )
       // A confirmed fee bump already executed the deployment.
-      return (
+      const { result } =
         (await waitForFeeBump(transaction)) ??
-        withPendingToast(
+        (await withPendingToast(
           sendStellarTransaction(transaction),
           t`Confirm in your wallet and wait for transaction confirmation`,
-        )
-      )
+        ))
+      return { pool: result.pool, values }
     },
     successMessage: () => t`Pool deployment confirmed`,
-    onSuccess: ({ result }, values) => {
-      onSuccess({ pool: result.pool, values })
-      return invalidateLitePoolList({ chainId: STELLAR_NETWORKS[network].chainId })
-    },
+    onSuccess: () => invalidateLitePoolList({ chainId: STELLAR_NETWORKS[network].chainId }),
   })
 }

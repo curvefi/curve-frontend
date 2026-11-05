@@ -269,8 +269,6 @@ export const SizesAndSpaces = {
     banner: '96rem', // 1536px
     page: '96rem', // 1536px
     connectWallet: '50rem', // 800px
-    createPoolForm: '40rem', // 640px
-    createPoolSummary: '22rem', // 352px
     actionCard: '28rem', // 448px
     candleAndBandChart: '68.75rem', // 1100px, switches to column from row when charts start to become to small next to eachother
     emptyStateCard: '35rem', // 560px

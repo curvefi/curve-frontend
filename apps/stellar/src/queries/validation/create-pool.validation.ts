@@ -4,6 +4,7 @@ import { STELLAR_POOL_LIMITS as limits, STELLAR_POOL_TYPES } from '@/stellar/fea
 import type { CreatePoolParams, FactoryImplementationParams } from '@/stellar/features/create-pool/types'
 import { isComplete } from '@primitives/array.utils'
 import { maybe, notFalsyArray, type Nullish } from '@primitives/objects.utils'
+import { createPoolTokenField, getCreatePoolTokens } from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -16,7 +17,7 @@ const encoder = new TextEncoder()
 const byteLength = (value: string | Nullish) => maybe(value, value => encoder.encode(value).length)
 
 const validateForm = ({
-  tokens,
+  tokenCount,
   poolType,
   amplification,
   fee,
@@ -30,10 +31,15 @@ const validateForm = ({
   slippage,
   ...values
 }: FieldsOf<CreatePoolFormValues>) => {
-  test('tokens', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
-    enforce(tokens?.length).gte(limits.tokens.min).lte(limits.tokens.max)
-    enforce(tokens?.every(token => token && isContractAddress(token.address))).equals(true)
+  const tokens = getCreatePoolTokens(values, tokenCount)
+  test('tokenCount', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
+    enforce(tokenCount).gte(limits.tokens.min).lte(limits.tokens.max)
     enforce(new Set(tokens?.map(token => token?.address)).size).equals(tokens?.length)
+  })
+  each(notFalsyArray(tokens), (token, index) => {
+    test(createPoolTokenField(index), 'Select a token', () => {
+      enforce(token?.address).isNotEmpty().condition(isContractAddress)
+    })
   })
   test('poolType', 'Select a pool type', () => {
     enforce(poolType).inside([...STELLAR_POOL_TYPES])

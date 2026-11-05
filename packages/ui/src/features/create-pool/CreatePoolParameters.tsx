@@ -4,7 +4,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import Stack from '@mui/material/Stack'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { Accordion } from '@ui/components/Accordion'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { CREATE_POOL_COLUMNS, EMPTY_POOL_PARAMETERS } from './constants'
@@ -34,16 +34,19 @@ export const CreatePoolParameters = ({
   disabled,
   poolType,
   ranges,
+  values,
+  update,
+  errors,
+  tokenSymbol,
 }: {
   disabled: boolean
   poolType: PoolType | undefined
   ranges: PoolParameterRanges
+  values: Pick<CreatePoolFormValues, 'preset' | 'feeMultiplier' | 'amplification' | 'tokenCount'>
+  tokenSymbol: string | undefined
+  update: UseFormReturn<CreatePoolFormValues>['update']
+  errors: UseFormReturn<CreatePoolFormValues>['formState']['errors']
 }) => {
-  const {
-    values,
-    update,
-    formState: { errors },
-  } = useFormContext<CreatePoolFormValues>()
   if (!poolType)
     return (
       <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
@@ -81,8 +84,8 @@ export const CreatePoolParameters = ({
       {CurvePreview && (
         <CurvePreview
           amplification={errors.amplification ? undefined : values.amplification}
-          tokenCount={values.tokens.length}
-          tokenSymbol={values.tokens[0]?.symbol}
+          tokenCount={values.tokenCount}
+          tokenSymbol={tokenSymbol}
         />
       )}
       <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>

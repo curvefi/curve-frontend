@@ -1,12 +1,13 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import type { NetworkQuery, UserQuery } from '@/stellar/queries/query-types'
 import type { CreatePoolFormValues } from '@ui/features/create-pool/types'
+import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 export type CreatePoolQuery = CreatePoolFormValues &
   NetworkQuery &
   UserQuery & { factory: StellarContract; implementationIndex: number; coins: StellarContract[] }
-export type CreatePoolParams = FieldsOf<CreatePoolQuery>
+export type CreatePoolParams = FieldsOf<DeepPartial<CreatePoolQuery>>
 export type CreatedPool = { pool: StellarContract; values: CreatePoolFormValues }
 
 export type PoolDeploymentQuery = Pick<

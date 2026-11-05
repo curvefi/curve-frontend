@@ -53,7 +53,7 @@ export function useTransactionMutation<TVariables extends object, TContext exten
   const [error, setError] = useState<Error | null>(null)
 
   // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { mutate, data, isPending, isSuccess } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
@@ -87,5 +87,5 @@ export function useTransactionMutation<TVariables extends object, TContext exten
     },
   })
 
-  return { mutate, error, isPending, isSuccess }
+  return { mutate, data, error, isPending, isSuccess }
 }

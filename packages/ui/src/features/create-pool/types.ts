@@ -10,27 +10,33 @@ import type { QueryProp } from '@ui/features/queries/util'
 import type { TokenOption } from '@ui/features/select-token/types'
 import type { CREATE_POOL_SECTIONS } from './constants'
 
-export type CreatePoolFormValues = PoolTokenFields & {
-  decimals: (number | undefined)[] | undefined
-  tokens: (TokenOption | undefined)[]
-  poolType: string | undefined
-  preset: string
-  amplification: Decimal | undefined
-  fee: Decimal | undefined
-  feeMultiplier: Decimal | undefined
-  priceOracleAveragingWindow: Decimal | undefined
-  poolName: string
-  symbol: string
-  maxAmounts: (Decimal | undefined)[] | undefined
-  slippage: Decimal
-  addLiquidity: boolean
-}
+export type CreatePoolTokenField = `token_${number}`
+export type CreatePoolTokenFields = Record<CreatePoolTokenField, TokenOption | undefined>
+
+export type CreatePoolFormValues = PoolTokenFields &
+  CreatePoolTokenFields & {
+    decimals: (number | undefined)[] | undefined
+    tokenCount: number
+    poolType: string | undefined
+    preset: string
+    amplification: Decimal | undefined
+    fee: Decimal | undefined
+    feeMultiplier: Decimal | undefined
+    priceOracleAveragingWindow: Decimal | undefined
+    poolName: string
+    symbol: string
+    maxAmounts: (Decimal | undefined)[] | undefined
+    slippage: Decimal
+    addLiquidity: boolean
+  }
 
 export type PoolParameters = Pick<
   CreatePoolFormValues,
   'amplification' | 'fee' | 'feeMultiplier' | 'priceOracleAveragingWindow'
 >
 export type PoolParameterRanges = Record<'amplification' | 'fee', { min: number; max: number }>
+
+export type CreatePoolNetwork = { name: string; nativeCurrency: { symbol: string } }
 
 export type PoolParameter = {
   name: keyof PoolParameters
@@ -68,7 +74,7 @@ export type CreatePoolTokenSearchProps = {
 export type CreatePoolTokensProps = CreatePoolTokenSearchProps & {
   form: UseFormReturn<CreatePoolFormValues>
   blockchainId: string
-  tokenCountRange: { min: number; max: number }
+  limits: PoolParameterRanges & { tokens: { min: number; max: number }; nameMaxBytes: number; symbolMaxBytes: number }
   inputsDisabled: boolean
   setTokens: (tokens: (TokenOption | undefined)[]) => void
 }
@@ -82,15 +88,18 @@ export type CreatePoolLiquidityProps = {
   userAddress: Address | undefined
 }
 
-export type CreatePoolSummaryProps = {
+export type CreatePoolSummaryProps = Pick<
+  PoolFormProps<CreatePoolFormValues>,
+  'error' | 'formErrors' | 'userAddress'
+> & {
   form: UseFormReturn<CreatePoolFormValues>
   poolTypes: readonly PoolType[]
+  network: CreatePoolNetwork
   blockchainId: string
+  poolListUrl: string
   totalDepositValueUsd: QueryProp<Decimal>
   creationFee: QueryProp<Decimal>
-  nativeSymbol: string
   created: { explorerUrl: string } | undefined
-  poolListUrl: string
   wallet: PoolFormProps<CreatePoolFormValues>['wallet']
   isPending: boolean
   isLoading: boolean
@@ -102,9 +111,4 @@ export type CreatePoolSummaryProps = {
 export type CreatePoolFormProps = Omit<PoolFormProps<CreatePoolFormValues>, 'footer' | 'tokens'> &
   CreatePoolTokensProps &
   CreatePoolLiquidityProps &
-  CreatePoolSummaryProps & {
-    parameterRanges: PoolParameterRanges
-    nameMaxBytes: number
-    symbolMaxBytes: number
-    completed: Record<(typeof CREATE_POOL_SECTIONS)[number]['value'], boolean>
-  }
+  CreatePoolSummaryProps & { completed: Record<(typeof CREATE_POOL_SECTIONS)[number]['value'], boolean> }

@@ -9,6 +9,7 @@ import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { CREATE_POOL_COLUMNS } from './constants'
+import { getCreatePoolTokens } from './create-pool.utils'
 import { CreatePoolField } from './CreatePoolField'
 import type { CreatePoolLiquidityProps } from './types'
 
@@ -34,7 +35,7 @@ export const CreatePoolLiquidity = ({
           t`Required for Cryptoswap, FXSwap and pools with rate tokens or oracles. Optional for plain Stableswap.`}
       </Typography>
       <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
-        {values.tokens.map((token, index) => (
+        {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
           <Stack key={poolAmountField(index)}>
             <CreatePoolField
               name={poolAmountField(index)}

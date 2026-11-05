@@ -12,8 +12,13 @@ import { useTokenUsdRates } from '@/stellar/queries/token/token-usd-rate.query'
 import { createPoolFormValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
 import { StellarPages } from '@/stellar/routes/routes'
 import { completeArray } from '@primitives/array.utils'
-import { maybe, recordValues, repeat } from '@primitives/objects.utils'
+import { fromEntries, maybe, notFalsy, range, recordValues } from '@primitives/objects.utils'
 import { POOL_TYPES } from '@ui/features/create-pool/constants'
+import {
+  createPoolTokenField,
+  getCreatePoolTokenDefaults,
+  getCreatePoolTokens,
+} from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormProps, CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { useForm, type UseFormReturn, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
@@ -23,12 +28,13 @@ import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
 import { STELLAR_POOL_LIMITS } from './constants'
-import type { CreatedPool, CreatePoolParams } from './types'
+import type { CreatePoolParams } from './types'
 import { useCreatePoolTokenOptions } from './useCreatePoolTokenOptions'
 import { useInitialLiquidity } from './useInitialLiquidity'
 
 const userDefaultValues = {
-  tokens: repeat(undefined, STELLAR_POOL_LIMITS.tokens.min),
+  tokenCount: STELLAR_POOL_LIMITS.tokens.min,
+  ...getCreatePoolTokenDefaults(STELLAR_POOL_LIMITS.tokens.min),
   poolType: undefined,
   preset: 'custom',
   amplification: undefined,
@@ -51,82 +57,91 @@ function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoo
   const isStepComplete = (...fields: (keyof CreatePoolFormValues)[]) =>
     formState.isDirty && fields.every(field => !formState.errors[field])
   return {
-    tokens: isStepComplete('tokens'),
+    tokens: isStepComplete('tokenCount', ...range(values.tokenCount).map(createPoolTokenField)),
     'pool-type': isStepComplete('poolType'),
     parameters: isStepComplete('poolType', 'amplification', 'fee', 'feeMultiplier', 'priceOracleAveragingWindow'),
     liquidity:
       isStepComplete('poolType') &&
       (!values.addLiquidity ||
-        isStepComplete('decimals', 'slippage', ...values.tokens.map((_, index) => poolAmountField(index)))),
+        isStepComplete('decimals', 'slippage', ...range(values.tokenCount).map(poolAmountField))),
     name: isStepComplete('poolName', 'symbol'),
   }
 }
 
-export function useCreatePoolForm({ network }: NetworkQuery): CreatePoolFormProps {
+export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreatePoolFormProps {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const [tokenSearch, setTokenSearch] = useState('')
-  const tokenOptions = useCreatePoolTokenOptions(network, tokenSearch)
-  const [created, setCreated] = useState<CreatedPool>()
+  const tokenOptions = useCreatePoolTokenOptions(networkId, tokenSearch)
   const form = useForm<CreatePoolFormValues>(formOptions)
   const { values, formState, update } = form
-  const { factories, nativeCurrency, explorerUrl } = STELLAR_NETWORKS[network]
+  const tokens = getCreatePoolTokens(values, values.tokenCount)
+  const network = STELLAR_NETWORKS[networkId]
+  const { factories, nativeCurrency, explorerUrl } = network
   const poolTypes = recordValues(POOL_TYPES).map(type => ({
     ...type,
     disabled: !factories.some(factory => factory.type === type.id),
   }))
   const { address: factory, implementationIndex } = factories.find(factory => factory.type === values.poolType) ?? {}
-  const coins = completeArray(values.tokens)?.map(token => asStellarContract(token.address))
-  const { decimalsData, maxAmounts } = usePoolTokens({ network, account, tokenAddresses: coins }) ?? {}
+  const deployment = useCreatePoolMutation({ network: networkId, factory, implementationIndex })
+  const created = deployment.data
+  const coins = tokens.map(token => asStellarContract(token?.address))
+  const selectedCoins = notFalsy(...coins)
+  const { decimalsData, maxAmounts } =
+    usePoolTokens({ network: networkId, account, tokenAddresses: completeArray(coins) }) ?? {}
   const balances = useMemo(() => maxAmounts?.map(balance => balance.data), [maxAmounts])
   useFormSync(form, { decimals: decimalsData, maxAmounts: balances })
 
   // suggest names from tokens; preserve names the user has edited.
-  const symbols = completeArray(values.tokens)?.map(token => token.symbol)
-  useFormSync(form, { poolName: symbols?.join('/') ?? '' }, !formState.dirtyFields.poolName)
-  useFormSync(form, { symbol: symbols?.join('') ?? '' }, !formState.dirtyFields.symbol)
+  const symbols = notFalsy(...tokens.map(token => token?.symbol))
+  useFormSync(form, { poolName: symbols.join('/') }, !formState.dirtyFields.poolName)
+  useFormSync(form, { symbol: symbols.join('') }, !formState.dirtyFields.symbol)
 
   const debounceDefaults = useMemo(
-    () => ({ ...userDefaultValues, ...getPoolDefaultValues(values.tokens.length) }),
-    [values.tokens.length],
+    () => ({
+      ...userDefaultValues,
+      ...getCreatePoolTokenDefaults(values.tokenCount),
+      ...getPoolDefaultValues(values.tokenCount),
+    }),
+    [values.tokenCount],
   )
   const [params, isDebouncing] = useFormDebounce<CreatePoolParams, keyof typeof debounceDefaults>(
-    { ...values, network, factory, implementationIndex, account, coins },
+    { ...values, network: networkId, factory, implementationIndex, account, coins },
     debounceDefaults,
   )
   const simulation = useCreatePoolSimulation(
-    { ...params, coins: completeArray(params.tokens)?.map(token => asStellarContract(token.address)) },
+    {
+      ...params,
+      coins: getCreatePoolTokens(params, params.tokenCount)?.map(token => asStellarContract(token?.address)),
+    },
     !created,
   )
   const liquidity = useInitialLiquidity({
-    network,
+    network: networkId,
     account,
     pool: created?.pool,
-    tokens: completeArray(created?.values.tokens)?.map(token => asStellarContract(token.address)),
+    tokens: maybe(created, ({ values }) =>
+      getCreatePoolTokens(values, values.tokenCount).map(token => asStellarContract(token!.address)),
+    ),
     autoDeposit: created?.values.addLiquidity && created.values,
     params,
   })
 
-  const deployment = useCreatePoolMutation({ network, factory, implementationIndex, onSuccess: setCreated })
-
   const isPending = formState.isSubmitting || deployment.isPending || liquidity.isPending
-  const amounts = values.tokens.map((_, index) => values[poolAmountField(index)])
-  const prices = useTokenUsdRates({ network, tokenAddresses: coins })
+  const amounts = range(values.tokenCount).map(index => values[poolAmountField(index)])
+  const prices = useTokenUsdRates({ network: networkId, tokenAddresses: selectedCoins })
 
   return {
     form,
     maxAmounts,
-    totalDepositValueUsd: coins
-      ? combineQueries(
-          coins.map(coin => prices[coin]),
-          (...rates) => rateAdjustedValue(amounts, rates),
-        )
-      : DISABLED_Q,
-    blockchainId: network,
+    totalDepositValueUsd: combineQueries(
+      coins.map(coin => (coin ? prices[coin] : DISABLED_Q)),
+      (...rates) => rateAdjustedValue(amounts, rates),
+    ),
+    network,
+    blockchainId: networkId,
+    limits: STELLAR_POOL_LIMITS,
+    poolListUrl: StellarPages.pools({ network: networkId }),
     poolTypes,
-    tokenCountRange: STELLAR_POOL_LIMITS.tokens,
-    parameterRanges: STELLAR_POOL_LIMITS,
-    nameMaxBytes: STELLAR_POOL_LIMITS.nameMaxBytes,
-    symbolMaxBytes: STELLAR_POOL_LIMITS.symbolMaxBytes,
     tokenSearch,
     onTokenSearch: setTokenSearch,
     tokenOptions,
@@ -135,9 +150,7 @@ export function useCreatePoolForm({ network }: NetworkQuery): CreatePoolFormProp
     creationFee: mapQuery(simulation, transaction =>
       fromWei(getStellarTransactionFees(transaction).fee, nativeCurrency.decimals),
     ),
-    nativeSymbol: nativeCurrency.symbol,
     created: maybe(created, ({ pool }) => ({ explorerUrl: `${explorerUrl}contract/${pool}` })),
-    poolListUrl: StellarPages.pools({ network }),
     isFunded: liquidity.isSuccess,
     isDepositing: liquidity.isDepositing,
     isPending,
@@ -145,7 +158,12 @@ export function useCreatePoolForm({ network }: NetworkQuery): CreatePoolFormProp
     inputsDisabled: isPending || !!created,
     completed: checkStepsCompleted({ values, formState }),
     setTokens: tokens =>
-      update({ tokens, ...getPoolDefaultValues(values.tokens.length), ...getPoolDefaultValues(tokens.length) }),
+      update({
+        tokenCount: tokens.length,
+        ...getCreatePoolTokenDefaults(values.tokenCount),
+        ...fromEntries(tokens.map((token, index) => [createPoolTokenField(index), token])),
+        ...getPoolDefaultValues(Math.max(values.tokenCount, tokens.length)),
+      }),
     error: deployment.error ?? liquidity.error ?? simulation.error,
     formErrors: formState.visibleErrors,
     isDisabled:

@@ -1,4 +1,3 @@
- 
 import {
   getStellarTransactionFees,
   type StellarTransaction,
@@ -14,7 +13,7 @@ import { waitForTransaction } from '@ui/lib/waitForTransaction'
 /** A fee-bump envelope pays resource fees that do not fit in the inner transaction's fee field. */
 const signFeeBumpTransaction = async <T>(transaction: StellarTransaction<T>, sign: contract.SignTransaction) => {
   const { networkPassphrase, publicKey, fee } = transaction.options
-  const options = { address: assert(publicKey, 'Connect a Stellar wallet'), networkPassphrase }
+  const options = { address: assert(publicKey, t`Connect a Stellar wallet`), networkPassphrase }
   const { sorobanData } = getStellarTransactionFees(transaction)
   const builder = rpc.assembleTransaction(
     assert(transaction.built, 'Missing simulated transaction'),

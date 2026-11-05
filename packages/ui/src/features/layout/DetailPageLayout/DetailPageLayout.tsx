@@ -14,7 +14,7 @@ import { PAGE_SPACING } from './constants'
 import { DetailPageSectionNav, type DetailPageSectionOption } from './DetailPageSectionNav'
 import type { DetailPageLayoutFormTabs } from './types'
 
-const { ButtonSize, MaxWidth, Spacing, BorderWidth } = SizesAndSpaces
+const { ButtonSize, MaxWidth, Spacing, BorderWidth, Width } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
 
@@ -72,6 +72,7 @@ export const DetailPageLayout = ({
   formTabs,
   header,
   sections,
+  sidebar,
   children,
   footer,
   testId,
@@ -80,6 +81,8 @@ export const DetailPageLayout = ({
   header?: ReactNode
   /** Ordered hash-addressable sections displayed in the sticky section navigation. */
   sections?: readonly DetailPageSectionOption<string>[]
+  /** Left sidebar on desktop, above the content on smaller screens. */
+  sidebar?: ReactNode
   children?: ReactNode
   footer?: ReactNode
   testId?: string
@@ -109,14 +112,15 @@ export const DetailPageLayout = ({
         rowSpacing={PAGE_SPACING}
         sx={{
           ...PAGE_MARGIN,
-          ...(hasSections && {
-            // The section navigation is sticky from tablet up
-            '--detail-page-scroll-margin-top': {
-              mobile: `${navHeight}px`,
-              // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
-              tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
-            },
-          }),
+          '& section[id]': {
+            scrollMarginTop: hasSections
+              ? {
+                  mobile: `${navHeight}px`,
+                  // The section navigation is sticky from tablet up; approximate its height with ButtonSize.
+                  tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
+                }
+              : stickyFormTabsSx(navHeight).top,
+          },
           ...(!header && { marginBlockStart: Spacing.xl }),
         }}
         // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
@@ -137,6 +141,19 @@ export const DetailPageLayout = ({
           {!isMobile && headerStack}
           <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
         </Grid>
+        {sidebar && (
+          <Grid
+            size={{ mobile: 12, desktop: 'auto' }}
+            sx={{
+              width: { desktop: Width.column.md },
+              order: { mobile: -1, desktop: 0 },
+              ...stickyFormTabsSx(navHeight),
+              position: { tablet: 'static', desktop: 'sticky' },
+            }}
+          >
+            {sidebar}
+          </Grid>
+        )}
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
       {formTabs !== null && showMobileDrawer && (
