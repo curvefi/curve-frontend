@@ -20,7 +20,7 @@ export const getCollateralValue = (
 
 /** Debt over the collateral value in percent, or null without collateral value */
 export const getLoanToValue = (debt: Decimal, collateralValue: Decimal) =>
-  decimalEqual(collateralValue, ZERO) ? null : decimalPercent(debt, collateralValue)
+  +collateralValue ? decimalPercent(debt, collateralValue) : null
 
 /** What the position returns if closed now at the oracle price, in the borrowed token */
 export const getEquity = (position: UserState, oraclePrice: Decimal) =>
