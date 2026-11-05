@@ -6,10 +6,10 @@ import { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { pick } from '@primitives/objects.utils'
+import { type Nullish, pick } from '@primitives/objects.utils'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimalDiv } from '@ui/lib/decimal'
-import { type ApiCollateralEvent, hasZapBorrowInOpenPosition } from '../collateral-events.utils'
+import { type ApiCollateralEvent, getOpeningLeverage, hasZapBorrowInOpenPosition } from '../collateral-events.utils'
 import {
   invalidateUserCrvUsdCollateralEventsQuery,
   useUserCrvUsdCollateralEventsQuery,
@@ -61,6 +61,8 @@ export type UserCollateralEvents = {
   originalLeverage: Decimal
   /** The open position borrowed through the leverage zap */
   isZapLeveraged: boolean
+  /** The leverage the open position opened at */
+  openingLeverage: Decimal | Nullish
 }
 
 const parseEventType = (
@@ -107,6 +109,7 @@ export const useUserCollateralEvents = ({
             ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
             : '0', // deposit should only be 0 if there is no loan, this is just a guard for div-by-zero errors
           isZapLeveraged: hasZapBorrowInOpenPosition(data.events),
+          openingLeverage: getOpeningLeverage(data.events),
           events:
             data.events
               .map((event, index, events) => ({

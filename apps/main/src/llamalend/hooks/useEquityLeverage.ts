@@ -33,6 +33,8 @@ export type EquityLeverage = {
   currentLoopedApr: QueryProp<Decimal | null>
   futureLoopedApr: QueryProp<Decimal | null>
   yieldMultiplier: QueryProp<Decimal | null>
+  /** The leverage the open position opened at */
+  opening: QueryProp<Decimal | null>
 }
 
 const getPositionLoopedApr = (
@@ -63,13 +65,7 @@ export function useEquityLeverage(
 ): EquityLeverage | null {
   const isEnabled = useLlamalendEquityLeverage() && enabled
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
-  const { data: collateralEvents } = useUserCollateralEvents({
-    app: marketType,
-    controllerAddress,
-    chainId,
-    userAddress,
-    tokens,
-  })
+  const collateralEvents = useUserCollateralEvents({ app: marketType, controllerAddress, chainId, userAddress, tokens })
   const oraclePrice = q(useMarketOraclePrice(params, isEnabled))
   const position = q(useUserState(params, isEnabled))
   const futurePositionQuery = futurePosition ?? DISABLED_Q
@@ -94,8 +90,9 @@ export function useEquityLeverage(
     yieldMultiplier: combineQueries([currentLoopedApr, marketYields], (apr, { collateralYieldApr }) =>
       getYieldMultiplier(apr, collateralYieldApr),
     ),
+    opening: mapQuery(collateralEvents, ({ openingLeverage }) => openingLeverage),
   }
-  return isEnabled && (isZapBorrow || collateralEvents?.isZapLeveraged) ? equityLeverage : null
+  return isEnabled && (isZapBorrow || collateralEvents.data?.isZapLeveraged) ? equityLeverage : null
 }
 
 export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {

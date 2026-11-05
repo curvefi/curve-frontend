@@ -15,6 +15,7 @@ import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.quer
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
@@ -79,6 +80,8 @@ type UserPositionQueries = {
   pnlUsd: QueryProp<number>
   /** The open position borrowed through the leverage zap */
   isZapLeveraged: QueryProp<boolean>
+  /** The leverage the open position opened at */
+  openingLeverage: QueryProp<Decimal | null>
 }
 
 const EMPTY_POSITION_QUERIES: UserPositionQueries = {
@@ -88,6 +91,7 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
   pnl: DISABLED_Q,
   pnlUsd: DISABLED_Q,
   isZapLeveraged: DISABLED_Q,
+  openingLeverage: DISABLED_Q,
 }
 
 /** Internal market-list row shape; API market data remains free of view/query state. */
@@ -197,6 +201,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
             maybe(pnl, ({ debt }) => Number(debt.pnl) * rate),
           ),
           isZapLeveraged: mapQuery(events, ({ isZapLeveraged }) => isZapLeveraged),
+          openingLeverage: mapQuery(events, ({ openingLeverage }) => openingLeverage),
         },
       }
     })
