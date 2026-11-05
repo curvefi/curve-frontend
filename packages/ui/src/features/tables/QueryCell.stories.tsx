@@ -14,12 +14,14 @@ const error = new Error('Could not load the position stats')
 
 const STATES: { label: string; query: QueryProp<string | Nullish> }[] = [
   { label: 'Loading', query: q({ data: undefined, isLoading: true, error: null }) },
+  { label: 'Loading, with data', query: q({ data: VALUE, isLoading: true, error: null }) },
   { label: 'Loaded', query: constQ(VALUE) },
   { label: 'Loaded, null data', query: constQ(null) },
   { label: 'Disabled', query: DISABLED_Q },
   { label: 'Failed, no data', query: q({ data: undefined, isLoading: false, error }) },
   { label: 'Failed, null data', query: q({ data: null, isLoading: false, error }) },
   { label: 'Failed, still loading', query: q({ data: undefined, isLoading: true, error }) },
+  { label: 'Failed, loading with data', query: q({ data: VALUE, isLoading: true, error }) },
   { label: 'Failed refetch, with data', query: q({ data: VALUE, isLoading: false, error }) },
 ]
 

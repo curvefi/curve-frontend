@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
+import { Spinner } from '@ui/components/Spinner'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -12,7 +13,10 @@ const { Spacing } = SizesAndSpaces
 // TODO: delete this in the task to create skeleton categories
 const skeletonProps = { width: 40, sx: { display: 'inline-block' } } as const
 
-/** Skeleton while the query loads, error icon when it failed. The skeleton or loaded data stay visible next to the icon. */
+/**
+ * Skeleton while the query loads without data, spinner next to the data when it loads with data.
+ * Error icon when it failed, the skeleton or the data stay visible next to the icon.
+ */
 export const QueryCell = ({
   query: { data, isLoading, error },
   children,
@@ -20,18 +24,21 @@ export const QueryCell = ({
   query: QueryProp<unknown>
   children: ReactNode
 }) => {
-  const hasContent = isLoading || data != null
+  const hasData = data != null
+  const isRefreshing = isLoading && hasData
+  const hasContent = isLoading || hasData
   return (
     <WithWrapper
       Wrapper={Stack}
-      shouldWrap={error && hasContent}
+      shouldWrap={isRefreshing || (error && hasContent)}
       direction="row"
       spacing={Spacing.xs}
       sx={{ display: 'inline-flex', alignItems: 'center' }}
     >
       {error && <ErrorCell error={error} />}
+      {isRefreshing && <Spinner size={12} sx={{ margin: 0, alignSelf: 'center' }} />}
       {(!error || hasContent) && (
-        <WithSkeleton loading={isLoading} {...skeletonProps}>
+        <WithSkeleton loading={isLoading && !hasData} {...skeletonProps}>
           {children}
         </WithSkeleton>
       )}
