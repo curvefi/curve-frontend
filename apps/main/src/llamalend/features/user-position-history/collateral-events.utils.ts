@@ -21,13 +21,13 @@ export const hasZapBorrowInOpenPosition = (events: ApiCollateralEvent[]) =>
 
 /**
  * The leverage the open position opened at: the equity leverage of its first event when that is a zap deposit.
- * Undefined when the position opened another way or the event has no oracle price (0 when missing), null without equity.
+ * Undefined when the position opened another way, null without equity.
  */
 export const getOpeningLeverage = (events: ApiCollateralEvent[]) =>
   maybe(getOpenPositionEvents(events).at(0), event =>
     isZapDeposit(event)
       ? maybes(
-          [decimal(event.collateralChange), decimal(event.loanChange), decimal(event.oraclePrice || null)],
+          [decimal(event.collateralChange), decimal(event.loanChange), decimal(event.oraclePrice)],
           (collateral, debt, oraclePrice) =>
             getEquityLeverage({ collateral, convertedBorrowed: ZERO, debt }, oraclePrice),
         )
