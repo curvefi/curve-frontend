@@ -14,7 +14,6 @@ import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-/** These cells only render the value, `withQuery` in their column handles the skeleton and the error icon */
 type BorrowPositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>
 
 /** Equity of the borrow position in USD */
