@@ -2,7 +2,15 @@ import type { Theme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui/lib/decimal'
+import {
+  decimalDiv,
+  decimalGreaterThan,
+  decimalMax,
+  decimalMinus,
+  decimalPercent,
+  decimalSum,
+  ZERO,
+} from '@ui/lib/decimal'
 
 export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
@@ -100,7 +108,7 @@ export const getHealthValues = (healthFull: Decimal, healthNotFull: Decimal) => 
   const healthDelta = decimalMinus(healthFull, healthNotFull)
   // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
   // which shouldn't be possible
-  const health = decimalGreaterThan(healthDelta, ZERO) ? healthDelta : ZERO
+  const health = decimalMax(healthDelta, ZERO)!
   return {
     healthDelta,
     /** Percentage distance from entering liquidation protection: the above-band cushion, clamped at zero. */
