@@ -16,14 +16,11 @@ const toPositionEventsSummary = <TData extends { events: ApiCollateralEvent[] }>
   isZapLeveraged: hasZapBorrowInOpenPosition(data.events),
 })
 
+/** The return type of the exported options can't be inferred from the spread query options */
 const selectFromEvents = <TData extends { events: ApiCollateralEvent[] }, TKey extends QueryKey, TResult>(
   options: QueryOptions<TData, DefaultError, TData, TKey>,
   select: (data: TData) => TResult,
 ): QueryOptions<TData, DefaultError, TResult, TKey> => ({ ...options, select })
-
-const selectCapital = <TData extends { events: ApiCollateralEvent[] }, TKey extends QueryKey>(
-  options: QueryOptions<TData, DefaultError, TData, TKey>,
-) => selectFromEvents(options, toPositionCapital)
 
 /** Own capital and whether the borrow went through the leverage zap, selected from the collateral events query */
 export const getPositionEventsSummaryOptions = (
@@ -38,10 +35,12 @@ export const getPositionEventsSummaryOptions = (
 
 export const usePositionCapital = (marketType: MarketType, params: UserContractParams, enabled = true) =>
   ({
-    [MarketType.Lend]: useQuery(
-      selectCapital(getUserLendCollateralEventsOptions(params, enabled && marketType === MarketType.Lend)),
-    ),
-    [MarketType.Mint]: useQuery(
-      selectCapital(getUserCrvUsdCollateralEventsOptions(params, enabled && marketType === MarketType.Mint)),
-    ),
+    [MarketType.Lend]: useQuery({
+      ...getUserLendCollateralEventsOptions(params, enabled && marketType === MarketType.Lend),
+      select: toPositionCapital,
+    }),
+    [MarketType.Mint]: useQuery({
+      ...getUserCrvUsdCollateralEventsOptions(params, enabled && marketType === MarketType.Mint),
+      select: toPositionCapital,
+    }),
   })[marketType]

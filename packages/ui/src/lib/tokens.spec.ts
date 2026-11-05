@@ -13,4 +13,8 @@ describe('token formatters', () => {
   it('formats token balances', () => {
     expect(formatToken(0.00000123456789, 'ETH', 'balance')).toBe('0.0000012346 ETH')
   })
+
+  it('formats the share of a token', () => {
+    expect(formatToken(12.3, 'sDOLA', 'share')).toBe('12.30% sDOLA')
+  })
 })

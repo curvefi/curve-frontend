@@ -88,8 +88,7 @@ const UserRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
         userBoost: decimal(lendingPosition?.boostMultiplier),
       })}
       totalApy={totalUserBoost}
-      totalAverageApy={null}
-      boost={{ type: 'user', apy: userBoostApy, totalApy: totalUserBoost, totalAverageApy: null }}
+      boost={{ type: 'user', apy: userBoostApy, totalApy: totalUserBoost }}
       rebasingYieldApy={borrowed?.rebasingYield}
       isLoading={isLoading}
     />

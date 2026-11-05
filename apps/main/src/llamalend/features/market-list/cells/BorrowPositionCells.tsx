@@ -12,6 +12,7 @@ import { Tooltip } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { formatToken } from '@ui/lib/tokens'
 import { getUserLiquidationBufferAmount, getUserYieldMultiplier } from '../user-position.utils'
 
 const { Spacing } = SizesAndSpaces
@@ -79,10 +80,7 @@ export const HealthFactorCell = ({ getValue }: BorrowPositionCellProps) => (
 export const LiquidationBufferCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
   <PositionMetric
     value={formatNumber(getValue(), 'percent.value')}
-    support={maybe(
-      getUserLiquidationBufferAmount(row),
-      amount => `${formatNumber(amount, 'token.compact')} ${row.assets.borrowed.symbol}`,
-    )}
+    support={maybe(getUserLiquidationBufferAmount(row), amount => formatToken(amount, row.assets.borrowed.symbol))}
   />
 )
 
@@ -103,10 +101,7 @@ export const BandCountCell = ({ getValue }: BorrowPositionCellProps) => (
 
 export const CollateralCompositionCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
   <PositionMetric
-    value={
-      maybe(getValue(), share => `${formatNumber(share, 'percent.rate')} ${row.assets.collateral.symbol}`) ??
-      UNAVAILABLE_NOTATION
-    }
-    support={maybe(getValue(), share => `${formatNumber(100 - share, 'percent.rate')} ${row.assets.borrowed.symbol}`)}
+    value={formatToken(getValue(), row.assets.collateral.symbol, 'share')}
+    support={maybe(getValue(), share => formatToken(100 - share, row.assets.borrowed.symbol, 'share'))}
   />
 )
