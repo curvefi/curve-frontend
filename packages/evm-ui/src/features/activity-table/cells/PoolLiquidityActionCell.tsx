@@ -1,29 +1,25 @@
-import type { PoolLiquidityEventType } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { DownloadIcon } from '@ui/icons/DownloadIcon'
 import { UploadIcon } from '@ui/icons/UploadIcon'
-import { t } from '@ui/lib/i18n'
 import type { PoolLiquidityRow } from '../types'
+import { getPoolLiquidityEventAction } from '../utils'
 
 const { Spacing } = SizesAndSpaces
 
 type PoolLiquidityActionCellProps = { event: PoolLiquidityRow }
 
-const isAddLiquidity = (eventType: PoolLiquidityEventType): boolean => eventType === 'AddLiquidity'
-
 export const PoolLiquidityActionCell = ({ event }: PoolLiquidityActionCellProps) => {
-  const isAdd = isAddLiquidity(event.eventType)
-  const label = isAdd ? t`Add` : t`Remove`
-  const Icon = isAdd ? DownloadIcon : UploadIcon
+  const { label, color } = getPoolLiquidityEventAction(event)
+  const Icon = event.eventType === 'AddLiquidity' ? DownloadIcon : UploadIcon
 
   return (
     <InlineTableCell>
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <Icon />
-        <Typography variant="tableCellValue" color={isAdd ? 'success' : 'error'}>
+        <Typography variant="tableCellValue" color={color}>
           {label}
         </Typography>
       </Stack>
