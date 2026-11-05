@@ -48,13 +48,7 @@ export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
 const mapPosition = <R>(
   { positionQueries }: LlamaMarketRow,
   mapper: (position: UserState, oraclePrice: Decimal) => R,
-) =>
-  maybe(positionQueries.stats.data, ({ collateral, convertedBorrowed, borrowed, oraclePrice }) =>
-    maybes(
-      [decimal(collateral), decimal(convertedBorrowed), decimal(borrowed), oraclePrice],
-      (collateral, convertedBorrowed, debt, price) => mapper({ collateral, convertedBorrowed, debt }, price),
-    ),
-  )
+) => maybe(positionQueries.stats.data, ({ position, oraclePrice }) => maybes([position, oraclePrice], mapper))
 
 /** Debt over the collateral value at the oracle price, plus the tokens converted in soft liquidation */
 export const getUserPositionLtv = (row: LlamaMarketRow) =>

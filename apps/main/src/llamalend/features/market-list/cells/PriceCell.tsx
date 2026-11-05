@@ -160,7 +160,7 @@ export const PriceCell = ({
       value: primaryValue,
       usdValue: primaryUsdValue,
       isPriceLoading: isPrimaryPriceLoading,
-      priceError: primaryPrice == null && primaryPriceError,
+      priceError: primaryPriceError,
     },
     ...notFalsyArray(
       hasSecondaryAsset && [
@@ -169,7 +169,7 @@ export const PriceCell = ({
           value: secondaryValue,
           usdValue: secondaryUsdValue,
           isPriceLoading: isSecondaryPriceLoading,
-          priceError: secondaryPrice == null && secondaryPriceError,
+          priceError: secondaryPriceError,
         },
       ],
     ),
@@ -186,7 +186,7 @@ export const PriceCell = ({
           tokenAddress={getAddressOrPair(asset.blockchainId, asset.address)}
           amountLoading={usesBorrowStats && isLoadingStats}
           usdLoading={isPriceLoading || (usesBorrowStats && isLoadingStats)}
-          usdError={priceError ? <ErrorCell error={priceError} /> : undefined}
+          usdError={priceError}
           tooltipTitle={tooltipTitle}
           tooltipBody={tooltipBody}
           horizontal={!!hasSecondaryAsset}

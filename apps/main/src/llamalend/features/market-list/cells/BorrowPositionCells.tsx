@@ -16,6 +16,7 @@ import { getUserLiquidationBufferAmount, getUserYieldMultiplier } from '../user-
 
 const { Spacing } = SizesAndSpaces
 
+/** These cells only render the value, `withQuery` in their column handles the skeleton and the error icon */
 type BorrowPositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>
 
 /** A metric of the borrow position, with an optional support line below it */
