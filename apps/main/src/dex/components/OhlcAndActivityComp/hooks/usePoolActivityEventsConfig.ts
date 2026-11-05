@@ -13,7 +13,7 @@ import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { loadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -31,7 +31,6 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
 
-  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
   const { liquidityColumnVisibility } = usePoolActivityVisibility()
 
   const poolLiquidityEvents = usePoolLiquidityEvents({
@@ -48,11 +47,11 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const liquidityWithUrls = useCombinedQueries(
     [poolLiquidityEvents, poolPriceApi, loadingQ(isHydrated || undefined)],
     useCallback(
-      liquidityData =>
+      (liquidityData, { coins: poolTokens }) =>
         maybe(network, blockchainId =>
           liquidityData.events.map(event => ({ ...event, chainId, blockchainId, poolTokens })),
         ),
-      [network, chainId, poolTokens],
+      [network, chainId],
     ),
   )
 
