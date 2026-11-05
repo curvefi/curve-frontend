@@ -61,6 +61,8 @@ export type UserCollateralEvents = {
   originalLeverage: Decimal
   /** The open position borrowed through the leverage zap */
   isZapLeveraged: boolean
+  /** The leverage the open position opened at */
+  openingLeverage: Decimal | Nullish
 }
 
 const parseEventType = (
@@ -93,7 +95,7 @@ export const useUserCollateralEvents = ({
   controllerAddress,
   chainId,
   tokens: { collateralToken, borrowToken },
-}: UserCollateralEventsProps): QueryProp<UserCollateralEvents & { openingLeverage: Decimal | Nullish }> => {
+}: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
   const params = { blockchainId: BlockchainIds[chainId], contractAddress: controllerAddress, userAddress }
   const { data, isLoading, error } = {
     [MarketType.Lend]: useUserLendCollateralEventsQuery(params, app === MarketType.Lend),
