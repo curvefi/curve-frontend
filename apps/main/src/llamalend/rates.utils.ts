@@ -56,16 +56,6 @@ export const getReturnOnEquity = (
     lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
   )
 
-/** Return on equity at the market's maximum leverage. */
-export const getMaxReturnOnEquity = ({
-  leverage,
-  assets: {
-    collateral: { rebasingYield },
-  },
-  rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
-  getReturnOnEquity(leverage, rebasingYield, borrowApy)
-
 export type BorrowRates = { borrowApr?: Decimal; borrowApy?: Decimal }
 
 export const formatReturnOnEquity = (

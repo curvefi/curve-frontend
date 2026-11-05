@@ -44,7 +44,6 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
   [MarketColumnId.MaxLtv]: t`Max LTV`,
   [MarketColumnId.MaxLeverage]: t`Max Leverage`,
-  [MarketColumnId.MaxReturnOnEquity]: t`Max RoE`,
   [MarketColumnId.UtilizationPercent]: t`Utilization`,
   [MarketColumnId.SolvencyPercent]: t`Market solvency`,
   [MarketColumnId.LiquidityUsd]: t`Available Liquidity`,

@@ -24,7 +24,6 @@ export enum MarketColumnId {
   NetSupplyRate = 'rates_lend',
   MaxLtv = 'maxLtv',
   MaxLeverage = 'maxLeverage',
-  MaxReturnOnEquity = 'maxRoe', // preserve the persisted column ID
   UtilizationPercent = 'utilizationPercent',
   SolvencyPercent = 'solvencyPercent',
   LiquidityUsd = 'liquidityUsd',
