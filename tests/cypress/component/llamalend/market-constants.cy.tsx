@@ -154,13 +154,18 @@ describe('hasZapDelegation', () => {
     expect(hasZapDelegation(market)).to.eq(false)
   })
 
-  it('ignores the Lend delegation zap on Mint markets', () => {
-    const market = createMockMintMarket(withZap('leverage_zap_v2_transient', DELEGATION_ZAP))
-    expect(hasZapDelegation(market)).to.eq(false)
+  it('is true for LLv2 markets on the LLv2 delegation zap', () => {
+    const market = createMockLendMarket({ version: 'v2', ...withZap('leverage_zap_v2_llv2', DELEGATION_ZAP) })
+    expect(hasZapDelegation(market)).to.eq(true)
   })
 
-  it('is true for LLv2 markets', () => {
-    expect(hasZapDelegation(createMockLendMarket({ version: 'v2' }))).to.eq(true)
+  it('is true for LLv2 markets on a chain without an LLv2 zap', () => {
+    const market = createMockLendMarket({
+      version: 'v2',
+      llamalend: { constants: { ALIASES: { leverage_zap_v2_llv2: zeroAddress } } },
+      getZapAddress: () => zeroAddress,
+    })
+    expect(hasZapDelegation(market)).to.eq(true)
   })
 
   it('is true for LLv1 markets on the Lend delegation zap', () => {

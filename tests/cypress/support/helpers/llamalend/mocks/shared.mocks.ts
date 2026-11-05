@@ -3,7 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
 import type { RoutesQuery } from '@evm-ui/queries/router-api/types'
 import { MarketVersion } from '@evm-ui/types/market'
-import { CRVUSD_ADDRESS } from '@evm-ui/utils'
+import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
@@ -111,6 +111,22 @@ export const mockRouterRoutes = (chainId: number, calldata: Hex = ROUTER_CALLDAT
   }).as('routerRoutes')
 }
 
+/** The zap of a mock market, like in llamalend.js LLv2 markets use the LLv2 delegation zap */
+const createMockZap = (version: MarketVersion) => {
+  const zapAddress = oneAddress()
+  return {
+    llamalend: {
+      constants: {
+        ALIASES: {
+          crv: MAINNET_CRV_ADDRESS,
+          ...(version === MarketVersion.v2 && { leverage_zap_v2_llv2: zapAddress }),
+        },
+      },
+    },
+    getZapAddress: createSyncStub(zapAddress),
+  }
+}
+
 export const createMockLendLoanMarket = ({
   version = MarketVersion.v1,
   loan,
@@ -148,7 +164,7 @@ export const createMockLendLoanMarket = ({
     loan,
     leverage: { hasLeverage: () => true, ...leverage },
     leverageZapV2,
-    getZapAddress: createSyncStub(oneAddress()),
+    ...createMockZap(version),
     userPosition: {
       currentLeverage: createStub(oneDecimal(1.1, 6, 2)),
       ...(userState && { userState }),
