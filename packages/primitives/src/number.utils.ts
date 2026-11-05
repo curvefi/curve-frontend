@@ -212,6 +212,19 @@ const PRECISE_NUMBER_FORMAT = {
 } as const
 
 const NUMBER_FORMAT_CATEGORIES = {
+  date: {
+    abbreviate: false,
+    fallback: UNAVAILABLE_NOTATION,
+    formatter: value => {
+      // Numeric dates are Unix timestamps in milliseconds.
+      const date = new Date(Number(value))
+      if (Number.isNaN(date.getTime())) return UNAVAILABLE_NOTATION
+      const day = date.getUTCDate().toString().padStart(2, '0')
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0')
+      const year = date.getUTCFullYear().toString().padStart(4, '0')
+      return `${day}.${month}.${year}`
+    },
+  },
   health: {
     abbreviate: false,
     fallback: UNAVAILABLE_NOTATION,

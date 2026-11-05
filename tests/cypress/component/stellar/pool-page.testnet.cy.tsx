@@ -63,7 +63,11 @@ describe('Stellar testnet pool page', () => {
   it('loads a seeded live pool and switches between liquidity actions', () => {
     mountPoolPage()
 
-    cy.get('[data-testid="tab-deposit-one-coin"]').should('have.attr', 'aria-selected', 'true')
+    cy.get('[data-testid="tab-deposit-one-coin"]', TIMEOUTS['stellar.read']).should(
+      'have.attr',
+      'aria-selected',
+      'true',
+    )
     cy.get('[data-testid^="pool-token-input-"]').should('have.length', 1)
     cy.get('[data-testid="tab-deposit-advanced"]').click()
     state.coins.forEach(({ address }) => {

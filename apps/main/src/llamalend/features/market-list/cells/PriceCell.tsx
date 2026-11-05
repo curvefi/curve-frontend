@@ -33,7 +33,6 @@ const getAssets = (columnId: MarketColumnId, assets: LlamaMarket['assets']) =>
     ({
       [MarketColumnId.UserCollateral]: [assets.collateral, assets.borrowed],
       [MarketColumnId.UserBorrowed]: [assets.borrowed, undefined],
-      [MarketColumnId.UserEarnings]: [assets.borrowed, undefined],
       [MarketColumnId.UserDeposited]: [assets.borrowed, undefined],
     }) as Partial<Record<MarketColumnId, [AssetDetails, AssetDetails | undefined]>>
   )[columnId]
@@ -51,7 +50,6 @@ const getAssetValues = (
     ({
       [MarketColumnId.UserCollateral]: [stats?.collateral, stats?.borrowToken],
       [MarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
-      [MarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
       [MarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
     }) as Partial<Record<MarketColumnId, [number, number | undefined]>>
   )[columnId]

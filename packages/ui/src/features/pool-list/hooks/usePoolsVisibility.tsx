@@ -9,7 +9,7 @@ import { PoolColumnId } from '../columns/columns.enum'
 import type { PoolTableVariant } from '../types'
 
 const migration: MigrationOptions<Record<PoolTableVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 8,
+  version: 9,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, currentGroups) => preserveVisibilityChoices(oldValue[variant], currentGroups)),
 }
