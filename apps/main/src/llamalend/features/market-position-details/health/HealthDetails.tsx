@@ -1,78 +1,100 @@
-import type { UserPositionStatus } from '@/llamalend/llamalend.types'
-import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
+import {
+  formatHealth,
+  getHealthBarFill,
+  getHealthFeedback,
+  getLiquidationBufferBarFill,
+  getLiquidationBufferFeedback,
+  type HealthThresholds,
+  type PositionHealth,
+} from '@/llamalend/health.utils'
+import { formatAmount } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
-import { mapRecord } from '@primitives/objects.utils'
+import { mapRecord, maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips/tooltips'
-import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
-import { getHealthDetailsState, getHealthTextColor, getLiquidationBufferTextColor } from './utils'
+import { HealthTooltipContent } from '../tooltips/HealthTooltipContent'
+import { LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips/tooltips'
+import { HealthAndBufferBar } from './HealthAndBufferBar'
 
 const { Spacing } = SizesAndSpaces
 
 const HEALTH_DETAILS_COLUMNS = { mobile: 4, tablet: 6, desktop: 10 } as const
 const PRIMARY_METRIC_SIZE = 2.5
 
-const HEALTH_PRECISION_THRESHOLD = 1.1
-
 export const HealthDetails = ({
-  health,
-  positionStatus,
+  position,
+  thresholds,
+  borrowSymbol,
 }: {
-  health: HealthQuery
-  positionStatus: QueryProp<UserPositionStatus>
+  position: QueryProp<PositionHealth>
+  thresholds: HealthThresholds
+  borrowSymbol: string | undefined
 }) => {
-  const theme = useTheme()
-  const { state, healthState, liquidationBufferState, type } = getHealthDetailsState(health.data)
-
+  const { Feedback } = useTheme().design.Text.TextColors
+  // the bars show no error, it is already shown in the sibling Metric component
+  const { data, isLoading } = position
+  const healthTooltip = { title: t`Health`, body: <HealthTooltipContent status={data?.status} /> }
   return (
-    <>
-      <HealthAndBufferDebug healthQuery={health} state={state} type={type} />
-      <Grid container columns={HEALTH_DETAILS_COLUMNS} columnSpacing={Spacing.xs} sx={{ alignItems: 'center' }}>
-        <Grid size={PRIMARY_METRIC_SIZE}>
-          <Metric
-            category="llamalend.positionHealth"
-            label={HEALTH_TOOLTIP.shortTitle}
-            testId="health-details-health-metric"
-            value={mapQuery(health, data => data.healthFactor)}
-            valueOptions={{
-              abbreviate: false,
-              color: getHealthTextColor(healthState)(theme),
-              formatter: value =>
-                formatNumber(value, +value < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health'),
-            }}
-            valueTooltip={HEALTH_FACTOR_TOOLTIP}
-          />
-        </Grid>
-        <Grid size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => size - PRIMARY_METRIC_SIZE)}>
-          <HealthAndBufferBar health={health} positionStatus={positionStatus} type="health" />
-        </Grid>
-        <Grid size={PRIMARY_METRIC_SIZE}>
-          <Metric
-            category="llamalend.positionLiquidationBuffer"
-            label={LIQUIDATION_BUFFER_TOOLTIP.shortTitle}
-            testId="health-details-liquidation-buffer-metric"
-            value={mapQuery(health, data => data.liquidationBuffer)}
-            notional={mapQuery(health, data => t`(${formatNumber(data.healthNotFull, 'percent.value')} of debt)`)}
-            valueOptions={{
-              abbreviate: false,
-              color: getLiquidationBufferTextColor(liquidationBufferState)(theme),
-              formatter: value => formatNumber(value, 'percent.value'),
-            }}
-            valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
-          />
-        </Grid>
-        <Grid
-          // Liquidation buffer size is the half of the health bar
-          size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => (size - PRIMARY_METRIC_SIZE) / 2)}
-        >
-          <HealthAndBufferBar health={health} positionStatus={positionStatus} type="liquidationBuffer" />
-        </Grid>
+    <Grid container columns={HEALTH_DETAILS_COLUMNS} columnSpacing={Spacing.xs} sx={{ alignItems: 'center' }}>
+      <Grid size={PRIMARY_METRIC_SIZE}>
+        <Metric
+          category="llamalend.positionHealth"
+          label={t`Health`}
+          testId="health-details-health-metric"
+          value={mapQuery(position, ({ health }) => health)}
+          valueOptions={{
+            abbreviate: false,
+            color: maybe(data, data => Feedback[getHealthFeedback(data, thresholds)]),
+            formatter: formatHealth,
+          }}
+          valueTooltip={healthTooltip}
+        />
       </Grid>
-    </>
+      <Grid size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => size - PRIMARY_METRIC_SIZE)}>
+        <HealthAndBufferBar
+          testId="health-details-health-bar"
+          size="lg"
+          tooltip={healthTooltip}
+          isLoading={isLoading}
+          fill={maybe(data, data => getHealthBarFill(data, thresholds))}
+          feedback={maybe(data, data => getHealthFeedback(data, thresholds))}
+          status={data?.status}
+        />
+      </Grid>
+      <Grid size={PRIMARY_METRIC_SIZE}>
+        <Metric
+          category="llamalend.positionLiquidationBuffer"
+          label={t`Liq. buffer`}
+          testId="health-details-liquidation-buffer-metric"
+          value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
+          notional={mapQuery(position, ({ liquidationBufferAmount }) =>
+            formatAmount(liquidationBufferAmount, borrowSymbol),
+          )}
+          valueOptions={{
+            abbreviate: false,
+            color: maybe(data, data => Feedback[getLiquidationBufferFeedback(data, thresholds)]),
+            formatter: value => formatNumber(value, 'percent.value'),
+          }}
+          valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
+        />
+      </Grid>
+      <Grid
+        // Liquidation buffer size is the half of the health bar
+        size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => (size - PRIMARY_METRIC_SIZE) / 2)}
+      >
+        <HealthAndBufferBar
+          testId="health-details-liquidation-buffer-bar"
+          size="sm"
+          tooltip={LIQUIDATION_BUFFER_TOOLTIP}
+          isLoading={isLoading}
+          fill={maybe(data, data => getLiquidationBufferBarFill(data, thresholds))}
+          feedback={maybe(data, data => getLiquidationBufferFeedback(data, thresholds))}
+        />
+      </Grid>
+    </Grid>
   )
 }

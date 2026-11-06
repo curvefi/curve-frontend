@@ -220,6 +220,9 @@ describe('Position status logic', () => {
 })
 
 describe('BorrowPositionDetails status alerts', () => {
+  // The alert is legacy, on Beta its text moved into the Health tooltip
+  beforeEach(() => localStorage.setItem('release-channel-v1', JSON.stringify(ReleaseChannel.Stable)))
+
   it('hides market alert when status is undefined', () => {
     cy.mount(<PositionDetailsTest {...baseProps} healthNotFull={null} />)
     cy.get(ALERT_TEST_ID).should('not.exist')
@@ -269,5 +272,15 @@ describe('BorrowPositionDetails status alerts', () => {
           })
         })
     })
+  })
+})
+
+describe('BorrowPositionDetails on Beta', () => {
+  it('hides the market alert', () => {
+    cy.mount(
+      <PositionDetailsTest {...baseProps} {...statusCases.find(s => s.status === 'hardLiquidation')?.overrides} />,
+    )
+    cy.get('[data-testid="health-details-health-metric"]').should('be.visible')
+    cy.get(ALERT_TEST_ID).should('not.exist')
   })
 })

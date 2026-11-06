@@ -1,6 +1,7 @@
 import type { Theme } from '@mui/material/styles'
-import type { Decimal } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
+import { formatNumber } from '@primitives/number.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMax } from '@ui/lib/decimal'
 
@@ -76,6 +77,19 @@ export const getHealthThresholds = (assetsType: MarketAssetsType | undefined): H
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
   decimalMax(decimalDiv(oraclePrice, topOfRange), '1')!
 
+/** Rounds up, so a health just above 1 never reads as 1.00, the value where soft liquidation starts. */
+export const formatHealth = (health: Amount) =>
+  +health < 1.1
+    ? formatNumber(health, {
+        abbreviate: false,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4,
+        trailingZeroDisplay: 'auto',
+        roundingPriority: 'lessPrecision',
+        roundingMode: 'ceil',
+      })
+    : formatNumber(health, 'health')
+
 /** Resolves the position status, the first match wins. */
 export const getPositionStatus = ({
   health,
@@ -98,7 +112,8 @@ export const getPositionStatus = ({
           : 'aboveRange'
         : 'inRange'
 
-type FeedbackKey = keyof Theme['design']['Layer']['Feedback'] & keyof Theme['design']['Text']['TextColors']['Feedback']
+export type FeedbackKey = keyof Theme['design']['Layer']['Feedback'] &
+  keyof Theme['design']['Text']['TextColors']['Feedback']
 
 export const getHealthFeedback = ({ health }: PositionHealth, { nearRangeHealth }: HealthThresholds): FeedbackKey =>
   decimalGreaterThan(health, '1') ? (+health <= nearRangeHealth ? 'Warning' : 'Success') : 'Error'
