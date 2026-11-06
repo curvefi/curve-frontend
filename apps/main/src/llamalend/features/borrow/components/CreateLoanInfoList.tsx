@@ -44,7 +44,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useCreateLoanIsApproved(params))}
-      health={q(useCreateLoanHealth({ ...params, isFull: true }, isOpen))}
+      health={q(useCreateLoanHealth({ ...params, isFull: true }, !useNewLlamalendHealth() && isOpen))}
       liquidationBuffer={q(useCreateLoanHealth({ ...params, isFull: false }, useNewLlamalendHealth() && isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}

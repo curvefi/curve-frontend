@@ -201,9 +201,9 @@ export const createCreateLoanScenario = ({
           }
         }
       : () => {
-          // full health for the legacy row, not full for the Beta liquidation buffer row
-          expect(normalStubs.createLoanHealth).to.have.been.calledWithExactly(...normalExpected.query, true)
+          // Beta only shows the liquidation buffer, so full health for the legacy row is never queried
           expect(normalStubs.createLoanHealth).to.have.been.calledWithExactly(...normalExpected.query, false)
+          expect(normalStubs.createLoanHealth).to.not.have.been.calledWith(...normalExpected.query, true)
           expect(normalStubs.createLoanPrices).to.have.been.calledWithExactly(...normalExpected.query)
           expect(normalStubs.createLoanMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
           expect(normalStubs.createLoanIsApproved).to.have.been.calledWithExactly(...normalExpected.approved)
