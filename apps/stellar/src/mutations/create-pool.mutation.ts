@@ -19,7 +19,12 @@ export const useCreatePoolMutation = ({
   network,
   factory,
   implementationIndex,
-}: NetworkQuery & { factory: StellarContract | undefined; implementationIndex: number | undefined }) => {
+  wasmHash,
+}: NetworkQuery & {
+  factory: StellarContract | undefined
+  implementationIndex: number | undefined
+  wasmHash: number[] | undefined
+}) => {
   const { address: account } = useWallet()
   const { mutate, data, error, isPending } = useTransactionMutation({
     mutationKey: [{ name: 'createPool', network, factory, implementationIndex, account }],
@@ -28,10 +33,11 @@ export const useCreatePoolMutation = ({
       network,
       factory,
       implementationIndex,
+      wasmHash,
       account: assert(account, t`Connect a Stellar wallet`),
     }),
     validationSuite: createPoolValidationSuite,
-    validationParams: { network, factory, implementationIndex, account },
+    validationParams: { network, factory, implementationIndex, account, wasmHash },
     mutationFn: async ({ values, ...params }: CreatePoolMutation, context): Promise<CreatedPool> => {
       const transaction = await withPendingToast(
         fetchCreatePoolSimulation({ ...params, ...context }, { staleTime: 0 }),

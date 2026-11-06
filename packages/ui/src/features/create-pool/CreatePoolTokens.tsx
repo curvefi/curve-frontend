@@ -5,6 +5,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { CREATE_POOL_COLUMNS } from './constants'
 import { getCreatePoolTokens } from './create-pool.utils'
+import { CreatePoolAvailability } from './CreatePoolAvailability'
 import { CreatePoolTokenSelector } from './CreatePoolTokenSelector'
 import type { CreatePoolTokensProps } from './types'
 
@@ -19,10 +20,12 @@ export const CreatePoolTokens = ({
   onTokenSearch,
   setTokens,
   inputsDisabled,
+  availability,
+  network,
 }: CreatePoolTokensProps) => {
   const tokens = getCreatePoolTokens(values, values.tokenCount)
   return (
-    <>
+    <Stack sx={{ gap: Spacing.xs }}>
       <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
         {tokens.map((token, index) => (
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Token slots must remain mounted when selections change.
@@ -57,6 +60,7 @@ export const CreatePoolTokens = ({
         disabled={inputsDisabled || tokens.length >= tokenCountRange.max}
         onClick={() => setTokens([...tokens, undefined])}
       >{t`Add token +`}</Button>
-    </>
+      <CreatePoolAvailability availability={availability} networkName={network.name} tokenCount={values.tokenCount} />
+    </Stack>
   )
 }

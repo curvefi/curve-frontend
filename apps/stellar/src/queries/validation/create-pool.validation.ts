@@ -132,6 +132,9 @@ export const createPoolValidationSuite = createValidationSuite((params: CreatePo
   validateFactory(params)
   validateAccount(params.account)
   validateParameters(params)
+  test('wasmHash', 'Pool creation is currently unavailable for this token count', () => {
+    enforce(params.wasmHash).isArray().isNotEmpty()
+  })
   test('coins', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
     enforce(params.coins?.length).gte(limits.tokens.min).lte(limits.tokens.max)
     enforce(new Set(params.coins).size).equals(params.coins?.length)

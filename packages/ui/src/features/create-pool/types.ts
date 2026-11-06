@@ -76,6 +76,8 @@ export type CreatePoolTokenSearchProps = {
 
 export type CreatePoolTokensProps = CreatePoolTokenSearchProps & {
   form: UseFormReturn<CreatePoolFormValues>
+  network: CreatePoolNetwork
+  availability: QueryProp<number[]>
   blockchainId: string
   limits: PoolParameterRanges & { tokens: { min: number; max: number }; nameMaxBytes: number; symbolMaxBytes: number }
   inputsDisabled: boolean

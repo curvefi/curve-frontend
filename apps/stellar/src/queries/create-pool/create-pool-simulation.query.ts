@@ -9,7 +9,6 @@ import { createPoolValidationSuite } from '@/stellar/queries/validation/create-p
 import { assert } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toWei } from '@ui/lib/decimal'
-import { fetchFactoryImplementation } from './factory-implementation.query'
 
 // PlainPoolParams in stableswap-rs/contracts/factory/src/types.rs.
 const PARAMETER_TYPES = {
@@ -33,6 +32,7 @@ export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSim
     network,
     factory,
     implementationIndex,
+    wasmHash,
     account,
     coins,
     amplification,
@@ -47,6 +47,7 @@ export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSim
       network,
       factory,
       implementationIndex,
+      wasmHash,
       account,
       coins,
       amplification,
@@ -68,8 +69,8 @@ export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSim
       fee,
       feeMultiplier,
       priceOracleAveragingWindow,
+      wasmHash,
     } = params
-    const wasmHash = await fetchFactoryImplementation({ ...params, coinCount: coins.length }, { staleTime: 0 })
     return simulateContractCall<{ pool: StellarContract }>(
       network,
       factory,

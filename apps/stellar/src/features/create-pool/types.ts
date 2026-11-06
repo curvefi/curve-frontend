@@ -8,7 +8,7 @@ export type CreatePoolValues = PoolParameters &
   Pick<CreatePoolFormValues, 'poolName' | 'symbol'> & { coins: StellarContract[] }
 export type CreatePoolQuery = CreatePoolValues &
   NetworkQuery &
-  UserQuery & { factory: StellarContract; implementationIndex: number }
+  UserQuery & { factory: StellarContract; implementationIndex: number; wasmHash: number[] }
 export type CreatePoolParams = FieldsOf<DeepPartial<CreatePoolQuery>>
 export type CreatePoolMutation = CreatePoolValues & { values: CreatePoolFormValues }
 export type CreatedPool = { pool: StellarContract; values: CreatePoolFormValues }
