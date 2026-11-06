@@ -211,6 +211,15 @@ const PRECISE_NUMBER_FORMAT = {
   formatter: preciseFormatter,
 } as const
 
+const PERCENT_RATE_FORMAT = {
+  unit: 'percentage',
+  abbreviate: true,
+  // Disregard the precision edge case around 0 and 1 and force using 2 decimals.
+  minimumFractionDigits: 2,
+  maximumSignificantDigits: undefined,
+  fallback: UNAVAILABLE_NOTATION,
+} as const
+
 const NUMBER_FORMAT_CATEGORIES = {
   date: {
     abbreviate: false,
@@ -253,6 +262,7 @@ const NUMBER_FORMAT_CATEGORIES = {
   'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   'token.balance': PRECISE_NUMBER_FORMAT,
   'token.precise': PRECISE_NUMBER_FORMAT,
+  'token.share': PERCENT_RATE_FORMAT,
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'usd.precise': { ...PRECISE_NUMBER_FORMAT, unit: 'dollar' },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: UNAVAILABLE_NOTATION },
@@ -265,14 +275,7 @@ const NUMBER_FORMAT_CATEGORIES = {
     fallback: UNAVAILABLE_NOTATION,
     formatter: value => defaultNumberFormatter(value, getFractionDigitsOptions(value, 5)),
   },
-  'percent.rate': {
-    unit: 'percentage',
-    abbreviate: true,
-    // Disregard the precision edge case around 0 and 1 and force using 2 decimals.
-    minimumFractionDigits: 2,
-    maximumSignificantDigits: undefined,
-    fallback: UNAVAILABLE_NOTATION,
-  },
+  'percent.rate': PERCENT_RATE_FORMAT,
   'pool.parameter': { unit: 'none', abbreviate: false, fallback: UNAVAILABLE_NOTATION, decimals: 5 },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 

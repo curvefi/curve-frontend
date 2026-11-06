@@ -9,7 +9,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimalDiv } from '@ui/lib/decimal'
-import { type ApiCollateralEvent, getOpenPositionEvents } from '../collateral-events.utils'
+import { type ApiCollateralEvent, hasZapBorrowInOpenPosition } from '../collateral-events.utils'
 import {
   invalidateUserCrvUsdCollateralEventsQuery,
   useUserCrvUsdCollateralEventsQuery,
@@ -62,13 +62,6 @@ export type UserCollateralEvents = {
   /** The open position borrowed through the leverage zap */
   isZapLeveraged: boolean
 }
-
-/**
- * Whether the open position deposited through the leverage zap. Only events after the last closed position count, so a
- * closed leveraged loan doesn't mark a new plain borrow.
- */
-const hasZapBorrowInOpenPosition = (events: ApiCollateralEvent[]) =>
-  getOpenPositionEvents(events).some(e => e.leverage?.eventType === 'Deposit')
 
 const parseEventType = (
   { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: ApiCollateralEvent,

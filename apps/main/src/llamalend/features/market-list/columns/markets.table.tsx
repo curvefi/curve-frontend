@@ -1,13 +1,10 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
-import { MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
 import { t } from '@ui/lib/i18n'
 import { CompactUsdCell } from '../cells/CompactUsdCell'
 import { LineGraphCell } from '../cells/LineGraphCell'
 import { MaxLeverageCell } from '../cells/MaxLeverageCell'
-import { MaxReturnOnEquityCell } from '../cells/MaxReturnOnEquityCell'
 import { PercentCell } from '../cells/PercentCell'
 import { RateCell } from '../cells/RateCell/RateCell'
 import { TvlCell } from '../cells/TvlCell'
@@ -92,21 +89,6 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
           sortUndefined: 'last',
         },
       ),
-      columnHelper.accessor(getMaxReturnOnEquity, {
-        id: MarketColumnId.MaxReturnOnEquity,
-        header: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
-        cell: MaxReturnOnEquityCell,
-        meta: {
-          type: 'numeric',
-          unit: 'percentage',
-          tooltip: {
-            title: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
-            body: <MaxReturnOnEquityTooltipContent />,
-          },
-          defaultHidden: true,
-        },
-        sortUndefined: 'last',
-      }),
       columnHelper.accessor(row => row.maxLtv ?? undefined, {
         id: MarketColumnId.MaxLtv,
         header: MARKET_TITLES[MarketColumnId.MaxLtv],

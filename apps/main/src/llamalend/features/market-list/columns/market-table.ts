@@ -75,6 +75,15 @@ const migrateGroupsToOverrides = (storedGroups: StoredGroups, columns: readonly 
 export const inGroup = <TColumn extends Partial<MarketColumn>>(settingsGroup: string, columns: TColumn[]) =>
   columns.map(column => ({ ...column, meta: { ...column.meta, settingsGroup } }))
 
+/** A column shown differently on one table, keeping the rest of its definition. */
+export const adapt = <TColumn extends Partial<MarketColumn>>(
+  column: TColumn,
+  {
+    meta,
+    ...overrides
+  }: Partial<Pick<TColumn, Extract<keyof TColumn, 'header' | 'cell'>>> & Pick<MarketColumn, 'meta'>,
+) => ({ ...column, ...overrides, meta: { ...column.meta, ...meta } })
+
 /** A table showing markets, its columns are the only source for what is shown, sorted, filtered and toggled. */
 export const defineMarketTable = <TColumn extends Partial<MarketColumn>>({
   columns: columnInputs,

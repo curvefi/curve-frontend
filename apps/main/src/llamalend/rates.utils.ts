@@ -56,16 +56,6 @@ export const getReturnOnEquity = (
     lev < 1 ? undefined : lev * colApy - (lev - 1) * borApy,
   )
 
-/** Return on equity at the market's maximum leverage. */
-export const getMaxReturnOnEquity = ({
-  leverage,
-  assets: {
-    collateral: { rebasingYield },
-  },
-  rates: { borrowApy },
-}: Pick<LlamaMarket, 'leverage' | 'assets' | 'rates'>): number | undefined =>
-  getReturnOnEquity(leverage, rebasingYield, borrowApy)
-
 export type BorrowRates = { borrowApr?: Decimal; borrowApy?: Decimal }
 
 export const formatReturnOnEquity = (
@@ -198,6 +188,10 @@ export const getMarketYields = (
     getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr),
     getMarketCampaigns(campaigns, addresses),
   )
+
+/** Yields and borrow campaign rewards of a market in the market list. */
+export const getMarketListYields = ({ assets, rewards }: Pick<LlamaMarket, 'assets' | 'rewards'>) =>
+  toMarketYields(assets.collateral.rebasingYieldApr, assets.borrowed.rebasingYieldApr, rewards)
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
