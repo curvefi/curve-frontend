@@ -153,14 +153,14 @@ export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
 /** The delegation ZapV2 contracts of the newer LLv1 markets, the LLv2 markets and the factory Mint markets */
 const DELEGATION_ZAP_ALIASES = ['leverage_zap_v2_transient', 'leverage_zap_v2_llv2', 'leverage_zap_v2_mint_transient']
 
-const usesDelegationZap = (market: MarketTemplate, alias: string) => {
-  const delegationZap = market.getLlamalend().constants.ALIASES[alias]
-  return !!delegationZap && isAddressEqual(market.getZapAddress() as Address, delegationZap as Address)
-}
-
 /** Controllers that support delegation use the delegation ZapV2 (no router calldata size limit). */
 export const hasZapDelegation = (market: MarketTemplate | Nullish) =>
-  maybe(market, market => DELEGATION_ZAP_ALIASES.some(alias => usesDelegationZap(market, alias)))
+  maybe(market, market => {
+    const { ALIASES } = market.getLlamalend().constants
+    return DELEGATION_ZAP_ALIASES.some(
+      alias => !!ALIASES[alias] && isAddressEqual(market.getZapAddress() as Address, ALIASES[alias] as Address),
+    )
+  })
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
