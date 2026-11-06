@@ -1,13 +1,9 @@
-import { zeroAddress, getAddress } from 'viem'
+import { zeroAddress, getAddress, isAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import {
-  DELEGATION_ZAP_ALIASES,
-  getMarketLeverageProviders,
-  getMarketLeverageSlippage,
-  hasZapDelegation,
-} from '@/llamalend/llama.utils'
+import { getMarketLeverageProviders, getMarketLeverageSlippage, hasZapDelegation } from '@/llamalend/llama.utils'
 import { getMarketAddressesByAssetsType } from '@/llamalend/market-assets-type.utils'
 import {
+  DELEGATION_ZAP_ALIASES,
   DEPRECATED_LLAMAS,
   MARKETS_ALERTS,
   MARKETS_LEVERAGE_CONFIG,
@@ -163,9 +159,7 @@ describe('hasZapDelegation', () => {
 
   it('only lists delegation zaps deployed on Ethereum in llamalend.js', () => {
     DELEGATION_ZAP_ALIASES.forEach(alias =>
-      expect(ALIASES_ETHEREUM[alias], alias)
-        .to.match(/^0x[0-9a-f]{40}$/)
-        .and.not.eq(zeroAddress),
+      expect(ALIASES_ETHEREUM[alias], alias).to.satisfy(isAddress).and.not.eq(zeroAddress),
     )
   })
 })
