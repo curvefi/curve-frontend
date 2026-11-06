@@ -1,5 +1,6 @@
+import { maybe } from '@primitives/objects.utils'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
-import type { Persister } from '@tanstack/query-persist-client-core'
+import type { PersistedClient, Persister } from '@tanstack/query-persist-client-core'
 import { QueryCache, QueryClient } from '@tanstack/react-query'
 import { mutationCache } from './cache'
 
@@ -14,4 +15,14 @@ export const queryClient = new QueryClient({
   mutationCache,
 })
 
-export const persister: Persister = createAsyncStoragePersister({ storage: window.localStorage })
+export const persister: Persister = createAsyncStoragePersister({
+  storage: window.localStorage,
+  // Tag bigint values to preserve their type without changing ordinary strings or importing viem.
+  serialize: data =>
+    JSON.stringify(data, (_, value: unknown) => (typeof value === 'bigint' ? { $bigint: value.toString() } : value)),
+  deserialize: data =>
+    JSON.parse(
+      data,
+      (_, value: unknown) => maybe((value as { $bigint?: string } | null)?.$bigint, BigInt) ?? value,
+    ) as PersistedClient,
+})

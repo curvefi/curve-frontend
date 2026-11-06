@@ -24,7 +24,6 @@ import { noRedundantCypressAssertionRule } from './.eslint/no-redundant-cypress-
 import { noRouterNavigateOnClickRule } from './.eslint/no-router-navigate-on-click.rule.mjs'
 import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
 import { isolatedPackagesRule } from './.eslint/isolated-packages.rule.mjs'
-import { noPersistedBigintRule } from './.eslint/no-persisted-bigint.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -87,7 +86,6 @@ const config = [
           'no-router-navigate-on-click': noRouterNavigateOnClickRule,
           'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
           'isolated-packages': isolatedPackagesRule,
-          'no-persisted-bigint': noPersistedBigintRule,
         },
       },
     },
@@ -117,7 +115,6 @@ const config = [
       'local/no-router-navigate-on-click': 'error',
       'local/no-single-line-named-functions': 'error',
       'local/isolated-packages': 'error',
-      'local/no-persisted-bigint': 'error',
       'local/use-not-falsy-pattern': 'error',
 
       'object-shorthand': 'warn',
