@@ -2,7 +2,12 @@ import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { getPositionCapitalOptions } from '@/llamalend/features/user-position-history/queries/position-capital'
-import { getDisplayHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
+import {
+  getLegacyDisplayHealth,
+  getLegacyLiquidationStatus,
+  isBelowRange,
+  isZapV0MintMarket,
+} from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -32,14 +37,14 @@ const normalizeMarketStats = (stats: BorrowStats) => {
   const collateralBorrowTokenAmount = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
   const oraclePrice = decimal(stats.oraclePrice)
   return {
-    status: getLiquidationStatus(
+    status: getLegacyLiquidationStatus(
       decimal(stats.health),
       stats.softLiquidation,
       isBelowRange(stats.activeBand, stats.n2),
       decimal(stats.collateral),
       decimal(collateralBorrowTokenAmount),
     ),
-    health: getDisplayHealth(stats.healthFull, stats.health) ?? undefined,
+    health: getLegacyDisplayHealth(stats.healthFull, stats.health) ?? undefined,
     borrowed: stats.debt,
     collateral: stats.collateral,
     /**

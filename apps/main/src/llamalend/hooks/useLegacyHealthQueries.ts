@@ -44,5 +44,5 @@ const combineHealth = ([healthFull, healthNotFull]: [Query<Decimal>, Query<Decim
  * @param getOptions - Function that returns the query options for a given isFull boolean.
  * @returns Combined health query result.
  */
-export const useHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions) =>
+export const useLegacyHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions) =>
   useQueries({ queries: [getOptions(true), getOptions(false)], combine: combineHealth })

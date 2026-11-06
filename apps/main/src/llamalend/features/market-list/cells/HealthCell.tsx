@@ -9,7 +9,7 @@ import { TooltipDescription } from '@ui/components/TooltipComponents'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { HealthBar } from '../../market-position-details/health/HealthBar'
+import { LegacyHealthBar } from '../../market-position-details/health/LegacyHealthBar'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -30,7 +30,7 @@ export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, Ll
     >
       <Stack sx={{ gap: Spacing.xs }}>
         {formatNumber(health, 'percent.value')}
-        <HealthBar small health={health} softLiquidation={status === 'softLiquidation'} />
+        <LegacyHealthBar small health={health} softLiquidation={status === 'softLiquidation'} />
       </Stack>
     </Tooltip>
   ))

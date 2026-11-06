@@ -1,5 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useResetEstimateGas } from '@/llamalend/queries/reset/reset-gas-estimate.query'
 import { getResetHealthOptions } from '@/llamalend/queries/reset/reset-health.query'
@@ -41,7 +41,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useResetIsApproved(params, isOpen))}
       gas={q(useResetEstimateGas(params, isOpen))}
-      health={q(useHealthQueries(isHealthFull => getResetHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(useLegacyHealthQueries(isHealthFull => getResetHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={q(useResetPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       loanToValue={q(

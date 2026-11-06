@@ -6,9 +6,9 @@ import { Tooltip } from '@ui/components/Tooltip'
 import { type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
-import { getHealthValueColor } from '../market-position-details.utils'
+import { getLegacyHealthValueColor } from '../market-position-details.utils'
 import { LEGACY_HEALTH_TOOLTIP } from '../tooltips/tooltips'
-import { HealthBar } from './HealthBar'
+import { LegacyHealthBar } from './LegacyHealthBar'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,12 +32,12 @@ export const LegacyHealthDetails = ({
             category="llamalend.legacyPositionHealth"
             label={title}
             value={healthQuery}
-            valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(health), theme }) }}
+            valueOptions={{ unit: 'none', color: getLegacyHealthValueColor({ health: decimal(health), theme }) }}
             valueTooltip={LEGACY_HEALTH_TOOLTIP}
           />
           <Tooltip title={title} body={body}>
             <Stack sx={{ flex: 1 }}>
-              <HealthBar health={health && +health} softLiquidation={softLiquidation} />
+              <LegacyHealthBar health={health && +health} softLiquidation={softLiquidation} />
             </Stack>
           </Tooltip>
         </Stack>
