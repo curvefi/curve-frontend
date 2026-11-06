@@ -1,15 +1,27 @@
+import { getHealth, type PositionHealth } from '@/llamalend/health.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData, QueryProp } from '@ui/features/queries/util'
-import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui/lib/decimal'
+import {
+  decimalDiv,
+  decimalGreaterThan,
+  decimalMinus,
+  decimalMultiply,
+  decimalPercent,
+  decimalSum,
+  ZERO,
+} from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
+import { useMarketOraclePrice } from '../market/market-oracle-price.query'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
+import { useUserPrices } from './user-prices.query'
+import { useUserState } from './user-state.query'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
@@ -53,6 +65,25 @@ export const useLegacyUserHealthValue = (params: UserMarketParams) =>
   combineQueries(
     [useUserHealth({ ...params, isFull: true }), useUserHealth({ ...params, isFull: false })],
     (full, notFull) => (+notFull < 0 ? notFull : full),
+  )
+
+/** The position's health, liquidation buffer and liquidatable state. No data when the user has no loan. */
+export const usePositionHealth = (params: UserMarketParams) =>
+  combineQueries(
+    [
+      useMarketOraclePrice(params),
+      useUserPrices(params),
+      useUserHealth({ ...params, isFull: false }),
+      useUserHealth({ ...params, isFull: true }),
+      useUserState(params),
+    ],
+    (oraclePrice, prices, liquidationBuffer, healthFull, { debt }) =>
+      maybe(prices, (prices): PositionHealth => ({
+        health: getHealth(oraclePrice, prices),
+        liquidationBuffer,
+        liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
+        isLiquidatable: decimalGreaterThan(ZERO, healthFull),
+      })),
   )
 
 export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
