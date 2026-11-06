@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { POOL_LIQUIDITY_BREAKDOWN } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
 import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
 import { PoolTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolTradesExpandedPanel'
 import { OhlcChart } from '@evm-ui/features/candle-chart/OhlcChart'
@@ -29,6 +30,7 @@ const EventsTab = ({ liquidityTable }: OhlcTabsParams) => (
     emptyState={liquidityTable.emptyState}
     errorState={liquidityTable.errorState}
     expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
+    rowBreakdown={POOL_LIQUIDITY_BREAKDOWN}
   />
 )
 
