@@ -109,7 +109,7 @@ export const DetailPageLayout = ({
         container
         data-testid={testId ?? 'detail-page-layout'}
         columnSpacing={Spacing.md}
-        rowSpacing={PAGE_SPACING}
+        rowSpacing={sidebar ? { ...PAGE_SPACING, mobile: Spacing.sm.mobile } : PAGE_SPACING}
         sx={{
           ...PAGE_MARGIN,
           '& section[id]': {
@@ -122,11 +122,15 @@ export const DetailPageLayout = ({
               : stickyFormTabsSx(navHeight).top,
           },
           ...(!header && { marginBlockStart: Spacing.xl }),
+          ...(sidebar && {
+            marginInline: { ...PAGE_MARGIN.marginInline, mobile: Spacing.sm.mobile },
+            marginBlockStart: { ...Spacing.xl, mobile: 0 },
+          }),
         }}
         // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
         {...(!showMobileDrawer && { direction: 'row-reverse' })}
       >
-        {isMobile && <Grid size={12}>{headerStack}</Grid>}
+        {isMobile && (!sidebar || header || hasSections) && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
         {formTabs !== null && !showMobileDrawer && (
@@ -148,7 +152,14 @@ export const DetailPageLayout = ({
               width: { desktop: Width.column.md },
               order: { mobile: -1, desktop: 0 },
               ...stickyFormTabsSx(navHeight),
-              position: { tablet: 'static', desktop: 'sticky' },
+              position: { mobile: 'sticky', tablet: 'static', desktop: 'sticky' },
+              top: {
+                mobile: `${navHeight}px`,
+                desktop: `calc(${navHeight}px + ${PAGE_MARGIN.marginBlockStart.desktop})`,
+              },
+              alignSelf: 'flex-start',
+              zIndex: t => t.zIndex.appBar - 1,
+              backgroundColor: t => ({ mobile: t.design.Layer[1].Fill, desktop: 'transparent' }),
             }}
           >
             {sidebar}

@@ -1,20 +1,19 @@
-import { type ReactNode, useId, useState } from 'react'
+import { type ReactNode, useId } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Step from '@mui/material/Step'
-import StepButton from '@mui/material/StepButton'
-import Stepper from '@mui/material/Stepper'
 import { FormProvider } from '@ui/features/forms'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useIsDesktop } from '@ui/hooks/useBreakpoints'
+import { useActiveSection } from '@ui/hooks/useActiveSection'
+import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { CREATE_POOL_SECTIONS } from './constants'
 import { CreatePoolLiquidity } from './CreatePoolLiquidity'
 import { CreatePoolNameFields } from './CreatePoolNameFields'
 import { CreatePoolParameters } from './CreatePoolParameters'
+import { CreatePoolSidebar } from './CreatePoolSidebar'
 import { CreatePoolSummary } from './CreatePoolSummary'
 import { CreatePoolTokens } from './CreatePoolTokens'
 import { CreatePoolType } from './CreatePoolType'
@@ -22,8 +21,8 @@ import type { CreatePoolFormProps } from './types'
 
 const { Spacing } = SizesAndSpaces
 
-const Section = ({ index, onFocus, children }: { index: number; onFocus: () => void; children: ReactNode }) => (
-  <Card size="small" component="section" id={CREATE_POOL_SECTIONS[index].value} onFocusCapture={onFocus}>
+const Section = ({ index, offset, children }: { index: number; offset: number; children: ReactNode }) => (
+  <Card size="small" component="section" id={CREATE_POOL_SECTIONS[index].value} style={{ scrollMarginTop: offset }}>
     <CardHeader title={`${index + 1}. ${CREATE_POOL_SECTIONS[index].label}`} />
     <CardContent>
       <Stack sx={{ gap: Spacing.sm }}>{children}</Stack>
@@ -35,32 +34,29 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
   const { form, onSubmit, inputsDisabled, isPending, completed, poolTypes, network, limits } = props
   // The mobile summary is portaled outside this form. Its submit button uses this ID to submit the page's inputs.
   const formId = useId()
-  const [activeStep, setActiveStep] = useState(0)
-  const isDesktop = useIsDesktop()
+  const isMobile = useIsMobile()
+  const { activeSection, navigationRef, scrollOffset } = useActiveSection(CREATE_POOL_SECTIONS, {
+    includeNavigationHeight: isMobile,
+  })
   return (
     <FormProvider {...form}>
       <Box component="form" id={formId} onSubmit={event => void onSubmit(event)} sx={{ overflowWrap: 'break-word' }}>
         <DetailPageLayout
           sidebar={
-            <Box component="nav" sx={{ overflowX: 'auto', padding: Spacing.sm }}>
-              <Stepper nonLinear activeStep={activeStep} orientation={isDesktop ? 'vertical' : 'horizontal'}>
-                {CREATE_POOL_SECTIONS.map(({ value, label }, index) => (
-                  <Step key={value} completed={completed[value]}>
-                    <StepButton href={`#${value}`} onClick={() => setActiveStep(index)} disabled={isPending}>
-                      {label}
-                    </StepButton>
-                  </Step>
-                ))}
-              </Stepper>
-            </Box>
+            <CreatePoolSidebar
+              ref={navigationRef}
+              activeSection={activeSection}
+              completed={completed}
+              isPending={isPending}
+            />
           }
           formTabs={{ placement: 'mobile-drawer', content: <CreatePoolSummary {...props} formId={formId} /> }}
         >
           <Stack sx={{ gap: Spacing.lg, minWidth: 0 }}>
-            <Section index={0} onFocus={() => setActiveStep(0)}>
+            <Section index={0} offset={scrollOffset}>
               <CreatePoolTokens {...props} />
             </Section>
-            <Section index={1} onFocus={() => setActiveStep(1)}>
+            <Section index={1} offset={scrollOffset}>
               <CreatePoolType
                 network={network}
                 poolTypes={poolTypes}
@@ -69,7 +65,7 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
                 update={form.update}
               />
             </Section>
-            <Section index={2} onFocus={() => setActiveStep(2)}>
+            <Section index={2} offset={scrollOffset}>
               <CreatePoolParameters
                 disabled={inputsDisabled}
                 ranges={limits}
@@ -80,10 +76,10 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
                 errors={form.formState.errors}
               />
             </Section>
-            <Section index={3} onFocus={() => setActiveStep(3)}>
+            <Section index={3} offset={scrollOffset}>
               <CreatePoolLiquidity {...props} />
             </Section>
-            <Section index={4} onFocus={() => setActiveStep(4)}>
+            <Section index={4} offset={scrollOffset}>
               <CreatePoolNameFields
                 disabled={inputsDisabled}
                 nameMaxBytes={limits.nameMaxBytes}
