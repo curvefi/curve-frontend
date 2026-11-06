@@ -239,6 +239,8 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumFractionDigits: 4,
     roundingPriority: 'lessPrecision',
     trailingZeroDisplay: 'auto',
+    // a health just above 1 must not read as 1.00, where soft liquidation starts
+    roundingMode: 'ceil',
   },
   'health.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   multiplier: {

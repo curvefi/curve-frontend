@@ -78,18 +78,11 @@ export const getHealthThresholds = (assetsType: MarketAssetsType | undefined): H
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
   decimalMax(decimalDiv(oraclePrice, topOfRange), '1')!
 
-/** Rounds up, so a health just above 1 never reads as 1.00, the value where soft liquidation starts. */
+/** Below this health, values near 1 need more decimals than the 3 significant digits of the `health` format */
+const HEALTH_PRECISION_THRESHOLD = 1.1
+
 export const formatHealth = (health: Amount) =>
-  +health < 1.1
-    ? formatNumber(health, {
-        abbreviate: false,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 4,
-        trailingZeroDisplay: 'auto',
-        roundingPriority: 'lessPrecision',
-        roundingMode: 'ceil',
-      })
-    : formatNumber(health, 'health')
+  formatNumber(health, +health < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
 
 /** Resolves the position status, the first match wins. */
 export const getPositionStatus = ({

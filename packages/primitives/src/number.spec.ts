@@ -455,6 +455,7 @@ describe('formatNumber', () => {
       expect(formatNumber('1.001688520114346498', 'health.precise')).toBe('1.0017')
       expect(formatNumber(1.2, 'health.precise')).toBe('1.20')
       expect(formatNumber(1, 'health.precise')).toBe('1.00')
+      expect(formatNumber(1.000001, 'health.precise')).toBe('1.0001')
       expect(formatNumber('1.301688520114346498', 'health')).toBe('1.30')
     })
 
