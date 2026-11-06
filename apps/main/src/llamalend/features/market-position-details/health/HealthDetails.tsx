@@ -35,8 +35,10 @@ export const HealthDetails = ({
   borrowSymbol: string | undefined
 }) => {
   const { Feedback } = useTheme().design.Text.TextColors
-  // the bars show no error, it is already shown in the sibling Metric component
-  const { data, isLoading } = position
+  // the bars show no error, it is already shown in the sibling Metric component.
+  // combineQueries keeps the last data next to an error, drop it so no guessed status shows
+  const { isLoading } = position
+  const data = position.error ? undefined : position.data
   const healthTooltip = { title: t`Health`, body: <HealthTooltipContent status={data?.status} /> }
   return (
     <Grid container columns={HEALTH_DETAILS_COLUMNS} columnSpacing={Spacing.xs} sx={{ alignItems: 'center' }}>

@@ -2,7 +2,7 @@ import { HealthDetails } from '@/llamalend/features/market-position-details/heal
 import type { HealthThresholds, PositionHealth, PositionStatus } from '@/llamalend/health.utils'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
-import { constQ } from '@ui/features/queries/util'
+import { constQ, q } from '@ui/features/queries/util'
 import { lightTheme } from '@ui/features/themes/themes'
 
 const { design } = lightTheme()
@@ -29,10 +29,14 @@ const checkBarWidth =
     expect(fillWidth).to.be.closeTo((barWidth * expectedPercentage) / 100, 0.5)
   }
 
-const mountHealthDetails = (position: PositionHealth) =>
+const mountHealthDetails = (position: PositionHealth, error: Error | null = null) =>
   cy.mount(
     <ComponentTestWrapper>
-      <HealthDetails position={constQ(position)} thresholds={THRESHOLDS} borrowSymbol="crvUSD" />
+      <HealthDetails
+        position={error ? q({ data: position, isLoading: false, error }) : constQ(position)}
+        thresholds={THRESHOLDS}
+        borrowSymbol="crvUSD"
+      />
     </ComponentTestWrapper>,
   )
 
@@ -172,5 +176,13 @@ describe('Health details', () => {
   it('never rounds a health above 1 down to 1.00', () => {
     mountHealthDetails(getPosition('1.000001', '12', '120', '0.6', 'nearRange'))
     cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.0001')
+  })
+
+  it('shows no status from stale data when a source errors', () => {
+    mountHealthDetails(getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'), new Error('rpc failed'))
+    cy.get('[data-testid="health-details-health-bar"]').should('be.visible')
+    cy.get('[data-testid="health-details-health-bar-badge"]').should('not.exist')
+    cy.get('[data-testid="health-details-health-bar-fill"]').then(checkBarWidth(0))
+    cy.get('[data-testid="health-details-liquidation-buffer-bar-fill"]').then(checkBarWidth(0))
   })
 })
