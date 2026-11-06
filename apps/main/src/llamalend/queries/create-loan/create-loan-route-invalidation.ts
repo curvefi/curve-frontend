@@ -18,7 +18,7 @@ export const invalidateCreateLoanRouteQueries = async (
     invalidateCreateLoanExpectedCollateral(params),
     invalidateCreateLoanIsApproved(params),
     invalidateCreateLoanBands(params),
-    invalidateCreateLoanHealth(params),
+    invalidateCreateLoanHealth(params, { partial: true }),
     invalidateCreateLoanMaxReceive(params),
     invalidateCreateLoanPriceImpact(params),
     invalidateCreateLoanPrices(params),

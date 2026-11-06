@@ -4,10 +4,14 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
-import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
+import type { FieldsOf } from '@ui/lib/validation/types'
+import type { CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanRouteMaxReceiveKey } from './create-loan-max-receive.query'
+
+type CreateLoanHealthQuery = CreateLoanDebtQuery & { isFull: boolean }
+type CreateLoanHealthParams = FieldsOf<CreateLoanHealthQuery>
 
 export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHealth } = queryFactory({
   queryKey: ({
@@ -20,7 +24,8 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
     range,
     maxDebt,
     routeId,
-  }: CreateLoanDebtParams) =>
+    isFull,
+  }: CreateLoanHealthParams) =>
     ({
       name: 'createLoanHealth',
       chainId,
@@ -32,6 +37,7 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
       range,
       maxDebt,
       routeId,
+      isFull,
     }) as const,
   queryFn: async ({
     marketId,
@@ -40,16 +46,25 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
     leverageEnabled,
     range,
     routeId,
-  }: CreateLoanDebtQuery): Promise<Decimal> => {
+    isFull,
+  }: CreateLoanHealthQuery): Promise<Decimal> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return decimal(
-          (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).health,
+          (
+            await impl.createLoanExpectedMetrics({
+              userCollateral,
+              debt,
+              range,
+              ...parseRoute(routeId),
+              healthIsFull: isFull,
+            })
+          ).health,
         )!
       case 'V0':
       case 'unleveraged':
-        return decimal(await impl.createLoanHealth(userCollateral, debt, range))!
+        return decimal(await impl.createLoanHealth(userCollateral, debt, range, isFull))!
     }
   },
   category: 'llamalend.createLoan',

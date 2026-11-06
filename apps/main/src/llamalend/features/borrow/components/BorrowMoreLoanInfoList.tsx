@@ -13,7 +13,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendEquityLeverage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -56,7 +56,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={q(useBorrowMoreEstimateGas({ ...params, isControllerApproved }, isOpen))}
-      health={q(useBorrowMoreHealth(params, isOpen))}
+      health={q(useBorrowMoreHealth({ ...params, isFull: true }, isOpen))}
+      liquidationBuffer={q(useBorrowMoreHealth({ ...params, isFull: false }, useNewLlamalendHealth() && isOpen))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       loanToValue={q(

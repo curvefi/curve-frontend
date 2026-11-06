@@ -18,6 +18,7 @@ import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -51,6 +52,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       gas={q(useAddCollateralEstimateGas(params, isOpen))}
       health={q(useLegacyHealthQueries(isFull => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      liquidationBuffer={q(useQuery(getAddCollateralHealthOptions({ ...params, isFull: false }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(

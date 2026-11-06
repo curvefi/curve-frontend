@@ -23,6 +23,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal, decimalMinus } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -116,6 +117,7 @@ export function RepayLoanInfoList({
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
       health={q(useLegacyHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      liquidationBuffer={q(useQuery(getRepayHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       isFullRepay={isFull}

@@ -17,7 +17,7 @@ export const invalidateBorrowMoreRouteQueries = async (
     invalidateBorrowMoreExpectedCollateral(params),
     invalidateBorrowMoreFutureLeverage(params),
     invalidateBorrowMoreEstimateGasQueries(params),
-    invalidateBorrowMoreHealth(params),
+    invalidateBorrowMoreHealth(params, { partial: true }),
     invalidateBorrowMoreIsApproved(params),
     invalidateBorrowMoreMaxReceive(params),
     invalidateBorrowMorePriceImpact(params),

@@ -14,6 +14,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MarketType } from '@evm-ui/types/market'
 import type { Address, Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMax, decimalMinus } from '@ui/lib/decimal'
 
@@ -42,6 +43,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
       isApproved={q(useResetIsApproved(params, isOpen))}
       gas={q(useResetEstimateGas(params, isOpen))}
       health={q(useLegacyHealthQueries(isHealthFull => getResetHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      liquidationBuffer={q(useQuery(getResetHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
       prices={q(useResetPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       loanToValue={q(

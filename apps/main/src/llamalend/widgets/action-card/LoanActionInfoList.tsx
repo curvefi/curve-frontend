@@ -3,18 +3,23 @@ import {
   getLegacyHealthValueColor,
   getLeverageValueColor,
 } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
+import { LIQUIDATION_BUFFER_TOOLTIP } from '@/llamalend/features/market-position-details/tooltips/tooltips'
+import { formatHealth, getHealth } from '@/llamalend/health.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
 import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui/features/queries/util'
 import { useShowNetRate } from '@ui/features/storage/useLocalStorage'
 import { t } from '@ui/lib/i18n'
@@ -28,6 +33,8 @@ export type LoanActionInfoListProps = {
   isApproved?: QueryProp<boolean>
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal | null>
+  liquidationBuffer?: QueryProp<Decimal | null>
+  prevLiquidationBuffer?: QueryProp<Decimal | null>
   isFullRepay?: boolean
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
@@ -62,6 +69,14 @@ export type LoanActionInfoListProps = {
   leverageEnabled?: boolean
 }
 
+const formatHealthQuery = (
+  oraclePrice: QueryProp<Decimal | null>,
+  prices: QueryProp<Range<Decimal> | null> | undefined,
+) =>
+  combineQueries([oraclePrice, prices ?? DISABLED_Q], (oraclePrice, prices) =>
+    maybes([oraclePrice, prices], (oraclePrice, prices) => formatHealth(getHealth(oraclePrice, prices))),
+  )
+
 /**
  * List with action infos about the loan (like health, borrow APR, LTV, net borrow APR, estimated gas)
  * By default, the action info are hidden. They are visible when the isOpen prop is true.
@@ -72,6 +87,8 @@ export const LoanActionInfoList = ({
   isApproved,
   health,
   prevHealth,
+  liquidationBuffer,
+  prevLiquidationBuffer,
   isFullRepay,
   prices,
   prevPrices,
@@ -103,6 +120,7 @@ export const LoanActionInfoList = ({
   borrowSymbol,
   leverageEnabled,
 }: LoanActionInfoListProps) => {
+  const theme = useTheme()
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
     prevNetRate: prevNetBorrowApr,
@@ -152,26 +170,51 @@ export const LoanActionInfoList = ({
           )}
         </Stack>
         <Stack>
-          <ActionInfo
-            label={t`Health`}
-            value={prevHealth ? mapQuery(prevHealth, data => formatNumber(data, 'health.compact')) : DISABLED_Q}
-            futureValue={
-              // todo: do not ignore loading state for health - some forms/tests expect the fallback when the query is disabled
-              isFullRepay
-                ? '∞'
-                : health?.data === undefined
-                  ? '-'
-                  : mapQuery(health, data => formatNumber(data, 'health.compact'))
-            }
-            valueColor={getLegacyHealthValueColor({
-              health: health?.data,
-              prevHealth: prevHealth?.data,
-              theme: useTheme(),
-              isFullRepay,
-            })}
-            size="small"
-            testId="borrow-health"
-          />
+          {useNewLlamalendHealth() ? (
+            <>
+              <ActionInfo
+                label={t`Health`}
+                labelTooltip={{ title: t`Health`, body: <HealthTooltipContent /> }}
+                value={formatHealthQuery(oraclePrice, prevPrices)}
+                futureValue={prices && !isFullRepay ? formatHealthQuery(oraclePrice, prices) : '-'}
+                size="small"
+                testId="borrow-health"
+              />
+              <ActionInfo
+                label={t`Liquidation buffer`}
+                labelTooltip={LIQUIDATION_BUFFER_TOOLTIP}
+                value={mapQuery(prevLiquidationBuffer ?? DISABLED_Q, data => formatNumber(data, 'percent.value'))}
+                futureValue={
+                  liquidationBuffer && !isFullRepay
+                    ? mapQuery(liquidationBuffer, data => formatNumber(data, 'percent.value'))
+                    : '-'
+                }
+                size="small"
+                testId="borrow-liquidation-buffer"
+              />
+            </>
+          ) : (
+            <ActionInfo
+              label={t`Health`}
+              value={prevHealth ? mapQuery(prevHealth, data => formatNumber(data, 'health.compact')) : DISABLED_Q}
+              futureValue={
+                // todo: do not ignore loading state for health - some forms/tests expect the fallback when the query is disabled
+                isFullRepay
+                  ? '∞'
+                  : health?.data === undefined
+                    ? '-'
+                    : mapQuery(health, data => formatNumber(data, 'health.compact'))
+              }
+              valueColor={getLegacyHealthValueColor({
+                health: health?.data,
+                prevHealth: prevHealth?.data,
+                theme,
+                isFullRepay,
+              })}
+              size="small"
+              testId="borrow-health"
+            />
+          )}
           {(loanToValue ?? prevLoanToValue) && (
             <ActionInfo
               label={
