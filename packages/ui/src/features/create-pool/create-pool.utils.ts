@@ -26,6 +26,10 @@ export const getCreatePoolDecimals = <Count extends number | Nullish>(
 ) => maybe(tokenCount, count => range(count).map(index => values[createPoolTokenDecimalsField(index)] ?? undefined))
 
 export const getCreatePoolTokenDefaults = (tokenCount: number) => ({
-  ...fromEntries(range(tokenCount).map(index => [createPoolTokenField(index), undefined])),
-  ...fromEntries(range(tokenCount).map(index => [createPoolTokenSymbolField(index), undefined])),
+  ...fromEntries(
+    range(tokenCount).flatMap(index => [
+      [createPoolTokenField(index), undefined],
+      [createPoolTokenSymbolField(index), undefined],
+    ]),
+  ),
 })

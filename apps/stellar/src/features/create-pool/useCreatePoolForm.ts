@@ -170,8 +170,12 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
       update({
         tokenCount: tokens.length,
         ...getCreatePoolTokenDefaults(values.tokenCount),
-        ...fromEntries(tokens.map((token, index) => [createPoolTokenField(index), token?.address])),
-        ...fromEntries(tokens.map((token, index) => [createPoolTokenSymbolField(index), token?.symbol])),
+        ...fromEntries(
+          tokens.flatMap((token, index) => [
+            [createPoolTokenField(index), token?.address],
+            [createPoolTokenSymbolField(index), token?.symbol],
+          ]),
+        ),
         ...getPoolDefaultValues(values.tokenCount),
       }),
     error: deployment.error ?? liquidity.error ?? simulation.error,

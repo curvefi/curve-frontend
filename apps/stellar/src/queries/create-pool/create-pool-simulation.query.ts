@@ -105,5 +105,5 @@ export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSim
     )
   },
   validationSuite: createPoolValidationSuite,
-  category: 'global.no-persist', // values returned by the SDK lose the built transaction, disable persistence for now
+  category: 'stellar.transaction',
 })
