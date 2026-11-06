@@ -18,10 +18,10 @@ export const getUserBorrowedUsd = ({ positionQueries }: LlamaMarketRow) => {
 export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
   const stats = positionQueries.stats.data
   const collateralUsdRate = positionQueries.prices.collateral.data
-  const borrowedUsdRate = stats?.borrowToken === 0 ? 0 : positionQueries.prices.borrowed.data
+  const borrowedUsdRate = stats?.convertedBorrowed === 0 ? 0 : positionQueries.prices.borrowed.data
   return maybes(
     [stats, collateralUsdRate, borrowedUsdRate],
-    (stats, collateralRate, borrowedRate) => stats.collateral * collateralRate + stats.borrowToken * borrowedRate,
+    (stats, collateralRate, borrowedRate) => stats.collateral * collateralRate + stats.convertedBorrowed * borrowedRate,
   )
 }
 
@@ -32,11 +32,12 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
   return maybes(
     [stats, borrowedUsdRate, collateralUsdRate],
     (stats, borrowedRate, collateralRate) =>
-      calculateLtv(stats.borrowed, stats.collateral, stats.borrowToken, borrowedRate, collateralRate) || undefined,
+      calculateLtv(stats.borrowed, stats.collateral, stats.convertedBorrowed, borrowedRate, collateralRate) ||
+      undefined,
   )
 }
 
-export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
+export const getUserLegacyHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.legacyHealth
 
 export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
 

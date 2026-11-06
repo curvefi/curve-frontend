@@ -2,7 +2,7 @@ import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltip
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { t } from '@ui/lib/i18n'
-import { HealthCell } from '../cells/HealthCell'
+import { LegacyHealthCell } from '../cells/LegacyHealthCell'
 import { LtvCell } from '../cells/LtvCell'
 import { EquityCell, PnlCell } from '../cells/PositionPnlCells'
 import { PriceCell } from '../cells/PriceCell'
@@ -11,7 +11,7 @@ import {
   getUserCollateralUsd,
   getUserEquityUsd,
   getUserPnlUsd,
-  getUserPositionHealth,
+  getUserLegacyHealth,
   getUserPositionLtv,
 } from '../user-position.utils'
 import { MARKET_TITLES } from './column.titles'
@@ -23,8 +23,8 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
   testId: 'borrow',
   defaultSort: [{ id: MarketColumnId.UserBorrowed, desc: true }],
   sortQueryField: 'userSortBorrow',
-  storageKey: 'My Borrow Positions',
-  deprecatedVariants: [MarketRateType.Borrow],
+  storageKey: 'my-borrow-positions',
+  deprecatedVariants: [MarketRateType.Borrow], // used for the v9 -> v10 migration, this will be removed in the future
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Borrow`, [
@@ -70,10 +70,10 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
         },
         sortUndefined: 'last',
       }),
-      columnHelper.accessor(getUserPositionHealth, {
+      columnHelper.accessor(getUserLegacyHealth, {
         id: MarketColumnId.UserHealth,
         header: MARKET_TITLES[MarketColumnId.UserHealth],
-        cell: HealthCell,
+        cell: LegacyHealthCell,
         meta: { type: 'numeric' },
         sortUndefined: 'last',
       }),

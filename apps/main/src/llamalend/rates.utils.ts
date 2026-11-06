@@ -136,8 +136,15 @@ export const toNumberOrNull = (value: number | string | Nullish) => maybe(value,
 
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
+/** Null without incentives, as sumBy returns 0 for empty arrays */
+export const sumExtraIncentivesApy = (aprs: number[]) =>
+  aprs.length ? sumBy(aprs, apr => aprToApy(apr, 'llamalend.rewards')) : null
+
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy, 'llamalend.rewards')) : null
+  sumExtraIncentivesApy((rewardsApr ?? []).map(({ apy }) => apy))
+
+/** The CRV reward APR at the boost of the user */
+export const getUserBoostApr = (crvApr: number, boost: Decimal | number) => crvApr * +boost
 
 export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
@@ -153,6 +160,8 @@ type MarketCampaignAddresses = {
   ammAddress: Address | Nullish
 }
 
+export const getSupplyCampaigns = (rewards: CampaignRewards[]) => rewards.filter(({ action }) => action === 'supply')
+
 /** Campaigns of a market, from the contracts that reward its market type */
 export const getMarketCampaigns = (
   campaigns: Record<string, CampaignRewards[]>,
@@ -167,20 +176,28 @@ export const getMarketCampaigns = (
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
-/**
- * Yields from the latest snapshot and the borrow campaign rewards of a market.
- * No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%.
- */
+/** No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%. */
+const toMarketYields = (
+  collateralYieldApr: number | Nullish,
+  borrowedYieldApr: number | Nullish,
+  campaigns: CampaignRewards[],
+): MarketYields => ({
+  collateralYieldApr: decimal(collateralYieldApr) ?? null,
+  borrowedYieldApr: decimal(borrowedYieldApr) ?? ZERO,
+  borrowRewardsApr: decimal(sumCampaignsApr(campaigns.filter(c => c.action === 'borrow'))) ?? ZERO,
+})
+
+/** Yields from the latest snapshot and the borrow campaign rewards of a market. */
 export const getMarketYields = (
   snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
   campaigns: Record<string, CampaignRewards[]>,
   addresses: MarketCampaignAddresses & { marketType: MarketType },
-): MarketYields => ({
-  collateralYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr)) ?? null,
-  borrowedYieldApr: decimal(getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr)) ?? ZERO,
-  borrowRewardsApr:
-    decimal(sumCampaignsApr(getMarketCampaigns(campaigns, addresses).filter(c => c.action === 'borrow'))) ?? ZERO,
-})
+): MarketYields =>
+  toMarketYields(
+    getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr),
+    getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr),
+    getMarketCampaigns(campaigns, addresses),
+  )
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
@@ -242,7 +259,9 @@ export const getSupplyApyMetrics = ({
   const crvMinBoostApy = aprToApy(crvMinBoostApr, 'llamalend.rewards') ?? null
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr, 'llamalend.rewards') ?? null
   const userBoostApy =
-    maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost, 'llamalend.rewards')) ?? null
+    maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) =>
+      aprToApy(getUserBoostApr(apr, boost), 'llamalend.rewards'),
+    ) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy, campaignsApy)
 

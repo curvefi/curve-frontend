@@ -105,7 +105,7 @@ export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
       params,
       futurePosition: mapQuery(
         useCreateLoanExpectedCollateral(params, !!params.leverageEnabled),
-        ({ totalCollateral }) => ({ collateral: totalCollateral, stablecoin: ZERO, debt: params.debt ?? ZERO }),
+        ({ totalCollateral }) => ({ collateral: totalCollateral, convertedBorrowed: ZERO, debt: params.debt ?? ZERO }),
       ),
       isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
       debtDelta: params.debt,
@@ -150,7 +150,7 @@ export const useRepayEquityLeverage = (
         (position, debt) =>
           debt &&
           (params.isFull
-            ? { collateral: ZERO, stablecoin: ZERO, debt: ZERO }
+            ? { collateral: ZERO, convertedBorrowed: ZERO, debt: ZERO }
             : { ...position, collateral: decimalMinus(position.collateral, params.stateCollateral ?? ZERO), debt }),
       ),
       debtDelta,
