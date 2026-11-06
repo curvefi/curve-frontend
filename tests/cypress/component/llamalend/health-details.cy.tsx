@@ -11,9 +11,8 @@ const { design } = lightTheme()
 const THRESHOLDS: HealthThresholds = {
   nearRangeHealth: 1.1,
   healthBarFull: 2,
-  bufferCritical: 3,
-  bufferRisky: 10,
-  bufferBarFull: 25,
+  bufferLeftCritical: 0.25,
+  bufferLeftRisky: 0.5,
 }
 
 const hexToRgb = (value: string) => {
@@ -58,19 +57,21 @@ const getPosition = (
   health: Decimal,
   liquidationBuffer: Decimal,
   liquidationBufferAmount: Decimal,
+  liquidationBufferLeft: Decimal,
   status: PositionStatus,
 ): PositionHealth => ({
   health,
   liquidationBuffer,
   liquidationBufferAmount,
+  liquidationBufferLeft,
   isLiquidatable: status === 'liquidatable',
   status,
 })
 
 const testCases: HealthDetailsTestCase[] = [
   {
-    title: 'renders a position above the range',
-    position: getPosition('1.6', '20', '200', 'aboveRange'),
+    title: 'renders a position above the range with a buffer above its starting gap',
+    position: getPosition('1.6', '20', '200', '1.2', 'aboveRange'),
     expected: {
       health: '1.60',
       healthFeedback: 'Success',
@@ -78,13 +79,13 @@ const testCases: HealthDetailsTestCase[] = [
       liquidationBuffer: '20%',
       liquidationBufferAmount: '200 crvUSD',
       liquidationBufferFeedback: 'Success',
-      liquidationBufferBarWidth: 80,
+      liquidationBufferBarWidth: 100,
       badge: 'Above range',
     },
   },
   {
     title: 'renders a position near the range with a risky buffer',
-    position: getPosition('1.05', '8', '80', 'nearRange'),
+    position: getPosition('1.05', '8', '80', '0.4', 'nearRange'),
     expected: {
       health: '1.05',
       healthFeedback: 'Warning',
@@ -92,13 +93,13 @@ const testCases: HealthDetailsTestCase[] = [
       liquidationBuffer: '8%',
       liquidationBufferAmount: '80 crvUSD',
       liquidationBufferFeedback: 'Warning',
-      liquidationBufferBarWidth: 32,
+      liquidationBufferBarWidth: 40,
       badge: 'Near range',
     },
   },
   {
     title: 'renders a position in the range',
-    position: getPosition('1', '6', '60', 'inRange'),
+    position: getPosition('1', '6', '60', '0.3', 'inRange'),
     expected: {
       health: '1.00',
       healthFeedback: 'Error',
@@ -106,13 +107,13 @@ const testCases: HealthDetailsTestCase[] = [
       liquidationBuffer: '6%',
       liquidationBufferAmount: '60 crvUSD',
       liquidationBufferFeedback: 'Warning',
-      liquidationBufferBarWidth: 24,
+      liquidationBufferBarWidth: 30,
       badge: 'Soft liquidation',
     },
   },
   {
     title: 'renders a position below the range with a critical buffer',
-    position: getPosition('1', '2.4', '24', 'belowRange'),
+    position: getPosition('1', '2.4', '24', '0.12', 'belowRange'),
     expected: {
       health: '1.00',
       healthFeedback: 'Error',
@@ -120,13 +121,13 @@ const testCases: HealthDetailsTestCase[] = [
       liquidationBuffer: '2.40%',
       liquidationBufferAmount: '24 crvUSD',
       liquidationBufferFeedback: 'Error',
-      liquidationBufferBarWidth: 9.6,
+      liquidationBufferBarWidth: 12,
       badge: 'Below range',
     },
   },
   {
     title: 'renders a liquidatable position',
-    position: getPosition('1', '-0.5', '-5', 'liquidatable'),
+    position: getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'),
     expected: {
       health: '1.00',
       healthFeedback: 'Error',
@@ -169,7 +170,7 @@ describe('Health details', () => {
   })
 
   it('never rounds a health above 1 down to 1.00', () => {
-    mountHealthDetails(getPosition('1.000001', '12', '120', 'nearRange'))
+    mountHealthDetails(getPosition('1.000001', '12', '120', '0.6', 'nearRange'))
     cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.0001')
   })
 })

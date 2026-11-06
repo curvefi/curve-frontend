@@ -15,6 +15,7 @@ const DEBT: Decimal = '10000'
 type HealthDetailsStoryProps = {
   health?: Decimal
   liquidationBuffer?: Decimal
+  liquidationBufferLeft?: Decimal
   isLiquidatable?: boolean
   status?: PositionStatus
   assetsType?: MarketAssetsType
@@ -24,18 +25,23 @@ type HealthDetailsStoryProps = {
 const HealthDetailsStory = ({
   health,
   liquidationBuffer,
+  liquidationBufferLeft,
   isLiquidatable = false,
   status,
   assetsType,
   isLoading,
 }: HealthDetailsStoryProps) => {
-  const data = maybes([health, liquidationBuffer, status], (health, liquidationBuffer, status): PositionHealth => ({
-    health,
-    liquidationBuffer,
-    liquidationBufferAmount: decimalDiv(decimalMultiply(DEBT, liquidationBuffer), '100'),
-    isLiquidatable,
-    status,
-  }))
+  const data = maybes(
+    [health, liquidationBuffer, liquidationBufferLeft, status],
+    (health, liquidationBuffer, liquidationBufferLeft, status): PositionHealth => ({
+      health,
+      liquidationBuffer,
+      liquidationBufferAmount: decimalDiv(decimalMultiply(DEBT, liquidationBuffer), '100'),
+      liquidationBufferLeft,
+      isLiquidatable,
+      status,
+    }),
+  )
   return (
     <HealthDetails
       position={isLoading ? q({ data, isLoading: true, error: null }) : constQ(data)}
@@ -55,6 +61,7 @@ const meta: Meta<typeof HealthDetailsStory> = {
   argTypes: {
     health: { control: 'text' },
     liquidationBuffer: { control: 'text' },
+    liquidationBufferLeft: { control: 'text' },
     isLiquidatable: { control: 'boolean' },
     status: { control: 'select', options: ['aboveRange', 'nearRange', 'inRange', 'belowRange', 'liquidatable'] },
     assetsType: { control: 'select', options: Object.values(MarketAssetsType) },
@@ -65,25 +72,61 @@ const meta: Meta<typeof HealthDetailsStory> = {
 export default meta
 type Story = StoryObj<typeof HealthDetailsStory>
 
-export const AboveRange: Story = { args: { health: '1.6', liquidationBuffer: '18', status: 'aboveRange' } }
+export const AboveRange: Story = {
+  args: { health: '1.6', liquidationBuffer: '18', liquidationBufferLeft: '0.7', status: 'aboveRange' },
+}
 
 export const Loading: Story = { args: { isLoading: true } }
 
 const allStates = [
   { name: 'Undefined', args: {} },
   { name: 'AboveRange', args: AboveRange.args },
-  { name: 'NearRange', args: { health: '1.08', liquidationBuffer: '12', status: 'nearRange' } },
-  { name: 'JustAboveRange', args: { health: '1.00001', liquidationBuffer: '12', status: 'nearRange' } },
-  { name: 'InRange', args: { health: '1', liquidationBuffer: '6', status: 'inRange' } },
-  { name: 'InRangeCritical', args: { health: '1', liquidationBuffer: '2.4', status: 'inRange' } },
-  { name: 'BelowRange', args: { health: '1', liquidationBuffer: '8', status: 'belowRange' } },
+  {
+    name: 'NearRange',
+    args: { health: '1.08', liquidationBuffer: '12', liquidationBufferLeft: '0.47', status: 'nearRange' },
+  },
+  {
+    name: 'JustAboveRange',
+    args: { health: '1.00001', liquidationBuffer: '12', liquidationBufferLeft: '0.47', status: 'nearRange' },
+  },
+  { name: 'InRange', args: { health: '1', liquidationBuffer: '6', liquidationBufferLeft: '0.23', status: 'inRange' } },
+  {
+    name: 'InRangeCritical',
+    args: { health: '1', liquidationBuffer: '2.4', liquidationBufferLeft: '0.09', status: 'inRange' },
+  },
+  {
+    name: 'BelowRange',
+    args: { health: '1', liquidationBuffer: '8', liquidationBufferLeft: '0.31', status: 'belowRange' },
+  },
   {
     name: 'Liquidatable',
-    args: { health: '1', liquidationBuffer: '-0.5', isLiquidatable: true, status: 'liquidatable' },
+    args: {
+      health: '1',
+      liquidationBuffer: '-0.5',
+      liquidationBufferLeft: '-0.02',
+      isLiquidatable: true,
+      status: 'liquidatable',
+    },
+  },
+  {
+    name: 'CorrelatedFreshBuffer',
+    args: {
+      health: '1.11',
+      liquidationBuffer: '0.41',
+      liquidationBufferLeft: '1.37',
+      status: 'aboveRange',
+      assetsType: MarketAssetsType.Correlated,
+    },
   },
   {
     name: 'CorrelatedCriticalBuffer',
-    args: { health: '1.11', liquidationBuffer: '0.38', status: 'aboveRange', assetsType: MarketAssetsType.Correlated },
+    args: {
+      health: '1.11',
+      liquidationBuffer: '0.03',
+      liquidationBufferLeft: '0.1',
+      status: 'aboveRange',
+      assetsType: MarketAssetsType.Correlated,
+    },
   },
 ] as const
 

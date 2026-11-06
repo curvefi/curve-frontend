@@ -9,6 +9,7 @@ import { getMarketOraclePriceKey } from '@/llamalend/queries/market/market-oracl
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
+import { getUserDiscountsKey } from '@/llamalend/queries/user/user-discounts.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
 import { getLoanExistsKey } from '@/llamalend/queries/user/user-loan-exists.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
@@ -93,6 +94,7 @@ const PositionDetailsTest = ({
           [getUserPricesKey({ ...params, loanExists: true }), userPrices],
           [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
           [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
+          [getUserDiscountsKey(params), { loanDiscount: '9', liquidationDiscount: '6' }],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
           [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
           [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],

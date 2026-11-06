@@ -91,7 +91,7 @@ export const HealthDetails = ({
           size="sm"
           tooltip={LIQUIDATION_BUFFER_TOOLTIP}
           isLoading={isLoading}
-          fill={maybe(data, data => getLiquidationBufferBarFill(data, thresholds))}
+          fill={maybe(data, getLiquidationBufferBarFill)}
           feedback={maybe(data, data => getLiquidationBufferFeedback(data, thresholds))}
         />
       </Grid>

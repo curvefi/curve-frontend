@@ -20,7 +20,7 @@ export const BorrowPositionDetails = () => {
   const params = { chainId, marketId, userAddress }
   const liquidationStatus = useLiquidationStatus(params)
   const thresholds = getHealthThresholds(getMarketAssetsType(chainId, controllerAddress))
-  // every source is already loaded by the legacy card and BorrowInformation, so this costs no extra calls on Stable
+  // on Stable every source but the discounts is already loaded by the legacy card and BorrowInformation
   const position = usePositionHealth(params, thresholds)
   const statusContent =
     liquidationStatus.data &&

@@ -6,10 +6,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import { decimalDiv, decimalGreaterThan, decimalMultiply, ZERO } from '@ui/lib/decimal'
+import { decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply, decimalPercent, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { useMarketOraclePrice } from '../market/market-oracle-price.query'
 import { validateIsFull } from '../validation/borrow-fields.validation'
+import { useUserDiscounts } from './user-discounts.query'
 import { useUserPrices } from './user-prices.query'
 import { useUserState } from './user-state.query'
 
@@ -52,8 +53,9 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: HealthTh
       useUserHealth({ ...params, isFull: false }),
       useUserHealth({ ...params, isFull: true }),
       useUserState(params),
+      useUserDiscounts(params),
     ],
-    (oraclePrice, prices, liquidationBuffer, healthFull, { debt }) =>
+    (oraclePrice, prices, liquidationBuffer, healthFull, { debt }, { loanDiscount, liquidationDiscount }) =>
       maybe(prices, (prices): PositionHealth => {
         const health = getHealth(oraclePrice, prices)
         const isLiquidatable = decimalGreaterThan(ZERO, healthFull)
@@ -61,6 +63,13 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: HealthTh
           health,
           liquidationBuffer,
           liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
+          liquidationBufferLeft: decimalDiv(
+            liquidationBuffer,
+            decimalMinus(
+              decimalPercent(decimalMinus('100', liquidationDiscount), decimalMinus('100', loanDiscount)),
+              '100',
+            ),
+          ),
           isLiquidatable,
           status: getPositionStatus({ health, isLiquidatable, oraclePrice, prices, thresholds }),
         }

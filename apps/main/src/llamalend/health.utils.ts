@@ -25,6 +25,15 @@ export type PositionHealth = {
   /** The liquidation buffer in the borrow token: debt × liquidationBuffer / 100. */
   liquidationBufferAmount: Decimal
   /**
+   * Share of the starting buffer still left: liquidationBuffer ÷ startingBuffer, where
+   * startingBuffer = ((100 − liquidationDiscount) / (100 − loanDiscount) − 1) × 100, in % of debt.
+   * Every loan action re-places the bands so the collateral covers the debt after the loan discount.
+   * Measured with the smaller liquidation discount, the buffer restarts near startingBuffer, then interest shrinks it.
+   * 1 means a fresh position. 0 means the liquidation price has reached the top of the range.
+   * Thresholds use this share because startingBuffer ranges from under 1% to over 25% between markets.
+   */
+  liquidationBufferLeft: Decimal
+  /**
    * Whether anyone can hard-liquidate the position now.
    * Same check as the Controller's `liquidate()`: full health below 0.
    */
@@ -37,12 +46,10 @@ export type HealthThresholds = {
   nearRangeHealth: number
   /** Health at which the health bar is full */
   healthBarFull: number
-  /** Liquidation buffer (% of debt) at or below which the position is critical */
-  bufferCritical: number
-  /** Liquidation buffer (% of debt) at or below which the position is risky */
-  bufferRisky: number
-  /** Liquidation buffer (% of debt) at which the buffer bar is full */
-  bufferBarFull: number
+  /** {@link PositionHealth.liquidationBufferLeft} at or below which the position is critical */
+  bufferLeftCritical: number
+  /** {@link PositionHealth.liquidationBufferLeft} at or below which the position is risky */
+  bufferLeftRisky: number
 }
 
 /** Provisional values, the comments give the price drop matching each health. */
@@ -50,23 +57,20 @@ const HEALTH_THRESHOLDS = {
   [MarketAssetsType.Correlated]: {
     nearRangeHealth: 1.0101, // 1%
     healthBarFull: 1.0526, // 5%
-    bufferCritical: 1,
-    bufferRisky: 3,
-    bufferBarFull: 5,
+    bufferLeftCritical: 0.1,
+    bufferLeftRisky: 0.3,
   },
   [MarketAssetsType.BlueChip]: {
     nearRangeHealth: 1.0526, // 5%
     healthBarFull: 1.4286, // 30%
-    bufferCritical: 2,
-    bufferRisky: 5,
-    bufferBarFull: 15,
+    bufferLeftCritical: 0.2,
+    bufferLeftRisky: 0.45,
   },
   [MarketAssetsType.LongTail]: {
     nearRangeHealth: 1.1111, // 10%
     healthBarFull: 2, // 50%
-    bufferCritical: 3,
-    bufferRisky: 10,
-    bufferBarFull: 25,
+    bufferLeftCritical: 0.3,
+    bufferLeftRisky: 0.6,
   },
 } as const satisfies Record<MarketAssetsType, HealthThresholds>
 
@@ -113,12 +117,12 @@ export const getHealthFeedback = ({ health }: PositionHealth, { nearRangeHealth 
   decimalGreaterThan(health, '1') ? (+health <= nearRangeHealth ? 'Warning' : 'Success') : 'Error'
 
 export const getLiquidationBufferFeedback = (
-  { liquidationBuffer, isLiquidatable }: PositionHealth,
-  { bufferCritical, bufferRisky }: HealthThresholds,
+  { liquidationBufferLeft, isLiquidatable }: PositionHealth,
+  { bufferLeftCritical, bufferLeftRisky }: HealthThresholds,
 ): FeedbackKey =>
-  isLiquidatable || +liquidationBuffer <= bufferCritical
+  isLiquidatable || +liquidationBufferLeft <= bufferLeftCritical
     ? 'Error'
-    : +liquidationBuffer <= bufferRisky
+    : +liquidationBufferLeft <= bufferLeftRisky
       ? 'Warning'
       : 'Success'
 
@@ -128,7 +132,5 @@ export const clampPercentage = (value: number | Nullish): number => Math.max(0, 
 export const getHealthBarFill = ({ health }: PositionHealth, { healthBarFull }: HealthThresholds) =>
   clampPercentage(((1 - 1 / +health) / (1 - 1 / healthBarFull)) * 100)
 
-export const getLiquidationBufferBarFill = (
-  { liquidationBuffer }: PositionHealth,
-  { bufferBarFull }: HealthThresholds,
-) => clampPercentage((+liquidationBuffer / bufferBarFull) * 100)
+export const getLiquidationBufferBarFill = ({ liquidationBufferLeft }: PositionHealth) =>
+  clampPercentage(+liquidationBufferLeft * 100)
