@@ -1,4 +1,4 @@
-import { getHealth, type PositionHealth } from '@/llamalend/health.utils'
+import { getHealth, getPositionStatus, type HealthThresholds, type PositionHealth } from '@/llamalend/health.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
@@ -67,8 +67,8 @@ export const useLegacyUserHealthValue = (params: UserMarketParams) =>
     (full, notFull) => (+notFull < 0 ? notFull : full),
   )
 
-/** The position's health, liquidation buffer and liquidatable state. No data when the user has no loan. */
-export const usePositionHealth = (params: UserMarketParams) =>
+/** The position's health, liquidation buffer and status. No data when the user has no loan. */
+export const usePositionHealth = (params: UserMarketParams, thresholds: HealthThresholds) =>
   combineQueries(
     [
       useMarketOraclePrice(params),
@@ -78,12 +78,17 @@ export const usePositionHealth = (params: UserMarketParams) =>
       useUserState(params),
     ],
     (oraclePrice, prices, liquidationBuffer, healthFull, { debt }) =>
-      maybe(prices, (prices): PositionHealth => ({
-        health: getHealth(oraclePrice, prices),
-        liquidationBuffer,
-        liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
-        isLiquidatable: decimalGreaterThan(ZERO, healthFull),
-      })),
+      maybe(prices, (prices): PositionHealth => {
+        const health = getHealth(oraclePrice, prices)
+        const isLiquidatable = decimalGreaterThan(ZERO, healthFull)
+        return {
+          health,
+          liquidationBuffer,
+          liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
+          isLiquidatable,
+          status: getPositionStatus({ health, isLiquidatable, oraclePrice, prices, thresholds }),
+        }
+      }),
   )
 
 export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
