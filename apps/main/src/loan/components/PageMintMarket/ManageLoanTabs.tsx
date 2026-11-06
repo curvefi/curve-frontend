@@ -1,5 +1,8 @@
 import { ClosePositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ClosePositionForm'
-import { ImproveHealthForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
+import {
+  ImproveHealthForm,
+  ImproveHealthTabLabel,
+} from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
@@ -47,7 +50,7 @@ const LiquidationMenu = [
     subTabs: [
       {
         value: 'improve-health',
-        label: t`Improve health`,
+        label: <ImproveHealthTabLabel />,
         component: props => <ImproveHealthForm networks={softLiqNetworks} {...props} isInSoftLiquidation />,
       },
       {

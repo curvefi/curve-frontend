@@ -1,3 +1,4 @@
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Typography from '@mui/material/Typography'
@@ -5,10 +6,12 @@ import { t } from '@ui/lib/i18n'
 
 export const AlertRepayDebtToIncreaseHealth = () => (
   <Alert severity="warning" variant="outlined">
-    <AlertTitle>{t`Improve health`}</AlertTitle>
+    <AlertTitle>{useNewLlamalendHealth() ? t`Raise liquidation buffer` : t`Improve health`}</AlertTitle>
 
     <Typography variant="bodySRegular" color="textSecondary">
-      {t`Repay debt to increase health and keep your position open. This won’t end soft liquidation while the price is in range.`}
+      {useNewLlamalendHealth()
+        ? t`Repay debt to raise your liquidation buffer and keep your position open. This won’t end soft liquidation while the price is in range.`
+        : t`Repay debt to increase health and keep your position open. This won’t end soft liquidation while the price is in range.`}
     </Typography>
   </Alert>
 )
