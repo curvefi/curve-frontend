@@ -6,11 +6,15 @@
  * @returns A new sorted array.
  */
 import type { Nullish } from './objects.utils'
+
 export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' | 'desc' = 'asc'): T[] =>
   items.toSorted((a, b) => {
     const direction = order === 'asc' ? 1 : -1
     return (getKey(a) - getKey(b)) * direction
   })
+
+export const sumBy = <T>(items: readonly T[], getValue: (item: T) => number): number =>
+  items.reduce((sum, item) => sum + getValue(item), 0)
 
 /** Return the array only when every item is non-null, preserving its order and reference. */
 export const completeArray = <T>(items: (T | Nullish)[] | Nullish): NonNullable<T>[] | undefined =>
