@@ -10,7 +10,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
 import { combineQueries } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
-import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, toValue, type Query, type QueryOrValue, type QueryProp } from '@ui/features/queries/util'
 
 const combine = <T>(results: Query<T>[]): QueryProp<T>[] => results.map(q)
 const EMPTY: never[] = []
@@ -22,8 +22,9 @@ export function usePoolTokens({
   network,
   account,
   tokenAddresses,
-}: NetworkParams & UserParams & { tokenAddresses: QueryProp<StellarContract[]> }) {
-  const addresses = tokenAddresses.data ?? EMPTY // useQueries doesn't accept undefined
+}: NetworkParams & UserParams & { tokenAddresses: QueryOrValue<StellarContract[] | undefined> }) {
+  const tokenData = toValue(tokenAddresses) // query state is ignored for now, hook returns undefined.
+  const addresses = tokenData ?? EMPTY // useQueries doesn't accept undefined
   const decimals = useQueries({
     queries: addresses.map(token => getTokenDecimalsQueryOptions({ network, token })),
     combine,
@@ -56,5 +57,5 @@ export function usePoolTokens({
   )
 
   const decimalsData = useMemo(() => decimals.map(q => q.data), [decimals])
-  if (tokenAddresses.data) return { tokens, symbols, decimals, decimalsData, maxAmounts: balances }
+  if (tokenData) return { tokens, symbols, decimals, decimalsData, maxAmounts: balances }
 }

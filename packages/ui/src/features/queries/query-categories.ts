@@ -38,6 +38,7 @@ export const QUERY_CATEGORIES = {
   'dex.swap': form,
   'dex.deposit': form,
   'dex.deployGauge': form,
+  'dex.createPool': form,
 
   // LlamaLend / crvUSD lending
   'llamalend.appStats': marketDetail,

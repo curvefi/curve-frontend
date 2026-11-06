@@ -5,7 +5,7 @@ import type { DesignSystem } from '@ui/features/themes/design'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { CheckIcon } from '@ui/icons/CheckIcon'
 
-const { Sizing, Spacing, IconSize, FontSize } = SizesAndSpaces
+const { Sizing, Spacing, IconSize, FontSize, ButtonSize } = SizesAndSpaces
 
 export const defineMuiStepLabel = (
   { Button, Text }: DesignSystem,
@@ -19,8 +19,13 @@ export const defineMuiStepLabel = (
   },
   styleOverrides: {
     root: { padding: 0 },
-    iconContainer: {
-      ...handleBreakpoints({ width: Sizing.sm, height: Sizing.sm, marginRight: Spacing.sm, fontSize: FontSize.sm }),
+    iconContainer: ({ ownerState: { children } }) => ({
+      ...handleBreakpoints({
+        width: children ? Sizing.sm : ButtonSize.xs,
+        height: children ? Sizing.sm : ButtonSize.xs,
+        marginRight: children ? Spacing.sm : 0,
+        fontSize: FontSize.sm,
+      }),
       fontWeight: typography.bodySBold?.fontWeight,
       padding: 0,
       justifyContent: 'center',
@@ -32,7 +37,9 @@ export const defineMuiStepLabel = (
           ([state, { Label, Fill }]) => [`&.Mui-${state}`, { color: Label, backgroundColor: Fill }],
         ),
       ),
-    },
+    }),
+    // Hide MUI's empty label container so steps without text keep their icons centered.
+    labelContainer: ({ ownerState }) => ({ display: ownerState.children || ownerState.optional ? undefined : 'none' }),
     label: {
       ...typography.bodyMBold,
       color: Text.TextColors.Secondary,

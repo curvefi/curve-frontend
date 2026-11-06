@@ -22,7 +22,7 @@ export const useDepositMutation = ({
   minMint,
   onReset,
 }: DepositMutationOptions) => {
-  const { mutate, error, isPending } = useStellarMutation<DepositMutation, DepositMutationContext>({
+  const { mutate, error, isPending, isSuccess } = useStellarMutation<DepositMutation, DepositMutationContext>({
     mutationKey: [{ network, pool, account, name: 'deposit' }] as const,
     buildContext: (_, baseContext) =>
       ({ ...baseContext, network, pool, tokens, quote, minMint }) as DepositMutationContext,
@@ -50,5 +50,5 @@ export const useDepositMutation = ({
       } as DepositMutation),
     [mutate],
   )
-  return { onSubmit, mutate, error, isPending }
+  return { onSubmit, mutate, error, isPending, isSuccess }
 }

@@ -19,6 +19,7 @@ export type StellarTransactionResponse = Omit<rpc.Api.SendTransactionResponse, '
 
 const TRANSACTION_SUBMISSION_RETRIES = 3
 const TRANSACTION_SUBMISSION_RETRY_DELAY_MS = 5000
+const MAX_TRANSACTION_FEE = 0xffff_ffffn // The inner transaction fee is uint32; fee-bump envelopes use int64.
 const RESOURCE_FEE_BUFFER_PERCENT = 20n
 /** TTL renewal can become payable after simulation. Keep the 20% buffer for larger simulated fees. */
 const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 600_000n
@@ -45,7 +46,22 @@ export function getStellarTransactionFees<T>({ options, simulationData: { transa
   // The SDK fee option is inclusion-only.
   const inclusionFee = BigInt(options.fee ?? BASE_FEE)
   const sorobanData = new SorobanDataBuilder(transactionData).setResourceFee(bufferedResourceFee).build()
-  return { fee: (inclusionFee + bufferedResourceFee).toString(), sorobanData }
+  const needsFeeBump = inclusionFee + bufferedResourceFee > MAX_TRANSACTION_FEE
+  const fee = bufferedResourceFee + inclusionFee * (needsFeeBump ? 2n : 1n)
+  return { fee: fee.toString(), sorobanData, needsFeeBump }
+}
+
+/** Simulate without SDK assembly: deployment rent can exceed its uint32 fee field. */
+export async function simulateStellarTransaction<T>(transaction: StellarTransaction<T>) {
+  // Building consumes the account sequence; keep this envelope for simulation, retries and submission.
+  const raw = (transaction.built ??= assert(transaction.raw, 'Missing transaction').build())
+  transaction.simulation = await new rpc.Server(transaction.options.rpcUrl).simulateTransaction(raw)
+  void transaction.simulationData
+  if (!getStellarTransactionFees(transaction).needsFeeBump) {
+    // Populate the SDK's built envelope for signAndSend. Oversized fees are assembled by waitForFeeBump instead.
+    transaction.built = rpc.assembleTransaction(raw, transaction.simulation).build()
+  }
+  return transaction
 }
 
 /** Apply our TTL buffer while preserving the SDK's refreshed timeout. */
