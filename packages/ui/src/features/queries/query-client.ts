@@ -1,7 +1,8 @@
+import { throttle } from 'lodash'
 import { maybe } from '@primitives/objects.utils'
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import type { PersistedClient, Persister } from '@tanstack/query-persist-client-core'
 import { QueryCache, QueryClient } from '@tanstack/react-query'
+import { REFRESH_INTERVAL } from '@ui/lib/time'
 import { mutationCache } from './cache'
 
 export const queryClient = new QueryClient({
@@ -15,14 +16,34 @@ export const queryClient = new QueryClient({
   mutationCache,
 })
 
-export const persister: Persister = createAsyncStoragePersister({
-  storage: window.localStorage,
-  // Tag bigint values to preserve their type without changing ordinary strings or importing viem.
-  serialize: data =>
-    JSON.stringify(data, (_, value: unknown) => (typeof value === 'bigint' ? { $bigint: value.toString() } : value)),
-  deserialize: data =>
-    JSON.parse(
-      data,
-      (_, value: unknown) => maybe((value as { $bigint?: string } | null)?.$bigint, BigInt) ?? value,
-    ) as PersistedClient,
-})
+const STORAGE_KEY = 'REACT_QUERY_OFFLINE_CACHE'
+
+/**
+ * TanStack's async persister swallows save errors; this implementation lets them surface.
+ * Tagged bigints preserve query data without wallet dependencies.
+ */
+export const persister = {
+  persistClient: throttle(
+    (data: PersistedClient) =>
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data, (_, value: unknown) =>
+          typeof value === 'bigint' ? { $bigint: value.toString() } : value,
+        ),
+      ),
+    REFRESH_INTERVAL['1s'],
+  ),
+  restoreClient: () =>
+    maybe(
+      window.localStorage.getItem(STORAGE_KEY),
+      data =>
+        JSON.parse(
+          data,
+          (_, value: unknown) => maybe((value as { $bigint?: string } | null)?.$bigint, BigInt) ?? value,
+        ) as PersistedClient,
+    ),
+  removeClient: () => {
+    persister.persistClient.cancel()
+    window.localStorage.removeItem(STORAGE_KEY)
+  },
+} satisfies Persister

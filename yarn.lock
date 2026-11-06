@@ -665,7 +665,6 @@ __metadata:
     "@mui/material": "npm:9.5.0"
     "@sentry/core": "npm:11.9.0"
     "@sentry/react": "npm:11.9.0"
-    "@tanstack/query-async-storage-persister": "npm:5.105.0"
     "@tanstack/query-persist-client-core": "npm:5.105.0"
     "@tanstack/react-query": "npm:5.105.0"
     "@tanstack/react-query-devtools": "npm:5.105.0"
@@ -5532,16 +5531,6 @@ __metadata:
   dependencies:
     remove-accents: "npm:0.5.0"
   checksum: 10c0/38d7211d816cffd3411ada08bf5dea086c1eed9baf4e016c2f2c58bd65148e8f143acf0a567bfcd7077b5b247d0f65a8ea80b3edd6c59bbdb8e3cde40885ddf6
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-async-storage-persister@npm:5.105.0":
-  version: 5.105.0
-  resolution: "@tanstack/query-async-storage-persister@npm:5.105.0"
-  dependencies:
-    "@tanstack/query-core": "npm:5.105.0"
-    "@tanstack/query-persist-client-core": "npm:5.105.0"
-  checksum: 10c0/b1f4a0dc17d191231f1a9084cb5d5c51d1b6693b7ed7e1b7a1c9814b6d716ce5594b2947db75bb2971588104cf5172265267928cfd19a834430d2ab04dec6b8c
   languageName: node
   linkType: hard
 
