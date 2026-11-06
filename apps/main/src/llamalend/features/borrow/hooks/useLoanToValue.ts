@@ -1,55 +1,40 @@
-import { BigNumber } from 'bignumber.js'
+import { getCollateralValue, getLoanToValue } from '@/llamalend/equity-leverage.utils'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import { type Token } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
+import { ZERO } from '@ui/lib/decimal'
 import type { CreateLoanFormQueryParams } from '../types'
 
 /**
- * Hook to calculate the Loan to Value (LTV) ratio in percentage points.
- * LTV = (debt in USD) / (collateral in USD) * 100
+ * Hook to calculate the Loan to Value (LTV) ratio in percentage points, at the oracle price.
  *
- * It fetches the USD rates for both the collateral and borrow tokens.
  * When leverage is enabled, it uses the expected total collateral after leverage
  * Otherwise, it uses the user's current collateral directly from the form params
  */
 export const useLoanToValue = <ChainId extends IChainId>(
-  {
-    params,
-    collateralToken,
-    borrowToken,
-  }: { params: CreateLoanFormQueryParams<ChainId>; collateralToken: Token | undefined; borrowToken: Token | undefined },
+  { params }: { params: CreateLoanFormQueryParams<ChainId> },
   enabled: boolean,
 ) => {
-  const { debt, userCollateral, leverageEnabled, chainId } = params
+  const { debt, userCollateral, leverageEnabled } = params
   const {
     data: expectedCollateral,
     isLoading: isExpectedCollateralLoading,
     error: expectCollateralError,
   } = useCreateLoanExpectedCollateral(params, enabled && (leverageEnabled ?? false))
   const {
-    data: collateralUsdRate,
-    error: collateralUsdRateError,
-    isLoading: isCollateralUsdRateLoading,
-  } = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, enabled)
-  const {
-    data: borrowUsdRate = 1,
-    isLoading: isBorrowUsdRateLoading,
-    error: borrowUsdRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
+    data: oraclePrice,
+    error: oraclePriceError,
+    isLoading: isOraclePriceLoading,
+  } = useMarketOraclePrice(params, enabled)
   const collateral = leverageEnabled ? expectedCollateral?.totalCollateral : userCollateral
   return {
     data:
-      debt == null || !collateral || !collateralUsdRate || borrowUsdRate == null
-        ? null
-        : (new BigNumber(debt)
-            .times(borrowUsdRate)
-            .div(collateral)
-            .div(collateralUsdRate)
-            .times(100)
-            .toFixed() as Decimal),
-    isLoading: [isCollateralUsdRateLoading, isBorrowUsdRateLoading, isExpectedCollateralLoading].some(Boolean),
-    error: [expectCollateralError, collateralUsdRateError, borrowUsdRateError].find(Boolean) ?? null,
+      maybes([debt, collateral, oraclePrice], (debt, collateral, oraclePrice) =>
+        // A loan that is not open yet has no collateral converted to the borrowed token by soft liquidation
+        getLoanToValue(debt, getCollateralValue({ collateral, convertedBorrowed: ZERO }, oraclePrice)),
+      ) ?? null,
+    isLoading: isOraclePriceLoading || isExpectedCollateralLoading,
+    error: expectCollateralError ?? oraclePriceError ?? null,
   }
 }

@@ -5,6 +5,7 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import { Typography } from '@mui/material'
 import { UserPositionIndicator, type ColorState } from '@ui/features/tables/UserPositionIndicator'
 import { Duration } from '@ui/features/themes/design/0_primitives'
+import { t } from '@ui/lib/i18n'
 
 /**
  * Creates a flicker effect by toggling between orange and red colors
@@ -35,24 +36,22 @@ const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
 }
 
 export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow }) => {
-  const { status = 'healthy' } = market.positionQueries.stats.data ?? {}
+  // No status while the stats load or after they failed, and supply positions have no stats
+  const { status } = market.positionQueries.stats.data ?? {}
   const [colorState, setColorState] = useState<ColorState>('info')
 
-  useEffect(() => statusColorEffect[status](setColorState), [status])
+  useEffect(() => (status ? statusColorEffect[status](setColorState) : setInfo(setColorState)), [status])
 
-  const positionStatus = status
-  const { title, description } = getPositionStatusContent(
-    market.assets.collateral.symbol,
-    market.assets.borrowed.symbol,
-  )[positionStatus]
+  const content =
+    status && getPositionStatusContent(market.assets.collateral.symbol, market.assets.borrowed.symbol)[status]
 
   return (
     <UserPositionIndicator
       colorState={colorState}
-      tooltipTitle={title}
+      tooltipTitle={content?.title ?? t`Position active`}
       tooltipBody={
         <Typography variant="bodySRegular" sx={{ fontWeight: t => t.typography.fontWeightMedium }}>
-          {description}
+          {content?.description ?? t`You have an active position in this market.`}
         </Typography>
       }
     />

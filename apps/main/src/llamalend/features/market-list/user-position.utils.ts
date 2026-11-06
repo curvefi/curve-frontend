@@ -1,8 +1,9 @@
 import { sum } from 'lodash'
-import { calculateLtv } from '@/llamalend/llama.utils'
+import { getCollateralValue, getLoanToValue } from '@/llamalend/equity-leverage.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import type { UserState } from '@/llamalend/queries/user/user-state.query'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -25,17 +26,18 @@ export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
   )
 }
 
-export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
-  const stats = positionQueries.stats.data
-  const borrowedUsdRate = positionQueries.prices.borrowed.data
-  const collateralUsdRate = positionQueries.prices.collateral.data
-  return maybes(
-    [stats, borrowedUsdRate, collateralUsdRate],
-    (stats, borrowedRate, collateralRate) =>
-      calculateLtv(stats.borrowed, stats.collateral, stats.convertedBorrowed, borrowedRate, collateralRate) ||
-      undefined,
+/** Maps the position to the user state (collateral, borrowed tokens in the AMM, debt) */
+const mapPosition = <R>(
+  { positionQueries }: LlamaMarketRow,
+  mapper: (position: UserState, oraclePrice: Decimal) => R,
+) => maybe(positionQueries.stats.data, ({ position, oraclePrice }) => maybes([position, oraclePrice], mapper))
+
+/** Debt over the collateral value at the oracle price, plus the tokens converted in soft liquidation */
+export const getUserPositionLtv = (row: LlamaMarketRow) =>
+  maybe(
+    mapPosition(row, (position, price) => getLoanToValue(position.debt, getCollateralValue(position, price))),
+    Number,
   )
-}
 
 export const getUserLegacyHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.legacyHealth
 

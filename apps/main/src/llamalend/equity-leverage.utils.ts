@@ -7,6 +7,7 @@ import {
   decimalGreaterThan,
   decimalMinus,
   decimalMultiply,
+  decimalPercent,
   decimalSum,
   ZERO,
 } from '@ui/lib/decimal'
@@ -16,6 +17,10 @@ export const getCollateralValue = (
   { collateral, convertedBorrowed }: Pick<UserState, 'collateral' | 'convertedBorrowed'>,
   oraclePrice: Decimal,
 ) => decimalSum(decimalMultiply(collateral, oraclePrice), convertedBorrowed)
+
+/** Debt over the collateral value in percent, or null without collateral value */
+export const getLoanToValue = (debt: Decimal, collateralValue: Decimal) =>
+  +collateralValue ? decimalPercent(debt, collateralValue) : null
 
 /** What the position returns if closed now at the oracle price, in the borrowed token */
 export const getEquity = (position: UserState, oraclePrice: Decimal) =>

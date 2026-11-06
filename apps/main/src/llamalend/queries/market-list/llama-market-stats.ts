@@ -7,6 +7,7 @@ import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/positi
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
+import type { UserState } from '@/llamalend/queries/user/user-state.query'
 import type { Chain } from '@curvefi/prices-api'
 import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.query'
@@ -31,6 +32,10 @@ const getTokenPriceKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chai
 const normalizeMarketStats = (stats: BorrowStats) => {
   const convertedBorrowed = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
   const oraclePrice = decimal(stats.oraclePrice)
+  const position = maybes(
+    [decimal(stats.collateral), decimal(convertedBorrowed), decimal(stats.debt)],
+    (collateral, convertedBorrowed, debt): UserState => ({ collateral, convertedBorrowed, debt }),
+  )
   return {
     status: getLiquidationStatus(
       decimal(stats.health),
@@ -47,12 +52,10 @@ const normalizeMarketStats = (stats: BorrowStats) => {
      */
     convertedBorrowed,
     oraclePrice,
+    /** The same position as the user state query */
+    position,
     /** In the borrowed token */
-    equity: maybes(
-      [decimal(stats.collateral), decimal(convertedBorrowed), decimal(stats.debt), oraclePrice],
-      (collateral, convertedBorrowed, debt, oraclePrice) =>
-        getEquity({ collateral, convertedBorrowed, debt }, oraclePrice),
-    ),
+    equity: maybes([position, oraclePrice], getEquity),
   }
 }
 
