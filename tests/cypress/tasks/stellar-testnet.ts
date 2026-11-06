@@ -1,4 +1,5 @@
 import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
+import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assert } from '@primitives/objects.utils'
 import { retry, type RetryOptions } from '@primitives/promise.utils'
@@ -31,7 +32,7 @@ export type TestnetDeployment = { issuer: TestnetAccount; factory: StellarContra
 export const createTestnetDeployer = async (config: TestnetDeployment, rpcUrl: string): Promise<TestnetAccount> => {
   const wallet = Keypair.random()
   const publicKey = wallet.publicKey()
-  const allowHttp = rpcUrl.startsWith('http://')
+  const { allowHttp } = STELLAR_NETWORKS['stellar-testnet']
   const server = new rpc.Server(rpcUrl, { allowHttp })
   const { passphrase: networkPassphrase } = await server.getNetwork()
   await server.fundAddress(publicKey).catch((error: Error) => {

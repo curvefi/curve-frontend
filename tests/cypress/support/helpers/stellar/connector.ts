@@ -117,7 +117,7 @@ const sendPoolDeployment = async (
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
 export const deployTestPool = async ({ factory: factoryAddress, deployer, coins }: TestnetConfig) => {
-  const { rpcUrl, networkPassphrase } = STELLAR_NETWORKS['stellar-testnet']
+  const { rpcUrl, networkPassphrase, allowHttp } = STELLAR_NETWORKS['stellar-testnet']
   const factory = await retry(
     () =>
       contract.Client.from<Factory>({
@@ -125,7 +125,7 @@ export const deployTestPool = async ({ factory: factoryAddress, deployer, coins 
         publicKey: deployer.address,
         networkPassphrase,
         rpcUrl,
-        allowHttp: rpcUrl.startsWith('http://'),
+        allowHttp,
       }),
     StellarFetchRetry,
   )

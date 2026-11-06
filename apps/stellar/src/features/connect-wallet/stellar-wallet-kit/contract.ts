@@ -34,7 +34,7 @@ export async function simulateContractCall<T>(
   args: ContractArgument[] = [],
   account?: StellarAddress,
 ) {
-  const { rpcUrl, networkPassphrase } = STELLAR_NETWORKS[network]
+  const { rpcUrl, networkPassphrase, allowHttp } = STELLAR_NETWORKS[network]
   const transaction = await retry(
     () =>
       contract.AssembledTransaction.build<T>({
@@ -45,7 +45,7 @@ export async function simulateContractCall<T>(
         address: account,
         networkPassphrase,
         rpcUrl,
-        allowHttp: rpcUrl.startsWith('http://'), // used for local rpcs
+        allowHttp,
         fee: MAX_INCLUSION_FEE.toString(),
         parseResultXdr: value => scValToNative(value) as T,
       }),
