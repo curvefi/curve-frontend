@@ -85,7 +85,7 @@ const allStates = [
     name: 'CorrelatedCriticalBuffer',
     args: { health: '1.11', liquidationBuffer: '0.38', status: 'aboveRange', assetsType: MarketAssetsType.Correlated },
   },
-] as const satisfies { name: string; args: HealthDetailsStoryProps }[]
+] as const
 
 export const AllStates: Story = {
   render: () => (

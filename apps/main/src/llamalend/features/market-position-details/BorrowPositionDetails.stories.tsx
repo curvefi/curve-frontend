@@ -7,6 +7,7 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
+import { getLoanExistsKey } from '@/llamalend/queries/user/user-loan-exists.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -97,7 +98,8 @@ const BorrowPositionDetailsStory = ({
           [getMarketOraclePriceBandKey(params), oraclePriceBand],
           [getUserCurrentLeverageKey(params), '1'],
           [getUserBandsKey(params), userBands],
-          [getUserPricesKey(params), userPrices],
+          [getLoanExistsKey(params), true],
+          [getUserPricesKey({ ...params, loanExists: true }), userPrices],
           [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
           [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
@@ -119,9 +121,9 @@ const meta: Meta<typeof BorrowPositionDetailsStory> = {
     docs: {
       description: {
         component:
-          'Composite component showing a borrow position: liquidation alert banner, health metric with bar, ' +
+          'Composite component showing a borrow position: health and liquidation buffer with bars, ' +
           'and key position metrics (collateral value, liquidation threshold, total debt, leverage). ' +
-          'Each UserPositionStatus triggers a different alert and health bar state.',
+          'On Beta the position status shows as a badge on the health bar, on Stable and Legacy as an alert banner.',
       },
     },
   },

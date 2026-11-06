@@ -258,7 +258,9 @@ export const createBorrowMoreScenario = ({
         }
       } else {
         expect(normalStubs.parameters).to.have.been.calledWithExactly()
-        expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health)
+        // full health for the legacy row, not full for the Beta liquidation buffer row
+        expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health, true)
+        expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health, false)
         expect(normalStubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
         expect(normalStubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
         if (approved) {

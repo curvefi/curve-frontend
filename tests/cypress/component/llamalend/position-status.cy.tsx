@@ -10,6 +10,7 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
+import { getLoanExistsKey } from '@/llamalend/queries/user/user-loan-exists.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -88,7 +89,8 @@ const PositionDetailsTest = ({
           [getMarketOraclePriceBandKey(params), oraclePrice],
           [getUserCurrentLeverageKey(params), `${leverage}`],
           [getUserBandsKey(params), userBands],
-          [getUserPricesKey(params), userPrices],
+          [getLoanExistsKey(params), true],
+          [getUserPricesKey({ ...params, loanExists: true }), userPrices],
           [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
           [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
@@ -282,5 +284,22 @@ describe('BorrowPositionDetails on Beta', () => {
     )
     cy.get('[data-testid="health-details-health-metric"]').should('be.visible')
     cy.get(ALERT_TEST_ID).should('not.exist')
+  })
+
+  // userPrices are [0.47, 0.69], the market has no assets type so the long-tail thresholds apply
+  const betaStatusCases = [
+    { badge: 'Above range', health: '1.45', overrides: { oraclePrice: 1 } },
+    { badge: 'Near range', health: '1.087', overrides: { oraclePrice: 0.75 } },
+    { badge: 'Soft liquidation', health: '1.00', overrides: { oraclePrice: 0.5 } },
+    { badge: 'Below range', health: '1.00', overrides: { oraclePrice: 0.4 } },
+    { badge: 'Liquidatable', health: '1.00', overrides: { oraclePrice: 0.4, healthFull: -1, healthNotFull: -1 } },
+  ]
+
+  betaStatusCases.forEach(({ badge, health, overrides }) => {
+    it(`shows health ${health} and the ${badge} badge`, () => {
+      cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)
+      cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', health)
+      cy.get('[data-testid="health-details-health-bar-badge"]').should('have.text', badge)
+    })
   })
 })
