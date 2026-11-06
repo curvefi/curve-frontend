@@ -136,7 +136,8 @@ describe('BorrowMoreForm (mocked)', () => {
         })
         cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
 
-        cy.then(assertPreSubmit)
+        // retried: the approve gas estimate for the typed collateral can land after the details render
+        cy.wrap(null).should(assertPreSubmit)
         submitBorrowMoreForm({ controllerApproved, isMocked: true }).then(assertSubmit)
       })
     },
