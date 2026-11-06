@@ -11,7 +11,7 @@ import { zip } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PoolCompositionRow } from '@ui/features/pools/pool-composition/columns/columns.definitions'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 export const usePoolComposition = ({
@@ -73,10 +73,10 @@ export const usePoolComposition = ({
         },
         displayAddress: shortenAddress(tokenAddress),
         explorerUrl: scanTokenPath(chainId, tokenAddress),
-        marketShare: constQ(maybe(reserve?.percentShareInPool, x => +x)),
-        amount: constQ(reserve?.balance),
-        amountUsd: constQ(reserve?.balanceUsd),
-        price: constQ(reserve?.usdRate),
+        marketShare: maybe(reserve?.percentShareInPool, x => +x),
+        amount: reserve?.balance,
+        amountUsd: reserve?.balanceUsd,
+        price: reserve?.usdRate,
       }
     }),
   )
