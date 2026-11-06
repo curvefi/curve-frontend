@@ -1,3 +1,4 @@
+import { clampPercentage } from '@/llamalend/health.utils'
 import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import type { Nullish } from '@primitives/objects.utils'
 import { LinearProgress } from '@ui/components/LinearProgress'
@@ -5,7 +6,6 @@ import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { getLegacyHealthTrackColor, LEGACY_HEALTH_THRESHOLDS } from '../market-position-details.utils'
-import { clampPercentage } from './utils'
 
 const { Height } = SizesAndSpaces
 

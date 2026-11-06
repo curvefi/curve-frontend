@@ -2,6 +2,7 @@ import type { Theme } from '@mui/material/styles'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMax } from '@ui/lib/decimal'
 
@@ -128,13 +129,13 @@ export const getLiquidationBufferFeedback = (
       ? 'Warning'
       : 'Success'
 
-const clampPercent = (value: number) => Math.min(Math.max(value, 0), 100)
+export const clampPercentage = (value: number | Nullish): number => Math.max(0, Math.min(value ?? 0, 100))
 
 /** Fills by price drop to the range, so the bar is linear in price rather than in health. */
 export const getHealthBarFill = ({ health }: PositionHealth, { healthBarFull }: HealthThresholds) =>
-  clampPercent(((1 - 1 / +health) / (1 - 1 / healthBarFull)) * 100)
+  clampPercentage(((1 - 1 / +health) / (1 - 1 / healthBarFull)) * 100)
 
 export const getLiquidationBufferBarFill = (
   { liquidationBuffer }: PositionHealth,
   { bufferBarFull }: HealthThresholds,
-) => clampPercent((+liquidationBuffer / bufferBarFull) * 100)
+) => clampPercentage((+liquidationBuffer / bufferBarFull) * 100)

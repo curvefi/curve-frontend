@@ -3,42 +3,18 @@ import { getUserPositionImplementation } from '@/llamalend/queries/market/market
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
-import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
+import { maybe } from '@primitives/objects.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import type { QueryData, QueryProp } from '@ui/features/queries/util'
-import {
-  decimalDiv,
-  decimalGreaterThan,
-  decimalMinus,
-  decimalMultiply,
-  decimalPercent,
-  decimalSum,
-  ZERO,
-} from '@ui/lib/decimal'
+import { decimalDiv, decimalGreaterThan, decimalMultiply, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { useMarketOraclePrice } from '../market/market-oracle-price.query'
 import { validateIsFull } from '../validation/borrow-fields.validation'
-import { useUserDiscounts } from './user-discounts.query'
 import { useUserPrices } from './user-prices.query'
 import { useUserState } from './user-state.query'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
-type UserHealthValues = {
-  health: Decimal
-  healthFactor: Decimal
-  healthNotFull: Decimal
-  liquidationBuffer: Decimal | undefined
-  debug?: {
-    healthFull: Decimal
-    healthNotFull: Decimal
-    healthDelta: Decimal
-    loanDiscount: Decimal
-    liquidationDiscount: Decimal
-    discountGap: Decimal
-  }
-}
 
 /**
  * Query to get the user's health in a market.
@@ -90,49 +66,3 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: HealthTh
         }
       }),
   )
-
-export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
-  const healthFull = useUserHealth({ ...params, isFull: true }, enabled)
-  const healthNotFull = useUserHealth({ ...params, isFull: false }, enabled)
-  const discounts = useUserDiscounts(params, enabled)
-
-  return {
-    data: maybes(
-      [healthFull.data, healthNotFull.data, discounts.data],
-      (full, notFull, { loanDiscount, liquidationDiscount }): UserHealthValues => {
-        const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
-        const healthDelta = decimalMinus(full, notFull)
-        // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
-        // which shouldn't be possible
-        const health = decimalGreaterThan(healthDelta, ZERO) ? healthDelta : ZERO
-        return {
-          /** Percentage distance from entering liquidation protection: the above-band cushion, clamped at zero. */
-          health,
-          /**
-           * Ratio of the above-band cushion plus debt to the debt amount.
-           * A health factor of 1 marks the entry into liquidation protection (soft liquidation).
-           * The +1 is equivalent to adding debt / debt, similar to how other lending platforms display health.
-           */
-          healthFactor: decimalSum('1', decimalDiv(health, '100')),
-          /** Raw band-valued margin before full liquidation, as a percentage of debt. */
-          healthNotFull: notFull,
-          /** Distance from liquidation as a percentage of the liquidation-discount gap. */
-          liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
-          /** Inputs and intermediate values exposed for developer diagnostics. */
-          debug: {
-            healthFull: full,
-            healthNotFull: notFull,
-            healthDelta,
-            loanDiscount,
-            liquidationDiscount,
-            discountGap,
-          },
-        }
-      },
-    ),
-    ...combineQueryState(healthFull, healthNotFull, discounts),
-  }
-}
-
-export type HealthValues = QueryData<typeof useUserHealthValues>
-export type HealthQuery = QueryProp<HealthValues>

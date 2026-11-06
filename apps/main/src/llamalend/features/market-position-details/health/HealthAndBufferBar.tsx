@@ -1,18 +1,13 @@
 import type { ReactNode } from 'react'
 import type { FeedbackKey, PositionStatus } from '@/llamalend/health.utils'
-import { type HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import { Stack } from '@mui/material'
-import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
 import { maybe } from '@primitives/objects.utils'
-import { Accordion } from '@ui/components/Accordion'
 import { Badge, type BadgeProps } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { IS_DEVELOPMENT } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
-import { getLiquidationBufferPercent, HealthAndBufferState, getHealthPercent, HealthType } from './utils'
 
 const { Badge: BadgeSizes, Height, MinWidth } = SizesAndSpaces
 
@@ -78,41 +73,3 @@ export const HealthAndBufferBar = ({
     </Tooltip>
   </WithSkeleton>
 )
-
-/** Development-only diagnostics for health related values and derived state. */
-export const HealthAndBufferDebug = ({
-  healthQuery,
-  state,
-  type,
-}: {
-  healthQuery: HealthQuery
-  state: HealthAndBufferState | undefined
-  type: HealthType
-}) => {
-  const { health, healthFactor, liquidationBuffer, debug } = healthQuery.data ?? {}
-  return (
-    IS_DEVELOPMENT && (
-      <Accordion title={t`Health and buffer state`} ghost size="extraSmall">
-        <AccordionDetails>
-          <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
-            {JSON.stringify(
-              {
-                values: { ...debug, health, healthFactor, liquidationBuffer },
-                display: {
-                  type,
-                  state,
-                  healthPercent: getHealthPercent(health),
-                  liquidationBufferPercent: getLiquidationBufferPercent(liquidationBuffer),
-                },
-                isLoading: healthQuery.isLoading,
-                error: healthQuery.error?.message,
-              },
-              null,
-              2,
-            ).slice(2, -2)}
-          </pre>
-        </AccordionDetails>
-      </Accordion>
-    )
-  )
-}

@@ -6,7 +6,6 @@ import { getMarketOraclePriceKey } from '@/llamalend/queries/market/market-oracl
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
-import { getUserDiscountsKey } from '@/llamalend/queries/user/user-discounts.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
@@ -27,7 +26,6 @@ const baseProps = {
   userBandsCollateralValue: 110.7,
   aboveBandsCollateralValue: 12.3,
   totalDebt: 100,
-  loanDiscount: 9,
   liquidationDiscount: 6,
   userPrices: [`0.80`, `0.90`] as Range<Decimal>,
   borrow: 0,
@@ -59,7 +57,6 @@ const BorrowPositionDetailsStory = ({
   userBandsCollateralValue,
   aboveBandsCollateralValue,
   totalDebt,
-  loanDiscount,
   liquidationDiscount,
   borrow,
   oraclePrice,
@@ -103,10 +100,6 @@ const BorrowPositionDetailsStory = ({
           [getUserPricesKey(params), userPrices],
           [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
           [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
-          [
-            getUserDiscountsKey(params),
-            { loanDiscount: `${loanDiscount}`, liquidationDiscount: `${liquidationDiscount}` },
-          ],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
           [getTokenUsdRateKey({ ...params, tokenAddress: BORROW_ADDRESS }), 1],
           [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
@@ -136,7 +129,6 @@ const meta: Meta<typeof BorrowPositionDetailsStory> = {
     userBandsCollateralValue: { control: { type: 'number', min: 0, step: 0.1 } },
     aboveBandsCollateralValue: { control: { type: 'number', min: 0, step: 0.1 } },
     totalDebt: { control: { type: 'number', min: 0.1, step: 0.1 } },
-    loanDiscount: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
     liquidationDiscount: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
     borrow: { control: { type: 'number', min: 0, step: 0.1 } },
     oraclePrice: { control: { type: 'number', min: 0.01, step: 0.01 } },
