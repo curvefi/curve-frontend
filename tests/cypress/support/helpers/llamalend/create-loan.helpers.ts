@@ -61,6 +61,24 @@ export const LOAN_TEST_MARKETS = {
       borrowedDecimals: BORROWED_DECIMALS,
       borrowedSymbol: BORROWED_SYMBOL,
     },
+    {
+      id: 'cbbtc',
+      label: 'cbBTC-crvUSD ZapV2 Mint Market',
+      collateralAddress: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf', // cbBTC
+      controllerAddress: '0xf8c786b1064889ffd3c8a08b48d5e0c159f4cbe3',
+      collateral: '1',
+      borrow: '100',
+      borrowMore: '10',
+      repay: '30',
+      chainId,
+      path: '/crvusd/ethereum/markets/cbbtc',
+      hasLeverage: true,
+      hasLeverageManagement: true,
+      collateralDecimals: 8,
+      borrowedAddress: CRVUSD_ADDRESS,
+      borrowedDecimals: BORROWED_DECIMALS,
+      borrowedSymbol: BORROWED_SYMBOL,
+    },
   ],
   [MarketType.Lend]: [
     {
