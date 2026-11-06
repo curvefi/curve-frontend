@@ -164,7 +164,7 @@ export const CreatePoolSummary = (props: CreatePoolSummaryProps & { formId: stri
     <WithWrapper
       shouldWrap={isMobileDrawer}
       Wrapper={MobileFormTabsDrawer}
-      tabs={[{ value: 'summary', label: t`Pool summary` }]}
+      tabs={[{ value: 'summary', label: t`Preview Pool` }]}
       onSelectTab={noop}
       omitFormButton={props.isFunded}
     >

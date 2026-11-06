@@ -12,7 +12,7 @@ import { TokenSelectorModal } from '@ui/features/select-token/ui/modal/TokenSele
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import type { CreatePoolTokenSearchProps } from './types'
+import type { CreatePoolToken, CreatePoolTokenSearchProps } from './types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,7 +22,10 @@ const TokenList = ({
   onTokenSearch,
   excluded,
   onToken,
-}: CreatePoolTokenSearchProps & { excluded: (TokenOption | undefined)[]; onToken: (token: TokenOption) => void }) => {
+}: CreatePoolTokenSearchProps & {
+  excluded: (CreatePoolToken | undefined)[]
+  onToken: (token: TokenOption) => void
+}) => {
   const { data: options, error, isLoading } = tokenOptions
 
   return (
@@ -77,8 +80,8 @@ export const CreatePoolTokenSelector = ({
   disabled,
 }: CreatePoolTokenSearchProps & {
   blockchainId: string
-  selectedToken: TokenOption | undefined
-  excluded: (TokenOption | undefined)[]
+  selectedToken: CreatePoolToken | undefined
+  excluded: (CreatePoolToken | undefined)[]
   onToken: (token: TokenOption) => void
   disabled: boolean
 }) => {

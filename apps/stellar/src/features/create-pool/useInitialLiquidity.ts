@@ -1,42 +1,41 @@
 import { useCallback, useEffect, useRef } from 'react'
-import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import type { DepositForm, DepositMutation } from '@/stellar/features/deposit/types'
+import { asStellarContract } from '@/stellar/features/connect-wallet/address'
+import type { DepositMutation } from '@/stellar/features/deposit/types'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolParams, UserParams } from '@/stellar/queries/query-types'
-import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { getCreatePoolDecimals, getCreatePoolTokens } from '@ui/features/create-pool/create-pool.utils'
+import type { CreatePoolFormValues, CreatePoolTokenFields } from '@ui/features/create-pool/types'
 import { getPoolAmounts, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type InitialLiquidityForm = PoolTokenFields &
-  Pick<DepositForm, 'decimals' | 'slippage'> & { maxAmounts: (Decimal | undefined)[] | undefined }
+  CreatePoolTokenFields &
+  Pick<CreatePoolFormValues, 'slippage' | 'maxAmounts' | 'tokenCount'>
 
 /** Loads post-deployment quotes and starts a regular deposit once; retries use the same deposit mutation. */
 export const useInitialLiquidity = ({
   network,
   account,
   pool,
-  tokens,
   autoDeposit,
-  params,
+  ...params
 }: PoolParams &
-  UserParams & {
-    tokens: StellarContract[] | undefined
-    autoDeposit: InitialLiquidityForm | false | undefined
-    params: FieldsOf<InitialLiquidityForm>
-  }) => {
+  UserParams &
+  FieldsOf<InitialLiquidityForm> & { autoDeposit: InitialLiquidityForm | false | undefined }) => {
   const depositStartedRef = useRef(false) // Mutation flags update on the next render; this synchronous guard also prevents StrictMode effect replay.
   const supply = usePoolSupply({ network, pool })
   const quote = useExpectedLp({
-    ...params,
     network,
     pool,
+    maxAmounts: params.maxAmounts,
     supply: supply.data,
-    amounts: getPoolAmounts(params, tokens?.length),
+    decimals: getCreatePoolDecimals(params, params.tokenCount),
+    amounts: getPoolAmounts(params, params.tokenCount),
     isDeposit: true,
   })
   const minimum = mapQuery(quote, value => maybe(params.slippage, slippage => calculateMinimumMint(value, slippage)))
@@ -44,7 +43,7 @@ export const useInitialLiquidity = ({
     network,
     pool,
     account,
-    tokens,
+    tokens: getCreatePoolTokens(params, params.tokenCount)?.map(token => asStellarContract(token?.address)),
     quote: quote.data,
     minMint: minimum.data,
   })
@@ -52,9 +51,11 @@ export const useInitialLiquidity = ({
     (values: InitialLiquidityForm) => {
       depositStartedRef.current = true // Manual retries also prevent automatic resubmission when queries recover.
       mutate({
-        ...values,
+        maxAmounts: values.maxAmounts,
+        slippage: values.slippage,
         supply: supply.data,
-        amounts: getPoolAmounts(values, values.decimals?.length),
+        decimals: getCreatePoolDecimals(values, values.tokenCount),
+        amounts: getPoolAmounts(values, values.tokenCount),
       } as DepositMutation)
     },
     [mutate, supply.data],

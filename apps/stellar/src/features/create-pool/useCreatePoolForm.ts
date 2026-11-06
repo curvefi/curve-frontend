@@ -16,6 +16,8 @@ import { fromEntries, maybe, notFalsy, range, recordValues } from '@primitives/o
 import { POOL_TYPES } from '@ui/features/create-pool/constants'
 import {
   createPoolTokenField,
+  createPoolTokenDecimalsField,
+  createPoolTokenSymbolField,
   getCreatePoolTokenDefaults,
   getCreatePoolTokens,
 } from '@ui/features/create-pool/create-pool.utils'
@@ -28,7 +30,7 @@ import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
 import { STELLAR_POOL_LIMITS } from './constants'
-import type { CreatePoolParams } from './types'
+import { getCreatePoolValues } from './create-pool.utils'
 import { useCreatePoolTokenOptions } from './useCreatePoolTokenOptions'
 import { useInitialLiquidity } from './useInitialLiquidity'
 
@@ -50,7 +52,7 @@ const userDefaultValues = {
 
 const formOptions = {
   validation: createPoolFormValidationSuite,
-  defaultValues: { ...userDefaultValues, decimals: undefined, maxAmounts: undefined },
+  defaultValues: { ...userDefaultValues, maxAmounts: undefined },
 }
 
 function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoolFormValues>, 'formState' | 'values'>) {
@@ -63,7 +65,11 @@ function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoo
     liquidity:
       isStepComplete('poolType') &&
       (!values.addLiquidity ||
-        isStepComplete('decimals', 'slippage', ...range(values.tokenCount).map(poolAmountField))),
+        isStepComplete(
+          'slippage',
+          ...range(values.tokenCount).map(createPoolTokenDecimalsField),
+          ...range(values.tokenCount).map(poolAmountField),
+        )),
     name: isStepComplete('poolName', 'symbol'),
   }
 }
@@ -89,7 +95,10 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
   const { decimalsData, maxAmounts } =
     usePoolTokens({ network: networkId, account, tokenAddresses: completeArray(coins) }) ?? {}
   const balances = useMemo(() => maxAmounts?.map(balance => balance.data), [maxAmounts])
-  useFormSync(form, { decimals: decimalsData, maxAmounts: balances })
+  useFormSync(form, {
+    ...fromEntries(range(values.tokenCount).map(index => [createPoolTokenDecimalsField(index), decimalsData?.[index]])),
+    maxAmounts: balances,
+  })
 
   // suggest names from tokens; preserve names the user has edited.
   const symbols = notFalsy(...tokens.map(token => token?.symbol))
@@ -104,26 +113,17 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
     }),
     [values.tokenCount],
   )
-  const [params, isDebouncing] = useFormDebounce<CreatePoolParams, keyof typeof debounceDefaults>(
-    { ...values, network: networkId, factory, implementationIndex, account, coins },
-    debounceDefaults,
-  )
+  const [params, isDebouncing] = useFormDebounce(values, debounceDefaults)
   const simulation = useCreatePoolSimulation(
-    {
-      ...params,
-      coins: getCreatePoolTokens(params, params.tokenCount)?.map(token => asStellarContract(token?.address)),
-    },
+    { ...getCreatePoolValues(params), network: networkId, factory, implementationIndex, account },
     !created,
   )
   const liquidity = useInitialLiquidity({
+    ...params,
     network: networkId,
     account,
     pool: created?.pool,
-    tokens: maybe(created, ({ values }) =>
-      getCreatePoolTokens(values, values.tokenCount).map(token => asStellarContract(token!.address)),
-    ),
     autoDeposit: created?.values.addLiquidity && created.values,
-    params,
   })
 
   const isPending = formState.isSubmitting || deployment.isPending || liquidity.isPending
@@ -161,13 +161,14 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
       update({
         tokenCount: tokens.length,
         ...getCreatePoolTokenDefaults(values.tokenCount),
-        ...fromEntries(tokens.map((token, index) => [createPoolTokenField(index), token])),
-        ...getPoolDefaultValues(Math.max(values.tokenCount, tokens.length)),
+        ...fromEntries(tokens.map((token, index) => [createPoolTokenField(index), token?.address])),
+        ...fromEntries(tokens.map((token, index) => [createPoolTokenSymbolField(index), token?.symbol])),
+        ...getPoolDefaultValues(values.tokenCount),
       }),
     error: deployment.error ?? liquidity.error ?? simulation.error,
     formErrors: formState.visibleErrors,
     isDisabled:
       isPending || liquidity.isSuccess || isDebouncing || !formState.isValid || (!!created && !values.addLiquidity),
-    onSubmit: form.handleSubmit(values => (created ? liquidity.onSubmit(values) : deployment.mutate(values))),
+    onSubmit: form.handleSubmit(values => (created ? liquidity.onSubmit(values) : deployment.onSubmit(values))),
   }
 }

@@ -75,7 +75,7 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
                 ranges={limits}
                 poolType={poolTypes.find(type => type.id === form.values.poolType)}
                 values={form.values}
-                tokenSymbol={form.values.token_0?.symbol}
+                tokenSymbol={form.values.symbol_0}
                 update={form.update}
                 errors={form.formState.errors}
               />

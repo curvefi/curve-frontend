@@ -1,11 +1,12 @@
- 
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
+import {
+  encodeContractValue,
+  simulateContractCall,
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { STELLAR_POOL_LIMITS } from '@/stellar/features/create-pool/constants'
-import type { CreatePoolParams, PoolDeploymentQuery } from '@/stellar/features/create-pool/types'
+import type { CreatePoolParams, CreatePoolQuery } from '@/stellar/features/create-pool/types'
 import { createPoolValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
 import { assert } from '@primitives/objects.utils'
-import { nativeToScVal } from '@stellar/stellar-sdk'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toWei } from '@ui/lib/decimal'
 import { fetchFactoryImplementation } from './factory-implementation.query'
@@ -25,7 +26,7 @@ const PARAMETER_TYPES = {
     methods: ['symbol', 'symbol'],
     oracles: ['symbol', 'address'],
   },
-} satisfies Parameters<typeof nativeToScVal>[1]
+} satisfies Parameters<typeof encodeContractValue>[1]
 
 export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSimulation } = queryFactory({
   queryKey: ({
@@ -55,7 +56,7 @@ export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSim
       poolName,
       symbol,
     }) as const,
-  queryFn: async (params: PoolDeploymentQuery) => {
+  queryFn: async (params: CreatePoolQuery) => {
     const {
       network,
       factory,
@@ -75,7 +76,7 @@ export const { useQuery: useCreatePoolSimulation, fetchQuery: fetchCreatePoolSim
       'deploy_plain_pool',
       [
         account,
-        nativeToScVal(
+        encodeContractValue(
           {
             name: poolName,
             symbol,

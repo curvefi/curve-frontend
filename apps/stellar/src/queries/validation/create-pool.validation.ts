@@ -2,9 +2,12 @@ import { each, skipWhen, test } from 'vest'
 import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { STELLAR_POOL_LIMITS as limits, STELLAR_POOL_TYPES } from '@/stellar/features/create-pool/constants'
 import type { CreatePoolParams, FactoryImplementationParams } from '@/stellar/features/create-pool/types'
-import { isComplete } from '@primitives/array.utils'
 import { maybe, notFalsyArray, type Nullish } from '@primitives/objects.utils'
-import { createPoolTokenField, getCreatePoolTokens } from '@ui/features/create-pool/create-pool.utils'
+import {
+  createPoolTokenDecimalsField,
+  createPoolTokenField,
+  getCreatePoolTokens,
+} from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -16,34 +19,14 @@ import { validateAccount, validateNetwork } from './pool.validation'
 const encoder = new TextEncoder()
 const byteLength = (value: string | Nullish) => maybe(value, value => encoder.encode(value).length)
 
-const validateForm = ({
-  tokenCount,
-  poolType,
+const validateParameters = ({
   amplification,
   fee,
   feeMultiplier,
   priceOracleAveragingWindow,
   poolName,
   symbol,
-  addLiquidity,
-  decimals,
-  maxAmounts,
-  slippage,
-  ...values
-}: FieldsOf<CreatePoolFormValues>) => {
-  const tokens = getCreatePoolTokens(values, tokenCount)
-  test('tokenCount', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
-    enforce(tokenCount).gte(limits.tokens.min).lte(limits.tokens.max)
-    enforce(new Set(tokens?.map(token => token?.address)).size).equals(tokens?.length)
-  })
-  each(notFalsyArray(tokens), (token, index) => {
-    test(createPoolTokenField(index), 'Select a token', () => {
-      enforce(token?.address).isNotEmpty().condition(isContractAddress)
-    })
-  })
-  test('poolType', 'Select a pool type', () => {
-    enforce(poolType).inside([...STELLAR_POOL_TYPES])
-  })
+}: CreatePoolParams) => {
   test(
     'amplification',
     `Amplification must be a whole number between ${limits.amplification.min} and ${limits.amplification.max}`,
@@ -87,16 +70,33 @@ const validateForm = ({
     enforce(symbol?.trim()).isNotEmpty()
     enforce(byteLength(symbol)).lte(limits.symbolMaxBytes)
   })
+}
+
+const validateForm = (values: FieldsOf<CreatePoolFormValues>) => {
+  const { tokenCount, poolType, addLiquidity, maxAmounts, slippage } = values
+  const tokens = getCreatePoolTokens(values, tokenCount)
+  test('tokenCount', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
+    enforce(tokenCount).gte(limits.tokens.min).lte(limits.tokens.max)
+    enforce(new Set(tokens?.map(token => token?.address)).size).equals(tokens?.length)
+  })
+  each(notFalsyArray(tokens), (token, index) => {
+    test(createPoolTokenField(index), 'Select a token', () => {
+      enforce(token?.address).isNotEmpty().condition(isContractAddress)
+    })
+  })
+  test('poolType', 'Select a pool type', () => {
+    enforce(poolType).inside([...STELLAR_POOL_TYPES])
+  })
+  validateParameters(values)
   skipWhen(!addLiquidity, () => {
     validateSlippage({ slippage })
-    test('decimals', 'Token decimals are unavailable', () => {
-      enforce(decimals?.length).equals(tokens?.length)
-      enforce(isComplete(decimals)).equals(true)
-    })
-    each(notFalsyArray(tokens), (_, index) => {
+    each(notFalsyArray(tokens), (token, index) => {
+      test(createPoolTokenDecimalsField(index), 'Token decimals are unavailable', () => {
+        enforce(token?.decimals).isNumber()
+      })
       test(poolAmountField(index), 'Enter a positive amount for every token', () => {
         enforce(values[poolAmountField(index)]).isDecimal().gt(0)
-        maybe(decimals?.[index], precision =>
+        maybe(token?.decimals, precision =>
           enforce(values[poolAmountField(index)]).isDecimal({ decimal_digits: `0,${precision}` }),
         )
       })
@@ -131,5 +131,10 @@ export const factoryImplementationValidationSuite = createValidationSuite((param
 export const createPoolValidationSuite = createValidationSuite((params: CreatePoolParams) => {
   validateFactory(params)
   validateAccount(params.account)
-  validateForm(params)
+  validateParameters(params)
+  test('coins', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
+    enforce(params.coins?.length).gte(limits.tokens.min).lte(limits.tokens.max)
+    enforce(new Set(params.coins).size).equals(params.coins?.length)
+    params.coins?.forEach(coin => enforce(coin).isNotEmpty().condition(isContractAddress))
+  })
 })

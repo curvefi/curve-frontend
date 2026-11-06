@@ -27,6 +27,8 @@ export const StellarFetchRetry = {
 
 type ContractArgument = StellarAddress | StellarContract | bigint | number | boolean | xdr.ScVal | ContractArgument[]
 
+export const encodeContractValue: typeof nativeToScVal = (value, options) => nativeToScVal(value, options)
+
 const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
   Array.isArray(value)
     ? xdr.ScVal.scvVec(value.map(encodeContractArgument))

@@ -11,11 +11,14 @@ import type { TokenOption } from '@ui/features/select-token/types'
 import type { CREATE_POOL_SECTIONS } from './constants'
 
 export type CreatePoolTokenField = `token_${number}`
-export type CreatePoolTokenFields = Record<CreatePoolTokenField, TokenOption | undefined>
+export type CreatePoolTokenFields = Record<CreatePoolTokenField, Address | undefined> &
+  Record<`symbol_${number}`, string | undefined> &
+  Record<`decimals_${number}`, number | undefined>
+
+export type CreatePoolToken = { address: Address; symbol?: string; decimals?: number }
 
 export type CreatePoolFormValues = PoolTokenFields &
   CreatePoolTokenFields & {
-    decimals: (number | undefined)[] | undefined
     tokenCount: number
     poolType: string | undefined
     preset: string
@@ -76,7 +79,7 @@ export type CreatePoolTokensProps = CreatePoolTokenSearchProps & {
   blockchainId: string
   limits: PoolParameterRanges & { tokens: { min: number; max: number }; nameMaxBytes: number; symbolMaxBytes: number }
   inputsDisabled: boolean
-  setTokens: (tokens: (TokenOption | undefined)[]) => void
+  setTokens: (tokens: (CreatePoolToken | undefined)[]) => void
 }
 
 export type CreatePoolLiquidityProps = {

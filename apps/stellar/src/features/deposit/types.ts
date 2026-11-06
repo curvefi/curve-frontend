@@ -28,4 +28,4 @@ export type DepositMutationContext = Pick<DepositQuery, 'network' | 'pool' | 'ac
   quote: Decimal
 }
 export type DepositMutationParams = FieldsOf<DeepPartial<DepositMutationContext & DepositMutation>>
-export type DepositMutationOptions = FieldsOf<DepositMutationContext> & { onReset?: () => void }
+export type DepositMutationOptions = FieldsOf<DeepPartial<DepositMutationContext>> & { onReset?: () => void }
