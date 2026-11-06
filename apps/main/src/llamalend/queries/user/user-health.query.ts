@@ -1,5 +1,6 @@
 import { getHealth, getPositionStatus, type HealthThresholds, type PositionHealth } from '@/llamalend/health.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -53,7 +54,7 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: HealthTh
       useUserHealth({ ...params, isFull: false }),
       useUserHealth({ ...params, isFull: true }),
       useUserState(params),
-      useUserDiscounts(params),
+      useUserDiscounts(params, useNewLlamalendHealth()),
     ],
     (oraclePrice, prices, liquidationBuffer, healthFull, { debt }, { loanDiscount, liquidationDiscount }) =>
       maybe(prices, (prices): PositionHealth => {
