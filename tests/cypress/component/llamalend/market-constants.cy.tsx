@@ -1,6 +1,11 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { getMarketLeverageProviders, getMarketLeverageSlippage, hasZapDelegation } from '@/llamalend/llama.utils'
+import {
+  DELEGATION_ZAP_ALIASES,
+  getMarketLeverageProviders,
+  getMarketLeverageSlippage,
+  hasZapDelegation,
+} from '@/llamalend/llama.utils'
 import { getMarketAddressesByAssetsType } from '@/llamalend/market-assets-type.utils'
 import {
   DEPRECATED_LLAMAS,
@@ -8,9 +13,10 @@ import {
   MARKETS_LEVERAGE_CONFIG,
   NO_LEVERAGE_LEND,
 } from '@/llamalend/markets.constants'
+import { ALIASES_ETHEREUM } from '@curvefi/llamalend-api/lib/constants/aliases'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
-import { createMockLendMarket, createMockMintMarket } from '@cy/support/helpers/llamalend/mock-market.helpers'
+import { createMockLendMarket } from '@cy/support/helpers/llamalend/mock-market.helpers'
 import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 // eslint-disable-next-line no-restricted-imports
@@ -138,44 +144,29 @@ describe('llama market constants', () => {
 
 describe('hasZapDelegation', () => {
   const DELEGATION_ZAP = oneAddress()
-  const OTHER_ZAP = oneAddress()
-  const withZap = (alias: string, zapAddress: Address) => ({
-    llamalend: { constants: { ALIASES: { [alias]: DELEGATION_ZAP } } },
-    getZapAddress: () => zapAddress,
-  })
-
-  it('is true for Mint markets on the Mint delegation zap', () => {
-    const market = createMockMintMarket(withZap('leverage_zap_v2_mint_transient', DELEGATION_ZAP))
-    expect(hasZapDelegation(market)).to.eq(true)
-  })
-
-  it('is false for Mint markets on another zap', () => {
-    const market = createMockMintMarket(withZap('leverage_zap_v2_mint_transient', OTHER_ZAP))
-    expect(hasZapDelegation(market)).to.eq(false)
-  })
-
-  it('is true for LLv2 markets on the LLv2 delegation zap', () => {
-    const market = createMockLendMarket({ version: 'v2', ...withZap('leverage_zap_v2_llv2', DELEGATION_ZAP) })
-    expect(hasZapDelegation(market)).to.eq(true)
-  })
-
-  it('is true for LLv2 markets on a chain without an LLv2 zap', () => {
-    const market = createMockLendMarket({
-      version: 'v2',
-      llamalend: { constants: { ALIASES: { leverage_zap_v2_llv2: zeroAddress } } },
-      getZapAddress: () => zeroAddress,
+  // the market type does not matter: only the zap address is compared with the delegation zap aliases
+  const marketWithZap = (alias: string, zapAddress: Address) =>
+    createMockLendMarket({
+      llamalend: { constants: { ALIASES: { [alias]: DELEGATION_ZAP } } },
+      getZapAddress: () => zapAddress,
     })
-    expect(hasZapDelegation(market)).to.eq(true)
+
+  DELEGATION_ZAP_ALIASES.forEach(alias =>
+    it(`is true for markets on the ${alias} zap`, () => {
+      expect(hasZapDelegation(marketWithZap(alias, DELEGATION_ZAP))).to.eq(true)
+    }),
+  )
+
+  it('is false for markets on another zap', () => {
+    expect(hasZapDelegation(marketWithZap(oneOf(...DELEGATION_ZAP_ALIASES), oneAddress()))).to.eq(false)
   })
 
-  it('is true for LLv1 markets on the Lend delegation zap', () => {
-    const market = createMockLendMarket({ version: 'v1', ...withZap('leverage_zap_v2_transient', DELEGATION_ZAP) })
-    expect(hasZapDelegation(market)).to.eq(true)
-  })
-
-  it('is false for LLv1 markets on another zap', () => {
-    const market = createMockLendMarket({ version: 'v1', ...withZap('leverage_zap_v2_transient', OTHER_ZAP) })
-    expect(hasZapDelegation(market)).to.eq(false)
+  it('only lists delegation zaps deployed on Ethereum in llamalend.js', () => {
+    DELEGATION_ZAP_ALIASES.forEach(alias =>
+      expect(ALIASES_ETHEREUM[alias], alias)
+        .to.match(/^0x[0-9a-f]{40}$/)
+        .and.not.eq(zeroAddress),
+    )
   })
 })
 

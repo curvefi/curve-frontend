@@ -151,7 +151,11 @@ export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
 /** The delegation ZapV2 contracts of the newer LLv1 markets, the LLv2 markets and the factory Mint markets */
-const DELEGATION_ZAP_ALIASES = ['leverage_zap_v2_transient', 'leverage_zap_v2_llv2', 'leverage_zap_v2_mint_transient']
+export const DELEGATION_ZAP_ALIASES = [
+  'leverage_zap_v2_transient',
+  'leverage_zap_v2_llv2',
+  'leverage_zap_v2_mint_transient',
+]
 
 /** Controllers that support delegation use the delegation ZapV2 (no router calldata size limit). */
 export const hasZapDelegation = (market: MarketTemplate | Nullish) =>
