@@ -10,7 +10,7 @@ import { maybe } from '@primitives/objects.utils'
 import { getCreatePoolDecimals, getCreatePoolTokens } from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormValues, CreatePoolTokenFields } from '@ui/features/create-pool/types'
 import { getPoolAmounts, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type InitialLiquidityForm = PoolTokenFields &
@@ -78,6 +78,8 @@ export const useInitialLiquidity = ({
 
   return {
     onSubmit,
+    expectedLp: q(quote),
+    minimumLp: minimum,
     isSuccess,
     isDepositing: isPending,
     isPending: isPending || isPreparing,

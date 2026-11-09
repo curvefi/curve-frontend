@@ -1,4 +1,7 @@
+import { escapeRegExp } from 'lodash'
+import { STELLAR_CONTRACT_PATTERN } from '@/stellar/features/connect-wallet/address'
 import { CreatePoolPage } from '@/stellar/features/create-pool/CreatePoolPage'
+import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarPages } from '@/stellar/routes/routes'
 import { oneOf } from '@cy/support/generators'
 import { connectTestWallet } from '@cy/support/helpers/stellar/connector'
@@ -45,6 +48,16 @@ describe('Stellar testnet pool creation', () => {
     cy.get('[data-testid="create-pool-type-stableswap"]').click()
     if (breakpoint === 'mobile') cy.get('[data-testid="mobile-form-action-summary"]').click()
     cy.get('[data-testid="create-pool-submit"]').click(TIMEOUTS['stellar.simulation'])
-    cy.get('[data-testid="create-pool-success"]', TIMEOUTS['stellar.confirmation']).should('be.visible')
+    cy.get('[data-testid="create-pool-success"]', TIMEOUTS['stellar.confirmation'])
+      .should('be.visible')
+      .find('a')
+      .should('have.attr', 'target', '_blank')
+      .and('have.attr', 'href')
+      .and(
+        'match',
+        new RegExp(
+          `^${escapeRegExp(STELLAR_NETWORKS[TEST_NETWORK].explorerUrl)}contract/${STELLAR_CONTRACT_PATTERN.source.slice(1)}`,
+        ),
+      )
   })
 })

@@ -159,7 +159,12 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
     creationFee: mapQuery(simulation, transaction =>
       fromWei(getStellarTransactionFees(transaction).fee, nativeCurrency.decimals),
     ),
-    created: maybe(created, ({ pool }) => ({ explorerUrl: `${explorerUrl}contract/${pool}` })),
+    created: maybe(created, ({ pool }) => ({
+      explorerUrl: `${explorerUrl}contract/${pool}`,
+      depositUrl: StellarPages.pool({ network: networkId, pool }),
+    })),
+    expectedLp: liquidity.expectedLp,
+    minimumLp: liquidity.minimumLp,
     isFunded: liquidity.isSuccess,
     isDepositing: liquidity.isDepositing,
     isPending,

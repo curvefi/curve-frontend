@@ -104,7 +104,9 @@ export type CreatePoolSummaryProps = Pick<
   poolListUrl: string
   totalDepositValueUsd: QueryProp<Decimal>
   creationFee: QueryProp<Decimal>
-  created: { explorerUrl: string } | undefined
+  expectedLp: QueryProp<Decimal>
+  minimumLp: QueryProp<Decimal>
+  created: { explorerUrl: string; depositUrl: string } | undefined
   wallet: PoolFormProps<CreatePoolFormValues>['wallet']
   isPending: boolean
   isLoading: boolean

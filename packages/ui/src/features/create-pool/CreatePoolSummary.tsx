@@ -46,6 +46,8 @@ const SummaryCard = ({
   blockchainId,
   poolListUrl,
   totalDepositValueUsd,
+  expectedLp,
+  minimumLp,
   wallet,
   isPending,
   isLoading,
@@ -114,6 +116,22 @@ const SummaryCard = ({
                   label={t`Value`}
                   value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
                 />
+                {!isFunded && (
+                  <>
+                    <ActionInfo
+                      size="small"
+                      testId="create-pool-expected-lp"
+                      label={t`Expected LP received`}
+                      value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
+                    />
+                    <ActionInfo
+                      size="small"
+                      testId="create-pool-minimum-lp"
+                      label={t`Minimum LP received`}
+                      value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
+                    />
+                  </>
+                )}
               </>
             ) : (
               <ActionInfo size="small" label={t`Amounts`} value={t`Add later`} />
@@ -141,7 +159,7 @@ const SummaryCard = ({
             {isFunded && <Alert severity="success">{t`Initial liquidity added`}</Alert>}
           </>
         )}
-        {!isFunded && (
+        {!isFunded && (!created || values.addLiquidity) && (
           <FormButton
             {...wallet}
             testId="create-pool-submit"
@@ -153,7 +171,16 @@ const SummaryCard = ({
             fullWidth
           />
         )}
-        {created && <RouterLink href={poolListUrl}>{t`Back to pools`}</RouterLink>}
+        {created && (
+          <>
+            {!isPending && !isFunded && (
+              <RouterLink href={created.depositUrl} state={{ defaultTab: 'deposit' }}>
+                {t`Deposit into pool`}
+              </RouterLink>
+            )}
+            <RouterLink href={poolListUrl}>{t`Back to pools`}</RouterLink>
+          </>
+        )}
       </Stack>
     </CardContent>
   </Card>
@@ -167,7 +194,7 @@ export const CreatePoolSummary = (props: CreatePoolSummaryProps & { formId: stri
       Wrapper={MobileFormTabsDrawer}
       tabs={[{ value: 'summary', label: t`Preview Pool` }]}
       onSelectTab={noop}
-      omitFormButton={props.isFunded}
+      omitFormButton={props.isFunded || (!!props.created && !props.form.values.addLiquidity)}
     >
       <Stack sx={{ gap: Spacing.md, minWidth: 0 }}>
         <SummaryCard {...props} />
