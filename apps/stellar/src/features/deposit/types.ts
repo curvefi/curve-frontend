@@ -19,6 +19,7 @@ export type DepositMutation = {
   decimals: number[]
   supply: Decimal
   slippage: Decimal
+  isSeed: boolean | undefined
 }
 
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }

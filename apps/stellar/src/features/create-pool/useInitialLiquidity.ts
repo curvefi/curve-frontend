@@ -50,6 +50,7 @@ export const useInitialLiquidity = ({
       mutate({
         maxAmounts: values.maxAmounts,
         slippage: '0', // Initial liquidity must receive the full quoted LP amount.
+        isSeed: true,
         supply: supply.data,
         decimals: getCreatePoolDecimals(values, values.tokenCount),
         amounts: getPoolAmounts(values, values.tokenCount),

@@ -8,6 +8,7 @@ import type {
 import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { depositMutationValidationSuite } from '@/stellar/queries/validation/deposit.validation'
+import { maybe } from '@primitives/objects.utils'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
@@ -45,6 +46,7 @@ export const useDepositMutation = ({
     (values: DepositForm) =>
       mutate({
         ...values,
+        isSeed: maybe(values.supply, s => !+s),
         amounts: getPoolAmounts(values, values.decimals?.length),
         maxAmounts: getPoolMaxAmounts(values, values.decimals?.length),
       } as DepositMutation),
