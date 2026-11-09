@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { useMarketCampaignsByAddress } from '@/llamalend/features/market-advanced-information/hooks/useMarketCampaignsByAddress'
 import { useMarketContext } from '@/llamalend/features/market-context'
+import { useMarketCampaigns } from '@/llamalend/features/market-list/hooks/useMarketCampaigns'
 import { isLendMarket } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
@@ -11,8 +11,10 @@ import { useUserSupplyBoost } from '@/llamalend/queries/user/user-supply-boost.q
 import {
   formatSupplyExtraIncentives,
   getLatestSnapshotValue,
+  getMarketCampaigns,
   getSupplyApyAverageMetrics,
   getSupplyApyMetrics,
+  getSupplyCampaigns,
   sumCampaignsApy,
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
@@ -22,6 +24,7 @@ import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/Mar
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
 import { useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
+import { MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
 import { Grid } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
@@ -68,7 +71,15 @@ export const SupplyPositionDetails = () => {
 
   const params = { chainId, marketId: market.id, userAddress }
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
-  const { data: campaigns } = useMarketCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
+  const { data: marketCampaigns } = useMarketCampaigns({ blockchainId })
+  const campaigns = getSupplyCampaigns(
+    getMarketCampaigns(marketCampaigns, {
+      marketType: MarketType.Lend,
+      controllerAddress,
+      vaultAddress: market.addresses.vault as Address,
+      ammAddress: market.addresses.amm as Address,
+    }),
+  )
   const noGauge = market.addresses.gauge === zeroAddress
 
   const userSupplyBoost = useUserSupplyBoost(params)
