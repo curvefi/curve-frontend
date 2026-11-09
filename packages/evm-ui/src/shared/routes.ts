@@ -153,13 +153,17 @@ export const routeToPage = (
   { blockchainId, pathname }: { blockchainId: string; pathname: string },
 ) => {
   const href = route({ blockchainId })
+  // The pathname has no query string, but links can have one, like the default tokens of the swap page.
+  const [hrefPath] = href.split('?')
   return {
     href,
     target,
     label: label(),
     isActive:
       // In-page section navigation can normalize the current pathname with a trailing slash.
-      matchMode === 'exact' ? removeTrailingSlash(pathname) === removeTrailingSlash(href) : pathname.startsWith(href),
+      matchMode === 'exact'
+        ? removeTrailingSlash(pathname) === removeTrailingSlash(hrefPath)
+        : pathname.startsWith(hrefPath),
   }
 }
 
