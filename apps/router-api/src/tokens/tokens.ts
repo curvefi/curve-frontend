@@ -13,7 +13,7 @@ export const getTokens = async (request: FastifyRequest<{ Querystring: TokensQue
   const chain = chains.find(chain => chain.chainId === chainId)
 
   const [tokens, nativeTokens] = await Promise.all([
-    chain ? getPricesTokens(chain.name, blacklist) : getLiteTokens(chainId, blacklist),
+    chain ? getPricesTokens(chain, blacklist) : getLiteTokens(chainId, blacklist),
     getNativeTokens(chainId),
   ])
 

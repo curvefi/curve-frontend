@@ -1,16 +1,28 @@
 import { getAddress, zeroAddress } from 'viem'
-import { getPools } from '@curvefi/prices-api/pools'
+import { getPools, type Pool, type V2PoolChain } from '@curvefi/prices-api/pools'
 import { sumBy } from '@primitives/array.utils'
-import { fromEntries, maybe, notFalsy, recordEntries } from '@primitives/objects.utils'
+import { fromEntries, maybe, notFalsy, notFalsyArray, recordEntries } from '@primitives/objects.utils'
+import { getPoolNativeCoin } from './native-tokens'
 import { LP_TOKEN_DECIMALS, MIN_POOL_TVL_USD } from './tokens.constants'
+import { getUnderlyingCoins } from './underlying-coins'
 
-export const getPricesTokens = async (chain: string, blacklist: ReadonlySet<string>) => {
-  const { pools } = await getPools(chain)
+export const getPricesTokens = async ({ chainId, name }: V2PoolChain, blacklist: ReadonlySet<string>) => {
+  const { pools } = await getPools(name)
   const eligiblePools = pools.filter(
     pool => pool.tvlUsd > MIN_POOL_TVL_USD && !blacklist.has(pool.address.toLowerCase()),
   )
-  const poolVolumes = eligiblePools.flatMap(({ coins, tradingVolume24h: volume }) =>
-    volume ? [...new Set(coins.map(coin => getAddress(coin.address)))].map(address => ({ address, volume })) : [],
+  const getPoolCoins = (pool: Pool) => [
+    ...notFalsyArray(getUnderlyingCoins(chainId, pool.address)),
+    ...pool.coins,
+    ...notFalsy(getPoolNativeCoin(chainId, pool)),
+  ]
+  const poolVolumes = eligiblePools.flatMap(pool =>
+    pool.tradingVolume24h
+      ? [...new Set(getPoolCoins(pool).map(coin => getAddress(coin.address)))].map(address => ({
+          address,
+          volume: pool.tradingVolume24h,
+        }))
+      : [],
   )
   const volumes = fromEntries(
     recordEntries(Object.groupBy(poolVolumes, coin => coin.address)).map(([address, coins]) => [
@@ -19,7 +31,7 @@ export const getPricesTokens = async (chain: string, blacklist: ReadonlySet<stri
     ]),
   )
   const poolTokens = eligiblePools
-    .flatMap(pool => pool.coins)
+    .flatMap(getPoolCoins)
     .map(({ address, symbol, decimals }) =>
       maybe(
         decimals,

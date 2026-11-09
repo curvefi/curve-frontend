@@ -3,6 +3,7 @@ import { listLitePools, type LitePool, type LitePoolCoin } from '@curvefi/prices
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, maybe, maybes, notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { LP_TOKEN_DECIMALS, MIN_POOL_TVL_USD } from './tokens.constants'
+import { getUnderlyingCoins } from './underlying-coins'
 
 const isBasePool = (address: Address) => (base: LitePool) =>
   (base.lpTokenAddress ?? base.address).toLowerCase() === address.toLowerCase()
@@ -28,6 +29,9 @@ export const getLiteTokens = async (chainId: number, blacklist: ReadonlySet<stri
         (address, symbol, decimals) => [getAddress(address), { symbol, decimals: +decimals }] as const,
       ),
     )
+  const underlyingTokens = eligiblePools
+    .flatMap(pool => getUnderlyingCoins(chainId, pool.address))
+    .map(coin => maybe(coin, ({ address, symbol, decimals }) => [address, { symbol, decimals }] as const))
   const lpTokens = eligiblePools.map(pool => {
     const address = getAddress(pool.lpTokenAddress ?? pool.address)
     return (
@@ -35,5 +39,5 @@ export const getLiteTokens = async (chainId: number, blacklist: ReadonlySet<stri
       maybe(pool.symbol, symbol => [address, { symbol, decimals: LP_TOKEN_DECIMALS, lp: true }] as const)
     )
   })
-  return fromEntries(notFalsy(...poolTokens, ...lpTokens))
+  return fromEntries(notFalsy(...underlyingTokens, ...poolTokens, ...lpTokens))
 }

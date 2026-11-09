@@ -11,6 +11,8 @@ const pool = z
   .object({
     name: z.string(),
     address,
+    pool_type: z.string().nullable().optional(),
+    implementation_address: address.nullable().optional(),
     n_coins: z.number(),
     tvl_usd: z.number(),
     trading_volume_24h: z.number(),
