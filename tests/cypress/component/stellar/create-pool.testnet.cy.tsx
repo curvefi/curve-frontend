@@ -46,7 +46,8 @@ describe('Stellar testnet pool creation', () => {
       cy.get('[data-testid="create-pool-token-search"] input').type(address)
       cy.get(`[data-testid="token-option-${address.toLowerCase()}"]`, TIMEOUTS['stellar.read']).click()
     })
-    cy.get('[data-testid="create-pool-seed-checkbox"]').should('be.visible').find('input').should('not.be.checked')
+    cy.get('[data-testid="create-pool-seed-checkbox"]').should('be.visible')
+    cy.get('[data-testid="create-pool-seed-checkbox"] input').should('not.be.checked')
     cy.get('[data-testid="create-pool-liquidity-input"]').should('not.exist')
     if (addLiquidity) {
       cy.get('[data-testid="create-pool-seed-checkbox"] input').check()
@@ -56,9 +57,8 @@ describe('Stellar testnet pool creation', () => {
     }
     if (breakpoint === 'mobile') cy.get('[data-testid="mobile-form-action-summary"]').click()
     cy.get('[data-testid="create-pool-submit"]').click(TIMEOUTS['stellar.simulation'])
-    cy.get('[data-testid="create-pool-success"]', TIMEOUTS['stellar.confirmation'])
-      .should('be.visible')
-      .find('a')
+    cy.get('[data-testid="create-pool-success"]', TIMEOUTS['stellar.confirmation']).should('be.visible')
+    cy.get('[data-testid="create-pool-success"] a')
       .should('have.attr', 'target', '_blank')
       .and('have.attr', 'href')
       .and(

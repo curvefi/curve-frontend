@@ -12,6 +12,7 @@ import {
   type xdr,
 } from '@stellar/stellar-sdk'
 import { convertStellarError } from './contract'
+import { createRpc } from './wallet'
 
 export type StellarHex = string & { readonly __stellarHex: unique symbol } // Stellar hashes are hex strings without an 0x prefix.
 export type StellarTransaction<T = unknown> = contract.AssembledTransaction<T>
@@ -55,7 +56,7 @@ export function getStellarTransactionFees<T>({ options, simulationData: { transa
 export async function simulateStellarTransaction<T>(transaction: StellarTransaction<T>) {
   // Building consumes the account sequence; keep this envelope for simulation, retries and submission.
   const raw = (transaction.built ??= assert(transaction.raw, 'Missing transaction').build())
-  transaction.simulation = await new rpc.Server(transaction.options.rpcUrl).simulateTransaction(raw)
+  transaction.simulation = await createRpc(transaction.options).simulateTransaction(raw)
   void transaction.simulationData
   if (!getStellarTransactionFees(transaction).needsFeeBump) {
     // Populate the SDK's built envelope for signAndSend. Oversized fees are assembled by waitForFeeBump instead.

@@ -1,14 +1,11 @@
-import {
-  getStellarTransactionFees,
-  type StellarTransaction,
-  type StellarTransactionResponse,
-} from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { assert } from '@primitives/objects.utils'
 import { BASE_FEE, contract, rpc, SorobanDataBuilder, Transaction, TransactionBuilder, xdr } from '@stellar/stellar-sdk'
 import { withPendingToast } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { waitForTransaction } from '@ui/lib/waitForTransaction'
+import { getStellarTransactionFees, type StellarTransaction, type StellarTransactionResponse } from './transaction'
+import { createRpc } from './wallet'
 
 /** A fee-bump envelope pays resource fees that do not fit in the inner transaction's fee field. */
 const signFeeBumpTransaction = async <T>(transaction: StellarTransaction<T>, sign: contract.SignTransaction) => {
@@ -53,7 +50,7 @@ const signFeeBumpTransaction = async <T>(transaction: StellarTransaction<T>, sig
 
 /** Submit and confirm a fee-bump envelope when required. It includes the inner transaction; do not submit it again. */
 export const waitForFeeBump = async <T>(transaction: StellarTransaction<T>) => {
-  const server = new rpc.Server(transaction.options.rpcUrl)
+  const server = createRpc(transaction.options)
   const confirmed = await waitForTransaction({
     onExecute: async () => {
       const signed = await signFeeBumpTransaction(
