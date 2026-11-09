@@ -24,6 +24,7 @@ export const CreatePoolType = ({
   poolTypes.map(({ id, label, description, defaultPreset, presets, disabled: unavailable }) => (
     <SelectableCard
       key={id}
+      data-testid={`create-pool-type-${id}`}
       isSelected={poolType === id}
       disabled={disabled || unavailable}
       onClick={() =>

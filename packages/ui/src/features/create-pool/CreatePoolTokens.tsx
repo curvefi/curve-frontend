@@ -54,6 +54,7 @@ export const CreatePoolTokens = ({
         ))}
       </Stack>
       <Button
+        data-testid="create-pool-add-token"
         color="ghost"
         size="small"
         sx={{ alignSelf: 'start' }}

@@ -36,6 +36,7 @@ const TokenList = ({
         variant="bodySRegular"
       >{t`Token symbol or contract address`}</Typography>
       <SearchField
+        data-testid="create-pool-token-search"
         autoFocus
         id="create-pool-token-search"
         size="small"
@@ -89,6 +90,7 @@ export const CreatePoolTokenSelector = ({
   return (
     <>
       <Select
+        data-testid="create-pool-token-select"
         fullWidth
         size="small"
         value=""

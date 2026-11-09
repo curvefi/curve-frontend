@@ -131,7 +131,7 @@ const SummaryCard = ({
         )}
         {created && (
           <>
-            <Alert severity="success">
+            <Alert severity="success" data-testid="create-pool-success">
               {t`Pool deployed`}.{' '}
               <Link href={created.explorerUrl} target="_blank" rel="noreferrer">{t`View on explorer`}</Link>
             </Alert>
@@ -144,6 +144,7 @@ const SummaryCard = ({
         {!isFunded && (
           <FormButton
             {...wallet}
+            testId="create-pool-submit"
             form={formId}
             pending={isPending}
             loading={isLoading}
