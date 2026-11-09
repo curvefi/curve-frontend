@@ -54,7 +54,7 @@ function parseSort(
   return sort.length ? sort : defaultSort.map(({ id, desc }) => ({ id: id.replace(/\./g, '_'), desc }))
 }
 
-const getSortableColumnIds = <TData extends RowData>(columns: CurveColumnDefs<TData>): ReadonlySet<string> =>
+export const getSortableColumnIds = <TData extends RowData>(columns: CurveColumnDefs<TData>): ReadonlySet<string> =>
   new Set(
     notFalsy(
       ...columns

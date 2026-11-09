@@ -13,7 +13,7 @@ import { PongLoader } from '@ui/components/PongLoader'
 import type { PoolClaimables, ResidualClaimsTableData } from '@ui/features/pool-list/types'
 import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalCompare, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -25,6 +25,7 @@ const { IconSize } = SizesAndSpaces
 const getPoolUserPosition = (claimables: PoolClaimables) => ({
   lpBalance: ZERO,
   depositsUsd: constQ(ZERO),
+  boost: DISABLED_Q,
   claimables: constQ(claimables),
   claimablesUsd: constQ(claimablesTotalUsd(claimables)),
 })

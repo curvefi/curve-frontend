@@ -11,19 +11,19 @@ export const {
   queryKey: getUserStateKey,
 } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    ({ name: 'userState', chainId, marketId, userAddress }) as const,
+    ({ name: 'userState', version: 1, chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const userState = await getUserPositionImplementation(marketId).userState(userAddress)
     return {
       /** The amount of collateral tokens the user's put in his loan */
       collateral: userState.collateral as Decimal,
       /**
-       * The amount of crvUSD that is in the AMM.
+       * The borrowed tokens in the AMM, converted from the collateral during soft liquidation.
        * You can borrow 100 crvUSD with $1000 worth of ETH collateral,
        * and if you enter soft liquidation you can end up with 1100
        * in crvUSD even though your debt is still 100.
        */
-      stablecoin: ('N' in userState ? userState.borrowed : userState.stablecoin) as Decimal,
+      convertedBorrowed: ('N' in userState ? userState.borrowed : userState.stablecoin) as Decimal,
       /**
        * The amount of crvUSD borrowed with the collateral.
        * This does not include the crvUSD in the AMM that

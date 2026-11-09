@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
 import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
@@ -13,11 +14,11 @@ import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import { ErrorCell } from '@ui/features/tables/ErrorCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { MarketColumnId } from '../columns/columns.enum'
-import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -33,7 +34,6 @@ const getAssets = (columnId: MarketColumnId, assets: LlamaMarket['assets']) =>
     ({
       [MarketColumnId.UserCollateral]: [assets.collateral, assets.borrowed],
       [MarketColumnId.UserBorrowed]: [assets.borrowed, undefined],
-      [MarketColumnId.UserEarnings]: [assets.borrowed, undefined],
       [MarketColumnId.UserDeposited]: [assets.borrowed, undefined],
     }) as Partial<Record<MarketColumnId, [AssetDetails, AssetDetails | undefined]>>
   )[columnId]
@@ -49,9 +49,8 @@ const getAssetValues = (
 ) =>
   (
     ({
-      [MarketColumnId.UserCollateral]: [stats?.collateral, stats?.borrowToken],
+      [MarketColumnId.UserCollateral]: [stats?.collateral, stats?.convertedBorrowed],
       [MarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
-      [MarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
       [MarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
     }) as Partial<Record<MarketColumnId, [number, number | undefined]>>
   )[columnId]
@@ -90,7 +89,7 @@ const getTooltipBody = (
             conversionRate: market.oraclePrice,
             symbol: market.assets.collateral.symbol,
           },
-          borrow: { value: decimal(stats?.borrowToken), symbol: market.assets.borrowed.symbol },
+          borrow: { value: decimal(stats?.convertedBorrowed), symbol: market.assets.borrowed.symbol },
           totalValue,
           totalValueUsd,
         }}
@@ -131,18 +130,19 @@ export const PriceCell = ({
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
   const [primaryValue, secondaryValue] = getAssetValues(columnId, stats, lendingPosition) ?? [getValue(), undefined]
   const primaryPriceQuery = columnId === MarketColumnId.UserCollateral ? prices.collateral : prices.borrowed
-  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = primaryPriceQuery
-  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = prices.borrowed
+  const { data: primaryPrice, isLoading: isPrimaryPriceLoading, error: primaryPriceError } = primaryPriceQuery
+  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading, error: secondaryPriceError } = prices.borrowed
 
-  if (usesBorrowStats && statsError) {
+  if (usesBorrowStats && statsError && stats == null) {
     return <ErrorCell error={statsError} />
   }
 
   const tooltipTitle =
     getTooltipTitle(columnId) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
-  const totalValue = maybe(market.oraclePrice, oraclePrice =>
-    decimal((stats?.collateral ?? 0) * oraclePrice + (stats?.borrowToken ?? 0)),
+  const totalValue = maybes(
+    [decimal(stats?.collateral), decimal(stats?.convertedBorrowed), decimal(market.oraclePrice)],
+    (collateral, convertedBorrowed, oraclePrice) => getCollateralValue({ collateral, convertedBorrowed }, oraclePrice),
   )
   const totalValueUsd = mapQuery(prices.borrowed, borrowUsdRate =>
     maybe(totalValue, value => decimalMultiply(value, borrowUsdRate)),
@@ -155,7 +155,13 @@ export const PriceCell = ({
   const hasSecondaryAsset = secondaryAsset && !!secondaryValue
 
   const gridAssets = [
-    { asset: primaryAsset, value: primaryValue, usdValue: primaryUsdValue, isPriceLoading: isPrimaryPriceLoading },
+    {
+      asset: primaryAsset,
+      value: primaryValue,
+      usdValue: primaryUsdValue,
+      isPriceLoading: isPrimaryPriceLoading,
+      priceError: primaryPriceError,
+    },
     ...notFalsyArray(
       hasSecondaryAsset && [
         {
@@ -163,6 +169,7 @@ export const PriceCell = ({
           value: secondaryValue,
           usdValue: secondaryUsdValue,
           isPriceLoading: isSecondaryPriceLoading,
+          priceError: secondaryPriceError,
         },
       ],
     ),
@@ -170,7 +177,7 @@ export const PriceCell = ({
 
   return (
     <Stack sx={{ gap: hasSecondaryAsset ? Spacing.xs : 0 }}>
-      {gridAssets.map(({ asset, value, usdValue, isPriceLoading }) => (
+      {gridAssets.map(({ asset, value, usdValue, isPriceLoading, priceError }) => (
         <TokenAmount
           key={asset.address}
           amount={value}
@@ -178,7 +185,8 @@ export const PriceCell = ({
           blockchainId={asset.blockchainId}
           tokenAddress={getAddressOrPair(asset.blockchainId, asset.address)}
           amountLoading={usesBorrowStats && isLoadingStats}
-          usdLoading={isPriceLoading}
+          usdLoading={isPriceLoading || (usesBorrowStats && isLoadingStats)}
+          usdError={priceError}
           tooltipTitle={tooltipTitle}
           tooltipBody={tooltipBody}
           horizontal={!!hasSecondaryAsset}

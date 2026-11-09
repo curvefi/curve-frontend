@@ -68,7 +68,10 @@ export default defineConfig(({ command }) => ({
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
   },
-  define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
+  define: {
+    'process.env.STELLAR_STANDALONE': JSON.stringify(process.env.STELLAR_STANDALONE),
+    'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
+  },
   ...(isVercelDeployment && {
     // the vercel plugin requires us to build the frontend, it then copies the files in dist
     builder: { buildApp: async builder => void (await builder.build(builder.environments.client)) },

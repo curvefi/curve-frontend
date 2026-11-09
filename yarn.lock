@@ -487,15 +487,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/api@npm:2.71.6":
-  version: 2.71.6
-  resolution: "@curvefi/api@npm:2.71.6"
+"@curvefi/api@npm:2.72.5":
+  version: 2.72.5
+  resolution: "@curvefi/api@npm:2.72.5"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:^10.0.2"
     ethers: "npm:^6.16.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/f8961b5aab44fcf49dd169fd8ecd1af19769b9ecaca68db80ca0271c9187d5b92621231732a4962400385ec0cac2438ea6a4c67b7f67e06491ca3cc4a5b75eef
+  checksum: 10c0/272328f3eddc927c42f832946338ff31db2b0edaf9f0c0054222f15679cd5349ddfa9fe6a34c654af3322d274fda505ec0d0b4d9a17a597efbeba3bca5d530a0
   languageName: node
   linkType: hard
 
@@ -553,7 +553,7 @@ __metadata:
   resolution: "@curvefi/evm-ui@workspace:packages/evm-ui"
   dependencies:
     "@coinbase/wallet-sdk": "npm:4.4.0"
-    "@curvefi/api": "npm:2.71.6"
+    "@curvefi/api": "npm:2.72.5"
     "@curvefi/legacy-ui": "workspace:^"
     "@curvefi/llamalend-api": "npm:2.6.3"
     "@curvefi/ui": "workspace:^"
@@ -665,7 +665,6 @@ __metadata:
     "@mui/material": "npm:9.5.0"
     "@sentry/core": "npm:11.9.0"
     "@sentry/react": "npm:11.9.0"
-    "@tanstack/query-async-storage-persister": "npm:5.105.0"
     "@tanstack/query-persist-client-core": "npm:5.105.0"
     "@tanstack/react-query": "npm:5.105.0"
     "@tanstack/react-query-devtools": "npm:5.105.0"
@@ -5532,16 +5531,6 @@ __metadata:
   dependencies:
     remove-accents: "npm:0.5.0"
   checksum: 10c0/38d7211d816cffd3411ada08bf5dea086c1eed9baf4e016c2f2c58bd65148e8f143acf0a567bfcd7077b5b247d0f65a8ea80b3edd6c59bbdb8e3cde40885ddf6
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-async-storage-persister@npm:5.105.0":
-  version: 5.105.0
-  resolution: "@tanstack/query-async-storage-persister@npm:5.105.0"
-  dependencies:
-    "@tanstack/query-core": "npm:5.105.0"
-    "@tanstack/query-persist-client-core": "npm:5.105.0"
-  checksum: 10c0/b1f4a0dc17d191231f1a9084cb5d5c51d1b6693b7ed7e1b7a1c9814b6d716ce5594b2947db75bb2971588104cf5172265267928cfd19a834430d2ab04dec6b8c
   languageName: node
   linkType: hard
 
@@ -13705,7 +13694,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
-    "@curvefi/api": "npm:2.71.6"
+    "@curvefi/api": "npm:2.72.5"
     "@curvefi/api-server": "workspace:^"
     "@curvefi/prices-api": "workspace:^"
     bignumber.js: "npm:10.0.2"

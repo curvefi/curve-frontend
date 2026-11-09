@@ -8,6 +8,8 @@ import type { Nullish } from '@primitives/objects.utils'
 import { TokenIcon, type Size } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import { q } from '@ui/features/queries/util'
+import { QueryCell } from '@ui/features/tables/QueryCell'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -20,6 +22,8 @@ type TokenAmountProps = {
   tokenAddress?: Address | Address[]
   amountLoading?: boolean
   usdLoading?: boolean
+  /** Shown as an error icon, next to the USD amount if there is one */
+  usdError?: Error | null
   tooltipTitle?: ReactNode
   tooltipBody?: ReactNode
   abbreviate?: boolean
@@ -34,6 +38,7 @@ export const TokenAmount = ({
   tokenAddress,
   amountLoading = false,
   usdLoading = false,
+  usdError = null,
   tooltipTitle,
   tooltipBody,
   abbreviate = true,
@@ -51,13 +56,13 @@ export const TokenAmount = ({
     }}
   >
     <Box sx={{ gridRow: horizontal ? 'auto' : 2 }}>
-      <WithSkeleton loading={usdLoading}>
+      <QueryCell query={q({ data: amountUsd, isLoading: usdLoading, error: usdError })}>
         <Tooltip title={formatNumber(amountUsd, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
           <Typography variant="tableCellSupport" color="textSecondary">
             {formatNumber(amountUsd, 'usd.notional')}
           </Typography>
         </Tooltip>
-      </WithSkeleton>
+      </QueryCell>
     </Box>
     <Box sx={{ gridRow: horizontal ? 'auto' : 1 }}>
       <WithSkeleton loading={amountLoading}>
