@@ -73,7 +73,7 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
   const poolTypes = getCreatePoolTypes(networkId)
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const [tokenSearch, setTokenSearch] = useState('')
-  const tokenOptions = useCreatePoolTokenOptions(networkId, tokenSearch)
+  const tokenOptions = useCreatePoolTokenOptions(networkId, tokenSearch, account)
   const form = useForm<CreatePoolFormValues>({
     validation: createPoolFormValidationSuite,
     defaultValues: { ...userDefaultValues, maxAmounts: undefined, ...getPoolTypeDefaults(poolTypes) },

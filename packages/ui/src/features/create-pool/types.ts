@@ -70,7 +70,7 @@ export type PoolTypeOption = {
 export type CreatePoolTokenSearchProps = {
   tokenSearch: string
   onTokenSearch: (search: string) => void
-  tokenOptions: QueryProp<TokenOption[]>
+  tokenOptions: QueryProp<(TokenOption & { balance?: Decimal; tokenPrice?: number })[]>
 }
 
 export type CreatePoolTokensProps = CreatePoolTokenSearchProps & {

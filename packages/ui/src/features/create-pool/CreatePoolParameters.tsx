@@ -49,8 +49,9 @@ export const CreatePoolParameters = ({
   update: UseFormReturn<CreatePoolFormValues>['update']
   errors: UseFormReturn<CreatePoolFormValues>['formState']['errors']
 }) => {
-  if (!poolType)
+  if (!poolType) {
     return (
+      // empty state until the pool type is chosen
       <Grid container spacing={Spacing.sm}>
         {EMPTY_POOL_PARAMETERS.map(parameter => (
           <Grid key={parameter.name} size={CREATE_POOL_GRID_SIZE}>
@@ -65,6 +66,7 @@ export const CreatePoolParameters = ({
         ))}
       </Grid>
     )
+  }
   const { CurvePreview, presets, parameters } = poolType
   const helperText = {
     amplification: t`Range ${formatNumber(ranges.amplification.min, 'pool.parameter')} to ${formatNumber(ranges.amplification.max, 'pool.parameter')}`,
