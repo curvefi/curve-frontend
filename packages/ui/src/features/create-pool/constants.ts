@@ -10,6 +10,8 @@ export const CREATE_POOL_SECTIONS = [
   { value: 'name', label: t`Name and symbol` },
 ] as const
 
+export type CreatePoolSection = (typeof CREATE_POOL_SECTIONS)[number]['value']
+
 export const CREATE_POOL_GRID_SIZE = { mobile: 12, tablet: 6 } as const
 
 // shown before the user chose a pool type

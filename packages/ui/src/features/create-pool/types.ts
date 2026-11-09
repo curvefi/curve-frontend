@@ -8,7 +8,7 @@ import type { PoolFormProps } from '@ui/features/pool-forms/pool-form.types'
 import type { PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
 import type { QueryProp } from '@ui/features/queries/util'
 import type { TokenOption } from '@ui/features/select-token/types'
-import type { CREATE_POOL_SECTIONS } from './constants'
+import type { CreatePoolSection } from './constants'
 
 export type CreatePoolTokenField = `token_${number}`
 export type CreatePoolTokenFields = Record<CreatePoolTokenField, Address | undefined> &
@@ -115,4 +115,4 @@ export type CreatePoolSummaryProps = Pick<
 export type CreatePoolFormProps = Omit<PoolFormProps<CreatePoolFormValues>, 'footer' | 'tokens'> &
   CreatePoolTokensProps &
   CreatePoolLiquidityProps &
-  CreatePoolSummaryProps & { completed: Record<(typeof CREATE_POOL_SECTIONS)[number]['value'], boolean> }
+  CreatePoolSummaryProps & { completed: Record<CreatePoolSection, boolean> }

@@ -5,7 +5,7 @@ import type { DesignSystem } from '@ui/features/themes/design'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { CheckIcon } from '@ui/icons/CheckIcon'
 
-const { Sizing, Spacing, IconSize, FontSize, ButtonSize } = SizesAndSpaces
+const { Sizing, Spacing, IconSize, FontSize } = SizesAndSpaces
 
 export const defineMuiStepLabel = (
   { Button, Text }: DesignSystem,
@@ -21,9 +21,9 @@ export const defineMuiStepLabel = (
     root: { padding: 0 },
     iconContainer: ({ ownerState: { children } }) => ({
       ...handleBreakpoints({
-        width: children ? Sizing.sm : ButtonSize.xs,
-        height: children ? Sizing.sm : ButtonSize.xs,
-        marginRight: children ? Spacing.sm : 0,
+        width: Sizing.sm,
+        height: Sizing.sm,
+        marginRight: children ? Spacing.sm : 0, // Only add spacing when a label follows the icon.
         fontSize: FontSize.sm,
       }),
       fontWeight: typography.bodySBold?.fontWeight,

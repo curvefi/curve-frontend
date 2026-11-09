@@ -16,8 +16,7 @@ const pointAt = (curve: LiquidityCurve, x: number) => {
   return maybes([curve.solve(xp, 1), spotPrice({ ...curve, xp }, STABLESWAP_PREVIEW_PAIR)], (y, price) => ({
     share: (100 * x) / (x + y),
     price,
-    // x*y=k gives marginal price y/x at the same reserve share.
-    constantProductPrice: y / x,
+    constantProductPrice: y / x, // x*y=k gives marginal price y/x at the same reserve share.
   }))
 }
 

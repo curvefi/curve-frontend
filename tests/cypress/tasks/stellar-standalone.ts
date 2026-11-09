@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax -- Bootstrap real contracts on CI's isolated Stellar node. */
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
 import { createRpc } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
@@ -13,7 +13,6 @@ const RPC_URL = `${STANDALONE_URL}/rpc`
 const FRIENDBOT_URL = `${STANDALONE_URL}/friendbot`
 const TOKEN_CODES = ['USDX', 'USDY', 'USDZ']
 const FACTORY_WASM_PATH = resolve(__dirname, '../fixtures/stellar/factory.wasm')
-const POOL_WASM_PATH = resolve(__dirname, '../fixtures/stellar/pool.wasm')
 const factoryMethods = {
   registerImplementation: 'register_implementation',
   setImplementationDeployable: 'set_implementation_deployable',
@@ -41,9 +40,8 @@ export const deployStellarStandalone = async (): Promise<TestnetDeployment> => {
     await sendDeployment(Operation.createStellarAssetContract({ asset }))
   }
   const coins = assets.map(asset => asset.contractId(Networks.STANDALONE) as StellarContract)
-  const coinCount = xdr.ScVal.scvU32(coins.length)
 
-  const factoryHash = await sendDeployment(Operation.uploadContractWasm({ wasm: readFileSync(FACTORY_WASM_PATH) }))
+  const factoryHash = await sendDeployment(Operation.uploadContractWasm({ wasm: await readFile(FACTORY_WASM_PATH) }))
   assert(factoryHash.type === 'scvBytes')
   const factoryAddress = await sendDeployment(
     Operation.createCustomContract({
@@ -53,21 +51,24 @@ export const deployStellarStandalone = async (): Promise<TestnetDeployment> => {
     }),
   )
   const factory = Address.fromScVal(factoryAddress).toString() as StellarContract
-  const poolHash = await sendDeployment(Operation.uploadContractWasm({ wasm: readFileSync(POOL_WASM_PATH) }))
-  await sendDeployment(
-    Operation.invokeContractFunction({
-      contract: factory,
-      function: factoryMethods.registerImplementation,
-      args: [coinCount, poolHash],
-    }),
-  )
-  await sendDeployment(
-    Operation.invokeContractFunction({
-      contract: factory,
-      function: factoryMethods.setImplementationDeployable,
-      args: [coinCount, xdr.ScVal.scvU32(FIRST_IMPLEMENTATION_INDEX), xdr.ScVal.scvBool(true)],
-    }),
-  )
+  for (const coinCount of [2, 3]) {
+    const wasm = await readFile(resolve(__dirname, `../fixtures/stellar/pool-coins-${coinCount}.wasm`))
+    const poolHash = await sendDeployment(Operation.uploadContractWasm({ wasm }))
+    await sendDeployment(
+      Operation.invokeContractFunction({
+        contract: factory,
+        function: factoryMethods.registerImplementation,
+        args: [xdr.ScVal.scvU32(coinCount), poolHash],
+      }),
+    )
+    await sendDeployment(
+      Operation.invokeContractFunction({
+        contract: factory,
+        function: factoryMethods.setImplementationDeployable,
+        args: [xdr.ScVal.scvU32(coinCount), xdr.ScVal.scvU32(FIRST_IMPLEMENTATION_INDEX), xdr.ScVal.scvBool(true)],
+      }),
+    )
+  }
 
   console.info(`Stellar standalone factory and ${coins.length} test tokens deployed`)
   return { issuer: { address: issuerAddress, secret: issuer.secret() as StellarSecret }, factory, coins }
