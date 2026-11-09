@@ -1,4 +1,5 @@
 import { throttle } from 'lodash'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { PersistedClient, Persister } from '@tanstack/query-persist-client-core'
 import { QueryCache, QueryClient } from '@tanstack/react-query'
@@ -39,7 +40,7 @@ export const persister = {
       data =>
         JSON.parse(
           data,
-          (_, value: unknown) => maybe((value as { $bigint?: string } | null)?.$bigint, BigInt) ?? value,
+          (_, value: unknown) => maybe((value as { $bigint?: Decimal } | null)?.$bigint, BigInt) ?? value,
         ) as PersistedClient,
     ),
   removeClient: () => {

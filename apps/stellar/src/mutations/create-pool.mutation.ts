@@ -1,4 +1,4 @@
-import type { StellarContract } from '@/stellar/features/connect-wallet/address'
+import { asAddress, type StellarContract } from '@/stellar/features/connect-wallet/address'
 import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { waitForFeeBump } from '@/stellar/features/connect-wallet/stellar-wallet-kit/waitForFeeBump'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
@@ -12,6 +12,7 @@ import { assert } from '@primitives/objects.utils'
 import type { CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { invalidateLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { useTransactionMutation } from '@ui/features/queries/mutations/useTransactionMutation'
+import { useCreatedPools } from '@ui/features/storage/useSessionStorage'
 import { withPendingToast } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
@@ -26,6 +27,7 @@ export const useCreatePoolMutation = ({
   wasmHash: number[] | undefined
 }) => {
   const { address: account } = useWallet()
+  const [, setCreatedPools] = useCreatedPools(network)
   const { mutate, data, error, isPending } = useTransactionMutation({
     mutationKey: [{ name: 'createPool', network, factory, implementationIndex, account }],
     userAddress: account,
@@ -53,7 +55,10 @@ export const useCreatePoolMutation = ({
       return { pool: result.pool, values }
     },
     successMessage: () => t`Pool deployment confirmed`,
-    onSuccess: () => invalidateLitePoolList({ chainId: STELLAR_NETWORKS[network].chainId }),
+    onSuccess: ({ pool }) => {
+      setCreatedPools(pools => [...pools, asAddress(pool)])
+      return invalidateLitePoolList({ chainId: STELLAR_NETWORKS[network].chainId })
+    },
   })
   return {
     data,
