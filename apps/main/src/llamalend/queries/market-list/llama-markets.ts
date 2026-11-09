@@ -1,4 +1,4 @@
-import { countBy, sumBy } from 'lodash'
+import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress, getAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
@@ -12,9 +12,11 @@ import {
 import {
   computeTotalRate,
   getMarketCampaigns,
+  getSupplyCampaigns,
   getSupplyApyMetrics,
   sumCampaignsApr,
   sumCampaignsApy,
+  sumExtraIncentivesApy,
 } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
@@ -161,9 +163,7 @@ const convertLendingVault = (
   const marketType = MarketType.Lend
   const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrowed = userBorrows?.has(controller) ?? null
-  const totalExtraRewardApy =
-    // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate, 'llamalend.rewards')) : null
+  const totalExtraRewardApy = sumExtraIncentivesApy(extraRewardApr.map(({ rate }) => rate))
   const rewards = getMarketCampaigns(campaigns, {
     marketType,
     controllerAddress: controller,
@@ -172,7 +172,7 @@ const convertLendingVault = (
   })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
-  const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
+  const supplyCampaignsApy = sumCampaignsApy(getSupplyCampaigns(rewards))
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
     crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],

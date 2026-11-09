@@ -1,36 +1,36 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { getMaxReturnOnEquity } from '@/llamalend/rates.utils'
-import { MaxReturnOnEquityTooltipContent } from '@/llamalend/widgets/tooltips/MaxReturnOnEquityTooltipContent'
-import { SolvencyTooltip } from '@/llamalend/widgets/tooltips/SolvencyTooltip'
 import { MarketRateType } from '@evm-ui/types/market'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
 import { t } from '@ui/lib/i18n'
 import { CompactUsdCell } from '../cells/CompactUsdCell'
 import { LineGraphCell } from '../cells/LineGraphCell'
-import { LiquidityUsdCell } from '../cells/LiquidityUsdCell'
 import { MaxLeverageCell } from '../cells/MaxLeverageCell'
-import { MaxReturnOnEquityCell } from '../cells/MaxReturnOnEquityCell'
 import { PercentCell } from '../cells/PercentCell'
 import { RateCell } from '../cells/RateCell/RateCell'
-import { SolvencyCell } from '../cells/SolvencyCell'
 import { TvlCell } from '../cells/TvlCell'
-import { UtilizationCell } from '../cells/UtilizationCell'
 import { BorrowAprHeaderTooltipContent } from '../header-tooltips/BorrowAprHeaderTooltipContent'
-import { LiquidityUsdHeaderTooltipContent } from '../header-tooltips/LiquidityUsdHeaderTooltipContent'
 import { NetSupplyRateHeaderTooltipContent } from '../header-tooltips/SupplyRateHeaderTooltipContent'
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
-import { UtilizationHeaderTooltipContent } from '../header-tooltips/UtilizationHeaderTooltipContent'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 import { defineMarketTable, inGroup } from './market-table'
-import { assetsColumn, borrowRateColumn, columnHelper, type MarketTable, supplyRateColumn } from './shared.columns'
+import {
+  assetsColumn,
+  borrowRateColumn,
+  columnHelper,
+  liquidityUsdColumn,
+  type MarketTable,
+  solvencyColumn,
+  supplyRateColumn,
+  utilizationColumn,
+} from './shared.columns'
 
 export const MARKETS_TABLE: MarketTable = defineMarketTable({
   testId: 'lamalend-markets',
   defaultSort: [{ id: MarketColumnId.Tvl, desc: true }],
   sortQueryField: 'sort',
-  storageKey: 'Llamalend Markets',
-  deprecatedVariants: ['hasPositions', 'noPositions'],
+  storageKey: 'llamalend-markets',
+  deprecatedVariants: ['hasPositions', 'noPositions'], // used for the v9 -> v10 migration, this will be removed in the future
   columns: columnHelper.columns([
     assetsColumn,
     ...inGroup(t`Borrow`, [
@@ -89,21 +89,6 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
           sortUndefined: 'last',
         },
       ),
-      columnHelper.accessor(getMaxReturnOnEquity, {
-        id: MarketColumnId.MaxReturnOnEquity,
-        header: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
-        cell: MaxReturnOnEquityCell,
-        meta: {
-          type: 'numeric',
-          unit: 'percentage',
-          tooltip: {
-            title: MARKET_TITLES[MarketColumnId.MaxReturnOnEquity],
-            body: <MaxReturnOnEquityTooltipContent />,
-          },
-          defaultHidden: true,
-        },
-        sortUndefined: 'last',
-      }),
       columnHelper.accessor(row => row.maxLtv ?? undefined, {
         id: MarketColumnId.MaxLtv,
         header: MARKET_TITLES[MarketColumnId.MaxLtv],
@@ -112,50 +97,9 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
         filterFn: rangeFilterFn,
         sortUndefined: 'last',
       }),
-      columnHelper.accessor('utilizationPercent', {
-        id: MarketColumnId.UtilizationPercent,
-        header: MARKET_TITLES[MarketColumnId.UtilizationPercent],
-        cell: UtilizationCell,
-        meta: {
-          type: 'numeric',
-          unit: 'percentage',
-          tooltip: {
-            title: MARKET_TITLES[MarketColumnId.UtilizationPercent],
-            body: <UtilizationHeaderTooltipContent />,
-          },
-        },
-        filterFn: rangeFilterFn,
-      }),
-      columnHelper.accessor(
-        // Normalize null to undefined so sortUndefined places missing solvency values last
-        ({ solvencyPercent }) => solvencyPercent ?? undefined,
-        {
-          id: MarketColumnId.SolvencyPercent,
-          header: MARKET_TITLES[MarketColumnId.SolvencyPercent],
-          cell: SolvencyCell,
-          meta: {
-            type: 'numeric',
-            unit: 'percentage',
-            tooltip: {
-              title: MARKET_TITLES[MarketColumnId.SolvencyPercent],
-              body: <SolvencyTooltip type="overview" />,
-            },
-            defaultHidden: true,
-          },
-          sortUndefined: 'last',
-        },
-      ),
-      columnHelper.accessor('liquidityUsd', {
-        id: MarketColumnId.LiquidityUsd,
-        header: MARKET_TITLES[MarketColumnId.LiquidityUsd],
-        cell: LiquidityUsdCell,
-        meta: {
-          type: 'numeric',
-          unit: 'dollar',
-          tooltip: { title: MARKET_TITLES[MarketColumnId.LiquidityUsd], body: <LiquidityUsdHeaderTooltipContent /> },
-        },
-        filterFn: rangeFilterFn,
-      }),
+      utilizationColumn,
+      solvencyColumn,
+      liquidityUsdColumn,
       columnHelper.accessor('totalDebtUsd', {
         id: MarketColumnId.TotalDebt,
         header: MARKET_TITLES[MarketColumnId.TotalDebt],

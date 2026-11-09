@@ -211,7 +211,7 @@ describe('liquidations', () => {
         collateralReceived: 2,
       },
     })
-    // 10,000 debt − 500 stablecoin − 2 × 1,500 collateral
+    // 10,000 debt − 500 convertedBorrowed − 2 × 1,500 collateral
     expect(Number(toPositionCapital({ events: [open, closed] })?.debt.netInvested)).toBe(10_000 + 6500)
   })
 })

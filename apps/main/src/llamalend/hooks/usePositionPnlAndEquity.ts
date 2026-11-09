@@ -1,6 +1,6 @@
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { usePositionCapital } from '@/llamalend/features/user-position-history/queries/position-capital'
+import { usePositionCapital } from '@/llamalend/features/user-position-history/queries/position-events-summary'
 import { isZapV0MintMarket } from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'

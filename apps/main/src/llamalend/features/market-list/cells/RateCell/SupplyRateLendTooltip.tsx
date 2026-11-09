@@ -1,14 +1,16 @@
 import { SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
+import { formatSupplyExtraIncentives, getSupplyCampaigns } from '@/llamalend/rates.utils'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { useSwitch } from '@ui/hooks/useSwitch'
+import { decimal } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
 import { useMarketRateHistory } from '../../hooks/useMarketRateHistory'
+import { getUserSupplyApyMetrics } from '../../user-position.utils'
 import { RateTooltipProps } from './RateCell'
 
 const rateType = MarketRateType.Supply
@@ -58,13 +60,52 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
   )
 }
 
-export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) => {
+const UserRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
+  const { averageRate, isLoading } = useMarketRateHistory(
+    market,
+    { type: rateType, category: AVERAGE_CATEGORY },
+    isOpen, // important: only call this when the tooltip is open
+  )
+  const { supplyApy, userBoostApy, totalUserBoost } = getUserSupplyApyMetrics(market)
+  const {
+    rates,
+    assets: { borrowed },
+    rewards,
+    lendingPosition,
+  } = market
+  return (
+    <MarketSupplyRateTooltipContent
+      supplyApy={supplyApy}
+      averageSupplyApy={averageRate}
+      periodLabel={PERIOD_LABEL}
+      extraRewards={getSupplyCampaigns(rewards)}
+      extraIncentives={formatSupplyExtraIncentives({
+        incentives: rates.incentives.map(incentive => ({
+          ...incentive,
+          percentage: aprToApy(incentive.percentage, 'llamalend.rewards'),
+        })),
+        userRate: userBoostApy,
+        userBoost: decimal(lendingPosition?.boostMultiplier),
+      })}
+      totalApy={totalUserBoost}
+      boost={{ type: 'user', apy: userBoostApy, totalApy: totalUserBoost }}
+      rebasingYieldApy={borrowed?.rebasingYield}
+      isLoading={isLoading}
+    />
+  )
+}
+
+const SupplyRateTooltip = ({
+  market,
+  children,
+  Content,
+}: RateTooltipProps & { Content: typeof LendRateTooltipContent }) => {
   const [open, onOpen, onClose] = useSwitch(false)
   return (
     <Tooltip
       clickable
       title={SUPPLY_RATE_TITLE}
-      body={<LendRateTooltipContent isOpen={open} market={market} />}
+      body={<Content isOpen={open} market={market} />}
       placement="top"
       open={open}
       onOpen={onOpen}
@@ -75,3 +116,17 @@ export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) =>
     </Tooltip>
   )
 }
+
+export const SupplyRateLendTooltip = (props: RateTooltipProps) => (
+  <SupplyRateTooltip {...props} Content={LendRateTooltipContent} />
+)
+
+/** At the user's boost, or at the market's rates when the user has none */
+export const UserSupplyRateTooltip = (props: RateTooltipProps) => (
+  <SupplyRateTooltip
+    {...props}
+    Content={
+      getUserSupplyApyMetrics(props.market).totalUserBoost == null ? LendRateTooltipContent : UserRateTooltipContent
+    }
+  />
+)

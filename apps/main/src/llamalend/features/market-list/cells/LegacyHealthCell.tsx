@@ -10,27 +10,27 @@ import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { HealthBar } from '../../market-position-details/health/HealthBar'
-import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
-export const HealthCell = ({ getValue, row }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
+export const LegacyHealthCell = ({
+  getValue,
+  row,
+}: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { assets } = row.original
-  const { data: { status } = {}, error } = row.original.positionQueries.stats
-  const health = getValue()
+  const { status } = row.original.positionQueries.stats.data ?? {}
+  const legacyHealth = getValue()
   const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
 
-  if (error) return <ErrorCell error={error} />
-
-  return maybe(health, health => (
+  return maybe(legacyHealth, legacyHealth => (
     <Tooltip
       title={content?.title ?? t`Position active`}
       body={<TooltipDescription text={content?.description ?? t`You have an active position in this market.`} />}
       placement="top"
     >
       <Stack sx={{ gap: Spacing.xs }}>
-        {formatNumber(health, 'percent.value')}
-        <HealthBar small health={health} softLiquidation={status === 'softLiquidation'} />
+        {formatNumber(legacyHealth, 'percent.value')}
+        <HealthBar small health={legacyHealth} softLiquidation={status === 'softLiquidation'} />
       </Stack>
     </Tooltip>
   ))
