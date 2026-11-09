@@ -10,11 +10,7 @@ export const CREATE_POOL_SECTIONS = [
   { value: 'name', label: t`Name and symbol` },
 ] as const
 
-// Temporary grid layout while the mobile design is being refined.
-export const CREATE_POOL_COLUMNS = {
-  display: 'grid',
-  gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(2, minmax(0, 1fr))' },
-} as const
+export const CREATE_POOL_GRID_SIZE = { mobile: 12, tablet: 6 } as const
 
 // shown before the user chose a pool type
 export const EMPTY_POOL_PARAMETERS: PoolParameter[] = [

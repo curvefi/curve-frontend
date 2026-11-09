@@ -1,3 +1,4 @@
+import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
@@ -7,7 +8,7 @@ import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { CREATE_POOL_COLUMNS } from './constants'
+import { CREATE_POOL_GRID_SIZE } from './constants'
 import { getCreatePoolTokens } from './create-pool.utils'
 import { CreatePoolField } from './CreatePoolField'
 import type { CreatePoolLiquidityProps } from './types'
@@ -41,9 +42,14 @@ export const CreatePoolLiquidity = ({
             {poolType?.liquidityDescription ??
               t`Required for Cryptoswap, FXSwap and pools with rate tokens or oracles. Optional for plain Stableswap.`}
           </Typography>
-          <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
+          <Grid container spacing={Spacing.sm}>
             {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
-              <Stack key={poolAmountField(index)} data-testid="create-pool-liquidity-input">
+              <Grid
+                key={poolAmountField(index)}
+                component={Stack}
+                size={CREATE_POOL_GRID_SIZE}
+                data-testid="create-pool-liquidity-input"
+              >
                 <CreatePoolField
                   name={poolAmountField(index)}
                   label={token?.symbol ?? `${t`Token`} ${index + 1}`}
@@ -59,9 +65,9 @@ export const CreatePoolLiquidity = ({
                     value={mapQuery(maxAmounts?.[index] ?? DISABLED_Q, value => formatNumber(value, 'token.balance'))}
                   />
                 )}
-              </Stack>
+              </Grid>
             ))}
-          </Stack>
+          </Grid>
           {poolType && (
             <ActionInfo
               size="small"

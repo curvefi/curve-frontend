@@ -1,9 +1,10 @@
 import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { CREATE_POOL_COLUMNS } from './constants'
+import { CREATE_POOL_GRID_SIZE } from './constants'
 import { getCreatePoolTokens } from './create-pool.utils'
 import { CreatePoolAvailability } from './CreatePoolAvailability'
 import { CreatePoolTokenSelector } from './CreatePoolTokenSelector'
@@ -26,10 +27,10 @@ export const CreatePoolTokens = ({
   const tokens = getCreatePoolTokens(values, values.tokenCount)
   return (
     <Stack sx={{ gap: Spacing.xs }}>
-      <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
+      <Grid container spacing={Spacing.sm}>
         {tokens.map((token, index) => (
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Token slots must remain mounted when selections change.
-          <Stack key={index} sx={{ gap: Spacing.xs }}>
+          <Grid key={index} component={Stack} size={CREATE_POOL_GRID_SIZE} sx={{ gap: Spacing.xs }}>
             <Typography variant="bodySRegular">{`${t`Token`} ${index + 1}`}</Typography>
             <Stack direction="row" sx={{ gap: Spacing.sm }}>
               <CreatePoolTokenSelector
@@ -50,9 +51,9 @@ export const CreatePoolTokens = ({
                 >{t`Remove`}</Button>
               )}
             </Stack>
-          </Stack>
+          </Grid>
         ))}
-      </Stack>
+      </Grid>
       <Button
         data-testid="create-pool-add-token"
         color="ghost"
