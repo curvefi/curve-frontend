@@ -3,6 +3,7 @@ import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { defineConfig } from 'cypress'
 import type { TestnetAccount, TestnetConfig } from './cypress/support/helpers/stellar/stellar-testnet.config'
+import { deployStellarStandalone } from './cypress/tasks/stellar-standalone'
 import { createTestnetDeployer, type TestnetDeployment } from './cypress/tasks/stellar-testnet'
 import { vitePreprocessor } from './vite-cypress-preprocessor'
 import { assert } from '@primitives/objects.utils'
@@ -34,7 +35,9 @@ export default defineConfig({
     devServer: { framework: 'react', bundler: 'vite' },
     indexHtmlFile: 'cypress/support/component-index.html',
     supportFile: 'cypress/support/component.ts',
-    setupNodeEvents(on, config) {
+    async setupNodeEvents(on, config) {
+      const standaloneDeployment =
+        process.env.STELLAR_STANDALONE === 'true' ? await deployStellarStandalone() : undefined
       let deployerPromise: Promise<TestnetAccount> | undefined
       // Capture network failures during module loading in the existing failure artifacts.
       on('before:browser:launch', (browser, launchOptions) => {
@@ -57,7 +60,7 @@ export default defineConfig({
         },
         getStellarTestnetConfig: async (rpcUrl: string): Promise<TestnetConfig> => {
           const deployment: TestnetDeployment = assert(
-            config.env.STELLAR_TESTNET_CONFIG,
+            standaloneDeployment ?? config.env.STELLAR_TESTNET_CONFIG,
             'STELLAR_TESTNET_CONFIG environment variable is not set',
           )
           deployerPromise ??= createTestnetDeployer(deployment, rpcUrl)
