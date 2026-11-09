@@ -18,7 +18,7 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { HealthTooltipContent } from '../tooltips/HealthTooltipContent'
-import { LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips/tooltips'
+import { LiquidationBufferTooltipContent } from '../tooltips/LiquidationBufferTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -64,7 +64,14 @@ export const HealthDetails = ({
       <Metric
         category="llamalend.positionLiquidationBuffer"
         label={t`Liquidation buffer`}
-        labelTooltip={LIQUIDATION_BUFFER_TOOLTIP}
+        labelTooltip={{
+          title: t`Liquidation buffer`,
+          body: (
+            <LiquidationBufferTooltipContent
+              amount={maybe(data, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))}
+            />
+          ),
+        }}
         testId="health-details-liquidation-buffer-metric"
         value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
         notional={mapQuery(position, ({ liquidationBufferAmount }) =>

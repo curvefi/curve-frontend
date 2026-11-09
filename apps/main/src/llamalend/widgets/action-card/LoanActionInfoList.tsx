@@ -4,7 +4,7 @@ import {
   getLeverageValueColor,
 } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
-import { LIQUIDATION_BUFFER_TOOLTIP } from '@/llamalend/features/market-position-details/tooltips/tooltips'
+import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import { formatHealth, getHealth } from '@/llamalend/health.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
@@ -182,7 +182,7 @@ export const LoanActionInfoList = ({
               />
               <ActionInfo
                 label={t`Liquidation buffer`}
-                labelTooltip={LIQUIDATION_BUFFER_TOOLTIP}
+                labelTooltip={{ title: t`Liquidation buffer`, body: <LiquidationBufferTooltipContent /> }}
                 value={mapQuery(prevLiquidationBuffer ?? DISABLED_Q, data => formatNumber(data, 'percent.value'))}
                 futureValue={
                   liquidationBuffer && !isFullRepay

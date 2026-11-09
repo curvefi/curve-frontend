@@ -26,17 +26,17 @@ const POSITION_STATUS_DESCRIPTION: Record<PositionStatus, string[]> = {
 export const HealthTooltipContent = ({ status }: { status?: PositionStatus }) => (
   <TooltipWrapper>
     <TooltipDescription
-      text={t`Health shows how far the oracle price is above your liquidation range. At 1.00 the price has reached your range and soft liquidation starts.`}
+      text={t`Health reaches 1.00 at the start of the Liquidation range, where collateral can convert and losses can occur. It stays at 1.00 within and below the range; monitor Liquidation buffer and Status.`}
     />
     <TooltipFormula
       formula={
         <>
-          {t`Health =`}
-          <TooltipFraction numerator={t`oracle price`} denominator={t`top of your liquidation range`} />
+          {t`Health = max(`}
+          <TooltipFraction numerator={t`Oracle price`} denominator={t`Upper boundary`} />
+          {', 1)'}
         </>
       }
     />
-    <TooltipDescription text={t`The price can fall by 1 − 1/Health before soft liquidation starts.`} />
     {status && POSITION_STATUS_DESCRIPTION[status].map(text => <TooltipDescription key={text} text={text} />)}
   </TooltipWrapper>
 )

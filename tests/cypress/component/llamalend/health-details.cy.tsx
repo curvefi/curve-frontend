@@ -1,4 +1,5 @@
 import { HealthDetails } from '@/llamalend/features/market-position-details/health/HealthDetails'
+import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import type { HealthThresholds, PositionHealth, PositionStatus } from '@/llamalend/health.utils'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -154,5 +155,27 @@ describe('Health details', () => {
     cy.get('[data-testid="health-details-health-metric-value"]')
       .find('p')
       .should('have.css', 'color', hexToRgb(design.Text.TextColors.Primary))
+  })
+
+  it('shows the buffer amount in the liquidation buffer tooltip', () => {
+    cy.viewport(1200, 800)
+    mountHealthDetails(getPosition('1.6', '20', '200', '1.2', 'aboveRange'))
+    cy.get('[data-testid="health-details-liquidation-buffer-metric"] svg').first().trigger('mouseover')
+    cy.get('[role="tooltip"]')
+      .contains('span', /^Buffer amount$/)
+      .should('be.visible')
+    cy.get('[role="tooltip"]').should('contain.text', '200 crvUSD')
+  })
+})
+
+describe('Liquidation buffer tooltip', () => {
+  it('leaves out the buffer amount without position data', () => {
+    cy.mount(
+      <ComponentTestWrapper>
+        <LiquidationBufferTooltipContent />
+      </ComponentTestWrapper>,
+    )
+    cy.contains('Not a price-drop allowance or withdrawable equity.').should('be.visible')
+    cy.contains('span', /^Buffer amount$/).should('not.exist')
   })
 })

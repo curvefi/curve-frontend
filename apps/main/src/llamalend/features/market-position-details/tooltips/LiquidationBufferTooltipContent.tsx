@@ -1,26 +1,47 @@
-import { TooltipDescription, TooltipFormula, TooltipFraction, TooltipWrapper } from '@ui/components/TooltipComponents'
+import {
+  TooltipDescription,
+  TooltipFooter,
+  TooltipFormula,
+  TooltipFraction,
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+} from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
-export const LiquidationBufferTooltipContent = () => (
+export const LiquidationBufferTooltipContent = ({ amount }: { amount?: string }) => (
   <TooltipWrapper>
     <TooltipDescription
-      text={t`Liquidation buffer is the margin left once the price reaches the top of your liquidation range, as a percentage of your debt. Inside or below the range, it is the margin left before hard liquidation.`}
+      text={t`At 0%, no liquidation margin remains. Below 0%, the position becomes liquidatable before the price reaches the Liquidation range. The buffer measures liquidation-adjusted margin as a percentage of debt.`}
+    />
+    {amount && (
+      <TooltipItems secondary>
+        <TooltipItem title={t`Buffer amount`} variant="independent">
+          {amount}
+        </TooltipItem>
+      </TooltipItems>
+    )}
+    <TooltipFormula
+      formula={
+        <>
+          {t`Buffer % =`}
+          <TooltipFraction numerator={t`C × (1 − d) − Debt`} denominator={t`Debt`} />
+          {t`× 100`}
+        </>
+      }
+      terms={[
+        { symbol: 'C', label: t`Collateral value at the range` },
+        { symbol: 'd', label: t`Liquidation discount` },
+      ]}
     />
     <TooltipFormula
       formula={
         <>
-          {t`Buffer =`}
-          <TooltipFraction numerator={t`C × (1 − d)`} denominator={t`debt`} />
-          {t`− 1`}
+          {t`Buffer amount =`}
+          <TooltipFraction numerator={t`Debt × Buffer %`} denominator="100" />
         </>
       }
-      terms={[
-        { symbol: 'C', label: t`collateral value when converted through your liquidation range` },
-        { symbol: 'd', label: t`liquidation discount of the market` },
-      ]}
     />
-    <TooltipDescription
-      text={t`At 0% or below, your position can be hard-liquidated before the price reaches your range.`}
-    />
+    <TooltipFooter>{t`Not a price-drop allowance or withdrawable equity.`}</TooltipFooter>
   </TooltipWrapper>
 )
