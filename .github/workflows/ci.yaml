@@ -192,6 +192,8 @@ jobs:
           if-no-files-found: error
 
   cypress-component-stellar:
+    env:
+      STELLAR_STANDALONE: 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -214,6 +216,10 @@ jobs:
       - run: yarn set version stable
       - run: yarn install --immutable
         timeout-minutes: 3
+      - name: Start Stellar standalone
+        uses: stellar/quickstart@main # Upstream publishes no Git tags for the action; tag below versions the Docker image
+        with:
+          tag: v690-b1601.1-testing
       - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.mts
         working-directory: tests
@@ -231,7 +237,6 @@ jobs:
           NODE_ENV: test
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-stellar-${{ matrix.browser }}-${{ matrix.iteration }}
           CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
-          CYPRESS_STELLAR_TESTNET_CONFIG: ${{ secrets.STELLAR_TESTNET_CONFIG }}
 
       - uses: actions/upload-artifact@v7
         if: failure()

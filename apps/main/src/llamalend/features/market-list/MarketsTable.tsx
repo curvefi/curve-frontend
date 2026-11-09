@@ -86,7 +86,7 @@ export const MarketsTable = ({
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters
-          testIdPrefix={MARKETS_TABLE.storageKey}
+          testIdPrefix={MARKETS_TABLE.testId}
           disableSearchAutoFocus
           searchText={globalFilter}
           onSearch={setGlobalFilter}

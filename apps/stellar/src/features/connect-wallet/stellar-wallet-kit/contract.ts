@@ -3,16 +3,7 @@ import { STABLE_SWAP_ERRORS } from '@/stellar/lib/errors'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { maybe } from '@primitives/objects.utils'
 import { retry, type RetryOptions } from '@primitives/promise.utils'
-import {
-  Address,
-  contract,
-  humanizeEvents,
-  nativeToScVal,
-  Networks,
-  scValToNative,
-  StrKey,
-  xdr,
-} from '@stellar/stellar-sdk'
+import { Address, contract, humanizeEvents, nativeToScVal, scValToNative, StrKey, xdr } from '@stellar/stellar-sdk'
 import type { DiagnosticEvent } from '@stellar/stellar-sdk/xdr'
 import { NoRetryError } from '@ui/features/queries/factory'
 import { simulateStellarTransaction } from './transaction'
@@ -39,8 +30,6 @@ const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
           typeof value === 'bigint' ? { type: 'i128' } : typeof value === 'number' ? { type: 'u32' } : {},
         )
 
-const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
-
 export async function simulateContractCall<T>(
   network: StellarNetwork,
   contractId: StellarContract,
@@ -48,6 +37,7 @@ export async function simulateContractCall<T>(
   args: ContractArgument[] = [],
   account?: StellarAddress,
 ) {
+  const { rpcUrl, networkPassphrase, allowHttp } = STELLAR_NETWORKS[network]
   const transaction = await retry(
     () =>
       contract.AssembledTransaction.build<T>({
@@ -56,8 +46,9 @@ export async function simulateContractCall<T>(
         args: args.map(encodeContractArgument),
         publicKey: account,
         address: account,
-        networkPassphrase: PASSPHRASES[network],
-        rpcUrl: STELLAR_NETWORKS[network].rpcUrl,
+        networkPassphrase,
+        rpcUrl,
+        allowHttp,
         fee: MAX_INCLUSION_FEE.toString(),
         simulate: false, // Simulate below: the SDK's automatic assembly overflows for fees requiring a fee bump.
         parseResultXdr: value => scValToNative(value) as T,

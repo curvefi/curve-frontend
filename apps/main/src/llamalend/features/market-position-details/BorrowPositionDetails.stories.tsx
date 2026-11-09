@@ -109,7 +109,10 @@ const BorrowPositionDetailsStory = ({
           ],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
           [getTokenUsdRateKey({ ...params, tokenAddress: BORROW_ADDRESS }), 1],
-          [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+          [
+            getUserStateKey(params),
+            { collateral: `${collateral}`, convertedBorrowed: `${borrow}`, debt: `${totalDebt}` },
+          ],
         ]}
       >
         <BorrowPositionDetails />

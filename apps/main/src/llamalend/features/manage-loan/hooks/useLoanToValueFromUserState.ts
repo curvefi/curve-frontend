@@ -1,17 +1,16 @@
-import { BigNumber } from 'bignumber.js'
+import { getCollateralValue, getLoanToValue } from '@/llamalend/equity-leverage.utils'
+import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import type { Address, Token } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type Nullish, maybe } from '@primitives/objects.utils'
+import { type Nullish, maybes } from '@primitives/objects.utils'
+import { decimalSum } from '@ui/lib/decimal'
 
 type Params<ChainId extends IChainId> = {
   chainId: ChainId | Nullish
   marketId: string | Nullish
   userAddress: Address | Nullish
-  collateralToken: Token | undefined
-  borrowToken: Token | undefined
   /**
    * Net change applied to on-chain collateral (positive = adding, negative = removing).
    * TODO: use expectedCollateral from llamalend-js, currently being implemented by @0xPearce
@@ -19,17 +18,18 @@ type Params<ChainId extends IChainId> = {
   collateralDelta?: Decimal | null
   /** Expected new borrowed amount after the loan is updated. */
   expectedBorrowed: Decimal | Nullish
+  /** Converted borrowed tokens left in the AMM after the loan is updated, the current ones when not given. */
+  expectedConvertedBorrowed?: Decimal
 }
 
 /**
- * Computes current Loan-to-Value (LTV) ratio from the user's on-chain state:
- * LTV = (debt in USD) / (collateral in USD) * 100
+ * Computes current Loan-to-Value (LTV) ratio from the user's on-chain state, at the oracle price.
  *
  * It uses the generic userState query so it can be reused across
  * add-collateral, remove-collateral and repay flows.
  */
 export const useLoanToValueFromUserState = <ChainId extends IChainId>(
-  { chainId, marketId, userAddress, collateralToken, borrowToken, collateralDelta, expectedBorrowed }: Params<ChainId>,
+  { chainId, marketId, userAddress, collateralDelta, expectedBorrowed, expectedConvertedBorrowed }: Params<ChainId>,
   enabled = true,
 ) => {
   enabled &&= !!expectedBorrowed
@@ -38,30 +38,27 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
     isLoading: isUserLoading,
     error: userError,
   } = useUserState({ chainId, marketId, userAddress }, enabled)
-
   const {
-    data: collateralUsdRate,
-    isLoading: isCollateralUsdRateLoading,
-    error: collateralUsdRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, enabled && !!collateralToken?.address)
-
-  const {
-    data: borrowUsdRate,
-    isLoading: isBorrowUsdRateLoading,
-    error: borrowUsdRateError,
-  } = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled && !!borrowToken?.address)
-
-  const baseCollateral = userState?.collateral
-
-  const debt = maybe(expectedBorrowed, expectedBorrowed => new BigNumber(expectedBorrowed)) ?? null
-  const collateral = maybe(baseCollateral, c => new BigNumber(c).plus(collateralDelta ?? '0')) ?? null
+    data: oraclePrice,
+    isLoading: isOraclePriceLoading,
+    error: oraclePriceError,
+  } = useMarketOraclePrice({ chainId, marketId }, enabled)
 
   return {
     data:
-      debt == null || collateral == null || !collateralUsdRate || borrowUsdRate == null || collateral.isZero()
-        ? null
-        : (debt.times(borrowUsdRate).div(collateral).div(collateralUsdRate).times(100).toFixed() as Decimal),
-    isLoading: enabled && (isUserLoading || isCollateralUsdRateLoading || isBorrowUsdRateLoading),
-    error: userError ?? collateralUsdRateError ?? borrowUsdRateError,
+      maybes([expectedBorrowed, userState, oraclePrice], (debt, { collateral, convertedBorrowed }, oraclePrice) =>
+        getLoanToValue(
+          debt,
+          getCollateralValue(
+            {
+              collateral: decimalSum(collateral, collateralDelta ?? undefined),
+              convertedBorrowed: expectedConvertedBorrowed ?? convertedBorrowed,
+            },
+            oraclePrice,
+          ),
+        ),
+      ) ?? null, // null shows future LTV as unavailable, undefined would show the current LTV as if it does not change
+    isLoading: enabled && (isUserLoading || isOraclePriceLoading),
+    error: userError ?? oraclePriceError,
   }
 }

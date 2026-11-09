@@ -1,4 +1,7 @@
+import { Networks } from '@creit.tech/stellar-wallets-kit/types'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
+
+const STANDALONE = process.env.STELLAR_STANDALONE === 'true'
 
 // Each factory pins a registered pool implementation; index 0 is the initial plain-pool implementation.
 export const STELLAR_NETWORKS = {
@@ -20,6 +23,8 @@ export const STELLAR_NETWORKS = {
       address: 'CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA' as const,
     },
     rpcUrl: 'https://rpc.ankr.com/stellar_soroban',
+    allowHttp: false,
+    networkPassphrase: Networks.PUBLIC,
     explorerUrl: 'https://stellar.expert/explorer/public/',
   },
   'stellar-testnet': {
@@ -39,7 +44,9 @@ export const STELLAR_NETWORKS = {
       decimals: 7,
       address: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC' as const,
     },
-    rpcUrl: 'https://soroban-testnet.stellar.org',
+    rpcUrl: STANDALONE ? 'http://localhost:8000/rpc' : 'https://soroban-testnet.stellar.org',
+    allowHttp: STANDALONE,
+    networkPassphrase: STANDALONE ? Networks.STANDALONE : Networks.TESTNET,
     explorerUrl: 'https://stellar.expert/explorer/testnet/',
   },
 } as const

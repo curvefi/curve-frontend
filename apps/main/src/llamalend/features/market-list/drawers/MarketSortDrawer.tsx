@@ -1,7 +1,6 @@
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { TableSortDrawer } from '@ui/features/tables/TableSortDrawer'
 import { getSortableColumnIds } from '@ui/hooks/useSortFromQueryString'
-import { MARKET_TITLES } from '../columns/column.titles'
 import type { MarketColumnId } from '../columns/columns.enum'
 import type { MarketTable } from '../columns/shared.columns'
 
@@ -17,10 +16,9 @@ export const MarketSortDrawer = ({ testId, columns, onSortingChange, sortField }
     buttonTestId={`btn-drawer-sort-${testId}`}
     drawerTestId={`drawer-sort-menu-${testId}`}
     onSortingChange={onSortingChange}
-    options={[...getSortableColumnIds(columns)].map(id => ({
-      id: id as MarketColumnId,
-      label: MARKET_TITLES[id as MarketColumnId],
-    }))}
+    options={columns
+      .filter(({ id }) => getSortableColumnIds(columns).has(id))
+      .map(({ id, header }) => ({ id: id as MarketColumnId, label: String(header) }))}
     sortField={sortField}
   />
 )
