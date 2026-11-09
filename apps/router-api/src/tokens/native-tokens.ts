@@ -20,9 +20,13 @@ export const getNativeTokens = async (chainId: number) => {
     nativeCurrencySymbol: symbol,
     wrappedNativeToken,
   } = await getLitePoolDeployment({ chainId })
-  const wrappedSymbol = `${symbol.startsWith(symbol[0].toLowerCase()) ? 'w' : 'W'}${symbol}`
   return {
+    // ethAddress is used as native address across EVM chains. Curve.js uses the same fallback when the deployment omits native_token.
     [getAddress(address ?? ethAddress)]: { symbol, decimals: DEFAULT_DECIMALS },
-    [getAddress(wrappedNativeToken)]: { symbol: wrappedSymbol, decimals: DEFAULT_DECIMALS },
+    [getAddress(wrappedNativeToken)]: {
+      // Match Curve.js symbol-prefix heuristic for Lite chains.
+      symbol: `${symbol.startsWith(symbol[0].toLowerCase()) ? 'w' : 'W'}${symbol}`,
+      decimals: DEFAULT_DECIMALS,
+    },
   }
 }
