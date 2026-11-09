@@ -11,6 +11,8 @@ const MARKET_KEYS: DeepKeys<LlamaMarket>[] = [
   'controllerAddress',
   'ammAddress',
   'vaultAddress',
+  'supplyGaugeAddress',
+  'borrowGaugeAddress',
 ]
 
 /** Search filter for market lists */

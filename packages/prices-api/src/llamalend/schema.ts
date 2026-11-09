@@ -30,6 +30,7 @@ const market = z
     controller: address,
     vault: address,
     gauge_address: address.nullable(),
+    borrow_gauge_address: address.nullable(),
     llamma: address,
     policy: address,
     oracle: address,
