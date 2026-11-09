@@ -1,6 +1,7 @@
 import { formatHealthFactor } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
+import { OpeningLeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
@@ -83,8 +84,17 @@ export const LiquidationBufferCell = ({ row: { original: row }, getValue }: Borr
   />
 )
 
-export const LeverageCell = ({ getValue }: BorrowPositionCellProps) => (
-  <PositionMetric value={formatNumber(getValue(), 'multiplier')} />
+/** Leverage of the borrow position, with the leverage it opened at on hover */
+export const LeverageCell = ({ row, getValue }: BorrowPositionCellProps) => (
+  <Tooltip
+    title={t`Opened at`}
+    body={<OpeningLeverageTooltipContent openingLeverage={row.original.positionQueries.openingLeverage} />}
+    placement="top"
+  >
+    <Stack>
+      <PositionMetric value={formatNumber(getValue(), 'multiplier')} />
+    </Stack>
+  </Tooltip>
 )
 
 export const LoopedAprCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
