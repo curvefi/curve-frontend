@@ -17,11 +17,12 @@ export type CreatePoolTokenFields = Record<CreatePoolTokenField, Address | undef
   Record<`decimals_${number}`, number | undefined>
 
 export type CreatePoolToken = { address: Address; symbol?: string; decimals?: number }
+export type PoolType = 'stableswap' | 'cryptoswap' | 'fxswap'
 
 export type CreatePoolFormValues = PoolTokenFields &
   CreatePoolTokenFields & {
     tokenCount: number
-    poolType: string | undefined
+    poolType: PoolType | undefined
     preset: string
     amplification: Decimal | undefined
     fee: Decimal | undefined
@@ -52,8 +53,8 @@ export type PoolParameter = {
   showInSummary?: boolean
 }
 
-export type PoolType = {
-  id: string
+export type PoolTypeOption = {
+  id: PoolType
   disabled: boolean
   label: string
   description: string
@@ -87,7 +88,7 @@ export type CreatePoolTokensProps = CreatePoolTokenSearchProps & {
 
 export type CreatePoolLiquidityProps = {
   form: UseFormReturn<CreatePoolFormValues>
-  poolTypes: readonly PoolType[]
+  poolTypes: readonly PoolTypeOption[]
   maxAmounts: QueryProp<Decimal>[] | undefined
   totalDepositValueUsd: QueryProp<Decimal>
   inputsDisabled: boolean
@@ -99,7 +100,7 @@ export type CreatePoolSummaryProps = Pick<
   'error' | 'formErrors' | 'userAddress'
 > & {
   form: UseFormReturn<CreatePoolFormValues>
-  poolTypes: readonly PoolType[]
+  poolTypes: readonly PoolTypeOption[]
   network: CreatePoolNetwork
   blockchainId: string
   poolListUrl: string

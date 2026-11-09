@@ -56,21 +56,21 @@ export const StableswapPricePreview = ({
   const reference = useMemo(() => stableswapPreview(REFERENCE_AMPLIFICATION, tokenCount), [tokenCount])
   const series = [
     {
-      label: t`A = ${amplification}, this pool`,
+      label: `${t`A`} = ${amplification}, ${t`this pool`}`,
       color: Chart.Lines[1],
       dash: undefined,
       data: preview?.samples.map(({ share, price }) => [share, price]) ?? [],
       band: preview?.band,
     },
     {
-      label: t`A = ${REFERENCE_AMPLIFICATION}`,
+      label: `${t`A`} = ${REFERENCE_AMPLIFICATION}`,
       color: Chart.Lines[2],
       dash: undefined,
       data: reference?.samples.map(({ share, price }) => [share, price]) ?? [],
       band: undefined,
     },
     {
-      label: 'Uniswap v2',
+      label: t`Uniswap v2`,
       color: Text.TextColors.Secondary,
       dash: CHART_LINE_DASH_PATTERNS.short,
       data: preview?.samples.map(({ share, constantProductPrice }) => [share, constantProductPrice]) ?? [],
@@ -112,7 +112,7 @@ export const StableswapPricePreview = ({
       ...(band && {
         markArea: {
           silent: true,
-          itemStyle: { color: Chart.Surfaces[1] },
+          itemStyle: { color: Chart.Lines[1], opacity: 0.1 },
           data: [[{ xAxis: band[0] }, { xAxis: band[1] }]],
         },
       }),

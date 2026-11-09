@@ -1,5 +1,3 @@
-export const STELLAR_POOL_TYPES = ['stableswap'] as const
-
 // stableswap-rs: factory/src/validate.rs and amm-core/src/lib.rs (UTF-8 byte lengths).
 export const STELLAR_POOL_LIMITS = {
   tokens: { min: 2, max: 8 },

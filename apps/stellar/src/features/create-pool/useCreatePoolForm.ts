@@ -7,14 +7,12 @@ import { rateAdjustedValue } from '@/stellar/lib/amounts'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { useCreatePoolMutation } from '@/stellar/mutations/create-pool.mutation'
 import { useCreatePoolSimulation } from '@/stellar/queries/create-pool/create-pool-simulation.query'
-import { useFactoryImplementations } from '@/stellar/queries/create-pool/factory-implementation.query'
 import type { NetworkQuery } from '@/stellar/queries/query-types'
 import { useTokenUsdRates } from '@/stellar/queries/token/token-usd-rate.query'
 import { createPoolFormValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
 import { StellarPages } from '@/stellar/routes/routes'
 import { completeArray } from '@primitives/array.utils'
-import { fromEntries, maybe, notFalsy, range, recordValues } from '@primitives/objects.utils'
-import { POOL_TYPES } from '@ui/features/create-pool/constants'
+import { fromEntries, maybe, notFalsy, range } from '@primitives/objects.utils'
 import {
   createPoolTokenField,
   createPoolTokenDecimalsField,
@@ -32,7 +30,8 @@ import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { STELLAR_POOL_LIMITS } from './constants'
-import { getCreatePoolValues } from './create-pool.utils'
+import { getPoolTypeDefaults, getCreatePoolTypes, getCreatePoolValues } from './create-pool.utils'
+import { useCreatePoolFactory } from './useCreatePoolFactory'
 import { useCreatePoolTokenOptions } from './useCreatePoolTokenOptions'
 import { useInitialLiquidity } from './useInitialLiquidity'
 
@@ -51,11 +50,6 @@ const userDefaultValues = {
   slippage: SLIPPAGE.stable.default,
   ...getPoolDefaultValues(STELLAR_POOL_LIMITS.tokens.min),
 } satisfies Partial<CreatePoolFormValues>
-
-const formOptions = {
-  validation: createPoolFormValidationSuite,
-  defaultValues: { ...userDefaultValues, maxAmounts: undefined },
-}
 
 function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoolFormValues>, 'formState' | 'values'>) {
   const isStepComplete = (...fields: (keyof CreatePoolFormValues)[]) =>
@@ -77,26 +71,24 @@ function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoo
 }
 
 export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreatePoolFormProps {
+  const network = STELLAR_NETWORKS[networkId]
+  const { nativeCurrency, explorerUrl } = network
+  const poolTypes = getCreatePoolTypes(networkId)
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const [tokenSearch, setTokenSearch] = useState('')
   const tokenOptions = useCreatePoolTokenOptions(networkId, tokenSearch)
-  const form = useForm<CreatePoolFormValues>(formOptions)
+  const form = useForm<CreatePoolFormValues>({
+    validation: createPoolFormValidationSuite,
+    defaultValues: { ...userDefaultValues, maxAmounts: undefined, ...getPoolTypeDefaults(poolTypes) },
+  })
   const { values, formState, update } = form
   const tokens = getCreatePoolTokens(values, values.tokenCount)
-  const network = STELLAR_NETWORKS[networkId]
-  const { factories, nativeCurrency, explorerUrl } = network
-  const { address: factory, implementationIndex } = factories.find(factory => factory.type === values.poolType) ?? {}
-  const implementations = useFactoryImplementations({
+  const factoryQuery = useCreatePoolFactory({
     network: networkId,
-    factories: factories.filter(factory => !values.poolType || factory.type === values.poolType),
+    poolType: values.poolType,
+    tokenCount: values.tokenCount,
   })
-  const wasmHash = implementations.data?.find(
-    item => item.factory === factory && item.coinCount === values.tokenCount,
-  )?.wasmHash
-  const poolTypes = recordValues(POOL_TYPES).map(type => ({
-    ...type,
-    disabled: !factories.some(factory => factory.type === type.id),
-  }))
+  const { factory, implementationIndex, wasmHash, isAvailable: hasFactory } = factoryQuery.data ?? {}
   const deployment = useCreatePoolMutation({ network: networkId, factory, implementationIndex, wasmHash })
   const created = deployment.data
   const coins = tokens.map(token => asStellarContract(token?.address))
@@ -124,7 +116,7 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
   )
   const [params, isDebouncing] = useFormDebounce(values, debounceDefaults)
   const simulation = useCreatePoolSimulation(
-    { ...getCreatePoolValues(params), network: networkId, factory, implementationIndex, account, wasmHash },
+    { ...getCreatePoolValues(params), network: networkId, account, factory, implementationIndex, wasmHash },
     !isDebouncing,
   )
   const liquidity = useInitialLiquidity({
@@ -154,7 +146,7 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
     tokenSearch,
     onTokenSearch: setTokenSearch,
     tokenOptions,
-    availability: mapQuery(implementations, implementations => implementations.map(item => item.coinCount)),
+    availability: mapQuery(factoryQuery, data => data.tokenCounts),
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     creationFee: mapQuery(simulation, transaction =>
@@ -172,7 +164,7 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
       values.addLiquidity && { label: t`Add liquidity`, status: liquidity.status },
     ),
     isPending,
-    isLoading: isPending || implementations.isLoading || simulation.isLoading || liquidity.isLoading,
+    isLoading: isPending || factoryQuery.isLoading || simulation.isLoading || liquidity.isLoading,
     inputsDisabled: isPending || !!created,
     completed: checkStepsCompleted({ values, formState }),
     setTokens: tokens =>
@@ -190,7 +182,7 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
     error: deployment.error ?? liquidity.error ?? simulation.error,
     formErrors: formState.visibleErrors,
     isDisabled:
-      isPending || liquidity.isSuccess || isDebouncing || !formState.isValid || !wasmHash || !!implementations.error,
+      isPending || liquidity.isSuccess || isDebouncing || !formState.isValid || !hasFactory || !!factoryQuery.error,
     onSubmit: form.handleSubmit(values => (created ? liquidity.onSubmit(values) : deployment.onSubmit(values))),
   }
 }

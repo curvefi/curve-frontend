@@ -4,7 +4,7 @@ import { SelectableCard } from '@ui/components/SelectableCard'
 import type { UseFormReturn } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { CreatePoolFormProps, CreatePoolFormValues, PoolType } from './types'
+import type { CreatePoolFormProps, CreatePoolFormValues, PoolTypeOption } from './types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -15,7 +15,7 @@ export const CreatePoolType = ({
   update,
   network,
 }: {
-  poolTypes: readonly PoolType[]
+  poolTypes: readonly PoolTypeOption[]
   disabled: boolean
   poolType: CreatePoolFormValues['poolType']
   update: UseFormReturn<CreatePoolFormValues>['update']

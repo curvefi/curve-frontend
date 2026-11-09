@@ -31,6 +31,7 @@ export const CreatePoolLiquidity = ({
       sx={{ border: 0, padding: 0, margin: 0, minWidth: 0, gap: Spacing.sm }}
     >
       <CheckboxField
+        testIdPrefix="create-pool-seed"
         checked={values.addLiquidity}
         disabled={inputsDisabled}
         label={t`Seed pool after deployment`}
@@ -44,7 +45,7 @@ export const CreatePoolLiquidity = ({
           </Typography>
           <Stack sx={{ ...CREATE_POOL_COLUMNS, gap: Spacing.sm }}>
             {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
-              <Stack key={poolAmountField(index)}>
+              <Stack key={poolAmountField(index)} data-testid="create-pool-liquidity-input">
                 <CreatePoolField
                   name={poolAmountField(index)}
                   label={token?.symbol ?? `${t`Token`} ${index + 1}`}

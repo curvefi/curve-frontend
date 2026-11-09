@@ -1,18 +1,19 @@
+import type { StellarContract } from '@/stellar/features/connect-wallet/address'
 import { Networks } from '@creit.tech/stellar-wallets-kit/types'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
+import type { PoolType } from '@ui/features/create-pool/types'
 
 const STANDALONE = process.env.STELLAR_STANDALONE === 'true'
+
+export type StellarFactory = { address: StellarContract; implementationIndex: number }
+export type StellarFactories = Partial<Record<PoolType, readonly StellarFactory[]>>
 
 // Each factory pins a registered pool implementation; index 0 is the initial plain-pool implementation.
 export const STELLAR_NETWORKS = {
   stellar: {
-    factories: [
-      {
-        type: 'stableswap',
-        implementationIndex: 0,
-        address: 'CC2DWZ5RDSC5BZKEDQ5BABNUATX5EFJ4GCOENDXULEDVBHH2OKXFKYS5',
-      },
-    ],
+    factories: {
+      stableswap: [{ implementationIndex: 0, address: 'CC2DWZ5RDSC5BZKEDQ5BABNUATX5EFJ4GCOENDXULEDVBHH2OKXFKYS5' }],
+    } satisfies StellarFactories,
     name: 'Stellar',
     chainId: 1500,
     isTestnet: false,
@@ -28,13 +29,9 @@ export const STELLAR_NETWORKS = {
     explorerUrl: 'https://stellar.expert/explorer/public/',
   },
   'stellar-testnet': {
-    factories: [
-      {
-        type: 'stableswap',
-        implementationIndex: 0,
-        address: 'CDCOYFMUZZQRKQ533O5WKAG3OHIPMYUBCRLPVW45UAKPK5ZPUGMMWXNO',
-      },
-    ],
+    factories: {
+      stableswap: [{ implementationIndex: 0, address: 'CDCOYFMUZZQRKQ533O5WKAG3OHIPMYUBCRLPVW45UAKPK5ZPUGMMWXNO' }],
+    } satisfies StellarFactories,
     name: 'Stellar testnet',
     chainId: 1501,
     isTestnet: true,

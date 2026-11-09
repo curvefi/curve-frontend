@@ -3,7 +3,7 @@ import { STELLAR_CONTRACT_PATTERN } from '@/stellar/features/connect-wallet/addr
 import { CreatePoolPage } from '@/stellar/features/create-pool/CreatePoolPage'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarPages } from '@/stellar/routes/routes'
-import { oneOf } from '@cy/support/generators'
+import { oneBool, oneDecimal, oneOf } from '@cy/support/generators'
 import { connectTestWallet } from '@cy/support/helpers/stellar/connector'
 import { TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import { getTestnetConfig, type TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
@@ -24,8 +24,9 @@ describe('Stellar testnet pool creation', () => {
     }),
   )
 
-  it('deploys a pool with the selected tokens', () => {
+  it('deploys a pool with the selected tokens and optional initial liquidity', () => {
     const coins = testnetConfig.coins.slice(0, oneOf(2, 3))
+    const addLiquidity = oneBool()
     cy.viewport(width, height)
     cy.mount(
       <StellarTestWrapper address={testnetConfig.deployer.address}>
@@ -45,7 +46,14 @@ describe('Stellar testnet pool creation', () => {
       cy.get('[data-testid="create-pool-token-search"] input').type(address)
       cy.get(`[data-testid="token-option-${address.toLowerCase()}"]`, TIMEOUTS['stellar.read']).click()
     })
-    cy.get('[data-testid="create-pool-type-stableswap"]').click()
+    cy.get('[data-testid="create-pool-seed-checkbox"]').should('be.visible').find('input').should('not.be.checked')
+    cy.get('[data-testid="create-pool-liquidity-input"]').should('not.exist')
+    if (addLiquidity) {
+      cy.get('[data-testid="create-pool-seed-checkbox"] input').check()
+      coins.map((_, index) =>
+        cy.get('[data-testid="create-pool-liquidity-input"] input').eq(index).type(oneDecimal(0.01, 0.05)),
+      )
+    }
     if (breakpoint === 'mobile') cy.get('[data-testid="mobile-form-action-summary"]').click()
     cy.get('[data-testid="create-pool-submit"]').click(TIMEOUTS['stellar.simulation'])
     cy.get('[data-testid="create-pool-success"]', TIMEOUTS['stellar.confirmation'])
@@ -59,5 +67,9 @@ describe('Stellar testnet pool creation', () => {
           `^${escapeRegExp(STELLAR_NETWORKS[TEST_NETWORK].explorerUrl)}contract/${STELLAR_CONTRACT_PATTERN.source.slice(1)}`,
         ),
       )
+    if (addLiquidity) {
+      cy.contains('[role="alert"]', 'Initial liquidity added', TIMEOUTS['stellar.confirmation']).should('be.visible')
+    }
+    cy.get('[data-testid="create-pool-submit"]').should('not.exist')
   })
 })

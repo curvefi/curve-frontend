@@ -1,6 +1,6 @@
 import { t } from '@ui/lib/i18n'
 import { StableswapPricePreview } from './StableswapPricePreview'
-import type { PoolParameter, PoolType } from './types'
+import type { PoolParameter, PoolType, PoolTypeOption } from './types'
 
 export const CREATE_POOL_SECTIONS = [
   { value: 'tokens', label: t`Tokens` },
@@ -84,4 +84,4 @@ export const POOL_TYPES = {
     presets: [],
     parameters: [],
   },
-} satisfies Record<string, Omit<PoolType, 'disabled'>>
+} satisfies Record<PoolType, Omit<PoolTypeOption, 'disabled'>>

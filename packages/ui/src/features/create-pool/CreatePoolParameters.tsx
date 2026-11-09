@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { CREATE_POOL_COLUMNS, EMPTY_POOL_PARAMETERS } from './constants'
 import { CreatePoolField } from './CreatePoolField'
-import type { CreatePoolFormValues, PoolParameter, PoolParameterRanges, PoolType } from './types'
+import type { CreatePoolFormValues, PoolParameter, PoolParameterRanges, PoolTypeOption } from './types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -40,7 +40,7 @@ export const CreatePoolParameters = ({
   tokenSymbol,
 }: {
   disabled: boolean
-  poolType: PoolType | undefined
+  poolType: PoolTypeOption | undefined
   ranges: PoolParameterRanges
   values: Pick<CreatePoolFormValues, 'preset' | 'feeMultiplier' | 'amplification' | 'tokenCount'>
   tokenSymbol: string | undefined

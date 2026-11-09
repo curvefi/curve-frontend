@@ -1,6 +1,6 @@
 import { each, skipWhen, test } from 'vest'
 import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
-import { STELLAR_POOL_LIMITS as limits, STELLAR_POOL_TYPES } from '@/stellar/features/create-pool/constants'
+import { STELLAR_POOL_LIMITS as limits } from '@/stellar/features/create-pool/constants'
 import type { CreatePoolParams, FactoryImplementationParams } from '@/stellar/features/create-pool/types'
 import { maybe, notFalsyArray, type Nullish } from '@primitives/objects.utils'
 import {
@@ -85,7 +85,7 @@ const validateForm = (values: FieldsOf<CreatePoolFormValues>) => {
     })
   })
   test('poolType', 'Select a pool type', () => {
-    enforce(poolType).inside([...STELLAR_POOL_TYPES])
+    enforce(poolType).isNotEmpty()
   })
   validateParameters(values)
   skipWhen(!addLiquidity, () => {
@@ -99,6 +99,9 @@ const validateForm = (values: FieldsOf<CreatePoolFormValues>) => {
         maybe(token?.decimals, precision =>
           enforce(values[poolAmountField(index)]).isDecimal({ decimal_digits: `0,${precision}` }),
         )
+      })
+      test(poolAmountField(index), 'Wallet balance is unavailable', () => {
+        enforce(maxAmounts?.[index]).isDecimal()
       })
       maybe(maxAmounts?.[index], balance =>
         test(poolAmountField(index), 'Insufficient token balance', () => {
