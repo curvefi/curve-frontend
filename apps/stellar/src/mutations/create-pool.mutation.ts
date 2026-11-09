@@ -28,7 +28,7 @@ export const useCreatePoolMutation = ({
 }) => {
   const { address: account } = useWallet()
   const [, setCreatedPools] = useCreatedPools(network)
-  const { mutate, data, error, isPending } = useTransactionMutation({
+  const { mutate, data, error, isPending, status } = useTransactionMutation({
     mutationKey: [{ name: 'createPool', network, factory, implementationIndex, account }],
     userAddress: account,
     buildContext: () => ({
@@ -64,6 +64,7 @@ export const useCreatePoolMutation = ({
     data,
     error,
     isPending,
+    status,
     onSubmit: (values: CreatePoolFormValues) =>
       mutate({ ...getCreatePoolValues(values), values } as CreatePoolMutation),
   }

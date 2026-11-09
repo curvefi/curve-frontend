@@ -39,7 +39,7 @@ export const useInitialLiquidity = ({
     isDeposit: true,
   })
   const minimum = mapQuery(quote, value => maybe(params.slippage, slippage => calculateMinimumMint(value, slippage)))
-  const { mutate, error, isPending, isSuccess } = useDepositMutation({
+  const { mutate, error, isPending, isSuccess, status } = useDepositMutation({
     network,
     pool,
     account,
@@ -81,7 +81,7 @@ export const useInitialLiquidity = ({
     expectedLp: q(quote),
     minimumLp: minimum,
     isSuccess,
-    isDepositing: isPending,
+    status,
     isPending: isPending || isPreparing,
     isLoading: isPending || isPreparing || supply.isLoading || quote.isLoading,
     error: error ?? preparationError,

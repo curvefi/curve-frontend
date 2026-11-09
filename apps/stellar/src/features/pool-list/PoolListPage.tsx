@@ -32,7 +32,7 @@ export const PoolListPage = () => {
   })
   return (
     <ListPageLayout>
-      <CreatedPoolsAlert network={network} pools={unlistedPools} />
+      <CreatedPoolsAlert network={network} unlistedPools={unlistedPools} />
       <PoolsTable
         tableQuery={query}
         isFetching={isFetching}

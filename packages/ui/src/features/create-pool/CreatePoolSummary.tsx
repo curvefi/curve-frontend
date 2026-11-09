@@ -9,11 +9,12 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
+import type { MutationStatus } from '@tanstack/react-query'
 import { RouterLink } from '@ui/components/RouterLink'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
-import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
+import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
 import { MobileFormTabsDrawer } from '@ui/features/forms/tabs/MobileFormTabsDrawer'
@@ -26,6 +27,20 @@ import { getCreatePoolTokens } from './create-pool.utils'
 import type { CreatePoolSummaryProps } from './types'
 
 const { Spacing } = SizesAndSpaces
+
+const transactionStatusLabels: Record<MutationStatus, string> = {
+  idle: t`Next`,
+  pending: t`Pending`,
+  success: t`Done`,
+  error: t`Failed`,
+}
+
+const transactionStatusColors: Record<MutationStatus, ActionInfoProps['valueColor']> = {
+  idle: 'textPrimary',
+  pending: 'textPrimary',
+  success: 'success.main',
+  error: 'error',
+}
 
 const SummarySection = ({ title, children }: { title: string; children: ReactNode }) => (
   <Stack>
@@ -54,7 +69,7 @@ const SummaryCard = ({
   isDisabled,
   created,
   isFunded,
-  isDepositing,
+  transactions,
 }: CreatePoolSummaryProps & { formId: string }) => (
   <Card size="small">
     <CardHeader title={t`Pool summary`} />
@@ -153,12 +168,23 @@ const SummaryCard = ({
               {t`Pool deployed`}.{' '}
               <Link href={created.explorerUrl} target="_blank" rel="noreferrer">{t`View on explorer`}</Link>
             </Alert>
-            {isDepositing && (
-              <Alert severity="info">{t`Confirm the initial liquidity transaction in your wallet.`}</Alert>
-            )}
             {isFunded && <Alert severity="success">{t`Initial liquidity added`}</Alert>}
           </>
         )}
+        <Stack>
+          <Typography variant="headingXsBold">{t`Transactions`}</Typography>
+          <Stack aria-live="polite">
+            {transactions.map(({ label, status }, index) => (
+              <ActionInfo
+                key={label}
+                size="small"
+                label={`${index + 1}. ${label}`}
+                value={transactionStatusLabels[status]}
+                valueColor={transactionStatusColors[status]}
+              />
+            ))}
+          </Stack>
+        </Stack>
         {!isFunded && (!created || values.addLiquidity) && (
           <FormButton
             {...wallet}

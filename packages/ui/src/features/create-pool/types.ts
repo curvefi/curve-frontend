@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { NumberFormatCategory } from '@primitives/number.utils'
+import type { MutationStatus } from '@tanstack/react-query'
 import type { UseFormReturn } from '@ui/features/forms'
 import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import type { PoolFormProps } from '@ui/features/pool-forms/pool-form.types'
@@ -112,7 +113,7 @@ export type CreatePoolSummaryProps = Pick<
   isLoading: boolean
   isDisabled: boolean
   isFunded: boolean
-  isDepositing: boolean
+  transactions: { label: string; status: MutationStatus }[]
 }
 
 export type CreatePoolFormProps = Omit<PoolFormProps<CreatePoolFormValues>, 'footer' | 'tokens'> &

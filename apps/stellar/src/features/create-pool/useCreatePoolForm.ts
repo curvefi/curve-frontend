@@ -30,6 +30,7 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 import { STELLAR_POOL_LIMITS } from './constants'
 import { getCreatePoolValues } from './create-pool.utils'
 import { useCreatePoolTokenOptions } from './useCreatePoolTokenOptions'
@@ -166,7 +167,10 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
     expectedLp: liquidity.expectedLp,
     minimumLp: liquidity.minimumLp,
     isFunded: liquidity.isSuccess,
-    isDepositing: liquidity.isDepositing,
+    transactions: notFalsy(
+      { label: t`Deploy pool`, status: deployment.status },
+      values.addLiquidity && { label: t`Add liquidity`, status: liquidity.status },
+    ),
     isPending,
     isLoading: isPending || implementations.isLoading || simulation.isLoading || liquidity.isLoading,
     inputsDisabled: isPending || !!created,
