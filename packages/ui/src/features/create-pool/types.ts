@@ -4,7 +4,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { NumberFormatCategory } from '@primitives/number.utils'
 import type { MutationStatus } from '@tanstack/react-query'
 import type { UseFormReturn } from '@ui/features/forms'
-import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import type { PoolFormProps } from '@ui/features/pool-forms/pool-form.types'
 import type { PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -31,7 +30,6 @@ export type CreatePoolFormValues = PoolTokenFields &
     poolName: string
     symbol: string
     maxAmounts: (Decimal | undefined)[] | undefined
-    slippage: Decimal
     addLiquidity: boolean
   }
 
@@ -59,7 +57,6 @@ export type PoolTypeOption = {
   label: string
   description: string
   liquidityDescription: string
-  slippageType: SlippageType
   defaultPreset: string
   presets: { id: string; label: string; values: PoolParameters }[]
   parameters: PoolParameter[]
@@ -92,7 +89,6 @@ export type CreatePoolLiquidityProps = {
   maxAmounts: QueryProp<Decimal>[] | undefined
   totalDepositValueUsd: QueryProp<Decimal>
   inputsDisabled: boolean
-  userAddress: Address | undefined
 }
 
 export type CreatePoolSummaryProps = Pick<
@@ -107,7 +103,6 @@ export type CreatePoolSummaryProps = Pick<
   totalDepositValueUsd: QueryProp<Decimal>
   creationFee: QueryProp<Decimal>
   expectedLp: QueryProp<Decimal>
-  minimumLp: QueryProp<Decimal>
   created: { explorerUrl: string; depositUrl: string } | undefined
   wallet: PoolFormProps<CreatePoolFormValues>['wallet']
   isPending: boolean

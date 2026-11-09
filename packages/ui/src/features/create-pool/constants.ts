@@ -25,7 +25,6 @@ export const EMPTY_POOL_PARAMETERS: PoolParameter[] = [
 export const POOL_TYPES = {
   stableswap: {
     id: 'stableswap',
-    slippageType: 'stable',
     label: 'Stableswap',
     description: t`Pegged assets, such as USDC/USDT. Trades near 1:1 with low slippage.`,
     liquidityDescription: t`The first deposit needs every token.`,
@@ -66,7 +65,6 @@ export const POOL_TYPES = {
     id: 'cryptoswap',
     label: 'Cryptoswap',
     description: t`Assets whose prices move apart, such as BTC/USD. Liquidity re-centres on the price.`,
-    slippageType: 'crypto',
     // Presets, parameters and the curve preview will be added when Cryptoswap creation is supported.
     liquidityDescription: '',
     defaultPreset: '',
@@ -77,7 +75,6 @@ export const POOL_TYPES = {
     id: 'fxswap',
     label: 'FXSwap',
     description: t`Currency pairs that drift slowly, such as EUR/USD.`,
-    slippageType: 'stable',
     // Presets, parameters and the curve preview will be added when FXSwap creation is supported.
     liquidityDescription: '',
     defaultPreset: '',

@@ -62,7 +62,6 @@ const SummaryCard = ({
   poolListUrl,
   totalDepositValueUsd,
   expectedLp,
-  minimumLp,
   wallet,
   isPending,
   isLoading,
@@ -132,20 +131,12 @@ const SummaryCard = ({
                   value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
                 />
                 {!isFunded && (
-                  <>
-                    <ActionInfo
-                      size="small"
-                      testId="create-pool-expected-lp"
-                      label={t`Expected LP received`}
-                      value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
-                    />
-                    <ActionInfo
-                      size="small"
-                      testId="create-pool-minimum-lp"
-                      label={t`Minimum LP received`}
-                      value={mapQuery(minimumLp, value => formatNumber(value, 'token.balance'))}
-                    />
-                  </>
+                  <ActionInfo
+                    size="small"
+                    testId="create-pool-expected-lp"
+                    label={t`Expected LP received`}
+                    value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
+                  />
                 )}
               </>
             ) : (
@@ -228,15 +219,7 @@ export const CreatePoolSummary = (props: CreatePoolSummaryProps & { formId: stri
           error={props.error}
           formErrors={props.formErrors}
           userAddress={props.userAddress}
-          handledErrors={[
-            'amplification',
-            'fee',
-            'feeMultiplier',
-            'priceOracleAveragingWindow',
-            'poolName',
-            'symbol',
-            'slippage',
-          ]}
+          handledErrors={['amplification', 'fee', 'feeMultiplier', 'priceOracleAveragingWindow', 'poolName', 'symbol']}
         />
       </Stack>
     </WithWrapper>

@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
-import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
 import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -21,7 +20,6 @@ export const CreatePoolLiquidity = ({
   maxAmounts,
   totalDepositValueUsd,
   inputsDisabled,
-  userAddress,
 }: CreatePoolLiquidityProps) => {
   const poolType = poolTypes.find(type => type.id === values.poolType)
   return (
@@ -65,21 +63,11 @@ export const CreatePoolLiquidity = ({
             ))}
           </Stack>
           {poolType && (
-            <>
-              <SlippageToleranceActionInfo
-                size="small"
-                maxSlippage={values.slippage}
-                userAddress={userAddress}
-                type={poolType.slippageType}
-                disabled={inputsDisabled}
-                onChanged={settings => update({ slippage: settings[poolType.slippageType] })}
-              />
-              <ActionInfo
-                size="small"
-                label={t`Pool TVL at deposit`}
-                value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
-              />
-            </>
+            <ActionInfo
+              size="small"
+              label={t`Pool TVL at deposit`}
+              value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
+            />
           )}
         </>
       )}

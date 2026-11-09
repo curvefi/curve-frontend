@@ -1,21 +1,19 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { asStellarContract } from '@/stellar/features/connect-wallet/address'
 import type { DepositMutation } from '@/stellar/features/deposit/types'
-import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolParams, UserParams } from '@/stellar/queries/query-types'
-import { maybe } from '@primitives/objects.utils'
 import { getCreatePoolDecimals, getCreatePoolTokens } from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormValues, CreatePoolTokenFields } from '@ui/features/create-pool/types'
 import { getPoolAmounts, type PoolTokenFields } from '@ui/features/pool-forms/pool-form.utils'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
 type InitialLiquidityForm = PoolTokenFields &
   CreatePoolTokenFields &
-  Pick<CreatePoolFormValues, 'slippage' | 'maxAmounts' | 'tokenCount'>
+  Pick<CreatePoolFormValues, 'maxAmounts' | 'tokenCount'>
 
 /** Loads post-deployment quotes and starts a regular deposit once; retries use the same deposit mutation. */
 export const useInitialLiquidity = ({
@@ -38,21 +36,20 @@ export const useInitialLiquidity = ({
     amounts: getPoolAmounts(params, params.tokenCount),
     isDeposit: true,
   })
-  const minimum = mapQuery(quote, value => maybe(params.slippage, slippage => calculateMinimumMint(value, slippage)))
   const { mutate, error, isPending, isSuccess, status } = useDepositMutation({
     network,
     pool,
     account,
     tokens: getCreatePoolTokens(params, params.tokenCount)?.map(token => asStellarContract(token?.address)),
     quote: quote.data,
-    minMint: minimum.data,
+    minMint: quote.data, // Initial liquidity must receive the full quoted LP amount.
   })
   const onSubmit = useCallback(
     (values: InitialLiquidityForm) => {
       depositStartedRef.current = true // Manual retries also prevent automatic resubmission when queries recover.
       mutate({
         maxAmounts: values.maxAmounts,
-        slippage: values.slippage,
+        slippage: '0', // Initial liquidity must receive the full quoted LP amount.
         supply: supply.data,
         decimals: getCreatePoolDecimals(values, values.tokenCount),
         amounts: getPoolAmounts(values, values.tokenCount),
@@ -79,7 +76,6 @@ export const useInitialLiquidity = ({
   return {
     onSubmit,
     expectedLp: q(quote),
-    minimumLp: minimum,
     isSuccess,
     status,
     isPending: isPending || isPreparing,

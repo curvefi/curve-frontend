@@ -7,13 +7,15 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 export const validateSlippage = ({
   slippage,
   required = true,
+  minimum = MIN_SLIPPAGE,
 }: {
   required?: boolean
   slippage: Decimal | Nullish
+  minimum?: number
 }) => {
   skipWhen(slippage == null && !required, () => {
     test('slippage', 'Slippage must be a number between 0 and 100', () => {
-      enforce(slippage).isDecimal().gte(MIN_SLIPPAGE).lte(MAX_SLIPPAGE)
+      enforce(slippage).isDecimal().gte(minimum).lte(MAX_SLIPPAGE)
     })
   })
 }

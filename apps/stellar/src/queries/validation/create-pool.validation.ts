@@ -12,7 +12,6 @@ import type { CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
-import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import type { FieldsOf } from '@ui/lib/validation/types'
 import { validateAccount, validateNetwork } from './pool.validation'
 
@@ -73,7 +72,7 @@ const validateParameters = ({
 }
 
 const validateForm = (values: FieldsOf<CreatePoolFormValues>) => {
-  const { tokenCount, poolType, addLiquidity, maxAmounts, slippage } = values
+  const { tokenCount, poolType, addLiquidity, maxAmounts } = values
   const tokens = getCreatePoolTokens(values, tokenCount)
   test('tokenCount', `Select between ${limits.tokens.min} and ${limits.tokens.max} different tokens`, () => {
     enforce(tokenCount).gte(limits.tokens.min).lte(limits.tokens.max)
@@ -89,7 +88,6 @@ const validateForm = (values: FieldsOf<CreatePoolFormValues>) => {
   })
   validateParameters(values)
   skipWhen(!addLiquidity, () => {
-    validateSlippage({ slippage })
     each(notFalsyArray(tokens), (token, index) => {
       test(createPoolTokenDecimalsField(index), 'Token decimals are unavailable', () => {
         enforce(token?.decimals).isNumber()

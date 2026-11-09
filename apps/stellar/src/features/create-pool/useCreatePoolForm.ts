@@ -22,7 +22,6 @@ import {
 } from '@ui/features/create-pool/create-pool.utils'
 import type { CreatePoolFormProps, CreatePoolFormValues } from '@ui/features/create-pool/types'
 import { useForm, type UseFormReturn, useFormSync } from '@ui/features/forms'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolDefaultValues, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
@@ -47,7 +46,6 @@ const userDefaultValues = {
   poolName: '',
   symbol: '',
   addLiquidity: false,
-  slippage: SLIPPAGE.stable.default,
   ...getPoolDefaultValues(STELLAR_POOL_LIMITS.tokens.min),
 } satisfies Partial<CreatePoolFormValues>
 
@@ -62,7 +60,6 @@ function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoo
       isStepComplete('poolType') &&
       (!values.addLiquidity ||
         isStepComplete(
-          'slippage',
           ...range(values.tokenCount).map(createPoolTokenDecimalsField),
           ...range(values.tokenCount).map(poolAmountField),
         )),
@@ -157,7 +154,6 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
       depositUrl: StellarPages.pool({ network: networkId, pool }),
     })),
     expectedLp: liquidity.expectedLp,
-    minimumLp: liquidity.minimumLp,
     isFunded: liquidity.isSuccess,
     transactions: notFalsy(
       { label: t`Deploy pool`, status: deployment.status },

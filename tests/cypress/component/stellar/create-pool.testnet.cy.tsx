@@ -20,6 +20,9 @@ describe('Stellar testnet pool creation', () => {
   before(() =>
     getTestnetConfig().then(async config => {
       testnetConfig = config
+      Object.assign(STELLAR_NETWORKS[TEST_NETWORK].factories, {
+        stableswap: [{ address: config.factory, implementationIndex: 0 }],
+      })
       await connectTestWallet(config)
     }),
   )

@@ -76,7 +76,7 @@ export const depositMutationValidationSuite = createValidationSuite(
   }: DepositMutationParams) => {
     validatePool({ pool, network })
     validateAccount(account)
-    validateSlippage({ slippage })
+    validateSlippage({ slippage, minimum: 0 }) // the initial deposit after pool creation forces slippage 0
     validateFundedInputs({ amounts, decimals, maxAmounts, supply })
     validateTokens({ tokens })
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
