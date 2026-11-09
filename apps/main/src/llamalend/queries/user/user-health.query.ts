@@ -59,6 +59,8 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: HealthTh
     (oraclePrice, prices, liquidationBuffer, healthFull, { debt }, { loanDiscount, liquidationDiscount }) =>
       maybe(prices, (prices): PositionHealth => {
         const health = getHealth(oraclePrice, prices)
+        // The Controller's `liquidate()` ignores the liquidation buffer: it checks `health(user, full=true) < 0`.
+        // Full health also counts the price distance above the range, so a negative buffer alone is not liquidatable.
         const isLiquidatable = decimalGreaterThan(ZERO, healthFull)
         return {
           health,

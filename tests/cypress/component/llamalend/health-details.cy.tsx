@@ -7,7 +7,7 @@ import { lightTheme } from '@ui/features/themes/themes'
 
 const { design } = lightTheme()
 
-/** Thresholds for these tests only, so the cases don't depend on the provisional market values. */
+/** Thresholds for these tests only, so the cases don't depend on the market values. */
 const THRESHOLDS: HealthThresholds = {
   nearRangeHealth: 1.1,
   healthBarFull: 2,

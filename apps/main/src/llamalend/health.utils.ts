@@ -52,23 +52,22 @@ export type HealthThresholds = {
   bufferLeftRisky: number
 }
 
-/** Provisional values, the comments give the price drop matching each health. */
 const HEALTH_THRESHOLDS = {
   [MarketAssetsType.Correlated]: {
-    nearRangeHealth: 1.0101, // 1%
-    healthBarFull: 1.0526, // 5%
+    nearRangeHealth: 1.0101,
+    healthBarFull: 1.0526,
     bufferLeftCritical: 0.1,
     bufferLeftRisky: 0.3,
   },
   [MarketAssetsType.BlueChip]: {
-    nearRangeHealth: 1.0526, // 5%
-    healthBarFull: 1.4286, // 30%
+    nearRangeHealth: 1.0526,
+    healthBarFull: 1.4286,
     bufferLeftCritical: 0.2,
     bufferLeftRisky: 0.45,
   },
   [MarketAssetsType.LongTail]: {
-    nearRangeHealth: 1.1111, // 10%
-    healthBarFull: 2, // 50%
+    nearRangeHealth: 1.1111,
+    healthBarFull: 2,
     bufferLeftCritical: 0.3,
     bufferLeftRisky: 0.6,
   },
@@ -88,7 +87,7 @@ const HEALTH_PRECISION_THRESHOLD = 1.1
 export const formatHealth = (health: Amount) =>
   formatNumber(health, +health < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
 
-/** Resolves the position status, the first match wins. */
+/** Resolves the position status. */
 export const getPositionStatus = ({
   health,
   isLiquidatable,
