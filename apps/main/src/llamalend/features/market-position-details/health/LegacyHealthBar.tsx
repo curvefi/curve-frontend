@@ -1,4 +1,4 @@
-import { clampPercentage } from '@/llamalend/health.utils'
+import { clamp } from 'lodash'
 import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import type { Nullish } from '@primitives/objects.utils'
 import { LinearProgress } from '@ui/components/LinearProgress'
@@ -38,7 +38,7 @@ export const LegacyHealthBar = ({ health, softLiquidation, small, sx }: HealthBa
   return small ? (
     health != null && (
       <LinearProgress
-        percent={clampPercentage(health)}
+        percent={clamp(health, 0, 100)}
         size="medium"
         barColor={getLegacyHealthTrackColor({ health, softLiquidation, theme })}
       />
@@ -58,7 +58,7 @@ export const LegacyHealthBar = ({ health, softLiquidation, small, sx }: HealthBa
           sx={{
             width:
               health != null
-                ? `${health <= LEGACY_HEALTH_THRESHOLDS.HARD_LIQUIDATION ? 100 : clampPercentage(health)}%`
+                ? `${health <= LEGACY_HEALTH_THRESHOLDS.HARD_LIQUIDATION ? 100 : clamp(health, 0, 100)}%`
                 : '0%',
             height: '100%',
             backgroundColor:
@@ -102,7 +102,7 @@ export const LegacyHealthBar = ({ health, softLiquidation, small, sx }: HealthBa
                 position: 'absolute',
                 bottom: LABEL_INSET,
                 left: LABEL_INSET,
-                width: `calc(${clampPercentage(health)}% - ${LABEL_INSET})`,
+                width: `calc(${clamp(health, 0, 100)}% - ${LABEL_INSET})`,
                 overflow: 'hidden',
               }}
             >

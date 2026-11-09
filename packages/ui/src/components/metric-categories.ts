@@ -62,7 +62,6 @@ const METRIC_TYPES = {
   secondaryDetail: metricLayout('secondary', 'detail'),
   primaryInline: metricLayout('primary', 'inline'),
   secondaryInline: metricLayout('secondary', 'inline'),
-  tertiaryInline: metricLayout('tertiary', 'inline'),
 } as const satisfies Record<string, MetricViewportLayout>
 
 /**
@@ -106,9 +105,9 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketListSummary': METRIC_TYPES.primaryDetail,
   'llamalend.positionBorrowDetails': METRIC_TYPES.secondaryDetail,
   'llamalend.positionSupplyDetails': METRIC_TYPES.secondaryDetail,
-  'llamalend.positionHealth': METRIC_TYPES.primaryInline,
+  'llamalend.positionHealth': METRIC_TYPES.primaryStat,
   'llamalend.legacyPositionHealth': METRIC_TYPES.primaryStat,
-  'llamalend.positionLiquidationBuffer': METRIC_TYPES.tertiaryInline,
+  'llamalend.positionLiquidationBuffer': METRIC_TYPES.secondaryStat,
 
   // crvUSD / loan
   'loan.scrvusdBanner': METRIC_TYPES.primaryStat,

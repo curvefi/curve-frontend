@@ -301,7 +301,7 @@ describe('BorrowPositionDetails on Beta', () => {
     it(`shows health ${health} and the ${badge} badge`, () => {
       cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)
       cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', health)
-      cy.get('[data-testid="health-details-health-bar-badge"]').should('have.text', badge)
+      cy.get('[data-testid="health-details-status-badge"]').should('have.text', badge)
     })
   })
 })

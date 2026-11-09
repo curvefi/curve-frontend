@@ -8,26 +8,12 @@ import { lightTheme } from '@ui/features/themes/themes'
 const { design } = lightTheme()
 
 /** Thresholds for these tests only, so the cases don't depend on the market values. */
-const THRESHOLDS: HealthThresholds = {
-  nearRangeHealth: 1.1,
-  healthBarFull: 2,
-  bufferLeftCritical: 0.25,
-  bufferLeftRisky: 0.5,
-}
+const THRESHOLDS: HealthThresholds = { nearRangeHealth: 1.1, bufferLeftCritical: 0.25, bufferLeftRisky: 0.5 }
 
 const hexToRgb = (value: string) => {
   const parsed = Number.parseInt(value.replace('#', ''), 16)
   return `rgb(${(parsed >> 16) & 255}, ${(parsed >> 8) & 255}, ${parsed & 255})`
 }
-
-const checkBarWidth =
-  (expectedPercentage: number) =>
-  ([fill]: JQuery<HTMLElement>) => {
-    const fillWidth = fill.getBoundingClientRect().width
-    const barWidth = fill.parentElement!.getBoundingClientRect().width
-    // Allow half a pixel for browser subpixel rounding.
-    expect(fillWidth).to.be.closeTo((barWidth * expectedPercentage) / 100, 0.5)
-  }
 
 const mountHealthDetails = (position: PositionHealth, error: Error | null = null) =>
   cy.mount(
@@ -48,11 +34,9 @@ type HealthDetailsTestCase = {
   expected: {
     health: string
     healthFeedback: FeedbackKey
-    healthBarWidth: number
     liquidationBuffer: string
     liquidationBufferAmount: string
     liquidationBufferFeedback: FeedbackKey
-    liquidationBufferBarWidth: number
     badge: string
   }
 }
@@ -79,11 +63,9 @@ const testCases: HealthDetailsTestCase[] = [
     expected: {
       health: '1.60',
       healthFeedback: 'Success',
-      healthBarWidth: 75,
       liquidationBuffer: '20%',
       liquidationBufferAmount: '200 crvUSD',
       liquidationBufferFeedback: 'Success',
-      liquidationBufferBarWidth: 100,
       badge: 'Above range',
     },
   },
@@ -93,11 +75,9 @@ const testCases: HealthDetailsTestCase[] = [
     expected: {
       health: '1.05',
       healthFeedback: 'Warning',
-      healthBarWidth: (1 - 1 / 1.05) * 200,
       liquidationBuffer: '8%',
       liquidationBufferAmount: '80 crvUSD',
       liquidationBufferFeedback: 'Warning',
-      liquidationBufferBarWidth: 40,
       badge: 'Near range',
     },
   },
@@ -107,11 +87,9 @@ const testCases: HealthDetailsTestCase[] = [
     expected: {
       health: '1.00',
       healthFeedback: 'Error',
-      healthBarWidth: 0,
       liquidationBuffer: '6%',
       liquidationBufferAmount: '60 crvUSD',
       liquidationBufferFeedback: 'Warning',
-      liquidationBufferBarWidth: 30,
       badge: 'Soft liquidation',
     },
   },
@@ -121,11 +99,9 @@ const testCases: HealthDetailsTestCase[] = [
     expected: {
       health: '1.00',
       healthFeedback: 'Error',
-      healthBarWidth: 0,
       liquidationBuffer: '2.40%',
       liquidationBufferAmount: '24 crvUSD',
       liquidationBufferFeedback: 'Error',
-      liquidationBufferBarWidth: 12,
       badge: 'Below range',
     },
   },
@@ -135,11 +111,9 @@ const testCases: HealthDetailsTestCase[] = [
     expected: {
       health: '1.00',
       healthFeedback: 'Error',
-      healthBarWidth: 0,
       liquidationBuffer: '-0.50%',
       liquidationBufferAmount: '-5 crvUSD',
       liquidationBufferFeedback: 'Error',
-      liquidationBufferBarWidth: 0,
       badge: 'Liquidatable',
     },
   },
@@ -154,22 +128,17 @@ describe('Health details', () => {
         .should('have.text', expected.health)
         .find('p')
         .should('have.css', 'color', hexToRgb(design.Text.TextColors.Feedback[expected.healthFeedback]))
-      cy.get('[data-testid="health-details-health-bar-fill"]')
-        .should('have.css', 'background-color', hexToRgb(design.Layer.Feedback[expected.healthFeedback]))
-        .then(checkBarWidth(expected.healthBarWidth))
-      cy.get('[data-testid="health-details-health-bar-badge"]').should('have.text', expected.badge)
+      cy.get('[data-testid="health-details-status-badge"]').should('have.text', expected.badge)
 
       cy.get('[data-testid="health-details-liquidation-buffer-metric-value"]')
-        .should('have.text', expected.liquidationBuffer)
+        .should('have.text', `${expected.liquidationBuffer}\u00a0of debt`)
         .find('p')
+        .first()
         .should('have.css', 'color', hexToRgb(design.Text.TextColors.Feedback[expected.liquidationBufferFeedback]))
       cy.get('[data-testid="health-details-liquidation-buffer-metric"]').should(
         'contain.text',
         expected.liquidationBufferAmount,
       )
-      cy.get('[data-testid="health-details-liquidation-buffer-bar-fill"]')
-        .should('have.css', 'background-color', hexToRgb(design.Layer.Feedback[expected.liquidationBufferFeedback]))
-        .then(checkBarWidth(expected.liquidationBufferBarWidth))
     })
   })
 
@@ -180,9 +149,10 @@ describe('Health details', () => {
 
   it('shows no status from stale data when a source errors', () => {
     mountHealthDetails(getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'), new Error('rpc failed'))
-    cy.get('[data-testid="health-details-health-bar"]').should('be.visible')
-    cy.get('[data-testid="health-details-health-bar-badge"]').should('not.exist')
-    cy.get('[data-testid="health-details-health-bar-fill"]').then(checkBarWidth(0))
-    cy.get('[data-testid="health-details-liquidation-buffer-bar-fill"]').then(checkBarWidth(0))
+    cy.get('[data-testid="health-details-health-metric"]').should('be.visible')
+    cy.get('[data-testid="health-details-status-badge"]').should('not.exist')
+    cy.get('[data-testid="health-details-health-metric-value"]')
+      .find('p')
+      .should('have.css', 'color', hexToRgb(design.Text.TextColors.Primary))
   })
 })

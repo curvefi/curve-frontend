@@ -2,7 +2,6 @@ import type { Theme } from '@mui/material/styles'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { formatNumber } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMax } from '@ui/lib/decimal'
 
@@ -44,8 +43,6 @@ export type PositionHealth = {
 export type HealthThresholds = {
   /** Above the range, a health at or below this reads as near range */
   nearRangeHealth: number
-  /** Health at which the health bar is full */
-  healthBarFull: number
   /** {@link PositionHealth.liquidationBufferLeft} at or below which the position is critical */
   bufferLeftCritical: number
   /** {@link PositionHealth.liquidationBufferLeft} at or below which the position is risky */
@@ -53,24 +50,9 @@ export type HealthThresholds = {
 }
 
 const HEALTH_THRESHOLDS = {
-  [MarketAssetsType.Correlated]: {
-    nearRangeHealth: 1.0101,
-    healthBarFull: 1.0526,
-    bufferLeftCritical: 0.1,
-    bufferLeftRisky: 0.3,
-  },
-  [MarketAssetsType.BlueChip]: {
-    nearRangeHealth: 1.0526,
-    healthBarFull: 1.4286,
-    bufferLeftCritical: 0.2,
-    bufferLeftRisky: 0.45,
-  },
-  [MarketAssetsType.LongTail]: {
-    nearRangeHealth: 1.1111,
-    healthBarFull: 2,
-    bufferLeftCritical: 0.3,
-    bufferLeftRisky: 0.6,
-  },
+  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.0101, bufferLeftCritical: 0.1, bufferLeftRisky: 0.3 },
+  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.0526, bufferLeftCritical: 0.2, bufferLeftRisky: 0.45 },
+  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.1111, bufferLeftCritical: 0.3, bufferLeftRisky: 0.6 },
 } as const satisfies Record<MarketAssetsType, HealthThresholds>
 
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */
@@ -124,12 +106,3 @@ export const getLiquidationBufferFeedback = (
     : +liquidationBufferLeft <= bufferLeftRisky
       ? 'Warning'
       : 'Success'
-
-export const clampPercentage = (value: number | Nullish): number => Math.max(0, Math.min(value ?? 0, 100))
-
-/** Fills by price drop to the range, so the bar is linear in price rather than in health. */
-export const getHealthBarFill = ({ health }: PositionHealth, { healthBarFull }: HealthThresholds) =>
-  clampPercentage(((1 - 1 / +health) / (1 - 1 / healthBarFull)) * 100)
-
-export const getLiquidationBufferBarFill = ({ liquidationBufferLeft }: PositionHealth) =>
-  clampPercentage(+liquidationBufferLeft * 100)
