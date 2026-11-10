@@ -21,7 +21,9 @@ export const UserPositionHistory = ({ eventsQuery, variant }: UserPositionHistor
         <UserEventsTable eventsQuery={eventsQuery} />
         <Stack direction="row" sx={{ gap: Spacing.xs }}>
           <Typography variant="bodyXsRegular">
-            {t`Llamelend liquidations are not price based, but health based.`}
+            {isNewLlamalendHealth
+              ? t`LlamaLend liquidations depend on your liquidation buffer, not on price alone.`
+              : t`Llamelend liquidations are not price based, but health based.`}
           </Typography>
           <Typography variant="bodyXsBold" sx={{ color: t => t.design.Text.TextColors.Highlight }}>
             {isNewLlamalendHealth
