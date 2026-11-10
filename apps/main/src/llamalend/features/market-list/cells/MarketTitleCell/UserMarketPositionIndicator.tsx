@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react'
+import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/HealthDetails'
+import { POSITION_STATUS_DESCRIPTION } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
+import type { PositionStatus } from '@/llamalend/health.utils'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { useLlamalendPositionTables } from '@evm-ui/hooks/useFeatureFlags'
 import { Typography } from '@mui/material'
+import { maybe } from '@primitives/objects.utils'
+import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { UserPositionIndicator, type ColorState } from '@ui/features/tables/UserPositionIndicator'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { t } from '@ui/lib/i18n'
@@ -26,6 +32,7 @@ const flickerEffect = (
 
 type ColorEffect = (set: (value: (prev: ColorState) => ColorState) => void) => void | (() => void)
 
+const setOrange: ColorEffect = set => set(() => 'orange')
 const setInfo: ColorEffect = set => set(() => 'info')
 const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
   healthy: setInfo,
@@ -35,24 +42,50 @@ const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
   hardLiquidation: flickerEffect,
 }
 
+const positionStatusColorEffect: Record<PositionStatus, ColorEffect> = {
+  liquidatable: flickerEffect,
+  inRange: flickerEffect,
+  belowRange: flickerEffect,
+  nearRange: setOrange,
+  aboveRange: setInfo,
+}
+
 export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow }) => {
+  const isPositionHealth = useLlamalendPositionTables()
   // No status while the stats load or after they failed, and supply positions have no stats
-  const { legacyStatus: status } = market.positionQueries.stats.data ?? {}
+  const { legacyStatus, positionHealth } = market.positionQueries.stats.data ?? {}
   const [colorState, setColorState] = useState<ColorState>('info')
 
-  useEffect(() => (status ? statusColorEffect[status](setColorState) : setInfo(setColorState)), [status])
+  const colorEffect =
+    (isPositionHealth
+      ? maybe(positionHealth, ({ status }) => positionStatusColorEffect[status])
+      : maybe(legacyStatus, status => statusColorEffect[status])) ?? setInfo
+  useEffect(() => colorEffect(setColorState), [colorEffect])
 
-  const content =
-    status && getPositionStatusContent(market.assets.collateral.symbol, market.assets.borrowed.symbol)[status]
+  const legacyContent =
+    legacyStatus &&
+    getPositionStatusContent(market.assets.collateral.symbol, market.assets.borrowed.symbol)[legacyStatus]
 
   return (
     <UserPositionIndicator
       colorState={colorState}
-      tooltipTitle={content?.title ?? t`Position active`}
+      tooltipTitle={
+        (isPositionHealth
+          ? maybe(positionHealth, ({ status }) => POSITION_STATUS_BADGE[status].label)
+          : legacyContent?.title) ?? t`Position active`
+      }
       tooltipBody={
-        <Typography variant="bodySRegular" sx={{ fontWeight: t => t.typography.fontWeightMedium }}>
-          {content?.description ?? t`You have an active position in this market.`}
-        </Typography>
+        isPositionHealth && positionHealth ? (
+          <TooltipWrapper>
+            {POSITION_STATUS_DESCRIPTION[positionHealth.status].map(text => (
+              <TooltipDescription key={text} text={text} />
+            ))}
+          </TooltipWrapper>
+        ) : (
+          <Typography variant="bodySRegular" sx={{ fontWeight: t => t.typography.fontWeightMedium }}>
+            {legacyContent?.description ?? t`You have an active position in this market.`}
+          </Typography>
+        )
       }
     />
   )
