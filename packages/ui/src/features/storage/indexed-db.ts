@@ -2,17 +2,18 @@ import { captureException } from '@sentry/react'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 
-/** Open one connection and report storage failures before disabling persistence until reload. */
+/** Open one connection and disable persistence on failures other than AbortError. */
 export const createIndexedDBStore = <T>(databaseName: string, storeName: string) => {
   let persistenceDisabled = false
   const onError = (error: unknown) => {
     if (persistenceDisabled) return
-    persistenceDisabled = true
+    const storageError = error as Error
+    persistenceDisabled = storageError?.name !== 'AbortError'
     captureException(error)
     notify(
-      error instanceof DOMException && error.name === 'QuotaExceededError'
+      storageError?.name === 'QuotaExceededError'
         ? t`Browser storage is full. Cached data won't be saved between visits.`
-        : (error as Error)?.message || String(error),
+        : storageError?.message || String(error),
       'error',
     )
   }
@@ -25,18 +26,18 @@ export const createIndexedDBStore = <T>(databaseName: string, storeName: string)
       db.onversionchange = () => db.close()
       resolve(db)
     }
-    request.onerror = () => reject(request.error ?? new Error('Unable to open IndexedDB'))
+    request.onerror = () => reject(request.error!) // IndexedDB guarantees an error when onerror runs.
   }).catch(onError)
 
   const withPersistence = async <R>(mode: IDBTransactionMode, action: (store: IDBObjectStore) => IDBRequest<R>) => {
     const db = await database
     if (!db || persistenceDisabled) return
     try {
-      return await new Promise<R>((resolve, reject) => {
+      return await new Promise<R | undefined>((resolve, reject) => {
         const transaction = db.transaction(storeName, mode)
         const request = action(transaction.objectStore(storeName))
         transaction.oncomplete = () => resolve(request.result)
-        transaction.onabort = () => reject(transaction.error ?? new Error('IndexedDB transaction aborted'))
+        transaction.onabort = () => (transaction.error ? reject(transaction.error) : resolve(undefined))
       })
     } catch (error: unknown) {
       onError(error)
