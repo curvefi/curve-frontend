@@ -59,16 +59,14 @@ const TypographyDisplay = ({ variant, children, ...args }: TypographyDisplayProp
         {children}
       </Typography>
       <Divider />
-      <Typography variant="bodyXsRegular">
-        <List>
-          <Item title="Variant" value={variant} />
-          <Item title="Font Family" value={theme.typography.fontFamily} />
-          <Item title="Font Weight" value={fontWeight} />
-          <Item title="Font Size" value={(fontSize || 'Medium').toUpperCase()} />
-          <Item title="Line Height" value={(lineHeight ?? fontSize).toUpperCase()} />
-          <Item title="Letter Spacing" value={letterSpacing} />
-        </List>
-      </Typography>
+      <List>
+        <Item title="Variant" value={variant} />
+        <Item title="Font Family" value={theme.typography.fontFamily} />
+        <Item title="Font Weight" value={fontWeight} />
+        <Item title="Font Size" value={(fontSize || 'Medium').toUpperCase()} />
+        <Item title="Line Height" value={(lineHeight ?? fontSize).toUpperCase()} />
+        <Item title="Letter Spacing" value={letterSpacing} />
+      </List>
     </Stack>
   )
 }
