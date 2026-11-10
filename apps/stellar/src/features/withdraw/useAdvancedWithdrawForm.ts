@@ -11,9 +11,8 @@ import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { advancedWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import { useWithdrawLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
-import { completeArray, isComplete } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, maybe, maybes } from '@primitives/objects.utils'
+import { fromEntries, maybe, range } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import {
@@ -23,17 +22,13 @@ import {
   poolAmountField,
   type PoolAmountField,
 } from '@ui/features/pool-forms/pool-form.utils'
-import {
-  getBalancedWithdrawAmounts,
-  getBalancedWithdrawLp,
-} from '@ui/features/pool-forms/withdraw/balanced-withdraw.utils'
+import { createBalancedWithdraw } from '@ui/features/pool-forms/withdraw/createBalancedWithdraw'
 import {
   getAdvancedWithdrawParams,
   type AdvancedWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
-import { decimalDiv, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawQuoteParams } from './types'
 
@@ -54,7 +49,8 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
   const { address: account, connect, isConnected, isConnecting } = useWallet()
   const config = usePoolConfig(poolParams)
   const snapshot = usePoolSnapshot(poolParams)
-  const { lp_supply: supply, active_balances: reserves } = snapshot.data ?? {}
+  const supply = mapQuery(snapshot, snapshot => snapshot.lp_supply)
+  const reserves = mapQuery(snapshot, snapshot => snapshot.active_balances)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const tokenCount = tokenAddresses.data?.length
 
@@ -69,7 +65,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     ...formOptions,
     defaultValues: { ...formOptions.defaultValues, ...userDefaultValues },
   })
-  const { formState, reset, values } = form
+  const { formState, handleSubmit, update, reset, values } = form
 
   const [debounced, isDebouncing] = useFormDebounce<
     AdvancedWithdrawFormValues,
@@ -81,12 +77,12 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
 
   useFormSync(form, {
     decimals: decimalsData,
-    supply,
+    supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
     maximumBurn: maximumLp.data,
-    ...maybe(tokenAddresses.data, addresses =>
-      fromEntries(addresses.map((_, index) => [poolMaxAmountField(index), reserves?.[index]])),
+    ...maybe(tokenCount, count =>
+      fromEntries(range(count).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
     ),
   })
 
@@ -104,48 +100,32 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onReset: () => reset(userDefaultValues),
   })
 
-  const amountsUsd = reserves?.map((amount, index) =>
-    maybe(tokens?.[index]?.data?.usdRate, rate => decimalMultiply(amount, rate)),
-  )
-  const precision = completeArray(values.decimals)
-  const canBalance = supply && reserves && precision && !!+supply && reserves.every(b => +b)
-  const getBalancedUpdates = (lpAmount: Decimal | undefined) => ({
-    lpAmount,
-    ...(lpAmount && canBalance
-      ? fromEntries(
-          getBalancedWithdrawAmounts(lpAmount, reserves, supply, precision).map((amount, i) => [
-            poolAmountField(i),
-            amount,
-          ]),
-        )
-      : maybe(tokenCount, getPoolDefaultValues)),
+  const { canBalance, lpAmountUsd, getUpdatesFromLpAmount, getUpdatesFromTokenAmount } = createBalancedWithdraw({
+    values,
+    tokens,
+    tokenCount,
+    reserves,
+    supply,
   })
+
   const isPending = formState.isSubmitting || isWithdrawing
+
+  // TODO: Surface reserves and supply loading/errors in the form, including the LP USD value.
   return {
     canBalance,
-    lpAmountUsd:
-      supply && +supply > 0 && isComplete(amountsUsd)
-        ? maybes([values.lpAmount, decimalDiv(decimalSum(...amountsUsd), supply)], decimalMultiply)
-        : undefined,
-    onLpChange: (lpAmount: Decimal | undefined) => form.update(getBalancedUpdates(lpAmount)),
+    lpAmountUsd: lpAmountUsd.data,
+    onLpChange: (lpAmount: Decimal | undefined) => update(getUpdatesFromLpAmount(lpAmount)),
     onBalancedChange: (isBalanced: boolean) =>
-      form.update({ ...(isBalanced && getBalancedUpdates(values.lpAmount)), isBalanced }),
+      update({ ...(isBalanced && getUpdatesFromLpAmount(values.lpAmount)), isBalanced }),
     onTokenChange: (index: number, amount: Decimal | undefined) =>
-      form.update({
-        ...(values.isBalanced &&
-          canBalance &&
-          getBalancedUpdates(
-            maybe(amount, amount => getBalancedWithdrawLp(amount, precision[index], reserves[index], supply)),
-          )),
-        [poolAmountField(index)]: amount,
-      }),
+      update({ ...(values.isBalanced && getUpdatesFromTokenAmount(index, amount)), [poolAmountField(index)]: amount }),
     form,
     expectedLp,
     maximumLp,
     priceImpact,
     params,
     lpBalance: q(lpBalance),
-    onSubmit: form.handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),
+    onSubmit: handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
@@ -153,7 +133,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     userAddress: asAddress(account),
     error,
     formErrors: formState.visibleErrors,
-    onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
+    onSlippageChange: (newSlippage: Decimal) => update({ slippage: newSlippage }),
     tokens,
   }
 }
