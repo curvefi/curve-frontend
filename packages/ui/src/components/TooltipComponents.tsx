@@ -129,7 +129,8 @@ export const TooltipItem = ({
         {title}
       </Typography>
     </Stack>
-    <WithSkeleton loading={loading}>
+    {/* TODO: delete this skeleton width in the task to create skeleton categories */}
+    <WithSkeleton loading={loading} width={40}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
         {/* eslint-disable-next-line @eslint-react/no-children-map -- Existing violation before enabling this rule. */}
         {Children.map(children, (child, index) => {

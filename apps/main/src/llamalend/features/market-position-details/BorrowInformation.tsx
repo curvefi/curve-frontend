@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import {
@@ -24,7 +25,7 @@ import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
+import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } from './market-position-details.utils'
@@ -50,9 +51,9 @@ export const BorrowInformation = ({
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
   const positionPnl = usePositionPnlAndEquity(params)
 
-  const { collateral, stablecoin: borrowed } = userStateValue ?? {}
+  const { collateral, convertedBorrowed: borrowed } = userStateValue ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
-    decimalSum(decimalMultiply(userState.collateral, oraclePrice), userState.stablecoin),
+    getCollateralValue(userState, oraclePrice),
   )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
@@ -66,10 +67,10 @@ export const BorrowInformation = ({
         label={t`Collateral value`}
         value={collateralValue}
         valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
-        notional={mapQuery(userState, ({ collateral, stablecoin }) =>
+        notional={mapQuery(userState, ({ collateral, convertedBorrowed }) =>
           formatCollateralNotional(
             { value: collateral, symbol: collateralToken?.symbol },
-            { value: stablecoin, symbol: borrowToken?.symbol },
+            { value: convertedBorrowed, symbol: borrowToken?.symbol },
           ),
         )}
         valueTooltip={{
@@ -130,7 +131,11 @@ export const BorrowInformation = ({
           }}
           valueTooltip={
             isEquityLeverage
-              ? { title: t`Leverage`, body: <LeverageTooltipContent />, ...BORROW_METRIC_TOOLTIP }
+              ? {
+                  title: t`Leverage`,
+                  body: <LeverageTooltipContent openingLeverage={equityLeverage?.opening} />,
+                  ...BORROW_METRIC_TOOLTIP,
+                }
               : undefined
           }
         />

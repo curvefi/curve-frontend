@@ -2,14 +2,16 @@
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { StellarFetchRetry } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
+import { createRpc } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
-import { type ModuleInterface, ModuleType, Networks } from '@creit.tech/stellar-wallets-kit/types'
+import { type ModuleInterface, ModuleType } from '@creit.tech/stellar-wallets-kit/types'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { assert } from '@primitives/objects.utils'
 import { retry } from '@primitives/promise.utils'
-import { BASE_FEE, contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk'
+import { contract, Keypair, rpc, TransactionBuilder } from '@stellar/stellar-sdk'
 import { Duration } from '@ui/features/themes/design/0_primitives'
+import { createSorobanDeploymentSender } from './deployment'
 
 /** Rebuild and sign on every attempt so rejected transactions get a fresh sequence and simulation. */
 export const retryTestnetSetup = <T>(
@@ -26,6 +28,7 @@ export const retryTestnetSetup = <T>(
 /** Register a real keypair wallet through the wallet kit's module interface. */
 export const connectTestWallet = ({ deployer }: TestnetConfig) => {
   const keypair = Keypair.fromSecret(deployer.secret)
+  const { networkPassphrase } = STELLAR_NETWORKS['stellar-testnet']
   const wallet: ModuleInterface = {
     productId: 'cypress-stellar',
     productName: 'Cypress Stellar wallet',
@@ -34,17 +37,17 @@ export const connectTestWallet = ({ deployer }: TestnetConfig) => {
     moduleType: ModuleType.HOT_WALLET,
     isAvailable: () => Promise.resolve(true),
     getAddress: () => Promise.resolve({ address: keypair.publicKey() }),
-    getNetwork: () => Promise.resolve({ network: 'TESTNET', networkPassphrase: Networks.TESTNET }),
+    getNetwork: () => Promise.resolve({ network: 'TESTNET', networkPassphrase }),
     signTransaction: (xdr, options) => {
-      expect(options?.networkPassphrase).to.equal(Networks.TESTNET)
-      const transaction = TransactionBuilder.fromXdr(xdr, Networks.TESTNET)
+      expect(options?.networkPassphrase).to.equal(networkPassphrase)
+      const transaction = TransactionBuilder.fromXdr(xdr, networkPassphrase)
       transaction.sign(keypair)
       return Promise.resolve({ signedTxXdr: transaction.toXdr(), signerAddress: keypair.publicKey() })
     },
     signAuthEntry: () => Promise.reject(new Error('Separate authorization entries are not supported by this wallet')),
     signMessage: () => Promise.reject(new Error('Message signing is not supported by this wallet')),
   }
-  StellarWalletsKit.init({ modules: [wallet], network: Networks.TESTNET, selectedWalletId: wallet.productId })
+  StellarWalletsKit.init({ modules: [wallet], network: networkPassphrase, selectedWalletId: wallet.productId })
   return StellarWalletsKit.fetchAddress()
 }
 
@@ -90,43 +93,39 @@ const isPoolDeploymentFootprintConflict = (confirmation: rpc.Api.GetTransactionR
 /**
  * Deployment simulation has returned >10 billion stroops, exceeding the ordinary uint32 fee.
  * The SDK's simulate()/signAndSend() path overflows before our shared sender can run.
- * Assemble a zero-fee inner transaction and pay its resource fee through an int64 fee bump.
- * This exception is only for test pool creation; user operations exercise sendStellarTransaction.
+ * Use the shared deployment sender with the app's fee buffer.
+ * User operations exercise sendStellarTransaction.
  * https://github.com/stellar/stellar-protocol/blob/master/core/cap-0066.md#allow-resource-fees-to-exceed-uint32
  */
 const sendPoolDeployment = async (
   transaction: contract.AssembledTransaction<contract.Result<PoolDeployment>>,
   keypair: Keypair,
 ) => {
-  const server = new rpc.Server(transaction.options.rpcUrl)
-  const raw = transaction.raw!.build()
-  transaction.simulation = await server.simulateTransaction(raw)
-  const { sorobanData } = getStellarTransactionFees(transaction)
-  const builder = rpc.assembleTransaction(raw, transaction.simulation).setSorobanData(sorobanData)
-  // Cancel build()'s resource addition: the inner fee is zero and the outer envelope pays it.
-  builder.baseFee = (-sorobanData.resourceFee).toString()
-  const inner = builder.build()
-  inner.sign(keypair)
-  const envelope = TransactionBuilder.buildFeeBumpTransaction(keypair, BASE_FEE, inner, Networks.TESTNET)
-  envelope.sign(keypair)
-  const submitted = await server.sendTransaction(envelope)
-  assert(submitted.status === 'PENDING', `Pool deployment submission failed: ${JSON.stringify(submitted)}`)
-  const confirmed = await server.pollTransaction(submitted.hash, { attempts: 60 })
-  if (confirmed.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
-    throw new Error(`Pool deployment failed: ${confirmed.status}`, { cause: confirmed })
-  }
-  return transaction.options.parseResultXdr(assert(confirmed.returnValue, 'Missing pool address')).unwrap().pool
+  const sendDeployment = createSorobanDeploymentSender(
+    createRpc(transaction.options),
+    keypair,
+    transaction.options.networkPassphrase,
+    transaction.options.timeoutInSeconds ?? contract.DEFAULT_TIMEOUT,
+  )
+  const [operation] = transaction.raw!.operations
+  const returnValue = await sendDeployment(operation, simulation => {
+    transaction.simulation = simulation
+    return getStellarTransactionFees(transaction).sorobanData
+  })
+  return transaction.options.parseResultXdr(returnValue).unwrap().pool
 }
 
 /** Matches stableswap-rs/scripts/deploy_testnet.sh; the factory allocates a fresh pool address on every call. */
 export const deployTestPool = async ({ factory: factoryAddress, deployer, coins }: TestnetConfig) => {
+  const { rpcUrl, networkPassphrase, allowHttp } = STELLAR_NETWORKS['stellar-testnet']
   const factory = await retry(
     () =>
       contract.Client.from<Factory>({
         contractId: factoryAddress,
         publicKey: deployer.address,
-        networkPassphrase: Networks.TESTNET,
-        rpcUrl: STELLAR_NETWORKS['stellar-testnet'].rpcUrl,
+        networkPassphrase,
+        rpcUrl,
+        allowHttp,
       }),
     StellarFetchRetry,
   )

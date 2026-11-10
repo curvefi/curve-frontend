@@ -59,8 +59,6 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
             chainId: params.chainId,
             marketId: params.marketId,
             userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
             collateralDelta: userCollateral && decimalNegate(userCollateral),
             expectedBorrowed: prevDebt.data,
           },

@@ -60,8 +60,6 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
             chainId: params.chainId,
             marketId: params.marketId,
             userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
             collateralDelta: userCollateral,
             expectedBorrowed: prevDebt.data,
           },

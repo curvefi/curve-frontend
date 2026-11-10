@@ -128,8 +128,6 @@ export function RepayLoanInfoList({
             chainId: params.chainId,
             marketId: params.marketId,
             userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
             expectedBorrowed: debt?.data,
           },
           isOpen,

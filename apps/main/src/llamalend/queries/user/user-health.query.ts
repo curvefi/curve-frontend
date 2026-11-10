@@ -1,4 +1,5 @@
 import { getHealth, getPositionStatus, type HealthThresholds, type PositionHealth } from '@/llamalend/health.utils'
+import { pickDisplayLegacyHealth } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
@@ -42,7 +43,7 @@ export const {
 export const useLegacyUserHealthValue = (params: UserMarketParams) =>
   combineQueries(
     [useUserHealth({ ...params, isFull: true }), useUserHealth({ ...params, isFull: false })],
-    (full, notFull) => (+notFull < 0 ? notFull : full),
+    (full, notFull) => pickDisplayLegacyHealth(full, notFull),
   )
 
 /** The position's health, liquidation buffer and status. No data when the user has no loan. */

@@ -67,8 +67,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             chainId: params.chainId,
             marketId: params.marketId,
             userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
             collateralDelta,
             expectedBorrowed: prevDebt.data && decimalSum(prevDebt.data, debt),
           },

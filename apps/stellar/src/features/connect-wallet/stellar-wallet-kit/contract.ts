@@ -3,20 +3,12 @@ import { STABLE_SWAP_ERRORS } from '@/stellar/lib/errors'
 import { STELLAR_NETWORKS, type StellarNetwork } from '@/stellar/lib/networks'
 import { maybe } from '@primitives/objects.utils'
 import { retry, type RetryOptions } from '@primitives/promise.utils'
-import {
-  Address,
-  contract,
-  humanizeEvents,
-  nativeToScVal,
-  Networks,
-  scValToNative,
-  StrKey,
-  xdr,
-} from '@stellar/stellar-sdk'
+import { Address, contract, humanizeEvents, nativeToScVal, scValToNative, StrKey, xdr } from '@stellar/stellar-sdk'
 import type { DiagnosticEvent } from '@stellar/stellar-sdk/xdr'
 import { NoRetryError } from '@ui/features/queries/factory'
+import { simulateStellarTransaction } from './transaction'
 
-const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
+export const MAX_INCLUSION_FEE = 100_000n // ≈ $0.0018 at the time of writing; resource fees are separate.
 
 export const StellarFetchRetry = {
   retries: 2,
@@ -24,7 +16,9 @@ export const StellarFetchRetry = {
   shouldRetry: (error: unknown) => /failed to fetch|fetch failed|network ?error/i.test((error as Error).message),
 } satisfies RetryOptions
 
-type ContractArgument = StellarAddress | StellarContract | bigint | number | boolean | ContractArgument[]
+type ContractArgument = StellarAddress | StellarContract | bigint | number | boolean | xdr.ScVal | ContractArgument[]
+
+export const encodeContractValue: typeof nativeToScVal = (value, options) => nativeToScVal(value, options)
 
 const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
   Array.isArray(value)
@@ -36,8 +30,6 @@ const encodeContractArgument = (value: ContractArgument): xdr.ScVal =>
           typeof value === 'bigint' ? { type: 'i128' } : typeof value === 'number' ? { type: 'u32' } : {},
         )
 
-const PASSPHRASES = { stellar: Networks.PUBLIC, 'stellar-testnet': Networks.TESTNET }
-
 export async function simulateContractCall<T>(
   network: StellarNetwork,
   contractId: StellarContract,
@@ -45,6 +37,7 @@ export async function simulateContractCall<T>(
   args: ContractArgument[] = [],
   account?: StellarAddress,
 ) {
+  const { rpcUrl, networkPassphrase, allowHttp } = STELLAR_NETWORKS[network]
   const transaction = await retry(
     () =>
       contract.AssembledTransaction.build<T>({
@@ -53,15 +46,17 @@ export async function simulateContractCall<T>(
         args: args.map(encodeContractArgument),
         publicKey: account,
         address: account,
-        networkPassphrase: PASSPHRASES[network],
-        rpcUrl: STELLAR_NETWORKS[network].rpcUrl,
+        networkPassphrase,
+        rpcUrl,
+        allowHttp,
         fee: MAX_INCLUSION_FEE.toString(),
+        simulate: false, // Simulate below: the SDK's automatic assembly overflows for fees requiring a fee bump.
         parseResultXdr: value => scValToNative(value) as T,
       }),
     StellarFetchRetry,
   )
   try {
-    void transaction.simulationData // The SDK getter throws if simulation failed or requires state restoration.
+    await retry(() => simulateStellarTransaction(transaction), StellarFetchRetry)
   } catch (e) {
     throw convertStellarError(transaction.simulation?.events, contractId) ?? e
   }

@@ -5,12 +5,14 @@ import { MAX_USER_POOL_PAGE_SIZE } from './constants'
 
 const rawCoin = z.object({ pool_index: z.number(), symbol: z.string(), address })
 
-const coin = rawCoin.transform(camelizeKeys)
+const coin = rawCoin.extend({ decimals: z.number().nullable().optional() }).transform(camelizeKeys)
 
 const pool = z
   .object({
     name: z.string(),
     address,
+    pool_type: z.string().nullable().optional(),
+    implementation_address: address.nullable().optional(),
     n_coins: z.number(),
     tvl_usd: z.number(),
     trading_volume_24h: z.number(),
@@ -404,7 +406,7 @@ const litePool = z
   .transform(camelizeKeys)
 
 export const getPoolsResponse = z
-  .object({ chain, total: poolTotals, data: z.array(pool) })
+  .object({ chain: z.string(), total: poolTotals, data: z.array(pool) })
   .transform(({ chain, total, data }) => ({ chain, totals: total, pools: data }))
 
 export const getPoolResponse = pool
@@ -442,6 +444,18 @@ export const listLitePoolsResponse = z
   })
   .transform(camelizeKeys)
   .transform(({ data, generatedTimeMs }) => ({ pools: data.poolData ?? [], totalTvl: data.tvl, generatedTimeMs }))
+
+export const getLitePoolDeploymentResponse = z
+  .object({
+    data: z.object({
+      config: z.object({
+        native_currency_symbol: z.string(),
+        native_token: address.nullish(),
+        wrapped_native_token: address,
+      }),
+    }),
+  })
+  .transform(({ data: { config } }) => camelizeKeys(config))
 
 export const getUserPoolPositionsResponse = z
   .object({
