@@ -5,6 +5,7 @@ import { createTwoCryptoCurve } from '@ui/features/pools/liquidity-density/twocr
 
 const A_PRECISION = 10_000
 const PREVIEW_PAIR = [0, 1] as const
+const PREVIEW_BIN_COUNT = 193 // odd count centers a bin on the balanced price; extra bins resolve the narrow peak.
 
 /** A uses the contract's 10,000 precision; gamma is unscaled. Reserves start at equal value. */
 export const cryptoswapPreview = (amplification: number, gamma: number, tokenCount: 2 | 3) => {
@@ -16,7 +17,7 @@ export const cryptoswapPreview = (amplification: number, gamma: number, tokenCou
       ? createTwoCryptoCurve(balances, 1, amplification / A_PRECISION, gamma, tokenCount)
       : createTriCryptoCurve(balances, [1, 1], amplification / A_PRECISION, gamma, tokenCount)
   return maybe(curve, curve =>
-    maybe(liquidityProfile(curve, PREVIEW_PAIR), profile => {
+    maybe(liquidityProfile(curve, PREVIEW_PAIR, PREVIEW_BIN_COUNT), profile => {
       const samples = profile.samples.map(({ price, depth, low, high }) => ({
         deviation: (price - 1) * 100,
         // Compare the same log-price interval and total deposit: Uniswap v2 starts with N/2 per reserve.

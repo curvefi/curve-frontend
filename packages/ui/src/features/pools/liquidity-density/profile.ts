@@ -77,14 +77,18 @@ const liquidityWindow = (curve: LiquidityCurve, pair: LiquidityPair): readonly [
 }
 
 /** Density is whole input tokens per 1% of log-price movement; price is output/input. */
-export const liquidityProfile = (curve: LiquidityCurve, pair: LiquidityPair): LiquidityProfile | undefined => {
+export const liquidityProfile = (
+  curve: LiquidityCurve,
+  pair: LiquidityPair,
+  binCount = PROFILE_BIN_COUNT,
+): LiquidityProfile | undefined => {
   const { scale } = curve
   const [inputCoin] = pair
   return maybe(spotPrice(curve, pair), spot =>
     maybe(liquidityWindow(curve, pair), ([low, high]) => {
       const span = Math.log(high / low)
-      const edges = range(PROFILE_BIN_COUNT + 1).map(index => {
-        const price = low * Math.exp((span * index) / PROFILE_BIN_COUNT)
+      const edges = range(binCount + 1).map(index => {
+        const price = low * Math.exp((span * index) / binCount)
         return { price, balance: balanceAtPrice(curve, pair, price) }
       })
       const samples: LiquiditySample[] = notFalsy(
