@@ -33,15 +33,8 @@ async function fetchPools(instance: CurveInstance, log: FastifyBaseLogger) {
     try {
       const [poolFilters] = await Promise.all([getPoolFilters(), ...factories.map(factory => factory.fetchPools())])
 
-      // Fetch pool addresses before calling fetchNewPools, because the frontend's API might not be able to resolve these newer pools yet.
       const poolsData = curve.getPoolsData()
       instance.poolAddresses = curve.getPoolList().map(id => getAddress(poolsData[id].swap_address))
-
-      await Promise.all(
-        factories.map(async factory => {
-          if ('fetchNewPools' in factory) await factory.fetchNewPools()
-        }),
-      )
 
       const blacklist = poolFilters
         .filter(({ chainId }) => chainId === curve.chainId)
