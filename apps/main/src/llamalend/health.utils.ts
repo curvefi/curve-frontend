@@ -2,6 +2,7 @@ import type { Theme } from '@mui/material/styles'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMax } from '@ui/lib/decimal'
 
@@ -62,8 +63,8 @@ export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>):
 /** Below this health, values near 1 need more decimals than the 3 significant digits of the `health` format */
 const HEALTH_PRECISION_THRESHOLD = 1.1
 
-export const formatHealth = (health: Amount) =>
-  formatNumber(health, +health < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
+export const formatHealth = (health: Amount | Nullish) =>
+  formatNumber(health, Number(health) < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
 
 /** Resolves the position status. */
 export const getPositionStatus = ({

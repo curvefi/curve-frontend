@@ -1,6 +1,5 @@
 import type { Theme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import {
   decimalDiv,
@@ -93,18 +92,17 @@ export const getLegacyHealthTrackColor = ({
 }) => healthFeedbackColors(theme, 'fill')[resolveHealthFeedbackKey({ health, softLiquidation, isFullRepay })]
 
 /** Distance from hard liquidation as a percentage of the gap between the loan and liquidation discounts, all in percent. */
-export const getLiquidationBuffer = (healthNotFull: Decimal, loanDiscount: Decimal, liquidationDiscount: Decimal) => {
+export const getLegacyLiquidationBuffer = (
+  healthNotFull: Decimal,
+  loanDiscount: Decimal,
+  liquidationDiscount: Decimal,
+) => {
   const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
   return decimalGreaterThan(discountGap, ZERO) ? decimalPercent(healthNotFull, discountGap) : undefined
 }
 
-const HEALTH_PRECISION_THRESHOLD = 1.1
-
-export const formatHealthFactor = (healthFactor: Decimal | number | undefined) =>
-  formatNumber(healthFactor, Number(healthFactor) < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
-
 /** Health of a position from its full and band-valued health, both in percent of the debt. */
-export const getHealthValues = (healthFull: Decimal, healthNotFull: Decimal) => {
+export const getLegacyHealthValues = (healthFull: Decimal, healthNotFull: Decimal) => {
   const healthDelta = decimalMinus(healthFull, healthNotFull)
   // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
   // which shouldn't be possible

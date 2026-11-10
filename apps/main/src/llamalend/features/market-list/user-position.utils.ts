@@ -6,7 +6,7 @@ import {
   getLoopedApr,
   getYieldMultiplier,
 } from '@/llamalend/equity-leverage.utils'
-import { getLiquidationBuffer } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { getLegacyLiquidationBuffer } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user/user-state.query'
@@ -89,7 +89,7 @@ export const getUserLiquidationBuffer = ({
   parameters: { loanDiscount, liquidationDiscount },
 }: LlamaMarketRow) =>
   maybe(positionQueries.stats.data?.healthNotFull, health =>
-    maybe(getLiquidationBuffer(health, loanDiscount, liquidationDiscount), Number),
+    maybe(getLegacyLiquidationBuffer(health, loanDiscount, liquidationDiscount), Number),
   )
 
 /** The part of the debt the band-valued health stands for, in the borrowed token */
