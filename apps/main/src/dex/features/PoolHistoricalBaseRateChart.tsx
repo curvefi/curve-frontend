@@ -113,13 +113,13 @@ export const PoolHistoricalBaseRateChart = () => {
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current daily base APR`}
-            value={mapQuery(apiPool, pool => pool.baseDailyApr ?? undefined)}
+            value={mapQuery(apiPool, pool => pool.baseDailyApr)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current weekly base APR`}
-            value={mapQuery(apiPool, pool => pool.baseWeeklyApr ?? undefined)}
+            value={mapQuery(apiPool, pool => pool.baseWeeklyApr)}
             valueOptions={{ unit: 'percentage' }}
           />
         </MetricsGrid>
