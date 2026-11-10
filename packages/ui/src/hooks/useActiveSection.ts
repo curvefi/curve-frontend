@@ -39,7 +39,7 @@ const getActiveSection = <T extends string>(elements: readonly HTMLElement[], ac
  * sticky section navigation so its measured height is included in the activation offset.
  *
  * @param sections Ordered section values matching element IDs and URL hashes.
- * @param options.includeNavigationHeight Include the navigation's height when it sticks above the sections.
+ * @param includeNavigationHeight Include the navigation's height when it sticks above the sections.
  * @returns The active section, navigation ref and scroll offset below the sticky navigation.
  */
 export const useActiveSection = <T extends string>(
