@@ -7,7 +7,7 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@ui/components/TokenInfo'
 import { Tooltip } from '@ui/components/Tooltip'
-import { mapQuery, type QueryOrValue, type QueryProp, toValue } from '@ui/features/queries/util'
+import { type QueryOrValue, toValue } from '@ui/features/queries/util'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -17,10 +17,10 @@ export type PoolCompositionRow = {
   source: Omit<TokenInfoTokenIconProps, 'primary'> & { primary: QueryOrValue<string> }
   displayAddress: string
   explorerUrl?: string
-  marketShare: QueryProp<Amount>
-  amount: QueryProp<Amount>
-  amountUsd: QueryProp<Amount>
-  price: QueryProp<number>
+  marketShare: Amount | undefined
+  amount: Amount | undefined
+  amountUsd: Amount | undefined
+  price: number | undefined
 }
 
 const columnHelper = createAppColumnHelper<PoolCompositionRow>()
@@ -57,7 +57,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'usd.precise'))} />
+        <TokenInfo iconPosition="right" primary={formatNumber(getValue(), 'usd.precise')} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -68,7 +68,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <TokenInfo iconPosition="right" primary={mapQuery(getValue(), value => formatNumber(value, 'percent.rate'))} />
+        <TokenInfo iconPosition="right" primary={formatNumber(getValue(), 'percent.rate')} />
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -83,9 +83,9 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <Tooltip
             title={maybes(
-              [getValue().data, symbol],
+              [getValue(), symbol],
               (value, symbol) =>
-                `${formatToken(value, symbol)}${maybe(row.original.amountUsd.data, value => ` / ${value}`) ?? ''}`,
+                `${formatToken(value, symbol)}${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
             )}
             placement="top"
           >
@@ -93,8 +93,8 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
             <Box>
               <TokenInfo
                 iconPosition="right"
-                primary={mapQuery(getValue(), value => formatNumber(value, 'token.compact'))}
-                secondary={mapQuery(row.original.amountUsd, value => formatNumber(value, 'usd.notional'))}
+                primary={formatNumber(getValue(), 'token.compact')}
+                secondary={formatNumber(row.original.amountUsd, 'usd.notional')}
               />
             </Box>
           </Tooltip>
