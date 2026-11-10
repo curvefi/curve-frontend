@@ -11,6 +11,7 @@ import {
   decimalMinus,
   decimalMultiply,
   decimalPercent,
+  decimalPow,
   ZERO,
 } from '@ui/lib/decimal'
 
@@ -63,6 +64,37 @@ const POSITION_HEALTH_THRESHOLDS = {
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */
 export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undefined): PositionHealthThresholds =>
   POSITION_HEALTH_THRESHOLDS[assetsType ?? MarketAssetsType.LongTail]
+
+/**
+ * The user's `[low, high]` liquidation range prices, from the market's base price and the user's bands.
+ * The price of a band is `basePrice × ((A − 1) / A) ^ band`. The range spans from the top of the first band to the bottom of the last one.
+ */
+export const getRangePrices = ({
+  basePrice,
+  A,
+  bands: [n1, n2],
+}: {
+  basePrice: Decimal
+  A: Decimal
+  bands: Range<number>
+}): Range<Decimal> => {
+  const bandPrice = (band: number) =>
+    decimalDiv(decimalMultiply(basePrice, decimalPow(decimalMinus(A, '1'), band)), decimalPow(A, band))
+  return [bandPrice(n2 + 1), bandPrice(n1)]
+}
+
+/**
+ * How far the oracle price must move to reach the liquidation range, in % of the oracle price.
+ * Negative above the range (the price must drop), positive below it (the price must rise), 0 inside.
+ */
+export const getDistanceToRange = (oraclePrice: Decimal, [low, high]: Range<Decimal>): Decimal =>
+  decimalPercent(
+    decimalMinus(
+      decimalGreaterThan(low, oraclePrice) ? low : decimalGreaterThan(oraclePrice, high) ? high : oraclePrice,
+      oraclePrice,
+    ),
+    oraclePrice,
+  )
 
 /** Computes {@link PositionHealth.health} from the user's `[low, high]` liquidation range prices. */
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
