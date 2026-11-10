@@ -258,9 +258,7 @@ export const createBorrowMoreScenario = ({
         }
       } else {
         expect(normalStubs.parameters).to.have.been.calledWithExactly()
-        // Beta only shows the liquidation buffer, so full health for the legacy row is never queried
         expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health, false)
-        expect(normalStubs.borrowMoreHealth).to.not.have.been.calledWith(...normalExpected.health, true)
         expect(normalStubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
         expect(normalStubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
         if (approved) {

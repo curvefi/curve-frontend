@@ -1,6 +1,10 @@
 import type { PositionStatus } from '@/llamalend/health.utils'
+import Stack from '@mui/material/Stack'
 import { TooltipDescription, TooltipFormula, TooltipFraction, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+
+const { Spacing } = SizesAndSpaces
 
 const POSITION_STATUS_DESCRIPTION: Record<PositionStatus, string[]> = {
   aboveRange: [t`The oracle price is above your liquidation range. No soft-liquidation conversions are occurring.`],
@@ -37,6 +41,12 @@ export const HealthTooltipContent = ({ status }: { status?: PositionStatus }) =>
         </>
       }
     />
-    {status && POSITION_STATUS_DESCRIPTION[status].map(text => <TooltipDescription key={text} text={text} />)}
+    {status && (
+      <Stack data-testid={`health-tooltip-status-${status}`} sx={{ gap: Spacing.sm }}>
+        {POSITION_STATUS_DESCRIPTION[status].map(text => (
+          <TooltipDescription key={text} text={text} />
+        ))}
+      </Stack>
+    )}
   </TooltipWrapper>
 )
