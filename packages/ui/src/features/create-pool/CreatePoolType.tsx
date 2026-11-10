@@ -4,7 +4,7 @@ import { SelectableCard } from '@ui/components/SelectableCard'
 import type { UseFormReturn } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import type { CreatePoolFormProps, CreatePoolFormValues, PoolTypeOption } from './types'
+import type { CreatePoolFormValues, PoolTypeOption } from './types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -13,13 +13,11 @@ export const CreatePoolType = ({
   disabled,
   poolType,
   update,
-  network,
 }: {
   poolTypes: readonly PoolTypeOption[]
   disabled: boolean
   poolType: CreatePoolFormValues['poolType']
   update: UseFormReturn<CreatePoolFormValues>['update']
-  network: CreatePoolFormProps['network']
 }) =>
   poolTypes.map(({ id, label, description, defaultPreset, presets, disabled: unavailable }) => (
     <SelectableCard
@@ -34,9 +32,7 @@ export const CreatePoolType = ({
     >
       <Stack sx={{ gap: Spacing.xs }}>
         <Typography variant="bodyMBold">{label}</Typography>
-        <Typography variant="bodySRegular">
-          {unavailable ? t`Not yet available on ${network.name}` : description}
-        </Typography>
+        <Typography variant="bodyXsRegular">{unavailable ? t`Coming soon` : description}</Typography>
       </Stack>
     </SelectableCard>
   ))

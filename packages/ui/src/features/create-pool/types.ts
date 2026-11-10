@@ -48,7 +48,6 @@ export type PoolParameter = {
   unit?: string
   advanced?: boolean
   summaryLabel?: string
-  showInSummary?: boolean
 }
 
 export type PoolTypeOption = {
@@ -56,7 +55,6 @@ export type PoolTypeOption = {
   disabled: boolean
   label: string
   description: string
-  liquidityDescription: string
   defaultPreset: string
   presets: { id: string; label: string; values: PoolParameters }[]
   parameters: PoolParameter[]

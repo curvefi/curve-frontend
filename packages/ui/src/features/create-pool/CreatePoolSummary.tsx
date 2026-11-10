@@ -98,16 +98,16 @@ const SummaryCard = ({
           ))}
         </SummarySection>
         <SummarySection title={t`Parameters`}>
-          {(poolTypes.find(type => type.id === values.poolType)?.parameters ?? EMPTY_POOL_PARAMETERS)
-            .filter(parameter => !parameter.advanced || parameter.showInSummary)
-            .map(({ name, label, summaryLabel, format }) => (
+          {(poolTypes.find(type => type.id === values.poolType)?.parameters ?? EMPTY_POOL_PARAMETERS).map(
+            ({ name, label, summaryLabel, format }) => (
               <ActionInfo
                 key={name}
                 size="small"
                 label={summaryLabel ?? label}
                 value={values.poolType ? formatNumber(values[name], format) : UNAVAILABLE_NOTATION}
               />
-            ))}
+            ),
+          )}
         </SummarySection>
         <SummarySection title={t`Initial liquidity`}>
           {values.poolType ? (
@@ -125,19 +125,23 @@ const SummaryCard = ({
                     }
                   />
                 ))}
-                <ActionInfo
-                  size="small"
-                  label={t`Value`}
-                  value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
-                />
                 {!isFunded && (
                   <ActionInfo
                     size="small"
                     testId="create-pool-expected-lp"
-                    label={t`Expected LP received`}
-                    value={mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))}
+                    label={t`LP expected`}
+                    value={
+                      created
+                        ? mapQuery(expectedLp, value => formatNumber(value, 'token.balance'))
+                        : t`Known after deployment`
+                    }
                   />
                 )}
+                <ActionInfo
+                  size="small"
+                  label={t`TVL at deposit`}
+                  value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
+                />
               </>
             ) : (
               <ActionInfo size="small" label={t`Amounts`} value={t`Add later`} />

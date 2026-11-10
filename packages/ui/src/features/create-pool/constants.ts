@@ -12,8 +12,6 @@ export const CREATE_POOL_SECTIONS = [
 
 export type CreatePoolSection = (typeof CREATE_POOL_SECTIONS)[number]['value']
 
-export const CREATE_POOL_GRID_SIZE = { mobile: 12, tablet: 6 } as const
-
 // shown before the user chose a pool type
 export const EMPTY_POOL_PARAMETERS: PoolParameter[] = [
   { name: 'amplification', format: 'pool.parameter', label: t`Amplification (A)`, summaryLabel: 'A' },
@@ -25,7 +23,6 @@ export const POOL_TYPES = {
     id: 'stableswap',
     label: 'Stableswap',
     description: t`Pegged assets, such as USDC/USDT. Trades near 1:1 with low slippage.`,
-    liquidityDescription: t`The first deposit needs every token.`,
     defaultPreset: 'stablecoin',
     presets: [
       {
@@ -41,17 +38,10 @@ export const POOL_TYPES = {
     ],
     parameters: [
       ...EMPTY_POOL_PARAMETERS,
-      {
-        name: 'feeMultiplier',
-        advanced: true,
-        showInSummary: true,
-        format: 'multiplier',
-        label: t`Offpeg fee multiplier`,
-        unit: '×',
-      },
+      { name: 'feeMultiplier', advanced: true, format: 'multiplier', label: t`Offpeg fee multiplier`, unit: '×' },
       {
         name: 'priceOracleAveragingWindow',
-        format: 'pool.parameter',
+        format: 'duration.seconds',
         label: t`Moving average time`,
         unit: 's',
         advanced: true,
@@ -64,7 +54,6 @@ export const POOL_TYPES = {
     label: 'Cryptoswap',
     description: t`Assets whose prices move apart, such as BTC/USD. Liquidity re-centres on the price.`,
     // Presets, parameters and the curve preview will be added when Cryptoswap creation is supported.
-    liquidityDescription: '',
     defaultPreset: '',
     presets: [],
     parameters: [],
@@ -74,7 +63,6 @@ export const POOL_TYPES = {
     label: 'FXSwap',
     description: t`Currency pairs that drift slowly, such as EUR/USD.`,
     // Presets, parameters and the curve preview will be added when FXSwap creation is supported.
-    liquidityDescription: '',
     defaultPreset: '',
     presets: [],
     parameters: [],

@@ -277,6 +277,12 @@ const NUMBER_FORMAT_CATEGORIES = {
   },
   'percent.rate': PERCENT_RATE_FORMAT,
   'pool.parameter': { unit: 'none', abbreviate: false, fallback: UNAVAILABLE_NOTATION, decimals: 5 },
+  'duration.seconds': {
+    unit: { symbol: ' s', position: 'suffix' },
+    abbreviate: false,
+    fallback: UNAVAILABLE_NOTATION,
+    decimals: 5,
+  },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
 export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES

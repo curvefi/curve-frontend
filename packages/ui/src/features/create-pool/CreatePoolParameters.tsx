@@ -2,16 +2,18 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Grid from '@mui/material/Grid'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
+import Stack from '@mui/material/Stack'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { Accordion } from '@ui/components/Accordion'
 import type { UseFormReturn } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { CREATE_POOL_GRID_SIZE, EMPTY_POOL_PARAMETERS } from './constants'
+import { EMPTY_POOL_PARAMETERS } from './constants'
 import { CreatePoolField } from './CreatePoolField'
 import type { CreatePoolFormValues, PoolParameter, PoolParameterRanges, PoolTypeOption } from './types'
 
 const { Spacing } = SizesAndSpaces
+const CREATE_POOL_GRID_SIZE = { mobile: 12, tablet: 6 } as const
 
 const ParameterField = ({
   name,
@@ -86,25 +88,27 @@ export const CreatePoolParameters = ({
         ))}
         <FormControlLabel value="custom" control={<Radio size="small" disabled={disabled} />} label={t`Custom`} />
       </RadioGroup>
-      {CurvePreview && (
-        <CurvePreview
-          amplification={errors.amplification ? undefined : values.amplification}
-          tokenCount={values.tokenCount}
-          tokenSymbol={tokenSymbol}
-        />
-      )}
-      <Grid container spacing={Spacing.sm}>
-        {parameters
-          .filter(parameter => !parameter.advanced)
-          .map(parameter => (
-            <ParameterField
-              key={parameter.name}
-              {...parameter}
-              helperText={helperText[parameter.name]}
-              disabled={disabled}
-            />
-          ))}
-      </Grid>
+      <Stack sx={{ gap: Spacing.md }}>
+        {CurvePreview && (
+          <CurvePreview
+            amplification={errors.amplification ? undefined : values.amplification}
+            tokenCount={values.tokenCount}
+            tokenSymbol={tokenSymbol}
+          />
+        )}
+        <Grid container spacing={Spacing.sm}>
+          {parameters
+            .filter(parameter => !parameter.advanced)
+            .map(parameter => (
+              <ParameterField
+                key={parameter.name}
+                {...parameter}
+                helperText={helperText[parameter.name]}
+                disabled={disabled}
+              />
+            ))}
+        </Grid>
+      </Stack>
       <Accordion title={t`Advanced settings`} ghost>
         <Grid container spacing={Spacing.sm}>
           {parameters

@@ -4,6 +4,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { CreatePoolAvailability } from '@ui/features/create-pool/CreatePoolAvailability'
 import { FormProvider } from '@ui/features/forms'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -53,12 +54,12 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
           formTabs={{ placement: 'mobile-drawer', content: <CreatePoolSummary {...props} formId={formId} /> }}
         >
           <Stack sx={{ gap: Spacing.lg, minWidth: 0 }}>
+            <CreatePoolAvailability availability={props.availability} networkName={props.network.name} />
             <Section index={0} offset={scrollOffset}>
               <CreatePoolTokens {...props} />
             </Section>
             <Section index={1} offset={scrollOffset}>
               <CreatePoolType
-                network={network}
                 poolTypes={poolTypes}
                 disabled={inputsDisabled}
                 poolType={form.values.poolType}

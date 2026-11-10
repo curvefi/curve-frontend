@@ -1,6 +1,4 @@
-import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
@@ -8,7 +6,6 @@ import { poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { CREATE_POOL_GRID_SIZE } from './constants'
 import { getCreatePoolTokens } from './create-pool.utils'
 import { CreatePoolField } from './CreatePoolField'
 import type { CreatePoolLiquidityProps } from './types'
@@ -38,24 +35,14 @@ export const CreatePoolLiquidity = ({
       />
       {values.addLiquidity && (
         <>
-          <Typography variant="bodySRegular">
-            {poolType?.liquidityDescription ??
-              t`Required for Cryptoswap, FXSwap and pools with rate tokens or oracles. Optional for plain Stableswap.`}
-          </Typography>
-          <Grid container spacing={Spacing.sm}>
+          <Stack sx={{ gap: Spacing.sm }}>
             {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
-              <Grid
-                key={poolAmountField(index)}
-                component={Stack}
-                size={CREATE_POOL_GRID_SIZE}
-                data-testid="create-pool-liquidity-input"
-              >
+              <Stack key={poolAmountField(index)} data-testid="create-pool-liquidity-input">
                 <CreatePoolField
                   name={poolAmountField(index)}
                   label={token?.symbol ?? `${t`Token`} ${index + 1}`}
                   unit={token?.symbol}
                   placeholder={formatNumber(0, 'token.amount')}
-                  helperText={!token && (index === 0 ? t`Balance shows here` : t`Matched to the price`)}
                   disabled={inputsDisabled || !token}
                 />
                 {token && (
@@ -65,9 +52,9 @@ export const CreatePoolLiquidity = ({
                     value={mapQuery(maxAmounts?.[index] ?? DISABLED_Q, value => formatNumber(value, 'token.balance'))}
                   />
                 )}
-              </Grid>
+              </Stack>
             ))}
-          </Grid>
+          </Stack>
           {poolType && (
             <ActionInfo
               size="small"
