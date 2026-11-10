@@ -27,7 +27,7 @@ type BorrowPositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, n
 /** A metric of the borrow position, with an optional colour and support line below it */
 const PositionMetric = ({ value, color, support }: { value: string; color?: string; support?: string }) => (
   <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-    <Typography variant="tableCellValueStrong" color={color}>
+    <Typography variant="tableCellValueStrong" sx={{ color }}>
       {value}
     </Typography>
     {support && (
@@ -87,7 +87,10 @@ export const HealthCell = ({ row: { original: row } }: BorrowPositionCellProps) 
     maybes([positionHealth, healthThresholds], (positionHealth, thresholds) => (
       <Tooltip title={t`Health`} body={<HealthTooltipContent status={positionHealth.status} />} placement="top">
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-          <Typography variant="tableCellValueStrong" color={getHealthTextColor(positionHealth, thresholds, theme)}>
+          <Typography
+            variant="tableCellValueStrong"
+            sx={{ color: getHealthTextColor(positionHealth, thresholds, theme) }}
+          >
             {formatHealth(positionHealth.health)}
           </Typography>
           <Badge size="extraSmall" {...POSITION_STATUS_BADGE[positionHealth.status]} />
