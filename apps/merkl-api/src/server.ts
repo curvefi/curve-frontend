@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_CONTROL } from '@api-server/cache.constants'
+import { PUBLIC_CACHE_CONTROL } from '@api-server/routes.constants'
 import { createApiServer } from '@api-server/server'
 import { getOpportunities } from './routes/opportunities'
 import { OpportunitiesOpts, OPPORTUNITIES_PATH } from './routes/opportunities.schemas'

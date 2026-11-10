@@ -255,6 +255,7 @@ describe('GET routes integration', () => {
       it(`returns a valid route for ${router} - ${label}`, { retry }, async () => {
         const { json, body, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
+          headers: { 'sec-fetch-site': 'same-origin' },
           query: { ...query, router },
         })
         expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
@@ -288,7 +289,11 @@ describe('GET routes integration', () => {
 
   Object.entries(failureCases).forEach(([label, { query, expectedResponse }]) => {
     it(`returns validation error for ${label}`, async () => {
-      const { statusCode, json } = await server.inject({ url: '/api/router/v1/routes', query })
+      const { statusCode, json } = await server.inject({
+        url: '/api/router/v1/routes',
+        headers: { 'sec-fetch-site': 'same-origin' },
+        query,
+      })
       expect(statusCode).toBe(expectedResponse.statusCode)
       expect(json()).toMatchObject(expectedResponse)
     })

@@ -1,6 +1,7 @@
+import { API_PREFIX } from '@api-server/routes.constants'
 import { ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
 
-export const TOKENS_PATH = '/api/router/v1/tokens'
+export const TOKENS_PATH = `${API_PREFIX}router/v1/tokens`
 
 export type TokensQuery = { chainId: number }
 

@@ -45,7 +45,11 @@ export const setupRouterApiServer = () => {
 
   return {
     getRoutes: (router: RouteProvider, query: QueryString = {}) =>
-      server.inject({ url: ROUTES_PATH, query: { ...DEFAULT_QUERY, router: [router], ...query } }),
+      server.inject({
+        url: ROUTES_PATH,
+        headers: { 'sec-fetch-site': 'same-origin' },
+        query: { ...DEFAULT_QUERY, router: [router], ...query },
+      }),
   }
 }
 

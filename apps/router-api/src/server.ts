@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_CONTROL } from '@api-server/cache.constants'
+import { PUBLIC_CACHE_CONTROL } from '@api-server/routes.constants'
 import { createApiServer } from '@api-server/server'
 import { getPoolAddresses } from './pools/addresses'
 import { AddressesOpts, ADDRESSES_PATH, type AddressesQuery } from './pools/addresses.schemas'
