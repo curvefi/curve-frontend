@@ -4,7 +4,15 @@ import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
-import { decimalDiv, decimalGreaterThan, decimalMax } from '@ui/lib/decimal'
+import {
+  decimalDiv,
+  decimalGreaterThan,
+  decimalMax,
+  decimalMinus,
+  decimalMultiply,
+  decimalPercent,
+  ZERO,
+} from '@ui/lib/decimal'
 
 export type PositionStatus = 'liquidatable' | 'inRange' | 'belowRange' | 'nearRange' | 'aboveRange'
 
@@ -87,6 +95,44 @@ export const getPositionStatus = ({
           ? 'nearRange'
           : 'aboveRange'
         : 'inRange'
+
+export const getPositionHealth = ({
+  oraclePrice,
+  prices,
+  liquidationBuffer,
+  healthFull,
+  debt,
+  loanDiscount,
+  liquidationDiscount,
+  thresholds,
+}: {
+  oraclePrice: Decimal
+  prices: Range<Decimal>
+  /** The Controller's `health(user, full=false)`, in % of debt */
+  liquidationBuffer: Decimal
+  /** The Controller's `health(user, full=true)`, in % of debt */
+  healthFull: Decimal
+  debt: Decimal
+  loanDiscount: Decimal
+  liquidationDiscount: Decimal
+  thresholds: PositionHealthThresholds
+}): PositionHealth => {
+  const health = getHealth(oraclePrice, prices)
+  // The Controller's `liquidate()` ignores the liquidation buffer: it checks `health(user, full=true) < 0`.
+  // Full health also counts the price distance above the range, so a negative buffer alone is not liquidatable.
+  const isLiquidatable = decimalGreaterThan(ZERO, healthFull)
+  return {
+    health,
+    liquidationBuffer,
+    liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
+    liquidationBufferShare: decimalDiv(
+      liquidationBuffer,
+      decimalMinus(decimalPercent(decimalMinus('100', liquidationDiscount), decimalMinus('100', loanDiscount)), '100'),
+    ),
+    isLiquidatable,
+    status: getPositionStatus({ health, isLiquidatable, oraclePrice, prices, thresholds }),
+  }
+}
 
 export const getHealthTextColor = (
   { health, isLiquidatable }: PositionHealth,
