@@ -200,7 +200,7 @@ export const CryptoswapLiquidityDepthPreview = ({
                 </Tooltip>
                 <Typography variant="bodySBold">
                   {preview.band
-                    ? `±${formatNumber((preview.band[1] - preview.band[0]) / 2, 'percent.value')}`
+                    ? t`${formatNumber(preview.band[0], 'percent.delta')} to ${formatNumber(preview.band[1], 'percent.delta')}`
                     : UNAVAILABLE_NOTATION}
                 </Typography>
               </Stack>
@@ -208,7 +208,7 @@ export const CryptoswapLiquidityDepthPreview = ({
             <PreviewChart chartRef={chartRef} option={option} fullscreen={fullscreen} />
             <ChartFooter
               legendSets={series.map(({ label, color, dash }) => ({ label, line: { lineStroke: color, dash } }))}
-              description={t`When the price leaves the range, the pool re-centres once fees cover the cost.`}
+              description={t`Re-centring depends on the price oracle, adjustment step and accumulated profits.`}
             />
             {tokenCount === 3 && (
               <Typography variant="bodyXsRegular" color="textSecondary">
