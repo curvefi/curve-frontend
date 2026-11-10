@@ -4,14 +4,17 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui/lib/i18n'
 
-export const AlertRepayDebtToIncreaseHealth = () => (
-  <Alert severity="warning" variant="outlined">
-    <AlertTitle>{useNewLlamalendHealth() ? t`Raise liquidation buffer` : t`Improve health`}</AlertTitle>
+export const AlertRepayDebtToIncreaseHealth = () => {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
+  return (
+    <Alert severity="warning" variant="outlined">
+      <AlertTitle>{isNewLlamalendHealth ? t`Raise liquidation buffer` : t`Improve health`}</AlertTitle>
 
-    <Typography variant="bodySRegular" color="textSecondary">
-      {useNewLlamalendHealth()
-        ? t`Repay debt to raise your liquidation buffer and keep your position open. This won’t end soft liquidation while the price is in range.`
-        : t`Repay debt to increase health and keep your position open. This won’t end soft liquidation while the price is in range.`}
-    </Typography>
-  </Alert>
-)
+      <Typography variant="bodySRegular" color="textSecondary">
+        {isNewLlamalendHealth
+          ? t`Repay debt to raise your liquidation buffer and keep your position open. This won’t end soft liquidation while the price is in range.`
+          : t`Repay debt to increase health and keep your position open. This won’t end soft liquidation while the price is in range.`}
+      </Typography>
+    </Alert>
+  )
+}

@@ -4,7 +4,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { maybes } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { constQ, q } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalDiv, decimalMultiply } from '@ui/lib/decimal'
 import { HealthDetails } from './HealthDetails'
@@ -29,7 +29,7 @@ const HealthDetailsStory = ({
   isLiquidatable = false,
   status,
   assetsType,
-  isLoading,
+  isLoading = false,
 }: HealthDetailsStoryProps) => {
   const data = maybes(
     [health, liquidationBuffer, liquidationBufferLeft, status],
@@ -44,7 +44,7 @@ const HealthDetailsStory = ({
   )
   return (
     <HealthDetails
-      position={isLoading ? q({ data, isLoading: true, error: null }) : constQ(data)}
+      position={q({ data, isLoading, error: null })}
       thresholds={getHealthThresholds(assetsType)}
       borrowSymbol="crvUSD"
     />

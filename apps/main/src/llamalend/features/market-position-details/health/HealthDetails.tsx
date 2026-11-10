@@ -1,7 +1,7 @@
 import {
   formatHealth,
-  getHealthFeedback,
-  getLiquidationBufferFeedback,
+  getHealthTextColor,
+  getLiquidationBufferTextColor,
   type HealthThresholds,
   type PositionHealth,
   type PositionStatus,
@@ -39,7 +39,7 @@ export const HealthDetails = ({
   thresholds: HealthThresholds
   borrowSymbol: string | undefined
 }) => {
-  const { Feedback } = useTheme().design.Text.TextColors
+  const theme = useTheme()
   // combineQueries keeps the last data next to an error, drop it so no guessed status or colour shows
   const data = position.error ? undefined : position.data
   return (
@@ -53,7 +53,7 @@ export const HealthDetails = ({
           value={mapQuery(position, ({ health }) => health)}
           valueOptions={{
             abbreviate: false,
-            color: maybe(data, data => Feedback[getHealthFeedback(data, thresholds)]),
+            color: maybe(data, data => getHealthTextColor(data, thresholds)(theme)),
             formatter: formatHealth,
           }}
         />
@@ -79,7 +79,7 @@ export const HealthDetails = ({
         )}
         valueOptions={{
           abbreviate: false,
-          color: maybe(data, data => Feedback[getLiquidationBufferFeedback(data, thresholds)]),
+          color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds)(theme)),
           formatter: value => formatNumber(value, 'percent.value'),
           unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },
         }}

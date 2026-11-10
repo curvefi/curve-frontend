@@ -38,14 +38,15 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   equityLeverage: EquityLeverage | null
   form: UseFormReturn<CreateLoanForm>
 }) => {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useCreateLoanIsApproved(params))}
-      health={q(useCreateLoanHealth({ ...params, isFull: true }, !useNewLlamalendHealth() && isOpen))}
-      liquidationBuffer={q(useCreateLoanHealth({ ...params, isFull: false }, useNewLlamalendHealth() && isOpen))}
+      health={q(useCreateLoanHealth({ ...params, isFull: true }, !isNewLlamalendHealth && isOpen))}
+      liquidationBuffer={q(useCreateLoanHealth({ ...params, isFull: false }, isNewLlamalendHealth && isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}

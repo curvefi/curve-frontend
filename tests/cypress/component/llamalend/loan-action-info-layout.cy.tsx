@@ -77,7 +77,8 @@ allViewports().forEach(([width, height, viewport]) => {
               />
               <LoanActionInfoList
                 isOpen
-                // the prev values make sure `->` doesn't change the line height
+                // render before → after values (Health from the oracle price and prev/next range, buffer from
+                // prev/next buffer) to check the arrow doesn't change the row height
                 prevPrices={q({ data: ['90', '100'] as Range<Decimal>, ...{ isLoading, error } })}
                 prices={q({ data: ['100', '110'] as Range<Decimal>, ...{ isLoading, error, ...state } })}
                 prevLiquidationBuffer={q({ data: '12.4', ...{ isLoading, error } })}

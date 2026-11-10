@@ -18,6 +18,7 @@ export const invalidateCreateLoanRouteQueries = async (
     invalidateCreateLoanExpectedCollateral(params),
     invalidateCreateLoanIsApproved(params),
     invalidateCreateLoanBands(params),
+    // params have no `isFull`, so the partial key matches both the `isFull: true` and `isFull: false` entries
     invalidateCreateLoanHealth(params, { partial: true }),
     invalidateCreateLoanMaxReceive(params),
     invalidateCreateLoanPriceImpact(params),

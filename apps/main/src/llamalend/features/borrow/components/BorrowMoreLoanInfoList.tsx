@@ -44,6 +44,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   equityLeverage: EquityLeverage | null
   form: UseFormReturn<BorrowMoreForm>
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
@@ -56,8 +57,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={q(useBorrowMoreEstimateGas({ ...params, isControllerApproved }, isOpen))}
-      health={q(useBorrowMoreHealth({ ...params, isFull: true }, !useNewLlamalendHealth() && isOpen))}
-      liquidationBuffer={q(useBorrowMoreHealth({ ...params, isFull: false }, useNewLlamalendHealth() && isOpen))}
+      health={q(useBorrowMoreHealth({ ...params, isFull: true }, !isNewLlamalendHealth && isOpen))}
+      liquidationBuffer={q(useBorrowMoreHealth({ ...params, isFull: false }, isNewLlamalendHealth && isOpen))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       loanToValue={q(

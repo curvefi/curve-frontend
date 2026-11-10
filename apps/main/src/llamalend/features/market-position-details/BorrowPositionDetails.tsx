@@ -15,6 +15,7 @@ import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 const { Spacing } = SizesAndSpaces
 
 export const BorrowPositionDetails = () => {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const { chainId, marketId, tokens, userAddress, controllerAddress } = useMarketContext()
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
@@ -29,14 +30,14 @@ export const BorrowPositionDetails = () => {
   return (
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
-        {useNewLlamalendHealth() ? (
+        {isNewLlamalendHealth ? (
           <HealthDetails position={position} thresholds={thresholds} borrowSymbol={borrowToken?.symbol} />
         ) : (
           <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />
         )}
         <BorrowInformation params={params} tokens={tokens} />
       </Stack>
-      {!useNewLlamalendHealth() && statusContent?.hasMarketAlert && (
+      {!isNewLlamalendHealth && statusContent?.hasMarketAlert && (
         <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
           <AlertTitle>{statusContent.title}</AlertTitle>
           <Typography variant="bodyXsRegular">{statusContent.description}</Typography>

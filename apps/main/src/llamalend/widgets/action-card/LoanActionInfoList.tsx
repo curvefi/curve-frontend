@@ -14,7 +14,7 @@ import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@primitives/number.utils'
+import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { Tooltip } from '@ui/components/Tooltip'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
@@ -176,7 +176,7 @@ export const LoanActionInfoList = ({
                 label={t`Health`}
                 labelTooltip={{ title: t`Health`, body: <HealthTooltipContent /> }}
                 value={formatHealthQuery(oraclePrice, prevPrices)}
-                futureValue={prices && !isFullRepay ? formatHealthQuery(oraclePrice, prices) : '-'}
+                futureValue={prices && !isFullRepay ? formatHealthQuery(oraclePrice, prices) : UNAVAILABLE_NOTATION}
                 size="small"
                 testId="borrow-health"
               />
@@ -187,7 +187,7 @@ export const LoanActionInfoList = ({
                 futureValue={
                   liquidationBuffer && !isFullRepay
                     ? mapQuery(liquidationBuffer, data => formatNumber(data, 'percent.value'))
-                    : '-'
+                    : UNAVAILABLE_NOTATION
                 }
                 size="small"
                 testId="borrow-liquidation-buffer"

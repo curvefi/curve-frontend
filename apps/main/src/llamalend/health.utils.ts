@@ -11,7 +11,6 @@ export type PositionHealth = {
   /**
    * How far the oracle price is above the liquidation range: oracle price ÷ top of the range, floored at 1.
    * 1.00 means the price has reached the range and soft liquidation can start.
-   * The price can fall by 1 − 1/health before that happens.
    */
   health: Decimal
   /**
@@ -24,12 +23,9 @@ export type PositionHealth = {
   /** The liquidation buffer in the borrow token: debt × liquidationBuffer / 100. */
   liquidationBufferAmount: Decimal
   /**
-   * Share of the starting buffer still left: liquidationBuffer ÷ startingBuffer, where
-   * startingBuffer = ((100 − liquidationDiscount) / (100 − loanDiscount) − 1) × 100, in % of debt.
-   * Every loan action re-places the bands so the collateral covers the debt after the loan discount.
-   * Measured with the smaller liquidation discount, the buffer restarts near startingBuffer, then interest shrinks it.
-   * 1 means a fresh position. 0 means the liquidation price has reached the top of the range.
-   * Thresholds use this share because startingBuffer ranges from under 1% to over 25% between markets.
+   * Share of the margin from the user's last action still left: buffer ÷ starting buffer, where starting buffer =
+   * (100 − liquidation discount) ÷ (100 − loan discount) − 1, in %. 1 is fresh, 0 is liquidatable once the price
+   * reaches the range. Used for colours because the starting buffer differs a lot between markets.
    */
   liquidationBufferLeft: Decimal
   /**
@@ -91,18 +87,23 @@ export const getPositionStatus = ({
           : 'aboveRange'
         : 'inRange'
 
-export type FeedbackKey = keyof Theme['design']['Layer']['Feedback'] &
-  keyof Theme['design']['Text']['TextColors']['Feedback']
+export const getHealthTextColor =
+  ({ health }: PositionHealth, { nearRangeHealth }: HealthThresholds) =>
+  (theme: Theme) =>
+    theme.design.Text.TextColors.Feedback[
+      decimalGreaterThan(health, '1') ? (+health <= nearRangeHealth ? 'Warning' : 'Success') : 'Error'
+    ]
 
-export const getHealthFeedback = ({ health }: PositionHealth, { nearRangeHealth }: HealthThresholds): FeedbackKey =>
-  decimalGreaterThan(health, '1') ? (+health <= nearRangeHealth ? 'Warning' : 'Success') : 'Error'
-
-export const getLiquidationBufferFeedback = (
-  { liquidationBufferLeft, isLiquidatable }: PositionHealth,
-  { bufferLeftCritical, bufferLeftRisky }: HealthThresholds,
-): FeedbackKey =>
-  isLiquidatable || +liquidationBufferLeft <= bufferLeftCritical
-    ? 'Error'
-    : +liquidationBufferLeft <= bufferLeftRisky
-      ? 'Warning'
-      : 'Success'
+export const getLiquidationBufferTextColor =
+  (
+    { liquidationBufferLeft, isLiquidatable }: PositionHealth,
+    { bufferLeftCritical, bufferLeftRisky }: HealthThresholds,
+  ) =>
+  (theme: Theme) =>
+    theme.design.Text.TextColors.Feedback[
+      isLiquidatable || +liquidationBufferLeft <= bufferLeftCritical
+        ? 'Error'
+        : +liquidationBufferLeft <= bufferLeftRisky
+          ? 'Warning'
+          : 'Success'
+    ]

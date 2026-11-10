@@ -3,7 +3,7 @@ import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-pos
 import type { HealthThresholds, PositionHealth, PositionStatus } from '@/llamalend/health.utils'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
-import { constQ, q } from '@ui/features/queries/util'
+import { q } from '@ui/features/queries/util'
 import { lightTheme } from '@ui/features/themes/themes'
 
 const { design } = lightTheme()
@@ -20,7 +20,7 @@ const mountHealthDetails = (position: PositionHealth, error: Error | null = null
   cy.mount(
     <ComponentTestWrapper>
       <HealthDetails
-        position={error ? q({ data: position, isLoading: false, error }) : constQ(position)}
+        position={q({ data: position, isLoading: false, error })}
         thresholds={THRESHOLDS}
         borrowSymbol="crvUSD"
       />
