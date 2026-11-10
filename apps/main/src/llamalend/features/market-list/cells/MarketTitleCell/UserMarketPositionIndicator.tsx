@@ -77,9 +77,13 @@ export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow
           : legacyContent?.title) ?? t`Position active`
       }
       tooltipBody={
-        isPositionHealth && positionHealth ? (
+        isPositionHealth ? (
           <TooltipWrapper>
-            {POSITION_STATUS_DESCRIPTION[positionHealth.status].map(text => (
+            {(
+              maybe(positionHealth, ({ status }) => POSITION_STATUS_DESCRIPTION[status]) ?? [
+                t`You have an active position in this market.`,
+              ]
+            ).map(text => (
               <TooltipDescription key={text} text={text} />
             ))}
           </TooltipWrapper>
