@@ -53,6 +53,7 @@ const oneLendingPool = (
     controller: oneAddress(),
     vault: oneAddress(),
     gauge_address: oneOf(null, oneAddress()),
+    borrow_gauge_address: oneOf(null, oneAddress()),
     llamma: oneAddress(),
     policy: oneAddress(),
     oracle: oneAddress(),
@@ -98,6 +99,8 @@ const oneLendingPool = (
 
 export const HIGH_TVL_ADDRESS = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 export const HIGH_UTILIZATION_ADDRESS = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+export const SUPPLY_GAUGE_ADDRESS = '0x1111111111111111111111111111111111111111' as const
+export const BORROW_GAUGE_ADDRESS = '0x2222222222222222222222222222222222222222' as const
 const REWARDS_TEST_ADDRESS = getAddress('0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 
 function oneLendingVaultResponse(blockchainId: Chain): GetMarketsResponse {
@@ -118,6 +121,7 @@ function oneLendingVaultResponse(blockchainId: Chain): GetMarketsResponse {
             address: HIGH_TVL_ADDRESS,
             vault: HIGH_TVL_ADDRESS,
             controller: HIGH_TVL_ADDRESS,
+            gauge_address: SUPPLY_GAUGE_ADDRESS,
           },
           {
             // 99% utilization to test the sorting and slider filter
@@ -126,6 +130,7 @@ function oneLendingVaultResponse(blockchainId: Chain): GetMarketsResponse {
             address: HIGH_UTILIZATION_ADDRESS,
             vault: HIGH_UTILIZATION_ADDRESS,
             controller: HIGH_UTILIZATION_ADDRESS,
+            borrow_gauge_address: BORROW_GAUGE_ADDRESS,
           },
         ] as GetMarketsResponse['data'])
       : []),
