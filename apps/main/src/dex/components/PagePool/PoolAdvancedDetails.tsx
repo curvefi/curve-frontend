@@ -144,7 +144,7 @@ export const PoolAdvancedDetails = () => {
         gamma: amount(parameters.data?.gamma),
       }}
       addressDisplay={evmAddressDisplay}
-      managePoolLink={<ManagePoolLink chainId={chainId} poolAddress={poolAddress && getAddress(poolAddress)} />}
+      managePoolLink={<ManagePoolLink />}
       addGaugeLink={<AddGaugeLink />}
     />
   )
