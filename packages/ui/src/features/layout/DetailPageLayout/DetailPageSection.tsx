@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from 'react'
 import Box from '@mui/material/Box'
-import { applySxProps, type SxProps } from '@ui/lib/mui'
+import type { SxProps } from '@ui/lib/mui'
 
 /** A hash-addressable section within a DetailPageLayout. */
 export const DetailPageSection = ({
@@ -14,11 +14,7 @@ export const DetailPageSection = ({
   component?: ElementType
   sx?: SxProps
 }) => (
-  <Component
-    id={id}
-    component="section"
-    sx={applySxProps({ scrollMarginTop: 'var(--detail-page-scroll-margin-top)' }, sx)}
-  >
+  <Component id={id} component="section" sx={sx}>
     {children}
   </Component>
 )

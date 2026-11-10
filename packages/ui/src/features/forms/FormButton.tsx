@@ -10,7 +10,7 @@ import { BUTTON_FORM_SIZE } from './constants'
 
 type FormButtonLabelPart = string | Exclude<Falsy, ''>
 
-export type FormButtonProps = Pick<ButtonProps, 'disabled' | 'fullWidth' | 'loading' | 'sx'> & {
+export type FormButtonProps = Pick<ButtonProps, 'disabled' | 'form' | 'fullWidth' | 'loading' | 'sx'> & {
   children?: ReactNode
   connectWalletTestId?: string
   label?: string | FormButtonLabelPart[]
@@ -24,6 +24,7 @@ export const FormButton = ({
   children,
   connectWalletTestId,
   disabled,
+  form,
   fullWidth,
   label,
   loading = false,
@@ -39,6 +40,7 @@ export const FormButton = ({
     children || (
       <Button
         type="submit"
+        form={form}
         disabled={disabled}
         fullWidth={isMobileDrawer || fullWidth}
         loading={loading ?? pending}
