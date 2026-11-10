@@ -22,7 +22,7 @@ import { LiquidationBufferTooltipContent } from '../tooltips/LiquidationBufferTo
 
 const { Spacing } = SizesAndSpaces
 
-const POSITION_STATUS_BADGE = {
+export const POSITION_STATUS_BADGE = {
   liquidatable: { label: t`Liquidatable`, color: 'alert' },
   inRange: { label: t`Soft liquidation`, color: 'warning' },
   belowRange: { label: t`Below range`, color: 'warning' },

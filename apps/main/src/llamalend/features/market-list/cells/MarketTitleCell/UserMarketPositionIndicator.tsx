@@ -37,7 +37,7 @@ const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
 
 export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow }) => {
   // No status while the stats load or after they failed, and supply positions have no stats
-  const { status } = market.positionQueries.stats.data ?? {}
+  const { legacyStatus: status } = market.positionQueries.stats.data ?? {}
   const [colorState, setColorState] = useState<ColorState>('info')
 
   useEffect(() => (status ? statusColorEffect[status](setColorState) : setInfo(setColorState)), [status])

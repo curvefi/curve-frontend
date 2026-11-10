@@ -18,9 +18,11 @@ export const LegacyHealthCell = ({
   row,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const { assets } = row.original
-  const { status } = row.original.positionQueries.stats.data ?? {}
+  const { legacyStatus } = row.original.positionQueries.stats.data ?? {}
   const legacyHealth = getValue()
-  const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
+  const content = legacyStatus
+    ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[legacyStatus]
+    : null
 
   return maybe(legacyHealth, legacyHealth => (
     <Tooltip
@@ -30,7 +32,7 @@ export const LegacyHealthCell = ({
     >
       <Stack sx={{ gap: Spacing.xs }}>
         {formatNumber(legacyHealth, 'percent.value')}
-        <LegacyHealthBar small health={legacyHealth} softLiquidation={status === 'softLiquidation'} />
+        <LegacyHealthBar small health={legacyHealth} softLiquidation={legacyStatus === 'softLiquidation'} />
       </Stack>
     </Tooltip>
   ))

@@ -2,7 +2,7 @@ import type { PositionStatus } from '@/llamalend/health.utils'
 import { TooltipDescription, TooltipFormula, TooltipFraction, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 
-const POSITION_STATUS_DESCRIPTION: Record<PositionStatus, string[]> = {
+export const POSITION_STATUS_DESCRIPTION: Record<PositionStatus, string[]> = {
   aboveRange: [t`The oracle price is above your liquidation range. No soft-liquidation conversions are occurring.`],
   nearRange: [
     t`The oracle price is close to your liquidation range. Soft liquidation starts once the price reaches it.`,
