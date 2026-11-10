@@ -14,7 +14,7 @@ import { PAGE_SPACING } from './constants'
 import { DetailPageSectionNav, type DetailPageSectionOption } from './DetailPageSectionNav'
 import type { DetailPageLayoutFormTabs } from './types'
 
-const { ButtonSize, MaxWidth, Spacing, BorderWidth } = SizesAndSpaces
+const { ButtonSize, MaxWidth, Spacing, BorderWidth, Width } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
 
@@ -72,6 +72,7 @@ export const DetailPageLayout = ({
   formTabs,
   header,
   sections,
+  sidebar,
   children,
   footer,
   testId,
@@ -80,6 +81,8 @@ export const DetailPageLayout = ({
   header?: ReactNode
   /** Ordered hash-addressable sections displayed in the sticky section navigation. */
   sections?: readonly DetailPageSectionOption<string>[]
+  /** Left sidebar on desktop, above the content on smaller screens. */
+  sidebar?: ReactNode
   children?: ReactNode
   footer?: ReactNode
   testId?: string
@@ -106,23 +109,28 @@ export const DetailPageLayout = ({
         container
         data-testid={testId ?? 'detail-page-layout'}
         columnSpacing={Spacing.md}
-        rowSpacing={PAGE_SPACING}
+        rowSpacing={sidebar ? { ...PAGE_SPACING, mobile: Spacing.sm.mobile } : PAGE_SPACING}
         sx={{
           ...PAGE_MARGIN,
-          ...(hasSections && {
-            // The section navigation is sticky from tablet up
-            '--detail-page-scroll-margin-top': {
-              mobile: `${navHeight}px`,
-              // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
-              tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
-            },
-          }),
+          '& section[id]': {
+            scrollMarginTop: hasSections
+              ? {
+                  mobile: `${navHeight}px`,
+                  // The section navigation is sticky from tablet up; approximate its height with ButtonSize.
+                  tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
+                }
+              : stickyFormTabsSx(navHeight).top,
+          },
           ...(!header && { marginBlockStart: Spacing.xl }),
+          ...(sidebar && {
+            marginInline: { ...PAGE_MARGIN.marginInline, mobile: Spacing.sm.mobile },
+            marginBlockStart: { ...Spacing.xl, mobile: 0 },
+          }),
         }}
         // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
         {...(!showMobileDrawer && { direction: 'row-reverse' })}
       >
-        {isMobile && <Grid size={12}>{headerStack}</Grid>}
+        {isMobile && (!sidebar || header || hasSections) && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
         {formTabs !== null && !showMobileDrawer && (
@@ -137,6 +145,26 @@ export const DetailPageLayout = ({
           {!isMobile && headerStack}
           <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
         </Grid>
+        {sidebar && (
+          <Grid
+            size={{ mobile: 12, desktop: 'auto' }}
+            sx={{
+              width: { desktop: Width.column.md },
+              order: { mobile: -1, desktop: 0 },
+              ...stickyFormTabsSx(navHeight),
+              position: { mobile: 'sticky', tablet: 'static', desktop: 'sticky' },
+              top: {
+                mobile: `${navHeight}px`,
+                desktop: `calc(${navHeight}px + ${PAGE_MARGIN.marginBlockStart.desktop})`,
+              },
+              alignSelf: 'flex-start',
+              zIndex: t => t.zIndex.appBar - 1,
+              backgroundColor: t => ({ mobile: t.design.Layer[1].Fill, desktop: 'transparent' }),
+            }}
+          >
+            {sidebar}
+          </Grid>
+        )}
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
       {formTabs !== null && showMobileDrawer && (
