@@ -148,13 +148,11 @@ describe('Health details', () => {
     cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.0001')
   })
 
-  it('shows no status from stale data when a source errors', () => {
+  it('keeps the last status next to the error icon when a source errors', () => {
     mountHealthDetails(getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'), new Error('rpc failed'))
-    cy.get('[data-testid="health-details-health-metric"]').should('be.visible')
-    cy.get('[data-testid="health-details-status-badge"]').should('not.exist')
-    cy.get('[data-testid="health-details-health-metric-value"]')
-      .find('p')
-      .should('have.css', 'color', hexToRgb(design.Text.TextColors.Primary))
+    cy.get('[data-testid="health-details-health-metric"] [data-error="Error: rpc failed"]').should('be.visible')
+    cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.00')
+    cy.get('[data-testid="health-details-status-badge"]').should('have.text', 'Liquidatable')
   })
 
   it('shows the buffer amount in the liquidation buffer tooltip', () => {

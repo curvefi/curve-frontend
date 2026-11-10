@@ -13,7 +13,6 @@ import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Badge, type BadgeProps } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
-import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -40,11 +39,10 @@ export const HealthDetails = ({
   borrowSymbol: string | undefined
 }) => {
   const theme = useTheme()
-  // combineQueries keeps the last data next to an error, drop it so no guessed status or colour shows
-  const data = position.error ? undefined : position.data
+  const { data } = position
   return (
-    <MetricsGrid>
-      <Stack sx={{ alignItems: 'start', gap: Spacing.xs }}>
+    <>
+      <Stack sx={{ gridRow: 'span 2', alignItems: 'start', gap: Spacing.xs }}>
         <Metric
           category="llamalend.positionHealth"
           label={t`Health`}
@@ -84,6 +82,6 @@ export const HealthDetails = ({
           unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },
         }}
       />
-    </MetricsGrid>
+    </>
   )
 }

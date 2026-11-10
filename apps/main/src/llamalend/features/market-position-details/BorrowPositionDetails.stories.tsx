@@ -128,9 +128,10 @@ const meta: Meta<typeof BorrowPositionDetailsStory> = {
     docs: {
       description: {
         component:
-          'Composite component showing a borrow position: health and liquidation buffer with bars, ' +
+          'Composite component showing a borrow position: health, liquidation buffer ' +
           'and key position metrics (collateral value, liquidation threshold, total debt, leverage). ' +
-          'On Beta the position status shows as a badge on the health bar, on Stable and Legacy as an alert banner.',
+          'On Beta they share one grid with the position status as a badge under Health, ' +
+          'on Stable and Legacy health shows with a bar above the grid and the status as an alert banner.',
       },
     },
   },

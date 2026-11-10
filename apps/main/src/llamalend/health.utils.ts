@@ -46,9 +46,9 @@ export type HealthThresholds = {
 }
 
 const HEALTH_THRESHOLDS = {
-  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.0101, bufferLeftCritical: 0.1, bufferLeftRisky: 0.3 },
-  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.0526, bufferLeftCritical: 0.2, bufferLeftRisky: 0.45 },
-  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.1111, bufferLeftCritical: 0.3, bufferLeftRisky: 0.6 },
+  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01, bufferLeftCritical: 0.1, bufferLeftRisky: 0.3 },
+  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.05, bufferLeftCritical: 0.2, bufferLeftRisky: 0.45 },
+  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.11, bufferLeftCritical: 0.3, bufferLeftRisky: 0.6 },
 } as const satisfies Record<MarketAssetsType, HealthThresholds>
 
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */

@@ -30,12 +30,12 @@ export const BorrowPositionDetails = () => {
   return (
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
-        {isNewLlamalendHealth ? (
-          <HealthDetails position={position} thresholds={thresholds} borrowSymbol={borrowToken?.symbol} />
-        ) : (
-          <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />
-        )}
-        <BorrowInformation params={params} tokens={tokens} />
+        {!isNewLlamalendHealth && <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />}
+        <BorrowInformation params={params} tokens={tokens}>
+          {isNewLlamalendHealth && (
+            <HealthDetails position={position} thresholds={thresholds} borrowSymbol={borrowToken?.symbol} />
+          )}
+        </BorrowInformation>
       </Stack>
       {!isNewLlamalendHealth && statusContent?.hasMarketAlert && (
         <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>

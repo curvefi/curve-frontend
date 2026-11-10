@@ -4,6 +4,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { maybes } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalDiv, decimalMultiply } from '@ui/lib/decimal'
@@ -43,11 +44,13 @@ const HealthDetailsStory = ({
     }),
   )
   return (
-    <HealthDetails
-      position={q({ data, isLoading, error: null })}
-      thresholds={getHealthThresholds(assetsType)}
-      borrowSymbol="crvUSD"
-    />
+    <MetricsGrid>
+      <HealthDetails
+        position={q({ data, isLoading, error: null })}
+        thresholds={getHealthThresholds(assetsType)}
+        borrowSymbol="crvUSD"
+      />
+    </MetricsGrid>
   )
 }
 

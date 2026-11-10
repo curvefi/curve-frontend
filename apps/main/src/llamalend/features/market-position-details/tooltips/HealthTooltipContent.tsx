@@ -11,7 +11,7 @@ const POSITION_STATUS_DESCRIPTION: Record<PositionStatus, string[]> = {
   inRange: [
     t`The oracle price is inside your liquidation range. Your collateral is being converted to the borrowed token as the price goes down, and back as it goes up. These conversions incur losses that reduce your liquidation buffer.`,
     t`You cannot add collateral while in the range. Close your position to recover current collateral, or repay debt to keep it open.`,
-    t`If your liquidation buffer falls below 0, your position can be hard-liquidated.`,
+    t`If your liquidation buffer falls below 0 while the price is in the range, your position can be hard-liquidated.`,
   ],
   belowRange: [
     t`The oracle price is below your liquidation range. Soft liquidation has converted your collateral to the borrowed token, and no losses occur while the price stays below the range.`,
