@@ -32,7 +32,7 @@ const Section = ({ index, offset, children }: { index: number; offset: number; c
 )
 
 export const CreatePoolForm = (props: CreatePoolFormProps) => {
-  const { form, onSubmit, inputsDisabled, isPending, completed, poolTypes, network, limits } = props
+  const { form, onSubmit, inputsDisabled, isPending, completed, poolTypes, limits } = props
   // The mobile summary is portaled outside this form. Its submit button uses this ID to submit the page's inputs.
   const formId = useId()
   const isMobile = useIsMobile()
@@ -40,6 +40,7 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
     includeNavigationHeight: isMobile,
   })
   return (
+    // create a custom provider/form element since the create pool form is split into page & preview/drawer
     <FormProvider {...form}>
       <Box component="form" id={formId} onSubmit={event => void onSubmit(event)} sx={{ overflowWrap: 'break-word' }}>
         <DetailPageLayout

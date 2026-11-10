@@ -11,24 +11,11 @@ export const Form = <TFieldValues extends FieldValues>({
   onSubmit,
   children,
   footer,
-  variant = 'card',
   ...form
-}: {
-  onSubmit: FormSubmitHandler
-  children: ReactNode
-  footer?: ReactNode
-  variant?: 'card' | 'plain'
-} & UseFormReturn<TFieldValues>) => (
+}: { onSubmit: FormSubmitHandler; children: ReactNode; footer: ReactNode } & UseFormReturn<TFieldValues>) => (
   <FormProvider {...form}>
     <form onSubmit={event => void onSubmit(event)} style={{ overflowWrap: 'break-word' }}>
-      {variant === 'plain' ? (
-        <>
-          {children}
-          {footer}
-        </>
-      ) : (
-        <FormContent footer={footer}>{children}</FormContent>
-      )}
+      <FormContent footer={footer}>{children}</FormContent>
     </form>
   </FormProvider>
 )
