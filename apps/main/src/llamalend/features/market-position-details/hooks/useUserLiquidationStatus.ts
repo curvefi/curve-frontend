@@ -15,7 +15,7 @@ export const useLiquidationStatus = (params: UserMarketParams, enabled?: boolean
       useUserBands(params, enabled),
       useMarketOraclePriceBand(params, enabled),
     ],
-    ({ collateral, stablecoin: borrowed }, userHealthNotFull, [upperBoundary, lowerBoundary], oraclePriceBand) =>
+    ({ collateral, convertedBorrowed: borrowed }, userHealthNotFull, [upperBoundary, lowerBoundary], oraclePriceBand) =>
       getLegacyLiquidationStatus(
         userHealthNotFull,
         getIsUserCloseToSoftLiquidation(upperBoundary, oraclePriceBand),
