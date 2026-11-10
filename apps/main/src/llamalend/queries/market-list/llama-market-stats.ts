@@ -44,7 +44,7 @@ const normalizeMarketStats = (stats: BorrowStats, { parameters, blockchainId, co
     [decimal(stats.collateral), decimal(convertedBorrowed), decimal(stats.debt)],
     (collateral, convertedBorrowed, debt): UserState => ({ collateral, convertedBorrowed, debt }),
   )
-  const rangePrices = maybes([decimal(parameters.basePrice), decimal(parameters.A)], (basePrice, A) =>
+  const rangePrices = maybes([decimal(parameters.basePrice), parameters.A], (basePrice, A) =>
     getRangePrices({ basePrice, A, bands: [stats.n1, stats.n2] }),
   )
   const healthThresholds = getPositionHealthThresholds(

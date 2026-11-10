@@ -11,7 +11,6 @@ import {
   decimalMinus,
   decimalMultiply,
   decimalPercent,
-  decimalPow,
   ZERO,
 } from '@ui/lib/decimal'
 
@@ -75,11 +74,11 @@ export const getRangePrices = ({
   bands: [n1, n2],
 }: {
   basePrice: Decimal
-  A: Decimal
+  A: number
   bands: Range<number>
 }): Range<Decimal> => {
-  const bandPrice = (band: number) =>
-    decimalDiv(decimalMultiply(basePrice, decimalPow(decimalMinus(A, '1'), band)), decimalPow(A, band))
+  // One float power of the ratio: powers of A and A − 1 overflow the decimal precision for negative bands
+  const bandPrice = (band: number) => decimalMultiply(basePrice, ((A - 1) / A) ** band)
   return [bandPrice(n2 + 1), bandPrice(n1)]
 }
 

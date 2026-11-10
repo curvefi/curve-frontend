@@ -67,10 +67,6 @@ export const decimalSqrt = (value: Decimal): Decimal => {
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
 
-/** Raises the decimal to an integer power, exactly. */
-export const decimalPow = (base: Decimal, exponent: number) =>
-  new BigNumber(base).exponentiatedBy(exponent).toFixed() as Decimal
-
 /** Round a decimal amount to the token's precision, truncating excess digits by default. */
 export const decimalRound = (
   value: Decimal,
