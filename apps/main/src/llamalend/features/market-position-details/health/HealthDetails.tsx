@@ -13,6 +13,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Badge, type BadgeProps } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -55,9 +56,20 @@ export const HealthDetails = ({
             formatter: formatHealth,
           }}
         />
-        {data && (
-          <Badge data-testid="health-details-status-badge" size="extraSmall" {...POSITION_STATUS_BADGE[data.status]} />
-        )}
+        <WithSkeleton
+          loading={position.isLoading}
+          variant="rounded"
+          width="5rem"
+          height={SizesAndSpaces.Badge.Size.extraSmall}
+        >
+          {data && (
+            <Badge
+              data-testid="health-details-status-badge"
+              size="extraSmall"
+              {...POSITION_STATUS_BADGE[data.status]}
+            />
+          )}
+        </WithSkeleton>
       </Stack>
       <Metric
         category="llamalend.positionLiquidationBuffer"
@@ -79,6 +91,7 @@ export const HealthDetails = ({
           abbreviate: false,
           color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds)(theme)),
           formatter: value => formatNumber(value, 'percent.value'),
+          // non-breaking space: a plain leading space is dropped in the flex unit
           unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },
         }}
       />

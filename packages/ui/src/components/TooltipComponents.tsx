@@ -18,8 +18,8 @@ export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ gap: Spacing.sm, [`&:not(.${drawerClasses.paper} *)`]: { maxWidth: '20rem' } }}>{children}</Stack>
 )
 
-export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
-  <Typography variant="bodySRegular" component="span">
+export const TooltipDescription = ({ text, testId }: { text: ReactNode | string; testId?: string }) => (
+  <Typography variant="bodySRegular" component="span" data-testid={testId}>
     {text}
   </Typography>
 )

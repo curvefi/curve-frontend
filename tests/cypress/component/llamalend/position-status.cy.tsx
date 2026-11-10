@@ -186,7 +186,7 @@ describe('Position status logic', () => {
   })
 })
 
-describe('BorrowPositionDetails on Beta', () => {
+describe('BorrowPositionDetails health status', () => {
   it('hides the market alert', () => {
     cy.mount(<PositionDetailsTest {...baseProps} healthFull={0} healthNotFull={-2} collateral={0} borrow={1} />)
     cy.get('[data-testid="health-details-health-metric"]').should('be.visible')
@@ -194,25 +194,21 @@ describe('BorrowPositionDetails on Beta', () => {
   })
 
   // userPrices are [0.47, 0.69], the market has no assets type so the long-tail thresholds apply
-  const betaStatusCases: {
-    status: PositionStatus
-    badge: string
-    health: string
-    overrides: Partial<typeof baseProps>
-  }[] = [
-    { status: 'aboveRange', badge: 'Above range', health: '1.45', overrides: { oraclePrice: 1 } },
-    { status: 'nearRange', badge: 'Near range', health: '1.087', overrides: { oraclePrice: 0.75 } },
-    { status: 'inRange', badge: 'Soft liquidation', health: '1.00', overrides: { oraclePrice: 0.5 } },
-    { status: 'belowRange', badge: 'Below range', health: '1.00', overrides: { oraclePrice: 0.4 } },
-    {
-      status: 'liquidatable',
-      badge: 'Liquidatable',
-      health: '1.00',
-      overrides: { oraclePrice: 0.4, healthFull: -1, healthNotFull: -1 },
-    },
-  ]
+  const statusCases: { status: PositionStatus; badge: string; health: string; overrides: Partial<typeof baseProps> }[] =
+    [
+      { status: 'aboveRange', badge: 'Above range', health: '1.45', overrides: { oraclePrice: 1 } },
+      { status: 'nearRange', badge: 'Near range', health: '1.087', overrides: { oraclePrice: 0.75 } },
+      { status: 'inRange', badge: 'Soft liquidation', health: '1.00', overrides: { oraclePrice: 0.5 } },
+      { status: 'belowRange', badge: 'Below range', health: '1.00', overrides: { oraclePrice: 0.4 } },
+      {
+        status: 'liquidatable',
+        badge: 'Liquidatable',
+        health: '1.00',
+        overrides: { oraclePrice: 0.4, healthFull: -1, healthNotFull: -1 },
+      },
+    ]
 
-  betaStatusCases.forEach(({ status, badge, health, overrides }) => {
+  statusCases.forEach(({ status, badge, health, overrides }) => {
     it(`shows health ${health}, the ${badge} badge and its tooltip status`, () => {
       cy.viewport(1200, 800)
       cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)

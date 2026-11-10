@@ -163,6 +163,20 @@ describe('Health details', () => {
     cy.get('[data-testid="health-details-status-badge"]').should('have.text', 'Liquidatable')
   })
 
+  it('shows a skeleton in place of the status badge while loading', () => {
+    cy.mount(
+      <ComponentTestWrapper>
+        <HealthDetails
+          position={q<PositionHealth>({ data: undefined, isLoading: true, error: null })}
+          thresholds={getHealthThresholds(MarketAssetsType.LongTail)}
+          borrowSymbol="crvUSD"
+        />
+      </ComponentTestWrapper>,
+    )
+    cy.get('[data-testid="health-details-health-metric"]').siblings('.MuiSkeleton-root').should('be.visible')
+    cy.get('[data-testid="health-details-status-badge"]').should('not.exist')
+  })
+
   it('shows the buffer amount in the liquidation buffer tooltip', () => {
     cy.viewport(1200, 800)
     mountHealthDetails(getPosition('1.6', '20', '200', '1.2', 'aboveRange'), MarketAssetsType.BlueChip)

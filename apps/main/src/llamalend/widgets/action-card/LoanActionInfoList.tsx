@@ -202,7 +202,7 @@ export const LoanActionInfoList = ({
                 isFullRepay
                   ? '∞'
                   : health?.data === undefined
-                    ? '-'
+                    ? UNAVAILABLE_NOTATION
                     : mapQuery(health, data => formatNumber(data, 'health.compact'))
               }
               valueColor={getLegacyHealthValueColor({
