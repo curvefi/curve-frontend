@@ -39,9 +39,13 @@ const getActiveSection = <T extends string>(elements: readonly HTMLElement[], ac
  * sticky section navigation so its measured height is included in the activation offset.
  *
  * @param sections Ordered section values matching element IDs and URL hashes.
- * @returns The URL-selected section and the ref used to measure the section navigation.
+ * @param includeNavigationHeight Include the navigation's height when it sticks above the sections.
+ * @returns The active section, navigation ref and scroll offset below the sticky navigation.
  */
-export const useActiveSection = <T extends string>(sections: readonly Section<T>[]) => {
+export const useActiveSection = <T extends string>(
+  sections: readonly Section<T>[],
+  { includeNavigationHeight = true }: { includeNavigationHeight?: boolean } = {},
+) => {
   const { hash } = useLocation()
   const navigate = useNavigate()
   const navigationRef = useRef<HTMLElement>(null)
@@ -53,7 +57,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
   const globalNavHeight = useLayoutStore(state => state.navHeight)
   const [, sectionNavHeight = 0] = useResizeObserver(navigationRef, { dimension: 'height' })
   // The activation band starts immediately below both stacked navigation bars.
-  const activationTop = globalNavHeight + sectionNavHeight
+  const activationTop = globalNavHeight + (includeNavigationHeight ? sectionNavHeight : 0)
   const activeSection = sections.find(({ value }) => value === hash)?.value ?? sections[0]?.value
 
   // URL to page: keep the hash-selected section visible as the layout changes.
@@ -126,5 +130,5 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     }
   }, [activationTop, hash, isNavigating, navigate, sections])
 
-  return { activeSection, navigationRef }
+  return { activeSection, navigationRef, scrollOffset: activationTop }
 }

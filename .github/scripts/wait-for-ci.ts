@@ -1,6 +1,8 @@
 import { setTimeout } from 'node:timers/promises'
 import { assert } from '../../packages/primitives/src/objects.utils.ts'
 
+const { CF_DEPLOY_GITHUB_TOKEN, WORKERS_CI_COMMIT_SHA, WORKERS_CI_BRANCH } = process.env
+
 type WorkflowRun = {
   id: number
   head_sha: string
@@ -30,10 +32,16 @@ const APPS = {
 
 const getGitHubAction = async <T>(path: string, timeoutMs = 30_000): Promise<T> => {
   const response = await fetch(`https://api.github.com/repos/curvefi/curve-frontend/actions/${path}`, {
-    headers: { Accept: 'application/vnd.github+json' },
+    headers: {
+      Accept: 'application/vnd.github+json',
+      // Optional CF build secret for higher GitHub API rate limits.
+      ...(CF_DEPLOY_GITHUB_TOKEN && { Authorization: `Bearer ${CF_DEPLOY_GITHUB_TOKEN}` }),
+    },
     signal: AbortSignal.timeout(timeoutMs),
   })
-  assert(response.ok, `GitHub API returned HTTP ${response.status}; deployment blocked`)
+  if (!response.ok) {
+    throw new Error(`GitHub API returned HTTP ${response.status}; deployment blocked.\n${await response.text()}`)
+  }
   return await response.json()
 }
 
@@ -46,17 +54,18 @@ const getActionJobs = async (runId: number, page = 1, pageSize = 100): Promise<W
 
 /**
  * Start polling at a fraction of CI's expected duration, counting time already spent building in CF.
- * Without a run, use the polling interval immediately. Never wait beyond the gate's deadline or return a negative delay.
+ * Use the gate's start time until the CI run is available.
+ * Never wait beyond the gate's deadline or return a negative delay.
  */
 const getWaitMs = (
-  run: WorkflowRun | undefined,
+  runStartedAt: number,
   expectedMinutes: number,
   pollMs: number,
   deadline: number,
   pollingStartFraction = 0.8,
 ) => {
   const now = Date.now()
-  const pollingStart = run ? Date.parse(run.run_started_at) + expectedMinutes * 60_000 * pollingStartFraction : now
+  const pollingStart = runStartedAt + expectedMinutes * 60_000 * pollingStartFraction
   const nextCheck = Math.max(pollingStart, now + pollMs)
   return Math.max(0, Math.min(nextCheck, deadline) - now)
 }
@@ -69,8 +78,8 @@ const getWaitMs = (
 export async function waitForCi(
   app: string,
   {
-    sha = process.env.WORKERS_CI_COMMIT_SHA,
-    branch = process.env.WORKERS_CI_BRANCH,
+    sha = WORKERS_CI_COMMIT_SHA,
+    branch = WORKERS_CI_BRANCH,
     timeoutMs = 15 * 60_000, // CF has a timeout of 20 minutes
     // GitHub allows 60 unauthenticated requests/hour per IP; each poll normally uses two, shared with concurrent builds.
     // Rate-limit 403/429: wait for Retry-After / x-ratelimit-reset, increase pollMs, or add token authentication.
@@ -87,35 +96,43 @@ export async function waitForCi(
   const startedAt = Date.now()
   const deadline = startedAt + timeoutMs
 
+  const waitAndPoll = async (message: string, runStartedAt = startedAt): Promise<void> => {
+    const waitMs = getWaitMs(runStartedAt, expectedMinutes, pollMs, deadline)
+    console.info(
+      `${message}. ${Math.round((Date.now() - startedAt) / 1000)}s waiting;`,
+      `checking again in ${Math.ceil(waitMs / 1000)}s.`,
+    )
+    await setTimeout(waitMs)
+    return poll()
+  }
+
   const poll = async (): Promise<void> => {
     assert(Date.now() < deadline, `Timed out waiting for ${app} CI at ${sha}; deployment blocked`)
     const { workflow_runs: runs } = await getGitHubAction<{ workflow_runs: WorkflowRun[] }>(
       `workflows/ci.yaml/runs?${query}`,
     )
     const run = runs.find(run => run.head_sha === sha && run.head_branch === branch && run.event === 'push')
-    const jobs = run ? await getActionJobs(run.id) : []
+    if (!run) return waitAndPoll(`Waiting for ${app} CI run to appear at ${sha}`)
+    const jobs = await getActionJobs(run.id)
     const failed = jobs.find(
       job => requiredJobs.includes(job.name) && job.status === 'completed' && job.conclusion !== 'success',
     )
-    assert(!failed, `${failed?.name}: ${failed?.conclusion}; deployment blocked (${run?.html_url})`)
+    assert(!failed, `${failed?.name}: ${failed?.conclusion}; deployment blocked (${run.html_url})`)
 
     const pending = requiredJobs.filter(
       name => !jobs.some(job => job.name === name && job.status === 'completed' && job.conclusion === 'success'),
     )
-    if (!pending.length) return // All required jobs passed; allow deployment without waiting for unrelated jobs.
+    if (!pending.length) return console.info(`Required ${app} CI jobs passed: ${run.html_url}`)
 
     assert(
-      run?.status !== 'completed',
-      `CI finished without passing required jobs: ${pending.join(', ')} (${run?.html_url})`,
+      run.status !== 'completed',
+      `CI finished without passing required jobs: ${pending.join(', ')} (${run.html_url})`,
     )
 
-    const waitMs = getWaitMs(run, expectedMinutes, pollMs, deadline)
-    console.info(
-      `Waiting for ${app} CI at ${sha}: ${pending.join(', ')}. ` +
-        `${Math.round((Date.now() - startedAt) / 1000)}s elapsed; checking again in ${Math.ceil(waitMs / 1000)}s.`,
+    return waitAndPoll(
+      `Waiting for ${app} CI at ${run.html_url}: ${pending.join(', ')}`,
+      Date.parse(run.run_started_at),
     )
-    await setTimeout(waitMs)
-    return poll()
   }
   return poll()
 }

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
-import { Address, Asset, Keypair, Networks, Operation, rpc, xdr } from '@stellar/stellar-sdk'
+import { createRpc } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
+import { Address, Asset, Keypair, Networks, Operation, xdr } from '@stellar/stellar-sdk'
 import { confirmStellarTransaction, createSorobanDeploymentSender } from '../support/helpers/stellar/deployment'
 import type { TestnetDeployment } from './stellar-testnet'
 
@@ -22,7 +23,7 @@ const FIRST_IMPLEMENTATION_INDEX = 0
 
 /** Deploy the standalone factory and tokens once during Cypress Node setup. */
 export const deployStellarStandalone = async (): Promise<TestnetDeployment> => {
-  const server = new rpc.Server(RPC_URL, { allowHttp: true })
+  const server = createRpc({ rpcUrl: RPC_URL, allowHttp: true })
   const issuer = Keypair.random()
   const issuerAddress = issuer.publicKey() as StellarAddress
 

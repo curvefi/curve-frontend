@@ -3,7 +3,7 @@ import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { activeModule } from '@creit.tech/stellar-wallets-kit/state'
 import { type ISupportedWallet, KitEventType } from '@creit.tech/stellar-wallets-kit/types'
-import { StrKey } from '@stellar/stellar-sdk'
+import { type contract, rpc, StrKey } from '@stellar/stellar-sdk'
 
 export type WalletConnector = ISupportedWallet
 
@@ -38,3 +38,6 @@ export const connectWallet = async (connector: WalletConnector) => {
 export const disconnectWallet = () => StellarWalletsKit.disconnect()
 
 export const isAccountAddress = (address: string): address is StellarAddress => StrKey.isValidEd25519PublicKey(address)
+
+export const createRpc = ({ rpcUrl, allowHttp }: Pick<contract.ClientOptions, 'rpcUrl' | 'allowHttp'>) =>
+  new rpc.Server(rpcUrl, { allowHttp })

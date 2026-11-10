@@ -1,7 +1,10 @@
 import { throttle } from 'lodash'
 import { maybe } from '@primitives/objects.utils'
+import { captureException } from '@sentry/react'
 import type { PersistedClient, Persister } from '@tanstack/query-persist-client-core'
 import { QueryCache, QueryClient } from '@tanstack/react-query'
+import { notify } from '@ui/features/toast/Toast/notify'
+import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
 import { mutationCache } from './cache'
 
@@ -17,22 +20,27 @@ export const queryClient = new QueryClient({
 })
 
 const STORAGE_KEY = 'REACT_QUERY_OFFLINE_CACHE'
+let persistenceDisabled = false
 
 /**
- * TanStack's async persister swallows save errors; this implementation lets them surface.
+ * Surface save errors, except full storage falls back to memory until reload.
  * Tagged bigints preserve query data without wallet dependencies.
  */
 export const persister = {
-  persistClient: throttle(
-    (data: PersistedClient) =>
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data, (_, value: unknown) =>
-          typeof value === 'bigint' ? { $bigint: value.toString() } : value,
-        ),
-      ),
-    REFRESH_INTERVAL['1s'],
-  ),
+  persistClient: throttle((data: PersistedClient) => {
+    if (persistenceDisabled) return
+    const value = JSON.stringify(data, (_, value: unknown) =>
+      typeof value === 'bigint' ? { $bigint: value.toString() } : value,
+    )
+    try {
+      window.localStorage.setItem(STORAGE_KEY, value)
+    } catch (error: unknown) {
+      if (!(error instanceof DOMException) || error.name !== 'QuotaExceededError') throw error
+      persistenceDisabled = true
+      captureException(error)
+      notify(t`Browser storage is full. Cached data won't be saved between visits.`, 'error')
+    }
+  }, REFRESH_INTERVAL['1s']),
   restoreClient: () =>
     maybe(
       window.localStorage.getItem(STORAGE_KEY),

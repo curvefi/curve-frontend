@@ -57,6 +57,7 @@ const CONTROLLER_V2_ABI = parseAbi([
 const GAUGE_CONTROLLER_ABI = parseAbi([
   'function gauge_relative_weight_write(address addr, uint256 time) view returns (uint256)',
 ])
+const GAUGE_ABI = parseAbi(['function is_killed() view returns (bool)'])
 const WEEK = 7n * 24n * 60n * 60n
 
 const getFactoryMarketsV1 = async (client: PublicClient): Promise<SupplyTestMarket[]> => {
@@ -111,20 +112,26 @@ const isSupportedMarket = ({ controllerAddress, borrowedTokenAddress, gaugeAddre
   !DEPRECATED_LLAMAS.Lend.ethereum?.[controllerAddress] &&
   !MARKETS_ALERTS.Lend[Chain.Ethereum]?.[controllerAddress]
 
-/** The rewards accrue over 7 days, so CRV emissions this week or next are enough */
+/**
+ * The rewards accrue over 7 days, so CRV emissions this week or next are enough.
+ * Killed gauges keep their controller weight but mint no CRV.
+ */
 const hasCrvEmissions = async (client: PublicClient, gaugeAddress: Address, timestamp: bigint) => {
   const week = (timestamp / WEEK) * WEEK
-  const weights = await Promise.all(
-    [week, week + WEEK].map(time =>
-      client.readContract({
-        address: GAUGE_CONTROLLER,
-        abi: GAUGE_CONTROLLER_ABI,
-        functionName: 'gauge_relative_weight_write',
-        args: [gaugeAddress, time],
-      }),
+  const [isKilled, weights] = await Promise.all([
+    client.readContract({ address: gaugeAddress, abi: GAUGE_ABI, functionName: 'is_killed' }),
+    Promise.all(
+      [week, week + WEEK].map(time =>
+        client.readContract({
+          address: GAUGE_CONTROLLER,
+          abi: GAUGE_CONTROLLER_ABI,
+          functionName: 'gauge_relative_weight_write',
+          args: [gaugeAddress, time],
+        }),
+      ),
     ),
-  )
-  return weights.some(weight => weight > 0n)
+  ])
+  return !isKilled && weights.some(weight => weight > 0n)
 }
 
 // admin fees are part of the v2 available balance but can't be withdrawn

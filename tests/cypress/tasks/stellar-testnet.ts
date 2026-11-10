@@ -1,4 +1,5 @@
 import type { StellarAddress, StellarContract, StellarSecret } from '@/stellar/features/connect-wallet/address'
+import { createRpc } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assert } from '@primitives/objects.utils'
@@ -33,7 +34,7 @@ export const createTestnetDeployer = async (config: TestnetDeployment, rpcUrl: s
   const wallet = Keypair.random()
   const publicKey = wallet.publicKey()
   const { allowHttp } = STELLAR_NETWORKS['stellar-testnet']
-  const server = new rpc.Server(rpcUrl, { allowHttp })
+  const server = createRpc({ rpcUrl, allowHttp })
   const { passphrase: networkPassphrase } = await server.getNetwork()
   await server.fundAddress(publicKey).catch((error: Error) => {
     if (!error.message.endsWith('transaction status NOT_FOUND')) throw error // account for rpc delays seeing the transaction

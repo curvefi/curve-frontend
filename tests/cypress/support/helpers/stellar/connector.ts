@@ -2,6 +2,7 @@
 import type { StellarAddress, StellarContract } from '@/stellar/features/connect-wallet/address'
 import { StellarFetchRetry } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { getStellarTransactionFees } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
+import { createRpc } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { type ModuleInterface, ModuleType } from '@creit.tech/stellar-wallets-kit/types'
@@ -100,9 +101,8 @@ const sendPoolDeployment = async (
   transaction: contract.AssembledTransaction<contract.Result<PoolDeployment>>,
   keypair: Keypair,
 ) => {
-  const server = new rpc.Server(transaction.options.rpcUrl, { allowHttp: transaction.options.allowHttp })
   const sendDeployment = createSorobanDeploymentSender(
-    server,
+    createRpc(transaction.options),
     keypair,
     transaction.options.networkPassphrase,
     transaction.options.timeoutInSeconds ?? contract.DEFAULT_TIMEOUT,
