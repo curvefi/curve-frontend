@@ -6,8 +6,13 @@ import { getWithdrawImplementation } from '@/dex/queries/withdraw/withdraw-query
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { waitForApproval } from '@evm-ui/utils'
 import type { Address, Hex } from '@primitives/address.utils'
-import { getPoolAmounts, wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
-import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
+import {
+  getAdvancedWithdrawParams,
+  getOneCoinWithdrawParams,
+  type AdvancedWithdrawFormValues,
+  type OneCoinWithdrawFormValues,
+} from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { t } from '@ui/lib/i18n'
 import type { WithdrawMutation } from './types'
 import { userWithdrawParamsValidationSuite } from './withdraw.validation'
@@ -27,11 +32,11 @@ const approveWithdraw = async (pool: PoolTemplate, { isWrapped, ...params }: Wit
 
 const withdraw = async (pool: PoolTemplate, { isWrapped, slippage, ...params }: WithdrawMutation): Promise<Hex> => {
   const [type, impl, args] = getWithdrawImplementation(pool, params)
-  // Imbalance withdrawal re-quotes LP burn in the SDK using slippage; the displayed maximum is not a fixed execution cap.
   switch (type) {
     case 'balanced':
       return (await impl[`withdraw${wrappedMethod(isWrapped)}`](...args, +slippage)) as Hex
     case 'imbalance':
+      // The SDK re-quotes LP burn using slippage; the displayed maximum is not a fixed execution cap.
       return (await impl[`withdrawImbalance${wrappedMethod(isWrapped)}`](...args, +slippage)) as Hex
     case 'oneCoin':
       return (await impl[`withdrawOneCoin${wrappedMethod(isWrapped)}`](...args, +slippage)) as Hex
@@ -41,12 +46,10 @@ const withdraw = async (pool: PoolTemplate, { isWrapped, slippage, ...params }: 
 export const useWithdrawMutation = ({
   chainId,
   poolAddress,
-  tokenCount,
   onReset,
 }: {
   chainId: number
   poolAddress: Address
-  tokenCount: number
   onReset: () => void
 }) => {
   const { address: userAddress } = useConnection()
@@ -72,9 +75,14 @@ export const useWithdrawMutation = ({
   })
 
   const onSubmit = useCallback(
-    (values: WithdrawFormValues) =>
-      mutate({ ...values, amounts: getPoolAmounts(values, tokenCount) } as WithdrawMutation),
-    [mutate, tokenCount],
+    (values: OneCoinWithdrawFormValues | AdvancedWithdrawFormValues) =>
+      mutate(
+        ('tokenIndex' in values
+          ? getOneCoinWithdrawParams(values)
+          : getAdvancedWithdrawParams(values)) as WithdrawMutation,
+      ),
+    [mutate],
   )
+
   return { error, isPending, onSubmit, mutate }
 }

@@ -12,11 +12,11 @@ const { useQuery: useWithdrawApproveEstimate } = hydratedQueryFactory({
     poolAddress,
     userAddress,
     isWrapped,
-    isBalanced,
+    mode,
     amounts,
     lpAmount,
     maxLpAmount,
-    maxWithdrawIndex,
+    tokenIndex,
   }: UserWithdrawParams) =>
     ({
       name: 'estimateGas.withdrawApprove',
@@ -24,11 +24,11 @@ const { useQuery: useWithdrawApproveEstimate } = hydratedQueryFactory({
       poolAddress,
       userAddress,
       isWrapped,
-      isBalanced,
+      mode,
       amounts,
       lpAmount,
       maxLpAmount,
-      maxWithdrawIndex,
+      tokenIndex,
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, ...params }: UserWithdrawQuery) => {
     if (isWrapped) return 0 // No zap approval transaction to estimate.
@@ -52,11 +52,11 @@ const { useQuery: useWithdrawEstimate } = hydratedQueryFactory({
     poolAddress,
     userAddress,
     isWrapped,
-    isBalanced,
+    mode,
     amounts,
     lpAmount,
     maxLpAmount,
-    maxWithdrawIndex,
+    tokenIndex,
     slippage,
   }: UserWithdrawParams) =>
     ({
@@ -65,11 +65,11 @@ const { useQuery: useWithdrawEstimate } = hydratedQueryFactory({
       poolAddress,
       userAddress,
       isWrapped,
-      isBalanced,
+      mode,
       amounts,
       lpAmount,
       maxLpAmount,
-      maxWithdrawIndex,
+      tokenIndex,
       slippage,
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, slippage, ...params }: UserWithdrawQuery) => {

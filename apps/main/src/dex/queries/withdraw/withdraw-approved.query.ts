@@ -9,11 +9,11 @@ export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsAppro
     poolAddress,
     userAddress,
     isWrapped,
-    isBalanced,
+    mode,
     amounts,
     lpAmount,
     maxLpAmount,
-    maxWithdrawIndex,
+    tokenIndex,
   }: UserWithdrawParams) =>
     ({
       name: 'withdrawIsApproved',
@@ -21,11 +21,11 @@ export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsAppro
       poolAddress,
       userAddress,
       isWrapped,
-      isBalanced,
+      mode,
       amounts,
       lpAmount,
       maxLpAmount,
-      maxWithdrawIndex,
+      tokenIndex,
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, ...params }: UserWithdrawQuery) => {
     if (isWrapped) return true // Direct pool withdrawal needs no zap allowance.

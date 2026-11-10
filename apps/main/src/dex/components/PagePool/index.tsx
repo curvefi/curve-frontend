@@ -8,7 +8,7 @@ import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStak
 import { LegacyFormDeposit } from '@/dex/components/PagePool/Deposit/components/LegacyFormDeposit'
 import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, TransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
   getDepositTabAlert,
   getSlippageType,
@@ -17,7 +17,7 @@ import {
 } from '@/dex/components/PagePool/utils'
 import { FormClaim } from '@/dex/components/PagePool/Withdraw/components/FormClaim'
 import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
-import { FormWithdraw as LegacyFormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
+import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
 import { AdvancedDepositTab, OneCoinDepositTab } from '@/dex/features/deposit/components/DepositTab'
@@ -28,7 +28,8 @@ import { PointsCampaigns } from '@/dex/features/pool-information/components/poin
 import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
-import { WithdrawTab } from '@/dex/features/withdraw/components/WithdrawTab'
+import { AdvancedWithdrawTab } from '@/dex/features/withdraw/components/AdvancedWithdrawTab'
+import { OneCoinWithdrawTab } from '@/dex/features/withdraw/components/OneCoinWithdrawTab'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
@@ -59,16 +60,6 @@ import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { PoolAlertBanner } from '../PoolAlertBanner'
-
-const FormWithdraw = (props: TransferProps) => {
-  const { pool } = usePoolContext()
-  // Custom amounts use withdrawImbalance, which crypto pools don’t support.
-  return useNewPoolForms() && pool.data?.isCrypto === false ? (
-    <WithdrawTab {...props} />
-  ) : (
-    <LegacyFormWithdraw {...props} />
-  )
-}
 
 const legacyMenu = [
   {
@@ -171,8 +162,21 @@ const menu = [
     visible: ({ seed }) => seed.data === false,
     subTabs: [
       {
+        value: 'withdraw-one-coin',
+        label: t`One coin`,
+        visible: ({ isCrypto }) => isCrypto === false,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={OneCoinWithdrawTab} {...props} />,
+      },
+      {
+        value: 'withdraw-advanced',
+        label: t`Advanced`,
+        visible: ({ isCrypto }) => isCrypto === false,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={AdvancedWithdrawTab} {...props} />,
+      },
+      {
         value: 'WITHDRAW',
         label: t`Withdraw`,
+        visible: ({ isCrypto }) => isCrypto !== false,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
       },
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
@@ -265,12 +269,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       poolAlert,
       maxSlippage,
       seed,
+      isCrypto: pool.data?.isCrypto,
       isGaugeManager: !!(gaugeManager && signerAddress && isAddressEqual(gaugeManager, signerAddress)),
       isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
         Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
       ),
     }),
-    [params, poolAlert, maxSlippage, seed, gaugeManager, signerAddress, rewardDistributors],
+    [params, poolAlert, maxSlippage, seed, pool.data?.isCrypto, gaugeManager, signerAddress, rewardDistributors],
   )
 
   return (

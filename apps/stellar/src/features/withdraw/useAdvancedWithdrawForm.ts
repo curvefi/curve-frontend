@@ -24,6 +24,10 @@ import {
   type PoolAmountField,
 } from '@ui/features/pool-forms/pool-form.utils'
 import {
+  getBalancedWithdrawAmounts,
+  getBalancedWithdrawLp,
+} from '@ui/features/pool-forms/withdraw/balanced-withdraw.utils'
+import {
   getAdvancedWithdrawParams,
   type AdvancedWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
@@ -31,7 +35,6 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalDiv, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
-import { getBalancedWithdrawAmounts, getBalancedWithdrawLp } from './balanced-withdraw.utils'
 import type { WithdrawQuoteParams } from './types'
 
 const formOptions = {

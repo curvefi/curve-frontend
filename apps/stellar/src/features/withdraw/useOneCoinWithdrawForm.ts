@@ -20,17 +20,17 @@ import {
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
+import { decimalEqual } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawQuoteParams } from './types'
 import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 
-const userDefaultValues = { amount: undefined }
+const userDefaultValues = { amount: undefined, isMax: false }
 const formOptions = {
   validation: oneCoinWithdrawFormValidationSuite,
   defaultValues: {
     ...userDefaultValues,
     tokenIndex: 0,
-    maxWithdrawAmount: undefined,
     poolReserve: undefined,
     maxLpAmount: undefined,
     decimals: undefined,
@@ -53,10 +53,9 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const form = useForm<OneCoinWithdrawFormValues>(formOptions)
   const { values, formState, reset } = form
   const index = values.tokenIndex
-  const maximum = q(
+  const max = q(
     useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index]?.data, lpAmount: lpBalance.data }),
   )
-  const max = !maximum.error && maximum.data != null && +maximum.data > 0 ? maximum : undefined
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams, account }
   const { expectedLp, maximumLp } = useWithdrawLp(params)
@@ -67,10 +66,10 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     supply,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    maxWithdrawAmount: max?.data,
     poolReserve: reserves?.[index],
     maximumBurn: maximumLp.data,
   })
+  useFormSync(form, { amount: max.data }, values.isMax)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])
 
   const {
@@ -85,6 +84,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     onReset: () => reset(userDefaultValues),
   })
   const isPending = formState.isSubmitting || isWithdrawing
+  const onMax = () => form.update({ amount: max.data, isMax: true })
   return {
     form,
     tokens,
@@ -102,7 +102,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
       isDebouncing ||
       !formState.isValid ||
       shouldBlockTransaction(priceImpact) ||
-      (params.mode === 'one-coin' && (!max || maximum.isLoading)),
+      (values.isMax && (max.data == null || max.isLoading || !!max.error)),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
@@ -111,6 +111,10 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     onSubmit: form.handleSubmit(values => onSubmit(getOneCoinWithdrawParams(values))),
     onSlippageChange: (slippage: Decimal) => form.update({ slippage }),
     onCoinChange: (tokenIndex: number) => form.update({ ...userDefaultValues, tokenIndex }),
-    onAmountChange: (amount: Decimal | undefined) => form.update({ amount }),
+    onMax,
+    onAmountChange: (amount: Decimal | undefined) => {
+      if (amount && max.data && !max.error && decimalEqual(amount, max.data)) return onMax()
+      form.update({ amount, isMax: false })
+    },
   }
 }

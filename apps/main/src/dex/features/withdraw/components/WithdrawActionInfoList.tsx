@@ -1,46 +1,38 @@
-import { useWithdrawPriceImpact } from '@/dex/queries/withdraw/withdraw-bonus.query'
+import { getSlippageType } from '@/dex/components/PagePool/utils'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { useWithdrawEstimateGas } from '@/dex/queries/withdraw/withdraw-estimate-gas.query'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UseFormReturn } from '@ui/features/forms'
-import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
-import type { WithdrawFormValues } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import type { QueryProp } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
-import { t } from '@ui/lib/i18n'
-import type { UserWithdrawParams } from '../types'
+import type { WithdrawQuoteParams } from '../types'
 
 export const WithdrawActionInfoList = ({
-  form,
   params,
   expectedLp,
   maximumLp,
   lpBalance,
-  slippageType,
+  priceImpact,
+  onSlippageChange,
 }: {
-  form: UseFormReturn<WithdrawFormValues>
-  params: UserWithdrawParams
+  params: WithdrawQuoteParams
   expectedLp: QueryProp<Decimal>
   maximumLp: QueryProp<Decimal>
   lpBalance: QueryProp<Decimal>
-  slippageType: SlippageType | undefined
+  priceImpact: QueryProp<Decimal | null>
+  onSlippageChange: (slippage: Decimal) => void
 }) => (
   <PoolActionInfoList
-    expectedLp={expectedLp}
-    expectedLpLabel={t`Expected LP burned`}
-    expectedLpTestId="pool-withdraw-expected-lp"
-    maximumLp={maximumLp}
+    maximumLp={params.mode === 'unbalanced' ? maximumLp : undefined}
     currentLp={lpBalance}
     currentLpTestId="pool-withdraw-current-lp"
     projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}
-    projectedLpLabel={t`Expected remaining LP balance`}
-    projectedLpTestId="pool-withdraw-projected-lp"
-    priceImpact={useWithdrawPriceImpact(params)}
+    priceImpact={priceImpact}
     gas={useWithdrawEstimateGas(params)}
-    slippage={form.values.slippage}
-    onSlippageChange={(slippage: Decimal) => form.update({ slippage })}
+    slippage={params.slippage}
+    onSlippageChange={onSlippageChange}
     userAddress={params.userAddress ?? undefined}
-    slippageType={slippageType}
+    slippageType={getSlippageType(usePoolContext().pool.data)}
   />
 )

@@ -8,26 +8,17 @@ import { decimalNegate } from '@ui/lib/decimal'
 import { getWithdrawImplementation } from './withdraw-query.helpers'
 
 export const { useQuery: useWithdrawBonus, invalidate: invalidateWithdrawBonus } = queryFactory({
-  queryKey: ({
-    chainId,
-    poolAddress,
-    isWrapped,
-    isBalanced,
-    amounts,
-    lpAmount,
-    maxLpAmount,
-    maxWithdrawIndex,
-  }: WithdrawParams) =>
+  queryKey: ({ chainId, poolAddress, isWrapped, mode, amounts, lpAmount, maxLpAmount, tokenIndex }: WithdrawParams) =>
     ({
       name: 'withdrawBonus',
       chainId,
       poolAddress,
       isWrapped,
-      isBalanced,
+      mode,
       amounts,
       lpAmount,
       maxLpAmount,
-      maxWithdrawIndex,
+      tokenIndex,
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, ...params }: WithdrawQuery) => {
     const [type, impl, args] = getWithdrawImplementation(poolAddress, params)

@@ -8,33 +8,24 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { getWithdrawImplementation } from './withdraw-query.helpers'
 
 export const { useQuery: useWithdrawExpected, invalidate: invalidateWithdrawExpected } = queryFactory({
-  queryKey: ({
-    chainId,
-    poolAddress,
-    isWrapped,
-    isBalanced,
-    amounts,
-    lpAmount,
-    maxLpAmount,
-    maxWithdrawIndex,
-  }: WithdrawParams) =>
+  queryKey: ({ chainId, poolAddress, isWrapped, mode, amounts, lpAmount, maxLpAmount, tokenIndex }: WithdrawParams) =>
     ({
       name: 'withdrawExpected',
       chainId,
       poolAddress,
       isWrapped,
-      isBalanced,
+      mode,
       amounts,
       lpAmount,
       maxLpAmount,
-      maxWithdrawIndex,
+      tokenIndex,
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, ...params }: WithdrawQuery) => {
     const [type, impl, args] = getWithdrawImplementation(poolAddress, params)
     switch (type) {
       case 'balanced':
       case 'oneCoin':
-        return params.lpAmount
+        return params.lpAmount!
       case 'imbalance':
         return (await impl[`withdrawImbalance${wrappedMethod(isWrapped)}Expected`](...args)) as Decimal
     }

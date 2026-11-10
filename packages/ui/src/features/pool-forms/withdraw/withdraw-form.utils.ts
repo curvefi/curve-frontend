@@ -1,7 +1,4 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
-import { decimalEqual } from '@ui/lib/decimal'
-import type { FieldsOf } from '@ui/lib/validation/types'
 import { getPoolAmounts, getPoolMaxAmounts, type PoolTokenFields } from '../pool-form.utils'
 
 export type WithdrawMode = 'balanced' | 'unbalanced' | 'one-coin'
@@ -21,6 +18,7 @@ export type WithdrawMutation = {
 }
 
 type WithdrawQuoteFields = {
+  isWrapped?: boolean
   decimals: (number | undefined)[] | undefined
   maxLpAmount: Decimal | undefined
   supply: Decimal | undefined
@@ -31,46 +29,29 @@ type WithdrawQuoteFields = {
 
 export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
   amount: Decimal | undefined
+  isMax: boolean
   tokenIndex: number
-  maxWithdrawAmount: Decimal | undefined
   poolReserve: Decimal | undefined
 }
 
 export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
   PoolTokenFields & { lpAmount: Decimal | undefined; isBalanced: boolean }
 
-export type WithdrawFormValues = AdvancedWithdrawFormValues & {
-  maxWithdrawIndex: number | undefined
-  isWrapped?: boolean
-}
-
-/** Use the recorded Max selection only when the full LP balance is selected. */
-export const getSingleCoinWithdrawIndex = ({
-  maxWithdrawIndex,
-  lpAmount,
-  maxLpAmount,
-}: FieldsOf<Pick<WithdrawFormValues, 'maxWithdrawIndex' | 'lpAmount' | 'maxLpAmount'>>) =>
-  maybes([maxWithdrawIndex, lpAmount, maxLpAmount], (index, amount, balance) =>
-    decimalEqual(amount, balance) ? index : undefined,
-  )
-
+/** Max burns the full LP balance; a custom token amount uses an imbalance withdrawal. */
 export const getOneCoinWithdrawParams = ({
   amount,
+  isMax,
   tokenIndex,
-  maxWithdrawAmount,
   poolReserve,
   ...quote
-}: OneCoinWithdrawFormValues) => {
-  const isFull = maybes([amount, maxWithdrawAmount], decimalEqual)
-  return {
-    ...quote,
-    mode: isFull ? ('one-coin' as const) : ('unbalanced' as const),
-    tokenIndex,
-    lpAmount: isFull ? quote.maxLpAmount : undefined,
-    amounts: quote.decimals?.map((_, index) => (index === tokenIndex ? amount : '0')),
-    maxAmounts: quote.decimals?.map((_, index) => (index === tokenIndex ? poolReserve : '0')),
-  }
-}
+}: OneCoinWithdrawFormValues) => ({
+  ...quote,
+  mode: isMax ? ('one-coin' as const) : ('unbalanced' as const),
+  tokenIndex,
+  lpAmount: isMax ? quote.maxLpAmount : undefined,
+  amounts: quote.decimals?.map((_, index) => (index === tokenIndex ? amount : '0')),
+  maxAmounts: quote.decimals?.map((_, index) => (index === tokenIndex ? poolReserve : '0')),
+})
 
 export const getAdvancedWithdrawParams = (values: AdvancedWithdrawFormValues) => ({
   ...values,

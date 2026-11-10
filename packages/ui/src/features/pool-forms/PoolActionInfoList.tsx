@@ -27,8 +27,6 @@ type PoolActionInfoListProps = {
   currentLp?: QueryProp<Decimal>
   currentLpTestId?: string
   projectedLp?: QueryProp<Decimal>
-  projectedLpLabel?: string
-  projectedLpTestId?: string
   seedLock?: QueryProp<Decimal | null>
   exchangeRate?: QueryProp<Decimal>
   minimumReceived?: QueryProp<Decimal>
@@ -51,8 +49,6 @@ export const PoolActionInfoList = ({
   currentLp,
   currentLpTestId,
   projectedLp,
-  projectedLpLabel,
-  projectedLpTestId,
   seedLock,
   exchangeRate,
   minimumReceived,
@@ -74,19 +70,7 @@ export const PoolActionInfoList = ({
         testId={currentLpTestId}
         label={t`LP balance`}
         value={mapQuery(currentLp, value => formatNumber(value, 'token.balance'))}
-        futureValue={
-          !projectedLpTestId && projectedLp
-            ? mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))
-            : undefined
-        }
-        size="small"
-      />
-    )}
-    {projectedLp && projectedLpLabel && projectedLpTestId && (
-      <ActionInfo
-        testId={projectedLpTestId}
-        label={projectedLpLabel}
-        value={mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
+        futureValue={projectedLp && mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))}
         size="small"
       />
     )}

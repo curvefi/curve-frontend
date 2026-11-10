@@ -10,6 +10,7 @@ import { PoolTokenInputs } from '@ui/features/pool-forms/PoolTokenInputs'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import type { AdvancedWithdrawFormValues } from './withdraw-form.utils'
+import { WrappedWithdrawCheckbox } from './WrappedWithdrawCheckbox'
 
 export const AdvancedWithdrawForm = ({
   form,
@@ -29,7 +30,9 @@ export const AdvancedWithdrawForm = ({
   onBalancedChange,
   onLpChange,
   onTokenChange,
+  canWithdrawWrapped,
 }: PoolFormProps<AdvancedWithdrawFormValues> & {
+  canWithdrawWrapped?: boolean
   lpAmountUsd?: Decimal
   lpBalance: QueryProp<Decimal>
   canBalance: boolean | undefined
@@ -66,6 +69,7 @@ export const AdvancedWithdrawForm = ({
       disabled={isPending || !canBalance}
       testIdPrefix="withdraw-unbalanced"
     />
+    {canWithdrawWrapped && <WrappedWithdrawCheckbox disabled={isPending} />}
     <FormButton
       {...wallet}
       pending={isPending}

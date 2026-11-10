@@ -1,18 +1,19 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
-import { getSingleCoinWithdrawIndex } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { decimalDiv, decimalMultiply, decimalRound, decimalSum } from '@ui/lib/decimal'
 import type { WithdrawParams } from './types'
 
-export const getMaximumWithdrawBurn = (
-  expected: Decimal,
-  { isBalanced, maxWithdrawIndex, lpAmount, maxLpAmount, slippage }: WithdrawParams,
-) =>
-  isBalanced || getSingleCoinWithdrawIndex({ maxWithdrawIndex, lpAmount, maxLpAmount }) != null
-    ? expected
-    : decimalRound(
+/**
+ * Balanced and Max one-coin withdrawals burn a fixed LP amount; slippage applies to their outputs.
+ * Imbalance withdrawals add percentage slippage to the expected LP burn, rounding half up to 18 decimals like the SDK.
+ * This estimate validates the available LP balance; the SDK re-quotes it when executing the withdrawal.
+ */
+export const getMaximumWithdrawBurn = (expected: Decimal, { mode, slippage }: WithdrawParams) =>
+  mode === 'unbalanced'
+    ? decimalRound(
         decimalMultiply(expected, decimalSum('1', decimalDiv(slippage!, '100'))),
         LP_TOKEN_DECIMALS,
-        BigNumber.ROUND_HALF_UP, // Match the SDK's toFixed rounding for its maximum burn estimate.
+        BigNumber.ROUND_HALF_UP,
       )
+    : expected

@@ -5,7 +5,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
-import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { t } from '@ui/lib/i18n'
 import type { PoolForm, PoolTokenFields } from './pool-form.utils'
 import { type PoolToken, PoolTokenInput } from './PoolTokenInput'
@@ -18,8 +17,6 @@ export const PoolTokenInputs = <TValues extends PoolForm>({
   disabled,
   maxAmounts,
   maxSelectedIndex,
-  positionAmounts,
-  positionTooltip,
   showBalance = true,
   onMax,
   onValueChange,
@@ -29,8 +26,6 @@ export const PoolTokenInputs = <TValues extends PoolForm>({
   disabled: PoolTokenDisabled
   maxAmounts?: QueryProp<Decimal>[]
   maxSelectedIndex?: number
-  positionAmounts?: QueryProp<Decimal>[]
-  positionTooltip?: string
   showBalance?: boolean
   onMax?: (index: number) => void
   onValueChange: (index: number, value: Decimal | undefined) => void
@@ -49,13 +44,7 @@ export const PoolTokenInputs = <TValues extends PoolForm>({
           isMaxSelected={index === maxSelectedIndex}
           onMax={onMax}
           onValueChange={onValueChange}
-          walletBalance={
-            positionAmounts
-              ? { symbol: token.symbol, balance: positionAmounts[index], tooltip: positionTooltip, prefix: LlamaIcon }
-              : showBalance
-                ? { symbol: token.symbol, balance: token.balance }
-                : undefined
-          }
+          walletBalance={showBalance ? { symbol: token.symbol, balance: token.balance } : undefined}
         />
       ) : (
         isLoading && <LargeTokenInputSkeleton />
