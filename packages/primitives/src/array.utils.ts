@@ -6,11 +6,15 @@
  * @returns A new sorted array.
  */
 import type { Nullish } from './objects.utils'
+
 export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' | 'desc' = 'asc'): T[] =>
   items.toSorted((a, b) => {
     const direction = order === 'asc' ? 1 : -1
     return (getKey(a) - getKey(b)) * direction
   })
+
+export const sumBy = <T>(items: readonly T[], getValue: (item: T) => number): number =>
+  items.reduce((sum, item) => sum + getValue(item), 0)
 
 /** Return the array only when every item is non-null, preserving its order and reference. */
 export const completeArray = <T>(items: (T | Nullish)[] | Nullish): NonNullable<T>[] | undefined =>
@@ -79,7 +83,7 @@ export const median = (values: number[]) => {
   return sorted.length % 2 === 0 ? sorted[middle - 1] : sorted[middle]
 }
 
-export const zip = <T extends readonly unknown[][]>(
+export const zip = <T extends readonly (readonly unknown[])[]>(
   ...arrays: T
 ): { [K in keyof T]: T[K] extends readonly (infer U)[] ? U : never }[] => {
   if (arrays.some(array => array.length !== arrays[0].length)) {

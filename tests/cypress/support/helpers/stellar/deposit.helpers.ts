@@ -1,8 +1,10 @@
 import type { StellarContract } from '@/stellar/features/connect-wallet/address'
-import { sendStellarTransaction, simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
+import { sendStellarTransaction } from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { fetchTokenDecimals } from '@/stellar/queries/token/token-decimals.query'
 import { oneDecimal } from '@cy/support/generators'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { retryTestnetSetup } from '@cy/support/helpers/stellar/connector'
 import { type PoolAmounts, poolInput, type PoolState, TEST_NETWORK } from '@cy/support/helpers/stellar/pool.helpers'
 import type { TestnetConfig } from '@cy/support/helpers/stellar/stellar-testnet.config'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
@@ -25,14 +27,16 @@ export const seedTestPool = async (pool: StellarContract, { coins, deployer: { a
       return BigInt(toWei(decimalMultiply(unit, index + 1), decimals))
     }),
   )
-  const transaction = await simulateContractCall<bigint>(
-    TEST_NETWORK,
-    pool,
-    'add_liquidity',
-    [account, amounts, 0n, account],
-    account,
-  )
-  return sendStellarTransaction(transaction)
+  return retryTestnetSetup(async () => {
+    const transaction = await simulateContractCall<bigint>(
+      TEST_NETWORK,
+      pool,
+      'add_liquidity',
+      [account, amounts, 0n, account],
+      account,
+    )
+    return sendStellarTransaction(transaction)
+  })
 }
 
 export const depositBalancedCheckbox = () =>
@@ -57,10 +61,11 @@ export const checkDepositDetail = (
   detail: 'expected-lp' | 'minimum-lp' | 'current-lp' | 'projected-lp' | 'seed-lock',
   amount: Decimal,
 ) =>
-  getActionValue(`pool-deposit-${detail}`, detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation').should(
-    'equal',
-    formatNumber(amount, 'token.balance'),
-  )
+  getActionValue(
+    `pool-deposit-${detail === 'projected-lp' ? 'current-lp' : detail}`,
+    detail === 'current-lp' ? 'stellar.read' : 'stellar.simulation',
+    detail === 'current-lp' ? 'previous' : 'value',
+  ).should('equal', formatNumber(amount, 'token.balance'))
 
 export const checkDepositBalances = ({ coins, lp }: PoolState) => {
   checkDepositDetail('current-lp', lp.balance)
@@ -89,7 +94,7 @@ export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
     'stellar.confirmation',
   )
   coins.forEach(({ address }) => {
-    poolInput(address).find('input').should('have.value', '')
+    poolInput(address).find('input[type="text"]').should('have.value', '')
   })
   depositSubmit().should('be.disabled')
 }
@@ -97,7 +102,7 @@ export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
 /** Submit through the form and check its LP and token balance refresh. */
 export const submitDepositAndCheck = (state: PoolState, amounts: PoolAmounts) => {
   depositSubmit().should('be.enabled')
-  return getActionValue('pool-deposit-projected-lp', 'stellar.simulation')
+  return getActionValue('pool-deposit-current-lp', 'stellar.simulation')
     .should(value => expect(Number(value)).to.be.greaterThan(+state.lp.balance))
     .then(projected => {
       submitDepositForm(state)

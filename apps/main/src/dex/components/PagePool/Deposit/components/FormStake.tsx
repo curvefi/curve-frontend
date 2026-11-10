@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be deleted. */
+
 import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
@@ -73,11 +77,11 @@ export const FormStake = ({ seed }: TransferProps) => {
         pool,
         { isWrapped, ...updatedFormValues },
         null,
-        seed.isSeed,
+        seed.data,
         '',
       )
     },
-    [config, curve, isWrapped, pool, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, pool, seed.data, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -170,7 +174,7 @@ export const FormStake = ({ seed }: TransferProps) => {
       updateFormValues({})
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // steps
   useEffect(() => {
@@ -183,7 +187,7 @@ export const FormStake = ({ seed }: TransferProps) => {
   }, [chainId, pool, signerAddress, formValues, formStatus])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
-  const disableForm = seed.isSeed === null || formStatus.formProcessing
+  const disableForm = seed.data == null || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
   const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolAddress })

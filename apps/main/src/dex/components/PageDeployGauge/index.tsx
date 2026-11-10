@@ -83,7 +83,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
             />
           )}
         </StyledBoxHeader>
-        {chainId && Object.keys(curveNetworks).length !== 0 ? (
+        {chainId && curveNetworks[chainId] ? (
           <>
             {sidechainGauge && !isLite && (
               <NavBox flex flexJustifyContent="space-between" flexAlignItems="center">
@@ -127,7 +127,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
               />
             </ButtonWrapper>
           </>
-        ) : isLoading(connectState) || curveNetworks[chainId] !== undefined ? (
+        ) : isLoading(connectState) ? (
           <SpinnerWrapper>
             <Spinner />
           </SpinnerWrapper>

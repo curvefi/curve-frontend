@@ -4,14 +4,14 @@ import { ChainId, NetworkConfig, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
-import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { crvUsdPages } from '@evm-ui/shared/routes'
 import { ARC_USDC_ADDRESS, CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
     swap: { fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', toAddress: ethAddress },
-    swapCustomRouteRedirect: { 'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS) },
+    swapCustomRouteRedirect: { 'sfrxeth-llamma': crvUsdPages.markets({ blockchainId: 'ethereum' }) },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
       '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',
@@ -205,6 +205,16 @@ export const defaultNetworks = Object.entries({
     tricryptoFactory: true,
     hasFactory: true,
   },
+  [Chain.Hyperliquid]: {
+    swap: {
+      fromAddress: ethAddress,
+      toAddress: '0x5555555555555555555555555555555555555555', // WHYPE
+    },
+    stableswapFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    hasFactory: true,
+  },
 }).reduce(
   (prev, [key, config]) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -234,9 +244,14 @@ const liteSwap: Record<number, NonNullable<NetworkConfig['swap']>> = {
   [Chain.Arc]: { fromAddress: ethAddress, toAddress: ARC_USDC_ADDRESS },
 }
 
+/** Lite networks are fetched from the prices api, which includes non-evm testnets. There's no realiable way to filter these out except for a hardcoded list. */
+const NON_EVM_CHAINS = ['stellar', 'stellar-testnet']
+
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { id: blockchainId, chainId, ...config }) => {
+    if (NON_EVM_CHAINS.includes(blockchainId)) return prev
+
     const isUpgraded = !isLiteChain(chainId) // Upgraded means this is a lite network but is not classified as such any longer
     const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
     const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)

@@ -92,10 +92,6 @@ export const toWei = (n: string, decimals: number) =>
 /** Converts integer token units to a decimal amount without losing precision. */
 export const fromWei = (n: string | bigint, decimals: number): Decimal => decimal(BigNumber(n).shiftedBy(-decimals))!
 
-/** Divide decimal values and truncate the quotient toward zero without rounding fractional digits first. */
-export const decimalIntegerDiv = (first: Decimal, second: Decimal): Decimal =>
-  BigNumber(first).dividedToIntegerBy(second).toFixed() as Decimal
-
 /** Convert ordered token amounts to integer units, preserving empty inputs. */
 export const toWeiArray = (amounts: (Decimal | undefined)[], decimals: number[]) =>
   zip(amounts, decimals).map(([amount, precision]) => maybe(amount, value => toWei(value, precision)))

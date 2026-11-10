@@ -31,7 +31,7 @@ const setControllerBorrowCap = ({
   availableBalance?: Decimal
   borrowedDecimals: number
 }) => {
-  cy.then(TIMEOUTS['evm.contractRead'], async () => {
+  cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
     const borrowCapWei = parseUnits(borrowCap, borrowedDecimals)
     const availableBalanceWei = parseUnits(availableBalance, borrowedDecimals)
     const client = createPublicClient({ transport: http(publicRpcUrl) })

@@ -5,9 +5,9 @@ import type {
   XAXisComponentOption,
   YAXisComponentOption,
 } from 'echarts'
-import { CHART_LINE_WIDTHS } from '@evm-ui/shared/ui/Chart/chart.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { CHART_LINE_WIDTHS } from '@ui/features/charts/chart.utils'
 import { buildOracleMarkerSeries } from './oracle-marker-series'
 import {
   CHART_LAYOUT,

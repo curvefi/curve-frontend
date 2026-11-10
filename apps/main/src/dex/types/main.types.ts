@@ -12,10 +12,9 @@ export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 
 export type NetworkUrlParams = { network: INetworkName }
-export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string }
 export type PoolAddressParams = NetworkUrlParams & { poolAddress: Address }
 type CrvLockerUrlParams = NetworkUrlParams
-export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
+export type UrlParams = NetworkUrlParams & Partial<PoolAddressParams & CrvLockerUrlParams>
 
 export type NetworkConfig = {
   isCrvRewardsEnabled: boolean

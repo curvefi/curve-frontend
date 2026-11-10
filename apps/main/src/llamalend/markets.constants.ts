@@ -398,6 +398,18 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
   ],
 }
 
+/** Legacy mint markets (ids 0 to 5) leverage through their V0 zap */
+export const ZAP_V0_MINT_MARKETS: PartialRecord<ApiChain, Address[]> = {
+  ethereum: [
+    '0x8472a9a7632b173c8cf3a86d3afec50c35548e76', // sfrxETH
+    '0x100daa78fc509db39ef7d04de0c1abd299f4c6ce', // wstETH
+    '0x4e59541306910ad6dc1dac0ac9dfb29bd9f15c67', // WBTC
+    '0xa920de414ea4ab66b97da1bfe9e6eca7d4219635', // ETH
+    '0xec0820efafc41d8943ee8de495fc9ba8495b15cf', // sfrxETH v2
+    '0x1c91da0223c763d2e0173243eadaa0a2ea47e704', // tBTC
+  ],
+}
+
 type MarketLeverageConfig = { providers: readonly RouteProvider[] }
 
 const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso', 'curve-solver', 'curve'] } satisfies MarketLeverageConfig
@@ -421,6 +433,7 @@ export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, Mark
     '0x2dA313f6DCEE04BA46466E100c4656618E5d3dDd': DEFAULT_LEVERAGE_CONFIG, // sUSDS-crvUSD
     '0x3DE37c38739dFb83b7A902842bF5393040f7BF50': DEFAULT_LEVERAGE_CONFIG, // sfrxUSD-crvUSD
     '0xB536FEa3a01c95Dd09932440eC802A75410139D6': DEFAULT_LEVERAGE_CONFIG, // sUSDe-crvUSD
+    '0x4922995d8CbF9e1f368B2EE521bD2fa2F49eADb1': DEFAULT_LEVERAGE_CONFIG, // reUSD/sfrxUSD LP-crvUSD
     // Deprecated ZapV2 markets remain enabled so existing positions can deleverage.
     '0x4f87158350c296955966059C50263F711cE0817C': DEFAULT_LEVERAGE_CONFIG,
     '0x74f88Baa966407b50c10B393bBD789639EFfE78B': DEFAULT_LEVERAGE_CONFIG,

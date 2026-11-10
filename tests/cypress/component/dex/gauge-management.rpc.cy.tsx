@@ -1,12 +1,11 @@
-import { useMemo } from 'react'
-import { getAddress, parseUnits } from 'viem'
+import { getAddress, parseUnits, type Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { defaultNetworks } from '@/dex/lib/networks'
-import { tryGetPool } from '@/dex/pool.utils'
+import { usePool } from '@/dex/queries/pool.query'
 import type { TokenMapper } from '@/dex/queries/tokens.query'
 import { useStore } from '@/dex/store/useStore'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
@@ -15,7 +14,7 @@ import {
   expectErc20BalanceChange,
   expectGaugeRewardDistributor,
   getErc20Balance,
-  setGaugeManager,
+  getGaugeManager,
 } from '@cy/support/helpers/dex/gauge.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import {
@@ -27,16 +26,14 @@ import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
-import { CurveProvider, useCurve } from '@evm-ui/features/connect-wallet'
+import { CurveProvider } from '@evm-ui/features/connect-wallet'
 import { Chain } from '@primitives/network.utils'
-import { maybe } from '@primitives/objects.utils'
 import { Loading } from '@ui/components/Loading'
 import { FormPlacementProvider } from '@ui/features/form-context/FormPlacementProvider'
 import { constQ } from '@ui/features/queries/util'
 
 const POOL_ADDRESS = '0x159a866f13f3931e256946ad7d921d18acbc599f'
 const GAUGE_ADDRESS = '0x456ba8aa2aa07c26a6b5d5a6a029ab754fb851c2'
-const MANAGER_ADDRESS = '0xE13aDC278c252e04DCBdca8eDced2C973Db994fA'
 const REWARD_TOKEN_SYMBOL = 'USDe'
 const REWARD_TOKEN_ADDRESS = '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3'
 const REWARD_DISTRIBUTOR_ADDRESS = '0x427Caf62D66fCec08FA55F0991DBCA66a8BfA7E7'
@@ -52,15 +49,10 @@ type GaugeManagementForm = keyof typeof gaugeManagementForms
 
 function GaugeManagementFormTest({ form }: { form: GaugeManagementForm }) {
   const { isPending } = useNetworksQuery()
-  const { curveApi, isHydrated } = useCurve()
-  const pool = useMemo(
-    () => maybe(curveApi, curveApi => tryGetPool(POOL_ADDRESS, curveApi)),
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [curveApi, isHydrated],
-  )
+  const { data: pool } = usePool({ chainId: CHAIN_ID, poolAddress: POOL_ADDRESS })
   const Form = gaugeManagementForms[form]
 
-  return isPending || !isHydrated || pool == null ? (
+  return isPending || pool == null ? (
     <Loading />
   ) : (
     <PoolContextProvider network={defaultNetworks[CHAIN_ID]} pool={constQ(pool)} poolAddress={POOL_ADDRESS}>
@@ -94,6 +86,7 @@ describe('Gauge Management (RPC)', () => {
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
   let adminRpcUrl: string, publicRpcUrl: string
+  let managerAddress: Address
 
   const getVirtualNetwork = createVirtualTestnet(uuid => ({
     slug: `gauge-management-${uuid}`,
@@ -108,21 +101,17 @@ describe('Gauge Management (RPC)', () => {
     adminRpcUrl = rpcUrls.adminRpcUrl
     publicRpcUrl = rpcUrls.publicRpcUrl
 
-    fundEth({ adminRpcUrl, amountWei: FUND_AMOUNT, recipientAddresses: [MANAGER_ADDRESS, address] })
-    setGaugeManager({
-      adminRpcUrl,
-      publicRpcUrl,
-      gaugeAddress: GAUGE_ADDRESS,
-      currentManagerAddress: MANAGER_ADDRESS,
-      nextManagerAddress: address,
-    })
-    addGaugeReward({
-      adminRpcUrl,
-      publicRpcUrl,
-      gaugeAddress: GAUGE_ADDRESS,
-      managerAddress: address,
-      rewardTokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
-      distributorAddress: address,
+    getGaugeManager({ publicRpcUrl, gaugeAddress: GAUGE_ADDRESS }).then(manager => {
+      managerAddress = manager
+      fundEth({ adminRpcUrl, amountWei: FUND_AMOUNT, recipientAddresses: [managerAddress] })
+      addGaugeReward({
+        adminRpcUrl,
+        publicRpcUrl,
+        gaugeAddress: GAUGE_ADDRESS,
+        managerAddress,
+        rewardTokenAddress: DEPOSIT_REWARD_TOKEN_ADDRESS,
+        distributorAddress: address,
+      })
     })
   })
 
@@ -145,7 +134,7 @@ describe('Gauge Management (RPC)', () => {
   })
 
   it('adds a gauge reward token', () => {
-    cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={privateKey} form="addReward" />)
+    cy.mount(<GaugeManagementTestCase vnet={getVirtualNetwork()} account={managerAddress} form="addReward" />)
 
     cy.get('[data-testid="add-reward-token-selector"]', TIMEOUTS['ui.render'])
       .should('contain', 'DAI')
@@ -159,7 +148,7 @@ describe('Gauge Management (RPC)', () => {
     submitAndExpectToast(
       () => cy.get('[data-testid="add-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
       { message: `Added reward token ${REWARD_TOKEN_SYMBOL}` },
-      'evm.confirmation',
+      'tenderly.submit',
     )
     expectGaugeRewardDistributor({
       publicRpcUrl,
@@ -179,7 +168,7 @@ describe('Gauge Management (RPC)', () => {
         submitAndExpectToast(
           () => cy.get('[data-testid="deposit-reward-submit-button"]', TIMEOUTS['ui.interaction']).click(),
           { message: 'Deposited reward token', approvalMessage: 'Approved deposit reward' },
-          'evm.confirmation',
+          'tenderly.submit',
         )
         expectErc20BalanceChange({
           publicRpcUrl,

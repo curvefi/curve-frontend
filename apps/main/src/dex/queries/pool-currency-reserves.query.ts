@@ -1,12 +1,11 @@
 import { isNaN } from 'lodash'
 import { test } from 'vest'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { fetchTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { assert } from '@primitives/objects.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -22,7 +21,7 @@ const {
   useQuery: usePoolCurrencyReservesQuery,
   fetchQuery: fetchPoolCurrencyReserves,
   invalidate: invalidatePoolCurrencyReservesQuery,
-} = queryFactory({
+} = hydratedQueryFactory({
   category: 'dex.pool',
   queryKey: ({ chainId, poolAddress, isWrapped, useApi }: PoolCurrencyReservesParams) =>
     ({ name: 'stats.currencyReserves', chainId, poolAddress, isWrapped, useApi }) as const,
@@ -83,8 +82,7 @@ export const invalidatePoolCurrencyReserves = (params: PoolParams) =>
 
 /** Hook to fetch reserves for the selected pool token representation. */
 export const usePoolCurrencyReserves = (params: Omit<PoolCurrencyReservesParams, 'useApi'>) =>
-  useHydratedQuery(
-    usePoolCurrencyReservesQuery,
+  usePoolCurrencyReservesQuery(
     { ...params, useApi: !useCurve()?.curveApi?.signerAddress },
     useCurve().curveApi?.isNoRPC === false,
   )

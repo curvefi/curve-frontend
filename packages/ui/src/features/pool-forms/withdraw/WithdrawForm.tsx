@@ -69,6 +69,7 @@ export const WithdrawForm = ({
         isDisabled={isPending}
       />
       <PoolTokenInputs
+        form={form}
         tokens={tokens}
         disabled={isPending}
         positionAmounts={maxAmounts}

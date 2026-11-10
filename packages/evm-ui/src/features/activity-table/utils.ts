@@ -5,7 +5,7 @@ import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
-import type { ActivityTokenDelta, MarketEventRow } from './types'
+import type { ActivityTokenDelta, MarketEventRow, PoolLiquidityRow } from './types'
 
 const PROCESSING_TIMEOUT_MS = REFRESH_INTERVAL['1h']
 
@@ -93,3 +93,27 @@ export const getLlammaEventTokenDeltas = (event: MarketEventRow): ActivityTokenD
     }
   }
 }
+
+export const getPoolLiquidityEventAction = ({ eventType }: PoolLiquidityRow) =>
+  eventType === 'AddLiquidity'
+    ? { label: t`Add`, color: 'success' as const }
+    : { label: t`Remove`, color: 'error' as const }
+
+/** Lists non-zero pool token deltas in their original token order. */
+export const getPoolLiquidityEventTokenDeltas = ({
+  tokenAmounts,
+  poolTokens,
+  eventType,
+  blockchainId,
+  time,
+}: PoolLiquidityRow): ActivityTokenDelta[] =>
+  tokenAmounts
+    .map((amount, index) => ({
+      label: t`Token ${index + 1}`,
+      token: poolTokens[index],
+      blockchainId,
+      amount: eventType === 'AddLiquidity' ? amount : -amount,
+      amountUsd: undefined,
+      timestamp: time,
+    }))
+    .filter(({ amount }) => amount !== 0)

@@ -1,86 +1,63 @@
-import type { Chain } from '@curvefi/prices-api'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
-import Stack from '@mui/material/Stack'
-import { type Token } from '@primitives/address.utils'
-import { formatNumber } from '@primitives/number.utils'
-import { InlineTableCell } from '@ui/components/InlineTableCell'
-import { TokenIcon } from '@ui/components/TokenIcon'
-import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { RowBreakdownConfig } from '@ui/features/tables/DataRow'
 import { t } from '@ui/lib/i18n'
+import { BreakdownActionLabel } from '../cells/BreakdownActionLabel'
 import { PoolLiquidityActionCell } from '../cells/PoolLiquidityActionCell'
-import type { PoolLiquidityRow } from '../types'
-
-const { Spacing } = SizesAndSpaces
+import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
+import type { ActivityTokenDelta, PoolLiquidityRow } from '../types'
+import { getPoolLiquidityEventAction, getPoolLiquidityEventTokenDeltas } from '../utils'
 
 export enum PoolLiquidityColumnId {
   Action = 'eventType',
+  TokenAmount = 'tokenAmount',
   User = 'provider',
   Time = 'time',
 }
 
-export const getTokenAmountColumnId = (tokenIndex: number): string => `tokenAmount_${tokenIndex}`
-
 const columnHelper = createAppColumnHelper<PoolLiquidityRow>()
 
-type CreatePoolLiquidityColumnsParams = { blockchainId: Chain | undefined; poolTokens: Token[] }
-
-export const createPoolLiquidityColumns = ({ blockchainId, poolTokens }: CreatePoolLiquidityColumnsParams) =>
-  columnHelper.columns([
-    columnHelper.accessor('provider', {
-      id: PoolLiquidityColumnId.User,
-      header: t`Address`,
-      cell: ({ getValue, row }) => (
-        <AddressCell address={getValue()} explorerUrl={scanAddressPath(row.original.chainId, row.original.provider)} />
-      ),
-    }),
-    columnHelper.display({
-      id: PoolLiquidityColumnId.Action,
-      header: t`Action`,
-      cell: ({ row }) => <PoolLiquidityActionCell event={row.original} />,
-    }),
-    // Generate one column per token
-    ...poolTokens.map((token, index) =>
-      columnHelper.display({
-        id: getTokenAmountColumnId(index),
-        header: () => (
-          <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-            {token.symbol ?? t`Token ${index + 1}`}
-            <TokenIcon blockchainId={blockchainId} address={token.address} size="mui-md" />
-          </Stack>
-        ),
-        cell: ({ row }) => {
-          const { tokenAmounts, eventType } = row.original
-          const amount = tokenAmounts[index] ?? 0
-          const isAdd = eventType === 'AddLiquidity'
-          const displayAmount = isAdd ? amount : -amount
-
-          return (
-            <InlineTableCell sx={{ alignItems: 'end' }}>
-              <TokenInfo
-                iconPosition="right"
-                // 0 is a valid value returned by the prices api, but our convention is to show - rather than zero.
-                primary={amount === 0 ? '-' : formatNumber(displayAmount, 'token.amount')}
-              />
-            </InlineTableCell>
-          )
-        },
-        meta: { type: 'numeric' },
-      }),
+export const POOL_LIQUIDITY_COLUMNS = columnHelper.columns([
+  columnHelper.accessor('provider', {
+    id: PoolLiquidityColumnId.User,
+    header: t`Address`,
+    cell: ({ getValue, row }) => (
+      <AddressCell address={getValue()} explorerUrl={scanAddressPath(row.original.chainId, row.original.provider)} />
     ),
-    columnHelper.accessor('time', {
-      id: PoolLiquidityColumnId.Time,
-      header: t`Time`,
-      cell: ({ row }) => (
-        <TimestampCell
-          timestamp={new Date(row.original.time)}
-          txUrl={scanTxPath(row.original.chainId, row.original.txHash)}
-          align="end"
-        />
-      ),
-      meta: { type: 'numeric' },
-    }),
-  ])
+  }),
+  columnHelper.display({
+    id: PoolLiquidityColumnId.Action,
+    header: t`Action`,
+    cell: ({ row }) => <PoolLiquidityActionCell event={row.original} />,
+  }),
+  columnHelper.display({
+    id: PoolLiquidityColumnId.TokenAmount,
+    header: t`Token amount`,
+    cell: ({ row }) => <TokenDeltaAmountCell deltas={getPoolLiquidityEventTokenDeltas(row.original)} />,
+    meta: { type: 'numeric' },
+  }),
+  columnHelper.accessor('time', {
+    id: PoolLiquidityColumnId.Time,
+    header: t`Time`,
+    cell: ({ row }) => (
+      <TimestampCell
+        timestamp={new Date(row.original.time)}
+        txUrl={scanTxPath(row.original.chainId, row.original.txHash)}
+        align="end"
+      />
+    ),
+    meta: { type: 'numeric' },
+  }),
+])
+
+/** One breakdown row per non-zero token when a liquidity event involves multiple tokens. */
+export const POOL_LIQUIDITY_BREAKDOWN: RowBreakdownConfig<PoolLiquidityRow, ActivityTokenDelta> = {
+  getItems: getPoolLiquidityEventTokenDeltas,
+  getItemKey: ({ label }) => label,
+  cells: {
+    [PoolLiquidityColumnId.Action]: (_, event) => <BreakdownActionLabel {...getPoolLiquidityEventAction(event)} />,
+    [PoolLiquidityColumnId.TokenAmount]: delta => <TokenDeltaAmountCell deltas={[delta]} />,
+  },
+}

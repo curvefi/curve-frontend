@@ -5,9 +5,8 @@ import { oneAddress, oneInt } from '@cy/support/generators'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Decimal } from '@primitives/decimal.utils'
-import { recordValues } from '@primitives/objects.utils'
+import { QUERY_CATEGORIES } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
-import { QUERY_TYPES } from '@ui/features/queries/query-types'
 import { readContractsQueryOptions } from '@wagmi/core/query'
 import { createMockLendMarket } from './mock-market.helpers'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
@@ -25,10 +24,12 @@ const seedErc20BalanceQuery = ({
   rawBalance: bigint
   decimals?: number
 }) => {
-  // disable refetching, otherwise real RPC calls to invalid token addresses run after expiration
-  recordValues(QUERY_TYPES).forEach(queryType =>
-    Object.assign(queryType, { ...queryType, staleTime: Infinity, gcTime: Infinity, refetchInterval: undefined }),
-  )
+  // Keep seeded balances fixed, including after transaction invalidation.
+  cy.stub(QUERY_CATEGORIES, 'global.tokenBalance').value({
+    ...QUERY_CATEGORIES['global.tokenBalance'],
+    staleTime: 'static',
+    refetchInterval: false,
+  })
 
   const { queryKey } = readContractsQueryOptions(mockedWagmiConfig, {
     contracts: [
@@ -114,6 +115,7 @@ export const seedLendMarketSolvencyQueries = ({
       totalDebtUsd: 20,
       vault: vaultAddress,
       gaugeAddress: null,
+      borrowGaugeAddress: null,
       llamma: oneAddress(),
       collateralToken: {
         symbol: market.collateral_token.symbol,

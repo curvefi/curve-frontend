@@ -2,13 +2,14 @@ import { type ReactNode, useMemo } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { POOL_LIQUIDITY_BREAKDOWN } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
 import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
 import { PoolTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolTradesExpandedPanel'
-import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
-import { TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
-import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import { OhlcChart } from '@evm-ui/features/candle-chart/OhlcChart'
 import Stack from '@mui/material/Stack'
 import { Tabs } from '@ui/components/Tabs/Tabs'
+import { TIME_OPTIONS } from '@ui/features/charts/chart.utils'
+import { ChartHeader } from '@ui/features/charts/ChartHeader'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { useOhlcChartState } from './hooks/useOhlcChartState'
@@ -29,6 +30,7 @@ const EventsTab = ({ liquidityTable }: OhlcTabsParams) => (
     emptyState={liquidityTable.emptyState}
     errorState={liquidityTable.errorState}
     expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
+    rowBreakdown={POOL_LIQUIDITY_BREAKDOWN}
   />
 )
 
@@ -56,7 +58,7 @@ const ChartTab = ({
       timeOption={{ options: TIME_OPTIONS, activeOption: ohlcChartProps.timeOption, setActiveOption: setTimeOption }}
       isLoading={isLoading}
     />
-    <ChartWrapper {...ohlcChartProps} />
+    <OhlcChart {...ohlcChartProps} />
   </Stack>
 )
 

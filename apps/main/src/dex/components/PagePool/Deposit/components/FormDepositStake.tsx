@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be deleted. */
+
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
@@ -94,11 +98,11 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
         pool,
         { isWrapped, ...updatedFormValues },
         loadMaxAmount,
-        seed.isSeed,
+        seed.data,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [config, curve, isWrapped, maxSlippage, pool, seed.isSeed, setFormValues],
+    [config, curve, isWrapped, maxSlippage, pool, seed.data, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -222,7 +226,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // max Slippage
   useEffect(() => {
@@ -262,7 +266,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
   ])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const disableForm = !seed.loaded || formStatus.formProcessing
+  const disableForm = seed.data == null || formStatus.formProcessing
 
   const estLpTokenReceivedUsdAmount = useMemo(() => {
     if (formLpTokenExpected.expected && formLpTokenExpected.virtualPrice) {
@@ -281,7 +285,7 @@ export const FormDepositStake = ({ poolAlert, maxSlippage, seed }: TransferProps
         formValues={formValues}
         haveSigner={haveSigner}
         blockchainId={blockchainId}
-        isSeed={seed.isSeed}
+        isSeed={seed.data}
         updateFormValues={updateFormValues}
       />
 

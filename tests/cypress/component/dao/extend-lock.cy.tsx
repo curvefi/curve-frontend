@@ -40,7 +40,7 @@ describe('FormLockDate (mocked)', () => {
     cy.get('[data-testid="estimated-tx-cost"]').should('contain.text', '$')
     cy.then(() => assertPreSubmit(ONE_YEAR_FROM_ROUNDED_LOCK_DAYS))
 
-    cy.get('[data-testid="extend-lock-submit-button"]').should('be.enabled').click()
+    cy.get('[data-testid="extend-lock-submit-button"]').click()
     cy.wrap(null).should(() => assertSubmit(ONE_YEAR_FROM_ROUNDED_LOCK_DAYS))
   })
 

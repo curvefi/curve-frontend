@@ -1,4 +1,3 @@
-import { curvejsApi } from '@/dex/lib/curvejs'
 import type { ChainId } from '@/dex/types/main.types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
@@ -9,7 +8,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 export const { useQuery: useAppStatsVolume } = queryFactory({
   queryKey: ({ chainId }: ChainParams<ChainId>) => ({ name: 'appStatsVolume', chainId }) as const,
   queryFn: async ({ chainId }: ChainQuery<ChainId>) =>
-    isLiteChain(chainId) ? null : await curvejsApi.network.getVolume(requireLib('curveApi')),
+    isLiteChain(chainId) ? null : await requireLib('curveApi').getVolume(),
   validationSuite: curveApiValidationSuite,
   category: 'dex.appStats',
 })

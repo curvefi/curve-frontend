@@ -78,6 +78,15 @@ describe('GET routes mocked unit tests', () => {
       expect(getProviderRequest(fetchMock).params[feeParam]).toBe(feeBps)
     })
 
+    it('rejects an unsupported market with a 400', async () => {
+      const fetchMock = mockFetch(response())
+
+      const { statusCode } = await getRoutes(router, { controllerAddress: USER })
+
+      expect(statusCode).toBe(400)
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
     it.each(SLIPPAGE_CASES)('converts $slippage% slippage', async ({ slippage, ...expected }) => {
       const fetchMock = mockFetch(response())
 

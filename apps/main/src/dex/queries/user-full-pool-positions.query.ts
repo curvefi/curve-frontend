@@ -10,7 +10,7 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 
 export const {
   useQuery: useUserFullPoolPositions,
-  queryKey: getUserFullPoolPositionsQueryKey,
+  reset: resetUserFullPoolPositions,
   invalidate: invalidateUserFullPoolPositions,
 } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>

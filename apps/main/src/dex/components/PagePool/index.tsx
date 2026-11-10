@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
-import { useShallow } from 'zustand/react/shallow'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
@@ -9,7 +8,7 @@ import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStak
 import { LegacyFormDeposit } from '@/dex/components/PagePool/Deposit/components/LegacyFormDeposit'
 import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
 import { Swap } from '@/dex/components/PagePool/Swap'
-import type { PageTransferProps, Seed, TransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, TransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
   getDepositTabAlert,
   getSlippageType,
@@ -21,38 +20,45 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw as LegacyFormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge/model/gauge.query'
 import { AddRewardToken } from '@/dex/features/add-gauge-reward-token/ui/AddRewardToken'
-import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
+import { AdvancedDepositTab, OneCoinDepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
+import { PointsCampaigns } from '@/dex/features/pool-information/components/points-campaigns'
+import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { WithdrawTab } from '@/dex/features/withdraw/components/WithdrawTab'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
+import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
+import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
-import { PoolPageHeader } from '@/dex/widgets/page-header/PoolPageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
-import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
+import { MAINNET_CRV } from '@evm-ui/utils/address'
+import Stack from '@mui/material/Stack'
 import { zip } from '@primitives/array.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
+import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
+import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
+import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdown'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { constQ, fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
+import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { PoolAlertBanner } from '../PoolAlertBanner'
-
-const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
-
-const FormDeposit = (props: TransferProps) =>
-  useNewPoolForms() ? <DepositTab {...props} /> : <LegacyFormDeposit {...props} />
 
 const FormWithdraw = (props: TransferProps) => {
   const { pool } = usePoolContext()
@@ -64,7 +70,7 @@ const FormWithdraw = (props: TransferProps) => {
   )
 }
 
-const menu = [
+const legacyMenu = [
   {
     value: 'deposit',
     label: t`Deposit`,
@@ -72,7 +78,7 @@ const menu = [
       {
         value: 'DEPOSIT',
         label: t`Deposit`,
-        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDeposit} {...props} />,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={LegacyFormDeposit} {...props} />,
       },
       {
         value: 'STAKE',
@@ -125,11 +131,87 @@ const menu = [
   },
 ] as const satisfies FormTab<TransferTabsParams>[]
 
+const menu = [
+  {
+    value: 'seed-pool',
+    label: t`Seed pool`,
+    visible: ({ seed }) => seed.data === true,
+    component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
+  },
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    visible: ({ seed }) => seed.data === false,
+    subTabs: [
+      {
+        value: 'deposit-one-coin',
+        label: t`One coin`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={OneCoinDepositTab} {...props} />,
+      },
+      {
+        value: 'DEPOSIT',
+        label: t`Advanced`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={AdvancedDepositTab} {...props} />,
+      },
+      {
+        value: 'STAKE',
+        label: t`Stake`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormStake} {...props} />,
+      },
+      {
+        value: 'DEPOSIT_STAKE',
+        label: t`Deposit & Stake`,
+        component: props => <TabGuard alert={getDepositTabAlert} otherwise={FormDepositStake} {...props} />,
+      },
+    ],
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    visible: ({ seed }) => seed.data === false,
+    subTabs: [
+      {
+        value: 'WITHDRAW',
+        label: t`Withdraw`,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
+      },
+      { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
+      { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
+    ],
+  },
+  {
+    value: 'swap',
+    label: t`Swap`,
+    visible: ({ seed }) => seed.data === false,
+    component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
+  },
+  {
+    value: 'manage-gauge',
+    label: t`Gauge`,
+    visible: p => p.seed.data === false && (!!p.isGaugeManager || !!p.isRewardsDistributor),
+    subTabs: [
+      {
+        value: 'add_reward',
+        label: t`Add Reward`,
+        visible: p => !!p.isGaugeManager,
+        component: () => <AddRewardToken />,
+      },
+      {
+        value: 'deposit_reward',
+        label: t`Deposit Reward`,
+        visible: p => !!p.isRewardsDistributor,
+        component: () => <DepositReward />,
+      },
+    ],
+  },
+] as const satisfies FormTab<TransferTabsParams>[]
+
 /** Replaces old form-specific pool URLs for expanded-row links that should open a specific form tab. */
 type PoolRouteState = { defaultTab?: (typeof menu)[number]['value'] }
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params } = pageTransferProps
+  const newPoolForms = useNewPoolForms()
   const {
     chainId,
     blockchainId,
@@ -154,24 +236,23 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const pricesApiPoolData = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
+  const tvl = usePoolTvl({ chainId, poolAddress })
+  const volume = usePoolVolume({ chainId, poolAddress })
+  const { tooltipData: netAprTooltip, ...yieldBreakdown } = useYieldBreakdown({ chainId, poolAddress })
 
   const currentSeed = mapQuery(
     fallbackQ(
       mapQuery(currencyReserves, reserves => reserves.tokens.map(({ balance }) => +balance)),
       mapQuery(pricesApiPoolData, pool => pool.balances),
     ),
-    // Need useShallow as mapQuery creates a new object every render, causing infinite rerenders in combination with usePreviousValue.
-    // Less complex than using useMappedQuery upstream for the fallback queries.
-    useShallow((balances: number[] | undefined) =>
-      balances?.length ? { isSeed: balances.every(balance => balance === 0), loaded: true } : null,
-    ),
+    balances => (balances?.length ? balances.every(balance => balance === 0) : null),
   )
 
   // Keep the last loaded status while reserve data is temporarily unavailable, including wrapped-mode changes.
-  const seed = usePreviousValue(currentSeed.data) ?? DEFAULT_SEED
+  const seed = q({ ...currentSeed, data: usePreviousValue(currentSeed.data) })
 
   useEffect(() => {
-    if (currentSeed.data?.isSeed && hasWrapped(pool.data)) setIsWrapped(true)
+    if (currentSeed.data && hasWrapped(pool.data)) setIsWrapped(true)
   }, [currentSeed.data, pool.data, setIsWrapped])
 
   const { signerAddress } = curve ?? {}
@@ -204,11 +285,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
       <DetailPageLayout
         header={
-          <PoolPageHeader
-            chainId={chainId}
-            blockchainId={blockchainId}
-            poolAddress={poolAddress}
-            // for now the page only renders when pool data has already loaded, it's not lazy yet.
+          <PoolDetailsHeader
+            backHref={dexPages.pools({ blockchainId })}
             title={mapQuery(pool, pool => pool.name)}
             tokens={
               combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
@@ -217,18 +295,54 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                   .map(([symbol, address]) => constQ({ symbol, address })),
               ).data
             }
-            pricesApiPoolData={pricesApiPoolData}
-            backHref={getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_POOLS)}
+            blockchainId={blockchainId}
+            rightItems={
+              <PoolHeaderMetrics
+                netApr={yieldBreakdown.total}
+                netAprTooltip={maybe(netAprTooltip.data, data => (
+                  <NetRateTooltipContent {...data} crvToken={MAINNET_CRV} />
+                ))}
+                tvl={fallbackQ(
+                  mapQuery(tvl, tvl => amount(tvl)),
+                  mapQuery(pricesApiPoolData, pool => amount(pool.tvlUsd)),
+                )}
+                volume24h={fallbackQ(
+                  mapQuery(volume, volume => amount(volume)),
+                  mapQuery(pricesApiPoolData, pool => amount(pool.tradingVolume24h)),
+                )}
+              />
+            }
           />
         }
-        formTabs={{ content: tabParams && <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} /> }}
+        formTabs={{
+          content: newPoolForms ? (
+            seed.data == null ? (
+              seed.error && <AlertDisableForm>{seed.error.message}</AlertDisableForm>
+            ) : (
+              <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />
+            )
+          ) : (
+            <FormTabs menu={legacyMenu} params={tabParams} defaultValue={defaultTab} />
+          ),
+        }}
       >
         <CampaignRewardsBanner />
         <UserPosition />
         {!isLiteChain(chainId) && pricesApiPoolData.data && (
           <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
         )}
-        {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />}
+        <Stack sx={stackedCardHeadersSx}>
+          {!isLiteChain(chainId) && (
+            <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
+          )}
+          <YieldBreakdown
+            {...yieldBreakdown}
+            totalTooltip={maybe(netAprTooltip.data, data => (
+              <NetRateTooltipContent {...data} crvToken={MAINNET_CRV} />
+            ))}
+          />
+          <PointsCampaigns />
+        </Stack>
         <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />
         <PoolAdvancedDetails />
       </DetailPageLayout>

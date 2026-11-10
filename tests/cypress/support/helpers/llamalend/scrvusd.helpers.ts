@@ -65,7 +65,7 @@ export const setScrvUsdInfiniteAllowance = (approveInfinite: boolean) => {
 }
 
 const readCrvUsdAllowance = ({ publicRpcUrl, userAddress }: { publicRpcUrl: string; userAddress: Address }) =>
-  cy.then(async () => {
+  cy.then(TIMEOUTS['tenderly.allowance'], async () => {
     const publicClient = createPublicClient({ transport: http(publicRpcUrl) })
     const allowance = await publicClient.readContract({
       address: CRVUSD_ADDRESS,
@@ -98,20 +98,20 @@ const checkNoFormErrors = () => {
 }
 
 const checkLoadedActionValue = (testId: string) =>
-  getActionValue(testId, 'evm.simulation').should(value => {
+  getActionValue(testId, 'tenderly.simulation').should(value => {
     expect(value).to.be.a('string').and.not.equal('').and.not.equal('-')
     expect(value).not.to.contain('...')
   })
 
 const checkLoadedUsdActionValue = (testId: string) => {
   checkLoadedActionValue(testId)
-  getActionValue(testId, 'evm.simulation').should('contain', '$')
+  getActionValue(testId, 'tenderly.simulation').should('contain', '$')
 }
 
 type PositionDetailsState = 'zero' | 'positive'
 
 const checkMetricValue = (testId: string, expected: PositionDetailsState) =>
-  getMetricValue(testId, 'evm.contractRead').should(value =>
+  getMetricValue(testId, 'tenderly.contractRead').should(value =>
     ({
       zero: () => expect(decimalCompare(value as Decimal, '0')).to.equal(0),
       positive: () => expect(decimalCompare(value as Decimal, '0')).to.equal(1),
@@ -123,12 +123,12 @@ export const checkScrvUsdPositionDetails = (expected: PositionDetailsState) => {
   checkMetricValue('scrvusd-position-share', expected)
   checkMetricValue('scrvusd-position-projection-30d', expected)
   checkMetricValue('scrvusd-position-projection-1y', expected)
-  getMetricValue('scrvusd-position-apy', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  getMetricValue('scrvusd-position-apy', 'tenderly.contractRead').should('match', DECIMAL_REGEX)
 }
 
 export const checkScrvUsdDepositDetailsLoaded = () => {
   cy.get('[data-testid="scrvusd-deposit-action-info-list"]', TIMEOUTS['ui.render']).should('be.visible')
-  getActionValue('scrvusd-deposit-exchange-rate', 'evm.simulation')
+  getActionValue('scrvusd-deposit-exchange-rate', 'tenderly.simulation')
     .should('contain', '1 crvUSD =')
     .and('contain', 'scrvUSD')
     .and('not.contain', '...')
@@ -142,8 +142,8 @@ export const checkScrvUsdDepositDetailsLoaded = () => {
 export const checkScrvUsdWithdrawDetailsLoaded = () => {
   cy.get('[data-testid="scrvusd-withdraw-action-info-list"]', TIMEOUTS['ui.render']).should('be.visible')
   checkLoadedActionValue('scrvusd-withdraw-receive')
-  getActionValue('scrvusd-withdraw-receive', 'evm.simulation', 'right').should('contain', 'crvUSD')
-  getActionValue('scrvusd-deposit-exchange-rate', 'evm.simulation')
+  getActionValue('scrvusd-withdraw-receive', 'tenderly.simulation', 'right').should('contain', 'crvUSD')
+  getActionValue('scrvusd-deposit-exchange-rate', 'tenderly.simulation')
     .should('contain', '1 crvUSD =')
     .and('contain', 'scrvUSD')
     .and('not.contain', '...')
@@ -152,25 +152,25 @@ export const checkScrvUsdWithdrawDetailsLoaded = () => {
 }
 
 export const submitScrvUsdDepositForm = () => {
-  cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['evm.allowance']).should(button =>
+  cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['tenderly.allowance']).should(button =>
     expect(button.text()).to.be.oneOf(['Approve & Deposit', 'Deposit']),
   )
   return submitAndExpectToast(
     () => cy.get('[data-testid="scrvusd-deposit-submit-button"]', TIMEOUTS['ui.interaction']).click(),
     { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
-    'evm.confirmation',
+    'tenderly.submit',
   )
 }
 
 export const submitScrvUsdWithdrawForm = (expectedButtonText: 'Withdraw' | 'Redeem') => {
-  cy.get('[data-testid="scrvusd-withdraw-submit-button"]', TIMEOUTS['evm.allowance']).should(
+  cy.get('[data-testid="scrvusd-withdraw-submit-button"]', TIMEOUTS['tenderly.allowance']).should(
     'have.text',
     expectedButtonText,
   )
   return submitAndExpectToast(
     () => cy.get('[data-testid="scrvusd-withdraw-submit-button"]', TIMEOUTS['ui.interaction']).click(),
     { message: 'Withdraw successful!' },
-    'evm.confirmation',
+    'tenderly.submit',
   )
 }
 
@@ -179,8 +179,8 @@ export const selectMaxScrvUsdWithdraw = () =>
 
 export const readScrvUsdWithdrawBalance = () =>
   cy
-    .get('[data-testid="scrvusd-withdraw-input"] [data-testid="balance-value"]', TIMEOUTS['evm.balances'])
-    .invoke(TIMEOUTS['evm.balances'], 'attr', 'data-value')
+    .get('[data-testid="scrvusd-withdraw-input"] [data-testid="balance-value"]', TIMEOUTS['tenderly.balances'])
+    .invoke(TIMEOUTS['tenderly.balances'], 'attr', 'data-value')
     .should(balance => expect(balance).to.be.a('string').and.not.equal('')) as Cypress.Chainable<Decimal>
 
 export const checkScrvUsdWithdrawBalanceGreaterThan = (expectedMinimum: Decimal) =>

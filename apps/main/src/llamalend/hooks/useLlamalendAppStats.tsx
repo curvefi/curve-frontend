@@ -2,7 +2,7 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
-import { type AppName, LLAMALEND_ROUTES } from '@evm-ui/shared/routes'
+import { type AppName } from '@evm-ui/shared/routes'
 import { fetchJson } from '@primitives/fetch.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -32,7 +32,7 @@ export function useLlamalendAppStats(
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
   const isMarketPage = useMatchRoute({
-    to: `${currentApp}/$network${LLAMALEND_ROUTES.PAGE_MARKETS}/$id`,
+    to: `${currentApp}/$network/markets/$id`,
     fuzzy: true, // match this route and any routes nested beneath it
   })
   const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)

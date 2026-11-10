@@ -56,9 +56,14 @@ export const YIELD_BREAKDOWN_COLUMNS = columnHelper.columns([
     header: headers[YieldBreakdownColumnId.Rate],
     cell: ({ getValue, row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <Tooltip {...row.original.rateTooltip} title={row.original.rateTooltip?.title ?? null} placement="top">
+        <Tooltip
+          mobileDrawer
+          {...row.original.rateTooltip}
+          title={row.original.rateTooltip?.title ?? null}
+          placement="top"
+        >
           {/** Needed for tooltip to work for whatever reason */}
-          <Box>
+          <Box data-testid="yield-rate-tooltip-trigger">
             <TokenInfo
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}

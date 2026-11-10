@@ -4,6 +4,7 @@ import { oneDecimal, oneInt, oneOf } from '@cy/support/generators'
 import { checkEstimatedTxCost } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { connectTestWallet, deployTestPool } from '@cy/support/helpers/stellar/connector'
 import { seedTestPool } from '@cy/support/helpers/stellar/deposit.helpers'
+import { mockLitePool } from '@cy/support/helpers/stellar/mock-lite-pool'
 import {
   fetchPoolState,
   checkPoolSlippage,
@@ -56,6 +57,7 @@ describe('Stellar testnet swap', () => {
   )
 
   const mountSwap = ({ connected = true } = {}) => {
+    mockLitePool(pool)
     cy.mount(
       <StellarTestWrapper address={connected ? testnetConfig.deployer.address : undefined}>
         <SwapTab network={TEST_NETWORK} pool={pool} />

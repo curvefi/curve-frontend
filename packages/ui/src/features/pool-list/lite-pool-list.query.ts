@@ -10,7 +10,7 @@ type ChainParams = FieldsOf<ChainQuery>
 
 export const {
   useQuery: useLitePoolList,
-  queryKey: getLitePoolListQueryKey,
+  reset: resetLitePoolList,
   invalidate: invalidateLitePoolList,
 } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ({ name: 'listLitePools', chainId }) as const,

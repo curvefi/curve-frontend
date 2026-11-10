@@ -41,9 +41,9 @@ export const poolInput = (address: StellarContract) =>
 
 /** Reselect after each action because changing an amount can rerender every token input. */
 export const writePoolAmount = (address: StellarContract, amount: Decimal | undefined) => {
-  poolInput(address).find('input').clear()
-  if (amount != null) poolInput(address).find('input').type(amount)
-  poolInput(address).find('input').blur()
+  poolInput(address).find('input[name^="amount_"], input[name="amount"]').clear()
+  if (amount != null) poolInput(address).find('input[name^="amount_"], input[name="amount"]').type(amount)
+  poolInput(address).find('input[name^="amount_"], input[name="amount"]').blur()
 }
 
 export const checkPoolSlippage = () =>

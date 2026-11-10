@@ -2,9 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "vitest/globals"],
-    "paths": {
-      "@curvefi/api-server": ["../../packages/api-server/src/index.ts"]
-    }
+    "paths": { "@api-server/*": ["../../packages/api-server/src/*"] }
   },
   "include": ["src", "test"]
 }

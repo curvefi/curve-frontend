@@ -74,7 +74,6 @@ export const useRefuelForm = ({
       decimals: q(tokenADecimals),
       balance: q(tokenABalance),
       usdRate: q(tokenAUsdRate),
-      amountError: formErrors.find(([field]) => field === 'tokenAAmount')?.[1],
     },
     tokenB: {
       address: coinB?.address,
@@ -82,7 +81,6 @@ export const useRefuelForm = ({
       decimals: q(tokenBDecimals),
       balance: q(tokenBBalance),
       usdRate: q(tokenBUsdRate),
-      amountError: formErrors.find(([field]) => field === 'tokenBAmount')?.[1],
     },
     poolTvl: mapQuery(pool, p => p.tvlUsd),
     isPending,

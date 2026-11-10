@@ -1,7 +1,10 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "curve-frontend-stellar",
-  "assets": { "directory": "./dist", "not_found_handling": "single-page-application" },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "single-page-application" },
+  "main": "./_api/_cloudflare-worker.ts",
+  "keep_vars": true,
+  "minify": true,
   "compatibility_date": "2026-09-24",
   "observability": { "logs": { "enabled": true, "invocation_logs": true } },
   "previews": {},

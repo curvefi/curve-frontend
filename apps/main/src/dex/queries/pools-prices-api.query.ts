@@ -1,4 +1,4 @@
-import { isAddress, type Address } from 'viem'
+import { type Address, isAddress } from 'viem'
 import { getPools } from '@curvefi/prices-api/pools'
 import type { ChainNameParams, ChainNameQuery } from '@evm-ui/queries/query-types'
 import { pricesApiChainValidationSuite } from '@evm-ui/queries/validation/prices-chain-validation'

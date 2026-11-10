@@ -13,7 +13,6 @@ import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { evmAddressDisplay } from '@evm-ui/utils'
 import { dayjs } from '@evm-ui/utils/dayjs'
 import type { Decimal } from '@primitives/decimal.utils'
-import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
@@ -66,14 +65,12 @@ export const PoolAdvancedDetails = () => {
   const { priceOracle, priceScale, A, initial_A, initial_A_time, future_A, future_A_time } = parameters.data ?? {}
   const { assetTypes, basePool, coins, hasDonations, metapool, oracles, registry, vyperVersion } = metadata.data ?? {}
   const isFxSwap = hasDonations ?? false
-  const isEywaPool = chainId === +Chain.Fantom && pool?.id.startsWith('factory-eywa')
 
   return (
     <AdvancedDetails
       chainId={chainId}
       isLoading={poolIsLoading}
       info={{
-        poolId: pool?.id,
         poolType: notFalsy(
           maybes([pool, tokens], (pool, tokens) =>
             getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
@@ -139,8 +136,7 @@ export const PoolAdvancedDetails = () => {
           mapQuery(parameters, ({ fee }) => decimal(fee)),
           mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.fee, fee => fee / 10 ** 8)),
         ),
-        daoFee: mapQuery(parameters, ({ adminFee }) => amount(isEywaPool ? +adminFee / 2 : adminFee)),
-        eywaFee: mapQuery(parameters, ({ adminFee }) => (isEywaPool ? +adminFee / 2 : null)),
+        daoFee: mapQuery(parameters, ({ adminFee }) => amount(adminFee)),
         virtualPrice: fallbackQ(
           mapQuery(parameters, ({ virtualPrice }) => decimal(virtualPrice)),
           mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.virtualPrice, value => value / 10 ** 18)),

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 import type { PoolCoin } from '@curvefi/prices-api/pools'
-import type { ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
+import type { ChartSelections } from '@ui/features/charts/ChartHeader'
 import { t } from '@ui/lib/i18n'
 import type { ChartSelection } from '../types'
 

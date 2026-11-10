@@ -198,7 +198,7 @@ const prepareBorrowedForSoftLiquidationActions = ({
     recipientAddresses: [userAddress],
   })
 
-  return loadTenderlyAccount().then(TIMEOUTS['tenderly.approve'], tenderlyAccount =>
+  return loadTenderlyAccount().then(TIMEOUTS['tenderly.submit'], tenderlyAccount =>
     approveErc20({
       client,
       spenderAddress: controllerAddress,
@@ -291,7 +291,7 @@ const moveAmmToOraclePrice = ({
   type Quote = { amount: bigint; inputUsed: bigint; isPump: boolean; outputAmount: bigint }
 
   return cy
-    .then<Quote>(TIMEOUTS['evm.contractRead'], async () => {
+    .then<Quote>(TIMEOUTS['tenderly.contractRead'], async () => {
       const [amount, isPump] = await client.readContract({
         address: ammAddress,
         abi: AMM_ABI,
@@ -324,7 +324,7 @@ const moveAmmToOraclePrice = ({
         recipientAddresses: [userAddress],
       }).then(() =>
         loadTenderlyAccount()
-          .then(TIMEOUTS['tenderly.exchange'], async tenderlyAccount => {
+          .then(TIMEOUTS['tenderly.submit'], async tenderlyAccount => {
             const tenderly = { ...tenderlyAccount, vnetId: vnet.id }
             await approveErc20({
               client,
@@ -369,7 +369,7 @@ const runSoftLiquidationPriceMove = ({
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
 }) =>
-  cy.then(TIMEOUTS['tenderly.softLiquidation'], async () => {
+  cy.then(TIMEOUTS['tenderly.submit'], async () => {
     const readParams = { client, controllerAddress, ammAddress, userAddress }
     const state = await readSoftLiquidationState(readParams)
 
@@ -394,14 +394,14 @@ const runSoftLiquidationPriceMove = ({
       timestamp: oracleObservationTimestamp,
     })
       .then(TIMEOUTS['tenderly.clock'], () => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
-      .then(TIMEOUTS['evm.contractRead'], async () => {
+      .then(TIMEOUTS['tenderly.contractRead'], async () => {
         const oracle = await readOracleState({ client, ammAddress })
         assert(
           oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
           `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetBand, targetPrice })}`,
         )
       })
-      .then(TIMEOUTS['tenderly.exchange'], () =>
+      .then(TIMEOUTS['tenderly.submit'], () =>
         moveAmmToOraclePrice({
           ammAddress,
           borrowedAddress,
@@ -412,7 +412,7 @@ const runSoftLiquidationPriceMove = ({
           vnet,
         }),
       )
-      .then(TIMEOUTS['evm.contractRead'], async quote => {
+      .then(TIMEOUTS['tenderly.contractRead'], async quote => {
         const { oracle, state } = await readSoftLiquidationSetup(readParams)
         assert(
           isSoftLiquidationState(state) && state.health > 0n,

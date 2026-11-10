@@ -1,6 +1,11 @@
 name: RPC Tests
 on:
   workflow_dispatch: # triggered manually
+    inputs:
+      spec:
+        description: Optional spec name without its extension (like supply), defaults to all RPC specs
+        required: false
+        type: string
 env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
@@ -16,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true
           cache: yarn
       - name: Restore Vite dependency cache
         uses: ./.github/actions/restore-cache
@@ -23,19 +29,22 @@ jobs:
           path: .cache/vite/tests
       - run: yarn set version stable
       - run: yarn install --immutable
+        timeout-minutes: 3
       - name: Optimize dependencies
-        run: yarn vite optimize --config vite.config.ts
+        run: yarn vite optimize --config vite.config.mts
         working-directory: tests
 
       - run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:rpc --browser electron 2>&1 | \
+          yarn run cy:run:rpc --browser electron ${SPEC:+--spec "cypress/component/**/$SPEC.rpc.cy.*"} 2>&1 | \
             tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null # rpc tests are expensive, stick to one browser
         working-directory: tests
         timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
+          DEBUG: vite:deps,vite:optimize-deps # Diagnose dependency rebuilds behind intermittent module-load failures.
           NODE_ENV: test
+          SPEC: ${{ inputs.spec }} # the last --spec wins, so this overrides the script's glob
           TEST_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-rpc
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}

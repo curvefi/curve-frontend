@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
-import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { POOL_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/pool-trades-columns'
@@ -13,7 +12,7 @@ import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -29,10 +28,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
-  const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
-
-  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
-  const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
+  const { tradesColumnVisibility } = usePoolActivityVisibility()
 
   const poolTrades = usePoolTrades({ blockchainId: network, poolAddress, page: apiPage, perPage: DEFAULT_PAGE_SIZE })
   const { data: tradesData } = poolTrades
@@ -41,7 +37,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
 
   // Transform trades data with block explorer URLs
   const tradesWithUrls = useCombinedQueries(
-    [poolTrades, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    [poolTrades, loadingQ(isHydrated || undefined)],
     useCallback(
       tradesData =>
         maybe(network, blockchainId => tradesData.trades.map(trade => ({ ...trade, chainId, blockchainId }))),

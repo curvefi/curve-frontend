@@ -24,7 +24,7 @@ export const User = () => {
   const { userAddress: rUserAddress } = useParams<UserUrlParams>()
   const { data: veCrvHolders, isLoading: holdersLoading } = useVeCrvHoldersQuery({})
 
-  const userAddress = rUserAddress.toLowerCase()
+  const userAddress = rUserAddress.toLowerCase() as Address
 
   const tableMinWidth = 41.875
 
@@ -33,7 +33,7 @@ export const User = () => {
     [userAddress, veCrvHolders],
   )
 
-  const { data: userEnsName } = useEnsName({ address: userAddress as Address })
+  const { data: userEnsName } = useEnsName({ address: userAddress })
 
   return (
     <DetailPageLayout formTabs={null} testId="user-page">

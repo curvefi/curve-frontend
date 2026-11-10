@@ -1,5 +1,6 @@
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { ETHEREUM_ONLY_NETWORK_SWITCH } from '@ui/features/layout/switch-chain/switch-policies'
 import { redirectTo } from '@ui/hooks/router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
@@ -19,6 +20,7 @@ const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'crvusd',
   component: CrvUsdClientLayout,
+  staticData: { networkSwitch: ETHEREUM_ONLY_NETWORK_SWITCH },
 })
 
 const layoutProps = { getParentRoute: () => crvusdLayoutRoute }
@@ -28,11 +30,6 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/markets/`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/beta-markets',
-    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
     ...layoutProps,
   }),
   createRoute({

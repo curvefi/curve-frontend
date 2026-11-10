@@ -40,6 +40,9 @@ type PoolListQuery = {
   pagination: number
   search: string
   poolType: string | null
+  minTvl: number
+  maxTvl: number
+  maxCreationDate: number
   sortBy: V2PoolSortField
   sortDirection: SortDirection
 }
@@ -170,6 +173,9 @@ const parsePoolListQuery = (url: URL): PoolListQuery => ({
   pagination: parseNumberParam(url.searchParams.get('pagination'), 50),
   search: url.searchParams.get('search_string')?.toLowerCase() ?? '',
   poolType: url.searchParams.get('pool_type'),
+  minTvl: parseNumberParam(url.searchParams.get('min_tvl'), -Infinity),
+  maxTvl: parseNumberParam(url.searchParams.get('max_tvl'), Infinity),
+  maxCreationDate: parseNumberParam(url.searchParams.get('max_creation_date'), Infinity),
   sortBy: parseSortBy(url.searchParams.get('sort_by')),
   sortDirection: url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc',
 })
@@ -200,7 +206,9 @@ const getPoolListResponse = (query: PoolListQuery) => {
   const filtered = orderBy(
     MOCK_POOLS.filter(pool => pool.chain_id === query.chainId)
       .filter(pool => matchesPoolType(pool, query.poolType))
-      .filter(pool => matchesSearch(pool, query.search)),
+      .filter(pool => matchesSearch(pool, query.search))
+      .filter(pool => pool.tvl_usd >= query.minTvl && pool.tvl_usd <= query.maxTvl)
+      .filter(pool => pool.creation_date <= query.maxCreationDate),
     pool => getSortValue(pool, query.sortBy),
     query.sortDirection,
   )

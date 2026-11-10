@@ -11,23 +11,19 @@ import { TableFiltersChip } from '@ui/features/tables/TableFiltersChip'
 import { TableHeader } from '@ui/features/tables/TableHeader'
 import { TableVisibilitySettingsPopover } from '@ui/features/tables/TableVisibilitySettingsPopover'
 import { useIsMobile, useIsTablet } from '@ui/hooks/useBreakpoints'
-import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { MarketsChips } from './chips/MarketsChips'
-import { DEFAULT_SORT } from './columns/column.constants'
-import { MARKET_COLUMNS } from './columns/column.definitions'
 import { MarketColumnId } from './columns/columns.enum'
+import { MARKETS_TABLE } from './columns/markets.table'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
 import { MarketsFiltersCollapsible } from './filters/MarketsFiltersCollapsible'
 import { MarketsFiltersOverlay } from './filters/MarketsFiltersOverlay'
-import { getMarketsColumnVariant, useMarketsVisibility } from './hooks/useMarketsVisibility'
+import { useMarketColumns } from './hooks/useMarketColumns'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
 import { MarketExpandedPanelActions } from './MarketExpandedPanelActions'
-
-const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
@@ -47,20 +43,16 @@ export const MarketsTable = ({
   const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    { columns: MarketColumnId },
+    { columns: MARKETS_TABLE.filterColumns },
   )
   const globalFilterFn = useMarketsGlobalFilterFn(data, globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns: MARKET_COLUMNS })
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useMarketsVisibility(
-    LOCAL_STORAGE_KEY,
-    sorting,
-    getMarketsColumnVariant(userHasPositions),
-  )
+  const { columns, sorting, onSortingChange, sortField, columnVisibility, columnSettings, toggleVisibility } =
+    useMarketColumns(MARKETS_TABLE)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useCurveTable({
-    columns: MARKET_COLUMNS,
+    columns,
     query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
@@ -94,7 +86,7 @@ export const MarketsTable = ({
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters
-          testIdPrefix={LOCAL_STORAGE_KEY}
+          testIdPrefix={MARKETS_TABLE.testId}
           disableSearchAutoFocus
           searchText={globalFilter}
           onSearch={setGlobalFilter}
@@ -118,7 +110,16 @@ export const MarketsTable = ({
               testId="btn-open-filters"
             />
           }
-          sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
+          sortChip={
+            isMobile && (
+              <MarketSortDrawer
+                testId={MARKETS_TABLE.testId}
+                columns={columns}
+                onSortingChange={onSortingChange}
+                sortField={sortField}
+              />
+            )
+          }
           chips={<MarketsChips hasFavorites={hasFavorites} {...filterProps} />}
         />
       </EvmDataTable>

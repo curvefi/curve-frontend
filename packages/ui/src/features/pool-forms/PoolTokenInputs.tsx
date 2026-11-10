@@ -2,29 +2,36 @@ import { Fragment } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { UseFormReturn } from '@ui/features/forms'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
+import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { t } from '@ui/lib/i18n'
+import type { PoolForm, PoolTokenFields } from './pool-form.utils'
 import { type PoolToken, PoolTokenInput } from './PoolTokenInput'
 
 export type PoolTokenDisabled = boolean | 'first-only'
 
-export const PoolTokenInputs = ({
+export const PoolTokenInputs = <TValues extends PoolForm>({
+  form,
   tokens,
   disabled,
   maxAmounts,
   maxSelectedIndex,
   positionAmounts,
   positionTooltip,
+  showBalance = true,
   onMax,
   onValueChange,
 }: {
+  form: UseFormReturn<TValues> & Pick<UseFormReturn<PoolTokenFields>, 'update'>
   tokens: QueryProp<PoolToken>[] | undefined
   disabled: PoolTokenDisabled
   maxAmounts?: QueryProp<Decimal>[]
   maxSelectedIndex?: number
   positionAmounts?: QueryProp<Decimal>[]
   positionTooltip?: string
+  showBalance?: boolean
   onMax?: (index: number) => void
   onValueChange: (index: number, value: Decimal | undefined) => void
 }) =>
@@ -33,6 +40,7 @@ export const PoolTokenInputs = ({
     <Fragment key={index}>
       {token ? (
         <PoolTokenInput
+          form={form}
           key={token.address}
           token={token}
           index={index}
@@ -41,7 +49,13 @@ export const PoolTokenInputs = ({
           isMaxSelected={index === maxSelectedIndex}
           onMax={onMax}
           onValueChange={onValueChange}
-          positionBalance={positionAmounts && { position: positionAmounts[index], tooltip: positionTooltip }}
+          walletBalance={
+            positionAmounts
+              ? { symbol: token.symbol, balance: positionAmounts[index], tooltip: positionTooltip, prefix: LlamaIcon }
+              : showBalance
+                ? { symbol: token.symbol, balance: token.balance }
+                : undefined
+          }
         />
       ) : (
         isLoading && <LargeTokenInputSkeleton />

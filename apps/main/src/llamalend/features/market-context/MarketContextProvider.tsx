@@ -13,8 +13,8 @@ import { createMarketContextValue } from './MarketContextValue'
 export const MarketContextProvider = <ChainId extends LlamaChainId>({
   children,
   network,
-  marketQuery,
-  apiMarket,
+  marketQuery: { data: market, isLoading: isMarketLoading, error: marketError },
+  apiMarket: { data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError },
   marketType,
 }: {
   children: ReactNode
@@ -26,8 +26,6 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const { llamaApi: api = null } = useCurve()
   const [releaseChannel] = useReleaseChannel()
-  const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
-  const { data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError } = apiMarket
   return (
     <MarketContext
       value={useMemo(
@@ -35,16 +33,8 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
           createMarketContextValue({
             chainId: network.chainId,
             blockchainId: network.blockchainId,
-            marketQuery: q({
-              data: market,
-              isLoading: isMarketLoading || (!market && !marketError && !!userAddress),
-              error: marketError,
-            }),
-            apiMarket: q({
-              data: apiMarketData,
-              isLoading: isApiMarketLoading || (!apiMarketData && !apiMarketError && !userAddress),
-              error: apiMarketError,
-            }),
+            marketQuery: q({ data: market, isLoading: isMarketLoading, error: marketError }),
+            apiMarket: q({ data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError }),
             marketType,
             userAddress,
             api,

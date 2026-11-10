@@ -1,13 +1,12 @@
 import type { UserWithdrawParams, UserWithdrawQuery } from '@/dex/features/withdraw/types'
 import { userWithdrawParamsValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import { useWithdrawIsApproved } from './withdraw-approved.query'
 import { getWithdrawImplementation } from './withdraw-query.helpers'
 
-const { useQuery: useWithdrawApproveEstimate } = queryFactory({
+const { useQuery: useWithdrawApproveEstimate } = hydratedQueryFactory({
   queryKey: ({
     chainId,
     poolAddress,
@@ -47,7 +46,7 @@ const { useQuery: useWithdrawApproveEstimate } = queryFactory({
   validationSuite: userWithdrawParamsValidationSuite,
 })
 
-const { useQuery: useWithdrawEstimate } = queryFactory({
+const { useQuery: useWithdrawEstimate } = hydratedQueryFactory({
   queryKey: ({
     chainId,
     poolAddress,
@@ -95,4 +94,4 @@ const useWithdrawEstimateGasQuery = createApprovedEstimateGasHook({
 })
 
 export const useWithdrawEstimateGas = (params: UserWithdrawParams, enabled?: boolean) =>
-  useHydratedQuery(useWithdrawEstimateGasQuery, params, enabled)
+  useWithdrawEstimateGasQuery(params, enabled)

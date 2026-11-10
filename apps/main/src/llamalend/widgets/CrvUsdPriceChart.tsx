@@ -4,17 +4,7 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
-import {
-  addMovingAverages,
-  CHART_LINE_DASH_PATTERNS,
-  type ChartLineDashPattern,
-  formatChartAxisNumber,
-} from '@evm-ui/shared/ui/Chart/chart.utils'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
-import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils/address'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { CardContent, Stack } from '@mui/material'
@@ -26,6 +16,16 @@ import { Chain } from '@primitives/network.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import {
+  addMovingAverages,
+  CHART_LINE_DASH_PATTERNS,
+  type ChartLineDashPattern,
+  formatChartAxisNumber,
+} from '@ui/features/charts/chart.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { ChartSelect } from '@ui/features/charts/ChartSelect'
+import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
+import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -132,7 +132,7 @@ export const CrvUsdPriceChart = () => {
       <CardHeader
         title={t`Historical crvUSD Peg`}
         action={
-          <SelectTimeOption
+          <ChartSelect
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}
@@ -170,22 +170,23 @@ export const CrvUsdPriceChart = () => {
           )}
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={q({ data: chartData, isLoading: showLoading, error: priceHistory.error })}
           height={Height.chart.sm}
-          isLoading={showLoading}
-          error={priceHistory.error}
-          errorMessage={t`Unable to fetch historical crvUSD peg data.`}
+          errorState={{ description: t`Unable to fetch historical crvUSD peg data.` }}
         >
-          <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
-            data={chartData}
-            height={Height.chart.sm}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | string) => formatDate(value)}
-            yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
-            yPaddingRatio={0.25}
-            renderTooltip={CrvUsdPriceTooltip}
-          />
+          {data => (
+            <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | string) => formatDate(value)}
+              yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
+              yPaddingRatio={0.25}
+              renderTooltip={CrvUsdPriceTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}

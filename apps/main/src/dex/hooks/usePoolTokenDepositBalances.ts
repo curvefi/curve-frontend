@@ -23,9 +23,7 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress 
   const hasGauge = pool?.gauge.address != null && !isAddressEqual(pool.gauge.address as Address, zeroAddress)
   return {
     hasGauge,
-    lpTokenBalance: q(
-      useTokenBalance({ chainId, userAddress, tokenAddress: pool?.lpToken as Address }, enabled && isHydrated),
-    ),
+    lpTokenBalance: q(useTokenBalance({ chainId, userAddress, tokenAddress: pool?.lpToken as Address }, enabled)),
     gaugeTokenBalance: q(
       useTokenBalance({ chainId, userAddress, tokenAddress: pool?.gauge.address as Address }, enabled && hasGauge),
     ),

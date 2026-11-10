@@ -162,6 +162,7 @@ export const Duration = {
   Focus: 50,
   FormDebounce: 350,
   TransactionPollTimeout: 2 * 60 * 1000, // 2 minutes
+  StellarPoolDeploymentRetry: 5000, // Testnet ledgers close roughly every five seconds.
   Toast: { success: 5000, info: 5000, warning: 10000, error: 10000 },
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,

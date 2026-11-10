@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
+import { useCreateLoanEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
@@ -13,13 +14,14 @@ import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/h
 import { useLowSolvencyAction } from '@/llamalend/widgets/action-card/hooks/useLowSolvencyAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useForm, useFormSync } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
-import { mapQuery, q, type Range } from '@ui/features/queries/util'
+import { futureOrCurrentQ, mapQuery, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalSum } from '@ui/lib/decimal'
 import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
@@ -140,6 +142,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const collateralTokenAddress = collateralToken?.address
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const equityLeverage = useCreateLoanEquityLeverage(params)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
@@ -160,11 +164,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     borrowToken,
     collateralToken,
     error: formActions.error ?? creationError,
-    leverage: {
-      data: expectedCollateral.data?.leverage,
-      // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
-      ...combineQueryState(maxTokenValues.debt, expectedCollateral),
-    },
+    leverage: isEquityLeverage
+      ? equityLeverage && futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+      : {
+          data: expectedCollateral.data?.leverage,
+          // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
+          ...combineQueryState(maxTokenValues.debt, expectedCollateral),
+        },
+    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: q(useCreateLoanIsApproved(params)),
     isControllerApproved: q(isControllerApproved),

@@ -1,5 +1,5 @@
 import { getAddress } from 'viem'
-import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
@@ -35,10 +35,7 @@ export const PegKeeperAdvancedDetails = ({
       label={t`Pool`}
       value={shortenAddress(poolAddress, { digits: 2 })}
       valueTooltip={
-        <ExternalLink
-          href={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
-          label={t`View pool`}
-        />
+        <ExternalLink href={dexPages.pool({ blockchainId: 'ethereum', poolAddress })} label={t`View pool`} />
       }
       copyValue={poolAddress}
       format={getAddress}

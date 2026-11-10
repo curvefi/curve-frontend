@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "deploy-cf": "node ../../.github/scripts/wait-for-ci.ts main && wrangler deploy",
     "lint": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/main --cache-strategy content . --fix",
     "start": "vite preview",
@@ -18,21 +19,22 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
+    "@curvefi/api-server": "workspace:^",
     "@curvefi/evm-ui": "workspace:^",
     "@curvefi/legacy-ui": "workspace:^",
     "@curvefi/ui": "workspace:^",
     "merkl-api": "workspace:^",
     "router-api": "workspace:^",
-    "vest": "6.3.2",
-    "vite-plugin-vercel": "11.1.1",
-    "wrangler": "4.143.0"
+    "vest": "6.3.4",
+    "vite-plugin-vercel": "11.2.0",
+    "wrangler": "4.154.0"
   },
   "devDependencies": {
-    "@sentry/vite-plugin": "5.4.0",
-    "@types/lodash": "4.17.25",
-    "@vitejs/plugin-react": "6.1.1",
+    "@sentry/vite-plugin": "11.9.0",
+    "@types/lodash": "4.17.27",
+    "@vitejs/plugin-react": "6.1.2",
     "pinst": "3.0.0",
-    "vite": "8.3.3",
+    "vite": "8.3.5",
     "vite-plugin-svgr": "5.2.0"
   }
 }

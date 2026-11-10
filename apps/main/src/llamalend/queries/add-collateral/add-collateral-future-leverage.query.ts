@@ -8,6 +8,7 @@ import { leverageCollateralValidationSuite } from '../validation/manage-loan.val
 /**
  * Query to get the user's expected leverage value in a position, after adding userCollateral
  * Note this does not support leverage values for old mint markets (marketId < 6).
+ * @deprecated Collateral leverage: collateral ÷ collateral deposited by the user, wrong after soft liquidation. Use `useEquityLeverage`.
  */
 export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>

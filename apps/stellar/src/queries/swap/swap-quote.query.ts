@@ -1,4 +1,4 @@
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { SwapQuoteParams, SwapQuoteQuery } from '@/stellar/features/swap/types'
 import { swapQuoteValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import { SWAP_FIELDS } from '@ui/features/pool-forms/swap/swap-form.utils'

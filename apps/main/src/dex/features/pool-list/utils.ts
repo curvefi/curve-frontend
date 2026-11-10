@@ -3,9 +3,8 @@ import { Alerts, getVyperExploitedAlert } from '@/dex/hooks/usePoolAlert'
 import { TOKEN_ALERTS } from '@/dex/hooks/useTokenAlert'
 import { getTokens } from '@/dex/pool.utils'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { DEX_ROUTES } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import { type Nullish, fromEntries, maybe } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import type { PoolAlerts, PoolRow, PoolRowData } from '@ui/features/pool-list/types'
@@ -46,7 +45,7 @@ export const enrichPoolRow = (
     blockchainId,
     campaigns,
     hasVyperVulnerability: isVyperVulnerablePool(chainId, pool.address),
-    url: getPath({ network: blockchainId }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}`),
+    url: dexPages.pool({ blockchainId, poolAddress: pool.address }),
     userPosition,
   }
 }

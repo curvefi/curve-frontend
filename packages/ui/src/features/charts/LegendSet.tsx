@@ -1,0 +1,68 @@
+import ButtonBase from '@mui/material/ButtonBase'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { WithWrapper } from '@ui/components/WithWrapper'
+import { TRANSITION, Duration } from '@ui/features/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import type { ChartLineDashPattern } from './chart.utils'
+
+const { Spacing } = SizesAndSpaces
+
+const TRANSITION_FUNCTION = `${TRANSITION} ${Duration.Delay}ms`
+
+export const LegendLine = ({
+  color,
+  dash,
+  opacity = 1,
+}: {
+  color: string
+  dash?: ChartLineDashPattern
+  opacity?: number
+}) => (
+  <svg
+    data-testid="chart-legend-line"
+    width="20"
+    height="2"
+    style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}
+  >
+    <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash?.join(' ')} />
+  </svg>
+)
+
+export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fill: string; opacity?: number }) => (
+  <svg
+    data-testid="chart-legend-box"
+    width="12"
+    height="12"
+    style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}
+  >
+    <rect x="0" y="0" width="12" height="12" stroke={outline} fill={fill} />
+  </svg>
+)
+
+export type LegendItem = {
+  label: string
+  line?: { lineStroke: string; dash?: ChartLineDashPattern }
+  box?: { outlineStroke?: string; fill: string }
+  toggled?: boolean
+  onToggle?: (label: string) => void
+}
+
+export const LegendSet = ({ label, line, box, toggled = true, onToggle }: LegendItem) => (
+  <WithWrapper shouldWrap={onToggle} Wrapper={ButtonBase} onClick={() => onToggle?.(label)}>
+    <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
+      {line && <LegendLine color={line.lineStroke} dash={line.dash} opacity={toggled ? 1 : 0.7} />}
+      {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} opacity={toggled ? 1 : 0.7} />}
+      <Typography
+        variant="bodySRegular"
+        sx={theme => ({
+          color: toggled ? undefined : theme.palette.text.disabled,
+          transition: `color ${TRANSITION_FUNCTION}`,
+          'button:hover &': { color: theme.palette.text.highlight },
+        })}
+      >
+        {label}
+      </Typography>
+    </Stack>
+  </WithWrapper>
+)

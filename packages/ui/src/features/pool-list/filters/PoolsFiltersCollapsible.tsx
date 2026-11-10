@@ -14,11 +14,16 @@ const getTvlFilterLabel = (serializedRange: string | undefined) => {
   return getRangeFilterLabel(getPoolsTvlLabelRange(range), 'dollar', { defaultMin: null })
 }
 
-type PoolsFiltersCollapsibleProps = { hasActiveFilters: boolean; resetFilters: () => void } & PoolsFiltersProps
+type PoolsFiltersCollapsibleProps = {
+  hasActiveFilters: boolean
+  isLite: boolean
+  resetFilters: () => void
+} & PoolsFiltersProps
 
 export const PoolsFiltersCollapsible = ({
   columnFiltersById,
   hasActiveFilters,
+  isLite,
   poolTypeFilters,
   resetFilters,
   setColumnFilter,
@@ -62,12 +67,15 @@ export const PoolsFiltersCollapsible = ({
   ]
 
   return (
-    <TableActiveFiltersBar
-      hasActiveFilters={hasActiveFilters}
-      resetFilters={resetFilters}
-      testId="dex-pool-filters-collapsible"
-    >
-      <TableActiveFilterGroups groups={activeFilterGroups} />
-    </TableActiveFiltersBar>
+    !isLite &&
+    hasActiveFilters && (
+      <TableActiveFiltersBar
+        hasActiveFilters={hasActiveFilters}
+        resetFilters={resetFilters}
+        testId="dex-pool-filters-collapsible"
+      >
+        <TableActiveFilterGroups groups={activeFilterGroups} />
+      </TableActiveFiltersBar>
+    )
   )
 }

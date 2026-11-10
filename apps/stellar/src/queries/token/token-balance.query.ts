@@ -1,4 +1,4 @@
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import {
   type BalanceParams,
   type BalanceQuery,

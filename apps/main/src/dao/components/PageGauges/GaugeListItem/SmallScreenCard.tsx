@@ -6,7 +6,7 @@ import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { IconButton } from '@legacy-ui/IconButton'
 import type { Address } from '@primitives/address.utils'
@@ -101,7 +101,7 @@ export const SmallScreenCard = ({
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap="var(--spacing-3)" flexAlignItems="center" margin="var(--spacing-2) auto">
             <InternalLinkButton
-              to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}
+              to={daoPages.gauge({ gaugeAddress: gaugeData.effective_address as Address })}
             >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>

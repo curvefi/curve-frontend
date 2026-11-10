@@ -1,13 +1,12 @@
 import { userDepositParamsValidationSuite } from '@/dex/features/deposit/deposit.validation'
 import type { DepositParams, DepositQuery, UserDepositParams } from '@/dex/features/deposit/types'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import { useDepositIsApproved } from './deposit-approved.query'
 
-const { useQuery: useDepositApproveEstimate } = queryFactory({
+const { useQuery: useDepositApproveEstimate } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, userAddress, isWrapped, amounts }: UserDepositParams) =>
     ({ name: 'estimateGas.depositApprove', chainId, poolAddress, userAddress, isWrapped, amounts }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>
@@ -16,7 +15,7 @@ const { useQuery: useDepositApproveEstimate } = queryFactory({
   validationSuite: userDepositParamsValidationSuite,
 })
 
-const { useQuery: useDepositEstimate } = queryFactory({
+const { useQuery: useDepositEstimate } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, userAddress, isWrapped, slippage, amounts }: UserDepositParams) =>
     ({ name: 'estimateGas.deposit', chainId, poolAddress, userAddress, isWrapped, slippage, amounts }) as const,
   queryFn: async ({ poolAddress, isWrapped, slippage, amounts }: DepositQuery) =>
@@ -32,4 +31,4 @@ const useDepositEstimateGasQuery = createApprovedEstimateGasHook({
 })
 
 export const useDepositEstimateGas = (params: DepositParams, enabled?: boolean) =>
-  useHydratedQuery(useDepositEstimateGasQuery, params, enabled)
+  useDepositEstimateGasQuery(params, enabled)

@@ -21,7 +21,7 @@ type SupplyBoost = {
   type: SupplyBoostType
   apy: number | Nullish
   totalApy: number | Nullish
-  totalAverageApy: number | Nullish
+  totalAverageApy?: number | Nullish
 }
 export type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | Nullish
@@ -30,7 +30,7 @@ export type MarketSupplyRateTooltipContentProps = {
   extraRewards: CampaignRewards[]
   extraIncentives: ExtraIncentive[]
   totalApy: number | Nullish
-  totalAverageApy: number | Nullish
+  totalAverageApy?: number | Nullish
   boost: SupplyBoost
   rebasingYieldApy: number | Nullish
   rebasingSymbol?: string | Nullish

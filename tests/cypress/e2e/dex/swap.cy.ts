@@ -7,7 +7,7 @@ describe('DEX Swap', () => {
   const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDT/
 
   it('shows quotes via router API when disconnected', () => {
-    cy.visitWithoutTestConnector(`dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
+    cy.visitWithoutTestConnector(`/dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
     cy.get('[data-testid="btn-connect-wallet"]', TIMEOUTS['ui.render']).should('be.enabled')
     cy.get(`[data-testid="token-icon-${FROM_USDT}"]`, TIMEOUTS['router.tokens']).should('be.visible')
 

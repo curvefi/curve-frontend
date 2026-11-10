@@ -9,6 +9,7 @@ export type WithdrawLockQuery = UserChainQuery<ChainId> & {
   lockedAmount: Decimal
   /** Unix timestamp in milliseconds. */
   unlockTime: number
+  currentDate: Date
 }
 
 export type WithdrawLockParams = FieldsOf<WithdrawLockQuery>

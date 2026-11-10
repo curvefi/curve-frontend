@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import react from '@vitejs/plugin-react'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import svgr from 'vite-plugin-svgr'
 import { vercel } from 'vite-plugin-vercel/vite'
+import { reactCompiler } from '../../react-compiler.config.mts'
 
 const {
+  MERKL_API_PROXY_TARGET = 'http://localhost:3011',
   SENTRY_AUTH_TOKEN,
   SENTRY_ORG,
   SENTRY_PROJECT,
@@ -18,17 +19,23 @@ const isVercelDeployment = process.env.VERCEL === '1'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  server: { port: 3100, hmr: true, ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'] },
+  server: {
+    port: 3100,
+    hmr: true,
+    proxy: { '/api/merkl': { target: MERKL_API_PROXY_TARGET, changeOrigin: true } },
+    ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
+  },
   preview: { port: 3100 },
   build: { sourcemap: true },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-stellar'),
   plugins: [
     react(),
-    babel({ presets: [reactCompilerPreset({ compilationMode: 'annotation' })] }),
+    reactCompiler(),
     svgr(),
     ...(isVercelDeployment
       ? [
           vercel({
+            entries: [{ id: resolve(__dirname, '_api/merkl.ts'), route: '/api/merkl/**' }],
             rewrites: [
               { source: '/favicon', destination: '/favicon.ico' },
               { source: '/(.*)', destination: '/index.html', enforce: 'post' },
@@ -53,12 +60,18 @@ export default defineConfig(({ command }) => ({
   resolve: {
     alias: [
       { find: '@/stellar', replacement: resolve(__dirname, './src') },
+      { find: '@api-server', replacement: resolve(__dirname, '../../packages/api-server/src') },
+      { find: '@merkl-api', replacement: resolve(__dirname, '../merkl-api/src') },
       { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src') },
+      { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
   },
-  define: { 'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production') },
+  define: {
+    'process.env.STELLAR_STANDALONE': JSON.stringify(process.env.STELLAR_STANDALONE),
+    'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
+  },
   ...(isVercelDeployment && {
     // the vercel plugin requires us to build the frontend, it then copies the files in dist
     builder: { buildApp: async builder => void (await builder.build(builder.environments.client)) },

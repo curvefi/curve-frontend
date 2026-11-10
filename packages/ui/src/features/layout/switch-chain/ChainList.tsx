@@ -1,13 +1,13 @@
 import lodash from 'lodash'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { recordEntries } from '@primitives/objects.utils'
+import { Link } from '@tanstack/react-router'
 import { MenuItem } from '@ui/components/MenuItem'
 import { MenuSectionHeader } from '@ui/components/MenuSectionHeader'
-import { RouterLink as Link } from '@ui/components/RouterLink'
 import { SearchField } from '@ui/components/SearchField'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -45,22 +45,18 @@ export function ChainList({
   options: ChainListOption[]
   showTestnets: boolean
   selectedNetworkId: string | undefined
-  onNetwork?: (network: ChainListOption) => void
+  onNetwork?: (chainId: number) => void
   tvls: QueryProp<Record<string, number>>
 }) {
   const [searchValue, setSearchValue] = useState('')
-  const groupedOptions = useMemo(
-    () =>
-      lodash.groupBy(
-        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
-        o =>
-          o.isTestnet
-            ? ChainType.test
-            : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
-              ? ChainType.lite
-              : ChainType.main,
-      ) as Record<ChainType, ChainListOption[]>,
-    [options, searchValue, tvls],
+  const groupedOptions = lodash.groupBy(
+    options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+    o =>
+      o.isTestnet
+        ? ChainType.test
+        : o.isLite || (tvls && tvls[o.blockchainId] === undefined) // flag chains not supported by prices API as lite
+          ? ChainType.lite
+          : ChainType.main,
   )
 
   const unconfiguredChains = options.filter(({ isTestnet, isConfigured }) => !isTestnet && !isConfigured)
@@ -88,18 +84,16 @@ export function ChainList({
               <Fragment key={key}>
                 <MenuSectionHeader>{title}</MenuSectionHeader>
                 <MenuList>
-                  {groupedOptions[key]?.map(network => (
-                    <MenuItem<string, typeof Link>
-                      data-testid={`menu-item-chain-${network.blockchainId}`}
-                      key={network.blockchainId}
-                      value={network.blockchainId}
-                      component={Link}
-                      // navigate to app root to avoid deep-linking to non-existing resources across chains
-                      href={network.href}
-                      isSelected={network.blockchainId == selectedNetworkId}
-                      icon={<ChainSwitcherIcon blockchainId={network.blockchainId} size={36} />}
-                      label={network.name}
-                      onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
+                  {groupedOptions[key]?.map(({ blockchainId, chainId, name, href }) => (
+                    <MenuItem
+                      data-testid={`menu-item-chain-${blockchainId}`}
+                      key={blockchainId}
+                      value={chainId}
+                      {...(blockchainId !== selectedNetworkId && { component: Link, href })}
+                      isSelected={blockchainId == selectedNetworkId}
+                      icon={<ChainSwitcherIcon blockchainId={blockchainId} size="lg" />}
+                      label={name}
+                      onSelected={onNetwork}
                       isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
                     />
                   ))}

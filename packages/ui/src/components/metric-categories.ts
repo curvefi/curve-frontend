@@ -80,10 +80,12 @@ export const METRIC_CATEGORIES = {
 
   // DAO
   'dao.crvStats': METRIC_TYPES.secondaryStat,
+  'dao.veCrvHeader': METRIC_TYPES.primaryStat,
 
   // DEX
   'dex.poolHeader': METRIC_TYPES.primaryStat,
   'dex.poolInformation': METRIC_TYPES.primaryStat,
+  'dex.liquidityDensity': METRIC_TYPES.tertiaryStat,
   'dex.userLiquidityDetails': METRIC_TYPES.primaryStat,
   'dex.refuelCharts': METRIC_TYPES.primaryStat,
   'dex.refuelPoolInformation': METRIC_TYPES.responsiveStat,

@@ -28,6 +28,9 @@ export const allViewports = () => [oneMobileViewport(), oneTabletViewport(), one
 
 export const oneViewport = () => oneOf(...allViewports())
 
+/** Browsers and ECharts lay out with fractional pixels that round differently in CI, so allow one CSS pixel. */
+export const SUBPIXEL_TOLERANCE = 1
+
 const isInViewport = ($el: JQuery) => {
   const height = Cypress.$(cy.state('window')).height()!
   const width = Cypress.$(cy.state('window')).width()!

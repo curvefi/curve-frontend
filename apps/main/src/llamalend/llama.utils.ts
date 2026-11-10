@@ -38,7 +38,8 @@ import { t } from '@ui/lib/i18n'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
-import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
+// eslint-disable-next-line no-restricted-imports -- the only reader of ZAP_V0_MINT_MARKETS, through isZapV0MintMarket
+import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS, ZAP_V0_MINT_MARKETS } from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
 import type { MarketBorrowAprTooltipContentProps } from './widgets/tooltips/MarketBorrowAprTooltipContent'
 import type { MarketSupplyRateTooltipContentProps } from './widgets/tooltips/MarketSupplyRateTooltipContent'
@@ -110,6 +111,11 @@ export const isMintMarket = (market: MarketTemplate | Nullish): market is MintMa
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   isMintMarket(market) && market.index == null && market.leverageZap !== zeroAddress
 
+export const isZapV0MintMarket = (blockchainId: Chain | undefined, controllerAddress: Address | undefined) =>
+  maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
+    ZAP_V0_MINT_MARKETS[blockchainId]?.includes(controllerAddress.toLowerCase() as Address),
+  )
+
 const hasV1Deleverage = (market: MarketTemplate) =>
   isMintMarket(market) && market.index == null && market.deleverageZap !== zeroAddress
 
@@ -127,6 +133,8 @@ export const hasResetPosition = (market: MarketTemplate | Nullish): market is Le
  * (prev)Leverage is >0 and <1 when the position has been leveraged in the past or went through soft liquidation.
  * (prev)Leverage is 1 when the position is not leveraged at all (simple borrowing, no leverage).
  * (prev)Leverage is > 1 when the position is leveraged.
+ * @deprecated Checks a collateral leverage ratio. Use `isZapLeveraged` from `useUserCollateralEvents` to know if the
+ * position borrowed through the zap, and `useEquityLeverage` for the value.
  **/
 export const isPositionLeveraged = (leverage: Amount | Nullish) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
@@ -356,29 +364,6 @@ export const getMonetaryPolicy = <T extends MarketTemplate | Nullish>(
     m => m.monetaryPolicyAddress,
   )
 
-/**
- * Calculates the loan-to-value ratio of a market.
- * @param debtAmount - The amount of debt in the market.
- * @param collateralAmount - The amount of deposited collateral.
- * @param collateralBorrowTokenAmount - The amount of collateral that has been converted into the borrow token during soft-liquidation.
- * @param borrowTokenUsdRate - The USD rate of the borrow token.
- * @param collateralTokenUsdRate - The USD rate of the collateral token.
- * @returns The loan-to-value ratio of the market.
- */
-export const calculateLtv = (
-  debtAmount: number,
-  collateralAmount: number,
-  collateralBorrowTokenAmount: number,
-  borrowTokenUsdRate: number | Nullish,
-  collateralTokenUsdRate: number | Nullish,
-) => {
-  const collateralValue =
-    collateralAmount * (collateralTokenUsdRate ?? 0) + collateralBorrowTokenAmount * (borrowTokenUsdRate ?? 0)
-  const debtValue = debtAmount * (borrowTokenUsdRate ?? 0)
-  if (collateralValue === 0 || debtValue === 0) return 0
-  return (debtValue / collateralValue) * 100
-}
-
 export const calculateLendMarketTvlUsd = ({
   borrowedBalanceUsd,
   collateralBalanceUsd,
@@ -412,7 +397,7 @@ export const updateUserEventsApi = async (
 }
 
 /**
- * Returns the minimum crvUSD stablecoin balance in a user’s AMM bands that must be
+ * Returns the minimum converted crvUSD balance in a user’s AMM bands that must be
  * exceeded before the position is considered to be in soft liquidation.
  *
  * When a user briefly enters and then exits soft liquidation, one or more bands may
@@ -422,7 +407,7 @@ export const updateUserEventsApi = async (
  *
  * However, the threshold must be skipped when the oracle price is within or near the
  * user’s bands (`userIsCloseToLiquidation=true`), because in that case even a tiny
- * stablecoin balance is genuine soft-liquidation activity, not leftover dust. Dust
+ * converted balance is genuine soft-liquidation activity, not leftover dust. Dust
  * only exists when the oracle has moved *far away* from the bands, which is exactly
  * the situation where `userIsCloseToLiquidation` is false.
  *
@@ -456,13 +441,17 @@ export const isBelowRange = (activeBand: number | Nullish, lowerBoundBand: numbe
  *
  * See https://docs.curve.finance/user/llamalend/liquidation-protection/how-it-works.
  */
-export const getDisplayHealth = (
+export const getDisplayLegacyHealth = (
   healthFull: Decimal | number | Nullish,
   healthNotFull: Decimal | number | Nullish,
 ): number | null => {
   if (healthFull == null || healthNotFull == null) return null
-  return +(+healthNotFull < 0 ? healthNotFull : healthFull)
+  return +pickDisplayLegacyHealth(healthFull, healthNotFull)
 }
+
+/** Full health by default, but band-valued health when it is negative. */
+export const pickDisplayLegacyHealth = <T extends Decimal | number>(healthFull: T, healthNotFull: T) =>
+  +healthNotFull < 0 ? healthNotFull : healthFull
 
 /**
  * healthNotFull is needed here because:
@@ -544,7 +533,11 @@ export function calculateReturnToWallet({
   collateralSymbol: string
   borrowedSymbol: string
 }): { value: Decimal; symbol: string }[] {
-  const { debt: stateDebt = '0', collateral: stateCollateral = '0', stablecoin: stateBorrowed = '0' } = userState ?? {}
+  const {
+    debt: stateDebt = '0',
+    collateral: stateCollateral = '0',
+    convertedBorrowed: stateBorrowed = '0',
+  } = userState ?? {}
   if (+totalBorrowed > 0) {
     const returnCollateral = decimalMinus(stateCollateral, stateCollateralDelta)
     const returnBorrowed = decimalMinus(decimalSum(totalBorrowed, stateBorrowed), stateDebt)

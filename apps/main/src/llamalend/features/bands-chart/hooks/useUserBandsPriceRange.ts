@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import type { FetchedBandsBalances } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { ChartDataPoint, UserBandsPriceRange } from '../types'
+import { isUserBand } from './useProcessedBandsData'
 
 /**
  * Calculates the user positions price range
@@ -10,18 +10,11 @@ import { ChartDataPoint, UserBandsPriceRange } from '../types'
  * - Display price labels at the boundaries of the user's range
  *
  * @param chartData - All available chart data points
- * @param userBandsBalances - User's positions in specific bands
  * @returns Price range data or null if user has no positions
  */
-export const useUserBandsPriceRange = (
-  chartData: ChartDataPoint[],
-  userBandsBalances: FetchedBandsBalances[],
-): UserBandsPriceRange =>
+export const useUserBandsPriceRange = (chartData: ChartDataPoint[]): UserBandsPriceRange =>
   useMemo(() => {
-    if (!userBandsBalances.length) return null
-
-    const userBandNumbers = new Set(userBandsBalances.map(band => band.n))
-    const userBands = chartData.filter(d => userBandNumbers.has(d.n))
+    const userBands = chartData.filter(isUserBand)
 
     if (!userBands.length) return null
 
@@ -34,4 +27,4 @@ export const useUserBandsPriceRange = (
       upperBandPriceUp: minBand.p_up, // Upper boundary of highest band
       lowerBandPriceDown: maxBand.p_down, // Lower boundary of lowest band
     }
-  }, [userBandsBalances, chartData])
+  }, [chartData])

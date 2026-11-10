@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
-import { createPoolLiquidityColumns } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
+import { POOL_LIQUIDITY_COLUMNS } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
 import { usePoolActivityVisibility } from '@evm-ui/features/activity-table/hooks/usePoolActivityVisibility'
 import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
@@ -13,7 +13,7 @@ import { getPageCount } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { fakeLoadingQ, mapQuery } from '@ui/features/queries/util'
+import { loadingQ } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 
@@ -31,8 +31,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
 
-  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
-  const { liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens })
+  const { liquidityColumnVisibility } = usePoolActivityVisibility()
 
   const poolLiquidityEvents = usePoolLiquidityEvents({
     blockchainId: network,
@@ -46,24 +45,19 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   // Transform liquidity data with block explorer URLs and pool tokens
   const liquidityWithUrls = useCombinedQueries(
-    [poolLiquidityEvents, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    [poolLiquidityEvents, poolPriceApi, loadingQ(isHydrated || undefined)],
     useCallback(
-      liquidityData =>
+      (liquidityData, { coins: poolTokens }) =>
         maybe(network, blockchainId =>
           liquidityData.events.map(event => ({ ...event, chainId, blockchainId, poolTokens })),
         ),
-      [network, chainId, poolTokens],
+      [network, chainId],
     ),
-  )
-
-  const liquidityColumns = useMemo(
-    () => createPoolLiquidityColumns({ blockchainId: network, poolTokens }),
-    [network, poolTokens],
   )
 
   const table = useCurveTable({
     query: liquidityWithUrls,
-    columns: liquidityColumns,
+    columns: POOL_LIQUIDITY_COLUMNS,
     state: { columnVisibility: liquidityColumnVisibility, pagination },
     manualPagination: true,
     pageCount,

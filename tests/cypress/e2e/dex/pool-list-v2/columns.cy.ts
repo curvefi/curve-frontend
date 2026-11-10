@@ -112,7 +112,7 @@ describe('V2 pool-list columns', () => {
   })
 
   it('shows the default columns and reveals optional columns in their defined order', () => {
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT, active: false })
 
     expectHeaderOrder(DEFAULT_FULL_COLUMNS)
 
@@ -175,7 +175,7 @@ describe('V2 pool-list columns', () => {
   })
 
   it('sorts yield and age columns through the pools API', () => {
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT, active: false })
     showV2PoolColumns([
       PoolColumnId.BaseRate,
       PoolColumnId.WeeklyBaseRate,
@@ -231,11 +231,13 @@ describe('V2 pool-list columns', () => {
     }
   })
 
-  it('searches and sorts every Lite pool locally without refetching or applying the default TVL filter', () => {
+  it('searches and sorts active Lite pools locally without refetching', () => {
     visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
 
     cy.get('@dex-v2-pool-chains.all').should('have.length', 0)
     cy.get('@dex-v2-pools.all').should('have.length', 0)
+    // The SDK and the pool list each fetch Lite pools once during initialization.
+    cy.get('@dex-v2-lite-pools.all').should('have.length', 2)
     getV2PoolRow(V2_POOL_FIXTURES.liteLowTvl.address).should('be.visible')
 
     const getSearch = () => cy.get('[data-testid="table-text-search-dex-pool-list"]').find('input')
@@ -267,11 +269,11 @@ describe('V2 pool-list columns', () => {
       expectFirstPool(V2_POOL_FIXTURES.liteLowTvl.address)
     }
 
-    cy.get('@dex-v2-lite-pools.all').should('have.length', 1)
+    cy.get('@dex-v2-lite-pools.all').should('have.length', 2)
   })
 
   it('classifies representative pool types and adds status badges', () => {
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT, active: false })
 
     expectPoolBadgeSet(V2_POOL_FIXTURES.showcase.address, ['badge-pool-type-stable', 'badge-pool-metapool'])
 
@@ -287,7 +289,7 @@ describe('V2 pool-list columns', () => {
   })
 
   it('adds pool and token alert badges with severity colors', () => {
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT, active: false })
 
     expectPoolBadgeSet(V2_POOL_FIXTURES.alerts.address, [
       'badge-pool-type-stable',

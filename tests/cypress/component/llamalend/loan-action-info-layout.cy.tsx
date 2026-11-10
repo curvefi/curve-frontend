@@ -112,6 +112,8 @@ describe('leverage action info', () => {
           leverageEnabled
           prevLeverageValue={constQ('2')}
           leverageValue={constQ('3')}
+          prevCollateralLeverageValue={constQ('2')}
+          collateralLeverageValue={constQ('3')}
           prevRates={constQ({ borrowApy: '2' })}
           rates={constQ({ borrowApy: '4' })}
           collateralApy={constQ(5)}

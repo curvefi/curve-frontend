@@ -1,6 +1,7 @@
 import type { Address } from 'viem'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
+import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { zip } from '@primitives/array.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { constQ } from '@ui/features/queries/util'
@@ -22,6 +23,7 @@ export const usePoolTokens = ({
   const symbols = pool?.[`${coinField}Coins`]
   const tokenAddresses = (pool && (pool[`${coinField}CoinAddresses`] as Address[])) ?? []
   const balances = useTokenBalances({ chainId, userAddress, tokenAddresses })
+  const prices = useTokenUsdRates({ chainId, tokenAddresses })
   return {
     tokenAddresses,
     tokenCount: tokenAddresses.length,
@@ -31,7 +33,7 @@ export const usePoolTokens = ({
     tokens:
       symbols &&
       zip(tokenAddresses, symbols).map(([address, symbol]) =>
-        constQ({ address, blockchainId, symbol, balance: balances[address] }),
+        constQ({ address, blockchainId, symbol, balance: balances[address], usdRate: prices[address]?.data }),
       ),
   }
 }

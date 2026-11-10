@@ -1,8 +1,6 @@
 import { type Hex } from '@primitives/address.utils'
-import { toArray } from '@primitives/array.utils'
-import { waitFor } from '@primitives/promise.utils'
 import { Duration } from '@ui/features/themes/design/0_primitives'
-import { notify } from '@ui/features/toast/Toast/notify'
+import { waitForTransaction } from '@ui/lib/waitForTransaction'
 import { type Config, waitForTransactionReceipt } from '@wagmi/core'
 
 export const gweiToEther = (gwei: number) => gwei / 1e9
@@ -12,35 +10,6 @@ export const gweiToWai = (gwei: number) => Math.trunc(gwei * 1e9)
 export const weiToEther = (wei: number) => wei / 1e18
 
 export const weiToGwei = (wai: number) => Math.trunc(wai) / 1e9
-
-/**
- * Waits for transaction execution by checking isSatisfied, and if not satisfied,
- * calls onExecute, waits for the transactions to be mined and then waits until
- * isSatisfied returns true.
- */
-async function waitForTransaction({
-  onExecute,
-  config,
-  isSatisfied,
-  onSatisfiedMessage,
-  timeout = Duration.TransactionPollTimeout,
-}: {
-  onExecute: () => Promise<Hex[] | Hex>
-  onSatisfiedMessage?: string
-  isSatisfied: () => Promise<boolean>
-  config: Config
-  timeout?: number
-}) {
-  if (await isSatisfied()) return
-  const results = await onExecute()
-  const txHashes = toArray(results)
-  if (txHashes.length > 0) {
-    await Promise.all(txHashes.map(hash => waitForTransactionReceipt(config, { hash })))
-    if (onSatisfiedMessage) notify(onSatisfiedMessage, 'success')
-    await waitFor(isSatisfied, { timeout })
-    return txHashes
-  }
-}
 
 export const waitForApproval = async ({
   onApprove,
@@ -57,7 +26,10 @@ export const waitForApproval = async ({
 }) =>
   await waitForTransaction({
     onExecute: onApprove,
-    config,
+    waitForConfirmation: async hash => {
+      await waitForTransactionReceipt(config, { hash })
+      return hash
+    },
     isSatisfied: isApproved,
     onSatisfiedMessage: message,
     timeout,

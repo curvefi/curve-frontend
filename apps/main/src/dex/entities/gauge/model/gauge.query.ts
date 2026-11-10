@@ -1,8 +1,8 @@
 import { type Address, zeroAddress } from 'viem'
 import { getGauge } from '@/dex/entities/gauge/lib/gauge-info'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { GaugeParams, GaugeQuery } from '@evm-ui/queries/query-types'
 import { poolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
-import { queryFactory } from '@ui/features/queries/factory'
 import {
   type DepositRewardApproveParams,
   DepositRewardApproveQuery,
@@ -15,7 +15,7 @@ export const {
   useQuery: useIsDepositRewardAvailable,
   invalidate: invalidateDepositRewardAvailable,
   queryKey: getDepositRewardAvailableQueryKey,
-} = queryFactory({
+} = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress }: GaugeParams) =>
     ({ name: 'isDepositRewardAvailable', chainId, poolAddress }) as const,
   queryFn: async ({ poolAddress }: GaugeQuery) => getGauge(poolAddress).isDepositRewardAvailable(),
@@ -23,7 +23,7 @@ export const {
   category: 'dex.gauge',
 })
 
-export const { useQuery: useGaugeManager } = queryFactory({
+export const { useQuery: useGaugeManager } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress }: GaugeParams) => ({ name: 'manager', chainId, poolAddress }) as const,
   queryFn: async ({ poolAddress }: GaugeQuery): Promise<Address | null> => {
     const gaugeManager = (await getGauge(poolAddress).gaugeManager()) as Address | null
@@ -33,7 +33,7 @@ export const { useQuery: useGaugeManager } = queryFactory({
   category: 'dex.poolParams',
 })
 
-export const { useQuery: useGaugeRewardsDistributors, invalidate: invalidateGaugeDistributors } = queryFactory({
+export const { useQuery: useGaugeRewardsDistributors, invalidate: invalidateGaugeDistributors } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, userAddress }: GaugeDistributorsParams) =>
     ({ name: 'distributors', chainId, poolAddress, userAddress }) as const,
   queryFn: async ({ poolAddress }: GaugeDistributorsQuery) =>
@@ -46,7 +46,7 @@ export const {
   useQuery: useGaugeDepositRewardIsApproved,
   fetchQuery: fetchDepositRewardIsApproved,
   queryKey: getDepositRewardIsApprovedQueryKey,
-} = queryFactory({
+} = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, rewardTokenId, amount }: DepositRewardApproveParams) =>
     ({ name: 'depositRewardIsApproved', chainId, poolAddress, rewardTokenId, amount }) as const,
   queryFn: async ({ poolAddress, amount, rewardTokenId }: DepositRewardApproveQuery) =>

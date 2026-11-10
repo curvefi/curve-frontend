@@ -6,8 +6,12 @@ import {
   LLAMMA_EVENTS_COLUMNS,
 } from '@evm-ui/features/activity-table/columns/llamma-events-columns'
 import { LLAMMA_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-trades-columns'
-import { createPoolLiquidityColumns } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
+import {
+  POOL_LIQUIDITY_BREAKDOWN,
+  POOL_LIQUIDITY_COLUMNS,
+} from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
 import { POOL_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/pool-trades-columns'
+import { usePoolActivityVisibility } from '@evm-ui/features/activity-table/hooks/usePoolActivityVisibility'
 import { MarketEventsExpandedPanel } from '@evm-ui/features/activity-table/panels/MarketEventsExpandedPanel'
 import { MarketTradesExpandedPanel } from '@evm-ui/features/activity-table/panels/MarketTradesExpandedPanel'
 import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
@@ -18,7 +22,7 @@ import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
-import { constQ, fakeLoadingQ, q } from '@ui/features/queries/util'
+import { constQ, loadingQ, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ActivityTable } from './ActivityTable'
@@ -104,12 +108,17 @@ const POOL_TOKENS: Token[] = [
 
 // Pool Liquidity Mock Data Generator
 const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
-  const eventTypes = ['AddLiquidity', 'RemoveLiquidity', 'RemoveLiquidityOne', 'RemoveLiquidityImbalance'] as const
+  const events = [
+    { eventType: 'AddLiquidity', tokenAmounts: [10000, 0.5, 2] },
+    { eventType: 'RemoveLiquidity', tokenAmounts: [2500, 0.1, 0.5] },
+    { eventType: 'RemoveLiquidityOne', tokenAmounts: [0, 0, 1.5] },
+    { eventType: 'RemoveLiquidityImbalance', tokenAmounts: [1000, 0, 0.25] },
+    { eventType: 'AddLiquidity', tokenAmounts: [0, 0.25, 0] },
+  ] satisfies Pick<PoolLiquidityRow, 'eventType' | 'tokenAmounts'>[]
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => ({
-    eventType: eventTypes[i % eventTypes.length],
-    tokenAmounts: [Math.random() * 10000, Math.random() * 0.5, Math.random() * 2],
+    ...events[i % events.length],
     fees: [Math.random() * 10, Math.random() * 0.001, Math.random() * 0.01],
     tokenSupply: 1000000 + Math.random() * 500000,
     blockNumber: 19000000 + i * 50,
@@ -196,7 +205,6 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
   })
 }
 
-const liquidityColumns = createPoolLiquidityColumns({ blockchainId: 'ethereum', poolTokens: POOL_TOKENS })
 const wagmiConfig = createTestWagmiConfig()
 
 /**
@@ -206,10 +214,19 @@ const wagmiConfig = createTestWagmiConfig()
 const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
+  const { tradesColumnVisibility, liquidityColumnVisibility } = usePoolActivityVisibility()
 
-  const tradesTable = useCurveTable({ query: constQ(tradesData), columns: POOL_TRADES_COLUMNS })
+  const tradesTable = useCurveTable({
+    query: constQ(tradesData),
+    columns: POOL_TRADES_COLUMNS,
+    state: { columnVisibility: tradesColumnVisibility },
+  })
 
-  const liquidityTable = useCurveTable({ query: constQ(liquidityData), columns: liquidityColumns })
+  const liquidityTable = useCurveTable({
+    query: constQ(liquidityData),
+    columns: POOL_LIQUIDITY_COLUMNS,
+    state: { columnVisibility: liquidityColumnVisibility },
+  })
 
   return (
     <>
@@ -224,6 +241,7 @@ const DexPoolActivityComponent = () => {
         emptyState={{ title: 'No liquidity data found.' }}
         errorState={{ title: 'Could not load liquidity data.' }}
         expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
+        rowBreakdown={POOL_LIQUIDITY_BREAKDOWN}
       />
     </>
   )
@@ -323,7 +341,7 @@ export const LendMarketActivity: LendStory = {
 }
 
 const LoadingStateComponent = () => {
-  const table = useCurveTable({ query: fakeLoadingQ<PoolTradeRow[]>(undefined), columns: POOL_TRADES_COLUMNS })
+  const table = useCurveTable({ query: loadingQ<PoolTradeRow[]>(undefined), columns: POOL_TRADES_COLUMNS })
   return (
     <ActivityTable
       table={table}

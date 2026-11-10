@@ -5,9 +5,9 @@ describe('Basic Access Test', () => {
   const path = oneOf('/', '/dex', '/dex/ethereum')
 
   it('should support default networks if the lite API is offline', () => {
-    cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { status: 500 }).as('error')
+    cy.intercept('https://api2.curve.finance/get_platforms', { statusCode: 500 }).as('error')
     cy.visit('/dex/plasma/pools?foo=derp')
-    cy.wait('@error', TIMEOUTS['mock.curveCore.platforms'])
+    cy.wait('@error', TIMEOUTS['mock.curveLite.platforms'])
     cy.title(TIMEOUTS['ui.navigation']).should('equal', 'Pools - Curve')
     cy.get('[data-testid="error-title"]').should('not.exist')
     cy.url().should('include', '/dex/ethereum/pools')
@@ -28,7 +28,7 @@ describe('Basic Access Test', () => {
 
   // todo: re-enable test once lite api is fixed
   it.skip('should load for lite networks', () => {
-    cy.visitWithoutTestConnector('dex/plasma/pools')
+    cy.visitWithoutTestConnector('/dex/plasma/pools')
     cy.title(TIMEOUTS['ui.navigation']).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/plasma/pools')
     cy.contains(/USDT0\/sUSDe/i, TIMEOUTS['curveLite.pools']).should('be.visible')

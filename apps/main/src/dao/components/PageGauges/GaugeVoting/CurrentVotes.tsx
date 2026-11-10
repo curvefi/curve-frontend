@@ -39,10 +39,7 @@ export const CurrentVotes = () => {
     isSuccess: userGaugeWeightsSuccess,
     isLoading: userGaugeWeightsLoading,
     isError: userGaugeWeightsError,
-  } = useUserGaugeWeightVotesQuery({
-    chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress ?? '',
-  })
+  } = useUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress }) // DAO is only used on mainnet
 
   const tableLoading = userGaugeWeightsLoading || gaugesIsLoading
 
@@ -81,7 +78,7 @@ export const CurrentVotes = () => {
     <Wrapper>
       <VoteStats selectedGauge={selectedGauge}>
         <h3>{t`USER GAUGE VOTES`}</h3>
-        {<GaugeVotingStats />}
+        <GaugeVotingStats />
       </VoteStats>
       {selectedGauge && gaugeMapper && (
         <VoteGauge

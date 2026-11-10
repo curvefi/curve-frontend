@@ -1,22 +1,16 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import type { UrlParams } from '@/dao/types/dao.types'
-import { getPath } from '@/dao/utils/utilsRouter'
 import { InternalLink } from '@legacy-ui/Link'
-import { useParams } from '@ui/hooks/router'
 import { ArrowRightIcon } from '@ui/icons/ArrowRightIcon'
 
 type InternalLinkButtonProps = { to: string; children: ReactNode; smallSize?: boolean }
 
-export const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const params = useParams<UrlParams>()
-  return (
-    <StyledInternalLink size={smallSize ? 'small' : undefined} href={getPath(params, to)}>
-      {children}
-      <ArrowRightIcon sx={{ fontSize: 16 }} />
-    </StyledInternalLink>
-  )
-}
+export const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => (
+  <StyledInternalLink size={smallSize ? 'small' : undefined} href={to}>
+    {children}
+    <ArrowRightIcon sx={{ fontSize: 16 }} />
+  </StyledInternalLink>
+)
 
 const StyledInternalLink = styled(InternalLink)<{ smallSize?: boolean }>`
   display: flex;

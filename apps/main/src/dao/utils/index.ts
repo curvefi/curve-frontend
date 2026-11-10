@@ -5,7 +5,6 @@ import { GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
 import { shortenAddress } from '@evm-ui/utils'
 import { Chain } from '@primitives/network.utils'
 
-export * from './utilsRouter'
 export * from './utilsDates'
 
 export function delayAction<T>(cb: T) {

@@ -44,48 +44,29 @@ const shouldLoadRateBreakdown = (rateType: 'borrow' | 'supply', hasRateData: boo
   if (hasRateData) card.find('[data-testid="data-table"]', TIMEOUTS['llamalend.rates']).should('be.visible')
 }
 
-const shouldLoadMarketContracts = ({
-  hasMonetaryPolicy,
-  hasOracle,
-  hasVault,
-}: {
-  hasMonetaryPolicy: boolean
-  hasOracle: boolean
-  hasVault: boolean
-}) => {
+const shouldLoadMarketContracts = ({ hasVault }: { hasVault: boolean }) => {
   cy.get('[data-testid="market-contracts-section"]', TIMEOUTS['ui.render']).should('be.visible')
   getActionValue('market-contract-collateral-token', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
   getActionValue('market-contract-borrow-token', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
   getActionValue('market-contract-amm', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
   if (hasVault) getActionValue('market-contract-vault', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
   getActionValue('market-contract-controller', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
-  if (hasMonetaryPolicy)
-    getActionValue('market-contract-monetary-policy', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
-  if (hasOracle) getActionValue('market-contract-oracle', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
+  getActionValue('market-contract-monetary-policy', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
+  getActionValue('market-contract-oracle', 'llamalend.marketMetadata').should('match', ADDRESS_PATTERN)
   getActionValue('market-id', 'llamalend.marketMetadata').should('not.equal', '-')
 }
 
-const shouldLoadMarketParameters = ({
-  hasOnChainParameters,
-  hasOraclePrice,
-  hasPricePerShare,
-}: {
-  hasOnChainParameters: boolean
-  hasOraclePrice: boolean
-  hasPricePerShare: boolean
-}) => {
+const shouldLoadMarketParameters = ({ hasPricePerShare }: { hasPricePerShare: boolean }) => {
   cy.get('[data-testid="market-parameters-section"]', TIMEOUTS['ui.render']).should('be.visible')
-  if (hasOnChainParameters) {
-    getActionValue('market-param-amm-swap-fee', 'evm.contractRead').should('match', DECIMAL_REGEX)
-    getActionValue('market-param-admin-fee', 'evm.contractRead').should('match', DECIMAL_REGEX)
-    getActionValue('market-param-band-width-factor', 'evm.contractRead').should('match', DECIMAL_REGEX)
-    getActionValue('market-param-loan-discount', 'evm.contractRead').should('match', DECIMAL_REGEX)
-    getActionValue('market-param-liquidation-discount', 'evm.contractRead').should('match', DECIMAL_REGEX)
-  }
+  getActionValue('market-param-amm-swap-fee', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  getActionValue('market-param-admin-fee', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  getActionValue('market-param-band-width-factor', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  getActionValue('market-param-loan-discount', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  getActionValue('market-param-liquidation-discount', 'evm.contractRead').should('match', DECIMAL_REGEX)
   getActionValue('market-param-max-ltv', 'evm.contractRead').should('match', DECIMAL_REGEX)
 
   cy.get('[data-testid="market-price-oracle"]', TIMEOUTS['ui.render']).should('be.visible')
-  if (hasOraclePrice) getActionValue('market-price-oracle', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  getActionValue('market-price-oracle', 'evm.contractRead').should('match', DECIMAL_REGEX)
   if (hasPricePerShare) getActionValue('market-price-per-share', 'evm.contractRead').should('match', DECIMAL_REGEX)
 }
 
@@ -170,9 +151,9 @@ export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
     shouldShowCanvas('interest-rate-utilization-chart', 'prices.charts')
     shouldLoadLendMarketActivity(MarketRateType.Borrow)
   }
-  shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
-  shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
-  if (hasApi && hasWallet) getActionValue('market-param-max-roe', 'evm.contractRead').should('match', DECIMAL_REGEX)
+  shouldLoadMarketContracts({ hasVault: true })
+  shouldLoadMarketParameters({ hasPricePerShare: false })
+  if (hasApi) getActionValue('market-param-max-roe', 'evm.contractRead').should('match', DECIMAL_REGEX)
 }
 
 export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
@@ -186,8 +167,8 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
     cy.get(`[data-testid="market-participants-tab-${MarketRateType.Supply}"]`).should('not.exist')
     // TODO: add back market total collateral metric
   }
-  shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
-  shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })
+  shouldLoadMarketContracts({ hasVault: false })
+  shouldLoadMarketParameters({ hasPricePerShare: false })
 }
 
 export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
@@ -212,7 +193,7 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   }
   clickTab('historical-rate-tab', MarketRateType.Borrow)
   shouldLoadRateBreakdown('borrow', hasApi)
-  shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
-  shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })
+  shouldLoadMarketContracts({ hasVault: true })
+  shouldLoadMarketParameters({ hasPricePerShare: true })
   shouldLoadMarketDetails()
 }

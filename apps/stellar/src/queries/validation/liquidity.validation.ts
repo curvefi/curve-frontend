@@ -17,7 +17,7 @@ export type ExpectedLpQuery = QuoteQuery & {
   maxAmounts?: (Decimal | undefined)[]
   lpAmount?: Decimal
   maxLpAmount?: Decimal
-  maxWithdrawIndex?: number
+  isExactBurn?: boolean
 }
 export type ExpectedLpParams = FieldsOf<DeepPartial<ExpectedLpQuery>>
 

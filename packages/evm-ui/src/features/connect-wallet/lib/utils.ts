@@ -2,11 +2,12 @@ import type { Eip1193Provider } from 'ethers'
 import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
 import { NETWORK_CONSTANTS as LLAMA_NETWORKS } from '@curvefi/llamalend-api/lib/llamalend'
+import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import { AppName } from '@evm-ui/shared/routes'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { assert } from '@primitives/objects.utils'
-import type { LlamaApi, Wallet } from './types'
-import { AppLib, CurveApi, LibChainId, LibKey, LibNetworkId, Libs } from './types'
+import type { CurveApi, LlamaApi, Wallet } from './types'
+import { AppLib, LibChainId, LibKey, LibNetworkId, Libs } from './types'
 
 /**
  * Compare the signer address of the wallet with the one in the library.
@@ -20,30 +21,34 @@ export const isWalletMatching = <TChainId extends number>(
   chainId: TChainId | undefined,
 ) => compareSignerAddress(wallet, lib) && lib?.chainId == chainId
 
+async function initCurve<
+  T extends { init: (this: T, ...args: Parameters<ReturnType<typeof createLlamalend>['init']>) => Promise<void> },
+>(createApi: () => T, network: NetworkDef, externalProvider: Eip1193Provider | undefined): Promise<T> {
+  const { chainId } = network
+  const api = createApi()
+  if (externalProvider) {
+    await api.init('Web3', { externalProvider }, { chainId })
+  } else {
+    await api.init(
+      'JsonRpc',
+      { url: assert(defaultGetRpcUrls(chainId)[0], `No RPC URL for chain ${chainId}`) },
+      { chainId },
+    )
+  }
+  return api
+}
+
 const initLib: {
   [K in LibKey]: (
     network: NetworkDef<LibNetworkId[K], LibChainId[K]>,
     externalProvider?: Eip1193Provider,
   ) => Promise<Libs[K]>
 } = {
-  llamaApi: async (network, externalProvider) => {
-    if (!externalProvider || !(network.chainId in LLAMA_NETWORKS)) {
-      return
-    }
-    const api = createLlamalend()
-    await api.init('Web3', { network, externalProvider }, { chainId: network.chainId })
-    return api as LlamaApi
-  },
-  curveApi: async (network, externalProvider) => {
-    const { chainId } = network
-    const curveApi = createCurve()
-    if (externalProvider) {
-      await curveApi.init('Web3', { network, externalProvider }, { chainId })
-    } else {
-      await curveApi.init('NoRPC', 'NoRPC', { chainId })
-    }
-    return curveApi as CurveApi
-  },
+  llamaApi: async (network, externalProvider) =>
+    network.chainId in LLAMA_NETWORKS
+      ? ((await initCurve(createLlamalend, network, externalProvider)) as LlamaApi)
+      : undefined,
+  curveApi: async (network, externalProvider) => (await initCurve(createCurve, network, externalProvider)) as CurveApi,
 }
 
 /**

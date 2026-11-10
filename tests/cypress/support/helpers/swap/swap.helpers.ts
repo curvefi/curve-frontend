@@ -23,7 +23,7 @@ export function writeSwapForm({ amount }: { amount: string }) {
  * Check that the swap route details (exchange rate, price impact, to-amount) have loaded.
  */
 export function checkSwapDetailsLoaded() {
-  getToAmountInput(TIMEOUTS['evm.simulation']).should($el => expect($el.val()).to.match(DECIMAL_REGEX))
+  getToAmountInput(TIMEOUTS['tenderly.simulation']).should($el => expect($el.val()).to.match(DECIMAL_REGEX))
   getActionValue('exchange-rate', 'ui.render').should('match', ExpectedExchangeRate)
   cy.get('[data-testid="price-impact-value"]').should('contain', '%')
 }
@@ -34,6 +34,6 @@ export function checkSwapDetailsLoaded() {
  * Returns a Cypress chainable that resolves when the transaction success message is shown.
  */
 export function submitApprovedSwap() {
-  cy.get('[data-testid="swap"]', TIMEOUTS['evm.allowance']).click()
-  return cy.contains('Transaction complete', TIMEOUTS['evm.confirmation'])
+  cy.get('[data-testid="swap"]', TIMEOUTS['tenderly.allowance']).click()
+  return cy.contains('Transaction complete', TIMEOUTS['tenderly.submit'])
 }

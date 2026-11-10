@@ -6,8 +6,8 @@ import {
   fetchWithdrawSimulation,
   invalidateWithdrawSimulation,
 } from '@/stellar/queries/withdraw/withdraw-simulation.query'
-import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
-import type { WithdrawFormValues, WithdrawMutation } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import type { WithdrawMutation } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import type { DeepPartial } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
@@ -27,19 +27,16 @@ export const useWithdrawMutation = ({ onReset, tokens, expected, ...params }: Wi
       const submitted = { ...values, ...context }
       await Promise.allSettled([
         invalidatePoolLiquidity(submitted),
-        invalidateExpectedLp({ ...submitted, isDeposit: false }),
+        invalidateExpectedLp({
+          ...submitted,
+          isDeposit: false,
+          isBalanced: submitted.mode === 'balanced',
+          isExactBurn: submitted.mode !== 'unbalanced',
+        }),
         invalidateWithdrawSimulation(submitted),
       ])
     },
   })
-  const onSubmit = useCallback(
-    (values: WithdrawFormValues) =>
-      mutate({
-        ...values,
-        amounts: getPoolAmounts(values, values.decimals?.length),
-        maxAmounts: getPoolMaxAmounts(values, values.decimals?.length),
-      } as WithdrawMutation),
-    [mutate],
-  )
+  const onSubmit = useCallback((values: DeepPartial<WithdrawMutation>) => mutate(values as WithdrawMutation), [mutate])
   return { onSubmit, mutate, error, isPending }
 }

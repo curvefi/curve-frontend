@@ -72,8 +72,13 @@ export const PoolActionInfoList = ({
     {currentLp && currentLpTestId && (
       <ActionInfo
         testId={currentLpTestId}
-        label={t`Current LP balance`}
+        label={t`LP balance`}
         value={mapQuery(currentLp, value => formatNumber(value, 'token.balance'))}
+        futureValue={
+          !projectedLpTestId && projectedLp
+            ? mapQuery(projectedLp, value => formatNumber(value, 'token.balance'))
+            : undefined
+        }
         size="small"
       />
     )}

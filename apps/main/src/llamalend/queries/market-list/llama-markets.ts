@@ -1,6 +1,6 @@
-import { countBy, sumBy } from 'lodash'
+import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { ethAddress, getAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
@@ -9,20 +9,28 @@ import {
   createGetBadDebtMarket,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
-import { computeTotalRate, getSupplyApyMetrics, sumCampaignsApr, sumCampaignsApy } from '@/llamalend/rates.utils'
+import {
+  computeTotalRate,
+  getMarketCampaigns,
+  getSupplyCampaigns,
+  getSupplyApyMetrics,
+  sumCampaignsApr,
+  sumCampaignsApy,
+  sumExtraIncentivesApy,
+} from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
-import { getCampaignsExternalOptions } from '@evm-ui/queries/campaigns/campaigns-external.query'
-import { getCampaignsMarketsMerklOptions } from '@evm-ui/queries/campaigns/campaigns-markets-merkl.query'
-import { combineCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
-import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@evm-ui/shared/routes'
+import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
+import { getCampaignsExternalOptions } from '@ui/features/campaigns/campaigns-external.query'
+import { getCampaignsMarketsMerklOptions } from '@ui/features/campaigns/campaigns-markets-merkl.query'
+import { combineCampaigns } from '@ui/features/campaigns/campaigns.query'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { combineQueryState } from '@ui/features/queries/combine'
+import { useQueries } from '@ui/features/queries/query-hooks'
 import { DISABLED_Q, type Query } from '@ui/features/queries/util'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
@@ -52,6 +60,7 @@ export type LlamaMarket = {
   controllerAddress: Address
   vaultAddress: Address | null
   supplyGaugeAddress: Address | null
+  borrowGaugeAddress: Address | null
   assets: Assets
   version: MarketVersion
   minBand?: number
@@ -120,6 +129,7 @@ const convertLendingVault = (
     totalDebtUsd,
     vault,
     gaugeAddress: supplyGaugeAddress,
+    borrowGaugeAddress,
     llamma,
     collateralToken,
     borrowedToken,
@@ -155,13 +165,16 @@ const convertLendingVault = (
   const marketType = MarketType.Lend
   const borrowApy = aprToApy(borrowApr, 'llamalend.borrow')
   const hasBorrowed = userBorrows?.has(controller) ?? null
-  const totalExtraRewardApy =
-    // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate, 'llamalend.rewards')) : null
-  const rewards = [...(campaigns[vault] ?? []), ...(campaigns[controller] ?? [])]
+  const totalExtraRewardApy = sumExtraIncentivesApy(extraRewardApr.map(({ rate }) => rate))
+  const rewards = getMarketCampaigns(campaigns, {
+    marketType,
+    controllerAddress: controller,
+    vaultAddress: vault,
+    ammAddress: llamma,
+  })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
-  const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
+  const supplyCampaignsApy = sumCampaignsApy(getSupplyCampaigns(rewards))
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
     crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],
@@ -177,6 +190,7 @@ const convertLendingVault = (
     ammAddress: llamma,
     vaultAddress: vault,
     supplyGaugeAddress,
+    borrowGaugeAddress,
     version: toMarketVersion(version),
     assets: {
       borrowed: { ...borrowedToken, blockchainId, balance: totalDebt, balanceUsd: totalDebtUsd },
@@ -227,7 +241,7 @@ const convertLendingVault = (
     },
     lendingPosition,
     type: marketType,
-    url: getInternalUrl('lend', blockchainId, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
+    url: lendPages.market({ blockchainId, marketId: controller }),
     deprecatedMessage:
       DEPRECATED_LLAMAS[marketType][blockchainId]?.[controller]?.message ??
       lowSolvencyDeprecatedMessage(solvencyPercent),
@@ -286,7 +300,12 @@ const convertMintMarket = (
   const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
-  const rewards = [...(campaigns[address] ?? []), ...(campaigns[llamma] ?? [])]
+  const rewards = getMarketCampaigns(campaigns, {
+    marketType,
+    controllerAddress: address,
+    vaultAddress: null,
+    ammAddress: llamma,
+  })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
@@ -297,6 +316,7 @@ const convertMintMarket = (
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
     supplyGaugeAddress: null,
+    borrowGaugeAddress: null,
     // todo: the market's version should come from the backend directly like for the lend markets (not supported yet)
     version: [collateralSymbol, stablecoinToken.symbol].some(symbol => symbol.toLowerCase().includes('llv2'))
       ? MarketVersion.v2
@@ -361,7 +381,7 @@ const convertMintMarket = (
     },
     type: marketType,
     deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[address]?.message ?? null,
-    url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
+    url: crvUsdPages.market({ blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
     leverage,
@@ -407,8 +427,8 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
         getMintMarketOptions({}, enabled),
         getBadDebtLendMarketsOptions(enabled),
         getBadDebtMintMarketsOptions(enabled),
-        getCampaignsExternalOptions({}, enabled),
-        getCampaignsMarketsMerklOptions({}, enabled),
+        getCampaignsExternalOptions(getAddress, enabled),
+        getCampaignsMarketsMerklOptions(getAddress, enabled),
         getFavoriteMarketOptions({}, enabled),
       ],
       [enabled],

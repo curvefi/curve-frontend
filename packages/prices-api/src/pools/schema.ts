@@ -5,12 +5,14 @@ import { MAX_USER_POOL_PAGE_SIZE } from './constants'
 
 const rawCoin = z.object({ pool_index: z.number(), symbol: z.string(), address })
 
-const coin = rawCoin.transform(camelizeKeys)
+const coin = rawCoin.extend({ decimals: z.number().nullable().optional() }).transform(camelizeKeys)
 
 const pool = z
   .object({
     name: z.string(),
     address,
+    pool_type: z.string().nullable().optional(),
+    implementation_address: address.nullable().optional(),
     n_coins: z.number(),
     tvl_usd: z.number(),
     trading_volume_24h: z.number(),
@@ -269,28 +271,38 @@ const userPoolPosition = poolProperties
   .transform(camelizeKeys)
   .transform(({ poolName, poolAddress, ...data }) => ({ ...data, name: poolName, address: poolAddress }))
 
-const v2Pool = poolProperties
+const v2PoolProperties = poolProperties.extend({
+  name: z.string(),
+  address,
+  creation_date: timestamp.nullable(),
+  is_metapool: z.boolean().nullable().optional(),
+  base_pool: address.nullable().optional(),
+  tvl_usd: z.number().nullable().optional(),
+  trading_volume_24h: z.number(),
+  trading_fee_24h: z.number(),
+  liquidity_volume_24h: z.number(),
+  liquidity_fee_24h: z.number(),
+  coins: z.array(v2Coin),
+  vyper_version: z.string().nullable().optional(),
+  gauges: z.array(v2Gauge).optional(),
+})
+
+const v2Pool = v2PoolProperties.transform(camelizeKeys).transform(({ gauges, ...data }) => {
+  const poolGauges = gauges ?? []
+
+  return { ...data, gauge: poolGauges[0] ?? null, gauges: poolGauges }
+})
+
+const v2PoolDetails = v2PoolProperties
   .extend({
-    name: z.string(),
-    address,
-    creation_date: timestamp.nullable(),
-    is_metapool: z.boolean().nullable().optional(),
-    base_pool: address.nullable().optional(),
-    tvl_usd: z.number().nullable().optional(),
-    trading_volume_24h: z.number(),
-    trading_fee_24h: z.number(),
-    liquidity_volume_24h: z.number(),
-    liquidity_fee_24h: z.number(),
-    coins: z.array(v2Coin),
-    vyper_version: z.string().nullable().optional(),
-    gauges: z.array(v2Gauge).optional(),
+    creation_date: timestamp.nullable().optional(),
+    registry_type: poolType.nullable().optional(),
+    lp_token_address: address,
+    gauges: z.array(address).default([]),
+    metapool: z.boolean().nullable().optional(),
+    info: z.object({ implementation_address: address.nullable().optional() }).transform(camelizeKeys),
   })
   .transform(camelizeKeys)
-  .transform(({ gauges, ...data }) => {
-    const poolGauges = gauges ?? []
-
-    return { ...data, gauge: poolGauges[0] ?? null, gauges: poolGauges }
-  })
 
 const v2PoolRegistry = z.object({ chain_id: z.number(), address, type: poolType }).transform(camelizeKeys)
 
@@ -394,10 +406,11 @@ const litePool = z
   .transform(camelizeKeys)
 
 export const getPoolsResponse = z
-  .object({ chain, total: poolTotals, data: z.array(pool) })
+  .object({ chain: z.string(), total: poolTotals, data: z.array(pool) })
   .transform(({ chain, total, data }) => ({ chain, totals: total, pools: data }))
 
 export const getPoolResponse = pool
+export const getPoolV2Response = v2PoolDetails
 export const listPoolsResponse = z
   .object({ page: z.number().optional(), pagination: z.number().optional(), count: z.number(), pools: z.array(v2Pool) })
   .transform(({ page, pagination, count, pools }) => ({
@@ -431,6 +444,18 @@ export const listLitePoolsResponse = z
   })
   .transform(camelizeKeys)
   .transform(({ data, generatedTimeMs }) => ({ pools: data.poolData ?? [], totalTvl: data.tvl, generatedTimeMs }))
+
+export const getLitePoolDeploymentResponse = z
+  .object({
+    data: z.object({
+      config: z.object({
+        native_currency_symbol: z.string(),
+        native_token: address.nullish(),
+        wrapped_native_token: address,
+      }),
+    }),
+  })
+  .transform(({ data: { config } }) => camelizeKeys(config))
 
 export const getUserPoolPositionsResponse = z
   .object({
@@ -526,6 +551,7 @@ export type PoolsTotals = z.infer<typeof poolTotals>
 export type Pool = z.infer<typeof pool>
 export type V2Gauge = z.infer<typeof v2Gauge>
 export type V2Pool = z.infer<typeof v2Pool>
+export type V2PoolDetails = z.infer<typeof v2PoolDetails>
 export type V2PoolRegistry = z.infer<typeof v2PoolRegistry>
 export type V2PoolChain = z.infer<typeof v2PoolChain>
 export type LitePoolChain = z.infer<typeof litePoolChain>

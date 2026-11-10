@@ -5,6 +5,7 @@ import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
 import { CampaignTooltipContent } from '@ui/features/pool-list/cells/RewardIcons'
 import { RewardsRateTooltipContent } from '@ui/features/pool-list/cells/RewardsRateTooltipContent'
+import { getNetRateTooltipData } from '@ui/features/pool-list/cells/utils'
 import type { PoolRow, PoolTableMeta } from '@ui/features/pool-list/types'
 import { BaseRateTooltipContent } from '@ui/features/pools/BaseRateTooltipContent'
 import { CrvRateTooltipContent } from '@ui/features/pools/CrvRateTooltipContent'
@@ -81,7 +82,13 @@ const createPool = (): PoolRow => ({
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
-  userPosition: { lpBalance: '0', depositsUsd: DISABLED_Q, claimables: constQ([]), claimablesUsd: constQ('0') },
+  userPosition: {
+    lpBalance: '0',
+    depositsUsd: DISABLED_Q,
+    boost: DISABLED_Q,
+    claimables: constQ([]),
+    claimablesUsd: constQ('0'),
+  },
   extraRewardsTotalApr: 2,
   campaignRewardsApr: 3,
   rewardsApr: 5,
@@ -130,7 +137,7 @@ describe('V2 pool-list tooltip content', () => {
   })
 
   it('renders the complete Net APR breakdown and BOLD campaign links', () => {
-    mountContent(<NetRateTooltipContent pool={createPool()} crvToken={CRV_TOKEN} volatile={false} />)
+    mountContent(<NetRateTooltipContent {...getNetRateTooltipData(createPool())} crvToken={CRV_TOKEN} />)
 
     expectContent([
       'Base APR10%',
@@ -148,8 +155,8 @@ describe('V2 pool-list tooltip content', () => {
     expectLink(POINTS_CAMPAIGN_LINK, '15+')
   })
 
-  it('renders the volatile Net rate warning', () => {
-    mountContent(<NetRateTooltipContent pool={createPool()} crvToken={CRV_TOKEN} volatile />)
+  it('renders the volatility warning for a high net APR with a normal base APR', () => {
+    mountContent(<NetRateTooltipContent {...getNetRateTooltipData(createPool())} netRate={6000} crvToken={CRV_TOKEN} />)
     cy.get(CONTENT).should('contain.text', 'This net rate is volatile and is unlikely to persist.')
   })
 

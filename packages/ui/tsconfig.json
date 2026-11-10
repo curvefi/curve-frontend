@@ -5,6 +5,7 @@
     "paths": {
       "@ui": ["./src/index.ts"],
       "@ui/*": ["./src/*"],
+      "@external-rewards": ["../external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../prices-api/src/*"],
       "@primitives/*": ["../primitives/src/*"]

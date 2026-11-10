@@ -1,5 +1,4 @@
 import { capitalize } from 'lodash'
-import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
 import { toArray } from '@primitives/array.utils'
@@ -20,11 +19,11 @@ import {
   type TableActiveFilterGroup,
   type TableActiveFilterGroupChipsProps,
 } from '@ui/features/tables/TableActiveFilterGroups'
-import { MARKET_COLUMNS } from '../columns/column.definitions'
 import { MARKET_TITLES } from '../columns/column.titles'
 import { MarketColumnId } from '../columns/columns.enum'
+import { MARKETS_TABLE } from '../columns/markets.table'
 
-const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
+const MARKET_COLUMN_ORDER = new Map(MARKETS_TABLE.columns.map((column, index) => [column.id, index]))
 
 // capitalize all labels except columns containing tokens symbols
 const formatLabel = (label: string, id: MarketColumnId) =>
@@ -50,15 +49,11 @@ export const MarketsActiveFiltersChip = ({
 >) => {
   const filtersState = table.state.columnFilters as { id: MarketColumnId; value: string }[]
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
-  const sortedFiltersState = useMemo(
-    () =>
-      filtersState.toSorted((a, b) => {
-        if (a.id === MarketColumnId.Chain) return -1
-        if (b.id === MarketColumnId.Chain) return 1
-        return MARKET_COLUMN_ORDER.get(a.id)! - MARKET_COLUMN_ORDER.get(b.id)!
-      }),
-    [filtersState],
-  )
+  const sortedFiltersState = filtersState.toSorted((a, b) => {
+    if (a.id === MarketColumnId.Chain) return -1
+    if (b.id === MarketColumnId.Chain) return 1
+    return MARKET_COLUMN_ORDER.get(a.id)! - MARKET_COLUMN_ORDER.get(b.id)!
+  })
 
   return (
     <TableActiveFilterGroups

@@ -1,3 +1,5 @@
+import { makeUnmountFn } from 'cypress/react'
+import { useEffect } from 'react'
 import { useDebounce, useDebounced } from '@ui/hooks/useDebounce'
 
 // Test component for useDebounced.
@@ -128,13 +130,27 @@ describe('useDebounce', () => {
 
   it('cancels a pending callback when unmounted', () => {
     const callback = cy.stub().as('callback')
-    cy.mount(<UseDebounceTest initialValue="" debounceMs={300} callback={callback} />).then(({ rerender }) => {
-      cy.get('input').type('draft')
-      cy.then(() => rerender(<div />))
-      cy.get('input').should('not.exist')
-      cy.tick(300)
-      cy.get('@callback').should('not.have.been.called')
-    })
+    const scheduled = cy.stub().as('scheduled')
+    // Hooks require a React host; this harness schedules an edit without rendering UI.
+    const TestHook = () => {
+      const [, setValue] = useDebounce({ initialValue: '', debounceMs: 300, callback })
+      useEffect(() => {
+        setValue('draft')
+        scheduled()
+      }, [setValue])
+      return null
+    }
+
+    cy.mount(<TestHook />)
+    // Mounting does not guarantee passive effects have run, so wait for the edit.
+    cy.get('@scheduled').should('have.been.calledOnce')
+    cy.get('@callback').should('not.have.been.called')
+
+    // This calls root.unmount(), which flushes cleanup before timers advance.
+    // Rerendering an empty element only guarantees DOM removal, not effect cleanup.
+    makeUnmountFn({ log: false })
+    cy.tick(300)
+    cy.get('@callback').should('not.have.been.called')
   })
 
   it('returns its initial value', () => {

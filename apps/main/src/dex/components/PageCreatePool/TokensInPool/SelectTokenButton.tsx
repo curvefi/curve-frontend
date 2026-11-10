@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/preserve-manual-memoization, react-hooks/refs -- Legacy code will be deleted. */
+
 import { type Key, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'

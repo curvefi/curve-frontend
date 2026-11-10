@@ -1,5 +1,5 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
-import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
+import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@ui/features/charts/chart.utils'
 import { t } from '@ui/lib/i18n'
 
 export const priceLineLabels: Record<YieldKeys, { label: string; dash?: ChartLineDashPattern }> = {

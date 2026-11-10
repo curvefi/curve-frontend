@@ -28,6 +28,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
+import type { Nullish } from '@primitives/objects.utils'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { getTokens } from '../pool.utils'
 import { invalidatePoolInfo, invalidateUserPoolInfo } from '../queries/invalidation'
@@ -53,7 +54,7 @@ export type PoolSwapSlice = {
     fetchIgnoreExchangeRateCheck: (pool: PoolTemplate) => Promise<boolean>
     fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<void>
     fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<string>
-    setFormValues: (config: Config, curve: CurveApi | null, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
+    setFormValues: (config: Config, curve: CurveApi | null, pool: PoolTemplate | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | Nullish, maxSlippage: string) => Promise<void>
 
     // steps
     fetchEstGasApproval: (activeKey: string, chainId: ChainId, pool: PoolTemplate, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
@@ -240,7 +241,7 @@ export const createPoolSwapSlice = (
       if (
         !curve ||
         !pool ||
-        isSeed === null ||
+        isSeed == null ||
         !cFormValues.fromToken ||
         !cFormValues.fromAddress ||
         !cFormValues.toToken ||

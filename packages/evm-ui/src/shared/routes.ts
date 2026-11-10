@@ -5,58 +5,106 @@ import {
   isTestnet,
 } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { NetworkDef, NetworkMapping } from '@legacy-ui/utils'
+import type { Address } from '@primitives/address.utils'
+import { addQueryString } from '@primitives/fetch.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { PAGE_INTEGRATIONS, PAGE_LEGAL } from '@ui/features/layout/routes'
 import type { ChainListOption } from '@ui/features/layout/switch-chain/ChainList'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
 
-export const DEX_ROUTES = {
-  PAGE_SWAP: '/swap',
-  PAGE_POOLS: '/pools',
-  PAGE_CREATE_POOL: '/create-pool',
-  PAGE_DEPLOY_GAUGE: '/deploy-gauge',
-  PAGE_COMPENSATION: '/compensation',
-  PAGE_LEGAL,
-  PAGE_INTEGRATIONS,
-} as const
-
-export const LEND_ROUTES = { PAGE_MARKETS: '/markets', PAGE_LEGAL, PAGE_INTEGRATIONS } as const
-
-export const LEND_MARKET_ROUTES = { PAGE_LOAN: '', PAGE_VAULT: '/vault' } as const
-
-export const CRVUSD_ROUTES = {
-  PAGE_MARKETS: '/markets',
-  PAGE_CRVUSD_STAKING: '/scrvUSD',
-  PAGE_PSR: '/psr',
-  PAGE_LEGAL,
-  PAGE_INTEGRATIONS,
-} as const
-
-export const LLAMALEND_ROUTES = { PAGE_MARKETS: '/markets', PAGE_LEGAL, PAGE_INTEGRATIONS } as const
-
-export const DAO_ROUTES = {
-  PAGE_PROPOSALS: '/proposals',
-  PAGE_GAUGES: '/gauges',
-  PAGE_VECRV: '/vecrv',
-  PAGE_ANALYTICS: '/analytics',
-  PAGE_USER: '/user',
-  DISCUSSION: EXTERNAL_LINKS.curve.gov,
-  PAGE_LEGAL,
-  PAGE_INTEGRATIONS,
-} as const
-
-const ANALYTICS_ROUTES = { PAGE_HOME: '/home' }
-
-const BRIDGE_ROUTES = { PAGE_BRIDGES: '' }
+export { replaceNetworkInPath } from '@ui/features/layout/routes'
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 'analytics'] as const
 export type AppName = (typeof AppNames)[number]
 export type AppMenuOption = 'dex' | 'llamalend' | 'dao' | 'bridge' | 'analytics'
 
+type ChainParams = { blockchainId: string }
+
+const appRoot = ({ app, blockchainId }: { app: AppName; blockchainId: string }) => ['', app, blockchainId].join('/')
+
+export const dexPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'dex', blockchainId }),
+  legal: (network: ChainParams) => [dexPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [dexPages.root(network), 'integrations'].join('/'),
+  swap: ({ from, to, ...network }: ChainParams & { from?: Address; to?: Address }) =>
+    [dexPages.root(network), 'swap'].join('/') + addQueryString({ from, to }),
+  pools: (network: ChainParams) => [dexPages.root(network), 'pools'].join('/'),
+  pool: ({ poolAddress, ...network }: ChainParams & { poolAddress: Address }) =>
+    [dexPages.pools(network), poolAddress].join('/'),
+  poolManagement: (params: ChainParams & { poolAddress: Address }) => [dexPages.pool(params), 'manage-pool'].join('/'),
+  poolCreation: (network: ChainParams) => [dexPages.root(network), 'create-pool'].join('/'),
+  gaugeDeployment: (network: ChainParams) => [dexPages.root(network), 'deploy-gauge'].join('/'),
+  compensation: (network: ChainParams) => [dexPages.root(network), 'compensation'].join('/'),
+} as const
+
+export const lendPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'lend', blockchainId }),
+  legal: (network: ChainParams) => [lendPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [lendPages.root(network), 'integrations'].join('/'),
+  markets: (network: ChainParams) => [lendPages.root(network), 'markets'].join('/'),
+  market: ({ marketId, ...network }: ChainParams & { marketId: Address }) =>
+    [lendPages.markets(network), marketId].join('/'),
+  vault: (params: ChainParams & { marketId: Address }) => [lendPages.market(params), 'vault'].join('/'),
+} as const
+
+export const crvUsdPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'crvusd', blockchainId }),
+  legal: (network: ChainParams) => [crvUsdPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [crvUsdPages.root(network), 'integrations'].join('/'),
+  markets: (network: ChainParams) => [crvUsdPages.root(network), 'markets'].join('/'),
+  market: ({ collateralId, ...network }: ChainParams & { collateralId: string }) =>
+    [crvUsdPages.markets(network), collateralId].join('/'),
+  crvUsdStaking: (network: ChainParams) => [crvUsdPages.root(network), 'scrvUSD'].join('/'),
+  psr: (network: ChainParams) => [crvUsdPages.root(network), 'psr'].join('/'),
+} as const
+
+export const llamalendRoutes = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'llamalend', blockchainId }),
+  legal: (network: ChainParams) => [llamalendRoutes.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [llamalendRoutes.root(network), 'integrations'].join('/'),
+  markets: (network: ChainParams) => [llamalendRoutes.root(network), 'markets'].join('/'),
+} as const
+
+export const daoPages = {
+  root: () => appRoot({ app: 'dao', blockchainId: 'ethereum' }),
+  proposals: () => [daoPages.root(), 'proposals'].join('/'),
+  proposal: ({ proposalId }: { proposalId: string }) => [daoPages.proposals(), proposalId].join('/'),
+  gauges: () => [daoPages.root(), 'gauges'].join('/'),
+  gauge: ({ gaugeAddress }: { gaugeAddress: Address }) => [daoPages.gauges(), gaugeAddress].join('/'),
+  veCrv: () => [daoPages.root(), 'vecrv'].join('/'),
+  analytics: () => [daoPages.root(), 'analytics'].join('/'),
+  user: ({ userAddress }: { userAddress: Address }) => [daoPages.root(), 'user', userAddress].join('/'),
+  discussion: () => EXTERNAL_LINKS.curve.gov,
+  legal: () => [daoPages.root(), 'legal'].join('/'),
+  integrations: () => [daoPages.root(), 'integrations'].join('/'),
+} as const
+
+const analyticsPages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'analytics', blockchainId }),
+  legal: (network: ChainParams) => [analyticsPages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [analyticsPages.root(network), 'integrations'].join('/'),
+  home: (network: ChainParams) => [analyticsPages.root(network), 'home'].join('/'),
+}
+
+export const bridgePages = {
+  root: ({ blockchainId }: ChainParams) => appRoot({ app: 'bridge', blockchainId }),
+  legal: (network: ChainParams) => [bridgePages.root(network), 'legal'].join('/'),
+  integrations: (network: ChainParams) => [bridgePages.root(network), 'integrations'].join('/'),
+}
+
+export const Pages = {
+  dex: dexPages,
+  lend: lendPages,
+  crvusd: crvUsdPages,
+  llamalend: llamalendRoutes,
+  dao: daoPages,
+  analytics: analyticsPages,
+  bridge: bridgePages,
+} as const
+
 export type NavigationItem = {
   app: AppName
-  route: string // this is a route inside the app, with leading slash, does not include the app name and the network
+  route: (params: ChainParams) => string
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
   matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
@@ -70,61 +118,53 @@ export const APP_LINK: Record<AppMenuOption, AppNavigation> = {
   dex: {
     label: 'DEX',
     routes: [
-      { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Swap` },
-      { app: 'dex', route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
-      { app: 'dex', route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
+      { app: 'dex', route: dexPages.swap, label: () => t`Swap` },
+      { app: 'dex', route: dexPages.pools, label: () => t`Pools` },
+      { app: 'dex', route: dexPages.poolCreation, label: () => t`Pool Creation` },
     ],
   },
   llamalend: {
     label: 'Llamalend',
     routes: [
-      { app: 'llamalend', route: LLAMALEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PSR, label: () => t`Peg Stability Reserves` },
+      { app: 'llamalend', route: llamalendRoutes.markets, label: () => t`Markets` },
+      { app: 'crvusd', route: crvUsdPages.crvUsdStaking, label: () => t`Savings crvUSD` },
+      { app: 'crvusd', route: crvUsdPages.psr, label: () => t`Peg Stability Reserves` },
     ],
   },
   dao: {
     label: 'Governance',
     routes: [
-      { app: 'dao', route: DAO_ROUTES.PAGE_VECRV, label: () => t`Lock CRV` },
-      { app: 'dao', route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
-      { app: 'dao', route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
-      { app: 'dao', route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
-      { app: 'dao', route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
+      { app: 'dao', route: daoPages.veCrv, label: () => t`Lock CRV` },
+      { app: 'dao', route: daoPages.proposals, label: () => t`Proposals` },
+      { app: 'dao', route: daoPages.gauges, label: () => t`Gauges` },
+      { app: 'dao', route: daoPages.analytics, label: () => t`Analytics` },
+      { app: 'dao', route: daoPages.discussion, label: () => t`Discussion`, target: '_blank' },
     ],
   },
-  bridge: { label: t`Bridge`, routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridge` }] },
-  analytics: {
-    label: 'Analytics',
-    routes: [{ app: 'analytics', route: ANALYTICS_ROUTES.PAGE_HOME, label: () => t`Home` }],
-  },
+  bridge: { label: t`Bridge`, routes: [{ app: 'bridge', route: bridgePages.root, label: () => t`Bridge` }] },
+  analytics: { label: 'Analytics', routes: [{ app: 'analytics', route: analyticsPages.home, label: () => t`Home` }] },
 }
-
-/** Returns the full pathname for a given app and network */
-export const getInternalUrl = (app: AppName, blockchainId: string, route = '/') => `/${app}/${blockchainId}${route}`
 
 const removeTrailingSlash = (pathname: string) => pathname.replace(/\/$/, '')
 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
-  { route, target, label, app, matchMode }: NavigationItem,
+  { route, target, label, matchMode }: NavigationItem,
   { blockchainId, pathname }: { blockchainId: string; pathname: string },
 ) => {
-  const href = route.startsWith('http') ? route : getInternalUrl(app, blockchainId, route)
+  const href = route({ blockchainId })
+  // The pathname has no query string, but links can have one, like the default tokens of the swap page.
+  const [hrefPath] = href.split('?')
   return {
     href,
     target,
     label: label(),
     isActive:
       // In-page section navigation can normalize the current pathname with a trailing slash.
-      matchMode === 'exact' ? removeTrailingSlash(pathname) === removeTrailingSlash(href) : pathname.startsWith(href),
+      matchMode === 'exact'
+        ? removeTrailingSlash(pathname) === removeTrailingSlash(hrefPath)
+        : pathname.startsWith(hrefPath),
   }
-}
-
-export const replaceNetworkInPath = (path: string, blockchainId: string) => {
-  const [, app, _network, ...rest] = path.split('/')
-  if (!app) return path // if no app, return original path
-  return ['', app, blockchainId, ...rest].join('/')
 }
 
 export const getCurrentApp = (path: string | null): AppName => {
@@ -142,14 +182,17 @@ export const getCurrentNetwork = (path: string): string | undefined => {
   return blockchainId
 }
 
-export const createChainOption = (network: NetworkDef, currentApp: AppName): ChainListOption => ({
+export const createChainOption = (network: NetworkDef, href: string): ChainListOption => ({
   ...network,
   name: getChainName(network.chainId),
   isConfigured: isChainConfigured(network.chainId),
   isLite: isLiteChain(network.chainId),
   isTestnet: isTestnet(network.chainId),
-  href: getInternalUrl(currentApp, network.blockchainId),
+  href,
 })
 
-export const createChainOptions = (supportedNetworks: NetworkMapping, currentApp: AppName): ChainListOption[] =>
-  recordValues(supportedNetworks).map(network => createChainOption(network, currentApp))
+export const createChainOptions = (
+  supportedNetworks: NetworkMapping,
+  getHref: (blockchainId: string) => string,
+): ChainListOption[] =>
+  recordValues(supportedNetworks).map(network => createChainOption(network, getHref(network.blockchainId)))

@@ -41,3 +41,23 @@ export const getAprCampaigns = ({ campaigns }: Pick<PoolRow, 'campaigns'>) =>
   campaigns?.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)
+
+const getIncentivesItems = (pool: PoolRow) => {
+  const extraRewards = getExtraRewards(pool)
+  const campaigns = getAprCampaigns(pool)
+  const unboostedCrvRate = pool.gauge?.isKilled ? null : pool.crvApr
+  const hasCrvRate = unboostedCrvRate != null && unboostedCrvRate !== 0
+
+  if (!hasCrvRate && !extraRewards.length && !campaigns?.length) return null
+  else return { incentivesRate: pool.incentivesApr, extraRewards, campaigns, unboostedCrvRate }
+}
+
+export const getNetRateTooltipData = (pool: PoolRow) => ({
+  blockchainId: pool.blockchainId,
+  baseRate: getBaseApr(pool, 'daily'),
+  netRate: pool.netApr,
+  crvRateRange: pool.gauge?.isKilled ? null : getCrvAprRange(pool),
+  maxNetRate: pool.netAprBoosted,
+  incentiveItems: getIncentivesItems(pool),
+  pointsCampaigns: getPointsCampaigns(pool),
+})

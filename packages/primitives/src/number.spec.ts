@@ -469,6 +469,31 @@ describe('formatNumber', () => {
       expect(formatNumber(-1.004, 'token.delta')).toBe('-1.004')
     })
 
+    it('formats USD and percent changes with signs before the unit', () => {
+      expect(formatNumber(1234.5, 'usd.delta')).toBe('+$1.23k')
+      expect(formatNumber(-1234.5, 'usd.delta')).toBe('-$1.23k')
+      expect(formatNumber(0, 'usd.delta')).toBe('$0')
+      expect(formatNumber(null, 'usd.delta')).toBe('-')
+      expect(formatNumber(12.3, 'percent.delta')).toBe('+12.30%')
+      expect(formatNumber(-12.3, 'percent.delta')).toBe('-12.30%')
+    })
+
+    it('keeps the sign of tiny changes', () => {
+      expect(formatNumber(0.000001, 'usd.delta')).toBe('$<+0.00001')
+      expect(formatNumber(-0.000001, 'usd.delta')).toBe('$>-0.00001')
+      expect(formatNumber(-0.000001, 'percent.delta')).toBe('>-0.00001%')
+      expect(formatNumber(0.000001, 'token.delta')).toBe('<+0.00001')
+      expect(formatNumber(-0.000001, 'token.delta')).toBe('>-0.00001')
+      expect(formatNumber(0.000001, 'usd.notional')).toBe('$<0.00001')
+      expect(formatNumber(-0.000001, 'usd.notional')).toBe('$>-0.00001')
+    })
+
+    it('keeps the precision of signed values that round to 0 or 1', () => {
+      expect(formatNumber(1.0001, 'usd.delta')).toBe('+$1.0001')
+      expect(formatNumber(1.0001, 'percent.delta')).toBe('+1.0001%')
+      expect(formatNumber(-1.0001, 'usd.delta')).toBe('-$1.0001')
+    })
+
     it('formats token balances with precision-sensitive decimal handling', () => {
       expect(formatNumber(0.00000123456789, 'token.balance')).toBe('0.0000012346')
       expect(formatNumber(-0.00000123456789, 'token.balance')).toBe('-0.0000012346')

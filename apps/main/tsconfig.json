@@ -3,6 +3,9 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
+      "@api-server/*": ["../../packages/api-server/src/*"],
+      "@merkl-api/*": ["../merkl-api/src/*"],
+      "@router-api/*": ["../router-api/src/*"],
       "@legacy-ui": ["../../packages/legacy-ui/src/index.ts"],
       "@legacy-ui/*": ["../../packages/legacy-ui/src/*"],
       "@evm-ui/*": ["../../packages/evm-ui/src/*"],

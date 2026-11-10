@@ -1,4 +1,4 @@
-import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { DepositParams, DepositQuery } from '@/stellar/features/deposit/types'
 import { depositValidationSuite } from '@/stellar/queries/validation/deposit.validation'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
@@ -25,6 +25,6 @@ export const {
       ],
       account,
     ),
-  category: 'global.no-persist', // values returned by the SDK lose the built transaction, disable persistence for now
+  category: 'stellar.transaction',
   validationSuite: depositValidationSuite,
 })

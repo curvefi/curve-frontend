@@ -1,12 +1,12 @@
 import type { GaugeFormattedData } from '@/dao/types/dao.types'
-import { getChartSignedValueColor } from '@evm-ui/shared/ui/Chart/chart.utils'
+import { useTheme } from '@mui/material/styles'
+import { formatNumber } from '@primitives/number.utils'
+import { getChartSignedValueColor } from '@ui/features/charts/chart.utils'
 import {
   ChartTooltipDataRow,
   ChartTooltipSeriesGroup,
   ChartTooltipShell,
-} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
-import { useTheme } from '@mui/material/styles'
-import { formatNumber } from '@primitives/number.utils'
+} from '@ui/features/charts/ChartTooltipComponents'
 import { t } from '@ui/lib/i18n'
 
 type GaugesBarChartCustomTooltipProps = { datum: GaugeFormattedData }

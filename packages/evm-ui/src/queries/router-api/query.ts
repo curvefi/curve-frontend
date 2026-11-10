@@ -5,8 +5,9 @@ import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
-import { type QueryKey, useQuery, type UseQueryOptions } from '@tanstack/react-query'
+import { type QueryKey } from '@tanstack/react-query'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { useQuery, type QueryOptions } from '@ui/features/queries/query-hooks'
 import { q, useMappedQuery } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -160,7 +161,7 @@ function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvi
 
 export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryKey = QueryKey> = (
   routeId: string | undefined,
-) => UseQueryOptions<TData, Error, TData, TKey>
+) => QueryOptions<TData, Error, TData, TKey>
 
 /** manually add gas cost result to curve route via llamalend.js */
 function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(

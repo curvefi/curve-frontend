@@ -6,9 +6,9 @@ import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId } from '@/dex/types/main.types'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import type { Address } from '@primitives/address.utils'
 import { zip } from '@primitives/array.utils'
-import { Chain } from '@primitives/network.utils'
 import type { LiquidityDetailsData } from '@ui/features/pools/liquidity-details/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, toQuery, type QueryProp } from '@ui/features/queries/util'
@@ -29,8 +29,7 @@ export const useLiquidityDetails = ({
 
   const hasPosition = Number(lpTokenBalance.data) > 0 || Number(gaugeTokenBalance.data) > 0
 
-  // There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A.
-  const showBoost = chainId === Number(Chain.Ethereum)
+  const showBoost = !isLiteChain(chainId)
 
   const userBalances = useUserPoolBalancesQuery(queryParams, hasPosition)
   const userLiquidityUsd = useUserPoolLiquidityUsdQuery(queryParams, hasPosition)

@@ -4,11 +4,12 @@ import type { NetworkParams, UserParams } from '@/stellar/queries/query-types'
 import { getTokenBalanceQueryOptions } from '@/stellar/queries/token/token-balance.query'
 import { getTokenDecimalsQueryOptions } from '@/stellar/queries/token/token-decimals.query'
 import { getTokenSymbolQueryOptions } from '@/stellar/queries/token/token-symbol.query'
+import { useTokenUsdRates } from '@/stellar/queries/token/token-usd-rate.query'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useQueries } from '@tanstack/react-query'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
 import { combineQueries } from '@ui/features/queries/combine'
+import { useQueries } from '@ui/features/queries/query-hooks'
 import { mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 
 const combine = <T>(results: Query<T>[]): QueryProp<T>[] => results.map(q)
@@ -32,6 +33,7 @@ export function usePoolTokens({
     combine,
   })
 
+  const prices = useTokenUsdRates({ network, tokenAddresses: addresses })
   const balances = useQueries({
     queries: zip(addresses, decimals).map(([token, decimals]) =>
       getTokenBalanceQueryOptions({ network, token, account, decimals: decimals.data }),
@@ -47,9 +49,10 @@ export function usePoolTokens({
           address: asAddress(address),
           symbol,
           balance,
+          usdRate: prices[address]?.data,
         })),
       ),
-    [addresses, symbols, balances, network],
+    [addresses, symbols, balances, prices, network],
   )
 
   const decimalsData = useMemo(() => decimals.map(q => q.data), [decimals])

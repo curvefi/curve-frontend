@@ -2,7 +2,7 @@ import { useConnection } from 'wagmi'
 import { useLpTokenPool } from '@/llamalend/queries/lp-token-pool.query'
 import type { Chain } from '@curvefi/prices-api'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import Collapse from '@mui/material/Collapse'
 import type { Token } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -35,8 +35,8 @@ export const BuyCollateralLink = ({
         <ExternalLink
           href={
             poolAddress
-              ? getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}/deposit`)
-              : `${getInternalUrl('dex', blockchainId, DEX_ROUTES.PAGE_SWAP)}?to=${token.address}`
+              ? dexPages.pool({ blockchainId, poolAddress })
+              : dexPages.swap({ blockchainId, to: token.address })
           }
           label={t`Get ${token.symbol}`}
           fullWidth

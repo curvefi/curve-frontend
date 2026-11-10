@@ -2,6 +2,7 @@ import { maybe } from '@primitives/objects.utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseRateCell, WeeklyBaseRateCell } from '../cells/BaseRateCell'
+import { BoostCell } from '../cells/BoostCell'
 import { ClaimablesCell } from '../cells/ClaimablesCell'
 import { CrvRateCell } from '../cells/CrvRateCell'
 import { DepositsCell } from '../cells/DepositsCell'
@@ -14,6 +15,7 @@ import { UsdCell } from '../cells/UsdCell'
 import { getCrvAprRange } from '../cells/utils'
 import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
 import { BaseRateHeaderTooltipContent } from '../header-tooltips/BaseRateHeaderTooltipContent'
+import { BoostHeaderTooltipContent } from '../header-tooltips/BoostHeaderTooltipContent'
 import { ClaimablesHeaderTooltipContent } from '../header-tooltips/ClaimablesHeaderTooltipContent'
 import { CrvRateHeaderTooltipContent } from '../header-tooltips/CrvRateHeaderTooltipContent'
 import { DepositsHeaderTooltipContent } from '../header-tooltips/DepositsHeaderTooltipContent'
@@ -141,6 +143,13 @@ export const POOL_COLUMNS = columnHelper.columns([
       type: 'numeric',
       tooltip: { title: POOL_TITLES[PoolColumnId.Deposits], body: <DepositsHeaderTooltipContent /> },
     },
+  }),
+  columnHelper.display({
+    id: PoolColumnId.Boost,
+    header: POOL_TITLES[PoolColumnId.Boost],
+    cell: ({ row }) => <BoostCell boost={row.original.userPosition?.boost} />,
+    enableSorting: false,
+    meta: { type: 'numeric', tooltip: { title: POOL_TITLES[PoolColumnId.Boost], body: <BoostHeaderTooltipContent /> } },
   }),
   columnHelper.accessor(pool => pool.userPosition?.claimablesUsd.data, {
     id: PoolColumnId.Claimables,

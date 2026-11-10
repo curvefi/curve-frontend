@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createApiServer } from '../src/index'
+import { createApiServer } from '../src/server'
 
 describe('health endpoint', () => {
   it('responds with service metadata', async () => {

@@ -7,8 +7,8 @@ import type {
   DepositRewardParams,
   DepositRewardQuery,
 } from '@/dex/entities/gauge/types'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook, createEstimateGasHook } from '@evm-ui/queries/gas-info.query'
-import { queryFactory } from '@ui/features/queries/factory'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,
@@ -20,7 +20,7 @@ import {
   useGaugeDepositRewardIsApproved,
 } from './gauge.query'
 
-const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
+const { useQuery: useEstimateGasDepositRewardApprove } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, rewardTokenId, amount, userBalance }: DepositRewardApproveParams) =>
     ({ name: 'estimateGas.depositRewardApprove', chainId, poolAddress, rewardTokenId, amount, userBalance }) as const,
   queryFn: async ({ poolAddress, rewardTokenId, amount }: DepositRewardApproveQuery) =>
@@ -31,7 +31,7 @@ const { useQuery: useEstimateGasDepositRewardApprove } = queryFactory({
   category: 'dex.deployGauge',
 })
 
-const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
+const { useQuery: useEstimateGasAddRewardToken } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, rewardTokenId, distributorId }: AddRewardParams) =>
     ({ name: 'estimateGas.addRewardToken', chainId, poolAddress, rewardTokenId, distributorId }) as const,
   queryFn: async ({ poolAddress, rewardTokenId, distributorId }: AddRewardQuery) =>
@@ -43,7 +43,7 @@ const { useQuery: useEstimateGasAddRewardToken } = queryFactory({
   category: 'dex.deployGauge',
 })
 
-const { useQuery: useEstimateGasDepositReward } = queryFactory({
+const { useQuery: useEstimateGasDepositReward } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, rewardTokenId, amount, epoch, userBalance }: DepositRewardParams) =>
     ({ name: 'estimateGas.depositReward', chainId, poolAddress, rewardTokenId, amount, epoch, userBalance }) as const,
   queryFn: async ({ poolAddress, rewardTokenId, amount, epoch }: DepositRewardQuery) =>

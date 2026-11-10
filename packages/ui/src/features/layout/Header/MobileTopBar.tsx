@@ -3,16 +3,9 @@ import { ChainSwitcher, type ChainSwitcherProps } from '@ui/features/layout/swit
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
 
-type MobileTopBarProps<TApp extends string> = ChainSwitcherProps<TApp> & {
-  toggleSidebar: () => void
-  isSidebarOpen: boolean
-}
+type MobileTopBarProps = ChainSwitcherProps & { toggleSidebar: () => void; isSidebarOpen: boolean }
 
-export const MobileTopBar = <TApp extends string>({
-  isSidebarOpen,
-  toggleSidebar,
-  ...chainSwitcherProps
-}: MobileTopBarProps<TApp>) => (
+export const MobileTopBar = ({ isSidebarOpen, toggleSidebar, ...chainSwitcherProps }: MobileTopBarProps) => (
   <Stack direction="row" sx={{ width: '100%', paddingX: 2 }}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo />

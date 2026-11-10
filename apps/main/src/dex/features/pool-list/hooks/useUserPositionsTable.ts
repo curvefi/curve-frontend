@@ -1,13 +1,15 @@
 import { useCallback } from 'react'
 import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
+import { usePoolCampaigns } from '@/dex/hooks/usePoolCampaigns'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import type { UserFullPoolPosition } from '@/dex/queries/user-full-pool-positions.query'
+import { useUserPoolBoosts } from '@/dex/queries/user-pool-boost.query'
 import { type UserPoolClaimables, useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { useCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { UserPositionsTableData } from '@ui/features/pool-list/types'
@@ -23,9 +25,11 @@ const getPoolUserPosition = (
   position: UserPoolPosition,
   tokenRate: QueryProp<number>,
   claimables: Query<UserPoolClaimables>,
+  boost: QueryProp<Decimal | null>,
 ) => ({
   lpBalance: position.totalBalance,
   depositsUsd: mapQuery(tokenRate, price => decimalMultiply(position.totalBalance, price)),
+  boost,
   claimables: mapQuery(claimables, pools => pools[position.address]),
   claimablesUsd: mapQuery(claimables, data => claimablesTotalUsd(data?.[position.address])),
 })
@@ -38,13 +42,14 @@ export const useUserPositionsTable = (
   const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
 
-  const campaigns = useCampaigns({ blockchainId })
+  const campaigns = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const litePoolList = useLitePoolList({ chainId }, enabled && isLite && !!userAddress)
   const poolAddresses = useMappedQuery(
     positions,
     useCallback(positions => positions.map(({ address }) => address), []),
   )
+  const boosts = useUserPoolBoosts({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled && !isLite)
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
 
   const tokenAddresses = useMappedQuery(
@@ -73,17 +78,34 @@ export const useUserPositionsTable = (
               pool!,
               network,
               campaigns.data,
-              getPoolUserPosition(position, tokenRates[position.lpTokenAddress], {
-                data: claimables.data,
-                isLoading: claimables.isLoading,
-                error: claimables.error,
-              }),
+              getPoolUserPosition(
+                position,
+                tokenRates[position.lpTokenAddress],
+                { data: claimables.data, isLoading: claimables.isLoading, error: claimables.error },
+                mapQuery(
+                  // isPending because we want to show loading state during hydration (but not when the query is disabled)
+                  { data: boosts.data, error: boosts.error, isLoading: enabled && !isLite && boosts.isPending },
+                  values => values[position.address],
+                ),
+              ),
             ),
           ])
           .toSorted((a, b) =>
             decimalCompare(b.userPosition?.depositsUsd.data ?? ZERO, a.userPosition?.depositsUsd.data ?? ZERO),
           ),
-      [isLite, network, campaigns.data, tokenRates, claimables.data, claimables.isLoading, claimables.error],
+      [
+        isLite,
+        network,
+        campaigns.data,
+        tokenRates,
+        claimables.data,
+        claimables.isLoading,
+        claimables.error,
+        boosts.data,
+        boosts.error,
+        boosts.isPending,
+        enabled,
+      ],
     ),
   )
 

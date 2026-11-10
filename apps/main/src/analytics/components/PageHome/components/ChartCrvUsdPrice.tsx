@@ -6,12 +6,12 @@ import { createChartOptions, createPalette, createTooltip, timeToCategory } from
 import { type Period, DAYS } from '@/analytics/features/charts/types'
 import { llama } from '@/analytics/llamadash'
 import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { ChartSelect } from '@ui/features/charts/ChartSelect'
+import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 
@@ -76,7 +76,7 @@ export function ChartCrvUsdPrice() {
       onCloseFullscreen={closeFullscreen}
       action={
         <>
-          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
+          <ChartSelect options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
           <ButtonExport
             filename="crvusd_price"
             data={{ price: chartData.map(x => ({ time: x.time, value: x.price })) }}

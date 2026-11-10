@@ -1,5 +1,5 @@
 import { test } from 'vest'
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { validateAmount } from '@/stellar/queries/validation/liquidity.validation'
 import { validatePool, validateTokenDecimals } from '@/stellar/queries/validation/pool.validation'
@@ -14,11 +14,7 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 type WithdrawMaxQuery = PoolQuery & { index: number; decimals: number; lpAmount: Decimal }
 type WithdrawMaxParams = FieldsOf<WithdrawMaxQuery>
 
-export const {
-  getQueryOptions: getWithdrawMaxAmountQueryOptions,
-  fetchQuery: fetchWithdrawMaxAmount,
-  invalidate: invalidateWithdrawMaxAmount,
-} = queryFactory({
+export const { useQuery: useWithdrawMaxAmount, invalidate: invalidateWithdrawMaxAmount } = queryFactory({
   queryKey: ({ network, pool, index, decimals, lpAmount }: WithdrawMaxParams) =>
     ({ name: 'calc_withdraw_one_coin', network, pool, index, decimals, lpAmount }) as const,
   queryFn: async ({ network, pool, index, decimals, lpAmount }: WithdrawMaxQuery) => {

@@ -98,6 +98,7 @@ const formatterReset = { style: undefined, currency: undefined, notation: undefi
  * - Returns "0" for exactly zero values regardless of decimal configuration
  * - For positive values smaller than 0.00001, returns "<0.00001"
  * - For negative values between -0.0001 and 0, returns ">-0.0001"
+ * - When `signDisplay` shows positive signs, tiny positive values return "<+0.00001"
  * - True integer numbers will have no decimals, unless trailingZeroDisplay is set to 'auto'
  * - When formatted output would show "0.00", "1.00", or just "0"/"1" but value has more precision, switches to 6 significant digits
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
@@ -120,7 +121,10 @@ export const defaultNumberFormatter = (
   const usesSignificantDigits = options.minimumSignificantDigits != null || options.maximumSignificantDigits != null
 
   const absValue = Math.abs(value)
-  if (!usesSignificantDigits && absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
+  if (!usesSignificantDigits && absValue > 0 && absValue < 0.00001)
+    return value > 0
+      ? `<${options.signDisplay === 'exceptZero' || options.signDisplay === 'always' ? '+' : ''}0.00001`
+      : '>-0.00001'
 
   const formatted = value.toLocaleString(LOCALE, {
     ...(!usesSignificantDigits && {
@@ -144,7 +148,7 @@ export const defaultNumberFormatter = (
    * - formatNumber(1.0001, { decimals: 2 }) would show "1.00" but we want "1.0001"
    * - formatNumber(1.0001, { decimals: 0 }) would show "1" but we want "1.0001"
    */
-  if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
+  if (value !== 0 && /^[+-]?[01](?:\.0+)?$/.test(formatted)) {
     return value.toLocaleString(LOCALE, { maximumSignificantDigits: 6, ...options, ...formatterReset })
   }
 
@@ -207,7 +211,29 @@ const PRECISE_NUMBER_FORMAT = {
   formatter: preciseFormatter,
 } as const
 
+const PERCENT_RATE_FORMAT = {
+  unit: 'percentage',
+  abbreviate: true,
+  // Disregard the precision edge case around 0 and 1 and force using 2 decimals.
+  minimumFractionDigits: 2,
+  maximumSignificantDigits: undefined,
+  fallback: UNAVAILABLE_NOTATION,
+} as const
+
 const NUMBER_FORMAT_CATEGORIES = {
+  date: {
+    abbreviate: false,
+    fallback: UNAVAILABLE_NOTATION,
+    formatter: value => {
+      // Numeric dates are Unix timestamps in milliseconds.
+      const date = new Date(Number(value))
+      if (Number.isNaN(date.getTime())) return UNAVAILABLE_NOTATION
+      const day = date.getUTCDate().toString().padStart(2, '0')
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0')
+      const year = date.getUTCFullYear().toString().padStart(4, '0')
+      return `${day}.${month}.${year}`
+    },
+  },
   health: {
     abbreviate: false,
     fallback: UNAVAILABLE_NOTATION,
@@ -232,35 +258,24 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumFractionDigits: 2,
   },
   'token.amount': { abbreviate: false, fallback: UNAVAILABLE_NOTATION },
-  'token.delta': {
-    abbreviate: false,
-    fallback: UNAVAILABLE_NOTATION,
-    formatter: value => {
-      const formatted = defaultNumberFormatter(value)
-      return Number(value) > 0 ? `+${formatted}` : formatted
-    },
-  },
+  'token.delta': { abbreviate: false, fallback: UNAVAILABLE_NOTATION, signDisplay: 'exceptZero' },
   'token.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   'token.balance': PRECISE_NUMBER_FORMAT,
   'token.precise': PRECISE_NUMBER_FORMAT,
+  'token.share': PERCENT_RATE_FORMAT,
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
   'usd.precise': { ...PRECISE_NUMBER_FORMAT, unit: 'dollar' },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: UNAVAILABLE_NOTATION },
+  'usd.delta': { unit: 'dollar', abbreviate: true, fallback: UNAVAILABLE_NOTATION, signDisplay: 'exceptZero' },
   'percent.value': { unit: 'percentage', abbreviate: false, fallback: UNAVAILABLE_NOTATION },
+  'percent.delta': { unit: 'percentage', abbreviate: false, fallback: UNAVAILABLE_NOTATION, signDisplay: 'exceptZero' },
   'percent.price-impact': {
     unit: 'percentage',
     abbreviate: false,
     fallback: UNAVAILABLE_NOTATION,
     formatter: value => defaultNumberFormatter(value, getFractionDigitsOptions(value, 5)),
   },
-  'percent.rate': {
-    unit: 'percentage',
-    abbreviate: true,
-    // Disregard the precision edge case around 0 and 1 and force using 2 decimals.
-    minimumFractionDigits: 2,
-    maximumSignificantDigits: undefined,
-    fallback: UNAVAILABLE_NOTATION,
-  },
+  'percent.rate': PERCENT_RATE_FORMAT,
   'pool.parameter': { unit: 'none', abbreviate: false, fallback: UNAVAILABLE_NOTATION, decimals: 5 },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
@@ -376,9 +391,9 @@ export function formatNumber(value: Amount | MissingAmount, options: NumberForma
   }
 
   const decomposed = decomposeNumber(value, options)
-  const isNegative = decomposed.mainValue.startsWith('-')
-  const sign = isNegative ? '-' : ''
-  const mainValue = isNegative ? decomposed.mainValue.slice(1) : decomposed.mainValue
+  // The sign goes before a prefix unit, e.g. "-$1k" or "+$1k"
+  const sign = /^[+-]/.exec(decomposed.mainValue)?.[0] ?? ''
+  const mainValue = decomposed.mainValue.slice(sign.length)
   return notFalsy(sign, decomposed.prefix, mainValue, decomposed.scaleSuffix, decomposed.suffix).join('')
 }
 

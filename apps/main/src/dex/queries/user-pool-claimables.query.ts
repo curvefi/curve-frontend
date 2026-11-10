@@ -1,14 +1,16 @@
 import { groupBy } from 'lodash'
 import { useMemo } from 'react'
+import { getAddress } from 'viem'
+import { LEGACY_POOLS } from '@/routes/dex.routes'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { assert, fromEntries, recordEntries } from '@primitives/objects.utils'
-import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
+import { NoRetryError } from '@ui/features/queries/factory'
 import { q, type QueryData } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -20,8 +22,8 @@ type UserPoolClaimablesParams = FieldsOf<UserPoolClaimablesQuery>
 // Temporary (?) workaround: these pools have broken behavior that breaks multicall
 const CLAIMABLES_BLACKLIST: Partial<Record<Chain, Set<Address>>> = {
   [Chain.Ethereum]: new Set([
-    // REUSD/3Crv: reward token 0xdBd34485773B0C9aDAC1B61b64e7c59049EB0944 reverts on symbol() and decimals().
-    '0xC61557C5d177bd7DC889A3b621eEC333e168f68A',
+    '0xC61557C5d177bd7DC889A3b621eEC333e168f68A', // REUSD/3Crv: reward token 0xdBd34485773B0C9aDAC1B61b64e7c59049EB0944 reverts on symbol() and decimals().
+    ...Object.keys(LEGACY_POOLS).map(getAddress), // Old pools that are not in Prices API (we redirect to https://classic.curve.finance/)
   ]),
   [Chain.Polygon]: new Set([
     '0x2FB12dA70a17802200A512DE31dc0B1b2Da03b4c', // CRV2USD
@@ -43,11 +45,16 @@ export const getUserPoolClaimablesQueryKey = ({ chainId, userAddress }: UserChai
  * so the expected gains don't justify the extra work and complexity. Keep one multicall batch.
  *
  */
-const { useQuery: useUserPoolClaimablesQuery } = queryFactory({
+const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress, poolAddresses }: UserPoolClaimablesParams) =>
     ({ ...getUserPoolClaimablesQueryKey({ chainId, userAddress }), poolAddresses }) as const,
-  queryFn: async ({ userAddress, poolAddresses }: UserPoolClaimablesQuery) => {
+  queryFn: async ({ userAddress, poolAddresses: allPoolAddresses }: UserPoolClaimablesQuery) => {
     const curve = requireLib('curveApi')
+
+    // Skip unresolved pools so one missing pool cannot fail the entire claimables batch.
+    // This can happen as the user positions v2 endpoint can return more pools than loaded in by curve-js which uses the v1 pools endpoint.
+    const knownPoolAddresses = new Set(Object.values(curve.getPoolsData()).map(pool => pool.swap_address.toLowerCase()))
+    const poolAddresses = allPoolAddresses.filter(address => knownPoolAddresses.has(address.toLowerCase()))
 
     // This is a very heavy function call, so we want to avoid many retries.
     const poolRewards = await curve.getUserClaimable(poolAddresses, userAddress).catch(error => {
@@ -92,8 +99,7 @@ export function useUserPoolClaimables(params: UserPoolClaimablesParams, enabled 
     () => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
     [chainId, poolAddresses],
   )
-  const query = useHydratedQuery(
-    useUserPoolClaimablesQuery,
+  const query = useUserPoolClaimablesQuery(
     { ...params, poolAddresses: filteredPoolAddresses },
     enabled && !!filteredPoolAddresses?.length && curveApi?.chainId === chainId,
   )

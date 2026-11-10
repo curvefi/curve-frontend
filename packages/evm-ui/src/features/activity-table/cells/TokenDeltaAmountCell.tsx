@@ -23,15 +23,20 @@ export const TokenDeltaAmountCell = ({ deltas }: { deltas: readonly ActivityToke
           ))}
         </IconStack>
       ) : (
-        first?.token && (
-          <TokenInfo
-            address={first.token.address}
-            blockchainId={first.blockchainId}
-            iconPosition="right"
-            iconSize="mui-md"
-            primary={formatNumber(first.amount, 'token.amount')}
-          />
-        )
+        <TokenInfo
+          icon={
+            first?.token && (
+              <TokenIcon
+                address={first.token.address}
+                blockchainId={first.blockchainId}
+                tooltip={first.token.symbol}
+                size="mui-md"
+              />
+            )
+          }
+          iconPosition="right"
+          primary={formatNumber(first?.amount, 'token.amount')}
+        />
       )}
     </InlineTableCell>
   )

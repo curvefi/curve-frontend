@@ -1,7 +1,7 @@
 import {
   getStellarTransactionFees,
   type StellarTransaction,
-} from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+} from '@/stellar/features/connect-wallet/stellar-wallet-kit/transaction'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import type { NetworkQuery } from '@/stellar/queries/query-types'
 import { useTokenUsdRate } from '@/stellar/queries/token/token-usd-rate.query'

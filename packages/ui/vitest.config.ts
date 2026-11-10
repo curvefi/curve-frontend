@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@curvefi/prices-api': resolve(__dirname, '../prices-api/src'),
+      '@external-rewards': resolve(rootDir, '../external-rewards/src/index.ts'),
       '@primitives': resolve(rootDir, '../primitives/src'),
       '@ui': resolve(rootDir, 'src'),
     },

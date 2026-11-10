@@ -7,7 +7,7 @@ import { mockLlamalendChartApis } from '@cy/support/helpers/llamalend/mocks/llam
 import { clickTab } from '@cy/support/helpers/tabs'
 import type { AppRoute } from '@cy/support/routes'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
-import { oneViewport } from '@cy/support/ui'
+import { oneViewport, SUBPIXEL_TOLERANCE } from '@cy/support/ui'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 
 const NAV_ID = 'detail-page-section-nav'
@@ -19,7 +19,7 @@ const PAGE = oneOf(
     { label: 'Mint', path: LOAN_TEST_MARKETS[MarketType.Mint][1].path, rateType: MarketRateType.Borrow },
     { label: 'Lending borrow', path: LEND_PATH, rateType: MarketRateType.Borrow },
     { label: 'Supply', path: `${LEND_PATH}/vault`, rateType: MarketRateType.Supply },
-  ] satisfies { label: string; path: `/${AppRoute}`; rateType: MarketRateType }[]),
+  ] satisfies { label: string; path: AppRoute; rateType: MarketRateType }[]),
 )
 
 const headerBottom = (document: Document) =>
@@ -40,8 +40,7 @@ const assertSectionReached = (section: MarketSectionId) =>
         )
 
         expect(win.scrollY, `${section}: page scrolled`).to.be.greaterThan(0)
-        // Firefox can round fractional layout positions differently in CI, so allow one CSS pixel.
-        expect(top, `${section}: below navigation`).to.be.at.least(obstruction - 1)
+        expect(top, `${section}: below navigation`).to.be.at.least(obstruction - SUBPIXEL_TOLERANCE)
         expect(top, `${section}: inside viewport`).to.be.lessThan(win.innerHeight)
       }),
   )
@@ -51,7 +50,7 @@ describe(`${PAGE.label} section navigation (${BREAKPOINT}, ${WIDTH}x${HEIGHT})`,
   const selectedSection = oneOf(...sections)
 
   const visit = (hash = '') => {
-    cy.visitWithoutTestConnector(`${PAGE.path.slice(1)}${hash}` as AppRoute)
+    cy.visitWithoutTestConnector(`${PAGE.path}${hash}`)
     cy.get(NAV, TIMEOUTS['ui.render']).should('be.visible')
     sections.forEach(section => {
       cy.get(`#${section}`, TIMEOUTS['ui.render']).should('exist')

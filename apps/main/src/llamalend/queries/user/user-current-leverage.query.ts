@@ -7,6 +7,7 @@ import { decimal } from '@ui/lib/decimal'
 /**
  * Query to get the user's current leverage value in a market.
  * Note this does not support leverage values for old mint markets (marketId < 6).
+ * @deprecated Collateral leverage: collateral ÷ collateral deposited by the user, wrong after soft liquidation. Use `useEquityLeverage`.
  */
 export const {
   useQuery: useUserCurrentLeverage,

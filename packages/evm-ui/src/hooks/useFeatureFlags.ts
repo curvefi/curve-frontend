@@ -31,3 +31,14 @@ export const useNewLlamaMarketDetailPage = useStableChannel
 export const useMarketMobileFormDrawer = useStableChannel
 
 export const useNewPoolForms = useBetaChannel
+
+export const useLiquidityDensityChart = useStableChannel
+
+/** LlamaLend leverage as collateral value ÷ equity */
+export const useLlamalendEquityLeverage = useBetaChannel
+
+/** LlamaLend equity and PNL (ROI %) of borrow positions */
+export const useLlamalendPositionPnl = useBetaChannel
+
+/** LlamaLend borrow and supply position tables with the position card's metrics */
+export const useLlamalendPositionTables = useBetaChannel

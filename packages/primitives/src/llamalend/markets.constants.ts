@@ -14,6 +14,7 @@ export enum MarketAssetsType {
 export const MARKET_ASSETS_TYPE_BY_CONTROLLER: PartialRecord<number, Record<Address, MarketAssetsType>> = {
   [Chain.Ethereum]: {
     // Lend markets
+    '0x4922995d8CbF9e1f368B2EE521bD2fa2F49eADb1': MarketAssetsType.Correlated, // reUSD/sfrxUSD LP/crvUSD
     '0xFd85e847cDd2549f213E276e4B57B0690169F043': MarketAssetsType.LongTail, // svZCHF/crvUSD
     '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': MarketAssetsType.Correlated, // syrupUSDC/crvUSD
     '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe': MarketAssetsType.Correlated, // sfrxUSD/crvUSD v2

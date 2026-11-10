@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: {
-      '@curvefi/api-server': resolve(__dirname, '../../packages/api-server/src/index.ts'),
+      '@api-server': resolve(__dirname, '../../packages/api-server/src'),
       '@curvefi/prices-api': resolve(__dirname, '../../packages/prices-api/src'),
       '@primitives': resolve(__dirname, '../../packages/primitives/src'),
     },

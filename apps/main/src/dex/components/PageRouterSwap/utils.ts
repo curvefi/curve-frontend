@@ -36,7 +36,7 @@ export function parseRouterRoutes(routes: IRouteStep[], getPool: (poolId: string
         haveCryptoRoutes = true
       }
 
-      return { ...route, name: poolName, routeUrlId: pool ? route.poolId : '' }
+      return { ...route, name: poolName, routeUrlId: pool ? pool.address : '' }
     })
   }
 

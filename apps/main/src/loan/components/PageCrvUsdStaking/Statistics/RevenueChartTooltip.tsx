@@ -1,13 +1,13 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
+import { formatDate } from '@primitives/date.utils'
+import { formatNumber } from '@primitives/number.utils'
 import {
   ChartTooltipShell,
   ChartTooltipSeriesGroup,
   ChartTooltipSeriesRow,
-} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
-import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { formatDate } from '@primitives/date.utils'
-import { formatNumber } from '@primitives/number.utils'
+} from '@ui/features/charts/ChartTooltipComponents'
+import type { LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
 import { t } from '@ui/lib/i18n'
 
 const lineLabels: Record<YieldKeys, string> = {

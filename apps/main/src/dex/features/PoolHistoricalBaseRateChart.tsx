@@ -4,17 +4,7 @@ import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
-import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import {
-  ChartTooltipSeriesGroup,
-  ChartTooltipSeriesRow,
-  ChartTooltipShell,
-} from '@evm-ui/shared/ui/Chart/ChartTooltipComponents'
-import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
-import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -25,6 +15,16 @@ import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { CHART_LINE_DASH_PATTERNS } from '@ui/features/charts/chart.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { ChartSelect } from '@ui/features/charts/ChartSelect'
+import {
+  ChartTooltipSeriesGroup,
+  ChartTooltipSeriesRow,
+  ChartTooltipShell,
+} from '@ui/features/charts/ChartTooltipComponents'
+import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
+import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimal } from '@ui/lib/decimal'
@@ -109,7 +109,7 @@ export const PoolHistoricalBaseRateChart = ({
       <CardHeader
         title={t`Historical Base Rate`}
         action={
-          <SelectTimeOption
+          <ChartSelect
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}
@@ -133,36 +133,37 @@ export const PoolHistoricalBaseRateChart = ({
           />
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={ratePoints}
           height={CHART_HEIGHT}
-          isLoading={ratePoints.isLoading}
-          error={ratePoints.error}
-          errorMessage={t`Unable to fetch historical base rate data.`}
+          errorState={{ description: t`Unable to fetch historical base rate data.` }}
         >
-          <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
-            data={ratePoints.data ?? []}
-            height={CHART_HEIGHT}
-            xKey="timestamp"
-            series={series}
-            visibleSeries={visibleSeries}
-            xTickFormatter={value => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={({ datum, visibleSeries: activeSeries }) => (
-              <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
-                <ChartTooltipSeriesGroup>
-                  {activeSeries.map(activeSeriesItem => (
-                    <ChartTooltipSeriesRow
-                      key={activeSeriesItem.key}
-                      label={activeSeriesItem.label}
-                      lineColor={activeSeriesItem.color}
-                      dash={activeSeriesItem.dash}
-                      value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
-                    />
-                  ))}
-                </ChartTooltipSeriesGroup>
-              </ChartTooltipShell>
-            )}
-          />
+          {data => (
+            <EChartsLineChart<BaseRateChartPoint, BaseRateSeriesKey, 'timestamp'>
+              data={data}
+              height={CHART_HEIGHT}
+              xKey="timestamp"
+              series={series}
+              visibleSeries={visibleSeries}
+              xTickFormatter={value => formatDate(value)}
+              yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={({ datum, visibleSeries: activeSeries }) => (
+                <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
+                  <ChartTooltipSeriesGroup>
+                    {activeSeries.map(activeSeriesItem => (
+                      <ChartTooltipSeriesRow
+                        key={activeSeriesItem.key}
+                        label={activeSeriesItem.label}
+                        lineColor={activeSeriesItem.color}
+                        dash={activeSeriesItem.dash}
+                        value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
+                      />
+                    ))}
+                  </ChartTooltipSeriesGroup>
+                </ChartTooltipShell>
+              )}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter legendSets={legendSets} />
       </CardContent>

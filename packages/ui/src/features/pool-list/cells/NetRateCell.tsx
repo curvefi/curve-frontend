@@ -9,46 +9,41 @@ import { ChipVolatileBaseApy } from '../../pools/ChipVolatileBaseApy'
 import type { PoolRow, PoolTableMeta } from '../types'
 import { NetRateTooltipContent } from './NetRateTooltipContent'
 import { RewardIcons } from './RewardIcons'
-import { formatCellValue, isVolatileRate } from './utils'
+import { formatCellValue, getNetRateTooltipData, isVolatileRate } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const NetRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolTableMeta['crvToken'] }) => {
-  const netRate = pool.netApr
-  const volatile = isVolatileRate(netRate)
-
-  return (
-    <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
-      <WithWrapper
-        shouldWrap={netRate}
-        Wrapper={Tooltip}
-        clickable
-        title={t`Net APR`}
-        body={<NetRateTooltipContent pool={pool} crvToken={crvToken} volatile={volatile} />}
-        placement="top"
+export const NetRateCell = ({ pool, crvToken }: { pool: PoolRow; crvToken: PoolTableMeta['crvToken'] }) => (
+  <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
+    <WithWrapper
+      shouldWrap={pool.netApr}
+      Wrapper={Tooltip}
+      clickable
+      title={t`Net APR`}
+      body={<NetRateTooltipContent {...getNetRateTooltipData(pool)} crvToken={crvToken} />}
+      placement="top"
+    >
+      <Box
+        component="span"
+        data-testid={pool.netApr ? 'pool-net-rate-tooltip-trigger' : undefined}
+        sx={{ display: 'inline-flex' }}
       >
-        <Box
-          component="span"
-          data-testid={netRate ? 'pool-net-rate-tooltip-trigger' : undefined}
-          sx={{ display: 'inline-flex' }}
-        >
-          {volatile ? (
-            <Box component="span" data-testid="pool-net-rate" sx={{ textAlign: 'end' }}>
-              <ChipVolatileBaseApy isBold disableTooltip />
-            </Box>
-          ) : (
-            <Typography
-              component="span"
-              data-testid="pool-net-rate"
-              variant="tableCellValueStrong"
-              sx={{ display: 'block', textAlign: 'end' }}
-            >
-              {formatCellValue(netRate, 'percent.rate')}
-            </Typography>
-          )}
-        </Box>
-      </WithWrapper>
-      <RewardIcons pool={pool} crvToken={crvToken} includePoints />
-    </Stack>
-  )
-}
+        {isVolatileRate(pool.netApr) ? (
+          <Box component="span" data-testid="pool-net-rate" sx={{ textAlign: 'end' }}>
+            <ChipVolatileBaseApy isBold disableTooltip />
+          </Box>
+        ) : (
+          <Typography
+            component="span"
+            data-testid="pool-net-rate"
+            variant="tableCellValueStrong"
+            sx={{ display: 'block', textAlign: 'end' }}
+          >
+            {formatCellValue(pool.netApr, 'percent.rate')}
+          </Typography>
+        )}
+      </Box>
+    </WithWrapper>
+    <RewardIcons pool={pool} crvToken={crvToken} includePoints />
+  </Stack>
+)

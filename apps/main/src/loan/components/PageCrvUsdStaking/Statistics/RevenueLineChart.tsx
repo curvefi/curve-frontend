@@ -2,11 +2,11 @@ import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/
 import { RevenueChartTooltip } from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
-import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

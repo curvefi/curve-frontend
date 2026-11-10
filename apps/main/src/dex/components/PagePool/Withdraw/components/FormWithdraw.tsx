@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be deleted. */
+
 import lodash, { countBy } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { css, styled } from 'styled-components'
@@ -92,11 +96,11 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         pool,
         { isWrapped, ...updatedFormValues },
         null,
-        seed.isSeed,
+        seed.data,
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, config, curve, isWrapped, pool, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, isWrapped, pool, seed.data, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -246,7 +250,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
       updateFormValues({}, null)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // max Slippage
   useEffect(() => {
@@ -258,7 +262,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   // steps
   useEffect(() => {
-    if (curve && pool && seed.isSeed !== null) {
+    if (curve && pool && seed.data != null) {
       const updatedSteps = getSteps(
         activeKey,
         config,
@@ -270,7 +274,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
         slippage,
         steps,
         maxSlippage,
-        seed.isSeed,
+        seed.data,
       )
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
@@ -286,7 +290,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
     slippage.isHighSlippage,
     slippageConfirmed,
     maxSlippage,
-    seed.isSeed,
+    seed.data,
   ])
 
   const tokenAddresses = useMemo(() => formValues.amounts.map(a => a.tokenAddress), [formValues.amounts])
@@ -318,7 +322,7 @@ export const FormWithdraw = ({ maxSlippage, seed }: TransferProps) => {
 
   const haveSlippage = formValues.selected !== 'lpToken'
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
+  const isDisabled = seed.data == null || seed.data || formStatus.formProcessing
 
   const handleAmountChange = useCallback(
     (val: string, idx: number) => {

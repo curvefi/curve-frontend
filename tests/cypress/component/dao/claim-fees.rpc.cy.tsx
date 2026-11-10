@@ -41,7 +41,7 @@ describe('FormClaimFees (RPC)', () => {
     )
 
     Object.entries(REWARDS).forEach(([token, amount]) => {
-      cy.get(`[data-testid="claim-fees-${token}"]`, TIMEOUTS['evm.contractRead'])
+      cy.get(`[data-testid="claim-fees-${token}"]`, TIMEOUTS['tenderly.contractRead'])
         .should('contain.text', amount)
         .find('button')
         .should('be.enabled')
@@ -51,7 +51,7 @@ describe('FormClaimFees (RPC)', () => {
       submitAndExpectToast(
         () => cy.get(`[data-testid="claim-fees-${token}"] button`).click(),
         { message: `${token} fees have been claimed and sent to your wallet.` },
-        'evm.confirmation',
+        'tenderly.submit',
       )
       cy.get(`[data-testid="claim-fees-${token}"]`).within(() => {
         cy.contains(/^0$/).should('be.visible')

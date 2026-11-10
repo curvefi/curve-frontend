@@ -1,4 +1,5 @@
-import { type Address, encodeFunctionData, parseAbi } from 'viem'
+import { type Address, createPublicClient, encodeFunctionData, http, parseAbi } from 'viem'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
@@ -18,6 +19,9 @@ const GAUGE_ABI = parseAbi([
   'function manager() view returns (address)',
   'function add_reward(address _reward_token, address _distributor)',
   'function deposit_reward_token(address _reward_token, uint256 _amount, uint256 _epoch)',
+  'function reward_count() view returns (uint256)',
+  'function reward_tokens(uint256 _index) view returns (address)',
+  'function claimable_reward(address _user, address _reward_token) view returns (uint256)',
 ])
 
 const submitClaimForm = (type: SupplyActionType, isMocked = false) =>
@@ -26,7 +30,7 @@ const submitClaimForm = (type: SupplyActionType, isMocked = false) =>
 const getClaimSubmitButton = (type: ClaimRewardType, isMocked = false) =>
   cy.get(
     `[data-testid="supply-claim-${type}-rewards-submit-button"]`,
-    TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   )
 
 export const submitClaimAndSettle = (
@@ -84,7 +88,7 @@ export const prepareClaimRewards = ({
 const touchClaimForm = (type: string, isMocked = false) => {
   cy.get(
     `[data-testid="supply-${type}-submit-button"]`,
-    TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   ).should('be.disabled')
 }
 
@@ -103,9 +107,10 @@ export function validateClaimTabState({
   getClaimSubmitButton('crv', isMocked).should(crvButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   getClaimSubmitButton('other', isMocked).should(otherRewardsButtonDisabled ? 'be.disabled' : 'not.be.disabled')
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  cy.get('[data-testid="supply-claim-empty-state"]', TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)]).should(
-    noRewards ? 'be.visible' : 'not.exist',
-  )
+  cy.get(
+    '[data-testid="supply-claim-empty-state"]',
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
+  ).should(noRewards ? 'be.visible' : 'not.exist')
 }
 
 /**
@@ -135,7 +140,7 @@ export function checkClaimDetailsLoaded({
   // The table's test ID is absent while either reward query is loading.
   cy.get(
     '[data-testid="data-table"] [data-testid="data-table-cell-token"]',
-    TIMEOUTS[getTimeoutCategory('evm.contractRead', isMocked)],
+    TIMEOUTS[getTimeoutCategory('tenderly', 'contractRead', isMocked)],
   ).should('have.length.at.least', 1)
   cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
 
@@ -144,13 +149,13 @@ export function checkClaimDetailsLoaded({
       checkEstimatedTxCostValue({
         hasValue: hasApi,
         name: 'claim-crv-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('evm.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
     } else {
       checkEstimatedTxCostValue({
         hasValue: false,
         name: 'claim-crv-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('evm.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
       getActionInfo('claim-crv-rewards-estimated-tx-cost', 'ui.render').should('have.text', '-')
     }
@@ -159,13 +164,13 @@ export function checkClaimDetailsLoaded({
       checkEstimatedTxCostValue({
         hasValue: hasApi,
         name: 'claim-other-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('evm.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
     } else {
       checkEstimatedTxCostValue({
         hasValue: false,
         name: 'claim-other-rewards-estimated-tx-cost',
-        category: getTimeoutCategory('evm.simulation', isMocked),
+        category: getTimeoutCategory('tenderly', 'simulation', isMocked),
       })
       getActionInfo('claim-other-rewards-estimated-tx-cost', 'ui.render').should('have.text', '-')
     }
@@ -221,3 +226,60 @@ export function checkClaimTableState({
     cy.contains(formatNumber(totalNotional, 'usd.notional')).should('be.visible')
   }
 }
+
+/** Some gauges also pay external rewards on top of CRV */
+const hasClaimableOtherRewards = ({
+  vnet,
+  userAddress,
+  gaugeAddress,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  gaugeAddress: Address
+}) =>
+  cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
+    const client = createPublicClient({ transport: http(getRpcUrls(vnet).publicRpcUrl) })
+    const count = await client.readContract({ address: gaugeAddress, abi: GAUGE_ABI, functionName: 'reward_count' })
+    const amounts = await Promise.all(
+      Cypress._.range(Number(count)).map(async index =>
+        client.readContract({
+          address: gaugeAddress,
+          abi: GAUGE_ABI,
+          functionName: 'claimable_reward',
+          args: [
+            userAddress,
+            await client.readContract({
+              address: gaugeAddress,
+              abi: GAUGE_ABI,
+              functionName: 'reward_tokens',
+              args: [BigInt(index)],
+            }),
+          ],
+        }),
+      ),
+    )
+    return amounts.some(amount => amount > 0n)
+  })
+
+/** Claims the CRV rewards, and the external rewards if any */
+export const claimSupplyRewards = ({
+  vnet,
+  userAddress,
+  gaugeAddress,
+  hasApi,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  gaugeAddress: Address
+  hasApi: boolean
+}) =>
+  hasClaimableOtherRewards({ vnet, userAddress, gaugeAddress }).then(hasOtherRewards => {
+    checkClaimDetailsLoaded({ hasOtherRewards, hasApi })
+    submitClaimAndSettle('crv', { waitForEmptyState: true })
+    if (hasOtherRewards) {
+      // each claim mines a block, so a few seconds of CRV may be claimable again and the tab can't settle empty
+      submitClaimAndSettle('other', { waitForEmptyState: true })
+    } else {
+      validateClaimTabState()
+    }
+  })

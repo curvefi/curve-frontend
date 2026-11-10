@@ -24,7 +24,7 @@ const testCases: TestCase[] = [
     {
       title: 'links the LP lend market collateral to its pool',
       token: LP_LEND_COLLATERAL,
-      href: `/dex/ethereum/pools/${LP_LEND_COLLATERAL.address}/deposit`,
+      href: `/dex/ethereum/pools/${LP_LEND_COLLATERAL.address}`,
     },
     {
       title: 'links the lend market collateral to the swap page',

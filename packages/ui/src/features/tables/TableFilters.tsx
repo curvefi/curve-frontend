@@ -16,6 +16,7 @@ export const TableFilters = ({
   testIdPrefix,
   collapsibleFilters,
   chips,
+  chipsPlacement,
   filterChip,
   sortChip,
   searchText,
@@ -25,7 +26,8 @@ export const TableFilters = ({
   testIdPrefix: string
   // collapsible bar that displays the active filters
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
-  chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
+  chips?: ReactNode
+  chipsPlacement?: 'row' | 'toolbar'
   filterChip?: ReactNode // buttons responsible for filtering
   sortChip?: ReactNode // buttons responsible for sorting
   searchText: string // text to search for, only used for mobile
@@ -34,6 +36,7 @@ export const TableFilters = ({
 }) => {
   // search is here because we remove the table title when searching on mobile
   const isMobile = useIsMobile()
+  const placement = chipsPlacement ?? (isMobile ? null : 'row')
   const { collapsible, hasActiveFilters } = collapsibleFilters ?? {}
 
   return (
@@ -62,8 +65,9 @@ export const TableFilters = ({
             />
           </Box>
           {sortChip && <Box className="tableControl">{sortChip}</Box>}
+          {placement === 'toolbar' && chips && <Box className="tableControl">{chips}</Box>}
         </Grid>
-        {!isMobile && chips && (
+        {placement === 'row' && chips && (
           <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
           </Grid>

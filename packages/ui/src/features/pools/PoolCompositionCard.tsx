@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react'
 import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -17,9 +19,11 @@ import { FooterRow } from './pool-composition/FooterRow'
 export const PoolCompositionCard = ({
   rows,
   totalUsd,
+  children,
 }: {
   rows: QueryProp<PoolCompositionRow[]>
   totalUsd: QueryProp<Decimal>
+  children?: ReactNode
 }) => {
   const isMobile = useIsMobile()
   const table = useCurveTable({
@@ -45,6 +49,7 @@ export const PoolCompositionCard = ({
           )
         }
       />
+      {children && <CardContent>{children}</CardContent>}
     </Card>
   )
 }

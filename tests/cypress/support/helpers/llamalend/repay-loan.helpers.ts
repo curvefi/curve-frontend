@@ -69,13 +69,13 @@ export function checkRepayDetailsLoaded({
   )
   getActionValue(
     'borrow-price-range',
-    getTimeoutCategory('evm.simulation', isMocked),
+    getTimeoutCategory('tenderly', 'simulation', isMocked),
     ...notFalsy(!isPriceChanged && 'previous'),
   ).should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
-  getActionValue('borrow-apr', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
+  getActionValue('borrow-apr', getTimeoutCategory('tenderly', 'simulation', isMocked)).should('include', '%')
   checkEstimatedTxCost({
     hasValue: hasApi && controllerApproved,
-    category: getTimeoutCategory('evm.simulation', isMocked),
+    category: getTimeoutCategory('tenderly', 'simulation', isMocked),
   })
   checkDebt(debt, { checkLoanToValue: hasApi, isMocked })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')

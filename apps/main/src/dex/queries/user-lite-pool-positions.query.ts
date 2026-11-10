@@ -1,31 +1,30 @@
-import { getAddress } from 'viem'
+import { getAddress, type Address } from 'viem'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserChainParams, UserChainQuery } from '@evm-ui/queries/query-types'
 import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { PromisePool } from '@supercharge/promise-pool'
-import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
 import { decimal, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { getPool } from '../pool.utils'
 
-const {
-  useQuery: useUserLitePoolPositionsQuery,
-  queryKey: getUserLitePoolPositionsQueryKey,
+export const {
+  useQuery: useUserLitePoolPositions,
+  reset: resetUserLitePoolPositions,
   invalidate: invalidateUserLitePoolPositions,
-} = queryFactory({
+} = hydratedQueryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
     ({ name: 'getUserLitePoolPositions', chainId, userAddress }) as const,
   queryFn: async ({ userAddress }: UserChainQuery) => {
     const curve = requireLib('curveApi')
-    const poolIds = await curve.getUserPoolListByLiquidity(userAddress)
-    const { results } = await PromisePool.for(poolIds)
+    const poolAddresses = (await curve.getUserPoolListByLiquidity(userAddress)) as Address[]
+    const { results } = await PromisePool.for(poolAddresses)
       .withConcurrency(10)
-      .process(async poolId => {
-        const pool = getPool(poolId, curve)
+      .process(async poolAddress => {
+        const pool = getPool(poolAddress, curve)
         const { lpToken, gauge } = (await pool.wallet.lpTokenBalances(userAddress)) as Record<string, string>
         const totalBalance = decimalSum(decimal(lpToken), decimal(gauge ?? ZERO))
         return { address: getAddress(pool.address), lpTokenAddress: getAddress(pool.lpToken), totalBalance }
@@ -40,10 +39,5 @@ const {
   }),
   category: 'dex.user',
 })
-
-export { getUserLitePoolPositionsQueryKey, invalidateUserLitePoolPositions }
-
-export const useUserLitePoolPositions = (params: UserChainParams, enabled = true) =>
-  useHydratedQuery(useUserLitePoolPositionsQuery, params, enabled)
 
 export type UserLitePoolPositions = QueryData<typeof useUserLitePoolPositions>

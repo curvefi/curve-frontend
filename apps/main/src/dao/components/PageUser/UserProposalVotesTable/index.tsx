@@ -8,15 +8,15 @@ import {
 } from '@/dao/entities/user-proposal-votes'
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import Box from '@mui/material/Box'
+import type { Address } from '@primitives/address.utils'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { t } from '@ui/lib/i18n'
 import { VOTES_LABELS } from '../constants'
 
-type UserProposalVotesTableProps = { userAddress: string; tableMinWidth: number }
+type UserProposalVotesTableProps = { userAddress: Address; tableMinWidth: number }
 
 const sortUserProposalVotes = (
   userProposalVotes: UserProposalVoteFormatted[],
@@ -58,9 +58,7 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
         renderRow={(proposalVote, index) => (
           <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
             <TableDataLink
-              href={getEthPath(
-                `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
-              )}
+              href={daoPages.proposal({ proposalId: `${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}` })}
               className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}
             >
               #{proposalVote.voteId}

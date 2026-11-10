@@ -7,11 +7,10 @@ import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { PartialRecord } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { FieldPath, FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
-import { HelperMessage } from '@ui/features/forms/controls/LargeTokenInput/HelperMessage'
-import { LargeTokenInput, type LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
+import { FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
+import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
+import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { decimal } from '@ui/lib/decimal'
@@ -67,11 +66,7 @@ export const LoanFormTokenInput = <
   blockchainId,
   name,
   max,
-  form: {
-    values,
-    update: updateForm,
-    formState: { errors: formErrors, touchedFields },
-  },
+  form: { values, update: updateForm, formState },
   testId,
   message,
   maxMessage,
@@ -104,23 +99,19 @@ export const LoanFormTokenInput = <
     [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],
   )
 
-  const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, Error>
-  const maxFieldName = max?.fieldName
-  const onMax = max?.onMax
-  const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
-  const error = name in touchedFields ? (errors[name] ?? max?.error ?? relatedMaxFieldError) : balanceError
   const value = values[name]
-  const errorMessage = error?.message
 
   const onBalance = useCallback(
     (v?: Decimal) => {
+      if (v && max?.onMax && v === max.data) return max.onMax()
       updateForm({ [name]: v } as FormUpdates<TFieldValues>)
       onValueChange?.(v)
     },
-    [name, onValueChange, updateForm],
+    [max, name, onValueChange, updateForm],
   )
   return (
-    <LargeTokenInput
+    <FormTokenInput
+      form={{ values, formState }}
       name={name}
       label={label}
       testId={testId}
@@ -134,16 +125,14 @@ export const LoanFormTokenInput = <
           />
         )
       }
-      balance={q({ data: value, isLoading: value == null, error: error ?? null })}
+      balance={q({ data: value, isLoading: value == null, error: balanceError })}
       onBalance={onBalance}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={max && { chips: 'range', balance: max, onMax }}
+      {...(max && { relatedFields: [max.fieldName] })}
+      max={max && { balance: max, chips: 'range', onMax: max.onMax }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
-      message={errorMessage ? undefined : message}
+      message={message ?? maxMessage}
       disabled={disabled}
-    >
-      {maxMessage && !errorMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
-      {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onMax ?? onBalance} isError />}
-    </LargeTokenInput>
+    />
   )
 }

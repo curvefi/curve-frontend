@@ -9,7 +9,7 @@ export { MAX_USER_POOL_PAGE_SIZE } from './constants'
 
 const LITE_POOLS_HOST = 'https://api2.curve.finance'
 
-export async function getPools(blockchainId: Chain, options?: Options) {
+export async function getPools(blockchainId: string, options?: Options) {
   const host = getHost(options)
   const response = await fetch(`${host}/v1/chains/${blockchainId}`)
 
@@ -21,6 +21,16 @@ export async function getPool(blockchainId: Chain, poolAddr: string, options?: O
   const response = await fetch(`${host}/v1/pools/${blockchainId}/${poolAddr}`)
 
   return Schema.getPoolResponse.parse(response)
+}
+
+export async function getPoolV2(
+  { chainId, poolAddress }: { chainId: number; poolAddress: Address },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const response = await fetch(`${host}/v2/pools/${chainId}/${poolAddress}`, { signal: options?.signal })
+
+  return Schema.getPoolV2Response.parse(response)
 }
 
 export async function listPoolChains(options?: Options) {
@@ -42,6 +52,13 @@ export async function listLitePools({ chainId }: { chainId: number }, options?: 
   const response = await fetch(`${host}/get_pools/${chainId}`, { signal: options?.signal })
 
   return Schema.listLitePoolsResponse.parse(response)
+}
+
+export async function getLitePoolDeployment({ chainId }: { chainId: number }, options?: Options) {
+  const host = options?.host ?? LITE_POOLS_HOST
+  const response = await fetch(`${host}/get_deployment/${chainId}`, { signal: options?.signal })
+
+  return Schema.getLitePoolDeploymentResponse.parse(response)
 }
 
 export type ListPoolsParams = {

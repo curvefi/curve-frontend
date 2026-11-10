@@ -1,9 +1,9 @@
 import type { UserWithdrawParams, UserWithdrawQuery } from '@/dex/features/withdraw/types'
 import { userWithdrawParamsValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
-import { queryFactory } from '@ui/features/queries/factory'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { getWithdrawImplementation } from './withdraw-query.helpers'
 
-export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsApproved } = queryFactory({
+export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsApproved } = hydratedQueryFactory({
   queryKey: ({
     chainId,
     poolAddress,

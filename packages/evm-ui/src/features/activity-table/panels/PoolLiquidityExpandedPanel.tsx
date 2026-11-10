@@ -7,33 +7,21 @@ import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { t } from '@ui/lib/i18n'
 import type { PoolLiquidityRow } from '../types'
+import { getChangeColor, getPoolLiquidityEventTokenDeltas } from '../utils'
 
-export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow> = ({
-  row: {
-    original: { tokenAmounts, poolTokens, provider, blockchainId, eventType },
-  },
-}) => {
-  const isAdd = eventType === 'AddLiquidity'
-
-  // Filter out zero amounts
-  const nonZeroAmounts = tokenAmounts
-    .map((amount, index) => ({ amount, index, token: poolTokens[index] }))
-    .filter(({ amount }) => amount !== 0)
-
-  return (
-    <Stack>
-      <MetricsGrid variant="mobileRows">
-        {nonZeroAmounts.map(({ amount, index, token }) => (
-          <MetricExpandedPanel
-            key={token?.address ?? index}
-            label={notFalsy(t`Amount`, `(${token?.symbol ?? t`Token ${index + 1}`})`).join(' ')}
-            value={isAdd ? amount : -amount}
-            valueOptions={{ color: isAdd ? 'success' : 'error' }}
-            icon={{ blockchainId, token }}
-          />
-        ))}
-      </MetricsGrid>
-      <ActionInfo label={t`User`} value={shortenString(provider)} />
-    </Stack>
-  )
-}
+export const PoolLiquidityExpandedPanel: ExpandedPanelComponent<PoolLiquidityRow> = ({ row: { original: event } }) => (
+  <Stack>
+    <MetricsGrid variant="mobileRows">
+      {getPoolLiquidityEventTokenDeltas(event).map(delta => (
+        <MetricExpandedPanel
+          key={delta.label}
+          label={notFalsy(t`Amount`, `(${delta.token?.symbol ?? delta.label})`).join(' ')}
+          value={delta.amount}
+          valueOptions={{ color: getChangeColor(delta.amount, 'success', 'error') }}
+          icon={{ blockchainId: delta.blockchainId, token: delta.token }}
+        />
+      ))}
+    </MetricsGrid>
+    <ActionInfo label={t`User`} value={shortenString(event.provider)} />
+  </Stack>
+)

@@ -5,11 +5,7 @@ import { getUtilizationPercent } from '@/llamalend/llama.utils'
 import { TotalDebtMetric, TotalLiquidityMetric } from '@/llamalend/widgets/MarketMetrics'
 import { useAvailableLiquidity } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
-import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
-import { EChartsLineChart, type LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/Chart/EvmChartStateWrapper'
-import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { MarketType } from '@evm-ui/types/market'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -19,6 +15,10 @@ import { formatNumber } from '@primitives/number.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
+import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@ui/features/charts/chart.utils'
+import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { EChartsLineChart, type LineSeriesConfig } from '@ui/features/charts/EChartsLineChart'
+import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -61,7 +61,11 @@ export const MarketRateCurveChart = () => {
   const {
     design: { Color },
   } = useTheme()
-  const rateCurve = useRateCurve({ blockchainId, contractAddress: controllerAddress })
+  // the rate curve query stays idle until the market provides the controller address
+  const rateCurve = combineQueries(
+    [q(useRateCurve({ blockchainId, contractAddress: controllerAddress })), fallbackQ(marketQuery, apiMarket)],
+    rateCurve => rateCurve,
+  )
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalDebt = fallbackQ(
     q(useMarketTotalDebt({ chainId, marketId })),
@@ -152,24 +156,25 @@ export const MarketRateCurveChart = () => {
           />
         </MetricsGrid>
         <EvmChartStateWrapper
+          query={chartData}
           height={Height.chart.sm}
-          isLoading={chartData.isLoading}
-          error={chartData.error}
-          errorMessage={t`Unable to fetch rate curve data.`}
+          errorState={{ description: t`Unable to fetch rate curve data.` }}
         >
-          <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
-            data={chartData.data ?? []}
-            height={Height.chart.sm}
-            xKey="utilization"
-            series={series}
-            visibleSeries={visibleSeries}
-            xAxisType="value"
-            markLines={markLines}
-            xTickFormatter={value => formatNumber(+value, 'percent.rate')}
-            yTickFormatter={value => formatNumber(+value, 'percent.rate')}
-            yPaddingRatio={0.05}
-            renderTooltip={RateCurveTooltip}
-          />
+          {data => (
+            <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
+              data={data}
+              height={Height.chart.sm}
+              xKey="utilization"
+              series={series}
+              visibleSeries={visibleSeries}
+              xAxisType="value"
+              markLines={markLines}
+              xTickFormatter={value => formatNumber(+value, 'percent.rate')}
+              yTickFormatter={value => formatNumber(+value, 'percent.rate')}
+              yPaddingRatio={0.05}
+              renderTooltip={RateCurveTooltip}
+            />
+          )}
         </EvmChartStateWrapper>
         <ChartFooter
           legendSets={legendSets}

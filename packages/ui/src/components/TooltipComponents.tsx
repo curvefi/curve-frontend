@@ -27,6 +27,7 @@ export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
 export const TooltipValueLink = ({ children, href }: { children: ReactNode; href: string }) => (
   <Stack
     component={Link}
+    data-testid="tooltip-value-link"
     href={href}
     rel="noopener noreferrer"
     target="_blank"
@@ -126,7 +127,8 @@ export const TooltipItem = ({
         {title}
       </Typography>
     </Stack>
-    <WithSkeleton loading={loading}>
+    {/* TODO: delete this skeleton width in the task to create skeleton categories */}
+    <WithSkeleton loading={loading} width={40}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
         {/* eslint-disable-next-line @eslint-react/no-children-map -- Existing violation before enabling this rule. */}
         {Children.map(children, (child, index) => {
@@ -171,6 +173,45 @@ export const TooltipItems = ({
     }}
   >
     {children}
+  </Stack>
+)
+
+export const TooltipFormula = ({
+  formula,
+  terms = [],
+}: {
+  formula: ReactNode
+  terms?: readonly { symbol: string; label: ReactNode }[]
+}) => (
+  <TooltipItems secondary>
+    <Typography
+      variant="bodySBold"
+      component="span"
+      sx={{ display: 'flex', alignItems: 'center', gap: Spacing.xs, whiteSpace: 'nowrap' }}
+    >
+      {formula}
+    </Typography>
+    {terms.map(({ symbol, label }) => (
+      <Typography key={symbol} variant="bodyXsRegular" color="textSecondary" component="span">
+        <Typography variant="bodyXsBold" color="textPrimary" component="span">
+          {symbol}
+        </Typography>{' '}
+        = {label}
+      </Typography>
+    ))}
+  </TooltipItems>
+)
+
+/** A numerator over a denominator, for a {@link TooltipFormula} */
+export const TooltipFraction = ({ numerator, denominator }: { numerator: ReactNode; denominator: ReactNode }) => (
+  <Stack component="span" sx={{ alignItems: 'center' }}>
+    <Stack
+      component="span"
+      sx={{ alignSelf: 'stretch', alignItems: 'center', paddingInline: Spacing.xxs, borderBottom: '1px solid' }}
+    >
+      {numerator}
+    </Stack>
+    <span>{denominator}</span>
   </Stack>
 )
 

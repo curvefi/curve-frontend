@@ -5,8 +5,17 @@ export enum MarketColumnId {
   UserBoostMultiplier = 'userBoostMultiplier', // only for supply positions
   UserCollateral = 'userCollateral',
   UserLtv = 'userLtv',
+  UserEquity = 'userEquity',
+  UserPnl = 'userPnl',
+  UserLiquidationBuffer = 'userLiquidationBuffer',
+  UserLeverage = 'userLeverage',
+  UserLoopedApr = 'userLoopedApr',
+  UserBandCount = 'userBandCount',
+  UserCollateralComposition = 'userCollateralComposition',
   UserEarnings = 'userEarnings', // only for lend markets
   UserDeposited = 'userDeposited', // only for lend markets
+  UserSupplyShare = 'userSupplyShare', // only for lend markets
+  SupplyIncentivesApr = 'supplyIncentivesApr',
   BorrowRate = 'rates_borrow',
   NetBorrowRate = 'rates_net_borrow',
   CollateralYield = 'collateralYield',
@@ -15,7 +24,6 @@ export enum MarketColumnId {
   NetSupplyRate = 'rates_lend',
   MaxLtv = 'maxLtv',
   MaxLeverage = 'maxLeverage',
-  MaxReturnOnEquity = 'maxRoe', // preserve the persisted column ID
   UtilizationPercent = 'utilizationPercent',
   SolvencyPercent = 'solvencyPercent',
   LiquidityUsd = 'liquidityUsd',

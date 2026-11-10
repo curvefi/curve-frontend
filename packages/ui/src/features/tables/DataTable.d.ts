@@ -19,6 +19,8 @@ declare module '@tanstack/table-core' {
     unit?: Unit // used when displaying the filter's serialized value
     variant?: TypographyVariantKey
     tooltip?: Omit<TooltipProps, 'children'>
+    defaultHidden?: boolean // the column starts hidden until the user enables it in the visibility settings
+    settingsGroup?: string // the group of the column's switch in the visibility settings
   }
 
   interface TableMeta<in out TFeatures extends TableFeatures, in out TData extends RowData> {

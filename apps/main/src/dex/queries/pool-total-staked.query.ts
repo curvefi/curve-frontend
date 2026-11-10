@@ -1,14 +1,13 @@
 import type { ContractMethod } from 'ethers'
 import { requireLib } from '@evm-ui/features/connect-wallet'
-import { useHydratedQuery } from '@evm-ui/hooks/useHydratedQuery'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
-import { queryFactory } from '@ui/features/queries/factory'
 
 const NOT_AVAILABLE = { totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' } as const
 
-const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked } = queryFactory({
+export const { useQuery: usePoolTotalStaked, invalidate: invalidatePoolTotalStaked } = hydratedQueryFactory({
   category: 'dex.pool',
   queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'totalStaked', chainId, poolAddress }) as const,
   queryFn: async ({ poolAddress }: PoolQuery) => {
@@ -35,7 +34,3 @@ const { useQuery: usePoolTotalStakedQuery, invalidate: invalidatePoolTotalStaked
   },
   validationSuite: curvePoolValidationSuite,
 })
-
-export { invalidatePoolTotalStaked }
-
-export const usePoolTotalStaked = (params: PoolParams) => useHydratedQuery(usePoolTotalStakedQuery, params)

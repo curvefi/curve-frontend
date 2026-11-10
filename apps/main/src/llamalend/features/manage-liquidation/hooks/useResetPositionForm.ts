@@ -81,7 +81,7 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
   const resetAvailable = useResetIsAvailable({ chainId, marketId, userAddress })
   const tokensToShrink = useTokensToShrink({ chainId, marketId, userAddress })
 
-  useFormSync(form, { convertedBorrowed: userState.data?.stablecoin })
+  useFormSync(form, { convertedBorrowed: userState.data?.convertedBorrowed })
   useFormSync(form, { maxBorrowed: walletBorrowed.data })
   useFormSync(form, { maxTotalBorrowed: userState.data?.debt })
   useFormSync(form, { minBorrowed: tokensToShrink.data })

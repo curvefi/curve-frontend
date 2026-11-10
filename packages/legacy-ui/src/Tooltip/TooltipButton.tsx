@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/immutability -- Legacy code will be deleted. */
+
 import { ReactNode, useCallback, useState } from 'react'
 import { styled } from 'styled-components'
 import type { TooltipProps } from '@legacy-ui/Tooltip/types'

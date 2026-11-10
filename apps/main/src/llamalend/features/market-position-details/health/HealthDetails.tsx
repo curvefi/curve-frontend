@@ -8,6 +8,7 @@ import { Metric } from '@ui/components/Metric'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { formatHealthFactor } from '../market-position-details.utils'
 import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips/tooltips'
 import { HealthAndBufferBar, HealthAndBufferDebug } from './HealthAndBufferBar'
 import { getHealthDetailsState, getHealthTextColor, getLiquidationBufferTextColor } from './utils'
@@ -16,8 +17,6 @@ const { Spacing } = SizesAndSpaces
 
 const HEALTH_DETAILS_COLUMNS = { mobile: 4, tablet: 6, desktop: 10 } as const
 const PRIMARY_METRIC_SIZE = 2.5
-
-const HEALTH_PRECISION_THRESHOLD = 1.1
 
 export const HealthDetails = ({
   health,
@@ -42,8 +41,7 @@ export const HealthDetails = ({
             valueOptions={{
               abbreviate: false,
               color: getHealthTextColor(healthState)(theme),
-              formatter: value =>
-                formatNumber(value, +value < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health'),
+              formatter: formatHealthFactor,
             }}
             valueTooltip={HEALTH_FACTOR_TOOLTIP}
           />

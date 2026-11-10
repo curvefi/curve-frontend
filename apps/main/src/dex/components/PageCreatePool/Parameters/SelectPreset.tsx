@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be rewritten. */
+
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
@@ -7,8 +11,7 @@ import { ModalDialog } from '@/dex/components/PageCreatePool/ConfirmModal/ModalD
 import { CRYPTOSWAP, FXSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { useStore } from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { DEX_ROUTES } from '@evm-ui/shared/routes'
+import { dexPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -270,7 +273,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                 {t`Can't find the pool preset you want? Check out`}
                 <StyledExternalLink
                   target="_blank"
-                  href={getPath(params, DEX_ROUTES.PAGE_POOLS)}
+                  href={dexPages.pools({ blockchainId: params.network })}
                 >{t`existing pools`}</StyledExternalLink>
                 {t`with similar assets for inspiration (or use`}
                 <StyledExternalLink href="https://github.com/curveresearch/curvesim" target="_blank">

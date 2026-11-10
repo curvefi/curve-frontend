@@ -48,12 +48,10 @@ export const CurveProvider = <App extends AppName>({
   const libKey = AppLibs[app]
   const config = useConfig()
   const [releaseChannel] = useReleaseChannel()
-  const [connectState, setConnectState] = useResettableState<ConnectState>(LOADING, [
-    network,
-    wallet,
-    walletChainId,
-    isFocused && network?.chainId !== walletChainId,
-  ])
+  const [{ connectState, error }, setConnection] = useResettableState<{ connectState: ConnectState; error?: Error }>(
+    { connectState: LOADING },
+    [network, wallet, walletChainId, isFocused && network?.chainId !== walletChainId],
+  )
 
   useEffect(() => {
     /**
@@ -65,10 +63,10 @@ export const CurveProvider = <App extends AppName>({
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
       void switchChain({ chainId: network.chainId }).then(chain => {
-        if (!chain) setConnectState(FAILURE)
+        if (!chain) setConnection({ connectState: FAILURE })
       })
     }
-  }, [isFocused, isInitialized, walletChainId, network, onChainUnavailable, switchChain, wallet, setConnectState])
+  }, [isFocused, isInitialized, walletChainId, network, onChainUnavailable, switchChain, wallet, setConnection])
 
   useEffect(() => {
     if (!isInitialized) return // wait for wagmi to auto-reconnect
@@ -78,11 +76,11 @@ export const CurveProvider = <App extends AppName>({
     /** Initialize the app by hydrating the library if needed. */
     const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
       if (globalLibs.hydrated[app] != lib && hydrate?.[app]) {
-        setConnectState(HYDRATING)
+        setConnection({ connectState: HYDRATING })
         await hydrate[app](config, lib, prevLib, wallet, releaseChannel) // if thrown, it will be caught in initLib
       }
       globalLibs.hydrated[app] = lib as (typeof globalLibs.hydrated)[App]
-      setConnectState(SUCCESS)
+      setConnection({ connectState: SUCCESS })
     }
 
     /**
@@ -101,7 +99,7 @@ export const CurveProvider = <App extends AppName>({
         }
 
         if (signal.aborted) return
-        setConnectState(LOADING)
+        setConnection({ connectState: LOADING })
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
         if (newLib) {
           console.info(
@@ -119,12 +117,15 @@ export const CurveProvider = <App extends AppName>({
       } catch (error) {
         if (signal.aborted) return console.info('Error during init ignored', error)
         console.error('Error during init', error)
-        setConnectState(FAILURE)
+        setConnection({
+          connectState: FAILURE,
+          error: error instanceof Error ? error : new Error(String(error), { cause: error }),
+        })
       }
     }
     void initLib()
     return () => abort.abort()
-  }, [app, config, hydrate, isInitialized, libKey, network, wallet, walletChainId, releaseChannel, setConnectState])
+  }, [app, config, hydrate, isInitialized, libKey, network, wallet, walletChainId, releaseChannel, setConnection])
 
   // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
@@ -135,6 +136,7 @@ export const CurveProvider = <App extends AppName>({
     <CurveContext
       value={{
         connectState,
+        error,
         isHydrated,
         isInitialized,
         ...(wallet && { wallet }),

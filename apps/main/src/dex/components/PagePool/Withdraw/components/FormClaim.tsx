@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/set-state-in-effect -- Legacy code will be deleted. */
+
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
@@ -6,14 +10,11 @@ import { AlertFormError } from '@/dex/components/AlertFormError'
 import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
-import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
+import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Withdraw/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
-import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Stats } from '@legacy-ui/Stats'
@@ -26,7 +27,31 @@ import { formatNumber } from '@primitives/number.utils'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { notify } from '@ui/features/toast/Toast/notify'
 import { amount as toAmount } from '@ui/lib/decimal'
-import { t, Trans } from '@ui/lib/i18n'
+import { t } from '@ui/lib/i18n'
+
+const getTokensText = ({ claimableCrv, claimableRewards }: FormValues, { isClaimCrv, isClaimRewards }: FormStatus) =>
+  isClaimCrv
+    ? `CRV ${claimableCrv}`
+    : isClaimRewards
+      ? claimableRewards.map(({ symbol, amount }) => `${symbol} ${amount}`).join(', ')
+      : ''
+
+function getClaimText(
+  formValues: FormValues,
+  formStatus: FormStatus,
+  comp: 'notify' | 'inProgress' | 'success' | 'successTxInfo' | 'claimCrvButton',
+) {
+  const tokensMessage = getTokensText(formValues, formStatus)
+  const messages = {
+    notify: t`Please confirm claim of ${tokensMessage}`,
+    inProgress: t`Claiming`,
+    success: t`Claim CRV Complete`,
+    successTxInfo: t`Claimed ${tokensMessage}`,
+    claimCrvButton: t`Claim CRV`,
+  }
+
+  return messages[comp]
+}
 
 export const FormClaim = ({ seed }: TransferProps) => {
   const {
@@ -37,8 +62,6 @@ export const FormClaim = ({ seed }: TransferProps) => {
     api: curve,
     isWrapped,
   } = usePoolContext()
-  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolAddress })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
@@ -55,7 +78,6 @@ export const FormClaim = ({ seed }: TransferProps) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const haveSigner = !!signerAddress
-  const { rewardsNeedNudging } = gaugeStatus ?? {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
@@ -67,19 +89,12 @@ export const FormClaim = ({ seed }: TransferProps) => {
     setTxInfoBar(null)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, pool.id, pool, { isWrapped }, null, seed.isSeed, '')
-  }, [config, curve, isWrapped, pool, seed.isSeed, setFormValues])
+    void setFormValues('CLAIM', config, curve, pool.id, pool, { isWrapped }, null, seed.data, '')
+  }, [config, curve, isWrapped, pool, seed.data, setFormValues])
 
   const handleClaimClick = useCallback(
-    async (
-      activeKey: string,
-      curve: CurveApi,
-      pool: PoolTemplate,
-      formValues: FormValues,
-      formStatus: FormStatus,
-      rewardsNeedNudging: boolean | undefined,
-    ) => {
-      const notifyMessage = getClaimText(formValues, formStatus, 'notify', rewardsNeedNudging)
+    async (activeKey: string, curve: CurveApi, pool: PoolTemplate, formValues: FormValues, formStatus: FormStatus) => {
+      const notifyMessage = getClaimText(formValues, formStatus, 'notify')
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, pool)
 
@@ -102,7 +117,6 @@ export const FormClaim = ({ seed }: TransferProps) => {
       pool: PoolTemplate,
       formValues: FormValues,
       formStatus: FormStatus,
-      rewardsNeedNudging: boolean | undefined,
       isSeed: boolean,
     ) => {
       const { isClaimCrv, step } = formStatus
@@ -121,13 +135,13 @@ export const FormClaim = ({ seed }: TransferProps) => {
           type: 'action',
           content: isComplete
             ? isClaimedCRV
-              ? getClaimText({ ...formValues, claimableCrv: '1' }, formStatus, 'success', rewardsNeedNudging)
+              ? getClaimText({ ...formValues, claimableCrv: '1' }, formStatus, 'success')
               : t`Claim Rewards Complete`
             : isClaimCrv
-              ? getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudging)
+              ? getClaimText(formValues, formStatus, 'claimCrvButton')
               : t`Claim Rewards`,
           onClick: () => {
-            void handleClaimClick(activeKey, curve, pool, formValues, formStatus, rewardsNeedNudging)
+            void handleClaimClick(activeKey, curve, pool, formValues, formStatus)
           },
         },
       }
@@ -159,7 +173,7 @@ export const FormClaim = ({ seed }: TransferProps) => {
       updateFormValues()
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, poolAddress, signerAddress, seed.isSeed])
+  }, [chainId, poolAddress, signerAddress, seed.data])
 
   // fetch claimable
   useEffect(() => {
@@ -171,13 +185,13 @@ export const FormClaim = ({ seed }: TransferProps) => {
 
   // steps
   useEffect(() => {
-    if (curve && pool && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, rewardsNeedNudging, seed.isSeed)
+    if (curve && pool && seed.data != null) {
+      const updatedSteps = getSteps(activeKey, curve, pool, formValues, formStatus, seed.data)
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [chainId, pool, slippageConfirmed, signerAddress, formValues, formStatus, rewardsNeedNudging, seed.isSeed])
+  }, [chainId, pool, slippageConfirmed, signerAddress, formValues, formStatus, seed.data])
 
   const handleBtnClick = (isClaimCrv: boolean, isClaimRewards: boolean) => {
     setTxInfoBar(null)
@@ -190,11 +204,9 @@ export const FormClaim = ({ seed }: TransferProps) => {
       cFormStatus.isClaimRewards = isClaimRewards
 
       setStateByKey('formStatus', cFormStatus)
-      void handleClaimClick(activeKey, curve, pool, formValues, cFormStatus, rewardsNeedNudging)
+      void handleClaimClick(activeKey, curve, pool, formValues, cFormStatus)
     }
   }
-
-  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !gaugeIsKilled
 
   return (
     <FormContent>
@@ -224,15 +236,6 @@ export const FormClaim = ({ seed }: TransferProps) => {
           )}
         </ClaimableTokensWrapper>
 
-        {rewardsNeedNudgingAndHaveGauge && (
-          <AlertBox alertType="info">
-            <Trans>
-              This pool has CRV rewards that aren&rsquo;t streaming yet. Click &lsquo;Claim CRV&rsquo; to resume reward
-              streaming for you and everyone else!
-            </Trans>
-          </AlertBox>
-        )}
-
         {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={updateFormValues} />}
         {txInfoBar}
         {!formStatus.isClaimRewards &&
@@ -240,14 +243,14 @@ export const FormClaim = ({ seed }: TransferProps) => {
         typeof formStatus.formTypeCompleted === 'string' &&
         formStatus.formTypeCompleted.length === 0 ? (
           <Box grid gridAutoFlow="column" gridColumnGap="3">
-            {curve && pool && (haveClaimableCrv || rewardsNeedNudgingAndHaveGauge) && (
+            {curve && pool && haveClaimableCrv && (
               <Button
                 disabled={!!formStatus.error}
                 variant="filled"
                 size="large"
                 onClick={() => handleBtnClick(true, false)}
               >
-                {getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudgingAndHaveGauge)}
+                {getClaimText(formValues, formStatus, 'claimCrvButton')}
               </Button>
             )}
             {curve && pool && haveClaimableRewards && (

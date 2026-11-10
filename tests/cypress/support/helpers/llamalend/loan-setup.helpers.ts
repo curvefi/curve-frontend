@@ -110,7 +110,7 @@ export const setupTenderlyLoan = ({
   fundUserForLoanSetup({ vnet, userAddress, collateralAddress, collateralAmountWei: fundedCollateral })
 
   // the call above uses cy.request, but to use async we need cy.then()
-  loadTenderlyAccount().then(TIMEOUTS['tenderly.createLoan'], async tenderlyAccount => {
+  loadTenderlyAccount().then(TIMEOUTS['tenderly.submit'], async tenderlyAccount => {
     await approveErc20({
       client,
       tenderly: { ...tenderlyAccount, vnetId: vnet.id },

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { objectKeys } from '@primitives/objects.utils'
-import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryResult } from '@tanstack/react-query'
+import { type QueryOptions } from '@ui/features/queries/query-hooks'
 
 export type Range<T> = [T, T]
 
@@ -66,7 +67,7 @@ export type QueryData<TQuery> = TQuery extends (...args: never[]) => Query<infer
 
 /** Extracts the data type from query hook options */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type QueryOptionsData<T> = T extends UseQueryOptions<infer TData, any, any, any> ? TData : never
+export type QueryOptionsData<T> = T extends QueryOptions<infer TData, any, any, any> ? TData : never
 
 /**
  * Takes the first query with data, then the first query with an error, then the first query that is loading,
@@ -77,6 +78,10 @@ export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(
     queries.find(q => q.error) ??
     queries.find(q => q.isLoading) ??
     queries[0]) as QueryProp<TQueries[number]['data']>
+
+/** The future query, or the current one while the future query is idle (disabled, e.g. empty inputs) */
+export const futureOrCurrentQ = <T>(future: QueryProp<T>, current: QueryProp<T>) =>
+  future.data === undefined && !future.isLoading && !future.error ? current : future
 
 /**
  * Maps a Query type to extract partial data from it.
@@ -97,16 +102,16 @@ export const mapQuery = <TSource, TResult>(
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
 
 /**
+ * Creates a fake query that assumes the data is loading when null or undefined.
+ * Avoid this when possible, prefer real queries instead!
+ **/
+export const loadingQ = <T>(data: T | undefined) => q({ data, isLoading: data == null, error: null })
+
+/**
  * A disabled query without any data. ActionInfo currently requires a query and doesn't accept undefined.
  * TODO: Get rid of this and create `type MaybeQuery<T> = T | QueryProp<T>`
  */
 export const DISABLED_Q = constQ(undefined)
-
-/**
- * Creates a fake query that assumes the data is loading when null or undefined.
- * Avoid this when possible, prefer real queries instead!
- **/
-export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: data == null, error: null })
 
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(

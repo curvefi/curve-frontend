@@ -11,7 +11,6 @@ import { t } from '@ui/lib/i18n'
 
 export type InfoProps = {
   chainId: number
-  poolId?: QueryOrValue<string>
   poolType: QueryOrValue<string | Nullish>
   basePoolAddress?: Address
   registryAddress?: Address
@@ -26,7 +25,6 @@ export const Info = ({
   registryAddress,
   vyperVersion,
   addressDisplay,
-  ...props
 }: InfoProps) => (
   <Card size="extraSmall" variant="inline">
     <CardHeader title={t`Info`} />
@@ -44,7 +42,6 @@ export const Info = ({
       {maybe(registryAddress, address => (
         <AddressActionInfo chainId={chainId} title={t`Registry`} address={address} display={addressDisplay} />
       ))}
-      {'poolId' in props && <ActionInfo label={t`ID`} value={props.poolId} />}
     </CardContent>
   </Card>
 )

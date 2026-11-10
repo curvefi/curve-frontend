@@ -175,9 +175,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
           debt: { current: debt, future: futureDebt, symbol: 'crvUSD' },
           isMocked: true,
         })
-        cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['mock.evm.simulation']).should(
-          'not.be.disabled',
-        )
+        cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['mock.simulation']).should('not.be.disabled')
 
         cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
         cy.then(() => {
@@ -310,7 +308,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         debt: { current: debt, future: getFutureDebt(moreUserBorrowed), symbol: 'crvUSD' },
         isMocked: true,
       })
-      cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['mock.evm.simulation']).should('not.be.disabled')
+      cy.get('[data-testid="reset-position-submit-button"]', TIMEOUTS['mock.simulation']).should('not.be.disabled')
 
       cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
       cy.then(() => {

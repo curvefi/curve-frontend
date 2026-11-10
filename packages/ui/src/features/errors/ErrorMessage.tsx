@@ -30,7 +30,7 @@ export const ErrorMessage = ({
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
   return (
-    <Stack sx={applySxProps({ alignItems: 'center' }, sx)}>
+    <Stack data-testid="error-message" sx={applySxProps({ alignItems: 'center' }, sx)}>
       <EmptyStateCard
         title={title}
         description={subtitle}

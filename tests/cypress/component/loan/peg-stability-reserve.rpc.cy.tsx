@@ -28,18 +28,24 @@ describe('Peg stability reserve', () => {
     cy.mount(<TestComponent config={config} />)
 
     // Initial data when not connected
-    cy.get('[data-testid="pegkeeper-metric-rate-value"]', TIMEOUTS['evm.contractRead']).should('have.text', '0.99985')
-    cy.get('[data-testid="pegkeeper-metric-debt-value"]')
+    cy.get('[data-testid="pegkeeper-metric-rate-value"]', TIMEOUTS['tenderly.contractRead']).should(
+      'have.text',
+      '0.99985',
+    )
+    cy.get('[data-testid="pegkeeper-metric-debt-value"]', TIMEOUTS['tenderly.contractRead'])
       .as('debt')
       .invoke('text')
       .should('match', /11.48McrvUSD/i)
-    cy.get('[data-testid="pegkeeper-metric-ceiling-value"]')
+    cy.get('[data-testid="pegkeeper-metric-ceiling-value"]', TIMEOUTS['tenderly.contractRead'])
       .invoke('text')
       .should('match', /45McrvUSD/i)
 
     cy.get('[data-testid="pegkeeper-action-info-pool-value"]').invoke('text').should('eq', '0x4D...9E')
     cy.get('[data-testid="pegkeeper-action-info-contract-value"]').invoke('text').should('eq', '0x92...40')
-    cy.get('[data-testid="pegkeeper-action-info-profit-value"]').as('est-profit').invoke('text').should('eq', '3.31562')
+    cy.get('[data-testid="pegkeeper-action-info-profit-value"]', TIMEOUTS['tenderly.simulation'])
+      .as('est-profit')
+      .invoke('text')
+      .should('eq', '3.31562')
 
     cy.get('[data-testid="pegkeeper-connect-wallet"]').as('connect-wallet').should('exist')
 
@@ -48,12 +54,12 @@ describe('Peg stability reserve', () => {
     cy.get('@connect-wallet').should('not.exist')
 
     // Connected, simulate actual profit and show rebalance button
-    cy.get('[data-testid="pegkeeper-rebalance-button"]')
+    cy.get('[data-testid="pegkeeper-rebalance-button"]', TIMEOUTS['tenderly.simulation'])
       .as('rebalance-button')
       .invoke('text')
       .should('match', /rebalance/i)
 
-    cy.get('@est-profit').invoke('text').should('eq', '4.64834')
+    cy.get('@est-profit', TIMEOUTS['tenderly.simulation']).invoke('text').should('eq', '4.64834')
 
     // Rebalance
     cy.get('@rebalance-button')
@@ -69,7 +75,7 @@ describe('Peg stability reserve', () => {
 
     // Final updated state
     cy.get('@est-profit', TIMEOUTS['tenderly.submit']).invoke('text').should('eq', '0')
-    cy.get('@debt')
+    cy.get('@debt', TIMEOUTS['tenderly.contractRead'])
       .invoke('text')
       .should('match', /10.67McrvUSD/i)
     cy.get('@rebalance-button')

@@ -1,11 +1,11 @@
 import { requireLib } from '@evm-ui/features/connect-wallet'
+import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { UserPoolParams, UserPoolQuery } from '@evm-ui/queries/query-types'
 import { userPoolValidationSuite } from '@evm-ui/queries/validation/user-pool-validation'
-import { queryFactory } from '@ui/features/queries/factory'
 import { decimal } from '@ui/lib/decimal'
 
-export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUserPoolLiquidityUsdQuery } = queryFactory(
-  {
+export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUserPoolLiquidityUsdQuery } =
+  hydratedQueryFactory({
     queryKey: ({ chainId, poolAddress, userAddress }: UserPoolParams) =>
       ({ name: 'userLiquidityUSD', chainId, poolAddress, userAddress }) as const,
     category: 'dex.user',
@@ -16,5 +16,4 @@ export const { useQuery: useUserPoolLiquidityUsdQuery, invalidate: invalidateUse
         .catch(() => 'NaN') // todo: remove, this is gross
         .then(x => decimal(x) ?? null),
     validationSuite: userPoolValidationSuite,
-  },
-)
+  })

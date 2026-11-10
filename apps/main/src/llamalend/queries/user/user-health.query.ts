@@ -1,3 +1,8 @@
+import {
+  getHealthValues,
+  getLiquidationBuffer,
+} from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { pickDisplayLegacyHealth } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
@@ -6,7 +11,7 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData, QueryProp } from '@ui/features/queries/util'
-import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui/lib/decimal'
+import { decimalMinus } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
@@ -52,7 +57,7 @@ export const {
 export const useLegacyUserHealthValue = (params: UserMarketParams) =>
   combineQueries(
     [useUserHealth({ ...params, isFull: true }), useUserHealth({ ...params, isFull: false })],
-    (full, notFull) => (+notFull < 0 ? notFull : full),
+    (full, notFull) => pickDisplayLegacyHealth(full, notFull),
   )
 
 export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
@@ -65,23 +70,14 @@ export const useUserHealthValues = (params: UserMarketParams, enabled = true) =>
       [healthFull.data, healthNotFull.data, discounts.data],
       (full, notFull, { loanDiscount, liquidationDiscount }): UserHealthValues => {
         const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
-        const healthDelta = decimalMinus(full, notFull)
-        // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
-        // which shouldn't be possible
-        const health = decimalGreaterThan(healthDelta, ZERO) ? healthDelta : ZERO
+        const { health, healthFactor, healthDelta } = getHealthValues(full, notFull)
         return {
-          /** Percentage distance from entering liquidation protection: the above-band cushion, clamped at zero. */
           health,
-          /**
-           * Ratio of the above-band cushion plus debt to the debt amount.
-           * A health factor of 1 marks the entry into liquidation protection (soft liquidation).
-           * The +1 is equivalent to adding debt / debt, similar to how other lending platforms display health.
-           */
-          healthFactor: decimalSum('1', decimalDiv(health, '100')),
+          healthFactor,
           /** Raw band-valued margin before full liquidation, as a percentage of debt. */
           healthNotFull: notFull,
           /** Distance from liquidation as a percentage of the liquidation-discount gap. */
-          liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
+          liquidationBuffer: getLiquidationBuffer(notFull, loanDiscount, liquidationDiscount),
           /** Inputs and intermediate values exposed for developer diagnostics. */
           debug: {
             healthFull: full,

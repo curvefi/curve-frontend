@@ -2,18 +2,18 @@ import { capitalize } from 'lodash'
 import { useCallback } from 'react'
 import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
+import { usePoolCampaigns } from '@/dex/hooks/usePoolCampaigns'
 import { getPool } from '@/dex/pool.utils'
 import { resetPoolLists } from '@/dex/queries/invalidation'
 import { usePoolAddresses } from '@/dex/queries/pool-addresses.query'
 import { useUserPoolClaimables } from '@/dex/queries/user-pool-claimables.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { useCampaigns } from '@evm-ui/queries/campaigns/campaigns.query'
 import { PongLoader } from '@ui/components/PongLoader'
 import type { PoolClaimables, ResidualClaimsTableData } from '@ui/features/pool-list/types'
 import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, mapQuery } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalCompare, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -25,6 +25,7 @@ const { IconSize } = SizesAndSpaces
 const getPoolUserPosition = (claimables: PoolClaimables) => ({
   lpBalance: ZERO,
   depositsUsd: constQ(ZERO),
+  boost: DISABLED_Q,
   claimables: constQ(claimables),
   claimablesUsd: constQ(claimablesTotalUsd(claimables)),
 })
@@ -37,7 +38,7 @@ export const useResidualClaimsTable = (
   const { address: userAddress } = useConnection()
   const { curveApi, isHydrated } = useCurve()
 
-  const campaigns = useCampaigns({ blockchainId })
+  const campaigns = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const poolAddresses = usePoolAddresses({ chainId }, enabled)
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)

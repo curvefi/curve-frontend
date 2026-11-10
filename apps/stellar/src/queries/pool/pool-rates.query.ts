@@ -1,4 +1,4 @@
-import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit'
+import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { PoolDecimalsParams, PoolDecimalsQuery } from '@/stellar/queries/query-types'
 import { poolDecimalsValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { zip } from '@primitives/array.utils'

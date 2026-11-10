@@ -14,6 +14,7 @@ export const formatAmount = (value: Amount | Nullish, symbol?: string) =>
 export const formatLeverage = (value: Amount | Nullish) =>
   value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 2, unit: 'multiplier' })
 
+/** @deprecated Expects the collateral leverage. With the equity leverage it gives the debt in collateral, not the collateral bought with leverage. */
 export const calculateLeverageCollateral = (totalCollateral: Decimal | Nullish, leverage: Decimal | Nullish) =>
   totalCollateral &&
   leverage &&

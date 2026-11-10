@@ -1,6 +1,9 @@
 import type { NetworkQuery, PoolQuery } from '@/stellar/queries/query-types'
 
-export const StellarUrls = {
-  poolList: ({ network }: NetworkQuery) => `/dex/${network}/pools`,
-  pool: ({ pool, network }: PoolQuery) => `${StellarUrls.poolList({ network })}/${pool}`,
+export const StellarPages = {
+  root: ({ network }: NetworkQuery) => ['', 'dex', network].join('/'),
+  pools: (params: NetworkQuery) => [StellarPages.root(params), 'pools'].join('/'),
+  pool: ({ pool, network }: PoolQuery) => [StellarPages.pools({ network }), pool].join('/'),
+  legal: (params: NetworkQuery) => [StellarPages.root(params), 'legal'].join('/'),
+  integrations: (params: NetworkQuery) => [StellarPages.root(params), 'integrations'].join('/'),
 }

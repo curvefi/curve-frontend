@@ -1,3 +1,7 @@
+'use no memo' // Legacy code excluded from React Compiler.
+
+/* eslint-disable react-hooks/refs -- Legacy code will be deleted. */
+
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { Loader } from '@legacy-ui/Loader'
@@ -21,7 +25,6 @@ export const InputLabel = ({
   useEffect(() => {
     const { offsetWidth, offsetHeight } = descriptionEl ?? {}
     if (offsetWidth && offsetHeight && description !== '-') {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSkeleton([offsetWidth > 10 ? offsetWidth : 20, offsetHeight - 4] as [number, number])
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

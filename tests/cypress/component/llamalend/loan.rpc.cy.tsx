@@ -51,12 +51,12 @@ const HAS_API = oneBool()
  */
 const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: MarketType) => {
   if (marketType !== MarketType.Lend) return // mint markets don't have cache
-  cy.then(TIMEOUTS['evm.contractRead'], () =>
+  cy.then(TIMEOUTS['tenderly.contractRead'], () =>
     waitFor(async () => {
       const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()
       if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
       console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
-    }, TIMEOUTS['evm.contractRead']),
+    }, TIMEOUTS['tenderly.contractRead']),
   )
 }
 
@@ -144,8 +144,8 @@ testCases.forEach(
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
-        writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
-        checkLoanDetailsLoaded({ leverageEnabled, hasApi: HAS_API })
+        writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, rpc: 'tenderly' })
+        checkLoanDetailsLoaded({ leverageEnabled, hasApi: HAS_API, rpc: 'tenderly' })
         submitCreateLoanForm().then(() => expect(onPricesUpdated).to.be.called)
         waitUntilLendMarketUpdated(id, borrow, marketType)
       })

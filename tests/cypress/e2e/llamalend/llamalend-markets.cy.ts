@@ -10,7 +10,13 @@ import {
   withExpandedPanelDrawer,
   withFilters,
 } from '@cy/support/helpers/data-table.helpers'
-import { Chain, HIGH_TVL_ADDRESS, HIGH_UTILIZATION_ADDRESS } from '@cy/support/helpers/lending-mocks'
+import {
+  BORROW_GAUGE_ADDRESS,
+  Chain,
+  HIGH_TVL_ADDRESS,
+  HIGH_UTILIZATION_ADDRESS,
+  SUPPLY_GAUGE_ADDRESS,
+} from '@cy/support/helpers/lending-mocks'
 import {
   checkChainSelection,
   checkCoinSelection,
@@ -193,16 +199,30 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it('should find markets by text', () => {
       cy.get("[data-testid^='table-text-search-'] input").click()
-      cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
+      cy.get("[data-testid='table-text-search-lamalend-markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
       cy.get(`[data-testid='table-row-link-${SFRX_ETH_MARKET}']`).should('not.exist')
       cy.get(`[data-testid="table-row-link-${WST_ETH_MARKET}"]`).should('exist')
     })
 
+    it('should find markets by supply and borrow gauge address', () => {
+      const search = (text: string) =>
+        cy.get("[data-testid='table-text-search-lamalend-markets'] input").clear().type(text)
+
+      cy.get("[data-testid^='table-text-search-'] input").click()
+      search(SUPPLY_GAUGE_ADDRESS)
+      cy.get('[data-testid^="data-table-row"]').should('have.length', 1)
+      cy.get(`[data-testid="table-row-link-${HIGH_TVL_ADDRESS}"]`).should('exist')
+
+      search(BORROW_GAUGE_ADDRESS)
+      cy.get('[data-testid^="data-table-row"]').should('have.length', 1)
+      cy.get(`[data-testid="table-row-link-${HIGH_UTILIZATION_ADDRESS}"]`).should('exist')
+    })
+
     it('should persists search filter across reload', () => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
-      cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
+      cy.get("[data-testid='table-text-search-lamalend-markets'] input").should('have.value', 'wstETH crvUSD')
       cy.get(`[data-testid="table-row-link-${WST_ETH_MARKET}"]`).should('exist')
       getTableCellAssets().first().contains('wstETH')
     })

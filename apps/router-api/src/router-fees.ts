@@ -5,8 +5,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 // eslint-disable-next-line no-restricted-imports -- Server-side fee selection requires the controller mapping.
 import { MARKET_ASSETS_TYPE_BY_CONTROLLER, MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { Chain } from '@primitives/network.utils'
-import { assert } from '@primitives/objects.utils'
 import type { ExternalRouteProvider } from '@primitives/router.utils'
+import { HttpError } from './router.utils'
 import type { RoutesQuery } from './routes/routes.schemas'
 
 /** note: no fractions allowed by enso */
@@ -36,10 +36,10 @@ export const getRouterFee = (
   const feeReceiver = ROUTER_FEE_RECEIVER_BY_CHAIN_ID[provider][chainId]
   if (!feeReceiver) return
 
-  const assetsType = assert(
-    controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)],
-    `A supported controllerAddress is required for ${provider} on chain ${chainId}`,
-  )
+  const assetsType = controllerAddress && MARKET_ASSETS_TYPE_BY_CONTROLLER[chainId]?.[getAddress(controllerAddress)]
+  if (!assetsType) {
+    throw new HttpError(400, `A supported controllerAddress is required for ${provider} on chain ${chainId}`)
+  }
   return { feeBps: ROUTER_FEE_BPS[assetsType], feeReceiver }
 }
 

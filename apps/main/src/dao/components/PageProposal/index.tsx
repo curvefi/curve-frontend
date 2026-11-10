@@ -8,9 +8,8 @@ import { CONTRACT_VECRV } from '@/dao/constants'
 import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { createProposalKey, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { IconButton } from '@legacy-ui/IconButton'
 import { Spinner, SpinnerWrapper } from '@legacy-ui/Spinner'
@@ -87,7 +86,7 @@ export const Proposal = () => {
 
   return (
     <DetailPageLayout formTabs={null}>
-      <BackButton path={getEthPath(DAO_ROUTES.PAGE_PROPOSALS)} label={t`Back to proposals`} />
+      <BackButton path={daoPages.proposals()} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">

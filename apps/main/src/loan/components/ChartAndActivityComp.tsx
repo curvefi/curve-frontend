@@ -23,6 +23,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     chainId,
     blockchainId,
     marketId,
+    marketQuery,
     ammAddress,
     controllerAddress,
     tokens: { collateralToken, borrowToken },
@@ -37,24 +38,9 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     ohlcChartProps,
   } = useOhlcChartState({ chainId, marketId: marketId ?? '', previewPrices, controllerAddress, ammAddress })
 
-  const {
-    chartData,
-    userBandsBalances,
-    oraclePrice,
-    isLoading: isBandsLoading,
-    error: bandsError,
-  } = useBandsData({ chainId, marketId, enabled: isBandsVisible })
+  const bands = useBandsData({ chainId, market: marketQuery, enabled: isBandsVisible })
 
   const chart = { chartMode, isLoading: isChartLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
-  const bands = {
-    chartData,
-    userBandsBalances: userBandsBalances ?? [],
-    oraclePrice,
-    isLoading: isBandsLoading,
-    error: bandsError,
-    collateralToken,
-    borrowToken,
-  }
 
   return useNewLlamaMarketDetailPage() ? (
     <MarketPriceChartLayout chart={chart} bands={bands} />

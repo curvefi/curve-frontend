@@ -37,18 +37,24 @@ export const checkDebt = (
   { current, future, symbol }: DebtCheck,
   { checkLoanToValue = true, isMocked = false }: { checkLoanToValue?: boolean; isMocked?: boolean } = {},
 ) => {
-  getActionValue('borrow-debt', getTimeoutCategory('evm.simulation', isMocked)).should(
+  getActionValue('borrow-debt', getTimeoutCategory('tenderly', 'simulation', isMocked)).should(
     'equal',
     formatNumber(future, 'token.amount'),
   )
-  getActionValue('borrow-debt', getTimeoutCategory('evm.simulation', isMocked), 'right').should('contain', symbol)
-  getActionValue('borrow-debt', getTimeoutCategory('evm.simulation', isMocked), 'previous').should(
+  getActionValue('borrow-debt', getTimeoutCategory('tenderly', 'simulation', isMocked), 'right').should(
+    'contain',
+    symbol,
+  )
+  getActionValue('borrow-debt', getTimeoutCategory('tenderly', 'simulation', isMocked), 'previous').should(
     'equal',
     formatNumber(current, 'token.amount'),
   )
   if (checkLoanToValue) {
-    getActionValue('borrow-ltv', getTimeoutCategory('evm.simulation', isMocked)).should('include', '%')
-    getActionValue('borrow-ltv', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('include', '%')
+    getActionValue('borrow-ltv', getTimeoutCategory('tenderly', 'simulation', isMocked)).should('include', '%')
+    getActionValue('borrow-ltv', getTimeoutCategory('tenderly', 'simulation', isMocked), 'previous').should(
+      'include',
+      '%',
+    )
   }
 }
 
@@ -56,10 +62,13 @@ export const checkDebt = (
  * Checks that the current debt is as expected, and future value is displayed.
  */
 export const checkCurrentDebt = (expectedCurrentDebt: Decimal, isMocked = false) => {
-  getActionInfo('borrow-debt', getTimeoutCategory('evm.simulation', isMocked)).should('be.visible')
+  getActionInfo('borrow-debt', getTimeoutCategory('tenderly', 'simulation', isMocked)).should('be.visible')
   const expected = formatNumber(expectedCurrentDebt, 'token.amount')
-  getActionValue('borrow-debt', getTimeoutCategory('evm.simulation', isMocked)).should('equal', expected)
-  getActionValue('borrow-debt', getTimeoutCategory('evm.simulation', isMocked), 'previous').should('equal', expected)
+  getActionValue('borrow-debt', getTimeoutCategory('tenderly', 'simulation', isMocked)).should('equal', expected)
+  getActionValue('borrow-debt', getTimeoutCategory('tenderly', 'simulation', isMocked), 'previous').should(
+    'equal',
+    expected,
+  )
 }
 
 export function touchInput(getInputFn: () => Cypress.Chainable) {

@@ -15,7 +15,7 @@ import type { MarketType } from '@evm-ui/types/market'
 import type { Address, Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { decimalMax, decimalMinus } from '@ui/lib/decimal'
+import { decimalMax, decimalMinus, ZERO } from '@ui/lib/decimal'
 
 export function ResetPositionInfoList<ChainId extends IChainId>({
   params,
@@ -50,9 +50,8 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
             chainId: params.chainId,
             marketId: params.marketId,
             userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
             expectedBorrowed: debt.data,
+            expectedConvertedBorrowed: ZERO, // the reset repays the debt with all the converted tokens
           },
           isOpen,
         ),
