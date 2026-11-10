@@ -16,7 +16,7 @@ import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -102,6 +102,7 @@ export function RepayLoanInfoList({
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('stateCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
@@ -116,7 +117,11 @@ export function RepayLoanInfoList({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
-      health={q(useLegacyHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(
+        useLegacyHealthQueries(isHealthFull =>
+          getRepayHealthOptions({ ...params, isHealthFull }, isOpen && !isNewLlamalendHealth),
+        ),
+      )}
       liquidationBuffer={q(useQuery(getRepayHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

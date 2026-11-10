@@ -11,6 +11,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import type { Address, Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -31,6 +32,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const debtReduction = getResetDebtReduction(values)
   const isOpen = +debtReduction > 0
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
@@ -42,7 +44,11 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useResetIsApproved(params, isOpen))}
       gas={q(useResetEstimateGas(params, isOpen))}
-      health={q(useLegacyHealthQueries(isHealthFull => getResetHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(
+        useLegacyHealthQueries(isHealthFull =>
+          getResetHealthOptions({ ...params, isHealthFull }, isOpen && !isNewLlamalendHealth),
+        ),
+      )}
       liquidationBuffer={q(useQuery(getResetHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
       prices={q(useResetPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}

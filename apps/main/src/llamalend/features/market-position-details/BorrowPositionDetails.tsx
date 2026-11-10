@@ -19,7 +19,7 @@ export const BorrowPositionDetails = () => {
   const { chainId, marketId, tokens, userAddress, controllerAddress } = useMarketContext()
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
-  const liquidationStatus = useLiquidationStatus(params)
+  const liquidationStatus = useLiquidationStatus(params, !isNewLlamalendHealth)
   const thresholds = getHealthThresholds(getMarketAssetsType(chainId, controllerAddress))
   const position = usePositionHealth(params, thresholds)
   const statusContent =
