@@ -126,6 +126,8 @@ describe('BorrowMoreForm (mocked)', () => {
           waitForRoutes: leverage,
           isMocked: true,
         })
+        // enabled once the debounced inputs apply, so the details below are for the typed values
+        cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt,
           expectedFutureDebt,
@@ -134,10 +136,7 @@ describe('BorrowMoreForm (mocked)', () => {
           controllerApproved,
           isMocked: true,
         })
-        cy.get('[data-testid="borrow-more-submit-button"]').should('be.enabled').and('have.text', buttonText)
-
-        // retried: the approve gas estimate for the typed collateral can land after the details render
-        cy.wrap(null).should(assertPreSubmit)
+        cy.then(assertPreSubmit)
         submitBorrowMoreForm({ controllerApproved, isMocked: true }).then(assertSubmit)
       })
     },
