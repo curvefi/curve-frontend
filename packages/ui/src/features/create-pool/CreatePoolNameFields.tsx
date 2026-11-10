@@ -16,8 +16,8 @@ export const CreatePoolNameFields = ({
   disabled: boolean
   nameMaxBytes: number
   symbolMaxBytes: number
-  poolName: string
-  symbol: string
+  poolName: string | undefined
+  symbol: string | undefined
 }) => (
   <Stack sx={{ gap: Spacing.sm }}>
     {(

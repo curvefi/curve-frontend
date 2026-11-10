@@ -50,7 +50,7 @@ export const CreatePoolField = ({
       {inputType === 'text' ? (
         <TextField
           {...inputProps}
-          value={values[name]}
+          value={values[name] ?? ''}
           onChange={event => update({ ...additionalUpdates, ...fromEntries([[name, event.target.value]]) })}
         />
       ) : (

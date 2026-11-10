@@ -12,10 +12,10 @@ import { useTokenUsdRates } from '@/stellar/queries/token/token-usd-rate.query'
 import { createPoolFormValidationSuite } from '@/stellar/queries/validation/create-pool.validation'
 import { StellarPages } from '@/stellar/routes/routes'
 import { completeArray } from '@primitives/array.utils'
-import { fromEntries, maybe, notFalsy, range } from '@primitives/objects.utils'
+import { fromEntries, maybe, notFalsy, notFalsyArray, range, recordEntries } from '@primitives/objects.utils'
 import {
-  createPoolTokenField,
   createPoolTokenDecimalsField,
+  createPoolTokenField,
   createPoolTokenSymbolField,
   getCreatePoolTokenDefaults,
   getCreatePoolTokens,
@@ -29,7 +29,7 @@ import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { fromWei } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { STELLAR_POOL_LIMITS } from './constants'
-import { getPoolTypeDefaults, getCreatePoolTypes, getCreatePoolValues } from './create-pool.utils'
+import { getCreatePoolTypes, getCreatePoolValues, getPoolTypeDefaults } from './create-pool.utils'
 import { useCreatePoolFactory } from './useCreatePoolFactory'
 import { useCreatePoolTokenOptions } from './useCreatePoolTokenOptions'
 import { useInitialLiquidity } from './useInitialLiquidity'
@@ -43,28 +43,31 @@ const userDefaultValues = {
   fee: undefined,
   feeMultiplier: undefined,
   priceOracleAveragingWindow: undefined,
-  poolName: '',
-  symbol: '',
+  poolName: undefined,
+  symbol: undefined,
   addLiquidity: false,
   ...getPoolDefaultValues(STELLAR_POOL_LIMITS.tokens.min),
 } satisfies Partial<CreatePoolFormValues>
 
 function checkStepsCompleted({ values, formState }: Pick<UseFormReturn<CreatePoolFormValues>, 'formState' | 'values'>) {
-  const isStepComplete = (...fields: (keyof CreatePoolFormValues)[]) =>
-    formState.isDirty && fields.every(field => !formState.errors[field])
-  return {
-    tokens: isStepComplete('tokenCount', ...range(values.tokenCount).map(createPoolTokenField)),
-    'pool-type': isStepComplete('poolType'),
-    parameters: isStepComplete('poolType', 'amplification', 'fee', 'feeMultiplier', 'priceOracleAveragingWindow'),
-    liquidity:
-      isStepComplete('poolType') &&
-      (!values.addLiquidity ||
-        isStepComplete(
-          ...range(values.tokenCount).map(createPoolTokenDecimalsField),
-          ...range(values.tokenCount).map(poolAmountField),
-        )),
-    name: isStepComplete('poolName', 'symbol'),
-  }
+  const { addLiquidity, tokenCount } = values
+  const steps = recordEntries({
+    tokens: ['tokenCount', ...range(tokenCount).map(createPoolTokenField)],
+    'pool-type': ['poolType'],
+    parameters: ['amplification', 'fee', 'feeMultiplier', 'priceOracleAveragingWindow'],
+    liquidity: notFalsyArray(
+      ['poolType'],
+      addLiquidity && [
+        ...range(tokenCount).map(createPoolTokenDecimalsField),
+        ...range(tokenCount).map(poolAmountField),
+      ],
+    ),
+    name: ['poolName', 'symbol'],
+  } satisfies Record<string, (keyof CreatePoolFormValues)[]>)
+  const nextStepIndex = steps.findIndex(([, fields]) =>
+    fields.some(field => values[field] == null || formState.errors[field]),
+  )
+  return fromEntries(steps.map(([step], index) => [step, nextStepIndex < 0 || index < nextStepIndex]))
 }
 
 export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreatePoolFormProps {
@@ -100,8 +103,8 @@ export function useCreatePoolForm({ network: networkId }: NetworkQuery): CreateP
 
   // suggest names from tokens; preserve names the user has edited.
   const symbols = notFalsy(...tokens.map(token => token?.symbol))
-  useFormSync(form, { poolName: symbols.join('/') }, !formState.dirtyFields.poolName)
-  useFormSync(form, { symbol: symbols.join('') }, !formState.dirtyFields.symbol)
+  useFormSync(form, { poolName: symbols.join('/') || undefined }, !formState.dirtyFields.poolName)
+  useFormSync(form, { symbol: symbols.join('') || undefined }, !formState.dirtyFields.symbol)
 
   const debounceDefaults = useMemo(
     () => ({

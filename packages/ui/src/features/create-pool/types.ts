@@ -27,8 +27,8 @@ export type CreatePoolFormValues = PoolTokenFields &
     fee: Decimal | undefined
     feeMultiplier: Decimal | undefined
     priceOracleAveragingWindow: Decimal | undefined
-    poolName: string
-    symbol: string
+    poolName: string | undefined
+    symbol: string | undefined
     maxAmounts: (Decimal | undefined)[] | undefined
     addLiquidity: boolean
   }
