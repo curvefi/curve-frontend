@@ -88,23 +88,24 @@ export const getPositionStatus = ({
           : 'aboveRange'
         : 'inRange'
 
-export const getHealthTextColor =
-  ({ health }: PositionHealth, { nearRangeHealth }: HealthThresholds) =>
-  (theme: Theme) =>
-    theme.design.Text.TextColors.Feedback[
-      decimalGreaterThan(health, '1') ? (+health <= nearRangeHealth ? 'Warning' : 'Success') : 'Error'
-    ]
+export const getHealthTextColor = (
+  { health, isLiquidatable }: PositionHealth,
+  { nearRangeHealth }: HealthThresholds,
+  theme: Theme,
+) =>
+  theme.design.Text.TextColors.Feedback[
+    !isLiquidatable && decimalGreaterThan(health, '1') ? (+health <= nearRangeHealth ? 'Warning' : 'Success') : 'Error'
+  ]
 
-export const getLiquidationBufferTextColor =
-  (
-    { liquidationBufferLeft, isLiquidatable }: PositionHealth,
-    { bufferLeftCritical, bufferLeftRisky }: HealthThresholds,
-  ) =>
-  (theme: Theme) =>
-    theme.design.Text.TextColors.Feedback[
-      isLiquidatable || +liquidationBufferLeft <= bufferLeftCritical
-        ? 'Error'
-        : +liquidationBufferLeft <= bufferLeftRisky
-          ? 'Warning'
-          : 'Success'
-    ]
+export const getLiquidationBufferTextColor = (
+  { liquidationBufferLeft, isLiquidatable }: PositionHealth,
+  { bufferLeftCritical, bufferLeftRisky }: HealthThresholds,
+  theme: Theme,
+) =>
+  theme.design.Text.TextColors.Feedback[
+    isLiquidatable || +liquidationBufferLeft <= bufferLeftCritical
+      ? 'Error'
+      : +liquidationBufferLeft <= bufferLeftRisky
+        ? 'Warning'
+        : 'Success'
+  ]
