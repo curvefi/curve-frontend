@@ -6,9 +6,9 @@ import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageToo
 import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
+import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { combineQueries } from '@ui/features/queries/combine'
 import { withQuery } from '@ui/features/tables/withQuery'
-import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { t } from '@ui/lib/i18n'
 import {
   BandCountCell,

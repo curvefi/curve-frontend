@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { LlamaMarketRow, MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { PositionHealth } from '@/llamalend/health.utils'
+import type { LlamaMarketRow, MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Decimal } from '@primitives/decimal.utils'
 import { constQ, DISABLED_Q, type Range } from '@ui/features/queries/util'
 import {

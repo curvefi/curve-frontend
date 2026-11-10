@@ -1,8 +1,8 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
-import { getPositionHealth, getPositionHealthThresholds, getRangePrices } from '@/llamalend/health.utils'
 import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
+import { getPositionHealth, getPositionHealthThresholds, getRangePrices } from '@/llamalend/health.utils'
 import {
   getDisplayLegacyHealth,
   getLegacyLiquidationStatus,
