@@ -4,7 +4,14 @@ import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { Health, Percentage, TokenHeader, type BorrowerRow, type SupplierRow } from './market-participants.utils'
+import {
+  BorrowerHealthHeader,
+  Health,
+  Percentage,
+  TokenHeader,
+  type BorrowerRow,
+  type SupplierRow,
+} from './market-participants.utils'
 
 enum BorrowerColumnId {
   Address = 'address',
@@ -61,7 +68,7 @@ export const getBorrowerColumns = (
     }),
     borrowerColumnHelper.accessor('health', {
       id: BorrowerColumnId.Health,
-      header: t`Health`,
+      header: BorrowerHealthHeader,
       cell: ({ row }) => (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <Health health={row.original.health} />
