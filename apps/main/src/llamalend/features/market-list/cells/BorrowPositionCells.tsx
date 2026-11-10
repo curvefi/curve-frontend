@@ -119,7 +119,7 @@ export const DistanceToRangeCell = ({ row: { original: row }, getValue }: Borrow
   <PositionMetric
     value={getValue() === 0 ? t`In range` : formatNumber(getValue(), 'percent.delta')}
     support={maybe(row.positionQueries.stats.data?.rangePrices, prices =>
-      prices.map(price => formatNumber(price, { abbreviate: false })).join(' – '),
+      prices.map(price => formatNumber(price, 'token.precise')).join(' – '),
     )}
   />
 )
