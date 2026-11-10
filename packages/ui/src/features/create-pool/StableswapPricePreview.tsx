@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS, formatChartAxisNumber } from '@ui/features/charts/chart.utils'
 import { ChartFooter } from '@ui/features/charts/ChartFooter'
@@ -19,7 +19,7 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 import { ArrowsSize } from '@ui/icons/ArrowsSize'
 import { DownloadIcon } from '@ui/icons/DownloadIcon'
 import { t } from '@ui/lib/i18n'
-import { STABLESWAP_PREVIEW_PRICE_BAND, STABLESWAP_PREVIEW_PAIR, stableswapPreview } from './stableswap-preview'
+import { STABLESWAP_PREVIEW_PAIR, STABLESWAP_PREVIEW_PRICE_BAND, stableswapPreview } from './stableswap-preview'
 
 const { Spacing, Height, FontSize, LineHeight, BorderWidth } = SizesAndSpaces
 const REFERENCE_AMPLIFICATION = 10
@@ -54,6 +54,7 @@ export const StableswapPricePreview = ({
     [amplification, tokenCount],
   )
   const reference = useMemo(() => stableswapPreview(REFERENCE_AMPLIFICATION, tokenCount), [tokenCount])
+
   const series = [
     {
       label: `${t`A`} = ${amplification}, ${t`this pool`}`,
@@ -66,7 +67,24 @@ export const StableswapPricePreview = ({
       label: `${t`A`} = ${REFERENCE_AMPLIFICATION}`,
       color: Chart.Lines[2],
       dash: undefined,
-      data: reference?.samples.map(({ share, price }) => [share, price]) ?? [],
+      data: useMemo(
+        () =>
+          // ECharts groups axis tooltips by x value. Sample the reference at this pool's shares to keep all three rows.
+          preview?.samples.map(({ share }) => [
+            share,
+            maybe(reference, ({ samples }) => {
+              const index = samples.findIndex(sample => sample.share >= share)
+              const right = samples[index]
+              if (right?.share === share) return right.price
+              return maybes(
+                [samples[index - 1], right],
+                (left, right) =>
+                  left.price + ((share - left.share) * (right.price - left.price)) / (right.share - left.share),
+              )
+            }) ?? null,
+          ]) ?? [],
+        [preview, reference],
+      ),
       band: undefined,
     },
     {
@@ -101,7 +119,19 @@ export const StableswapPricePreview = ({
       axisLabel: { ...textStyle, formatter: (value: number) => formatChartAxisNumber(value) },
       splitLine: { lineStyle: gridLine },
     },
-    tooltip: { trigger: 'axis', valueFormatter: value => formatChartAxisNumber(Number(value)) },
+    tooltip: {
+      trigger: 'axis',
+      confine: true,
+      transitionDuration: 0,
+      order: 'seriesAsc',
+      axisPointer: {
+        snap: true,
+        label: {
+          formatter: ({ value }) => `${formatNumber(Number(value), 'percent.value')} ${tokenSymbol ?? t`Token 1`}`,
+        },
+      },
+      valueFormatter: value => `${formatChartAxisNumber(Number(value))}× ${t`rate`}`,
+    },
     series: series.map(({ label, color, dash, data, band }): LineSeriesOption => ({
       type: 'line',
       name: label,

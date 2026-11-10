@@ -4,9 +4,9 @@ import Box from '@mui/material/Box'
 import { DocsContainer, type DocsContainerProps } from '@storybook/addon-docs/blocks'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
-import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 import { chadTheme, darkTheme, lightTheme } from '@ui/features/themes/themes'
 import { Toast } from '@ui/features/toast/Toast/Toast'
+import { StoryRouter } from './StoryRouter'
 import '@ui/styles/initial-load.css'
 
 const themes = {
@@ -19,19 +19,14 @@ const themes = {
 }
 
 const decorators: Decorator[] = [
-  Story => {
-    const router = createRouter({
-      routeTree: createRootRoute({ component: Story }),
-      history: createMemoryHistory({ initialEntries: ['/'] }),
-    })
-
-    return (
-      <>
-        <RouterProvider router={router} />
-        <Toast />
-      </>
-    )
-  },
+  Story => (
+    <>
+      <StoryRouter>
+        <Story />
+      </StoryRouter>
+      <Toast />
+    </>
+  ),
   // The last decorator wraps the others, so the shared Toast also receives the theme.
   withThemeFromJSXProvider<ReactRenderer>({
     themes,
