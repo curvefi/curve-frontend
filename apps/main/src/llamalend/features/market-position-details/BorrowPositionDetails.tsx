@@ -1,6 +1,6 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
-import { getHealthThresholds } from '@/llamalend/health.utils'
+import { getPositionHealthThresholds } from '@/llamalend/health.utils'
 import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { usePositionHealth } from '@/llamalend/queries/user/user-health.query'
@@ -20,7 +20,7 @@ export const BorrowPositionDetails = () => {
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
   const liquidationStatus = useLiquidationStatus(params, !isNewLlamalendHealth)
-  const thresholds = getHealthThresholds(getMarketAssetsType(chainId, controllerAddress))
+  const thresholds = getPositionHealthThresholds(getMarketAssetsType(chainId, controllerAddress))
   const position = usePositionHealth(params, thresholds)
   const statusContent =
     liquidationStatus.data &&

@@ -2,7 +2,7 @@ import {
   formatHealth,
   getHealthTextColor,
   getLiquidationBufferTextColor,
-  type HealthThresholds,
+  type PositionHealthThresholds,
   type PositionHealth,
   type PositionStatus,
 } from '@/llamalend/health.utils'
@@ -36,7 +36,7 @@ export const HealthDetails = ({
   borrowSymbol,
 }: {
   position: QueryProp<PositionHealth>
-  thresholds: HealthThresholds
+  thresholds: PositionHealthThresholds
   borrowSymbol: string | undefined
 }) => {
   const theme = useTheme()

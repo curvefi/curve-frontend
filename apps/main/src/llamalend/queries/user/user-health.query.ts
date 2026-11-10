@@ -1,4 +1,9 @@
-import { getHealth, getPositionStatus, type HealthThresholds, type PositionHealth } from '@/llamalend/health.utils'
+import {
+  getHealth,
+  getPositionStatus,
+  type PositionHealthThresholds,
+  type PositionHealth,
+} from '@/llamalend/health.utils'
 import { pickDisplayLegacyHealth } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
@@ -47,7 +52,7 @@ export const useLegacyUserHealthValue = (params: UserMarketParams) =>
   )
 
 /** The position's health, liquidation buffer and status. No data when the user has no loan. */
-export const usePositionHealth = (params: UserMarketParams, thresholds: HealthThresholds) =>
+export const usePositionHealth = (params: UserMarketParams, thresholds: PositionHealthThresholds) =>
   combineQueries(
     [
       useMarketOraclePrice(params),
@@ -67,7 +72,7 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: HealthTh
           health,
           liquidationBuffer,
           liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
-          liquidationBufferLeft: decimalDiv(
+          liquidationBufferShare: decimalDiv(
             liquidationBuffer,
             decimalMinus(
               decimalPercent(decimalMinus('100', liquidationDiscount), decimalMinus('100', loanDiscount)),

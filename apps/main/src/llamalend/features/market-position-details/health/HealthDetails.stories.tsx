@@ -1,4 +1,4 @@
-import { getHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
+import { getPositionHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
@@ -16,7 +16,7 @@ const DEBT: Decimal = '10000'
 type HealthDetailsStoryProps = {
   health?: Decimal
   liquidationBuffer?: Decimal
-  liquidationBufferLeft?: Decimal
+  liquidationBufferShare?: Decimal
   isLiquidatable?: boolean
   status?: PositionStatus
   assetsType?: MarketAssetsType
@@ -26,19 +26,19 @@ type HealthDetailsStoryProps = {
 const HealthDetailsStory = ({
   health,
   liquidationBuffer,
-  liquidationBufferLeft,
+  liquidationBufferShare,
   isLiquidatable = false,
   status,
   assetsType,
   isLoading = false,
 }: HealthDetailsStoryProps) => {
   const data = maybes(
-    [health, liquidationBuffer, liquidationBufferLeft, status],
-    (health, liquidationBuffer, liquidationBufferLeft, status): PositionHealth => ({
+    [health, liquidationBuffer, liquidationBufferShare, status],
+    (health, liquidationBuffer, liquidationBufferShare, status): PositionHealth => ({
       health,
       liquidationBuffer,
       liquidationBufferAmount: decimalDiv(decimalMultiply(DEBT, liquidationBuffer), '100'),
-      liquidationBufferLeft,
+      liquidationBufferShare,
       isLiquidatable,
       status,
     }),
@@ -47,7 +47,7 @@ const HealthDetailsStory = ({
     <MetricsGrid>
       <HealthDetails
         position={q({ data, isLoading, error: null })}
-        thresholds={getHealthThresholds(assetsType)}
+        thresholds={getPositionHealthThresholds(assetsType)}
         borrowSymbol="crvUSD"
       />
     </MetricsGrid>
@@ -64,7 +64,7 @@ const meta: Meta<typeof HealthDetailsStory> = {
   argTypes: {
     health: { control: 'text' },
     liquidationBuffer: { control: 'text' },
-    liquidationBufferLeft: { control: 'text' },
+    liquidationBufferShare: { control: 'text' },
     isLiquidatable: { control: 'boolean' },
     status: { control: 'select', options: ['aboveRange', 'nearRange', 'inRange', 'belowRange', 'liquidatable'] },
     assetsType: { control: 'select', options: Object.values(MarketAssetsType) },
@@ -76,7 +76,7 @@ export default meta
 type Story = StoryObj<typeof HealthDetailsStory>
 
 export const AboveRange: Story = {
-  args: { health: '1.6', liquidationBuffer: '18', liquidationBufferLeft: '0.7', status: 'aboveRange' },
+  args: { health: '1.6', liquidationBuffer: '18', liquidationBufferShare: '0.7', status: 'aboveRange' },
 }
 
 export const Loading: Story = { args: { isLoading: true } }
@@ -86,27 +86,27 @@ const allStates = [
   { name: 'AboveRange', args: AboveRange.args },
   {
     name: 'NearRange',
-    args: { health: '1.08', liquidationBuffer: '12', liquidationBufferLeft: '0.47', status: 'nearRange' },
+    args: { health: '1.08', liquidationBuffer: '12', liquidationBufferShare: '0.47', status: 'nearRange' },
   },
   {
     name: 'JustAboveRange',
-    args: { health: '1.00001', liquidationBuffer: '12', liquidationBufferLeft: '0.47', status: 'nearRange' },
+    args: { health: '1.00001', liquidationBuffer: '12', liquidationBufferShare: '0.47', status: 'nearRange' },
   },
-  { name: 'InRange', args: { health: '1', liquidationBuffer: '6', liquidationBufferLeft: '0.23', status: 'inRange' } },
+  { name: 'InRange', args: { health: '1', liquidationBuffer: '6', liquidationBufferShare: '0.23', status: 'inRange' } },
   {
     name: 'InRangeCritical',
-    args: { health: '1', liquidationBuffer: '2.4', liquidationBufferLeft: '0.09', status: 'inRange' },
+    args: { health: '1', liquidationBuffer: '2.4', liquidationBufferShare: '0.09', status: 'inRange' },
   },
   {
     name: 'BelowRange',
-    args: { health: '1', liquidationBuffer: '8', liquidationBufferLeft: '0.31', status: 'belowRange' },
+    args: { health: '1', liquidationBuffer: '8', liquidationBufferShare: '0.31', status: 'belowRange' },
   },
   {
     name: 'Liquidatable',
     args: {
       health: '1',
       liquidationBuffer: '-0.5',
-      liquidationBufferLeft: '-0.02',
+      liquidationBufferShare: '-0.02',
       isLiquidatable: true,
       status: 'liquidatable',
     },
@@ -116,7 +116,7 @@ const allStates = [
     args: {
       health: '1.11',
       liquidationBuffer: '0.41',
-      liquidationBufferLeft: '1.37',
+      liquidationBufferShare: '1.37',
       status: 'aboveRange',
       assetsType: MarketAssetsType.Correlated,
     },
@@ -126,7 +126,7 @@ const allStates = [
     args: {
       health: '1.11',
       liquidationBuffer: '0.03',
-      liquidationBufferLeft: '0.1',
+      liquidationBufferShare: '0.1',
       status: 'aboveRange',
       assetsType: MarketAssetsType.Correlated,
     },
