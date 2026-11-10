@@ -91,7 +91,7 @@ export const HealthDetails = ({
           abbreviate: false,
           color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds)(theme)),
           formatter: value => formatNumber(value, 'percent.value'),
-          // non-breaking space: a plain leading space is dropped in the flex unit
+          // unicode needed so "of debt" keeps a space before it, a normal space would be removed
           unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },
         }}
       />

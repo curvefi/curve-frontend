@@ -24,7 +24,7 @@ const POSITION_STATUS_DESCRIPTION: Record<PositionStatus, string[]> = {
 }
 
 export const HealthTooltipContent = ({ status }: { status?: PositionStatus }) => (
-  <TooltipWrapper>
+  <TooltipWrapper testId={status && `health-tooltip-status-${status}`}>
     <TooltipDescription
       text={t`Health reaches 1.00 at the start of the Liquidation range, where collateral can convert and losses can occur. It stays at 1.00 within and below the range; monitor Liquidation buffer and Status.`}
     />
@@ -37,13 +37,6 @@ export const HealthTooltipContent = ({ status }: { status?: PositionStatus }) =>
         </>
       }
     />
-    {status &&
-      POSITION_STATUS_DESCRIPTION[status].map((text, index) => (
-        <TooltipDescription
-          key={text}
-          text={text}
-          testId={index === 0 ? `health-tooltip-status-${status}` : undefined}
-        />
-      ))}
+    {status && POSITION_STATUS_DESCRIPTION[status].map(text => <TooltipDescription key={text} text={text} />)}
   </TooltipWrapper>
 )
