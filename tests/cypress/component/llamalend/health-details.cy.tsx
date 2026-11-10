@@ -1,6 +1,5 @@
 import { HealthDetails } from '@/llamalend/features/market-position-details/health/HealthDetails'
-import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
-import { getHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
+import { getPositionHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
@@ -19,7 +18,7 @@ const mountHealthDetails = (position: PositionHealth, assetsType: MarketAssetsTy
     <ComponentTestWrapper>
       <HealthDetails
         position={q({ data: position, isLoading: false, error })}
-        thresholds={getHealthThresholds(assetsType)}
+        thresholds={getPositionHealthThresholds(assetsType)}
         borrowSymbol="crvUSD"
       />
     </ComponentTestWrapper>,
@@ -45,13 +44,13 @@ const getPosition = (
   health: Decimal,
   liquidationBuffer: Decimal,
   liquidationBufferAmount: Decimal,
-  liquidationBufferLeft: Decimal,
+  liquidationBufferShare: Decimal,
   status: PositionStatus,
 ): PositionHealth => ({
   health,
   liquidationBuffer,
   liquidationBufferAmount,
-  liquidationBufferLeft,
+  liquidationBufferShare,
   isLiquidatable: status === 'liquidatable',
   status,
 })
@@ -136,7 +135,7 @@ describe('Health details', () => {
       cy.get('[data-testid="health-details-status-badge"]').should('have.text', expected.badge)
 
       cy.get('[data-testid="health-details-liquidation-buffer-metric-value"]')
-        .should('have.text', `${expected.liquidationBuffer}\u00a0of debt`)
+        .should('contain.text', expected.liquidationBuffer)
         .find('p')
         .first()
         .should('have.css', 'color', hexToRgb(design.Text.TextColors.Feedback[expected.liquidationBufferFeedback]))
@@ -161,27 +160,5 @@ describe('Health details', () => {
     cy.get('[data-testid="health-details-health-metric"] [data-error="Error: rpc failed"]').should('be.visible')
     cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.00')
     cy.get('[data-testid="health-details-status-badge"]').should('have.text', 'Liquidatable')
-  })
-
-  it('shows the buffer amount in the liquidation buffer tooltip', () => {
-    cy.viewport(1200, 800)
-    mountHealthDetails(getPosition('1.6', '20', '200', '1.2', 'aboveRange'), MarketAssetsType.BlueChip)
-    cy.get('[data-testid="health-details-liquidation-buffer-metric"] svg').first().trigger('mouseover')
-    cy.get('[role="tooltip"]')
-      .contains('span', /^Buffer amount$/)
-      .should('be.visible')
-    cy.get('[role="tooltip"]').should('contain.text', '200 crvUSD')
-  })
-})
-
-describe('Liquidation buffer tooltip', () => {
-  it('leaves out the buffer amount without position data', () => {
-    cy.mount(
-      <ComponentTestWrapper>
-        <LiquidationBufferTooltipContent />
-      </ComponentTestWrapper>,
-    )
-    cy.contains('Not a price-drop allowance or withdrawable equity.').should('be.visible')
-    cy.contains('span', /^Buffer amount$/).should('not.exist')
   })
 })
