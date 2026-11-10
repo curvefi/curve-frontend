@@ -4,14 +4,13 @@ import {
   getLiquidationBufferTextColor,
   type PositionHealthThresholds,
   type PositionHealth,
-  type PositionStatus,
 } from '@/llamalend/health.utils'
 import { formatAmount } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
-import { Badge, type BadgeProps } from '@ui/components/Badge'
+import { Badge } from '@ui/components/Badge'
 import { Metric } from '@ui/components/Metric'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -19,16 +18,9 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { HealthTooltipContent } from '../tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '../tooltips/LiquidationBufferTooltipContent'
+import { POSITION_STATUS_BADGE } from './position-status'
 
 const { Spacing } = SizesAndSpaces
-
-export const POSITION_STATUS_BADGE = {
-  liquidatable: { label: t`Liquidatable`, color: 'alert' },
-  inRange: { label: t`Soft liquidation`, color: 'warning' },
-  belowRange: { label: t`Below range`, color: 'warning' },
-  nearRange: { label: t`Near range`, color: 'warning' },
-  aboveRange: { label: t`Above range`, color: 'default' },
-} as const satisfies Record<PositionStatus, Pick<BadgeProps, 'label' | 'color'>>
 
 export const HealthDetails = ({
   position,

@@ -1,4 +1,4 @@
-import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/HealthDetails'
+import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/position-status'
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import { formatHealth, getHealthTextColor, getLiquidationBufferTextColor } from '@/llamalend/health.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'

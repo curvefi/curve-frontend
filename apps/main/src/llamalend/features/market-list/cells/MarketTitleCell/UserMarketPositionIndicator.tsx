@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/HealthDetails'
-import { POSITION_STATUS_DESCRIPTION } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
+import {
+  POSITION_STATUS_BADGE,
+  POSITION_STATUS_DESCRIPTION,
+} from '@/llamalend/features/market-position-details/health/position-status'
 import type { PositionStatus } from '@/llamalend/health.utils'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
