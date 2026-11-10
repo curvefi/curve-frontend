@@ -25,6 +25,13 @@ const RESOURCE_FEE_BUFFER_PERCENT = 20n
 /** TTL renewal can become payable after simulation. Keep the 20% buffer for larger simulated fees. */
 const MIN_RESOURCE_FEE_BUFFER_PER_ENTRY = 600_000n
 
+export const retryStellarTransaction = <T>(submit: () => Promise<T>) =>
+  retry(submit, {
+    retries: TRANSACTION_SUBMISSION_RETRIES,
+    delay: () => TRANSACTION_SUBMISSION_RETRY_DELAY_MS,
+    shouldRetry: error => (error as Error).message.includes('TRY_AGAIN_LATER'),
+  })
+
 /**
  * Reserve TTL renewal headroom in stroops for each contract data/code entry in the footprint.
  * Renewal may become necessary after simulation, even when simulated rent is zero.
@@ -80,20 +87,14 @@ export async function sendStellarTransaction<T>(
   signTransaction: contract.SignTransaction = StellarWalletsKit.signTransaction.bind(StellarWalletsKit),
 ) {
   const { sorobanData } = getStellarTransactionFees(transaction)
-  const sent = await retry(
-    async () =>
-      await transaction.signAndSend({
-        signTransaction: (envelope, options) => {
-          const tx = applyResourceFeeBuffer(envelope, transaction, sorobanData)
-          return signTransaction(tx.toXdr(), options)
-        },
-        watcher: {}, // we could change the watcher to log submission and confirmation events
-      }),
-    {
-      retries: TRANSACTION_SUBMISSION_RETRIES,
-      delay: () => TRANSACTION_SUBMISSION_RETRY_DELAY_MS,
-      shouldRetry: error => (error as Error).message.includes('TRY_AGAIN_LATER'),
-    },
+  const sent = await retryStellarTransaction(() =>
+    transaction.signAndSend({
+      signTransaction: (envelope, options) => {
+        const tx = applyResourceFeeBuffer(envelope, transaction, sorobanData)
+        return signTransaction(tx.toXdr(), options)
+      },
+      watcher: {}, // we could change the watcher to log submission and confirmation events
+    }),
   )
 
   const confirmation = sent.getTransactionResponse

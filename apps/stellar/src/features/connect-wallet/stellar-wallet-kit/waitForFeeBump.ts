@@ -4,7 +4,12 @@ import { BASE_FEE, contract, rpc, SorobanDataBuilder, Transaction, TransactionBu
 import { withPendingToast } from '@ui/features/toast/Toast/notify'
 import { t } from '@ui/lib/i18n'
 import { waitForTransaction } from '@ui/lib/waitForTransaction'
-import { getStellarTransactionFees, type StellarTransaction, type StellarTransactionResponse } from './transaction'
+import {
+  getStellarTransactionFees,
+  retryStellarTransaction,
+  type StellarTransaction,
+  type StellarTransactionResponse,
+} from './transaction'
 import { createRpc } from './wallet'
 
 /** A fee-bump envelope pays resource fees that do not fit in the inner transaction's fee field. */
@@ -57,9 +62,11 @@ export const waitForFeeBump = async <T>(transaction: StellarTransaction<T>) => {
         transaction,
         StellarWalletsKit.signTransaction.bind(StellarWalletsKit),
       )
-      const response = await server.sendTransaction(signed)
-      assert(response.status === 'PENDING', `Transaction submission failed: ${response.status}`)
-      return response as StellarTransactionResponse
+      return retryStellarTransaction(async () => {
+        const response = await server.sendTransaction(signed)
+        assert(response.status === 'PENDING', `Transaction submission failed: ${response.status}`)
+        return response as StellarTransactionResponse
+      })
     },
     waitForConfirmation: async response => {
       const confirmation = await withPendingToast(
