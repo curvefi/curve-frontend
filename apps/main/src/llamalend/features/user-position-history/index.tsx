@@ -23,11 +23,11 @@ export const UserPositionHistory = ({ eventsQuery, variant }: UserPositionHistor
           <Typography variant="bodyXsRegular">
             {isNewLlamalendHealth
               ? t`LlamaLend liquidations depend on your liquidation buffer, not on price alone.`
-              : t`Llamelend liquidations are not price based, but health based.`}
+              : t`Llamalend liquidations are not price based, but health based.`}
           </Typography>
           <Typography variant="bodyXsBold" sx={{ color: t => t.design.Text.TextColors.Highlight }}>
             {isNewLlamalendHealth
-              ? t`Liquidations occur when the liquidation buffer is below 0% and the price is in or below the liquidation range.`
+              ? t`Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range.`
               : t`Liquidations occur when health reaches 0.`}
           </Typography>
         </Stack>

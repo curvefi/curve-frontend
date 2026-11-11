@@ -31,27 +31,27 @@ const RISK_GROUP: FaqGroup = {
     },
     {
       question: t`What is the liquidation buffer?`,
-      answer: t`The liquidation buffer is the margin your position has before it can be fully liquidated, shown as a percentage of your debt. Conversion losses and growing debt reduce it. When it falls below 0%, the position can be fully liquidated once the oracle price is at or below the top of your liquidation range.`,
+      answer: t`The liquidation buffer is the margin your position has before it can be fully liquidated, shown as a percentage of your debt. Conversion losses and growing debt reduce it. Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range.`,
     },
     {
       question: t`When does liquidation happen?`,
-      answer: t`Full liquidation can happen when the oracle price is at or below the top of your liquidation range and your liquidation buffer is below 0%. Before that, if the collateral price moves into your liquidation protection range, your loan enters liquidation protection where the system starts gradually converting collateral. That is not full liquidation yet.`,
+      answer: t`Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range. Before that, if the collateral price moves into your liquidation protection range, your loan enters liquidation protection where the system starts gradually converting collateral. That is not full liquidation yet.`,
     },
     {
       question: t`Is liquidation instant or gradual?`,
-      answer: t`Liquidation protection is gradual. As price moves through your protection range, collateral is converted step by step into the borrowed asset via the LLAMMA. If price moves back up through the range, the borrowed asset is converted back into collateral. Full liquidation can happen when the price is in or below your range and your liquidation buffer is below 0%. Then your position is closed, the debt is repaid and your collateral is transferred in exchange. You lose the collateral and the position.`,
+      answer: t`Liquidation protection is gradual. As price moves through your protection range, collateral is converted step by step into the borrowed asset via the LLAMMA. If price moves back up through the range, the borrowed asset is converted back into collateral. Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range. Then your position is closed, the debt is repaid and your collateral is transferred in exchange. You lose the collateral and the position.`,
     },
     {
       question: t`What is liquidation protection?`,
-      answer: t`Liquidation protection is Curve's mechanism for gradually adjusting your position when price moves into your "protection range." The system converts collateral into the borrowed asset (and back if price recovers) instead of closing the loan in one go. That gives you a buffer and more time to repay. If your liquidation buffer falls below 0% while the price is in or below the range, the position can be fully liquidated. The debt is repaid and the collateral is transferred in exchange. You lose the position.`,
+      answer: t`Liquidation protection is Curve's mechanism for gradually adjusting your position when price moves into your "protection range." The system converts collateral into the borrowed asset (and back if price recovers) instead of closing the loan in one go. That gives you a buffer and more time to repay. Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range. The debt is repaid and the collateral is transferred in exchange. You lose the position.`,
     },
     {
       question: t`Can I lose all my collateral?`,
-      answer: t`In a full liquidation, your position is closed. The debt is repaid and your collateral is lost. During liquidation protection, you can have conversion losses from the gradual swaps. These losses reduce your liquidation buffer, so in the worst case you lose the position if the buffer falls below 0%.`,
+      answer: t`In a full liquidation, your position is closed. The debt is repaid and your collateral is lost. During liquidation protection, you can have conversion losses from the gradual swaps. These losses reduce your liquidation buffer. Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range.`,
     },
     {
       question: t`Can I be partially liquidated?`,
-      answer: t`Yes. During liquidation protection, parts of your collateral are gradually converted into the borrowed asset as price moves through your protection range. This reduces your effective collateral but does not immediately close your loan. Full liquidation can only happen when your liquidation buffer is below 0% and the price is in or below your range.`,
+      answer: t`Yes. During liquidation protection, parts of your collateral are gradually converted into the borrowed asset as price moves through your protection range. This reduces your effective collateral but does not immediately close your loan. Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range.`,
     },
     {
       question: t`What can I do when liquidation protection is active?`,
