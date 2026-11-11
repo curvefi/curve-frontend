@@ -7,7 +7,7 @@ import type { PositionStatus } from '@/llamalend/health.utils'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { useLlamalendPositionTables } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendHealthTables } from '@evm-ui/hooks/useFeatureFlags'
 import { Typography } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
@@ -102,7 +102,7 @@ const getLegacyStatusIndicator = (
 export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow }) => {
   // No status while the stats load or after they failed, and supply positions have no stats
   const { legacyStatus, positionHealth } = market.positionQueries.stats.data ?? {}
-  const { colorEffect, title, body } = useLlamalendPositionTables()
+  const { colorEffect, title, body } = useLlamalendHealthTables()
     ? getPositionStatusIndicator(positionHealth?.status)
     : getLegacyStatusIndicator(legacyStatus, market.assets)
   const [colorState, setColorState] = useState<ColorState>('info')

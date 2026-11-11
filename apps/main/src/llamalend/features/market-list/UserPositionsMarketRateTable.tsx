@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import { useLlamalendPositionTables, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendHealthTables } from '@evm-ui/hooks/useFeatureFlags'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import CardHeader from '@mui/material/CardHeader'
@@ -48,9 +48,7 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, table: positionTable, legacyTable } = TABLE_CONFIG[marketRateType]
-  const isPositionTables = useLlamalendPositionTables()
-  const isNewLlamalendHealth = useNewLlamalendHealth()
-  const marketTable = isPositionTables && isNewLlamalendHealth ? positionTable : legacyTable
+  const marketTable = useLlamalendHealthTables() ? positionTable : legacyTable
   const { columns, sorting, onSortingChange, sortField, columnVisibility, columnSettings, toggleVisibility } =
     useMarketColumns(marketTable)
   const [expanded, setExpanded] = useState<ExpandedState>({})
