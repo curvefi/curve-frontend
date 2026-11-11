@@ -5,7 +5,7 @@ import {
 } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
-import { formatHealth, getHealth } from '@/llamalend/health.utils'
+import { getHealth } from '@/llamalend/health.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
@@ -74,7 +74,7 @@ const formatHealthQuery = (
   prices: QueryProp<Range<Decimal> | null> | undefined,
 ) =>
   combineQueries([oraclePrice, prices ?? DISABLED_Q], (oraclePrice, prices) =>
-    maybes([oraclePrice, prices], (oraclePrice, prices) => formatHealth(getHealth(oraclePrice, prices))),
+    maybes([oraclePrice, prices], (oraclePrice, prices) => formatNumber(getHealth(oraclePrice, prices), 'health')),
   )
 
 /**
@@ -196,14 +196,14 @@ export const LoanActionInfoList = ({
           ) : (
             <ActionInfo
               label={t`Health`}
-              value={prevHealth ? mapQuery(prevHealth, data => formatNumber(data, 'health.compact')) : DISABLED_Q}
+              value={prevHealth ? mapQuery(prevHealth, data => formatNumber(data, 'legacyHealth')) : DISABLED_Q}
               futureValue={
                 // todo: do not ignore loading state for health - some forms/tests expect the fallback when the query is disabled
                 isFullRepay
                   ? '∞'
                   : health?.data === undefined
                     ? UNAVAILABLE_NOTATION
-                    : mapQuery(health, data => formatNumber(data, 'health.compact'))
+                    : mapQuery(health, data => formatNumber(data, 'legacyHealth'))
               }
               valueColor={getLegacyHealthValueColor({
                 health: health?.data,

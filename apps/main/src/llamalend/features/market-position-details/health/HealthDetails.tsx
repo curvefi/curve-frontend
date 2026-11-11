@@ -1,5 +1,4 @@
 import {
-  formatHealth,
   getHealthTextColor,
   getLiquidationBufferTextColor,
   type PositionHealthThresholds,
@@ -16,6 +15,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { BORROW_METRIC_TOOLTIP } from '../market-position-details.utils'
 import { HealthTooltipContent } from '../tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '../tooltips/LiquidationBufferTooltipContent'
 import { POSITION_STATUS_BADGE } from './position-status'
@@ -39,13 +39,17 @@ export const HealthDetails = ({
         <Metric
           category="llamalend.positionHealth"
           label={t`Health`}
-          labelTooltip={{ title: t`Health`, body: <HealthTooltipContent status={data?.status} /> }}
+          valueTooltip={{
+            title: t`Health`,
+            body: <HealthTooltipContent status={data?.status} />,
+            ...BORROW_METRIC_TOOLTIP,
+          }}
           testId="health-details-health-metric"
           value={mapQuery(position, ({ health }) => health)}
           valueOptions={{
             abbreviate: false,
             color: maybe(data, data => getHealthTextColor(data, thresholds, theme)),
-            formatter: formatHealth,
+            formatter: value => formatNumber(value, 'health'),
           }}
         />
         <WithSkeleton
@@ -66,13 +70,14 @@ export const HealthDetails = ({
       <Metric
         category="llamalend.positionLiquidationBuffer"
         label={t`Liquidation buffer`}
-        labelTooltip={{
+        valueTooltip={{
           title: t`Liquidation buffer`,
           body: (
             <LiquidationBufferTooltipContent
               amount={maybe(data, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))}
             />
           ),
+          ...BORROW_METRIC_TOOLTIP,
         }}
         testId="health-details-liquidation-buffer-metric"
         value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
@@ -81,7 +86,7 @@ export const HealthDetails = ({
         )}
         valueOptions={{
           abbreviate: false,
-          color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds, theme)),
+          color: maybe(data, data => getLiquidationBufferTextColor(data, theme)),
           formatter: value => formatNumber(value, 'percent.value'),
           // unicode needed so "of debt" keeps a space before it, a normal space would be removed
           unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },

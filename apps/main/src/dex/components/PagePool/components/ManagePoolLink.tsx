@@ -1,26 +1,17 @@
-import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
-import type { Chain } from '@curvefi/prices-api'
+import { usePoolContext } from '@/dex/features/pool-context'
 import { dexPages } from '@evm-ui/shared/routes'
 import Button from '@mui/material/Button'
-import type { Address } from '@primitives/address.utils'
 import { RouterLink } from '@ui/components/RouterLink'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-/** Prices API tells us which pools methods are available, of which the following one is a requisite for refuels */
-const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donation_shares')
-
-export const ManagePoolLink = ({ chainId, poolAddress }: { chainId: number; poolAddress: Address | undefined }) => {
-  const { data: network } = useNetworkByChain({ chainId })
-  const blockchainId = network?.blockchainId as Chain
-  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId, poolAddress })
+export const ManagePoolLink = () => {
+  const { blockchainId, poolAddress, apiPool } = usePoolContext()
 
   return (
-    poolAddress != null &&
-    hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
+    apiPool.data?.info.hasDonations && (
       <Button
         component={RouterLink}
         href={dexPages.poolManagement({ blockchainId, poolAddress })}

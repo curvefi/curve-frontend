@@ -1,6 +1,6 @@
 import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/position-status'
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
-import { formatHealth, getHealthTextColor, getLiquidationBufferTextColor } from '@/llamalend/health.utils'
+import { getHealthTextColor, getLiquidationBufferTextColor } from '@/llamalend/health.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { OpeningLeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
@@ -91,7 +91,7 @@ export const HealthCell = ({ row: { original: row } }: BorrowPositionCellProps) 
             variant="tableCellValueStrong"
             sx={{ color: getHealthTextColor(positionHealth, thresholds, theme) }}
           >
-            {formatHealth(positionHealth.health)}
+            {formatNumber(positionHealth.health, 'health')}
           </Typography>
           <Badge size="extraSmall" {...POSITION_STATUS_BADGE[positionHealth.status]} />
         </Stack>
@@ -103,13 +103,11 @@ export const HealthCell = ({ row: { original: row } }: BorrowPositionCellProps) 
 /** Liquidation buffer of the borrow position in % of debt, with the buffer in the borrowed token below it */
 export const LiquidationBufferCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => {
   const theme = useTheme()
-  const { positionHealth, healthThresholds } = row.positionQueries.stats.data ?? {}
+  const { positionHealth } = row.positionQueries.stats.data ?? {}
   return (
     <PositionMetric
       value={formatNumber(getValue(), 'percent.value')}
-      color={maybes([positionHealth, healthThresholds], (positionHealth, thresholds) =>
-        getLiquidationBufferTextColor(positionHealth, thresholds, theme),
-      )}
+      color={maybe(positionHealth, positionHealth => getLiquidationBufferTextColor(positionHealth, theme))}
       support={maybe(positionHealth, ({ liquidationBufferAmount }) =>
         formatToken(liquidationBufferAmount, row.assets.borrowed.symbol),
       )}

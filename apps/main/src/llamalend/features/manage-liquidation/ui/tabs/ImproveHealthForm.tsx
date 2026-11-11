@@ -10,4 +10,4 @@ export const ImproveHealthForm = ({ ...props }: Omit<ComponentProps<typeof Repay
   <RepayForm {...props} isInSoftLiquidation onPricesUpdated={onPricesUpdated} />
 )
 
-export const ImproveHealthTabLabel = () => (useNewLlamalendHealth() ? t`Repay debt` : t`Improve health`)
+export const ImproveHealthTabLabel = () => (useNewLlamalendHealth() ? t`Refill buffer` : t`Improve health`)

@@ -1,8 +1,6 @@
 import type { Theme } from '@mui/material/styles'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
-import { formatNumber } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import {
   decimalDiv,
@@ -48,17 +46,16 @@ export type PositionHealth = {
 export type PositionHealthThresholds = {
   /** Above the range, a health at or below this reads as near range */
   nearRangeHealth: number
-  /** {@link PositionHealth.liquidationBufferShare} at or below which the position is critical */
-  bufferShareCritical: number
-  /** {@link PositionHealth.liquidationBufferShare} at or below which the position is risky */
-  bufferShareRisky: number
 }
 
 const POSITION_HEALTH_THRESHOLDS = {
-  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01, bufferShareCritical: 0.1, bufferShareRisky: 0.3 },
-  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.05, bufferShareCritical: 0.2, bufferShareRisky: 0.45 },
-  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.11, bufferShareCritical: 0.3, bufferShareRisky: 0.6 },
+  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01 },
+  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.1 },
+  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.2 },
 } as const satisfies Record<MarketAssetsType, PositionHealthThresholds>
+
+/** {@link PositionHealth.liquidationBufferShare} at or below which the position is critical or risky, for every market type */
+const LIQUIDATION_BUFFER_SHARE_THRESHOLDS = { critical: 0.2, risky: 0.5 } as const
 
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */
 export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undefined): PositionHealthThresholds =>
@@ -98,12 +95,6 @@ export const getDistanceToRange = (oraclePrice: Decimal, [low, high]: Range<Deci
 /** Computes {@link PositionHealth.health} from the user's `[low, high]` liquidation range prices. */
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
   decimalMax(decimalDiv(oraclePrice, topOfRange), '1')!
-
-/** Below this health, values near 1 need more decimals than the 3 significant digits of the `health` format */
-const HEALTH_PRECISION_THRESHOLD = 1.1
-
-export const formatHealth = (health: Amount | Nullish) =>
-  formatNumber(health, Number(health) < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
 
 /** Resolves the position status. */
 export const getPositionStatus = ({
@@ -176,13 +167,12 @@ export const getHealthTextColor = (
 
 export const getLiquidationBufferTextColor = (
   { liquidationBufferShare, isLiquidatable }: PositionHealth,
-  { bufferShareCritical, bufferShareRisky }: PositionHealthThresholds,
   theme: Theme,
 ) =>
   theme.design.Text.TextColors.Feedback[
-    isLiquidatable || +liquidationBufferShare <= bufferShareCritical
+    isLiquidatable || +liquidationBufferShare <= LIQUIDATION_BUFFER_SHARE_THRESHOLDS.critical
       ? 'Error'
-      : +liquidationBufferShare <= bufferShareRisky
+      : +liquidationBufferShare <= LIQUIDATION_BUFFER_SHARE_THRESHOLDS.risky
         ? 'Warning'
         : 'Success'
   ]

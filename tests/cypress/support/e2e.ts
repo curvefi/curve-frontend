@@ -2,6 +2,16 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
+beforeEach(() =>
+  cy.once('window:before:load', win => {
+    // Cypress leaves IndexedDB intact. Subsequent opens wait for this deletion before restoring the cache.
+    const request = win.indexedDB.deleteDatabase('REACT_QUERY_OFFLINE_CACHE')
+    request.onerror = () => {
+      throw request.error ?? new Error('Unable to clear the query cache')
+    }
+  }),
+)
+
 /** Global Cypress exception handler to ignore specific known errors. */
 Cypress.on(
   'uncaught:exception',
