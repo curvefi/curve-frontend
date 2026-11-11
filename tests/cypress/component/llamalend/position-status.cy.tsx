@@ -199,7 +199,7 @@ describe('BorrowPositionDetails health status', () => {
   // userPrices are [0.47, 0.69], the market has no assets type so the long-tail thresholds apply
   const statusCases: { status: PositionStatus; badge: string; health: string; overrides: Partial<typeof baseProps> }[] =
     [
-      { status: 'aboveRange', badge: 'Above range', health: '1.45', overrides: { oraclePrice: 1 } },
+      { status: 'aboveRange', badge: 'Above range', health: '1.4493', overrides: { oraclePrice: 1 } },
       { status: 'nearRange', badge: 'Near range', health: '1.087', overrides: { oraclePrice: 0.75 } },
       { status: 'inRange', badge: 'Soft liquidation', health: '1.00', overrides: { oraclePrice: 0.5 } },
       { status: 'belowRange', badge: 'Below range', health: '1.00', overrides: { oraclePrice: 0.4 } },
@@ -217,7 +217,7 @@ describe('BorrowPositionDetails health status', () => {
       cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)
       cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', health)
       cy.get('[data-testid="health-details-status-badge"]').should('have.text', badge)
-      cy.get('[data-testid="health-details-health-metric"] svg').first().trigger('mouseover')
+      cy.get('[data-testid="health-details-health-metric-value"]').trigger('mouseover')
       cy.get(`[data-testid="health-tooltip-status-${status}"]`).should('be.visible')
     })
   })
