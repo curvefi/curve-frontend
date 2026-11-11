@@ -103,11 +103,13 @@ export const HealthCell = ({ row: { original: row } }: BorrowPositionCellProps) 
 /** Liquidation buffer of the borrow position in % of debt, with the buffer in the borrowed token below it */
 export const LiquidationBufferCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => {
   const theme = useTheme()
-  const { positionHealth } = row.positionQueries.stats.data ?? {}
+  const { positionHealth, healthThresholds } = row.positionQueries.stats.data ?? {}
   return (
     <PositionMetric
       value={formatNumber(getValue(), 'percent.value')}
-      color={maybe(positionHealth, positionHealth => getLiquidationBufferTextColor(positionHealth, theme))}
+      color={maybes([positionHealth, healthThresholds], (positionHealth, thresholds) =>
+        getLiquidationBufferTextColor(positionHealth, thresholds, theme),
+      )}
       support={maybe(positionHealth, ({ liquidationBufferAmount }) =>
         formatToken(liquidationBufferAmount, row.assets.borrowed.symbol),
       )}
