@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import {
   POSITION_STATUS_BADGE,
   POSITION_STATUS_DESCRIPTION,
@@ -51,47 +51,61 @@ const positionStatusColorEffect: Record<PositionStatus, ColorEffect> = {
   aboveRange: setInfo,
 }
 
+type IndicatorContent = { colorEffect: ColorEffect; title: string; body: ReactNode }
+
+const getPositionStatusIndicator = (status: PositionStatus | undefined): IndicatorContent => {
+  const { colorEffect, title, descriptions } = maybe(status, status => ({
+    colorEffect: positionStatusColorEffect[status],
+    title: POSITION_STATUS_BADGE[status].label,
+    descriptions: POSITION_STATUS_DESCRIPTION[status],
+  })) ?? {
+    colorEffect: setInfo,
+    title: t`Position active`,
+    descriptions: [t`You have an active position in this market.`],
+  }
+  return {
+    colorEffect,
+    title,
+    body: (
+      <TooltipWrapper>
+        {descriptions.map(text => (
+          <TooltipDescription key={text} text={text} />
+        ))}
+      </TooltipWrapper>
+    ),
+  }
+}
+
+const getLegacyStatusIndicator = (
+  status: UserPositionStatusKey | undefined,
+  { collateral, borrowed }: LlamaMarketRow['assets'],
+): IndicatorContent => {
+  const { colorEffect, title, description } = maybe(status, status => ({
+    colorEffect: statusColorEffect[status],
+    ...getPositionStatusContent(collateral.symbol, borrowed.symbol)[status],
+  })) ?? {
+    colorEffect: setInfo,
+    title: t`Position active`,
+    description: t`You have an active position in this market.`,
+  }
+  return {
+    colorEffect,
+    title,
+    body: (
+      <Typography variant="bodySRegular" sx={{ fontWeight: t => t.typography.fontWeightMedium }}>
+        {description}
+      </Typography>
+    ),
+  }
+}
+
 export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow }) => {
-  const isPositionHealth = useLlamalendPositionTables()
   // No status while the stats load or after they failed, and supply positions have no stats
   const { legacyStatus, positionHealth } = market.positionQueries.stats.data ?? {}
+  const { colorEffect, title, body } = useLlamalendPositionTables()
+    ? getPositionStatusIndicator(positionHealth?.status)
+    : getLegacyStatusIndicator(legacyStatus, market.assets)
   const [colorState, setColorState] = useState<ColorState>('info')
-
-  const colorEffect =
-    (isPositionHealth
-      ? maybe(positionHealth, ({ status }) => positionStatusColorEffect[status])
-      : maybe(legacyStatus, status => statusColorEffect[status])) ?? setInfo
   useEffect(() => colorEffect(setColorState), [colorEffect])
-
-  const legacyContent =
-    legacyStatus &&
-    getPositionStatusContent(market.assets.collateral.symbol, market.assets.borrowed.symbol)[legacyStatus]
-
-  return (
-    <UserPositionIndicator
-      colorState={colorState}
-      tooltipTitle={
-        (isPositionHealth
-          ? maybe(positionHealth, ({ status }) => POSITION_STATUS_BADGE[status].label)
-          : legacyContent?.title) ?? t`Position active`
-      }
-      tooltipBody={
-        isPositionHealth ? (
-          <TooltipWrapper>
-            {(
-              maybe(positionHealth, ({ status }) => POSITION_STATUS_DESCRIPTION[status]) ?? [
-                t`You have an active position in this market.`,
-              ]
-            ).map(text => (
-              <TooltipDescription key={text} text={text} />
-            ))}
-          </TooltipWrapper>
-        ) : (
-          <Typography variant="bodySRegular" sx={{ fontWeight: t => t.typography.fontWeightMedium }}>
-            {legacyContent?.description ?? t`You have an active position in this market.`}
-          </Typography>
-        )
-      }
-    />
-  )
+  return <UserPositionIndicator colorState={colorState} tooltipTitle={title} tooltipBody={body} />
 }
