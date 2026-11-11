@@ -1,3 +1,4 @@
+import { API_PREFIX } from '@api-server/routes.constants'
 import { type Address, ADDRESS_HEX_PATTERN } from '@primitives/address.utils'
 import { type Decimal, DECIMAL_REGEX } from '@primitives/decimal.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
@@ -5,7 +6,7 @@ import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 const DECIMAL_PATTERN = DECIMAL_REGEX.source
 const WEI_AMOUNT_PATTERN = '^\\d+$'
 
-export const ROUTES_PATH = '/api/router/v1/routes'
+export const ROUTES_PATH = `${API_PREFIX}router/v1/routes`
 
 const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN.source } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const

@@ -1,4 +1,6 @@
-export const OPPORTUNITIES_PATH = '/api/merkl/v1/opportunities'
+import { API_PREFIX } from '@api-server/routes.constants'
+
+export const OPPORTUNITIES_PATH = `${API_PREFIX}merkl/v1/opportunities`
 
 const opportunitiesQuerySchema = {
   type: 'object',
