@@ -17,6 +17,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
+import { BORROW_METRIC_TOOLTIP } from '../market-position-details.utils'
 import { HealthTooltipContent } from '../tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '../tooltips/LiquidationBufferTooltipContent'
 
@@ -47,7 +48,11 @@ export const HealthDetails = ({
         <Metric
           category="llamalend.positionHealth"
           label={t`Health`}
-          labelTooltip={{ title: t`Health`, body: <HealthTooltipContent status={data?.status} /> }}
+          valueTooltip={{
+            title: t`Health`,
+            body: <HealthTooltipContent status={data?.status} />,
+            ...BORROW_METRIC_TOOLTIP,
+          }}
           testId="health-details-health-metric"
           value={mapQuery(position, ({ health }) => health)}
           valueOptions={{
@@ -74,13 +79,14 @@ export const HealthDetails = ({
       <Metric
         category="llamalend.positionLiquidationBuffer"
         label={t`Liquidation buffer`}
-        labelTooltip={{
+        valueTooltip={{
           title: t`Liquidation buffer`,
           body: (
             <LiquidationBufferTooltipContent
               amount={maybe(data, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))}
             />
           ),
+          ...BORROW_METRIC_TOOLTIP,
         }}
         testId="health-details-liquidation-buffer-metric"
         value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
