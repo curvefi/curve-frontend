@@ -11,19 +11,17 @@ import type { WithdrawQuoteParams } from './types'
 export const WithdrawActionInfoList = ({
   params,
   expectedLp,
-  maximumLp,
   lpBalance,
   priceImpact,
   onSlippageChange,
 }: {
   params: WithdrawQuoteParams
   expectedLp: QueryProp<Decimal>
-  maximumLp: QueryProp<Decimal>
   lpBalance: QueryProp<Decimal>
   priceImpact: QueryProp<Decimal | null>
   onSlippageChange: (slippage: Decimal) => void
 }) => {
-  const simulation = useWithdrawSimulation({ ...params, expected: expectedLp.data, maximumBurn: maximumLp.data })
+  const simulation = useWithdrawSimulation({ ...params, expected: expectedLp.data })
 
   return (
     <PoolActionInfoList

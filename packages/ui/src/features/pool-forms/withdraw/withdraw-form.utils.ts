@@ -14,7 +14,6 @@ export type WithdrawMutation = {
   slippage: Decimal
   supply: Decimal
   seedLock: Decimal
-  maximumBurn: Decimal
 }
 
 type WithdrawQuoteFields = {

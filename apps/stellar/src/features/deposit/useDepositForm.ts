@@ -3,7 +3,6 @@ import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { useDepositPriceImpact } from '@/stellar/features/deposit/useDepositPriceImpact'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
-import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
@@ -71,7 +70,6 @@ export function useDepositForm(poolParams: PoolQuery) {
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
-  const minimum = mapQuery(quote, value => calculateMinimumMint(value, params.slippage))
   const priceImpact = useDepositPriceImpact({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }, q(quote))
   const isSeed = mapQuery(supply, supply => !+supply)
 
@@ -84,7 +82,6 @@ export function useDepositForm(poolParams: PoolQuery) {
     account,
     tokens: tokenAddresses.data,
     quote: quote.data,
-    minMint: minimum.data,
     onReset: () => reset(userDefaultValues),
   })
 

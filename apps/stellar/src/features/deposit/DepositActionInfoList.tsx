@@ -25,7 +25,7 @@ export const DepositActionInfoList = ({
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
   const quote = useExpectedLp({ ...queryParams, isDeposit: true })
   const minimum = mapQuery(quote, value => calculateMinimumMint(value, slippage))
-  const simulation = useDepositSimulation({ ...queryParams, minMint: minimum.data })
+  const simulation = useDepositSimulation({ ...queryParams, quote: quote.data })
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
   const lpDecimals = useTokenDecimals({ ...params, token: pool })

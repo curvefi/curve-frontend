@@ -21,11 +21,10 @@ export type DepositMutation = {
   slippage: Decimal
 }
 
-export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
+export type DepositQuery = QuoteQuery & UserQuery & DepositMutation & { quote: Decimal }
 export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
-export type DepositMutationContext = Pick<DepositQuery, 'network' | 'pool' | 'account' | 'minMint'> & {
+export type DepositMutationContext = Pick<DepositQuery, 'network' | 'pool' | 'account' | 'quote'> & {
   tokens: StellarContract[]
-  quote: Decimal
 }
 export type DepositMutationParams = FieldsOf<DeepPartial<DepositMutationContext & DepositMutation>>
 export type DepositMutationOptions = FieldsOf<DepositMutationContext> & { onReset: () => void }
