@@ -48,10 +48,8 @@ const POSITION_HEALTH_THRESHOLDS = {
   [MarketAssetsType.LongTail]: { nearRangeHealth: 1.2 },
 } as const satisfies Record<MarketAssetsType, PositionHealthThresholds>
 
-/** {@link PositionHealth.liquidationBufferShare} at or below which the position is critical, for every market type */
-const BUFFER_SHARE_CRITICAL = 0.2
-/** {@link PositionHealth.liquidationBufferShare} at or below which the position is risky, for every market type */
-const BUFFER_SHARE_RISKY = 0.5
+/** {@link PositionHealth.liquidationBufferShare} at or below which the position is critical or risky, for every market type */
+const LIQUIDATION_BUFFER_SHARE_THRESHOLDS = { critical: 0.2, risky: 0.5 } as const
 
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */
 export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undefined): PositionHealthThresholds =>
@@ -99,9 +97,9 @@ export const getLiquidationBufferTextColor = (
   theme: Theme,
 ) =>
   theme.design.Text.TextColors.Feedback[
-    isLiquidatable || +liquidationBufferShare <= BUFFER_SHARE_CRITICAL
+    isLiquidatable || +liquidationBufferShare <= LIQUIDATION_BUFFER_SHARE_THRESHOLDS.critical
       ? 'Error'
-      : +liquidationBufferShare <= BUFFER_SHARE_RISKY
+      : +liquidationBufferShare <= LIQUIDATION_BUFFER_SHARE_THRESHOLDS.risky
         ? 'Warning'
         : 'Success'
   ]
