@@ -14,56 +14,52 @@ const { Spacing } = SizesAndSpaces
 
 export const CreatePoolLiquidity = ({
   form: { values, update },
-  poolTypes,
   maxAmounts,
   totalDepositValueUsd,
   inputsDisabled,
-}: CreatePoolLiquidityProps) => {
-  const poolType = poolTypes.find(type => type.id === values.poolType)
-  return (
-    <Stack
-      component="fieldset"
+}: CreatePoolLiquidityProps) => (
+  <Stack
+    component="fieldset"
+    disabled={inputsDisabled}
+    sx={{ border: 0, padding: 0, margin: 0, minWidth: 0, gap: Spacing.sm }}
+  >
+    <CheckboxField
+      testIdPrefix="create-pool-seed"
+      checked={values.addLiquidity}
       disabled={inputsDisabled}
-      sx={{ border: 0, padding: 0, margin: 0, minWidth: 0, gap: Spacing.sm }}
-    >
-      <CheckboxField
-        testIdPrefix="create-pool-seed"
-        checked={values.addLiquidity}
-        disabled={inputsDisabled}
-        label={t`Seed pool after deployment`}
-        onChange={event => update({ addLiquidity: event.target.checked })}
-      />
-      {values.addLiquidity && (
-        <>
-          <Stack sx={{ gap: Spacing.sm }}>
-            {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
-              <Stack key={poolAmountField(index)} data-testid="create-pool-liquidity-input">
-                <CreatePoolField
-                  name={poolAmountField(index)}
-                  label={token?.symbol ?? `${t`Token`} ${index + 1}`}
-                  unit={token?.symbol}
-                  placeholder={formatNumber(0, 'token.amount')}
-                  disabled={inputsDisabled || !token}
+      label={t`Seed pool after deployment`}
+      onChange={event => update({ addLiquidity: event.target.checked })}
+    />
+    {values.addLiquidity && (
+      <>
+        <Stack sx={{ gap: Spacing.sm }}>
+          {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
+            <Stack key={poolAmountField(index)} data-testid="create-pool-liquidity-input">
+              <CreatePoolField
+                name={poolAmountField(index)}
+                label={token?.symbol ?? `${t`Token`} ${index + 1}`}
+                unit={token?.symbol}
+                placeholder={formatNumber(0, 'token.amount')}
+                disabled={inputsDisabled || !token}
+              />
+              {token && (
+                <ActionInfo
+                  size="small"
+                  label={t`Balance`}
+                  value={mapQuery(maxAmounts?.[index] ?? DISABLED_Q, value => formatNumber(value, 'token.balance'))}
                 />
-                {token && (
-                  <ActionInfo
-                    size="small"
-                    label={t`Balance`}
-                    value={mapQuery(maxAmounts?.[index] ?? DISABLED_Q, value => formatNumber(value, 'token.balance'))}
-                  />
-                )}
-              </Stack>
-            ))}
-          </Stack>
-          {poolType && (
-            <ActionInfo
-              size="small"
-              label={t`Pool TVL at deposit`}
-              value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
-            />
-          )}
-        </>
-      )}
-    </Stack>
-  )
-}
+              )}
+            </Stack>
+          ))}
+        </Stack>
+        {values.poolType && (
+          <ActionInfo
+            size="small"
+            label={t`Pool TVL at deposit`}
+            value={mapQuery(totalDepositValueUsd, value => formatNumber(value, 'usd.amount'))}
+          />
+        )}
+      </>
+    )}
+  </Stack>
+)

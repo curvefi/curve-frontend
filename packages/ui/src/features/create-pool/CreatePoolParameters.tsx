@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { EMPTY_POOL_PARAMETERS } from './constants'
 import { CreatePoolField } from './CreatePoolField'
-import type { CreatePoolFormValues, PoolParameter, PoolParameterRanges, PoolTypeOption } from './types'
+import type { CreatePoolFormValues, PoolParameter, PoolParameterRanges, PoolPreset, PoolTypeOption } from './types'
 
 const { Spacing } = SizesAndSpaces
 const CREATE_POOL_GRID_SIZE = { mobile: 12, tablet: 6 } as const
@@ -37,6 +37,7 @@ const ParameterField = ({
 export const CreatePoolParameters = ({
   disabled,
   poolType,
+  preset,
   ranges,
   values,
   update,
@@ -45,8 +46,9 @@ export const CreatePoolParameters = ({
 }: {
   disabled: boolean
   poolType: PoolTypeOption | undefined
+  preset: PoolPreset | undefined
   ranges: PoolParameterRanges
-  values: Pick<CreatePoolFormValues, 'preset' | 'feeMultiplier' | 'amplification' | 'tokenCount'>
+  values: Pick<CreatePoolFormValues, 'feeMultiplier' | 'amplification' | 'tokenCount'>
   tokenSymbol: string | undefined
   update: UseFormReturn<CreatePoolFormValues>['update']
   errors: UseFormReturn<CreatePoolFormValues>['formState']['errors']
@@ -78,15 +80,22 @@ export const CreatePoolParameters = ({
   }
   return (
     <>
-      <RadioGroup
-        row
-        value={values.preset}
-        onChange={(_, preset) => update({ preset, ...presets.find(option => option.id === preset)?.values })}
-      >
-        {presets.map(({ id, label }) => (
-          <FormControlLabel key={id} value={id} control={<Radio size="small" disabled={disabled} />} label={label} />
+      <RadioGroup row value={preset?.id ?? 'custom'}>
+        {presets.map(({ id, label, values: presetValues }) => (
+          <FormControlLabel
+            key={id}
+            value={id}
+            control={
+              <Radio size="small" disabled={disabled} onChange={() => update({ preset: id, ...presetValues })} />
+            }
+            label={label}
+          />
         ))}
-        <FormControlLabel value="custom" control={<Radio size="small" disabled={disabled} />} label={t`Custom`} />
+        <FormControlLabel
+          value="custom"
+          control={<Radio size="small" disabled={disabled} onChange={() => update({ preset: 'custom' })} />}
+          label={t`Custom`}
+        />
       </RadioGroup>
       <Stack sx={{ gap: Spacing.md }}>
         {CurvePreview && (

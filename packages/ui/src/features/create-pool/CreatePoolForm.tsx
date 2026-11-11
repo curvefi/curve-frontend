@@ -14,7 +14,7 @@ import { CREATE_POOL_SECTIONS } from './constants'
 import { CreatePoolLiquidity } from './CreatePoolLiquidity'
 import { CreatePoolNameFields } from './CreatePoolNameFields'
 import { CreatePoolParameters } from './CreatePoolParameters'
-import { CreatePoolSidebar } from './CreatePoolSidebar'
+import { CreatePoolStepper } from './CreatePoolStepper'
 import { CreatePoolSummary } from './CreatePoolSummary'
 import { CreatePoolTokens } from './CreatePoolTokens'
 import { CreatePoolType } from './CreatePoolType'
@@ -39,20 +39,29 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
   const { activeSection, navigationRef, scrollOffset } = useActiveSection(CREATE_POOL_SECTIONS, {
     includeNavigationHeight: isMobile,
   })
+  const { values, formState, update } = form
+  const { poolType, symbol, poolName, symbol_0: firstSymbol } = values
+  const selectedPoolType = poolTypes.find(type => type.id === poolType)
+  const selectedPreset = selectedPoolType?.presets.find(preset => preset.id === values.preset)
   return (
     // create a custom provider/form element since the create pool form is split into page & preview/drawer
     <FormProvider {...form}>
       <Box component="form" id={formId} onSubmit={event => void onSubmit(event)} sx={{ overflowWrap: 'break-word' }}>
         <DetailPageLayout
           sidebar={
-            <CreatePoolSidebar
+            <CreatePoolStepper
               ref={navigationRef}
               activeSection={activeSection}
               completed={completed}
               isPending={isPending}
             />
           }
-          formTabs={{ placement: 'mobile-drawer', content: <CreatePoolSummary {...props} formId={formId} /> }}
+          formTabs={{
+            placement: 'mobile-drawer',
+            content: (
+              <CreatePoolSummary {...props} formId={formId} poolType={selectedPoolType} preset={selectedPreset} />
+            ),
+          }}
         >
           <Stack sx={{ gap: Spacing.lg, minWidth: 0 }}>
             <CreatePoolAvailability availability={props.availability} networkName={props.network.name} />
@@ -60,22 +69,18 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
               <CreatePoolTokens {...props} />
             </Section>
             <Section index={1} offset={scrollOffset}>
-              <CreatePoolType
-                poolTypes={poolTypes}
-                disabled={inputsDisabled}
-                poolType={form.values.poolType}
-                update={form.update}
-              />
+              <CreatePoolType poolTypes={poolTypes} disabled={inputsDisabled} poolType={poolType} update={update} />
             </Section>
             <Section index={2} offset={scrollOffset}>
               <CreatePoolParameters
                 disabled={inputsDisabled}
                 ranges={limits}
-                poolType={poolTypes.find(type => type.id === form.values.poolType)}
-                values={form.values}
-                tokenSymbol={form.values.symbol_0}
-                update={form.update}
-                errors={form.formState.errors}
+                poolType={selectedPoolType}
+                preset={selectedPreset}
+                values={values}
+                tokenSymbol={firstSymbol}
+                update={update}
+                errors={formState.errors}
               />
             </Section>
             <Section index={3} offset={scrollOffset}>
@@ -86,8 +91,8 @@ export const CreatePoolForm = (props: CreatePoolFormProps) => {
                 disabled={inputsDisabled}
                 nameMaxBytes={limits.nameMaxBytes}
                 symbolMaxBytes={limits.symbolMaxBytes}
-                poolName={form.values.poolName}
-                symbol={form.values.symbol}
+                poolName={poolName}
+                symbol={symbol}
               />
             </Section>
           </Stack>

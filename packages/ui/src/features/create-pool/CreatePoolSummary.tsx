@@ -56,7 +56,8 @@ const SummaryCard = ({
   form: { values },
   formId,
   creationFee,
-  poolTypes,
+  poolType,
+  preset,
   network: { nativeCurrency },
   blockchainId,
   poolListUrl,
@@ -75,12 +76,9 @@ const SummaryCard = ({
     <CardContent>
       <Stack sx={{ gap: Spacing.sm }}>
         <SummarySection title={t`Pool`}>
-          <ActionInfo
-            size="small"
-            label={t`Type`}
-            value={poolTypes.find(type => type.id === values.poolType)?.label ?? UNAVAILABLE_NOTATION}
-          />
+          <ActionInfo size="small" label={t`Type`} value={poolType?.label ?? UNAVAILABLE_NOTATION} />
           <ActionInfo size="small" label={t`Name`} value={values.poolName || UNAVAILABLE_NOTATION} />
+          <ActionInfo size="small" label={t`LP token symbol`} value={values.symbol || UNAVAILABLE_NOTATION} />
         </SummarySection>
         <SummarySection title={t`Tokens`}>
           {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
@@ -93,21 +91,24 @@ const SummaryCard = ({
                   {token?.symbol ?? `${t`Token`} ${index + 1}`}
                 </Stack>
               }
-              value={token ? t`Standard` : UNAVAILABLE_NOTATION}
+              value={token ? t`Standard` /* only assetType: 0 is used for now */ : UNAVAILABLE_NOTATION}
             />
           ))}
         </SummarySection>
         <SummarySection title={t`Parameters`}>
-          {(poolTypes.find(type => type.id === values.poolType)?.parameters ?? EMPTY_POOL_PARAMETERS).map(
-            ({ name, label, summaryLabel, format }) => (
-              <ActionInfo
-                key={name}
-                size="small"
-                label={summaryLabel ?? label}
-                value={values.poolType ? formatNumber(values[name], format) : UNAVAILABLE_NOTATION}
-              />
-            ),
-          )}
+          <ActionInfo
+            size="small"
+            label={t`Preset`}
+            value={preset?.label ?? (poolType ? t`Custom` : UNAVAILABLE_NOTATION)}
+          />
+          {(poolType?.parameters ?? EMPTY_POOL_PARAMETERS).map(({ name, label, summaryLabel, format }) => (
+            <ActionInfo
+              key={name}
+              size="small"
+              label={summaryLabel ?? label}
+              value={values.poolType ? formatNumber(values[name], format) : UNAVAILABLE_NOTATION}
+            />
+          ))}
         </SummarySection>
         <SummarySection title={t`Initial liquidity`}>
           {values.poolType ? (

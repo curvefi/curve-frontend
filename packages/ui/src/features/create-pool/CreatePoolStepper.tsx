@@ -6,14 +6,14 @@ import Stepper from '@mui/material/Stepper'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { useIsDesktop, useIsMobile } from '@ui/hooks/useBreakpoints'
+import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
 import { CREATE_POOL_SECTIONS } from './constants'
 import type { CreatePoolFormProps } from './types'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export const CreatePoolSidebar = ({
+export const CreatePoolStepper = ({
   ref,
   activeSection,
   completed,
@@ -22,32 +22,41 @@ export const CreatePoolSidebar = ({
   ref: Ref<HTMLElement>
   activeSection: keyof CreatePoolFormProps['completed']
 }) => {
-  const isDesktop = useIsDesktop()
-  const isMobile = useIsMobile()
   const activeStep = CREATE_POOL_SECTIONS.findIndex(({ value }) => value === activeSection)
   return (
     <Stack ref={ref} component="nav" aria-label={t`Pool creation steps`} sx={{ gap: Spacing.xs, padding: Spacing.sm }}>
-      <Stepper nonLinear activeStep={activeStep} orientation={isDesktop ? 'vertical' : 'horizontal'}>
+      <Stepper nonLinear activeStep={activeStep} orientation={useIsDesktop() ? 'vertical' : 'horizontal'}>
         {CREATE_POOL_SECTIONS.map(({ value, label }, index) => (
-          <Step key={value} completed={completed[value]} sx={[!isDesktop && { paddingInline: 0 }]}>
+          <Step
+            key={value}
+            completed={completed[value]}
+            sx={t => ({ [t.breakpoints.down('desktop')]: { paddingInline: 0 } })}
+          >
             <StepButton
               component={RouterLink}
               href={`#${value}`}
               aria-label={label}
               aria-current={activeStep === index ? 'step' : undefined}
               disabled={isPending}
-              sx={[isMobile && { margin: 0, padding: 0, width: ButtonSize.sm, height: ButtonSize.sm }]}
+              sx={t => ({
+                [t.breakpoints.down('tablet')]: {
+                  margin: 0,
+                  padding: 0,
+                  width: ButtonSize.sm,
+                  height: ButtonSize.sm,
+                  '& .MuiStepLabel-iconContainer': { marginRight: 0 },
+                  '& .MuiStepLabel-labelContainer': { display: 'none' },
+                },
+              })}
             >
-              {!isMobile && label}
+              {label}
             </StepButton>
           </Step>
         ))}
       </Stepper>
-      {isMobile && (
-        <Typography variant="bodySBold">
-          {t`Step ${activeStep + 1} of ${CREATE_POOL_SECTIONS.length}`} · {CREATE_POOL_SECTIONS[activeStep].label}
-        </Typography>
-      )}
+      <Typography variant="bodySBold" sx={{ display: { tablet: 'none' } }}>
+        {t`Step ${activeStep + 1} of ${CREATE_POOL_SECTIONS.length}`} · {CREATE_POOL_SECTIONS[activeStep].label}
+      </Typography>
     </Stack>
   )
 }

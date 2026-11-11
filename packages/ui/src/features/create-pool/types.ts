@@ -50,13 +50,15 @@ export type PoolParameter = {
   summaryLabel?: string
 }
 
+export type PoolPreset = { id: string; label: string; values: PoolParameters }
+
 export type PoolTypeOption = {
   id: PoolType
   disabled: boolean
   label: string
   description: string
   defaultPreset: string
-  presets: { id: string; label: string; values: PoolParameters }[]
+  presets: PoolPreset[]
   parameters: PoolParameter[]
   CurvePreview?: ComponentType<{
     amplification: Decimal | undefined
@@ -83,7 +85,6 @@ export type CreatePoolTokensProps = CreatePoolTokenSearchProps & {
 
 export type CreatePoolLiquidityProps = {
   form: UseFormReturn<CreatePoolFormValues>
-  poolTypes: readonly PoolTypeOption[]
   maxAmounts: QueryProp<Decimal>[] | undefined
   totalDepositValueUsd: QueryProp<Decimal>
   inputsDisabled: boolean
@@ -94,7 +95,8 @@ export type CreatePoolSummaryProps = Pick<
   'error' | 'formErrors' | 'userAddress'
 > & {
   form: UseFormReturn<CreatePoolFormValues>
-  poolTypes: readonly PoolTypeOption[]
+  poolType: PoolTypeOption | undefined
+  preset: PoolPreset | undefined
   network: CreatePoolNetwork
   blockchainId: string
   poolListUrl: string
@@ -113,4 +115,7 @@ export type CreatePoolSummaryProps = Pick<
 export type CreatePoolFormProps = Omit<PoolFormProps<CreatePoolFormValues>, 'footer' | 'tokens'> &
   CreatePoolTokensProps &
   CreatePoolLiquidityProps &
-  CreatePoolSummaryProps & { completed: Record<CreatePoolSection, boolean> }
+  Omit<CreatePoolSummaryProps, 'poolType' | 'preset'> & {
+    poolTypes: readonly PoolTypeOption[]
+    completed: Record<CreatePoolSection, boolean>
+  }
