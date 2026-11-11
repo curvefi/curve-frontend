@@ -20,6 +20,9 @@ const getFetchInit = (fetchMock: ReturnType<typeof vi.fn<typeof fetch>>) => {
 const createServer = (MERKL_API_KEY = 'test-merkl-key') =>
   createMerklServer({ env: { NODE_ENV: 'test', LOG_LEVEL: 'silent', MERKL_API_KEY } })
 
+const getOpportunities = (server: ReturnType<typeof createServer>, query?: Record<string, string>) =>
+  server.inject({ url: '/api/merkl/v1/opportunities', headers: { 'sec-fetch-site': 'same-origin' }, query })
+
 describe('GET opportunities', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
@@ -32,13 +35,19 @@ describe('GET opportunities', () => {
     const server = createServer()
 
     try {
-      const { statusCode, json } = await server.inject({
-        url: '/api/merkl/v1/opportunities',
-        query: { mainProtocolId: 'curve', test: 'false', status: 'LIVE', action: 'POOL', items: '100', page: '0' },
+      const { statusCode, json, headers } = await getOpportunities(server, {
+        mainProtocolId: 'curve',
+        test: 'false',
+        status: 'LIVE',
+        action: 'POOL',
+        items: '100',
+        page: '0',
       })
 
       expect(statusCode).toBe(200)
       expect(json()).toEqual(upstreamPayload)
+      expect(headers.vary).toBe('Sec-Fetch-Site')
+      expect(headers['cache-control']).toContain('s-maxage=')
 
       const [input] = getFetchCall(fetchMock)
       const url = new URL(typeof input === 'string' || input instanceof URL ? input.toString() : input.url)
@@ -62,7 +71,7 @@ describe('GET opportunities', () => {
     const server = createServer('secret-merkl-key')
 
     try {
-      const { statusCode } = await server.inject({ url: '/api/merkl/v1/opportunities' })
+      const { statusCode } = await getOpportunities(server)
       expect(statusCode).toBe(200)
 
       const init = getFetchInit(fetchMock)
@@ -84,10 +93,7 @@ describe('GET opportunities', () => {
     const server = createServer()
 
     try {
-      const { statusCode, json } = await server.inject({
-        url: '/api/merkl/v1/opportunities',
-        query: { mainProtocolId: 'other-protocol', status: 'LIVE' },
-      })
+      const { statusCode, json } = await getOpportunities(server, { mainProtocolId: 'other-protocol', status: 'LIVE' })
 
       expect(statusCode).toBe(400)
       expect(json()).toMatchObject({
@@ -106,10 +112,7 @@ describe('GET opportunities', () => {
     const server = createServer()
 
     try {
-      const { statusCode, json } = await server.inject({
-        url: '/api/merkl/v1/opportunities',
-        query: { mainProtocolId: 'curve', status: 'PAST' },
-      })
+      const { statusCode, json } = await getOpportunities(server, { mainProtocolId: 'curve', status: 'PAST' })
 
       expect(statusCode).toBe(400)
       expect(json()).toMatchObject({
@@ -130,7 +133,7 @@ describe('GET opportunities', () => {
     const server = createServer('secret-merkl-key')
 
     try {
-      const response = await server.inject({ url: '/api/merkl/v1/opportunities' })
+      const response = await getOpportunities(server)
       expect(response.statusCode).toBe(429)
 
       const body = response.body

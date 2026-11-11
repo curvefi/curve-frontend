@@ -38,8 +38,14 @@ import { t } from '@ui/lib/i18n'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
 import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
-// eslint-disable-next-line no-restricted-imports -- the only reader of ZAP_V0_MINT_MARKETS, through isZapV0MintMarket
-import { LP_TOKEN_PAIRS, MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS, ZAP_V0_MINT_MARKETS } from './markets.constants'
+import {
+  DELEGATION_ZAP_ALIASES,
+  LP_TOKEN_PAIRS,
+  MARKETS_LEVERAGE_CONFIG,
+  SOLVENCY_THRESHOLDS,
+  // eslint-disable-next-line no-restricted-imports -- the only reader of ZAP_V0_MINT_MARKETS, through isZapV0MintMarket
+  ZAP_V0_MINT_MARKETS,
+} from './markets.constants'
 import type { UserState } from './queries/user/user-state.query'
 import type { MarketBorrowAprTooltipContentProps } from './widgets/tooltips/MarketBorrowAprTooltipContent'
 import type { MarketSupplyRateTooltipContentProps } from './widgets/tooltips/MarketSupplyRateTooltipContent'
@@ -150,19 +156,14 @@ export const hasVault = (market: MarketTemplate) => isLendMarket(market) && 'vau
 export const hasZapV2 = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => market.leverageZapV2.hasLeverage())
 
-/** LLv1 markets whose controller supports delegation use the delegation ZapV2 (no router calldata size limit). */
-const hasV1ZapDelegation = (market: LendMarketTemplate) => {
-  const delegationZap = market.getLlamalend().constants.ALIASES.leverage_zap_v2_transient
-  return (
-    market.version === 'v1' &&
-    !!delegationZap &&
-    isAddressEqual(market.getZapAddress() as Address, delegationZap as Address)
-  )
-}
-
-/** LLv2 markets and the newer LLv1 markets use the delegation ZapV2 contract */
+/** Controllers that support delegation use the delegation ZapV2 (no router calldata size limit). */
 export const hasZapDelegation = (market: MarketTemplate | Nullish) =>
-  maybe(market, market => isLendMarket(market) && (market.version === 'v2' || hasV1ZapDelegation(market)))
+  maybe(market, market => {
+    const { ALIASES } = market.getLlamalend().constants
+    return DELEGATION_ZAP_ALIASES.some(
+      alias => !!ALIASES[alias] && isAddressEqual(market.getZapAddress() as Address, ALIASES[alias] as Address),
+    )
+  })
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',

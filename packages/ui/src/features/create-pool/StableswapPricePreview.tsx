@@ -189,7 +189,7 @@ export const StableswapPricePreview = ({
                 <Typography
                   variant="bodyXsRegular"
                   color="textSecondary"
-                >{t`Holds within ${formatNumber(STABLESWAP_PREVIEW_PRICE_BAND, 'percent.rate')} of the rate`}</Typography>
+                >{t`Holds within ${formatNumber(STABLESWAP_PREVIEW_PRICE_BAND * 100, 'percent.rate')} of the rate`}</Typography>
                 <Typography variant="bodySBold">
                   {preview.band
                     ? t`${formatNumber(preview.band[0], 'percent.value')} to ${formatNumber(preview.band[1], 'percent.value')} ${tokenSymbol ?? t`Token 1`}`
