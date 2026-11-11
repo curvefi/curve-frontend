@@ -69,6 +69,7 @@ const normalizeMarketStats = (stats: BorrowStats, { parameters, blockchainId, co
           liquidationBuffer,
           healthFull,
           debt,
+          // TODO: workaround, use the user's loan discount, liquidation_discount and extra_health once the user stats endpoints return them
           loanDiscount: parameters.loanDiscount,
           liquidationDiscount: parameters.liquidationDiscount,
           thresholds: healthThresholds,

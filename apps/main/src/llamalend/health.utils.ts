@@ -61,6 +61,7 @@ const LIQUIDATION_BUFFER_SHARE_THRESHOLDS = { critical: 0.2, risky: 0.5 } as con
 export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undefined): PositionHealthThresholds =>
   POSITION_HEALTH_THRESHOLDS[assetsType ?? MarketAssetsType.LongTail]
 
+// TODO: workaround, remove once the user stats endpoints return price_low and price_high
 /**
  * The user's `[low, high]` liquidation range prices, from the market's base price and the user's bands.
  * The price of a band is `basePrice × ((A − 1) / A) ^ band`. The range spans from the top of the first band to the bottom of the last one.

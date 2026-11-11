@@ -73,6 +73,7 @@ export type LlamaMarket = {
   oracleAddress?: Address
   parameters: {
     A: number | null
+    // TODO: workaround, remove once the user stats endpoints return price_low and price_high
     basePrice: number
     loanDiscount: Decimal
     liquidationDiscount: Decimal
