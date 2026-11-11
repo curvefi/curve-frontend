@@ -61,11 +61,7 @@ export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undef
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
   decimalMax(decimalDiv(oraclePrice, topOfRange), '1')!
 
-/** Below this health, values near 1 need more decimals than the 3 significant digits of the `health` format */
-const HEALTH_PRECISION_THRESHOLD = 1.1
-
-export const formatHealth = (health: Amount | Nullish) =>
-  formatNumber(health, Number(health) < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health')
+export const formatHealth = (health: Amount | Nullish) => formatNumber(health, 'health.precise')
 
 /** Resolves the position status. */
 export const getPositionStatus = ({
