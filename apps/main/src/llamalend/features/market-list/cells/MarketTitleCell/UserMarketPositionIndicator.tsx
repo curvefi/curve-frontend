@@ -34,7 +34,6 @@ const flickerEffect = (
 
 type ColorEffect = (set: (value: (prev: ColorState) => ColorState) => void) => void | (() => void)
 
-const setOrange: ColorEffect = set => set(() => 'orange')
 const setInfo: ColorEffect = set => set(() => 'info')
 const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
   healthy: setInfo,
@@ -48,7 +47,7 @@ const positionStatusColorEffect: Record<PositionStatus, ColorEffect> = {
   liquidatable: flickerEffect,
   inRange: flickerEffect,
   belowRange: flickerEffect,
-  nearRange: setOrange,
+  nearRange: setInfo,
   aboveRange: setInfo,
 }
 
