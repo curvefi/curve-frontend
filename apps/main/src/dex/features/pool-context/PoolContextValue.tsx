@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { getTokens } from '@/dex/pool.utils'
 import type { CurveApi } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { V2PoolDetails } from '@curvefi/prices-api/pools'
 import type { Address } from '@primitives/address.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 
@@ -10,6 +11,7 @@ export const createPoolContextValue = ({
   blockchainId,
   userAddress,
   pool,
+  apiPool,
   poolAddress,
   api,
   isWrapped,
@@ -19,6 +21,7 @@ export const createPoolContextValue = ({
   blockchainId: string
   userAddress: Address | undefined
   pool: QueryProp<PoolTemplate>
+  apiPool: QueryProp<V2PoolDetails>
   poolAddress: Address
   api: CurveApi | null
   isWrapped: boolean
@@ -31,6 +34,7 @@ export const createPoolContextValue = ({
     blockchainId,
     userAddress,
     pool,
+    apiPool,
     poolAddress,
     // A generic query helper function that turns QueryProp<T> into { [K in keyof T]: QueryProp<T[K]> } isn't worth it (we'd still have to enumerate all props for typing to work)
     // Might actually replace these 3 different queries with just tokenQuery in a future commit?

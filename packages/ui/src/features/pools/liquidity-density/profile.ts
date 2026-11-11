@@ -8,7 +8,7 @@ import type { LiquidityCurve, LiquidityPair, LiquidityProfile, LiquiditySample }
 // Port of flet-curve-demo/src/curve/liquidity.py: depth_at, background, auto_window, profile.
 // Reference commit: 5831c2416080e27c9c7018c281c48e21cae9beeb.
 /** Report density per 1% of log-price movement, estimated with a smaller symmetric price step. */
-const DENSITY_LOG_PRICE_BAND = 0.01
+export const DENSITY_LOG_PRICE_BAND = 0.01
 const DEPTH_PRICE_STEP_RATIO = 1e-4
 const MAX_RELATIVE_PRICE_WIDTH = 2
 const BACKGROUND_PRICE_MULTIPLIERS = [3, 2, 1 / 3, 1 / 2] as const
@@ -77,14 +77,18 @@ const liquidityWindow = (curve: LiquidityCurve, pair: LiquidityPair): readonly [
 }
 
 /** Density is whole input tokens per 1% of log-price movement; price is output/input. */
-export const liquidityProfile = (curve: LiquidityCurve, pair: LiquidityPair): LiquidityProfile | undefined => {
+export const liquidityProfile = (
+  curve: LiquidityCurve,
+  pair: LiquidityPair,
+  binCount = PROFILE_BIN_COUNT,
+): LiquidityProfile | undefined => {
   const { scale } = curve
   const [inputCoin] = pair
   return maybe(spotPrice(curve, pair), spot =>
     maybe(liquidityWindow(curve, pair), ([low, high]) => {
       const span = Math.log(high / low)
-      const edges = range(PROFILE_BIN_COUNT + 1).map(index => {
-        const price = low * Math.exp((span * index) / PROFILE_BIN_COUNT)
+      const edges = range(binCount + 1).map(index => {
+        const price = low * Math.exp((span * index) / binCount)
         return { price, balance: balanceAtPrice(curve, pair, price) }
       })
       const samples: LiquiditySample[] = notFalsy(

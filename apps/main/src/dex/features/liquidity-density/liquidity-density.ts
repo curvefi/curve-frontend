@@ -1,7 +1,7 @@
 import { maxBy, minBy } from 'lodash'
 import type { PoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { Pool, PoolMetadata, PoolSnapshot } from '@curvefi/prices-api/pools'
+import type { PoolMetadata, PoolSnapshot, V2PoolDetails } from '@curvefi/prices-api/pools'
 import { zip } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
@@ -35,7 +35,7 @@ export type PoolLiquidityResult = LiquidityProfile & {
 
 /** Returns no profile when API data cannot describe the pool or the solver cannot follow the curve. */
 export const processApiLiquidity = (
-  { balances }: Pool,
+  { balances }: V2PoolDetails,
   { poolType, metapool, assetTypes }: PoolMetadata,
   snapshots: readonly PoolSnapshot[],
   pair: LiquidityPair,
