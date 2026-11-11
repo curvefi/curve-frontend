@@ -1,6 +1,6 @@
 import type { WithdrawParams, WithdrawQuery } from '@/dex/features/withdraw/types'
 import { withdrawQueryValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
-import { requireLib } from '@evm-ui/features/connect-wallet'
+import { getPool } from '@/dex/pool.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -21,15 +21,16 @@ export const { useQuery: useWithdrawBonus, invalidate: invalidateWithdrawBonus }
       ...('tokenIndex' in params && { tokenIndex: params.tokenIndex }),
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts, ...params }: WithdrawQuery) => {
-    const pool = requireLib('curveApi').getPool(poolAddress)
+    const pool = getPool(poolAddress)
     switch (params.mode) {
       case 'balanced':
         return '0'
       case 'unbalanced':
         return (await pool[`withdrawImbalance${wrappedMethod(isWrapped)}Bonus`](amounts)) as Decimal
-      case 'one-coin':
+      case 'one-coin': {
         const { lpAmount, tokenIndex } = params
         return (await pool[`withdrawOneCoin${wrappedMethod(isWrapped)}Bonus`](lpAmount, tokenIndex)) as Decimal
+      }
     }
   },
   category: 'dex.pool',

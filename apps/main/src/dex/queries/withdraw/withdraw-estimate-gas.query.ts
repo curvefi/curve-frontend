@@ -1,6 +1,6 @@
 import type { UserWithdrawParams, UserWithdrawQuery } from '@/dex/features/withdraw/types'
 import { userWithdrawParamsValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
-import { requireLib } from '@evm-ui/features/connect-wallet'
+import { getPool } from '@/dex/pool.utils'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
@@ -22,7 +22,7 @@ const { useQuery: useWithdrawApproveEstimate } = hydratedQueryFactory({
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts, ...params }: UserWithdrawQuery) => {
     if (isWrapped) return 0 // No zap approval transaction to estimate.
-    const pool = requireLib('curveApi').getPool(poolAddress)
+    const pool = getPool(poolAddress)
     switch (params.mode) {
       case 'balanced':
         return await pool.estimateGas.withdrawApprove(params.lpAmount)
@@ -61,7 +61,7 @@ const { useQuery: useWithdrawEstimate } = hydratedQueryFactory({
       ...('tokenIndex' in params && { tokenIndex: params.tokenIndex }),
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, slippage, amounts, ...params }: UserWithdrawQuery) => {
-    const pool = requireLib('curveApi').getPool(poolAddress)
+    const pool = getPool(poolAddress)
     switch (params.mode) {
       case 'balanced':
         return await pool.estimateGas[`withdraw${wrappedMethod(isWrapped)}`](params.lpAmount, +slippage)

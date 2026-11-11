@@ -1,6 +1,6 @@
 import type { UserWithdrawParams, UserWithdrawQuery } from '@/dex/features/withdraw/types'
 import { userWithdrawParamsValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
-import { requireLib } from '@evm-ui/features/connect-wallet'
+import { getPool } from '@/dex/pool.utils'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 
 export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsApproved } = hydratedQueryFactory({
@@ -19,7 +19,7 @@ export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsAppro
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts, ...params }: UserWithdrawQuery) => {
     if (isWrapped) return true // Direct pool withdrawal needs no zap allowance.
-    const pool = requireLib('curveApi').getPool(poolAddress)
+    const pool = getPool(poolAddress)
     switch (params.mode) {
       case 'balanced':
         return await pool.withdrawIsApproved(params.lpAmount)
