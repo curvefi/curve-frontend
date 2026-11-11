@@ -1,10 +1,20 @@
-import createFastify, { type FastifyInstance } from 'fastify'
+import createFastify, { type FastifyInstance, type onRequestHookHandler } from 'fastify'
+import { API_PREFIX } from './routes.constants'
 
 type ApiServerEnv = Partial<
   Record<'LOG_LEVEL' | 'NODE_ENV' | 'SERVICE_NAME' | 'npm_package_version', string | undefined>
 >
 
 type DevServerEnv = Partial<Record<'HOST' | 'PORT', string | undefined>>
+
+/** Requires that browser fetches must originate from this deployment, including previews and localhost. **/
+const requireSameOrigin: onRequestHookHandler = (request, reply, done) => {
+  if (!request.routeOptions.url?.startsWith(API_PREFIX)) return done()
+  reply.header('Vary', 'Sec-Fetch-Site') // make sure the cache is not serving wrong origins
+  return request.headers['sec-fetch-site'] === 'same-origin'
+    ? done()
+    : void reply.code(403).send({ error: 'Forbidden' })
+}
 
 const loadEnvFile = (path?: string) => {
   try {
@@ -30,14 +40,16 @@ export const createApiServer = ({
     logger: logger && { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') },
     ...(pluginTimeout != null && { pluginTimeout }),
   }
-  return createFastify(options).get('/health', () => ({
-    status: 'ok',
-    service: SERVICE_NAME || serviceName,
-    environment: NODE_ENV || 'development',
-    version: npm_package_version || '0.0.1',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  }))
+  return createFastify(options)
+    .addHook('onRequest', requireSameOrigin)
+    .get('/health', () => ({
+      status: 'ok',
+      service: SERVICE_NAME || serviceName,
+      environment: NODE_ENV || 'development',
+      version: npm_package_version || '0.0.1',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+    }))
 }
 
 /**
