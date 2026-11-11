@@ -11,6 +11,9 @@ const { FAILURE, LOADING } = ConnectState
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
+/** Wagmi caches its client as query data, but its methods cannot be persisted to IndexedDB. */
+const DISABLE_PERSISTENCE = { query: { meta: { persist: false } } } as const
+
 type CurveContextValue = {
   connectState: ConnectState
   curveApi?: CurveApi
@@ -48,7 +51,7 @@ function useWagmiIsInitialized(hasWallet: boolean) {
  * Note: Cypress private key accounts may not expose `eth_accounts`, which BrowserProvider expects.
  */
 export function useWagmiWallet() {
-  const { data: client } = useConnectorClient()
+  const { data: client } = useConnectorClient(DISABLE_PERSISTENCE)
   const address = client?.account?.address
   const request = client?.transport.request
   const chainId = client?.chain.id
