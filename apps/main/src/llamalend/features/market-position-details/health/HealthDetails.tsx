@@ -89,7 +89,7 @@ export const HealthDetails = ({
         )}
         valueOptions={{
           abbreviate: false,
-          color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds, theme)),
+          color: maybe(data, data => getLiquidationBufferTextColor(data, theme)),
           formatter: value => formatNumber(value, 'percent.value'),
           // unicode needed so "of debt" keeps a space before it, a normal space would be removed
           unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },

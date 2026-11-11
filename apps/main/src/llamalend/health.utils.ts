@@ -40,17 +40,18 @@ export type PositionHealth = {
 export type PositionHealthThresholds = {
   /** Above the range, a health at or below this reads as near range */
   nearRangeHealth: number
-  /** {@link PositionHealth.liquidationBufferShare} at or below which the position is critical */
-  bufferShareCritical: number
-  /** {@link PositionHealth.liquidationBufferShare} at or below which the position is risky */
-  bufferShareRisky: number
 }
 
 const POSITION_HEALTH_THRESHOLDS = {
-  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01, bufferShareCritical: 0.1, bufferShareRisky: 0.3 },
-  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.05, bufferShareCritical: 0.2, bufferShareRisky: 0.45 },
-  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.11, bufferShareCritical: 0.3, bufferShareRisky: 0.6 },
+  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01 },
+  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.1 },
+  [MarketAssetsType.LongTail]: { nearRangeHealth: 1.2 },
 } as const satisfies Record<MarketAssetsType, PositionHealthThresholds>
+
+/** {@link PositionHealth.liquidationBufferShare} at or below which the position is critical, for every market type */
+const BUFFER_SHARE_CRITICAL = 0.2
+/** {@link PositionHealth.liquidationBufferShare} at or below which the position is risky, for every market type */
+const BUFFER_SHARE_RISKY = 0.5
 
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */
 export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undefined): PositionHealthThresholds =>
@@ -99,13 +100,12 @@ export const getHealthTextColor = (
 
 export const getLiquidationBufferTextColor = (
   { liquidationBufferShare, isLiquidatable }: PositionHealth,
-  { bufferShareCritical, bufferShareRisky }: PositionHealthThresholds,
   theme: Theme,
 ) =>
   theme.design.Text.TextColors.Feedback[
-    isLiquidatable || +liquidationBufferShare <= bufferShareCritical
+    isLiquidatable || +liquidationBufferShare <= BUFFER_SHARE_CRITICAL
       ? 'Error'
-      : +liquidationBufferShare <= bufferShareRisky
+      : +liquidationBufferShare <= BUFFER_SHARE_RISKY
         ? 'Warning'
         : 'Success'
   ]
