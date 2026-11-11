@@ -18,11 +18,7 @@ export const CreatePoolLiquidity = ({
   totalDepositValueUsd,
   inputsDisabled,
 }: CreatePoolLiquidityProps) => (
-  <Stack
-    component="fieldset"
-    disabled={inputsDisabled}
-    sx={{ border: 0, padding: 0, margin: 0, minWidth: 0, gap: Spacing.sm }}
-  >
+  <Stack component="fieldset" disabled={inputsDisabled} sx={{ minWidth: 0, gap: Spacing.sm }}>
     <CheckboxField
       testIdPrefix="create-pool-seed"
       checked={values.addLiquidity}

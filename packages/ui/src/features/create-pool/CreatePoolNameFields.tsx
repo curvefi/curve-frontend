@@ -33,7 +33,7 @@ export const CreatePoolNameFields = ({
         label={label}
         disabled={disabled}
         placeholder={t`Fills in from the tokens`}
-        helperText={value ? t`${encoder.encode(value).length} / ${limit} bytes` : t`Up to ${limit} bytes`}
+        helperText={value ? `${encoder.encode(value).length} / ` + t`${limit} bytes` : t`Up to ${limit} bytes`}
       />
     ))}
   </Stack>

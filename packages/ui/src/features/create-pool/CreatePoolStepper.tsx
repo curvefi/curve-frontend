@@ -8,7 +8,7 @@ import { RouterLink } from '@ui/components/RouterLink'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { CREATE_POOL_SECTIONS } from './constants'
+import { CREATE_POOL_SECTIONS, type CreatePoolSection } from './constants'
 import type { CreatePoolFormProps } from './types'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
@@ -20,23 +20,17 @@ export const CreatePoolStepper = ({
   isPending,
 }: Pick<CreatePoolFormProps, 'completed' | 'isPending'> & {
   ref: Ref<HTMLElement>
-  activeSection: keyof CreatePoolFormProps['completed']
+  activeSection: CreatePoolSection
 }) => {
   const activeStep = CREATE_POOL_SECTIONS.findIndex(({ value }) => value === activeSection)
   return (
     <Stack ref={ref} component="nav" aria-label={t`Pool creation steps`} sx={{ gap: Spacing.xs, padding: Spacing.sm }}>
       <Stepper nonLinear activeStep={activeStep} orientation={useIsDesktop() ? 'vertical' : 'horizontal'}>
-        {CREATE_POOL_SECTIONS.map(({ value, label }, index) => (
-          <Step
-            key={value}
-            completed={completed[value]}
-            sx={t => ({ [t.breakpoints.down('desktop')]: { paddingInline: 0 } })}
-          >
+        {CREATE_POOL_SECTIONS.map(({ value, label }) => (
+          <Step key={value} completed={completed[value]} sx={{ paddingInline: 0 }}>
             <StepButton
               component={RouterLink}
               href={`#${value}`}
-              aria-label={label}
-              aria-current={activeStep === index ? 'step' : undefined}
               disabled={isPending}
               sx={t => ({
                 [t.breakpoints.down('tablet')]: {
