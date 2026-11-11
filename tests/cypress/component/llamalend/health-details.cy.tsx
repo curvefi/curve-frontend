@@ -97,7 +97,7 @@ const testCases: HealthDetailsTestCase[] = [
   },
   {
     title: 'renders a position below the range with a critical buffer',
-    position: getPosition('1', '2.4', '24', '0.12', 'belowRange'),
+    position: getPosition('1', '2.4', '24', '0.08', 'belowRange'),
     assetsType: MarketAssetsType.LongTail,
     expected: {
       health: '1.00',
