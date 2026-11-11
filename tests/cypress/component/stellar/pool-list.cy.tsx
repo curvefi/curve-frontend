@@ -32,8 +32,6 @@ const mountStellarApp = (path: string) => {
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`Stellar pool list (${breakpoint}, ${width}x${height})`, () => {
     beforeEach(() => {
-      queryClient.clear()
-      cy.clearLocalStorage()
       cy.viewport(width, height)
       mockCampaigns()
     })
@@ -69,6 +67,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('keeps pools searchable while showing a Merkl campaigns error', () => {
+      cy.stub(queryClient.getDefaultOptions().queries!, 'retryDelay').returns(0) // disable retries to speed up the test
       mockCampaignsError()
       mountStellarApp(POOL_LIST_URL)
       cy.get('[data-testid="error-message"]', TIMEOUTS['ui.render']).should('be.visible')

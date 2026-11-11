@@ -1,6 +1,12 @@
 import '@/global-extensions'
 import { mount } from 'cypress/react'
 import { skipTestsAfterFailure } from '@cy/support/ui'
+import { persister, queryClient } from '@ui/features/queries/query-client'
+
+beforeEach(async () => {
+  queryClient.clear()
+  await persister.removeClient()
+})
 
 /** Global Cypress exception handler to ignore specific known errors. */
 Cypress.on(
