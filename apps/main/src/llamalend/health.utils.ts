@@ -42,9 +42,12 @@ export type PositionHealthThresholds = {
   liquidationBufferShare: { critical: number; risky: number }
 }
 
+/** Buffer cutoffs shared by the correlated and blue chip markets */
+const LIQUIDATION_BUFFER_SHARE_THRESHOLDS = { critical: 0.2, risky: 0.5 } as const
+
 const POSITION_HEALTH_THRESHOLDS = {
-  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01, liquidationBufferShare: { critical: 0.2, risky: 0.5 } },
-  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.1, liquidationBufferShare: { critical: 0.2, risky: 0.5 } },
+  [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01, liquidationBufferShare: LIQUIDATION_BUFFER_SHARE_THRESHOLDS },
+  [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.1, liquidationBufferShare: LIQUIDATION_BUFFER_SHARE_THRESHOLDS },
   [MarketAssetsType.LongTail]: { nearRangeHealth: 1.2, liquidationBufferShare: { critical: 0.1, risky: 0.4 } },
 } as const satisfies Record<MarketAssetsType, PositionHealthThresholds>
 
