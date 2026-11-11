@@ -11,6 +11,7 @@ import { useWithdrawLp } from '@/dex/queries/withdraw/withdraw-expected.query'
 import { useWithdrawMaxAmount } from '@/dex/queries/withdraw/withdraw-max-amounts.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import {
   getOneCoinWithdrawParams,
@@ -63,7 +64,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   const reserves = mapQuery(usePoolCurrencyReserves(poolParams), data => data.tokens.map(token => token.balance))
   const supply = mapQuery(usePoolParameters(poolParams), data => data.lpTokenSupply as Decimal)
 
-  // The SDK does not support full-LP one-coin withdrawals for lending-with-zap wrapped tokens.
+  // Max needs one-coin quote for the entire LP balance. For lending pools with zap, curve-js has no withdrawOneCoinWrappedExpected implementation, so wrapped-token Max is unavailable
   const canWithdrawOneCoin = !isWrapped || !pool?.isLending || !pool.zap
   const max = q(useWithdrawMaxAmount({ ...poolParams, index, lpAmount: lpBalance.data }, canWithdrawOneCoin))
 
@@ -117,10 +118,8 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     onSlippageChange: (slippage: Decimal) => update({ slippage }),
     onCoinChange: (tokenIndex: number) => update({ ...userDefaultValues, tokenIndex }),
     onMax,
-    onAmountChange: (amount: Decimal | undefined) => {
-      if (amount && max.data && !max.error && decimalEqual(amount, max.data)) return onMax()
-      update({ amount, isMax: false })
-    },
+    onAmountChange: (amount: Decimal | undefined) =>
+      maybes([amount, max.data], decimalEqual) ? onMax() : update({ amount, isMax: false }),
     onSubmit: handleSubmit(onSubmit),
     isPending,
     isLoading: isPoolLoading || isPending || priceImpact.isLoading || expectedLp.isLoading,
@@ -129,7 +128,6 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
       !formState.isValid ||
       isPending ||
       isDebouncing ||
-      !!expectedLp.error || // Failed refetches can retain stale quotes.
       shouldBlockTransaction(priceImpact) ||
       (values.isMax && (!canWithdrawOneCoin || max.data == null || max.isLoading || !!max.error)),
     error,

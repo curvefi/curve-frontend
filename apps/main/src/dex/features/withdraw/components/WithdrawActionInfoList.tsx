@@ -24,7 +24,7 @@ export const WithdrawActionInfoList = ({
   onSlippageChange: (slippage: Decimal) => void
 }) => (
   <PoolActionInfoList
-    maximumLp={params.mode === 'unbalanced' ? maximumLp : undefined}
+    {...(params.mode === 'unbalanced' && { maximumLp })} // Other modes burn a fixed LP amount.
     currentLp={lpBalance}
     currentLpTestId="pool-withdraw-current-lp"
     projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}
@@ -32,7 +32,7 @@ export const WithdrawActionInfoList = ({
     gas={useWithdrawEstimateGas(params)}
     slippage={params.slippage}
     onSlippageChange={onSlippageChange}
-    userAddress={params.userAddress ?? undefined}
+    userAddress={params.userAddress}
     slippageType={getSlippageType(usePoolContext().pool.data)}
   />
 )

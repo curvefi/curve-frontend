@@ -38,10 +38,7 @@ export const createBalancedWithdraw = ({
   )
   const canBalance = totalSupply && balances && precision && !!+totalSupply
 
-  /**
-   * Build proportional token updates from an LP amount, clearing them when inputs are unavailable.
-   * For EVM lending/metapools, reserve scaling is approximate because the Curve SDK rounds conversions differently.
-   */
+  /** Build proportional token updates from an LP amount, clearing them when inputs are unavailable. */
   const getUpdatesFromLpAmount = (lpAmount: Decimal | undefined) => ({
     lpAmount,
     ...(lpAmount && canBalance

@@ -1,9 +1,11 @@
 import { each, skipWhen, test } from 'vest'
+import { tryGetPool } from '@/dex/pool.utils'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LP_TOKEN_DECIMALS, poolAmountField } from '@ui/features/pool-forms/pool-form.utils'
+import { range } from '@primitives/objects.utils'
+import { LP_TOKEN_DECIMALS, poolAmountField, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import {
   getAdvancedWithdrawParams,
   getOneCoinWithdrawParams,
@@ -16,21 +18,34 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import type { UserWithdrawParams, WithdrawLpParams, WithdrawMaxParams, WithdrawParams } from './types'
 
-const validateLpAmount = (lpAmount: WithdrawParams['lpAmount'], { allowZero = false } = {}) =>
+// single-coin form has one field named amount; advanced form uses amount_0, amount_1, etc.
+type AmountField = (index: number) => PoolAmountField | 'amount'
+
+const validateLpAmount = (
+  lpAmount: WithdrawParams['lpAmount'],
+  /** We allow zero when validating a user's LP balance, but withdrawing 0 LPs is not allowed **/
+  { allowZero = false },
+) =>
   test('lpAmount', 'Enter a valid LP amount', () => {
     enforce(lpAmount)
       .isDecimal({ decimal_digits: `0,${LP_TOKEN_DECIMALS}` })
       [allowZero ? 'gte' : 'gt'](0)
   })
 
-const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: (index: number) => string = poolAmountField) => {
+const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountField = poolAmountField) => {
   test('root', 'Enter an amount to withdraw', () => {
-    enforce(amounts?.some(amount => +(amount ?? '0') > 0)).equals(true)
+    enforce(amounts)
+      .isArray()
+      .condition(() => amounts!.some(amount => amount && +amount))
   })
   test('decimals', 'Decimals are required', () => {
     enforce(decimals).isArray().isNotEmpty()
-    enforce(decimals?.every(decimal => decimal != null && decimal >= 0)).equals(true)
   })
+  each(decimals ?? [], (decimal, index) =>
+    test(field(index), 'Token decimals must be a non-negative number', () => {
+      enforce(decimal).isNumber().gte(0)
+    }),
+  )
   test('root', 'Amounts must match pool token count', () => {
     enforce(amounts?.length).equals(decimals?.length)
   })
@@ -46,41 +61,53 @@ const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: (index: n
   })
 }
 
-const validateWithdraw = ({ amounts, lpAmount, maxLpAmount, tokenIndex, mode, slippage }: WithdrawParams) => {
+const validateWithdraw = (
+  { amounts, lpAmount, maxLpAmount, tokenIndex, mode, slippage }: WithdrawParams,
+  field: AmountField = poolAmountField,
+) => {
   validateSlippage({ slippage })
   test('mode', 'Invalid withdrawal mode', () => {
-    enforce(['balanced', 'unbalanced', 'one-coin'].includes(mode!)).isTruthy()
+    enforce(mode).inside(['balanced', 'unbalanced', 'one-coin'])
   })
   test('maxLpAmount', 'LP balance is unavailable', () => {
     enforce(maxLpAmount).isDecimal().gte(0)
   })
   skipWhen(mode === 'unbalanced', () => {
-    validateLpAmount(lpAmount)
+    validateLpAmount(lpAmount, { allowZero: false })
     test('lpAmount', 'Insufficient LP balance', () => {
       enforce(lpAmount).lte(maxLpAmount!)
     })
   })
   skipWhen(mode !== 'one-coin', () => {
-    test('root', 'Max withdrawal requires the full LP balance and a single token output', () => {
+    test('tokenIndex', 'Invalid pool token index', () => {
       enforce(tokenIndex)
         .isNumber()
-        .condition(Number.isInteger)
-        .gte(0)
-        .lt(amounts?.length ?? 0)
-      enforce(decimalEqual(lpAmount!, maxLpAmount!)).isTruthy()
-      enforce(
-        amounts?.every((amount, i) => (i === tokenIndex ? +(amount ?? '0') > 0 : decimalEqual(amount ?? '0', '0'))),
-      ).isTruthy()
+        .inside(range(amounts?.length ?? 0))
+    })
+    test('lpAmount', 'Max withdrawal requires the full LP balance', () => {
+      enforce(lpAmount).condition(() => decimalEqual(lpAmount!, maxLpAmount!))
+    })
+    each(amounts ?? [], (amount, index) => {
+      skipWhen(index !== tokenIndex, () =>
+        test(field(index), 'Enter an amount to withdraw', () => {
+          enforce(amount).gt(0)
+        }),
+      )
+      skipWhen(index === tokenIndex, () =>
+        test(field(index), 'Only the selected token can have a withdrawal amount', () => {
+          enforce(amount).condition(() => decimalEqual(amount!, '0'))
+        }),
+      )
     })
   })
 }
 
 type FormParams = WithdrawParams & { maximumBurn: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
 
-const validateForm = (params: FormParams, field: (index: number) => string = poolAmountField) => {
+const validateForm = (params: FormParams, field: AmountField = poolAmountField) => {
   const { maximumBurn, lpAmount, maxLpAmount, mode, amounts, maxAmounts } = params
   validateAmounts(params, field)
-  validateWithdraw(params)
+  validateWithdraw(params, field)
   test('maximumBurn', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn)
       .isDecimal({ decimal_digits: `0,${LP_TOKEN_DECIMALS}` })
@@ -93,7 +120,7 @@ const validateForm = (params: FormParams, field: (index: number) => string = poo
   })
   skipWhen(mode === 'unbalanced', () => {
     test('maximumBurn', 'LP burn does not match the selected LP amount', () => {
-      enforce(decimalEqual(maximumBurn!, lpAmount!)).isTruthy()
+      enforce(maximumBurn).condition(() => decimalEqual(maximumBurn!, lpAmount!))
     })
   })
   each(amounts ?? [], (amount, index) => {
@@ -145,6 +172,10 @@ const validateLpQuery = ({ chainId, poolAddress, lpAmount, isWrapped }: Withdraw
 export const withdrawMaxValidationSuite = createValidationSuite(({ index, ...params }: WithdrawMaxParams) => {
   validateLpQuery(params)
   test('index', 'Invalid pool token index', () => {
-    enforce(index).isNumber().condition(Number.isInteger).gte(0).lt(8)
+    const pool = tryGetPool(params.poolAddress)
+    const tokens = params.isWrapped ? pool?.wrappedCoins : pool?.underlyingCoins
+    enforce(index)
+      .isNumber()
+      .inside(range(tokens?.length ?? 0))
   })
 })

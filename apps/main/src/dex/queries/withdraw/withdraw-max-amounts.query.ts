@@ -8,12 +8,12 @@ import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
 export const { useQuery: useWithdrawMaxAmount, invalidate: invalidateWithdrawMaxAmounts } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, isWrapped, lpAmount, index }: WithdrawMaxParams) =>
     ({ name: 'withdrawMaxAmounts', chainId, poolAddress, isWrapped, lpAmount, index }) as const,
-  queryFn: async ({ poolAddress, isWrapped, lpAmount, index }: WithdrawMaxQuery) => {
-    if (!+lpAmount) return '0'
-    return (await requireLib('curveApi')
-      .getPool(poolAddress)
-      [`withdrawOneCoin${wrappedMethod(isWrapped)}Expected`](lpAmount, index)) as Decimal
-  },
+  queryFn: async ({ poolAddress, isWrapped, lpAmount, index }: WithdrawMaxQuery) =>
+    +lpAmount
+      ? ((await requireLib('curveApi')
+          .getPool(poolAddress)
+          [`withdrawOneCoin${wrappedMethod(isWrapped)}Expected`](lpAmount, index)) as Decimal)
+      : '0',
   category: 'dex.pool',
   validationSuite: withdrawMaxValidationSuite,
 })

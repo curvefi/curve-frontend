@@ -2,6 +2,7 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
@@ -17,7 +18,7 @@ type PoolActionInfoListProps = {
   gas: QueryProp<TxGasInfo | null>
   slippage: Decimal
   onSlippageChange: (slippage: Decimal) => void
-  userAddress: Address | undefined
+  userAddress: Address | Nullish
   slippageType: SlippageType | undefined
   expectedLp?: QueryProp<Decimal>
   expectedLpLabel?: string

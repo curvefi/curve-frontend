@@ -135,5 +135,6 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => update({ slippage: newSlippage }),
     tokens,
+    canWithdrawWrapped: false,
   }
 }

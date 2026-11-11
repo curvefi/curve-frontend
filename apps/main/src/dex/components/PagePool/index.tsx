@@ -176,7 +176,7 @@ const menu = [
       {
         value: 'WITHDRAW',
         label: t`Withdraw`,
-        visible: ({ isCrypto }) => isCrypto !== false,
+        visible: ({ isCrypto }) => isCrypto !== false, // todo: implement new form for crypto pools
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
       },
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },

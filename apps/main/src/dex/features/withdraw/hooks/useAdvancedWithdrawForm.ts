@@ -125,13 +125,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
     onSubmit: handleSubmit(onSubmit),
     isPending,
     isLoading: isPoolLoading || isPending || priceImpact.isLoading || expectedLp.isLoading,
-    isDisabled:
-      pool == null ||
-      !formState.isValid ||
-      isPending ||
-      isDebouncing ||
-      !!expectedLp.error || // Failed refetches can retain stale quotes.
-      shouldBlockTransaction(priceImpact),
+    isDisabled: pool == null || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact),
     error,
     formErrors: formState.visibleErrors,
   }

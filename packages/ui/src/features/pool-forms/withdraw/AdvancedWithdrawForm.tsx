@@ -32,8 +32,8 @@ export const AdvancedWithdrawForm = ({
   onTokenChange,
   canWithdrawWrapped,
 }: PoolFormProps<AdvancedWithdrawFormValues> & {
-  canWithdrawWrapped?: boolean
-  lpAmountUsd?: Decimal
+  canWithdrawWrapped: boolean | undefined
+  lpAmountUsd: Decimal | undefined
   lpBalance: QueryProp<Decimal>
   canBalance: boolean | undefined
   onBalancedChange: (balanced: boolean) => void

@@ -11,6 +11,7 @@ import { oneCoinWithdrawFormValidationSuite } from '@/stellar/queries/validation
 import { useWithdrawLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
 import { useWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
@@ -51,7 +52,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
   const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
   const form = useForm<OneCoinWithdrawFormValues>(formOptions)
-  const { values, formState, reset } = form
+  const { values, formState, reset, update, handleSubmit } = form
   const index = values.tokenIndex
   const max = q(
     useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index]?.data, lpAmount: lpBalance.data }),
@@ -84,7 +85,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     onReset: () => reset(userDefaultValues),
   })
   const isPending = formState.isSubmitting || isWithdrawing
-  const onMax = () => form.update({ amount: max.data, isMax: true })
+  const onMax = () => update({ amount: max.data, isMax: true })
   return {
     form,
     tokens,
@@ -102,19 +103,17 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
       isDebouncing ||
       !formState.isValid ||
       shouldBlockTransaction(priceImpact) ||
-      (values.isMax && (max.data == null || max.isLoading || !!max.error)),
+      (values.isMax && !max.data),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error,
     formErrors: formState.visibleErrors,
-    onSubmit: form.handleSubmit(values => onSubmit(getOneCoinWithdrawParams(values))),
-    onSlippageChange: (slippage: Decimal) => form.update({ slippage }),
-    onCoinChange: (tokenIndex: number) => form.update({ ...userDefaultValues, tokenIndex }),
+    onSubmit: handleSubmit(values => onSubmit(getOneCoinWithdrawParams(values))),
+    onSlippageChange: (slippage: Decimal) => update({ slippage }),
+    onCoinChange: (tokenIndex: number) => update({ ...userDefaultValues, tokenIndex }),
     onMax,
-    onAmountChange: (amount: Decimal | undefined) => {
-      if (amount && max.data && !max.error && decimalEqual(amount, max.data)) return onMax()
-      form.update({ amount, isMax: false })
-    },
+    onAmountChange: (amount: Decimal | undefined) =>
+      maybes([amount, max.data], decimalEqual) ? onMax() : update({ amount, isMax: false }),
   }
 }
