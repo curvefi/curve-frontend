@@ -22,7 +22,7 @@ import type { UserWithdrawParams, WithdrawLpParams, WithdrawMaxParams, WithdrawP
 type AmountField = (index: number) => PoolAmountField | 'amount'
 
 const validateLpAmount = (
-  lpAmount: WithdrawParams['lpAmount'],
+  lpAmount: WithdrawLpParams['lpAmount'],
   /** We allow zero when validating a user's LP balance, but withdrawing 0 LPs is not allowed **/
   { allowZero = false },
 ) =>
@@ -62,38 +62,40 @@ const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountFie
 }
 
 const validateWithdraw = (
-  { amounts, lpAmount, maxLpAmount, tokenIndex, mode, slippage }: WithdrawParams,
+  { amounts, maxLpAmount, slippage, ...params }: WithdrawParams,
   field: AmountField = poolAmountField,
 ) => {
   validateSlippage({ slippage })
   test('mode', 'Invalid withdrawal mode', () => {
-    enforce(mode).inside(['balanced', 'unbalanced', 'one-coin'])
+    enforce(params.mode).inside(['balanced', 'unbalanced', 'one-coin'])
   })
   test('maxLpAmount', 'LP balance is unavailable', () => {
     enforce(maxLpAmount).isDecimal().gte(0)
   })
-  skipWhen(mode === 'unbalanced', () => {
-    validateLpAmount(lpAmount, { allowZero: false })
+  skipWhen(params.mode === 'unbalanced', () => {
+    if (params.mode !== 'balanced' && params.mode !== 'one-coin') return // type safety inside skipWhen
+    validateLpAmount(params.lpAmount, { allowZero: false })
     test('lpAmount', 'Insufficient LP balance', () => {
-      enforce(lpAmount).lte(maxLpAmount!)
+      enforce(params.lpAmount).lte(maxLpAmount!)
     })
   })
-  skipWhen(mode !== 'one-coin', () => {
+  skipWhen(params.mode !== 'one-coin', () => {
+    if (params.mode !== 'one-coin') return // type safety inside skipWhen
     test('tokenIndex', 'Invalid pool token index', () => {
-      enforce(tokenIndex)
+      enforce(params.tokenIndex)
         .isNumber()
         .inside(range(amounts?.length ?? 0))
     })
     test('lpAmount', 'Max withdrawal requires the full LP balance', () => {
-      enforce(lpAmount).condition(() => decimalEqual(lpAmount!, maxLpAmount!))
+      enforce(params.lpAmount).condition(() => decimalEqual(params.lpAmount!, maxLpAmount!))
     })
     each(amounts ?? [], (amount, index) => {
-      skipWhen(index !== tokenIndex, () =>
+      skipWhen(index !== params.tokenIndex, () =>
         test(field(index), 'Enter an amount to withdraw', () => {
           enforce(amount).gt(0)
         }),
       )
-      skipWhen(index === tokenIndex, () =>
+      skipWhen(index === params.tokenIndex, () =>
         test(field(index), 'Only the selected token can have a withdrawal amount', () => {
           enforce(amount).condition(() => decimalEqual(amount!, '0'))
         }),
@@ -105,7 +107,7 @@ const validateWithdraw = (
 type FormParams = WithdrawParams & { maximumBurn: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
 
 const validateForm = (params: FormParams, field: AmountField = poolAmountField) => {
-  const { maximumBurn, lpAmount, maxLpAmount, mode, amounts, maxAmounts } = params
+  const { maximumBurn, maxLpAmount, mode, amounts, maxAmounts } = params
   validateAmounts(params, field)
   validateWithdraw(params, field)
   test('maximumBurn', 'Withdrawal quote is unavailable', () => {
@@ -119,8 +121,9 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
     })
   })
   skipWhen(mode === 'unbalanced', () => {
+    if (params.mode !== 'balanced' && params.mode !== 'one-coin') return // type safety inside skipWhen
     test('maximumBurn', 'LP burn does not match the selected LP amount', () => {
-      enforce(maximumBurn).condition(() => decimalEqual(maximumBurn!, lpAmount!))
+      enforce(maximumBurn).condition(() => decimalEqual(maximumBurn!, params.lpAmount!))
     })
   })
   each(amounts ?? [], (amount, index) => {

@@ -8,12 +8,13 @@ export type WithdrawMutation = {
   amounts: Decimal[]
   decimals: number[]
   isWrapped: boolean
-  mode: WithdrawMode
-  lpAmount: Decimal | undefined
   maxLpAmount: Decimal
-  tokenIndex: number | undefined
   slippage: Decimal
-}
+} & (
+  | { mode: 'balanced'; lpAmount: Decimal }
+  | { mode: 'unbalanced' }
+  | { mode: 'one-coin'; lpAmount: Decimal; tokenIndex: number }
+)
 
 export type WithdrawQuery = PoolQuery & WithdrawMutation
 export type UserWithdrawQuery = WithdrawQuery & UserQuery

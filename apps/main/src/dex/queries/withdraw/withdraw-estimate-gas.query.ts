@@ -1,45 +1,35 @@
 import type { UserWithdrawParams, UserWithdrawQuery } from '@/dex/features/withdraw/types'
 import { userWithdrawParamsValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
+import { requireLib } from '@evm-ui/features/connect-wallet'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { useWithdrawIsApproved } from './withdraw-approved.query'
-import { getWithdrawImplementation } from './withdraw-query.helpers'
 
 const { useQuery: useWithdrawApproveEstimate } = hydratedQueryFactory({
-  queryKey: ({
-    chainId,
-    poolAddress,
-    userAddress,
-    isWrapped,
-    mode,
-    amounts,
-    lpAmount,
-    maxLpAmount,
-    tokenIndex,
-  }: UserWithdrawParams) =>
+  queryKey: ({ chainId, poolAddress, userAddress, isWrapped, amounts, maxLpAmount, ...params }: UserWithdrawParams) =>
     ({
       name: 'estimateGas.withdrawApprove',
       chainId,
       poolAddress,
       userAddress,
       isWrapped,
-      mode,
+      mode: params.mode,
       amounts,
-      lpAmount,
       maxLpAmount,
-      tokenIndex,
+      ...('lpAmount' in params && { lpAmount: params.lpAmount }),
+      ...('tokenIndex' in params && { tokenIndex: params.tokenIndex }),
     }) as const,
-  queryFn: async ({ poolAddress, isWrapped, ...params }: UserWithdrawQuery) => {
+  queryFn: async ({ poolAddress, isWrapped, amounts, ...params }: UserWithdrawQuery) => {
     if (isWrapped) return 0 // No zap approval transaction to estimate.
-    const [type, impl, args] = getWithdrawImplementation(poolAddress, params)
-    switch (type) {
+    const pool = requireLib('curveApi').getPool(poolAddress)
+    switch (params.mode) {
       case 'balanced':
-        return await impl.estimateGas.withdrawApprove(...args)
-      case 'imbalance':
-        return await impl.estimateGas.withdrawImbalanceApprove(...args)
-      case 'oneCoin':
-        return await impl.estimateGas.withdrawOneCoinApprove(args[0])
+        return await pool.estimateGas.withdrawApprove(params.lpAmount)
+      case 'unbalanced':
+        return await pool.estimateGas.withdrawImbalanceApprove(amounts)
+      case 'one-coin':
+        return await pool.estimateGas.withdrawOneCoinApprove(params.lpAmount)
     }
   },
   category: 'dex.pool',
@@ -52,12 +42,10 @@ const { useQuery: useWithdrawEstimate } = hydratedQueryFactory({
     poolAddress,
     userAddress,
     isWrapped,
-    mode,
     amounts,
-    lpAmount,
     maxLpAmount,
-    tokenIndex,
     slippage,
+    ...params
   }: UserWithdrawParams) =>
     ({
       name: 'estimateGas.withdraw',
@@ -65,22 +53,24 @@ const { useQuery: useWithdrawEstimate } = hydratedQueryFactory({
       poolAddress,
       userAddress,
       isWrapped,
-      mode,
+      mode: params.mode,
       amounts,
-      lpAmount,
       maxLpAmount,
-      tokenIndex,
       slippage,
+      ...('lpAmount' in params && { lpAmount: params.lpAmount }),
+      ...('tokenIndex' in params && { tokenIndex: params.tokenIndex }),
     }) as const,
-  queryFn: async ({ poolAddress, isWrapped, slippage, ...params }: UserWithdrawQuery) => {
-    const [type, impl, args] = getWithdrawImplementation(poolAddress, params)
-    switch (type) {
+  queryFn: async ({ poolAddress, isWrapped, slippage, amounts, ...params }: UserWithdrawQuery) => {
+    const pool = requireLib('curveApi').getPool(poolAddress)
+    switch (params.mode) {
       case 'balanced':
-        return await impl.estimateGas[`withdraw${wrappedMethod(isWrapped)}`](...args, +slippage)
-      case 'imbalance':
-        return await impl.estimateGas[`withdrawImbalance${wrappedMethod(isWrapped)}`](...args, +slippage)
-      case 'oneCoin':
-        return await impl.estimateGas[`withdrawOneCoin${wrappedMethod(isWrapped)}`](...args, +slippage)
+        return await pool.estimateGas[`withdraw${wrappedMethod(isWrapped)}`](params.lpAmount, +slippage)
+      case 'unbalanced':
+        return await pool.estimateGas[`withdrawImbalance${wrappedMethod(isWrapped)}`](amounts, +slippage)
+      case 'one-coin': {
+        const { lpAmount, tokenIndex } = params
+        return await pool.estimateGas[`withdrawOneCoin${wrappedMethod(isWrapped)}`](lpAmount, tokenIndex, +slippage)
+      }
     }
   },
   category: 'dex.pool',

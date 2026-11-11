@@ -1,42 +1,32 @@
 import type { UserWithdrawParams, UserWithdrawQuery } from '@/dex/features/withdraw/types'
 import { userWithdrawParamsValidationSuite } from '@/dex/features/withdraw/withdraw.validation'
+import { requireLib } from '@evm-ui/features/connect-wallet'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
-import { getWithdrawImplementation } from './withdraw-query.helpers'
 
 export const { useQuery: useWithdrawIsApproved, fetchQuery: fetchWithdrawIsApproved } = hydratedQueryFactory({
-  queryKey: ({
-    chainId,
-    poolAddress,
-    userAddress,
-    isWrapped,
-    mode,
-    amounts,
-    lpAmount,
-    maxLpAmount,
-    tokenIndex,
-  }: UserWithdrawParams) =>
+  queryKey: ({ chainId, poolAddress, userAddress, isWrapped, amounts, maxLpAmount, ...params }: UserWithdrawParams) =>
     ({
       name: 'withdrawIsApproved',
       chainId,
       poolAddress,
       userAddress,
       isWrapped,
-      mode,
+      mode: params.mode,
       amounts,
-      lpAmount,
       maxLpAmount,
-      tokenIndex,
+      ...('lpAmount' in params && { lpAmount: params.lpAmount }),
+      ...('tokenIndex' in params && { tokenIndex: params.tokenIndex }),
     }) as const,
-  queryFn: async ({ poolAddress, isWrapped, ...params }: UserWithdrawQuery) => {
+  queryFn: async ({ poolAddress, isWrapped, amounts, ...params }: UserWithdrawQuery) => {
     if (isWrapped) return true // Direct pool withdrawal needs no zap allowance.
-    const [type, impl, args] = getWithdrawImplementation(poolAddress, params)
-    switch (type) {
+    const pool = requireLib('curveApi').getPool(poolAddress)
+    switch (params.mode) {
       case 'balanced':
-        return await impl.withdrawIsApproved(...args)
-      case 'imbalance':
-        return await impl.withdrawImbalanceIsApproved(...args)
-      case 'oneCoin':
-        return await impl.withdrawOneCoinIsApproved(args[0])
+        return await pool.withdrawIsApproved(params.lpAmount)
+      case 'unbalanced':
+        return await pool.withdrawImbalanceIsApproved(amounts)
+      case 'one-coin':
+        return await pool.withdrawOneCoinIsApproved(params.lpAmount)
     }
   },
   category: 'dex.pool',
