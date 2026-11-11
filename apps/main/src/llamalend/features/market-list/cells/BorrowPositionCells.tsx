@@ -1,4 +1,3 @@
-import { formatHealth } from '@/llamalend/health.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { OpeningLeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
@@ -74,7 +73,7 @@ export const LtvCell = ({ getValue }: BorrowPositionCellProps) => (
 )
 
 export const HealthFactorCell = ({ getValue }: BorrowPositionCellProps) => (
-  <PositionMetric value={formatHealth(getValue())} />
+  <PositionMetric value={formatNumber(getValue(), 'health')} />
 )
 
 export const LiquidationBufferCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (

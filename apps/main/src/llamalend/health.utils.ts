@@ -1,8 +1,6 @@
 import type { Theme } from '@mui/material/styles'
-import type { Amount, Decimal } from '@primitives/decimal.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
-import { formatNumber } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import { decimalDiv, decimalGreaterThan, decimalMax } from '@ui/lib/decimal'
 
@@ -58,8 +56,6 @@ export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undef
 /** Computes {@link PositionHealth.health} from the user's `[low, high]` liquidation range prices. */
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
   decimalMax(decimalDiv(oraclePrice, topOfRange), '1')!
-
-export const formatHealth = (health: Amount | Nullish) => formatNumber(health, 'health.precise')
 
 /** Resolves the position status. */
 export const getPositionStatus = ({

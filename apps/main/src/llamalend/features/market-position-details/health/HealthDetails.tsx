@@ -1,5 +1,4 @@
 import {
-  formatHealth,
   getHealthTextColor,
   getLiquidationBufferTextColor,
   type PositionHealthThresholds,
@@ -58,7 +57,7 @@ export const HealthDetails = ({
           valueOptions={{
             abbreviate: false,
             color: maybe(data, data => getHealthTextColor(data, thresholds, theme)),
-            formatter: formatHealth,
+            formatter: value => formatNumber(value, 'health'),
           }}
         />
         <WithSkeleton
