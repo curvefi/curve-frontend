@@ -410,6 +410,13 @@ export const ZAP_V0_MINT_MARKETS: PartialRecord<ApiChain, Address[]> = {
   ],
 }
 
+/** The llamalend.js aliases of the delegation ZapV2 contracts, used by the newer LLv1, the LLv2 and the factory Mint markets */
+export const DELEGATION_ZAP_ALIASES = [
+  'leverage_zap_v2_transient',
+  'leverage_zap_v2_llv2',
+  'leverage_zap_v2_mint_transient',
+]
+
 type MarketLeverageConfig = { providers: readonly RouteProvider[] }
 
 const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso', 'curve-solver', 'curve'] } satisfies MarketLeverageConfig
