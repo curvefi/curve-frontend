@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from 'react'
 import { ChainId } from '@/dex/types/main.types'
-import type { Pool } from '@curvefi/prices-api/pools'
+import type { V2PoolDetails } from '@curvefi/prices-api/pools'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
 import { POOL_LIQUIDITY_BREAKDOWN } from '@evm-ui/features/activity-table/columns/pool-liquidity-columns'
 import { PoolLiquidityExpandedPanel } from '@evm-ui/features/activity-table/panels/PoolLiquidityExpandedPanel'
@@ -72,10 +72,16 @@ const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
 )
 
-export const OhlcAndActivityComp = ({ chainId, pricesApiPoolData }: { chainId: ChainId; pricesApiPoolData: Pool }) => {
+export const OhlcAndActivityComp = ({
+  chainId,
+  pricesApiPoolData,
+}: {
+  chainId: ChainId
+  pricesApiPoolData: V2PoolDetails
+}) => {
   const poolAddress = pricesApiPoolData.address
   const chart = useOhlcChartState({ chainId, pricesApiPoolData })
-  const liquidityTable = usePoolActivityEventsConfig({ chainId, poolAddress })
+  const liquidityTable = usePoolActivityEventsConfig()
   const tradesTable = usePoolActivityTradesConfig({ chainId, poolAddress })
   return (
     <Stack>

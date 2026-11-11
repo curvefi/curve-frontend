@@ -2,7 +2,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { getDexChartSelectionKey, useDexOhlcQuery } from '@/dex/queries/ohlc-chart.query'
 import type { ChainId } from '@/dex/types/main.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
-import type { Pool } from '@curvefi/prices-api/pools'
+import type { V2PoolDetails } from '@curvefi/prices-api/pools'
 import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@evm-ui/features/candle-chart/hooks/useDexChartList'
 import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
@@ -14,7 +14,7 @@ import { t } from '@ui/lib/i18n'
 
 const { Height } = SizesAndSpaces
 
-type UseOhlcChartStateArgs = { chainId: ChainId; pricesApiPoolData: Pool }
+type UseOhlcChartStateArgs = { chainId: ChainId; pricesApiPoolData: V2PoolDetails }
 
 const selectDexOhlcData = (page: { ohlcData: LpPriceOhlcDataFormatted[] }) => page.ohlcData
 
@@ -22,7 +22,7 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
   const { data: networkData } = useNetworkByChain({ chainId })
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
-    useDexChartList({ coins: pricesApiPoolData.coins, nCoins: pricesApiPoolData.numCoins })
+    useDexChartList({ coins: pricesApiPoolData.coins, nCoins: pricesApiPoolData.nCoins })
 
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(
     chainId,

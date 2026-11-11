@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
-import type { Address } from 'viem'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
-import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolContext } from '@/dex/features/pool-context'
 import type { Chain } from '@curvefi/prices-api'
 import { type TimeOption, timeOptions } from '@evm-ui/queries/validation/time-option-validation'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
@@ -44,13 +43,8 @@ const SERIES_CONFIG = [
   { key: 'weeklyBaseRate', label: t`Weekly Base APR`, dash: CHART_LINE_DASH_PATTERNS.tight },
 ] as const
 
-export const PoolHistoricalBaseRateChart = ({
-  blockchainId,
-  poolAddress,
-}: {
-  blockchainId: string
-  poolAddress: Address
-}) => {
+export const PoolHistoricalBaseRateChart = () => {
+  const { blockchainId, poolAddress, apiPool } = usePoolContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<BaseRateSeriesKey[]>(() => SERIES_CONFIG.map(({ key }) => key))
 
@@ -72,9 +66,6 @@ export const PoolHistoricalBaseRateChart = ({
         weeklyBaseRate: maybe(snapshot.baseWeeklyApr, apr => apr * 100) ?? undefined,
       })),
   )
-
-  // Current metric values are based on pool list data to avoid mismatches, and is also updated more frequently than snapshots
-  const currentPool = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
 
   const {
     design: { Color },
@@ -122,13 +113,13 @@ export const PoolHistoricalBaseRateChart = ({
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current daily base APR`}
-            value={mapQuery(currentPool, pool => pool.baseDailyApr * 100)}
+            value={mapQuery(apiPool, pool => pool.baseDailyApr)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             category={METRIC_CATEGORY}
             label={t`Current weekly base APR`}
-            value={mapQuery(currentPool, pool => pool.baseWeeklyApr * 100)}
+            value={mapQuery(apiPool, pool => pool.baseWeeklyApr)}
             valueOptions={{ unit: 'percentage' }}
           />
         </MetricsGrid>
