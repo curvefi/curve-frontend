@@ -45,7 +45,7 @@ const parseProposalData = (proposal: Proposal) => {
 }
 
 const _fetchProposals = async (): Promise<ProposalsMapper> => {
-  const pagination = 500
+  const pagination = 100
   const results: Proposal[] = await paginate(
     async (page, offset) => {
       const result = await getProposals(page, offset, '', 'all', 'all')

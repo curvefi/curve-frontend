@@ -298,11 +298,17 @@ const v2PoolDetails = v2PoolProperties
     creation_date: timestamp.nullable().optional(),
     registry_type: poolType.nullable().optional(),
     lp_token_address: address,
+    n_coins: z.number(),
+    balances: z.array(z.number()).default([]),
+    balances_usd: z.array(z.number().nullable()).default([]),
     gauges: z.array(address).default([]),
     metapool: z.boolean().nullable().optional(),
-    info: z.object({ implementation_address: address.nullable().optional() }).transform(camelizeKeys),
+    info: z
+      .object({ implementation_address: address.nullable().optional(), has_donations: z.boolean() })
+      .transform(camelizeKeys),
   })
   .transform(camelizeKeys)
+  .transform(({ balancesUsd, ...data }) => ({ ...data, balancesUsd: balancesUsd.map(balance => balance ?? 0) }))
 
 const v2PoolRegistry = z.object({ chain_id: z.number(), address, type: poolType }).transform(camelizeKeys)
 

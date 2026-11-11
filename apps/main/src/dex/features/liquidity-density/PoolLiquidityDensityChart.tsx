@@ -1,7 +1,6 @@
 import { isEqual } from 'lodash'
 import { useMemo, useState } from 'react'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import { maybe } from '@primitives/objects.utils'
 import { ChartSelect } from '@ui/features/charts/ChartSelect'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
@@ -13,7 +12,7 @@ import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
 export const PoolLiquidityDensityChart = () => {
-  const { chainId, blockchainId, poolAddress, pool: pool } = usePoolContext()
+  const { pool } = usePoolContext()
   const { data: poolData, isLoading } = pool
   // Default to pricing the second wrapped coin in the first.
   const [selectedPair, setSelectedPair] = useState<LiquidityPair>([1, 0])
@@ -40,11 +39,7 @@ export const PoolLiquidityDensityChart = () => {
     outputSymbol,
   } = pairs.find(({ pair }) => isEqual(pair, selectedPair)) ?? pairs[0] ?? {}
 
-  const { profile, oraclePrice, inputTokenUsdPrice, outputTokenUsdPrice } = usePoolLiquidityDensity(
-    { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress },
-    poolData,
-    pair,
-  )
+  const { profile, oraclePrice, inputTokenUsdPrice, outputTokenUsdPrice } = usePoolLiquidityDensity(pair)
   const valuedProfile = useCombinedQueries([profile, inputTokenUsdPrice, outputTokenUsdPrice], valueLiquidityProfile)
 
   return (

@@ -35,8 +35,6 @@ import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
-import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
-import type { Chain } from '@curvefi/prices-api'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { dexPages } from '@evm-ui/shared/routes'
@@ -221,6 +219,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     blockchainId,
     poolAddress,
     pool,
+    apiPool,
     api: curve,
     isWrapped,
     setIsWrapped,
@@ -239,7 +238,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const defaultTab = (state as PoolRouteState).defaultTab
 
   const currencyReserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
-  const pricesApiPoolData = usePoolPricesApi({ blockchainId: blockchainId as Chain, poolAddress })
   const tvl = usePoolTvl({ chainId, poolAddress })
   const volume = usePoolVolume({ chainId, poolAddress })
   const { tooltipData: netAprTooltip, ...yieldBreakdown } = useYieldBreakdown({ chainId, poolAddress })
@@ -247,7 +245,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const currentSeed = mapQuery(
     fallbackQ(
       mapQuery(currencyReserves, reserves => reserves.tokens.map(({ balance }) => +balance)),
-      mapQuery(pricesApiPoolData, pool => pool.balances),
+      mapQuery(apiPool, pool => pool.balances),
     ),
     balances => (balances?.length ? balances.every(balance => balance === 0) : null),
   )
@@ -309,11 +307,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                 ))}
                 tvl={fallbackQ(
                   mapQuery(tvl, tvl => amount(tvl)),
-                  mapQuery(pricesApiPoolData, pool => amount(pool.tvlUsd)),
+                  mapQuery(apiPool, pool => amount(pool.tvlUsd)),
                 )}
                 volume24h={fallbackQ(
                   mapQuery(volume, volume => amount(volume)),
-                  mapQuery(pricesApiPoolData, pool => amount(pool.tradingVolume24h)),
+                  mapQuery(apiPool, pool => amount(pool.tradingVolume24h)),
                 )}
               />
             }
@@ -333,13 +331,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         <CampaignRewardsBanner />
         <UserPosition />
-        {!isLiteChain(chainId) && pricesApiPoolData.data && (
-          <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={pricesApiPoolData.data} />
+        {!isLiteChain(chainId) && apiPool.data && (
+          <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={apiPool.data} />
         )}
         <Stack sx={stackedCardHeadersSx}>
-          {!isLiteChain(chainId) && (
-            <PoolHistoricalBaseRateChart blockchainId={blockchainId} poolAddress={poolAddress} />
-          )}
+          {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart />}
           <YieldBreakdown
             {...yieldBreakdown}
             totalTooltip={maybe(netAprTooltip.data, data => (
@@ -348,7 +344,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
           <PointsCampaigns />
         </Stack>
-        <PoolInformation poolAlert={poolAlert} pricesApiPoolData={pricesApiPoolData} />
+        <PoolInformation poolAlert={poolAlert} />
         <PoolAdvancedDetails />
       </DetailPageLayout>
     </>
