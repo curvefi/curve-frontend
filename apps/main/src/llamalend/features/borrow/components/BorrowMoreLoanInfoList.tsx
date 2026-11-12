@@ -1,5 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import type { EquityMetrics } from '@/llamalend/hooks/useEquityLeverage'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -41,7 +41,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
   leverageEnabled: boolean | undefined
-  equityLeverage: EquityLeverage | null
+  equityLeverage: EquityMetrics
   form: UseFormReturn<BorrowMoreForm>
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()

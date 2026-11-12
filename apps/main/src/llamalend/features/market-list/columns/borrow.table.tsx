@@ -46,7 +46,7 @@ import { assetsColumn, borrowRateColumn, columnHelper, type MarketTable } from '
 
 const getStatsQuery = ({ positionQueries: { stats } }: LlamaMarketRow) => stats
 
-/** The leverage metrics are only shown once we know the position is zap leveraged */
+/** The leverage is only shown once we know the position is zap leveraged */
 const getLeverageQuery = ({ positionQueries: { stats, isZapLeveraged } }: LlamaMarketRow) =>
   combineQueries([stats, isZapLeveraged], stats => stats)
 
@@ -198,7 +198,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       columnHelper.accessor(getUserCarryApr, {
         id: MarketColumnId.UserCarryApr,
         header: MARKET_TITLES[MarketColumnId.UserCarryApr],
-        cell: withQuery(getLeverageQuery, CarryAprCell),
+        cell: withQuery(getStatsQuery, CarryAprCell),
         meta: {
           type: 'numeric',
           unit: 'percentage',

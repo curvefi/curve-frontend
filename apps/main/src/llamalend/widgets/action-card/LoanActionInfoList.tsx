@@ -168,6 +168,21 @@ export const LoanActionInfoList = ({
               testId="borrow-net-apr"
             />
           )}
+          {/* hidden once both are known to be null: the collateral has no yield or there is no equity */}
+          {[prevCarryApr, carryApr].some(apr => apr && apr.data !== null) && (
+            <ActionInfo
+              label={t`Carry APR`}
+              labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
+              value={
+                carryApr?.data !== undefined && prevCarryApr
+                  ? mapQuery(prevCarryApr, data => formatNumber(data, 'percent.rate'))
+                  : DISABLED_Q
+              }
+              futureValue={mapQuery(carryApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              size="small"
+              testId="borrow-carry-apr"
+            />
+          )}
         </Stack>
         <Stack>
           {useNewLlamalendHealth() ? (
@@ -285,35 +300,19 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {(prevCarryApr ?? carryApr) ? (
+          {!(prevCarryApr ?? carryApr) && collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
             <ActionInfo
-              label={t`Carry APR`}
-              labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
-              value={
-                carryApr?.data !== undefined && prevCarryApr
-                  ? mapQuery(prevCarryApr, data => formatNumber(data, 'percent.rate'))
-                  : DISABLED_Q
-              }
-              futureValue={mapQuery(carryApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              label={t`Return on Equity (RoE)`}
+              value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
+              futureValue={formatReturnOnEquity(
+                collateralLeverageValue,
+                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
+                rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
+                collateralApy,
+              )}
               size="small"
-              testId="borrow-carry-apr"
+              testId="borrow-return-on-equity"
             />
-          ) : (
-            collateralApy &&
-            (prevCollateralLeverageValue ?? collateralLeverageValue) && (
-              <ActionInfo
-                label={t`Return on Equity (RoE)`}
-                value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
-                futureValue={formatReturnOnEquity(
-                  collateralLeverageValue,
-                  /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
-                  rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
-                  collateralApy,
-                )}
-                size="small"
-                testId="borrow-return-on-equity"
-              />
-            )
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo

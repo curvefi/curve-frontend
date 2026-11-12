@@ -26,16 +26,23 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, DISABLED_Q, futureOrCurrentQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalGreaterThan, decimalMinus, decimalSum, ZERO } from '@ui/lib/decimal'
 
-/** Leverage and carry APR of the open position (current) and of the position after the action (future) */
+/** Leverage of the open position (current) and of the position after the action (future) */
 export type EquityLeverage = {
   current: QueryProp<Decimal | null>
   future: QueryProp<Decimal | null>
-  currentCarryApr: QueryProp<Decimal | null>
-  futureCarryApr: QueryProp<Decimal | null>
-  yieldMultiplier: QueryProp<Decimal | null>
   /** The leverage the open position opened at */
   opening: QueryProp<Decimal | null>
 }
+
+/** Carry APR of the open position (current) and of the position after the action (future) */
+export type CarryApr = {
+  current: QueryProp<Decimal | null>
+  future: QueryProp<Decimal | null>
+  yieldMultiplier: QueryProp<Decimal | null>
+}
+
+/** Each is null when it is not shown */
+export type EquityMetrics = { leverage: EquityLeverage | null; carryApr: CarryApr | null }
 
 const getPositionCarryApr = (
   position: UserState | null,
@@ -46,7 +53,7 @@ const getPositionCarryApr = (
 
 /**
  * Equity leverage, carry APR and yield multiplier of the open position and of the position after the action.
- * Returns null when it is not shown: disabled, or neither the open position nor the action borrows through the zap.
+ * Both are null when disabled. The leverage is also null unless the open position or the action borrows through the zap.
  */
 export function useEquityLeverage(
   {
@@ -62,7 +69,7 @@ export function useEquityLeverage(
     debtDelta?: Decimal | null
   },
   enabled = true,
-): EquityLeverage | null {
+): EquityMetrics {
   const isEnabled = useLlamalendEquityLeverage() && enabled
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
   const collateralEvents = useUserCollateralEvents({ app: marketType, controllerAddress, chainId, userAddress, tokens })
@@ -76,36 +83,44 @@ export function useEquityLeverage(
     currentRates,
   )
   const currentCarryApr = combineQueries([position, oraclePrice, currentRates, marketYields], getPositionCarryApr)
-  const equityLeverage = {
-    current: combineQueries([position, oraclePrice], getEquityLeverage),
-    future: combineQueries(
-      [futurePositionQuery, oraclePrice],
-      (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
-    ),
-    currentCarryApr,
-    futureCarryApr: combineQueries([futurePositionQuery, oraclePrice, futureRates, marketYields], getPositionCarryApr),
-    yieldMultiplier: combineQueries([currentCarryApr, marketYields], (apr, { collateralYieldApr }) =>
-      getYieldMultiplier(apr, collateralYieldApr),
-    ),
-    opening: mapQuery(collateralEvents, ({ openingLeverage }) => openingLeverage),
+  return {
+    leverage:
+      isEnabled && (isZapBorrow || collateralEvents.data?.isZapLeveraged)
+        ? {
+            current: combineQueries([position, oraclePrice], getEquityLeverage),
+            future: combineQueries(
+              [futurePositionQuery, oraclePrice],
+              (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
+            ),
+            opening: mapQuery(collateralEvents, ({ openingLeverage }) => openingLeverage),
+          }
+        : null,
+    carryApr: isEnabled
+      ? {
+          current: currentCarryApr,
+          future: combineQueries([futurePositionQuery, oraclePrice, futureRates, marketYields], getPositionCarryApr),
+          yieldMultiplier: combineQueries([currentCarryApr, marketYields], (apr, { collateralYieldApr }) =>
+            getYieldMultiplier(apr, collateralYieldApr),
+          ),
+        }
+      : null,
   }
-  return isEnabled && (isZapBorrow || collateralEvents.data?.isZapLeveraged) ? equityLeverage : null
 }
 
 export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
   const { market } = useMarketContext()
-  return useEquityLeverage(
-    {
-      params,
-      futurePosition: mapQuery(
-        useCreateLoanExpectedCollateral(params, !!params.leverageEnabled),
-        ({ totalCollateral }) => ({ collateral: totalCollateral, convertedBorrowed: ZERO, debt: params.debt ?? ZERO }),
-      ),
-      isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
-      debtDelta: params.debt,
-    },
-    !!params.leverageEnabled,
-  )
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, !!params.leverageEnabled)
+  return useEquityLeverage({
+    params,
+    futurePosition: mapQuery(
+      params.leverageEnabled
+        ? mapQuery(expectedCollateral, ({ totalCollateral }) => totalCollateral)
+        : constQ(params.userCollateral ?? ZERO),
+      collateral => ({ collateral, convertedBorrowed: ZERO, debt: params.debt ?? ZERO }),
+    ),
+    isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
+    debtDelta: params.debt,
+  })
 }
 
 export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {

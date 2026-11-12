@@ -43,7 +43,7 @@ export const BorrowInformation = ({
   const { data: userStateValue } = userState
   const isEquityLeverage = useLlamalendEquityLeverage()
   const collateralLeverage = useUserCurrentLeverage(params)
-  const equityLeverage = useEquityLeverage({ params })
+  const { leverage: equityLeverage, carryApr } = useEquityLeverage({ params })
   const leverage = isEquityLeverage
     ? equityLeverage?.current
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
@@ -148,14 +148,14 @@ export const BorrowInformation = ({
           borrowUsdRate={q(borrowUsdRate)}
         />
       )}
-      {equityLeverage && (
+      {carryApr && (
         <Metric
           category={BORROW_METRIC_CATEGORY}
           label={t`Carry APR`}
-          value={equityLeverage.currentCarryApr}
+          value={carryApr.current}
           valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
           valueTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-          notional={mapQuery(equityLeverage.yieldMultiplier, multiplier =>
+          notional={mapQuery(carryApr.yieldMultiplier, multiplier =>
             maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
           )}
         />

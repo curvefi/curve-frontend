@@ -1,4 +1,4 @@
-import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import type { EquityMetrics } from '@/llamalend/hooks/useEquityLeverage'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -35,7 +35,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  equityLeverage: EquityLeverage | null
+  equityLeverage: EquityMetrics
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
