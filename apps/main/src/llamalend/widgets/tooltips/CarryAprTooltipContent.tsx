@@ -14,11 +14,11 @@ export const CarryAprTooltipContent = () => (
         </>
       }
       terms={[
+        { symbol: 'Y', label: t`yield earned on your collateral` },
         {
-          symbol: 'Y',
-          label: t`yield earned: yield on your collateral and on the tokens converted in soft liquidation`,
+          symbol: 'B',
+          label: t`net borrow cost: interest on your debt minus borrow rewards, plus the yield of the borrowed token on the debt not covered by the converted tokens`,
         },
-        { symbol: 'B', label: t`net borrow cost: interest on your debt minus borrow rewards` },
         { symbol: 'E', label: t`equity: collateral + converted tokens − debt` },
       ]}
     />
