@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
+import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import {
@@ -43,7 +44,8 @@ export const BorrowInformation = ({
   const { data: userStateValue } = userState
   const isEquityLeverage = useLlamalendEquityLeverage()
   const collateralLeverage = useUserCurrentLeverage(params)
-  const { leverage: equityLeverage, carryApr } = useEquityLeverage({ params })
+  const equityLeverage = useEquityLeverage({ params })
+  const carryApr = useCarryApr({ params })
   const leverage = isEquityLeverage
     ? equityLeverage?.current
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)

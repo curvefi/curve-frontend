@@ -133,13 +133,12 @@ describe('leverage action info', () => {
 })
 
 describe('carry APR action info', () => {
-  const mount = (carryApr: { prevCarryApr: Decimal | null; carryApr: Decimal | null }) =>
+  const mount = (current: Decimal | null, future: Decimal | null) =>
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
         <LoanActionInfoList
           isOpen
-          prevCarryApr={constQ(carryApr.prevCarryApr)}
-          carryApr={constQ(carryApr.carryApr)}
+          carryApr={{ current: constQ(current), future: constQ(future), yieldMultiplier: constQ(null) }}
           oraclePrice={constQ(null)}
           gas={constQ(null)}
         />
@@ -147,13 +146,13 @@ describe('carry APR action info', () => {
     )
 
   it('shows the current and future carry APR without leverage', () => {
-    mount({ prevCarryApr: '4', carryApr: '5' })
+    mount('4', '5')
     getActionValue('borrow-carry-apr', 'ui.render', 'previous').should('equal', formatNumber(4, 'percent.rate'))
     getActionValue('borrow-carry-apr', 'ui.render').should('equal', formatNumber(5, 'percent.rate'))
   })
 
   it('hides the carry APR when the collateral has no yield', () => {
-    mount({ prevCarryApr: null, carryApr: null })
+    mount(null, null)
     cy.get('[data-testid="loan-action-info-list"]').should('be.visible')
     cy.get('[data-testid^="borrow-carry-apr"]').should('not.exist')
   })

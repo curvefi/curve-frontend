@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useAddCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
+import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { useAddCollateralFuturePosition } from '@/llamalend/hooks/useFuturePosition'
 import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
@@ -48,9 +50,11 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
     prevCollateral,
     stateCollateral => userCollateral && decimal(new BigNumber(stateCollateral).plus(userCollateral))!,
   )
+  const futurePosition = useAddCollateralFuturePosition(params, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useCarryApr({ params, futurePosition }, isOpen)}
       gas={q(useAddCollateralEstimateGas(params, isOpen))}
       health={q(
         useLegacyHealthQueries(isFull =>
@@ -79,7 +83,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
         collateralLeverageValue: useAddCollateralFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage: useLlamalendEquityLeverage(),
-        equityLeverage: useAddCollateralEquityLeverage(params, isOpen),
+        equityLeverage: useEquityLeverage({ params, futurePosition }, isOpen),
         prevCollateral,
         leverageTotalCollateral: collateral,
         collateralDelta: userCollateral,

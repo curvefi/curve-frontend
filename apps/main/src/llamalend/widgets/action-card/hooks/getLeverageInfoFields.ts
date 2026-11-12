@@ -1,4 +1,4 @@
-import type { EquityMetrics } from '@/llamalend/hooks/useEquityLeverage'
+import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -13,7 +13,7 @@ type LeverageInfoFieldsOptions = {
   collateralLeverageValue: Query<Decimal | null>
   prevCollateralLeverageValue: Query<Decimal | null>
   isEquityLeverage: boolean
-  equityLeverage: EquityMetrics
+  equityLeverage: EquityLeverage | null
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   collateralDelta?: Decimal // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
@@ -46,22 +46,21 @@ export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
     collateralDelta,
     prevCollateralLeverageValue,
     isEquityLeverage,
-    equityLeverage: { leverage, carryApr },
+    equityLeverage,
     prevCollateral,
     leverageTotalCollateral,
   } = options
   return {
     // we show the leverage info even when the leverage is disabled for the current action
-    ...(leverageEnabled || (isEquityLeverage ? leverage : isPositionLeveraged(prevCollateralLeverageValue.data))
+    ...(leverageEnabled || (isEquityLeverage ? equityLeverage : isPositionLeveraged(prevCollateralLeverageValue.data))
       ? {
           leverageEnabled: true,
           ...(isEquityLeverage
-            ? leverage && { leverageValue: leverage.future, prevLeverageValue: leverage.current }
+            ? equityLeverage && { leverageValue: equityLeverage.future, prevLeverageValue: equityLeverage.current }
             : getCollateralLeverageFields(options)),
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
         }
       : { prevCollateral, collateral: mapQuery(prevCollateral, prev => maybes([prev, collateralDelta], decimalSum)) }),
-    ...(carryApr && { carryApr: carryApr.future, prevCarryApr: carryApr.current }),
   } satisfies Partial<LoanActionInfoListProps>
 }

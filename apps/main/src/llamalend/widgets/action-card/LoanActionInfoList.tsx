@@ -6,6 +6,7 @@ import {
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import { getHealth } from '@/llamalend/health.utils'
+import type { CarryApr } from '@/llamalend/hooks/useCarryApr'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
@@ -57,8 +58,7 @@ export type LoanActionInfoListProps = {
   /** @deprecated Return on equity inputs, collateral leverage path only */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
-  prevCarryApr?: QueryProp<Decimal | null>
-  carryApr?: QueryProp<Decimal | null>
+  carryApr?: CarryApr | null
   prevLeverageCollateral?: QueryProp<Decimal | null>
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
@@ -110,7 +110,6 @@ export const LoanActionInfoList = ({
   leverageValue,
   prevCollateralLeverageValue,
   collateralLeverageValue,
-  prevCarryApr,
   carryApr,
   prevLeverageCollateral,
   leverageCollateral,
@@ -169,16 +168,16 @@ export const LoanActionInfoList = ({
             />
           )}
           {/* hidden once both are known to be null: the collateral has no yield or there is no equity */}
-          {[prevCarryApr, carryApr].some(apr => apr && apr.data !== null) && (
+          {carryApr && [carryApr.current, carryApr.future].some(apr => apr.data !== null) && (
             <ActionInfo
               label={t`Carry APR`}
               labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
               value={
-                carryApr?.data !== undefined && prevCarryApr
-                  ? mapQuery(prevCarryApr, data => formatNumber(data, 'percent.rate'))
-                  : DISABLED_Q
+                carryApr.future.data === undefined
+                  ? DISABLED_Q
+                  : mapQuery(carryApr.current, data => formatNumber(data, 'percent.rate'))
               }
-              futureValue={mapQuery(carryApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              futureValue={mapQuery(carryApr.future, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="borrow-carry-apr"
             />
@@ -300,7 +299,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {!(prevCarryApr ?? carryApr) && collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
+          {!carryApr && collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
             <ActionInfo
               label={t`Return on Equity (RoE)`}
               value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}

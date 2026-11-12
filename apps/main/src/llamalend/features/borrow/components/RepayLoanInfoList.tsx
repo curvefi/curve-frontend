@@ -1,7 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useRepayEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
+import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { useRepayFuturePosition } from '@/llamalend/hooks/useFuturePosition'
 import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
@@ -112,9 +114,11 @@ export function RepayLoanInfoList({
     isOpen,
   )
 
+  const futurePosition = useRepayFuturePosition(params, debt, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useCarryApr({ params, futurePosition, debtDelta }, isOpen)}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
       health={q(
@@ -148,7 +152,7 @@ export function RepayLoanInfoList({
         collateralLeverageValue: useRepayFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage: useLlamalendEquityLeverage(),
-        equityLeverage: useRepayEquityLeverage(params, { debt, debtDelta }, isOpen),
+        equityLeverage: useEquityLeverage({ params, futurePosition }, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
