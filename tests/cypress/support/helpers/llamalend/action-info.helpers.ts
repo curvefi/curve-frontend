@@ -13,7 +13,7 @@ export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REG
 /** Reads the value once it has loaded: while loading, the future value shows the current one under a skeleton */
 export const getActionValue = (name: string, category: TimeoutCategory, field?: ActionInfoField) =>
   getActionInfo(name, category, field)
-    .should($el => expect($el.closest('.MuiSkeleton-root')).to.have.length(0))
+    .not('.MuiSkeleton-root *', TIMEOUTS[category])
     .invoke(TIMEOUTS[category], 'attr', 'data-value')
 
 export const getMetricValue = (name: string, category: TimeoutCategory) =>
