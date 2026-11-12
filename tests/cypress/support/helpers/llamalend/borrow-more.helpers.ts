@@ -68,11 +68,10 @@ export function checkBorrowMoreDetailsLoaded({
     'match',
     DECIMAL_REGEX,
   )
-  // the future buffer shows the current one until its query settles, so wait for the skeleton to go
-  cy.get(
-    '[data-testid="borrow-liquidation-buffer"] .MuiSkeleton-root',
-    TIMEOUTS[getTimeoutCategory('tenderly', 'simulation', isMocked)],
-  ).should('not.exist')
+  getActionValue('borrow-liquidation-buffer', getTimeoutCategory('tenderly', 'simulation', isMocked)).should(
+    'include',
+    '%',
+  )
   checkEstimatedTxCost({
     hasValue: hasApi && controllerApproved,
     category: getTimeoutCategory('tenderly', 'simulation', isMocked),
