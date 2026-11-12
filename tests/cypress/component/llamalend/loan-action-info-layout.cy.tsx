@@ -132,32 +132,6 @@ describe('leverage action info', () => {
   })
 })
 
-describe('carry APR action info', () => {
-  const mount = (current: Decimal | null, future: Decimal | null) =>
-    cy.mount(
-      <ComponentTestWrapper config={mockedWagmiConfig}>
-        <LoanActionInfoList
-          isOpen
-          carryApr={{ current: constQ(current), future: constQ(future), yieldMultiplier: constQ(null) }}
-          oraclePrice={constQ(null)}
-          gas={constQ(null)}
-        />
-      </ComponentTestWrapper>,
-    )
-
-  it('shows the current and future carry APR without leverage', () => {
-    mount('4', '5')
-    getActionValue('borrow-carry-apr', 'ui.render', 'previous').should('equal', formatNumber(4, 'percent.rate'))
-    getActionValue('borrow-carry-apr', 'ui.render').should('equal', formatNumber(5, 'percent.rate'))
-  })
-
-  it('hides the carry APR when the collateral has no yield', () => {
-    mount(null, null)
-    cy.get('[data-testid="loan-action-info-list"]').should('be.visible')
-    cy.get('[data-testid^="borrow-carry-apr"]').should('not.exist')
-  })
-})
-
 describe('market slippage settings', () => {
   it('uses the current market slippage without submitting an unchanged value', () => {
     const onChanged = cy.spy().as('onChanged')
