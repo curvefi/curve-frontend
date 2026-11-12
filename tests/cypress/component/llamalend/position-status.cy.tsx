@@ -17,6 +17,7 @@ import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { oneViewport, openTooltip } from '@cy/support/ui'
 import { getTokenUsdRateKey } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
@@ -213,11 +214,12 @@ describe('BorrowPositionDetails health status', () => {
 
   statusCases.forEach(({ status, badge, health, overrides }) => {
     it(`shows health ${health}, the ${badge} badge and its tooltip status`, () => {
-      cy.viewport(1200, 800)
+      const [width, height, breakpoint] = oneViewport()
+      cy.viewport(width, height)
       cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)
       cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', health)
       cy.get('[data-testid="health-details-status-badge"]').should('have.text', badge)
-      cy.get('[data-testid="health-details-health-metric-value"]').trigger('mouseover')
+      openTooltip('[data-testid="health-details-health-metric-value"]', breakpoint)
       cy.get(`[data-testid="health-tooltip-status-${status}"]`).should('be.visible')
     })
   })
