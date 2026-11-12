@@ -54,12 +54,11 @@ export const getCarryApr = (
     decimalEqual(equity, ZERO)
   )
     return null
-  const earned = decimalMultiply(collateral, oraclePrice, collateralYieldApr)
-  const borrowCost = decimalSum(
-    decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr)),
-    // a yield-bearing borrowed token grows the debt's value, the converted tokens earn that yield back
-    decimalMultiply(decimalMinus(debt, convertedBorrowed), borrowedYieldApr),
+  const earned = decimalSum(
+    decimalMultiply(collateral, oraclePrice, collateralYieldApr),
+    decimalMultiply(convertedBorrowed, borrowedYieldApr),
   )
+  const borrowCost = decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr))
   return decimalDiv(decimalMinus(earned, borrowCost), equity)
 }
 
