@@ -167,8 +167,7 @@ export const LoanActionInfoList = ({
               testId="borrow-net-apr"
             />
           )}
-          {/* hidden once both are known to be null: the collateral has no yield or there is no equity */}
-          {carryApr && [carryApr.current, carryApr.future].some(apr => apr.data !== null) && (
+          {carryApr && (
             <ActionInfo
               label={t`Carry APR`}
               labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
