@@ -39,7 +39,7 @@ describe('getCarryApr', () => {
       ),
     ).toBeCloseTo(5.4))
 
-  it.each([null, '0'])('is null with a collateral yield of %s', collateralYieldApr =>
+  it.each<Decimal | null>([null, '0'])('is null with a collateral yield of %s', collateralYieldApr =>
     expect(getCarry({ yields: { collateralYieldApr } })).toBeNull(),
   )
 
