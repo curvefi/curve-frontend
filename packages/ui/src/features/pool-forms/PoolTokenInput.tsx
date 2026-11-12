@@ -48,8 +48,8 @@ export const PoolTokenInput = <TValues extends PoolForm>({
   const maxField = poolMaxAmountField(index)
   const amount = values[field]
   useFormSync<PoolTokenFields>(form, {
-    [maxField]: max ? max.data : values[maxField],
-    [field]: isMaxSelected ? max?.data : amount,
+    ...(max && { [maxField]: max.data }),
+    ...(isMaxSelected && { [field]: max?.data }),
   })
   return (
     <FormTokenInput
