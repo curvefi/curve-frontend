@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": "26.13.1"
-  },
   "scripts": {
     "dev": "tsx watch src/dev.ts",
     "lint": "eslint --cache --cache-location ../../.cache/eslint/router-api --cache-strategy content .",
