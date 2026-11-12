@@ -3,8 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useBorrowMoreFuturePosition } from '@/llamalend/hooks/useFuturePosition'
+import { useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
@@ -174,11 +173,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
   const isEquityLeverage = useLlamalendEquityLeverage()
   const collateralLeverage = useBorrowMoreLeverage(params)
-  const equityLeverage = useEquityLeverage({
-    params,
-    futurePosition: useBorrowMoreFuturePosition(params),
-    isZapBorrow: isLeverageBorrowMore(market, params.leverageEnabled),
-  })
+  const equityLeverage = useBorrowMoreEquityLeverage(params)
   const isPending = formState.isSubmitting || isBorrowing
   return {
     form,

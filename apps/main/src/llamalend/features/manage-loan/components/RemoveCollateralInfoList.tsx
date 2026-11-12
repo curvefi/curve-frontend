@@ -1,7 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
-import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useRemoveCollateralFuturePosition } from '@/llamalend/hooks/useFuturePosition'
+import { useRemoveCollateralCarryApr } from '@/llamalend/hooks/useCarryApr'
+import { useRemoveCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
@@ -49,11 +48,10 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
     prevCollateral,
     stateCollateral => decimalMax('0', decimalMinus(stateCollateral, userCollateral ?? '0')), // validation fails, "max" just to prevent collateral<0 the UI
   )
-  const futurePosition = useRemoveCollateralFuturePosition(params, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
-      carryApr={useCarryApr({ params, futurePosition }, isOpen)}
+      carryApr={useRemoveCollateralCarryApr(params, isOpen)}
       gas={q(useRemoveCollateralEstimateGas(params, isOpen))}
       health={q(
         useLegacyHealthQueries(isFull =>
@@ -82,7 +80,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         collateralLeverageValue: useRemoveCollateralFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage: useLlamalendEquityLeverage(),
-        equityLeverage: useEquityLeverage({ params, futurePosition }, isOpen),
+        equityLeverage: useRemoveCollateralEquityLeverage(params, isOpen),
         prevCollateral,
         leverageTotalCollateral: collateral,
         collateralDelta: userCollateral && decimalNegate(userCollateral),

@@ -1,8 +1,21 @@
 import { getEquityLeverage } from '@/llamalend/equity-leverage.utils'
+import type { CreateLoanFormQueryParams } from '@/llamalend/features/borrow/types'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import {
+  useAddCollateralFuturePosition,
+  useBorrowMoreFuturePosition,
+  useCreateLoanFuturePosition,
+  useRemoveCollateralFuturePosition,
+  useRepayFuturePosition,
+} from '@/llamalend/hooks/useFuturePosition'
+import { hasZapV2 } from '@/llamalend/llama.utils'
+import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { type UserState, useUserState } from '@/llamalend/queries/user/user-state.query'
+import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
+import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -43,3 +56,33 @@ export function useEquityLeverage(
   }
   return isEnabled && (isZapBorrow || collateralEvents.data?.isZapLeveraged) ? equityLeverage : null
 }
+
+export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
+  const { market } = useMarketContext()
+  return useEquityLeverage(
+    {
+      params,
+      futurePosition: useCreateLoanFuturePosition(params),
+      isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
+    },
+    !!params.leverageEnabled,
+  )
+}
+
+export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {
+  const { market } = useMarketContext()
+  return useEquityLeverage({
+    params,
+    futurePosition: useBorrowMoreFuturePosition(params),
+    isZapBorrow: isLeverageBorrowMore(market, params.leverageEnabled),
+  })
+}
+
+export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled = true) =>
+  useEquityLeverage({ params, futurePosition: useRepayFuturePosition(params, debt, enabled) }, enabled)
+
+export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
+  useEquityLeverage({ params, futurePosition: useAddCollateralFuturePosition(params, enabled) }, enabled)
+
+export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
+  useEquityLeverage({ params, futurePosition: useRemoveCollateralFuturePosition(params, enabled) }, enabled)

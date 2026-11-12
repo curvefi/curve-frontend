@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useCreateLoanFuturePosition } from '@/llamalend/hooks/useFuturePosition'
+import { useCreateLoanEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
@@ -144,14 +143,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
   const isEquityLeverage = useLlamalendEquityLeverage()
-  const equityLeverage = useEquityLeverage(
-    {
-      params,
-      futurePosition: useCreateLoanFuturePosition(params),
-      isZapBorrow: !!params.leverageEnabled && hasZapV2(market),
-    },
-    !!params.leverageEnabled,
-  )
+  const equityLeverage = useCreateLoanEquityLeverage(params)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
