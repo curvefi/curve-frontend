@@ -21,5 +21,5 @@ export const calculateMaximumBurn = (expected: Decimal, slippage: Decimal): Deci
   applyLpSlippage(expected, slippage, BigNumber.ROUND_CEIL)
 
 /** Value of decimal token amounts at their normalized rates. */
-export const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: Decimal[]) =>
+export const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: (Decimal | number)[]) =>
   decimalSum(...rates.map((rate, index) => maybe(amounts[index], amount => decimalMultiply(amount, rate))))

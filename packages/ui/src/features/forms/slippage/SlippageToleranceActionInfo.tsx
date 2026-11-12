@@ -18,6 +18,7 @@ export const SlippageToleranceActionInfo = ({
   type,
   active,
   userAddress,
+  disabled = false,
 }: {
   maxSlippage: Decimal | undefined
   onChanged?: (data: SlippageSettings) => void
@@ -25,6 +26,7 @@ export const SlippageToleranceActionInfo = ({
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType
   userAddress: Address | undefined
+  disabled?: boolean
 }) => {
   const [isOpen, openModal, closeModal] = useSwitch()
   return (
@@ -36,18 +38,18 @@ export const SlippageToleranceActionInfo = ({
         valueRight={
           <IconButton
             onClick={openModal}
-            disabled={!type?.length}
+            disabled={disabled || !type?.length}
             size="extraExtraSmall"
             data-testid="slippage-settings-button"
           >
-            <GearIcon sx={{ color: 'text.primary' }} />
+            <GearIcon sx={{ color: disabled ? 'text.disabled' : 'text.primary' }} />
           </IconButton>
         }
         size={size}
         testId="borrow-slippage"
       />
 
-      {isOpen != null && (
+      {!disabled && isOpen != null && (
         <SlippageSettingsModal
           type={type}
           isOpen={isOpen}

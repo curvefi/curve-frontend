@@ -34,7 +34,7 @@ export type TransactionMutationOptions<TVariables extends object, TContext exten
   /** Callback executed on successful mutation */
   onSuccess?: (data: TData, variables: TVariables, context: TContext) => unknown
   /** Callback executed to reset the form when mutation is finished successfully */
-  onReset: () => void
+  onReset?: () => void
 }
 
 /** Shared transaction lifecycle with validation, context, success notifications, and error handling. */
@@ -53,7 +53,7 @@ export function useTransactionMutation<TVariables extends object, TContext exten
   const [error, setError] = useState<Error | null>(null)
 
   // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
-  const { mutate, isPending } = useMutation({
+  const { mutate, data, isPending, isSuccess, status } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       setError(null) // Clear local error at the start of a new mutation attempt.
@@ -87,5 +87,5 @@ export function useTransactionMutation<TVariables extends object, TContext exten
     },
   })
 
-  return { mutate, error, isPending }
+  return { mutate, data, error, isPending, isSuccess, status }
 }
