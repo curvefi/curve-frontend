@@ -1,9 +1,9 @@
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { CarryAprTooltipContent } from '@/llamalend/widgets/tooltips/CarryAprTooltipContent'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
-import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
 import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
@@ -18,7 +18,7 @@ import {
   HealthCell,
   LeverageCell,
   LiquidationBufferCell,
-  LoopedAprCell,
+  CarryAprCell,
   LtvCell,
   PnlCell,
 } from '../cells/BorrowPositionCells'
@@ -34,7 +34,7 @@ import {
   getUserHealth,
   getUserLeverage,
   getUserLiquidationBuffer,
-  getUserLoopedApr,
+  getUserCarryApr,
   getUserPnlUsd,
   getUserLegacyHealth,
   getUserPositionLtv,
@@ -195,14 +195,14 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
         },
         sortUndefined: 'last',
       }),
-      columnHelper.accessor(getUserLoopedApr, {
-        id: MarketColumnId.UserLoopedApr,
-        header: MARKET_TITLES[MarketColumnId.UserLoopedApr],
-        cell: withQuery(getLeverageQuery, LoopedAprCell),
+      columnHelper.accessor(getUserCarryApr, {
+        id: MarketColumnId.UserCarryApr,
+        header: MARKET_TITLES[MarketColumnId.UserCarryApr],
+        cell: withQuery(getLeverageQuery, CarryAprCell),
         meta: {
           type: 'numeric',
           unit: 'percentage',
-          tooltip: { title: MARKET_TITLES[MarketColumnId.UserLoopedApr], body: <LoopedAprTooltipContent /> },
+          tooltip: { title: MARKET_TITLES[MarketColumnId.UserCarryApr], body: <CarryAprTooltipContent /> },
           defaultHidden: true,
         },
         sortUndefined: 'last',

@@ -35,8 +35,8 @@ export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => 
 /** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. Null when unknown. */
 export type MarketYields = { collateralYieldApr: Decimal | null; borrowedYieldApr: Decimal; borrowRewardsApr: Decimal }
 
-/** Looped APR: yearly yield on the equity after borrowing costs, in percent. Null when the equity is zero or a required rate is unknown. */
-export const getLoopedApr = (
+/** Carry APR: yearly yield on the equity after borrowing costs, in percent. Null when the equity is zero or a required rate is unknown. */
+export const getCarryApr = (
   position: UserState,
   oraclePrice: Decimal,
   borrowApr: Decimal | undefined,
@@ -54,7 +54,7 @@ export const getLoopedApr = (
 }
 
 /** How many times the collateral yield the equity earns. Null when the collateral has no positive yield. */
-export const getYieldMultiplier = (loopedApr: Decimal | null, collateralYieldApr: Decimal | null) =>
-  maybes([loopedApr, collateralYieldApr], (apr, yieldApr) =>
+export const getYieldMultiplier = (carryApr: Decimal | null, collateralYieldApr: Decimal | null) =>
+  maybes([carryApr, collateralYieldApr], (apr, yieldApr) =>
     decimalGreaterThan(yieldApr, ZERO) ? decimalDiv(apr, yieldApr) : null,
   ) ?? null

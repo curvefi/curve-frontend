@@ -140,7 +140,7 @@ export const LeverageCell = ({ row, getValue }: BorrowPositionCellProps) => (
   </Tooltip>
 )
 
-export const LoopedAprCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
+export const CarryAprCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
   <PositionMetric
     value={formatNumber(getValue(), 'percent.rate')}
     support={maybe(getUserYieldMultiplier(row), multiplier => `${formatNumber(multiplier, 'multiplier')} ${t`yield`}`)}
