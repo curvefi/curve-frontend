@@ -121,6 +121,8 @@ describe('leverage action info', () => {
           prevRates={constQ({ borrowApy: '2' })}
           rates={constQ({ borrowApy: '4' })}
           collateralApy={constQ(5)}
+          prices={constQ(null)}
+          liquidationBuffer={constQ(null)}
           oraclePrice={constQ(null)}
           gas={constQ(null)}
         />

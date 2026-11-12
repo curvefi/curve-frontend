@@ -29,15 +29,17 @@ import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { ACTION_INFO_GROUP_SX, formatAmount, formatLeverage } from './info-actions.helpers'
 
-export type LoanActionInfoListProps = {
+/** The position after the action: its range and buffer, unless the action closes it */
+type FuturePositionProps =
+  | { isFullRepay?: boolean; prices: QueryProp<Range<Decimal> | null>; liquidationBuffer: QueryProp<Decimal | null> }
+  | { isFullRepay: true; prices?: never; liquidationBuffer?: never }
+
+export type LoanActionInfoListProps = FuturePositionProps & {
   isOpen: boolean
   isApproved?: QueryProp<boolean>
   health?: QueryProp<Decimal | null>
   prevHealth?: QueryProp<Decimal | null>
-  liquidationBuffer?: QueryProp<Decimal | null>
   prevLiquidationBuffer?: QueryProp<Decimal | null>
-  isFullRepay?: boolean
-  prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
   rates?: QueryProp<BorrowRates | null>
   prevRates?: QueryProp<BorrowRates | null>

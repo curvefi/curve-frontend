@@ -10,8 +10,11 @@ export const getActionInfo = (name: string, category: TimeoutCategory, field: Ac
 export const DECIMAL_REGEX = new RegExp(FULL_DECIMAL_REGEX.source.slice(1, -1)) // remove the start and end anchors
 export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))
 
+/** Reads the value once it has loaded: while loading, the future value shows the current one under a skeleton */
 export const getActionValue = (name: string, category: TimeoutCategory, field?: ActionInfoField) =>
-  getActionInfo(name, category, field).invoke(TIMEOUTS[category], 'attr', 'data-value')
+  getActionInfo(name, category, field)
+    .should($el => expect($el.closest('.MuiSkeleton-root')).to.have.length(0))
+    .invoke(TIMEOUTS[category], 'attr', 'data-value')
 
 export const getMetricValue = (name: string, category: TimeoutCategory) =>
   cy.get(`[data-testid="${name}-value"]`, TIMEOUTS[category]).invoke(TIMEOUTS[category], 'attr', 'data-value')

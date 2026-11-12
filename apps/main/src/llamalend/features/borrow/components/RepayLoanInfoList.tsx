@@ -100,7 +100,7 @@ export function RepayLoanInfoList({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   showLeverage: boolean | undefined
   form: UseFormReturn<RepayFormData>
-  prices?: QueryProp<Range<Decimal> | null>
+  prices: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()
