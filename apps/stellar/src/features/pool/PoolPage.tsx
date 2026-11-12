@@ -3,6 +3,7 @@ import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
+import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { PoolQuery } from '@/stellar/queries/query-types'
@@ -73,7 +74,8 @@ export const PoolPage = () => {
   const tokenName = useTokenName({ network, token: pool })
 
   const isJustCreated = createdPools.includes(asAddress(pool))
-  return litePool.data || isJustCreated ? (
+  const { isTestnet } = STELLAR_NETWORKS[network]
+  return litePool.data || isJustCreated || isTestnet ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
@@ -94,9 +96,11 @@ export const PoolPage = () => {
           ),
       }}
     >
-      {isJustCreated && !litePool.data && (
+      {!litePool.data && (
         <Alert severity="warning" data-testid="pool-unlisted-warning">
-          {t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`}
+          {isTestnet
+            ? t`This testnet pool is not listed in the API. Some pool data is unavailable. Proceed with caution and verify the pool address and tokens before interacting.`
+            : t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`}
         </Alert>
       )}
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
