@@ -171,11 +171,7 @@ export const LoanActionInfoList = ({
             <ActionInfo
               label={t`Carry APR`}
               labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
-              value={
-                carryApr.future.data === undefined
-                  ? DISABLED_Q
-                  : mapQuery(carryApr.current, data => formatNumber(data, 'percent.rate'))
-              }
+              value={mapQuery(carryApr.current, data => formatNumber(data, 'percent.rate'))}
               futureValue={mapQuery(carryApr.future, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="borrow-carry-apr"
