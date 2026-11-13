@@ -71,7 +71,14 @@ export type LlamaMarket = {
   ammPrice: number
   monetaryPolicyAddress?: Address
   oracleAddress?: Address
-  parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal; adminFee: Decimal }
+  parameters: {
+    A: number | null
+    // TODO: workaround, remove once the user stats endpoints return price_low and price_high
+    basePrice: number
+    loanDiscount: Decimal
+    liquidationDiscount: Decimal
+    adminFee: Decimal
+  }
   utilizationPercent: number
   liquidity: number
   liquidityUsd: number
@@ -143,6 +150,7 @@ const convertLendingVault = (
     extraRewardApr,
     maxLtv,
     ammA,
+    basePrice,
     loanDiscount,
     liquidationDiscount,
     minBand,
@@ -206,6 +214,7 @@ const convertLendingVault = (
     oracleAddress: oracle,
     parameters: {
       A: ammA,
+      basePrice,
       loanDiscount: scaledFractionToPercent(loanDiscount),
       liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
       adminFee: scaledFractionToPercent(adminFee),
@@ -283,6 +292,7 @@ const convertMintMarket = (
     priceOracle,
     ammPrice,
     ammA,
+    basePrice,
     loanDiscount,
     liquidationDiscount,
     minBand,
@@ -353,6 +363,7 @@ const convertMintMarket = (
     oracleAddress: oracle,
     parameters: {
       A: ammA ?? null,
+      basePrice,
       loanDiscount: scaledFractionToPercent(loanDiscount),
       liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
       adminFee: '0',

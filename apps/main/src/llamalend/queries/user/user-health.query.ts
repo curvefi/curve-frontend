@@ -1,9 +1,4 @@
-import {
-  getHealth,
-  getPositionStatus,
-  type PositionHealthThresholds,
-  type PositionHealth,
-} from '@/llamalend/health.utils'
+import { getPositionHealth, type PositionHealthThresholds } from '@/llamalend/health.utils'
 import { pickDisplayLegacyHealth } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
@@ -13,7 +8,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import { decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply, decimalPercent, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { useMarketOraclePrice } from '../market/market-oracle-price.query'
 import { validateIsFull } from '../validation/borrow-fields.validation'
@@ -63,24 +57,16 @@ export const usePositionHealth = (params: UserMarketParams, thresholds: Position
       useUserDiscounts(params, useNewLlamalendHealth()),
     ],
     (oraclePrice, prices, liquidationBuffer, healthFull, { debt }, { loanDiscount, liquidationDiscount }) =>
-      maybe(prices, (prices): PositionHealth => {
-        const health = getHealth(oraclePrice, prices)
-        // The Controller's `liquidate()` ignores the liquidation buffer: it checks `health(user, full=true) < 0`.
-        // Full health also counts the price distance above the range, so a negative buffer alone is not liquidatable.
-        const isLiquidatable = decimalGreaterThan(ZERO, healthFull)
-        return {
-          health,
+      maybe(prices, prices =>
+        getPositionHealth({
+          oraclePrice,
+          prices,
           liquidationBuffer,
-          liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
-          liquidationBufferShare: decimalDiv(
-            liquidationBuffer,
-            decimalMinus(
-              decimalPercent(decimalMinus('100', liquidationDiscount), decimalMinus('100', loanDiscount)),
-              '100',
-            ),
-          ),
-          isLiquidatable,
-          status: getPositionStatus({ health, isLiquidatable, oraclePrice, prices, thresholds }),
-        }
-      }),
+          healthFull,
+          debt,
+          loanDiscount,
+          liquidationDiscount,
+          thresholds,
+        }),
+      ),
   )

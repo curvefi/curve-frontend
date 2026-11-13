@@ -1,18 +1,21 @@
-import { LegacyLiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LegacyLiquidationBufferTooltipContent'
+import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
+import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
+import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { combineQueries } from '@ui/features/queries/combine'
 import { withQuery } from '@ui/features/tables/withQuery'
 import { t } from '@ui/lib/i18n'
 import {
   BandCountCell,
   CollateralCompositionCell,
+  DistanceToRangeCell,
   EquityCell,
-  HealthFactorCell,
+  HealthCell,
   LeverageCell,
   LiquidationBufferCell,
   LoopedAprCell,
@@ -27,7 +30,8 @@ import {
   getUserCollateralShare,
   getUserCollateralUsd,
   getUserEquityUsd,
-  getUserHealthFactor,
+  getUserDistanceToRange,
+  getUserHealth,
   getUserLeverage,
   getUserLiquidationBuffer,
   getUserLoopedApr,
@@ -134,11 +138,35 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       adapt(userCollateralColumn, { header: t`Collateral`, meta: { defaultHidden: true } }),
       adapt(userLtvColumn, { header: t`LTV ratio`, meta: { defaultHidden: true } }),
       borrowRateColumn,
-      columnHelper.accessor(getUserHealthFactor, {
+      columnHelper.accessor(getUserHealth, {
         id: MarketColumnId.UserHealth,
         header: MARKET_TITLES[MarketColumnId.UserHealth],
-        cell: withQuery(getStatsQuery, HealthFactorCell),
-        meta: { type: 'numeric' },
+        cell: withQuery(getStatsQuery, HealthCell),
+        meta: {
+          type: 'numeric',
+          tooltip: { title: MARKET_TITLES[MarketColumnId.UserHealth], body: <HealthTooltipContent /> },
+        },
+        sortUndefined: 'last',
+      }),
+      columnHelper.accessor(getUserDistanceToRange, {
+        id: MarketColumnId.UserDistanceToRange,
+        header: MARKET_TITLES[MarketColumnId.UserDistanceToRange],
+        cell: withQuery(getStatsQuery, DistanceToRangeCell),
+        meta: {
+          type: 'numeric',
+          unit: 'percentage',
+          tooltip: {
+            title: MARKET_TITLES[MarketColumnId.UserDistanceToRange],
+            body: (
+              <TooltipWrapper>
+                <TooltipDescription
+                  text={t`How far the oracle price must move to reach your liquidation range. Shown below are the bottom and top prices of the range.`}
+                />
+              </TooltipWrapper>
+            ),
+          },
+          defaultHidden: true,
+        },
         sortUndefined: 'last',
       }),
       columnHelper.accessor(getUserLiquidationBuffer, {
@@ -150,7 +178,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
           unit: 'percentage',
           tooltip: {
             title: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
-            body: <LegacyLiquidationBufferTooltipContent />,
+            body: <LiquidationBufferTooltipContent />,
           },
           defaultHidden: true,
         },

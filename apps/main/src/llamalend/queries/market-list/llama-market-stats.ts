@@ -1,14 +1,15 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
-import { getLegacyHealthValues } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
+import { getPositionHealth, getPositionHealthThresholds, getRangePrices } from '@/llamalend/health.utils'
 import {
   getDisplayLegacyHealth,
   getLegacyLiquidationStatus,
   isBelowRange,
   isZapV0MintMarket,
 } from '@/llamalend/llama.utils'
+import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -36,15 +37,21 @@ type TokenPriceEntry = { chainId: number; tokenAddress: Address }
 
 const getTokenPriceKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chainId}:${tokenAddress.toLowerCase()}`
 
-const normalizeMarketStats = (stats: BorrowStats) => {
+const normalizeMarketStats = (stats: BorrowStats, { parameters, blockchainId, controllerAddress }: LlamaMarket) => {
   const convertedBorrowed = 'stablecoin' in stats ? stats.stablecoin : stats.borrowed
   const oraclePrice = decimal(stats.oraclePrice)
   const position = maybes(
     [decimal(stats.collateral), decimal(convertedBorrowed), decimal(stats.debt)],
     (collateral, convertedBorrowed, debt): UserState => ({ collateral, convertedBorrowed, debt }),
   )
+  const rangePrices = maybes([decimal(parameters.basePrice), parameters.A], (basePrice, A) =>
+    getRangePrices({ basePrice, A, bands: [stats.n1, stats.n2] }),
+  )
+  const healthThresholds = getPositionHealthThresholds(
+    getMarketAssetsType(requireChainId(blockchainId), controllerAddress),
+  )
   return {
-    status: getLegacyLiquidationStatus(
+    legacyStatus: getLegacyLiquidationStatus(
       decimal(stats.health),
       stats.softLiquidation,
       isBelowRange(stats.activeBand, stats.n2),
@@ -52,12 +59,23 @@ const normalizeMarketStats = (stats: BorrowStats) => {
       decimal(convertedBorrowed),
     ),
     legacyHealth: getDisplayLegacyHealth(stats.healthFull, stats.health) ?? undefined,
-    healthFactor: maybes(
-      [decimal(stats.healthFull), decimal(stats.health)],
-      (full, notFull) => getLegacyHealthValues(full, notFull).healthFactor,
+    rangePrices,
+    positionHealth: maybes(
+      [oraclePrice, rangePrices, decimal(stats.health), decimal(stats.healthFull), decimal(stats.debt)],
+      (oraclePrice, prices, liquidationBuffer, healthFull, debt) =>
+        getPositionHealth({
+          oraclePrice,
+          prices,
+          liquidationBuffer,
+          healthFull,
+          debt,
+          // TODO: workaround, use the user's loan discount, liquidation_discount and extra_health once the user stats endpoints return them
+          loanDiscount: parameters.loanDiscount,
+          liquidationDiscount: parameters.liquidationDiscount,
+          thresholds: healthThresholds,
+        }),
     ),
-    /** Band-valued health in percent of the debt, for the liquidation buffer */
-    healthNotFull: decimal(stats.health),
+    healthThresholds,
     bandCount: stats.n,
     borrowed: stats.debt,
     collateral: stats.collateral,
@@ -180,7 +198,7 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     return markets.map(market => {
       if (!market.userHasPositions) return { ...market, positionQueries: EMPTY_POSITION_QUERIES }
 
-      const stats = mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats)
+      const stats = mapQuery(statsByMarket.get(market) ?? DISABLED_Q, stats => normalizeMarketStats(stats, market))
       const prices = {
         borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
         collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),

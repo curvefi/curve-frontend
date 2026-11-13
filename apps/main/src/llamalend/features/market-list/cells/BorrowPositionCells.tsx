@@ -1,28 +1,35 @@
+import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/position-status'
+import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
+import { getHealthTextColor, getLiquidationBufferTextColor } from '@/llamalend/health.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { OpeningLeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
+import { Badge } from '@ui/components/Badge'
 import { Tooltip } from '@ui/components/Tooltip'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
-import { getUserLiquidationBufferAmount, getUserYieldMultiplier } from '../user-position.utils'
+import { getUserYieldMultiplier } from '../user-position.utils'
 
 const { Spacing } = SizesAndSpaces
 
 type BorrowPositionCellProps = CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>
 
-/** A metric of the borrow position, with an optional support line below it */
-const PositionMetric = ({ value, support }: { value: string; support?: string }) => (
+/** A metric of the borrow position, with an optional colour and support line below it */
+const PositionMetric = ({ value, color, support }: { value: string; color?: string; support?: string }) => (
   <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
-    <Typography variant="tableCellValueStrong">{value}</Typography>
+    <Typography variant="tableCellValueStrong" sx={{ color }}>
+      {value}
+    </Typography>
     {support && (
       <Typography variant="tableCellSupport" color="textSecondary">
         {support}
@@ -72,14 +79,51 @@ export const LtvCell = ({ getValue }: BorrowPositionCellProps) => (
   </Tooltip>
 )
 
-export const HealthFactorCell = ({ getValue }: BorrowPositionCellProps) => (
-  <PositionMetric value={formatNumber(getValue(), 'health')} />
-)
+/** Health of the borrow position, with its status below it */
+export const HealthCell = ({ row: { original: row } }: BorrowPositionCellProps) => {
+  const theme = useTheme()
+  const { positionHealth, healthThresholds } = row.positionQueries.stats.data ?? {}
+  return (
+    maybes([positionHealth, healthThresholds], (positionHealth, thresholds) => (
+      <Tooltip title={t`Health`} body={<HealthTooltipContent status={positionHealth.status} />} placement="top">
+        <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
+          <Typography
+            variant="tableCellValueStrong"
+            sx={{ color: getHealthTextColor(positionHealth, thresholds, theme) }}
+          >
+            {formatNumber(positionHealth.health, 'health')}
+          </Typography>
+          <Badge size="extraSmall" {...POSITION_STATUS_BADGE[positionHealth.status]} />
+        </Stack>
+      </Tooltip>
+    )) ?? <PositionMetric value={UNAVAILABLE_NOTATION} />
+  )
+}
 
-export const LiquidationBufferCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
+/** Liquidation buffer of the borrow position in % of debt, with the buffer in the borrowed token below it */
+export const LiquidationBufferCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => {
+  const theme = useTheme()
+  const { positionHealth, healthThresholds } = row.positionQueries.stats.data ?? {}
+  return (
+    <PositionMetric
+      value={formatNumber(getValue(), 'percent.value')}
+      color={maybes([positionHealth, healthThresholds], (positionHealth, thresholds) =>
+        getLiquidationBufferTextColor(positionHealth, thresholds, theme),
+      )}
+      support={maybe(positionHealth, ({ liquidationBufferAmount }) =>
+        formatToken(liquidationBufferAmount, row.assets.borrowed.symbol),
+      )}
+    />
+  )
+}
+
+/** How far the oracle price is from the liquidation range, with the range prices below it */
+export const DistanceToRangeCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
   <PositionMetric
-    value={formatNumber(getValue(), 'percent.value')}
-    support={maybe(getUserLiquidationBufferAmount(row), amount => formatToken(amount, row.assets.borrowed.symbol))}
+    value={getValue() === 0 ? t`In range` : formatNumber(getValue(), 'percent.delta')}
+    support={maybe(row.positionQueries.stats.data?.rangePrices, prices =>
+      prices.map(price => formatNumber(price, 'token.precise')).join(' – '),
+    )}
   />
 )
 

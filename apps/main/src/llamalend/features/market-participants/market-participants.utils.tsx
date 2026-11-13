@@ -1,6 +1,7 @@
 import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamalend'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -46,31 +47,38 @@ export const Health = ({ health }: Pick<BorrowerRow, 'health'>) => (
   <Typography variant="tableCellValue">{formatNumber(health, 'percent.value')}</Typography>
 )
 
-export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row: { original: borrower } }) => (
-  <MetricsGrid variant="mobileRows">
-    <MetricExpandedPanel
-      label={notFalsy(t`Collateral`, borrower.collateralToken?.symbol && `(${borrower.collateralToken.symbol})`).join(
-        ' ',
-      )}
-      value={borrower.collateral}
-      notional={constQ({ value: borrower.collateralUsd, unit: 'dollar' })}
-      icon={{
-        blockchainId: borrower.blockchainId,
-        token: { address: getAddressOrPair(borrower.blockchainId, borrower.collateralToken?.address) },
-      }}
-    />
-    <MetricExpandedPanel
-      label={notFalsy(t`Loan`, borrower.borrowToken?.symbol && `(${borrower.borrowToken.symbol})`).join(' ')}
-      value={borrower.debt}
-      notional={constQ({ value: borrower.debtUsd, unit: 'dollar' })}
-      icon={{
-        blockchainId: borrower.blockchainId,
-        token: { address: getAddressOrPair(borrower.blockchainId, borrower.borrowToken?.address) },
-      }}
-    />
-    <MetricExpandedPanel label={t`Health`} value={borrower.health} valueOptions={{ unit: 'percentage' }} />
-  </MetricsGrid>
-)
+const useBorrowerHealthLabel = () => (useNewLlamalendHealth() ? t`Liquidation buffer` : t`Health`)
+
+export const BorrowerHealthHeader = () => <>{useBorrowerHealthLabel()}</>
+
+export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row: { original: borrower } }) => {
+  const healthLabel = useBorrowerHealthLabel()
+  return (
+    <MetricsGrid variant="mobileRows">
+      <MetricExpandedPanel
+        label={notFalsy(t`Collateral`, borrower.collateralToken?.symbol && `(${borrower.collateralToken.symbol})`).join(
+          ' ',
+        )}
+        value={borrower.collateral}
+        notional={constQ({ value: borrower.collateralUsd, unit: 'dollar' })}
+        icon={{
+          blockchainId: borrower.blockchainId,
+          token: { address: getAddressOrPair(borrower.blockchainId, borrower.collateralToken?.address) },
+        }}
+      />
+      <MetricExpandedPanel
+        label={notFalsy(t`Loan`, borrower.borrowToken?.symbol && `(${borrower.borrowToken.symbol})`).join(' ')}
+        value={borrower.debt}
+        notional={constQ({ value: borrower.debtUsd, unit: 'dollar' })}
+        icon={{
+          blockchainId: borrower.blockchainId,
+          token: { address: getAddressOrPair(borrower.blockchainId, borrower.borrowToken?.address) },
+        }}
+      />
+      <MetricExpandedPanel label={healthLabel} value={borrower.health} valueOptions={{ unit: 'percentage' }} />
+    </MetricsGrid>
+  )
+}
 
 export const SupplierExpandedPanel: ExpandedPanelComponent<SupplierRow> = ({ row: { original: supplier } }) => (
   <MetricsGrid variant="mobileRows">
