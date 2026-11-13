@@ -6,6 +6,7 @@ import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.u
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayControllerApproval } from '@/llamalend/queries/repay/repay-controller-approval.query'
+import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
@@ -22,7 +23,7 @@ import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
-import { type AllowUndefined, q, type Range } from '@ui/features/queries/util'
+import { type AllowUndefined, mapQuery, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
@@ -141,6 +142,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isControllerApproved: q(isControllerApproved),
     delegationModal,
     isApproved: q(useRepayIsApproved(params)),
+    exchangeRate: mapQuery(useRepayExpectedBorrowed(params), data => data.avgPrice ?? null),
     priceImpact: q(useRepayPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,

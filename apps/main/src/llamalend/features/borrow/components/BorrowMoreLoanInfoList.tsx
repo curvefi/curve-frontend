@@ -1,5 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
+import { useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -29,7 +29,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   isControllerApproved,
   tokens: { collateralToken, borrowToken },
   leverageEnabled,
-  equityLeverage,
   form,
   controllerAddress,
   marketType,
@@ -41,15 +40,14 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
   leverageEnabled: boolean | undefined
-  equityLeverage: EquityLeverage | null
   form: UseFormReturn<BorrowMoreForm>
 }) {
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
 
-  const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
-  const totalCollateral = expectedCollateralQuery.data?.totalCollateral
+  const expectedCollateral = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
+  const totalCollateral = expectedCollateral.data?.totalCollateral
   const collateralDelta = leverageEnabled ? totalCollateral : userCollateral
   return (
     <LoanActionInfoList
@@ -77,12 +75,15 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         collateralLeverageValue: useBorrowMoreFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage: useLlamalendEquityLeverage(),
-        equityLeverage,
+        equityLeverage: useBorrowMoreEquityLeverage(params),
         prevCollateral,
         leverageTotalCollateral: combineQueries(
-          [prevCollateral, leverageEnabled ? expectedCollateralQuery : constQ(null)],
-          (prevCollateral, expected) =>
-            maybes([prevCollateral, (expected ? expected.totalCollateral : userCollateral) ?? ZERO], decimalSum),
+          [prevCollateral, leverageEnabled ? expectedCollateral : constQ(null)],
+          (prevCollateral, expectedCollateral) =>
+            maybes(
+              [prevCollateral, (expectedCollateral ? expectedCollateral.totalCollateral : userCollateral) ?? ZERO],
+              decimalSum,
+            ),
         ),
         collateralDelta,
       })}

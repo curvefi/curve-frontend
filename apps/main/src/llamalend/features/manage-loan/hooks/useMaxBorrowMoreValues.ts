@@ -40,9 +40,11 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   const maxReceive = useBorrowMoreMaxReceiveQueries(params)
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv })
 
-  useFormSync(form, { maxCollateral: maxUserCollateral.data })
-  useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
-  useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
+  useFormSync(form, {
+    maxCollateral: maxUserCollateral.data,
+    maxBorrowed: maxUserBorrowed.data,
+    maxDebt: maxReceive.data?.maxDebt,
+  })
   // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
   useFormSync(form, {
     leverageEnabled: maybe(

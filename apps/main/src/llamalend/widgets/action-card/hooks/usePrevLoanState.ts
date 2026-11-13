@@ -6,8 +6,7 @@ import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Token } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 
 /**
  * Shared hook for the "prev" (before-action) loan state fields passed to LoanActionInfoList.
@@ -18,24 +17,17 @@ export function usePrevLoanState<ChainId extends IChainId>(
     params,
     collateralToken,
     borrowToken,
-    prevPrices,
-  }: {
-    params: UserMarketParams<ChainId>
-    collateralToken: Token | undefined
-    borrowToken: Token | undefined
-    prevPrices?: QueryProp<Range<Decimal> | null>
-  },
+  }: { params: UserMarketParams<ChainId>; collateralToken: Token | undefined; borrowToken: Token | undefined },
   enabled = true,
 ) {
   const userState = q(useUserState(params, enabled))
   const prevDebt = mapQuery(userState, ({ debt }) => debt)
   const prevCollateral = mapQuery(userState, ({ collateral }) => collateral)
-  const userPrevPrices = q(useUserPrices(params, enabled && !prevPrices))
   return {
     prevDebt,
     prevCollateral,
     prevHealth: q(useHealthQueries(isFull => getUserHealthOptions({ ...params, isFull }, enabled))),
-    prevPrices: prevPrices ?? userPrevPrices,
+    prevPrices: q(useUserPrices(params, enabled)),
     prevLoanToValue: q(
       useLoanToValueFromUserState(
         {
