@@ -1,9 +1,7 @@
 import { StellarErrorPage } from '@/stellar/components/StellarErrorPage'
 import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
-import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
-import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { PoolQuery } from '@/stellar/queries/query-types'
@@ -18,15 +16,14 @@ import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { useCreatedPools } from '@ui/features/storage/useSessionStorage'
 import { useLocation, useParams } from '@ui/hooks/router'
-import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { StellarPages } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
 import { SwapTab } from '../swap/SwapTab'
 import { OneCoinWithdrawTab } from '../withdraw/OneCoinWithdrawTab'
 import { PoolAdvancedDetails } from './PoolAdvancedDetails'
+import { useIsRegisteredPool } from './useIsRegisteredPool'
 import { useLitePool } from './useLitePool'
 import { usePoolComposition } from './usePoolComposition'
 import { usePoolTokens } from './usePoolTokens'
@@ -64,19 +61,17 @@ export const PoolPage = () => {
   const { network, pool } = useParams<PoolQuery>()
   const { defaultTab } = useLocation().state as RouterState
   const { address: account } = useWallet()
-  const [createdPools] = useCreatedPools(network)
   const params = { network, pool }
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
-  const { query: litePool, isMissing } = useLitePool(params)
+  const { query: litePool } = useLitePool(params)
+  const { data: isRegistered, isLoading, error } = useIsRegisteredPool(params, config, litePool)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, symbols, decimals } = usePoolTokens({ network, account, tokenAddresses }) ?? {}
   const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals })
   const tokenName = useTokenName({ network, token: pool })
 
-  const isJustCreated = createdPools.includes(asAddress(pool))
-  const isUnlisted = isJustCreated || (STELLAR_NETWORKS[network].isTestnet && !IS_CYPRESS && isMissing)
-  return litePool.data || isUnlisted ? (
+  return isRegistered ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
@@ -98,10 +93,10 @@ export const PoolPage = () => {
       }}
     >
       {!litePool.data && (
-        <Alert severity="warning" data-testid="pool-unlisted-warning">
-          {isJustCreated
-            ? t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`
-            : t`This testnet pool is not listed in the API. Some pool data is unavailable. Proceed with caution and verify the pool address and tokens before interacting.`}
+        <Alert severity={litePool.isLoading ? 'info' : 'warning'} data-testid="pool-unlisted-warning">
+          {litePool.isLoading
+            ? t`Pool data is still loading. Some information is not available yet.`
+            : t`Some pool data is unavailable from the API.`}
         </Alert>
       )}
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
@@ -109,14 +104,14 @@ export const PoolPage = () => {
       <PoolCompositionCard {...composition} />
       <PoolAdvancedDetails network={network} pool={pool} tokens={tokens} litePool={litePool} />
     </DetailPageLayout>
-  ) : isMissing || litePool.error ? (
+  ) : isLoading ? (
+    <Loading />
+  ) : (
     <StellarErrorPage
-      title={litePool.error ? t`Error` : '404'}
-      subtitle={litePool.error?.message ?? t`Pool Not Found`}
-      error={litePool.error}
+      title={error ? t`Error` : '404'}
+      subtitle={error?.message ?? t`Pool Not Found`}
+      error={error}
       continueUrl={StellarPages.pools({ network })}
     />
-  ) : (
-    <Loading />
   )
 }
