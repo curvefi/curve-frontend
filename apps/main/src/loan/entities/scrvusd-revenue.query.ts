@@ -1,5 +1,6 @@
 import { getRevenue, type Revenue } from '@curvefi/prices-api/savings'
 import { weiToEther } from '@evm-ui/utils'
+import { range } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
@@ -46,12 +47,9 @@ const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
 }
 
 const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
-  const pages = 1
-  const dataPerPage = 300
-
-  const data = await getRevenue(pages, dataPerPage)
-
-  return { ...data, epochs: organizeDataIntoEpochs(data.history) }
+  const pages = await Promise.all(range(1, 3).map(page => getRevenue(page)))
+  const history = pages.flatMap(p => p.history)
+  return { ...pages[0], history, epochs: organizeDataIntoEpochs(history) }
 }
 
 export const { useQuery: useScrvUsdRevenue } = queryFactory({

@@ -20,7 +20,7 @@ import { useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { REFUEL_TIMESERIES_PAGE_SIZE, RefuelTimeSeriesData, useRefuelTimeseries } from '../queries/timeseries.query'
+import { RefuelTimeSeriesData, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces
 
@@ -78,13 +78,7 @@ export const RefuelPricesChart = ({
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const timeSeries = useRefuelTimeseries({
-    blockchainId,
-    poolAddress,
-    start,
-    end,
-    pageSize: REFUEL_TIMESERIES_PAGE_SIZE,
-  })
+  const timeSeries = useRefuelTimeseries({ blockchainId, poolAddress, start, end })
 
   const theme = useTheme()
   const palette = createPalette({ theme })

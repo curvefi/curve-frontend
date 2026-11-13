@@ -28,12 +28,12 @@ export async function getUserLocks(user: string, options?: Options) {
 
 export async function getLockers(options?: Options) {
   const host = getHost(options)
-  const fs = (page: number) =>
-    fetch(`${host}/v1/dao/lockers?pagination=1000&page=${page}`).then(response =>
+  const fs = (page: number, pagination: number) =>
+    fetch(`${host}/v1/dao/lockers?pagination=${pagination}&page=${page}`).then(response =>
       Schema.getLockersResponse.parse(response),
     )
 
-  return paginate(fs, 1, 100)
+  return paginate(fs, { page: 1 })
 }
 
 export async function getLockersTop(top: number, options?: Options) {

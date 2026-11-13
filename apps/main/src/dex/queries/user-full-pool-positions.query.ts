@@ -18,8 +18,7 @@ export const {
   queryFn: async ({ chainId, userAddress }: UserChainQuery) => {
     const positions = await paginate(
       async (page, pagination) => (await getUserPoolPositions({ chainId, userAddress, page, pagination })).positions,
-      1,
-      MAX_USER_POOL_PAGE_SIZE,
+      { page: 1, offset: MAX_USER_POOL_PAGE_SIZE },
     )
 
     return positions.map(position => ({
