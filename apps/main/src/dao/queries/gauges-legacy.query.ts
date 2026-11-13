@@ -44,17 +44,21 @@ type CurveApiLendingGauge = CurveApiBaseGauge & {
   lendingVaultAddress: string
 }
 
-type CurveApiFundraisingGauge = CurveApiBaseGauge & {
+type CurveApiBaseUrllessGauge = CurveApiBaseGauge & {
   isPool: false
   gaugeType: string
   lendingVaultUrls?: null
   poolUrls?: null
-  swap: string
-  swap_token: string
-  type: 'fundraising'
 }
 
-export type CurveApiGaugeData = CurveApiPoolGauge | CurveApiLendingGauge | CurveApiFundraisingGauge
+type CurveApiFundraisingGauge = CurveApiBaseUrllessGauge & { swap: string; swap_token: string; type: 'fundraising' }
+
+type CurveApiLmCallbackGauge = CurveApiBaseUrllessGauge & {
+  lmCallback: { ammAddress: string; collateralTokenAddress: string; lendingVaultAddress: string }
+}
+
+export type CurveApiGaugeData =
+  CurveApiPoolGauge | CurveApiLendingGauge | CurveApiFundraisingGauge | CurveApiLmCallbackGauge
 
 type CurveGaugeResponse = { success: boolean; data: Record<string, CurveApiGaugeData>; generatedTimeMs: number }
 
@@ -70,7 +74,7 @@ export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) =>
       : gaugeData.isPool
         ? // Legacy pool URLs have a hash fragment; redirects have been removed. This is a legacy query anyway and most likely be removed in the future.
           gaugeData.poolUrls.deposit[0]?.replace('/#/', '/')
-        : gaugeData.lendingVaultUrls.deposit,
+        : gaugeData.lendingVaultUrls?.deposit,
   )
 
 /**

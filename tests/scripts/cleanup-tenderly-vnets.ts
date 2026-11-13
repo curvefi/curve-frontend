@@ -109,7 +109,7 @@ async function cleanup() {
 }
 
 /**
- * Run with Node 24: node tests/scripts/cleanup-tenderly-vnets.ts
+ * Run with Node 26.13.1: node tests/scripts/cleanup-tenderly-vnets.ts
  * Pause environment creation first; this script batch-deletes environments until the project is empty.
  * @see https://docs.tenderly.co/api-reference/virtual-environments/batch-delete-environments
  */
