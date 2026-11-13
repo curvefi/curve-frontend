@@ -20,6 +20,7 @@ import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCreatedPools } from '@ui/features/storage/useSessionStorage'
 import { useLocation, useParams } from '@ui/hooks/router'
+import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { StellarPages } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
@@ -74,8 +75,8 @@ export const PoolPage = () => {
   const tokenName = useTokenName({ network, token: pool })
 
   const isJustCreated = createdPools.includes(asAddress(pool))
-  const { isTestnet } = STELLAR_NETWORKS[network]
-  return litePool.data || isJustCreated || isTestnet ? (
+  const allowUnlisted = STELLAR_NETWORKS[network].isTestnet && !IS_CYPRESS
+  return litePool.data || isJustCreated || allowUnlisted ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
@@ -98,7 +99,7 @@ export const PoolPage = () => {
     >
       {!litePool.data && (
         <Alert severity="warning" data-testid="pool-unlisted-warning">
-          {isTestnet
+          {allowUnlisted
             ? t`This testnet pool is not listed in the API. Some pool data is unavailable. Proceed with caution and verify the pool address and tokens before interacting.`
             : t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`}
         </Alert>
