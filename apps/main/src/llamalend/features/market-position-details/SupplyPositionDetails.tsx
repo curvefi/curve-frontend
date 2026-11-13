@@ -3,7 +3,7 @@ import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketCampaigns } from '@/llamalend/features/market-list/hooks/useMarketCampaigns'
-import { isLendMarket } from '@/llamalend/llama.utils'
+import { isLendMarket, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
@@ -181,12 +181,11 @@ export const SupplyPositionDetails = () => {
         <Metric
           category={METRIC_CATEGORY}
           label={t`Amount supplied`}
-          value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
-          valueOptions={{ unit: 'dollar' }}
-          notional={mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
-            value: depositedAmount,
-            unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
-          }))}
+          {...tokenMetric({
+            value: mapQuery(supplyAsset, ({ depositedAmount }) => depositedAmount),
+            symbol: market.borrowed_token.symbol,
+            usdRate: mapQuery(supplyAsset, ({ usdRate }) => usdRate),
+          })}
           valueTooltip={{
             title: t`Amount Supplied`,
             body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} />,

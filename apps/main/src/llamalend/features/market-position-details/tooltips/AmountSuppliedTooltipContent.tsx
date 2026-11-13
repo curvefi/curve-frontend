@@ -25,7 +25,7 @@ export const AmountSuppliedTooltipContent = ({
   supplyAsset: QueryProp<SupplyAsset>
 }) => {
   const { totalShares: value, gauge: staked } = balances ?? {}
-  const { symbol, depositedAmount } = supplyAsset ?? {}
+  const { symbol, depositedAmount, depositedUsdValue } = supplyAsset ?? {}
 
   const unstaked = maybes([value, staked], (value, staked) => decimalMinus(value, staked))
   const unstakedPercentage = maybes([value, unstaked], (value, unstaked) =>
@@ -54,6 +54,7 @@ export const AmountSuppliedTooltipContent = ({
       <TooltipItem variant="primary" title={t`Total supplied`}>
         {maybes([depositedAmount, symbol], (depositedAmount, symbol) => formatToken(depositedAmount, symbol)) ??
           UNAVAILABLE_NOTATION}
+        {formatNumber(depositedUsdValue, 'usd.notional')}
       </TooltipItem>
     </TooltipWrapper>
   )
