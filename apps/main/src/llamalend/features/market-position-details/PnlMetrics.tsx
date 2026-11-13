@@ -16,10 +16,20 @@ type PnlMetricsProps = PositionPnlAndEquityQueries & {
   borrowSymbol: string | undefined
   collateralSymbol: string | undefined
   borrowUsdRate: QueryProp<Amount>
+  /** Shows the USD value below Equity and PNL */
+  showNotional: boolean
 }
 
 /** Equity and PNL (ROI %) in the borrowed token, each with its USD value */
-export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrowUsdRate }: PnlMetricsProps) => {
+export const PnlMetrics = ({
+  equity,
+  pnl,
+  borrowSymbol,
+  collateralSymbol,
+  borrowUsdRate,
+  showNotional,
+}: PnlMetricsProps) => {
+  const equityMetric = tokenMetric({ value: equity, symbol: borrowSymbol, usdRate: borrowUsdRate })
   const pnlMetric = tokenMetric({
     value: mapQuery(pnl, pnl => pnl?.debt.pnl ?? null),
     symbol: borrowSymbol,
@@ -32,7 +42,8 @@ export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrow
         label={t`Equity`}
         sx={{ gridArea: 'equity' }}
         valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-        {...tokenMetric({ value: equity, symbol: borrowSymbol, usdRate: borrowUsdRate })}
+        {...equityMetric}
+        notional={showNotional ? equityMetric.notional : undefined}
       />
       <Metric
         category={BORROW_METRIC_CATEGORY}
@@ -40,6 +51,7 @@ export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrow
         sx={{ gridArea: 'pnl' }}
         labelTooltip={{ title: t`PNL (ROI %)`, body: <PnlTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...pnlMetric}
+        notional={showNotional ? pnlMetric.notional : undefined}
         valueOptions={{ ...pnlMetric.valueOptions, fallback: UNAVAILABLE_NOTATION }}
         change={maybe(pnl.data?.debt.roi, Number)}
         valueTooltip={maybe(pnl.data, ({ debt, collateral }) => ({

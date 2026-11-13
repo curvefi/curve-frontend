@@ -26,10 +26,13 @@ export const HealthDetails = ({
   position,
   thresholds,
   borrowSymbol,
+  showAmount,
 }: {
   position: QueryProp<PositionHealth>
   thresholds: PositionHealthThresholds
   borrowSymbol: string | undefined
+  /** Shows the liquidation buffer in the borrowed token below its percentage */
+  showAmount: boolean
 }) => {
   const theme = useTheme()
   const { data } = position
@@ -82,9 +85,11 @@ export const HealthDetails = ({
         testId="health-details-liquidation-buffer-metric"
         sx={{ gridArea: 'buffer' }}
         value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
-        notional={mapQuery(position, ({ liquidationBufferAmount }) =>
-          formatAmount(liquidationBufferAmount, borrowSymbol),
-        )}
+        notional={
+          showAmount
+            ? mapQuery(position, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))
+            : undefined
+        }
         valueOptions={{
           abbreviate: false,
           color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds, theme)),

@@ -49,6 +49,7 @@ const HealthDetailsStory = ({
         position={q({ data, isLoading, error: null })}
         thresholds={getPositionHealthThresholds(assetsType)}
         borrowSymbol="crvUSD"
+        showAmount
       />
     </MetricsGrid>
   )
