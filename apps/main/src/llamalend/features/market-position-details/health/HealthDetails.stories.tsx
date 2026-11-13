@@ -44,7 +44,7 @@ const HealthDetailsStory = ({
     }),
   )
   return (
-    <MetricsGrid>
+    <MetricsGrid sx={{ gridTemplateAreas: '"health buffer"' }}>
       <HealthDetails
         position={q({ data, isLoading, error: null })}
         thresholds={getPositionHealthThresholds(assetsType)}

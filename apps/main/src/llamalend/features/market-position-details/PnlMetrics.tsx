@@ -30,12 +30,14 @@ export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrow
       <Metric
         category={BORROW_METRIC_CATEGORY}
         label={t`Equity`}
+        sx={{ gridArea: 'equity' }}
         valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...tokenMetric({ value: equity, symbol: borrowSymbol, usdRate: borrowUsdRate })}
       />
       <Metric
         category={BORROW_METRIC_CATEGORY}
         label={t`PNL (ROI %)`}
+        sx={{ gridArea: 'pnl' }}
         labelTooltip={{ title: t`PNL (ROI %)`, body: <PnlTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...pnlMetric}
         valueOptions={{ ...pnlMetric.valueOptions, fallback: UNAVAILABLE_NOTATION }}

@@ -35,7 +35,7 @@ export const HealthDetails = ({
   const { data } = position
   return (
     <>
-      <Stack sx={{ gridRow: 'span 2', alignItems: 'start', gap: Spacing.xs }}>
+      <Stack sx={{ gridArea: 'health', alignItems: 'start', gap: Spacing.xs }}>
         <Metric
           category="llamalend.positionHealth"
           label={t`Health`}
@@ -80,6 +80,7 @@ export const HealthDetails = ({
           ...BORROW_METRIC_TOOLTIP,
         }}
         testId="health-details-liquidation-buffer-metric"
+        sx={{ gridArea: 'buffer' }}
         value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
         notional={mapQuery(position, ({ liquidationBufferAmount }) =>
           formatAmount(liquidationBufferAmount, borrowSymbol),

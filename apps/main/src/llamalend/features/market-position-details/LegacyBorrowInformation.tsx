@@ -1,8 +1,6 @@
-import type { ReactNode } from 'react'
 import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
 import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import {
   formatCollateralNotional,
   isPositionLeveraged,
@@ -30,15 +28,13 @@ import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } from './market-position-details.utils'
-import { PnlMetrics } from './PnlMetrics'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 
-type LegacyBorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; children?: ReactNode }
+type LegacyBorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
 export const LegacyBorrowInformation = ({
   params,
   tokens: { collateralToken, borrowToken },
-  children,
 }: LegacyBorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
@@ -51,7 +47,6 @@ export const LegacyBorrowInformation = ({
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
   const oraclePrice = useMarketOraclePrice(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
-  const positionPnl = usePositionPnlAndEquity(params)
 
   const { collateral, convertedBorrowed: borrowed } = userStateValue ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
@@ -63,7 +58,6 @@ export const LegacyBorrowInformation = ({
 
   return (
     <MetricsGrid variant="mobileRows">
-      {children}
       <Metric
         category={BORROW_METRIC_CATEGORY}
         label={t`Collateral value`}
@@ -140,14 +134,6 @@ export const LegacyBorrowInformation = ({
                 }
               : undefined
           }
-        />
-      )}
-      {positionPnl && (
-        <PnlMetrics
-          {...positionPnl}
-          borrowSymbol={borrowToken?.symbol}
-          collateralSymbol={collateralToken?.symbol}
-          borrowUsdRate={q(borrowUsdRate)}
         />
       )}
       {carryApr && (

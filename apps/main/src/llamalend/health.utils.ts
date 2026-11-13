@@ -1,6 +1,8 @@
 import type { Theme } from '@mui/material/styles'
-import type { Decimal } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
+import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { Range } from '@ui/features/queries/util'
 import {
   decimalDiv,
@@ -11,6 +13,7 @@ import {
   decimalPercent,
   ZERO,
 } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 
 export type PositionStatus = 'liquidatable' | 'inRange' | 'belowRange' | 'nearRange' | 'aboveRange'
 
@@ -94,6 +97,17 @@ export const getDistanceToRange = (oraclePrice: Decimal, [low, high]: Range<Deci
     ),
     oraclePrice,
   )
+
+/** "In range" at 0, otherwise the signed percentage */
+export const formatDistanceToRange = (distance: Amount | Nullish) =>
+  distance != null && +distance === 0 ? t`In range` : formatNumber(distance, 'percent.delta')
+
+/** The low and high price of the liquidation range as `low – high` */
+export const formatRangePrices = (prices: Range<Amount>) =>
+  prices.map(price => formatNumber(price, 'token.precise')).join(' – ')
+
+/** Number of bands of a position, counting both ends of `[n1, n2]` */
+export const getBandCount = ([n1, n2]: Range<number>) => Math.abs(n1 - n2) + 1
 
 /** Computes {@link PositionHealth.health} from the user's `[low, high]` liquidation range prices. */
 export const getHealth = (oraclePrice: Decimal, [, topOfRange]: Range<Decimal>): Decimal =>
