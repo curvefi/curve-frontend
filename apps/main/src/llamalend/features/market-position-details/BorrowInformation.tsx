@@ -42,11 +42,17 @@ import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } 
 import { PnlMetrics } from './PnlMetrics'
 import { DistanceToRangeTooltipContent } from './tooltips/DistanceToRangeTooltipContent'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Grid } = SizesAndSpaces
+
+/** The metrics turn into full-width rows on mobile, so they stack in one column there */
+const GRID_SX = {
+  gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(4, minmax(0, 1fr))' },
+  rowGap: { ...Grid.Row_Spacing, mobile: 0 },
+}
 
 /** Every metric of the main grid sets its `gridArea`, so a missing metric leaves its slot empty instead of reflowing the rest. */
 const MAIN_GRID_AREAS = {
-  mobile: `"health range" "health buffer" "leverage leverage" "carry carry" "equity equity" "pnl pnl"`,
+  mobile: `"health" "range" "buffer" "leverage" "carry" "equity" "pnl"`,
   tablet: `"health range leverage equity" "health buffer carry pnl"`,
 }
 
@@ -82,7 +88,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
 
   return (
     <Stack>
-      <MetricsGrid sx={{ gridTemplateAreas: MAIN_GRID_AREAS }}>
+      <MetricsGrid sx={{ ...GRID_SX, gridTemplateAreas: MAIN_GRID_AREAS }}>
         <HealthDetails
           position={position}
           thresholds={thresholds}
@@ -148,7 +154,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         )}
       </MetricsGrid>
       <Collapse in={isDetailsOpen}>
-        <MetricsGrid sx={{ paddingBlockStart: Spacing.sm }}>
+        <MetricsGrid sx={{ ...GRID_SX, paddingBlockStart: Spacing.sm }}>
           <Metric
             category={BORROW_METRIC_CATEGORY}
             label={t`Collateral value`}
