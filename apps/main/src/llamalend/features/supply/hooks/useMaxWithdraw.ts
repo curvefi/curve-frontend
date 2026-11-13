@@ -62,8 +62,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
     ),
   )
 
-  useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
-  useFormSync(form, { userVaultShares: userBalances.data?.depositedShares })
+  useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data, userVaultShares: userBalances.data?.depositedShares })
   useEffect(
     () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],

@@ -227,7 +227,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     leverage: isEquityLeverage
       ? equityLeverage && futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
       : collateralLeverage,
-    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
   }

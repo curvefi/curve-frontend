@@ -6,9 +6,7 @@ import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-lo
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getAddressOrPair, hasLeverageValue } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
-import { useUserPrices } from '@/llamalend/queries/user/user-prices.query'
 import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
 import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -22,7 +20,7 @@ import { TokenLabel } from '@ui/components/TokenLabel'
 import { Form } from '@ui/features/forms/components/Form'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
-import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { type QueryProp, type Range } from '@ui/features/queries/util'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
@@ -92,6 +90,7 @@ export const RepayForm = <ChainId extends IChainId>({
     formErrors,
     max,
     isFull,
+    exchangeRate,
     priceImpact,
   } = useRepayForm({ networks, onPricesUpdated })
   const { token, onToken, tokens } = useRepayTokens({
@@ -145,8 +144,7 @@ export const RepayForm = <ChainId extends IChainId>({
           isControllerApproved={isControllerApproved.data}
           tokens={{ collateralToken, borrowToken }}
           showLeverage={showLeverage}
-          prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
-          prevPrices={q(useUserPrices(params))}
+          isInSoftLiquidation={isInSoftLiquidation}
         />
       }
     >
@@ -190,7 +188,7 @@ export const RepayForm = <ChainId extends IChainId>({
         slippage={values.slippage}
         onSlippageChange={slippage => updateForm({ slippage })}
         routes={routes}
-        exchangeRate={mapQuery(max.expected, data => data.avgPrice ?? null)}
+        exchangeRate={exchangeRate}
         priceImpact={priceImpact}
         collateralSymbol={collateralToken?.symbol}
         borrowSymbol={borrowToken?.symbol}

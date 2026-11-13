@@ -171,7 +171,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
           // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
           ...combineQueryState(maxTokenValues.debt, expectedCollateral),
         },
-    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: q(useCreateLoanIsApproved(params)),
     isControllerApproved: q(isControllerApproved),
