@@ -18,16 +18,19 @@ import type { DepositFormQuery } from './types'
 import { useDepositPriceImpact } from './useDepositPriceImpact'
 
 export const DepositActionInfoList = ({
+  params,
   onSlippageChange,
-  ...params
-}: DepositFormQuery & { onSlippageChange: (slippage: Decimal) => void }) => {
+}: {
+  params: DepositFormQuery
+  onSlippageChange: (slippage: Decimal) => void
+}) => {
   const { account, pool, slippage, tokenCount } = params
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
-  const quote = useExpectedLp({ ...queryParams, isDeposit: true })
-  const minimum = mapQuery(quote, value => calculateMinimumMint(value, slippage))
-  const simulation = useDepositSimulation({ ...queryParams, quote: quote.data })
+  const expectedLp = q(useExpectedLp({ ...queryParams, isDeposit: true }))
+  const priceImpact = useDepositPriceImpact(queryParams, expectedLp)
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
+  const simulation = useDepositSimulation({ ...queryParams, expectedLp: expectedLp.data })
   const lpDecimals = useTokenDecimals({ ...params, token: pool })
   const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals.data })
   const seedLock = combineQueries([config, supply], ({ seedLock }, value) =>
@@ -37,14 +40,14 @@ export const DepositActionInfoList = ({
   return (
     <PoolActionInfoList
       slippageType="stable"
-      expectedLp={q(quote)}
+      expectedLp={expectedLp}
       expectedLpLabel={t`Expected LP received`}
       expectedLpTestId="pool-deposit-expected-lp"
-      minimumLp={minimum}
+      minimumLp={mapQuery(expectedLp, value => calculateMinimumMint(value, slippage))}
       currentLp={q(lpBalance)}
       currentLpTestId="pool-deposit-current-lp"
-      projectedLp={combineQueries([lpBalance, quote], decimalSum)}
-      priceImpact={useDepositPriceImpact(queryParams, q(quote))}
+      projectedLp={combineQueries([lpBalance, expectedLp], decimalSum)}
+      priceImpact={priceImpact}
       seedLock={seedLock}
       gas={useGasEstimation(params, simulation)}
       slippage={slippage}

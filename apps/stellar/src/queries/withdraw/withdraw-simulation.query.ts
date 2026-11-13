@@ -25,7 +25,7 @@ export const {
     maxLpAmount,
     tokenIndex,
     seedLock,
-    expected,
+    expectedLp,
     slippage,
   }: WithdrawSimulationParams) =>
     ({
@@ -42,7 +42,7 @@ export const {
       maxLpAmount,
       tokenIndex,
       seedLock,
-      expected,
+      expectedLp,
       slippage,
     }) as const,
   queryFn: async ({
@@ -52,7 +52,7 @@ export const {
     mode,
     amounts,
     decimals,
-    expected,
+    expectedLp,
     lpAmount,
     tokenIndex,
     slippage,
@@ -83,7 +83,7 @@ export const {
         [
           account,
           toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
-          BigInt(toWei(calculateMaximumBurn(expected, slippage), LP_TOKEN_DECIMALS)),
+          BigInt(toWei(calculateMaximumBurn(expectedLp, slippage), LP_TOKEN_DECIMALS)),
           account,
         ],
         account,

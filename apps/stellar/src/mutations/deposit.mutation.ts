@@ -14,13 +14,13 @@ import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
-export const useDepositMutation = ({ network, pool, account, tokens, quote, onReset }: DepositMutationOptions) => {
+export const useDepositMutation = ({ network, pool, account, tokens, expectedLp, onReset }: DepositMutationOptions) => {
   const { mutate, error, isPending, isSuccess, status } = useStellarMutation<DepositMutation, DepositMutationContext>({
     mutationKey: [{ network, pool, account, name: 'deposit' }] as const,
-    buildContext: (_, baseContext) => ({ ...baseContext, network, pool, tokens, quote }) as DepositMutationContext,
+    buildContext: (_, baseContext) => ({ ...baseContext, network, pool, tokens, expectedLp }) as DepositMutationContext,
     createTransaction: (values, context) => fetchDepositSimulation({ ...values, ...context }, { staleTime: 0 }),
     validationSuite: depositMutationValidationSuite,
-    validationParams: { network, pool, account, tokens, quote },
+    validationParams: { network, pool, account, tokens, expectedLp },
     pendingMessage: () => t`Preparing deposit`,
     successMessage: () => t`Deposit confirmed`,
     onReset,

@@ -8,7 +8,7 @@ import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { oneCoinWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { useWithdrawLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
+import { useWithdrawExpectedLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
 import { useWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -37,7 +37,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    expected: undefined,
+    expectedLp: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -59,7 +59,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   )
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams, account }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const expectedLp = useWithdrawExpectedLp(params)
   const priceImpact = useWithdrawPriceImpact(params, expectedLp)
 
   useFormSync(form, {
@@ -68,7 +68,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves?.[index],
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
   })
   useFormSync(form, { amount: max.data }, values.isMax)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])
@@ -81,7 +81,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokenAddresses.data,
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
     onReset: () => reset(userDefaultValues),
   })
   const isPending = formState.isSubmitting || isWithdrawing
@@ -92,10 +92,6 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     index,
     max,
     params,
-    expectedLp,
-    maximumLp,
-    lpBalance: q(lpBalance),
-    priceImpact,
     isPending,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply || !+supply,
     isDisabled:

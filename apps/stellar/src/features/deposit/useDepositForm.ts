@@ -28,7 +28,7 @@ const formOptions = {
     tokenIndex: 0,
     decimals: undefined,
     supply: undefined,
-    quote: undefined,
+    expectedLp: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -69,9 +69,12 @@ export function useDepositForm(poolParams: PoolQuery) {
     },
     userDefaultValues,
   )
-  const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
-  useFormSync(form, { decimals: decimalsData, supply: supply.data, quote: quote.data })
-  const priceImpact = useDepositPriceImpact({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }, q(quote))
+  const expectedLp = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
+  useFormSync(form, { decimals: decimalsData, supply: supply.data, expectedLp: expectedLp.data })
+  const priceImpact = useDepositPriceImpact(
+    { ...params, amounts: getPoolAmounts(params, params.tokenCount) },
+    q(expectedLp),
+  )
   const isSeed = mapQuery(supply, supply => !+supply)
 
   const {
@@ -82,7 +85,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokenAddresses.data,
-    quote: quote.data,
+    expectedLp: expectedLp.data,
     onReset: () => reset(userDefaultValues),
   })
 

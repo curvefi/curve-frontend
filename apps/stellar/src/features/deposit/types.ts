@@ -22,9 +22,9 @@ export type DepositMutation = {
   isSeed: boolean | undefined
 }
 
-export type DepositQuery = QuoteQuery & UserQuery & DepositMutation & { quote: Decimal }
+export type DepositQuery = QuoteQuery & UserQuery & DepositMutation & { expectedLp: Decimal }
 export type DepositParams = FieldsOf<DeepPartial<DepositQuery>>
-export type DepositMutationContext = Pick<DepositQuery, 'network' | 'pool' | 'account' | 'quote'> & {
+export type DepositMutationContext = Pick<DepositQuery, 'network' | 'pool' | 'account' | 'expectedLp'> & {
   tokens: StellarContract[]
 }
 export type DepositMutationParams = FieldsOf<DeepPartial<DepositMutationContext & DepositMutation>>

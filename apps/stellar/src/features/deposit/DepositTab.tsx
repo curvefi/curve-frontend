@@ -4,7 +4,7 @@ import { DepositActionInfoList } from './DepositActionInfoList'
 import { useDepositForm } from './useDepositForm'
 
 export const DepositTab = ({ type, ...params }: PoolQuery & { type: DepositType }) => {
-  const { params: queryParams, onSlippageChange, ...form } = useDepositForm(params)
+  const result = useDepositForm(params)
   const Component = depositForms[type]
-  return <Component {...form} footer={<DepositActionInfoList {...queryParams} onSlippageChange={onSlippageChange} />} />
+  return <Component {...result} footer={<DepositActionInfoList {...result} />} />
 }

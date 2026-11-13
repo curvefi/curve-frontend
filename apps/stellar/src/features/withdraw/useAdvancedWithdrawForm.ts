@@ -10,7 +10,7 @@ import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { advancedWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { useWithdrawLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
+import { useWithdrawExpectedLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, maybe, range } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
@@ -39,7 +39,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    expected: undefined,
+    expectedLp: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -72,7 +72,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     PoolAmountField | 'lpAmount' | 'isBalanced'
   >(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getAdvancedWithdrawParams(debounced), ...poolParams, account }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const expectedLp = useWithdrawExpectedLp(params)
   const priceImpact = useWithdrawPriceImpact(params, expectedLp)
 
   useFormSync(form, {
@@ -80,7 +80,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
     ...maybe(tokenCount, count =>
       fromEntries(range(count).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
     ),
@@ -96,7 +96,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokenAddresses.data,
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
     onReset: () => reset(userDefaultValues),
   })
 
@@ -120,9 +120,6 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onTokenChange: (index: number, amount: Decimal | undefined) =>
       update({ ...(values.isBalanced && getUpdatesFromTokenAmount(index, amount)), [poolAmountField(index)]: amount }),
     form,
-    expectedLp,
-    maximumLp,
-    priceImpact,
     params,
     lpBalance: q(lpBalance),
     onSubmit: handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),

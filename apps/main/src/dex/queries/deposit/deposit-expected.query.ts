@@ -5,7 +5,7 @@ import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { Decimal } from '@primitives/decimal.utils'
 import { depositMethod } from '@ui/features/pool-forms/pool-form.utils'
 
-export const { useQuery: useDepositExpected, invalidate: invalidateDepositExpected } = hydratedQueryFactory({
+export const { useQuery: useDepositExpectedLp, invalidate: invalidateDepositExpectedLp } = hydratedQueryFactory({
   queryKey: ({ chainId, poolAddress, isWrapped, amounts }: DepositParams) =>
     ({ name: 'depositExpected', chainId, poolAddress, isWrapped, amounts }) as const,
   queryFn: async ({ poolAddress, isWrapped, amounts }: DepositQuery) =>

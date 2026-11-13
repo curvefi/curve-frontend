@@ -11,7 +11,7 @@ export const {
   invalidate: invalidateDepositSimulation,
   fetchQuery: fetchDepositSimulation,
 } = queryFactory({
-  queryKey: ({ network, pool, amounts, decimals, account, quote, slippage, supply, maxAmounts }: DepositParams) =>
+  queryKey: ({ network, pool, amounts, decimals, account, expectedLp, slippage, supply, maxAmounts }: DepositParams) =>
     ({
       name: 'add_liquidity',
       network,
@@ -19,12 +19,12 @@ export const {
       amounts,
       decimals,
       account,
-      quote,
+      expectedLp,
       slippage,
       supply,
       maxAmounts,
     }) as const,
-  queryFn: ({ network, pool, account, amounts, decimals, quote, slippage }: DepositQuery) =>
+  queryFn: ({ network, pool, account, amounts, decimals, expectedLp, slippage }: DepositQuery) =>
     simulateContractCall<bigint>(
       network,
       pool,
@@ -32,7 +32,7 @@ export const {
       [
         account,
         toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
-        BigInt(toWei(calculateMinimumMint(quote, slippage), LP_TOKEN_DECIMALS)),
+        BigInt(toWei(calculateMinimumMint(expectedLp, slippage), LP_TOKEN_DECIMALS)),
         account,
       ],
       account,

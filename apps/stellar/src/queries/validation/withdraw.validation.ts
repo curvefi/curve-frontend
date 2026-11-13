@@ -107,11 +107,11 @@ const validateWithdrawBudget = ({
   supply,
   seedLock,
   mode,
-  expected,
+  expectedLp,
   slippage,
 }: WithdrawSimulationParams) => {
   const isExactBurn = mode !== 'unbalanced'
-  const maximumBurn = isExactBurn ? expected : maybes([expected, slippage], calculateMaximumBurn)
+  const maximumBurn = isExactBurn ? expectedLp : maybes([expectedLp, slippage], calculateMaximumBurn)
   validateBudget({ lpAmount: isExactBurn ? lpAmount : maximumBurn, maxLpAmount, supply, seedLock })
   validateMaximumBurn({ lpAmount: isExactBurn ? lpAmount : maxLpAmount, maximumBurn, isExactBurn })
 }
@@ -150,7 +150,7 @@ export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values:
 const validateWithdrawQuote = (params: WithdrawSimulationParams) => {
   validateWithdrawBudget(params)
   test('root', 'Withdrawal is too small to burn LP', () => {
-    enforce(params.expected).isDecimal().gt(0)
+    enforce(params.expectedLp).isDecimal().gt(0)
   })
 }
 

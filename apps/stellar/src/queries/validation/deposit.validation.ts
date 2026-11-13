@@ -8,18 +8,18 @@ import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import { validateLiquidityInputs } from './liquidity.validation'
 
-const validateQuote = (quote: DepositParams['quote']) =>
-  test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
-    enforce(quote).isDecimal().gt(0)
+const validateExpectedLp = (expectedLp: DepositParams['expectedLp']) =>
+  test('expectedLp', 'Deposit must leave LP after the permanent seed lock', () => {
+    enforce(expectedLp).isDecimal().gt(0)
   })
 
 export const depositValidationSuite = createValidationSuite(
-  ({ pool, network, account, quote, slippage, ...inputs }: DepositParams) => {
+  ({ pool, network, account, expectedLp, slippage, ...inputs }: DepositParams) => {
     validatePool({ pool, network })
     validateFundedInputs(inputs)
     validateAccount(account)
     validateSlippage({ slippage, minimum: 0 }) // the initial deposit after pool creation forces slippage 0
-    validateQuote(quote)
+    validateExpectedLp(expectedLp)
   },
 )
 
@@ -47,9 +47,9 @@ const validateFundedInputs = ({ decimals, maxAmounts, ...inputs }: DepositInputs
   })
 }
 
-const validateForm = ({ decimals, supply, slippage, quote, ...values }: DepositForm) => {
+const validateForm = ({ decimals, supply, slippage, expectedLp, ...values }: DepositForm) => {
   validateSlippage({ slippage })
-  validateQuote(quote)
+  validateExpectedLp(expectedLp)
   validateInputs({
     decimals,
     supply,

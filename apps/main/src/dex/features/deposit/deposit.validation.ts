@@ -38,12 +38,12 @@ const validateAmounts = ({
 }
 
 export const depositFormValidationSuite = createValidationSuite(
-  ({ decimals, slippage, quote, ...values }: DepositFormValues) => {
+  ({ decimals, slippage, expectedLp, ...values }: DepositFormValues) => {
     const amounts = getPoolAmounts(values, decimals?.length)
     validateAmounts({ amounts, decimals })
     validateSlippage({ slippage })
-    test('quote', 'Deposit quote must be positive', () => {
-      enforce(quote).isDecimal().gt(0)
+    test('expectedLp', 'Deposit quote must be positive', () => {
+      enforce(expectedLp).isDecimal().gt(0)
     })
     amounts?.forEach((amount, index) => {
       const maxAmount = values[poolMaxAmountField(index)]

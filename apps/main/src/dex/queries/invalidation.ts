@@ -4,7 +4,7 @@ import { resetCampaignsPoolsMerkl } from '@ui/features/campaigns/campaigns-pools
 import { resetLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidateDepositBonus } from './deposit/deposit-bonus.query'
-import { invalidateDepositExpected } from './deposit/deposit-expected.query'
+import { invalidateDepositExpectedLp } from './deposit/deposit-expected.query'
 import { resetPoolAddresses } from './pool-addresses.query'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolIsGaugeKilled } from './pool-is-gauge-killed.query'
@@ -20,7 +20,7 @@ import { getUserPoolClaimablesQueryKey } from './user-pool-claimables.query'
 import { invalidateUserPoolLiquidityUsdQuery } from './user-pool-liquidity-usd.query'
 import { invalidateUserPoolShareQuery } from './user-pool-share.query'
 import { invalidateWithdrawBonus } from './withdraw/withdraw-bonus.query'
-import { invalidateWithdrawExpected } from './withdraw/withdraw-expected.query'
+import { invalidateWithdrawExpectedLp } from './withdraw/withdraw-expected.query'
 import { invalidateWithdrawMaxAmounts } from './withdraw/withdraw-max-amounts.query'
 
 /** Compatibility helper that refreshes user-pool-info method queries and the user's pool positions. */
@@ -39,9 +39,9 @@ export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
 export const invalidatePoolInfo = async (params: PoolParams) =>
   await Promise.all([
     invalidateDepositBonus(params, { partial: true }),
-    invalidateDepositExpected(params, { partial: true }),
+    invalidateDepositExpectedLp(params, { partial: true }),
     invalidateWithdrawBonus(params, { partial: true }),
-    invalidateWithdrawExpected(params, { partial: true }),
+    invalidateWithdrawExpectedLp(params, { partial: true }),
     invalidateWithdrawMaxAmounts(params, { partial: true }),
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),

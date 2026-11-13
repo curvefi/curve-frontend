@@ -7,7 +7,7 @@ import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { useWithdrawPriceImpact } from '@/dex/queries/withdraw/withdraw-bonus.query'
-import { useWithdrawLp } from '@/dex/queries/withdraw/withdraw-expected.query'
+import { useWithdrawExpectedLp } from '@/dex/queries/withdraw/withdraw-expected.query'
 import { useWithdrawMaxAmount } from '@/dex/queries/withdraw/withdraw-max-amounts.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -49,7 +49,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
       decimals: undefined,
       maxLpAmount: undefined,
       poolReserve: undefined,
-      expected: undefined,
+      expectedLp: undefined,
       supply: undefined,
       seedLock: undefined,
     },
@@ -70,7 +70,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
 
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const expectedLp = q(useWithdrawExpectedLp(params))
   const priceImpact = useWithdrawPriceImpact(params)
 
   useFormSync(form, {
@@ -78,7 +78,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     supply: supply.data,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves.data?.[index],
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
   })
 
   // Keep Max selected as the quote changes, including while its amount is unavailable.
@@ -107,10 +107,6 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     tokens,
     index,
     max,
-    lpBalance,
-    expectedLp,
-    maximumLp,
-    priceImpact,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply.data || !+supply.data,
     canWithdrawWrapped: !!hasWrapped(pool),
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },

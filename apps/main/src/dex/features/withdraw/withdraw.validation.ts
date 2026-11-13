@@ -105,14 +105,14 @@ const validateWithdraw = (
   })
 }
 
-type FormParams = WithdrawParams & { expected: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
+type FormParams = WithdrawParams & { expectedLp: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
 
 const validateForm = (params: FormParams, field: AmountField = poolAmountField) => {
-  const { expected, maxLpAmount, mode, amounts, maxAmounts } = params
-  const maximumBurn = maybe(expected, expected => getMaximumWithdrawBurn(expected, params))
+  const { expectedLp, maxLpAmount, mode, amounts, maxAmounts } = params
+  const maximumBurn = maybe(expectedLp, expectedLp => getMaximumWithdrawBurn(expectedLp, params))
   validateAmounts(params, field)
   validateWithdraw(params, field)
-  test('expected', 'Withdrawal quote is unavailable', () => {
+  test('expectedLp', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn)
       .isDecimal({ decimal_digits: `0,${LP_TOKEN_DECIMALS}` })
       .gt(0)
@@ -124,7 +124,7 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
   })
   skipWhen(params.mode !== 'balanced' && params.mode !== 'one-coin', () => {
     if (params.mode !== 'balanced' && params.mode !== 'one-coin') return // type safety inside skipWhen
-    test('expected', 'LP burn does not match the selected LP amount', () => {
+    test('expectedLp', 'LP burn does not match the selected LP amount', () => {
       enforce(maximumBurn).condition(() => decimalEqual(maximumBurn!, params.lpAmount!))
     })
   })
