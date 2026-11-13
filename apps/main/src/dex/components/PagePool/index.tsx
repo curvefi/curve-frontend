@@ -27,6 +27,7 @@ import { PoolInformation } from '@/dex/features/pool-information'
 import { PointsCampaigns } from '@/dex/features/pool-information/components/points-campaigns'
 import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
+import { SwapTab } from '@/dex/features/swap/components/SwapTab'
 import { UserPosition } from '@/dex/features/user-position'
 import { AdvancedWithdrawTab } from '@/dex/features/withdraw/components/AdvancedWithdrawTab'
 import { OneCoinWithdrawTab } from '@/dex/features/withdraw/components/OneCoinWithdrawTab'
@@ -185,7 +186,7 @@ const menu = [
     value: 'swap',
     label: t`Swap`,
     visible: ({ seed }) => seed.data === false,
-    component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
+    component: props => <TabGuard alert={getSwapTabAlert} otherwise={SwapTab} {...props} />,
   },
   {
     value: 'manage-gauge',

@@ -12,6 +12,8 @@ import { getPoolListRootQueryKey, resetPoolChains, resetLitePoolChains } from '.
 import { invalidatePoolParameters } from './pool-parameters.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
 import { invalidatePoolTotalStaked } from './pool-total-staked.query'
+import { invalidateSwapPriceImpact } from './swap/swap-price-impact.query'
+import { invalidateSwapQuote } from './swap/swap-quote.query'
 import { resetUserFullPoolPositions, invalidateUserFullPoolPositions } from './user-full-pool-positions.query'
 import { resetUserLitePoolPositions, invalidateUserLitePoolPositions } from './user-lite-pool-positions.query'
 import { invalidateUserPoolBalancesQuery } from './user-pool-balances.query'
@@ -43,6 +45,8 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidateWithdrawBonus(params, { partial: true }),
     invalidateWithdrawExpectedLp(params, { partial: true }),
     invalidateWithdrawMaxAmounts(params, { partial: true }),
+    invalidateSwapQuote(params, { partial: true }),
+    invalidateSwapPriceImpact(params, { partial: true }),
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),
     invalidatePoolIsGaugeKilled(params),
