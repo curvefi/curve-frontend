@@ -20,6 +20,7 @@ import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import { CarryAprTooltipContent } from '@/llamalend/widgets/tooltips/CarryAprTooltipContent'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
+import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
@@ -37,24 +38,12 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
-import { HealthDetails } from './health/HealthDetails'
+import { HealthMetric, LiquidationBufferMetric } from './health/HealthDetails'
 import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } from './market-position-details.utils'
-import { PnlMetrics } from './PnlMetrics'
+import { PnlMetric } from './PnlMetric'
 import { DistanceToRangeTooltipContent } from './tooltips/DistanceToRangeTooltipContent'
 
-const { Spacing, Grid } = SizesAndSpaces
-
-/** The metrics turn into full-width rows on mobile, so they stack in one column there */
-const GRID_SX = {
-  gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(4, minmax(0, 1fr))' },
-  rowGap: { ...Grid.Row_Spacing, mobile: 0 },
-}
-
-/** Every metric of the main grid sets its `gridArea`, so a missing metric leaves its slot empty instead of reflowing the rest. */
-const MAIN_GRID_AREAS = {
-  mobile: `"health" "range" "buffer" "leverage" "carry" "equity" "pnl"`,
-  tablet: `"health range leverage equity" "health buffer carry pnl"`,
-}
+const { Grid } = SizesAndSpaces
 
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
@@ -88,13 +77,8 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
 
   return (
     <Stack>
-      <MetricsGrid sx={{ ...GRID_SX, gridTemplateAreas: MAIN_GRID_AREAS }}>
-        <HealthDetails
-          position={position}
-          thresholds={thresholds}
-          borrowSymbol={borrowToken?.symbol}
-          showAmount={isDetailsOpen}
-        />
+      <MetricsGrid variant="mobileRows">
+        <HealthMetric position={position} thresholds={thresholds} />
         <Metric
           category={BORROW_METRIC_CATEGORY}
           label={t`Distance to range`}
@@ -105,8 +89,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             body: <DistanceToRangeTooltipContent userPrices={q(userPrices)} params={params} priceUnit={priceUnit} />,
             ...BORROW_METRIC_TOOLTIP,
           }}
-          notional={isDetailsOpen ? mapQuery(userPrices, prices => maybe(prices, formatRangePrices)) : undefined}
-          sx={{ gridArea: 'range' }}
+          {...(isDetailsOpen && { notional: mapQuery(userPrices, prices => maybe(prices, formatRangePrices)) })}
         />
         {equityLeverage && (
           <Metric
@@ -123,9 +106,26 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               body: <LeverageTooltipContent openingLeverage={equityLeverage.opening} />,
               ...BORROW_METRIC_TOOLTIP,
             }}
-            sx={{ gridArea: 'leverage' }}
           />
         )}
+        {positionPnl && (
+          <Metric
+            category={BORROW_METRIC_CATEGORY}
+            label={t`Equity`}
+            valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
+            {...tokenMetric({
+              value: positionPnl.equity,
+              symbol: borrowToken?.symbol,
+              ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
+            })}
+          />
+        )}
+        <LiquidationBufferMetric
+          position={position}
+          thresholds={thresholds}
+          borrowSymbol={borrowToken?.symbol}
+          showAmount={isDetailsOpen}
+        />
         {carryApr && (
           <Metric
             category={BORROW_METRIC_CATEGORY}
@@ -133,19 +133,16 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             value={carryApr.current}
             valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
             valueTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-            notional={
-              isDetailsOpen
-                ? mapQuery(carryApr.yieldMultiplier, multiplier =>
-                    maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
-                  )
-                : undefined
-            }
-            sx={{ gridArea: 'carry' }}
+            {...(isDetailsOpen && {
+              notional: mapQuery(carryApr.yieldMultiplier, multiplier =>
+                maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
+              ),
+            })}
           />
         )}
         {positionPnl && (
-          <PnlMetrics
-            {...positionPnl}
+          <PnlMetric
+            pnl={positionPnl.pnl}
             borrowSymbol={borrowToken?.symbol}
             collateralSymbol={collateralToken?.symbol}
             borrowUsdRate={q(borrowUsdRate)}
@@ -154,7 +151,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         )}
       </MetricsGrid>
       <Collapse in={isDetailsOpen}>
-        <MetricsGrid sx={{ ...GRID_SX, paddingBlockStart: Spacing.sm }}>
+        <MetricsGrid variant="mobileRows" sx={{ paddingBlockStart: Grid.Row_Spacing }}>
           <Metric
             category={BORROW_METRIC_CATEGORY}
             label={t`Collateral value`}

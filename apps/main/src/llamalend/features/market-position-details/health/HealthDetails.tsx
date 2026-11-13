@@ -22,14 +22,50 @@ import { POSITION_STATUS_BADGE } from './position-status'
 
 const { Spacing } = SizesAndSpaces
 
-export const HealthDetails = ({
+type HealthMetricProps = { position: QueryProp<PositionHealth>; thresholds: PositionHealthThresholds }
+
+/** Health with its status badge. It spans both rows of the borrow position grid from tablet up. */
+export const HealthMetric = ({ position, thresholds }: HealthMetricProps) => {
+  const theme = useTheme()
+  const { data } = position
+  return (
+    <Stack sx={{ gridRow: { tablet: 'span 2' }, alignItems: 'start', gap: Spacing.xs }}>
+      <Metric
+        category="llamalend.positionHealth"
+        label={t`Health`}
+        valueTooltip={{
+          title: t`Health`,
+          body: <HealthTooltipContent status={data?.status} />,
+          ...BORROW_METRIC_TOOLTIP,
+        }}
+        testId="health-details-health-metric"
+        value={mapQuery(position, ({ health }) => health)}
+        valueOptions={{
+          abbreviate: false,
+          color: maybe(data, data => getHealthTextColor(data, thresholds, theme)),
+          formatter: value => formatNumber(value, 'health'),
+        }}
+      />
+      <WithSkeleton
+        loading={position.isLoading}
+        variant="rounded"
+        width="5rem"
+        height={SizesAndSpaces.Badge.Size.extraSmall}
+      >
+        {data && (
+          <Badge data-testid="health-details-status-badge" size="extraSmall" {...POSITION_STATUS_BADGE[data.status]} />
+        )}
+      </WithSkeleton>
+    </Stack>
+  )
+}
+
+export const LiquidationBufferMetric = ({
   position,
   thresholds,
   borrowSymbol,
   showAmount,
-}: {
-  position: QueryProp<PositionHealth>
-  thresholds: PositionHealthThresholds
+}: HealthMetricProps & {
   borrowSymbol: string | undefined
   /** Shows the liquidation buffer in the borrowed token below its percentage */
   showAmount: boolean
@@ -37,67 +73,32 @@ export const HealthDetails = ({
   const theme = useTheme()
   const { data } = position
   return (
-    <>
-      <Stack sx={{ gridArea: 'health', alignItems: 'start', gap: Spacing.xs }}>
-        <Metric
-          category="llamalend.positionHealth"
-          label={t`Health`}
-          valueTooltip={{
-            title: t`Health`,
-            body: <HealthTooltipContent status={data?.status} />,
-            ...BORROW_METRIC_TOOLTIP,
-          }}
-          testId="health-details-health-metric"
-          value={mapQuery(position, ({ health }) => health)}
-          valueOptions={{
-            abbreviate: false,
-            color: maybe(data, data => getHealthTextColor(data, thresholds, theme)),
-            formatter: value => formatNumber(value, 'health'),
-          }}
-        />
-        <WithSkeleton
-          loading={position.isLoading}
-          variant="rounded"
-          width="5rem"
-          height={SizesAndSpaces.Badge.Size.extraSmall}
-        >
-          {data && (
-            <Badge
-              data-testid="health-details-status-badge"
-              size="extraSmall"
-              {...POSITION_STATUS_BADGE[data.status]}
-            />
-          )}
-        </WithSkeleton>
-      </Stack>
-      <Metric
-        category="llamalend.positionLiquidationBuffer"
-        label={t`Liquidation buffer`}
-        valueTooltip={{
-          title: t`Liquidation buffer`,
-          body: (
-            <LiquidationBufferTooltipContent
-              amount={maybe(data, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))}
-            />
-          ),
-          ...BORROW_METRIC_TOOLTIP,
-        }}
-        testId="health-details-liquidation-buffer-metric"
-        sx={{ gridArea: 'buffer' }}
-        value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
-        notional={
-          showAmount
-            ? mapQuery(position, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))
-            : undefined
-        }
-        valueOptions={{
-          abbreviate: false,
-          color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds, theme)),
-          formatter: value => formatNumber(value, 'percent.value'),
-          // unicode needed so "of debt" keeps a space before it, a normal space would be removed
-          unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },
-        }}
-      />
-    </>
+    <Metric
+      category="llamalend.positionLiquidationBuffer"
+      label={t`Liquidation buffer`}
+      valueTooltip={{
+        title: t`Liquidation buffer`,
+        body: (
+          <LiquidationBufferTooltipContent
+            amount={maybe(data, ({ liquidationBufferAmount }) => formatAmount(liquidationBufferAmount, borrowSymbol))}
+          />
+        ),
+        ...BORROW_METRIC_TOOLTIP,
+      }}
+      testId="health-details-liquidation-buffer-metric"
+      value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
+      {...(showAmount && {
+        notional: mapQuery(position, ({ liquidationBufferAmount }) =>
+          formatAmount(liquidationBufferAmount, borrowSymbol),
+        ),
+      })}
+      valueOptions={{
+        abbreviate: false,
+        color: maybe(data, data => getLiquidationBufferTextColor(data, thresholds, theme)),
+        formatter: value => formatNumber(value, 'percent.value'),
+        // unicode needed so "of debt" keeps a space before it, a normal space would be removed
+        unit: { symbol: `\u00a0${t`of debt`}`, position: 'suffix' },
+      }}
+    />
   )
 }

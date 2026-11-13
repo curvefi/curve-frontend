@@ -8,7 +8,7 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalDiv, decimalMultiply } from '@ui/lib/decimal'
-import { HealthDetails } from './HealthDetails'
+import { HealthMetric, LiquidationBufferMetric } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 const DEBT: Decimal = '10000'
@@ -43,14 +43,12 @@ const HealthDetailsStory = ({
       status,
     }),
   )
+  const position = q({ data, isLoading, error: null })
+  const thresholds = getPositionHealthThresholds(assetsType)
   return (
-    <MetricsGrid sx={{ gridTemplateAreas: '"health buffer"' }}>
-      <HealthDetails
-        position={q({ data, isLoading, error: null })}
-        thresholds={getPositionHealthThresholds(assetsType)}
-        borrowSymbol="crvUSD"
-        showAmount
-      />
+    <MetricsGrid>
+      <HealthMetric position={position} thresholds={thresholds} />
+      <LiquidationBufferMetric position={position} thresholds={thresholds} borrowSymbol="crvUSD" showAmount />
     </MetricsGrid>
   )
 }
