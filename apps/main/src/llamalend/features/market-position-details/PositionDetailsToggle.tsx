@@ -17,7 +17,14 @@ export const PositionDetailsToggle = () => {
       {icon}
     </IconButton>
   ) : (
-    <Button color="ghost" size="extraSmall" endIcon={icon} aria-expanded={isOpen} onClick={onClick}>
+    <Button
+      color="ghost"
+      size="extraSmall"
+      endIcon={icon}
+      sx={{ textWrapMode: 'nowrap' }}
+      aria-expanded={isOpen}
+      onClick={onClick}
+    >
       {label}
     </Button>
   )

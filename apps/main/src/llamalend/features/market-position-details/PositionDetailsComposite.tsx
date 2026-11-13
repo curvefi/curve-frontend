@@ -8,6 +8,7 @@ import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
 import type { QueryProp } from '@ui/features/queries/util'
+import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { BorrowPositionDetails } from './BorrowPositionDetails'
 import { MarketEmptyPosition } from './MarketEmptyPosition'
 import { PositionDetailsCard } from './PositionDetailsCard'
@@ -24,6 +25,8 @@ type PositionDetailsCompositeProps<T extends MarketRateType> = {
   hasPosition: boolean | undefined
   events: QueryProp<PositionEvents[NoInfer<T>]>
 }
+
+const { Spacing } = SizesAndSpaces
 
 const POSITION_CONFIG: {
   [T in MarketRateType]: { Details: ComponentType; renderActivity: (events: QueryProp<PositionEvents[T]>) => ReactNode }
@@ -54,9 +57,9 @@ export const PositionDetailsComposite = <T extends MarketRateType>({
       hasEvents={hasEvents}
       headerAction={
         type === MarketRateType.Borrow && (
-          <Stack direction="row" sx={{ alignItems: 'center' }}>
-            {isNewLlamalendHealth && hasPosition && <PositionDetailsToggle />}
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <LlamaMonitorBotButton />
+            {isNewLlamalendHealth && hasPosition && <PositionDetailsToggle />}
           </Stack>
         )
       }
