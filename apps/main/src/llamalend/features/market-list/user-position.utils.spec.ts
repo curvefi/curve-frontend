@@ -111,22 +111,21 @@ describe('borrow position metrics', () => {
     expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows no leverage nor carry APR for a plain borrow', () => {
+  it('shows the carry APR but no leverage for a plain borrow', () => {
     const row = createRow({ isZapLeveraged: false })
     expect(getUserLeverage(row)).toBeUndefined()
-    expect(getUserCarryApr(row)).toBeUndefined()
-    expect(getUserYieldMultiplier(row)).toBeUndefined()
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
+    expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows no leverage nor carry APR while it is unknown if the position is zap leveraged', () => {
+  it('shows the carry APR but no leverage while it is unknown if the position is zap leveraged', () => {
     const row = createRow({ isZapLeveraged: null })
     expect(getUserLeverage(row)).toBeUndefined()
-    expect(getUserCarryApr(row)).toBeUndefined()
-    expect(getUserYieldMultiplier(row)).toBeUndefined()
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
   })
 
-  it('shows no carry APR without a collateral yield', () => {
-    const row = createRow({ collateralYieldApr: null })
+  it.each([null, 0])('shows no carry APR with a collateral yield of %s', collateralYieldApr => {
+    const row = createRow({ collateralYieldApr })
     expect(getUserCarryApr(row)).toBeUndefined()
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })

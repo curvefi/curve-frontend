@@ -35,7 +35,10 @@ export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => 
 /** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. Null when unknown. */
 export type MarketYields = { collateralYieldApr: Decimal | null; borrowedYieldApr: Decimal; borrowRewardsApr: Decimal }
 
-/** Carry APR: yearly yield on the equity after borrowing costs, in percent. Null when the equity is zero or a required rate is unknown. */
+/**
+ * Carry APR: yearly yield on the equity after borrowing costs, in percent.
+ * Null without a positive collateral yield, as the carry would only show the borrow cost, when the equity is zero or when the borrow rate is unknown.
+ */
 export const getCarryApr = (
   position: UserState,
   oraclePrice: Decimal,
@@ -44,7 +47,13 @@ export const getCarryApr = (
 ) => {
   const { collateral, convertedBorrowed, debt } = position
   const equity = getEquity(position, oraclePrice)
-  if (collateralYieldApr == null || borrowApr == null || decimalEqual(equity, ZERO)) return null
+  if (
+    collateralYieldApr == null ||
+    !decimalGreaterThan(collateralYieldApr, ZERO) ||
+    borrowApr == null ||
+    decimalEqual(equity, ZERO)
+  )
+    return null
   const earned = decimalSum(
     decimalMultiply(collateral, oraclePrice, collateralYieldApr),
     decimalMultiply(convertedBorrowed, borrowedYieldApr),

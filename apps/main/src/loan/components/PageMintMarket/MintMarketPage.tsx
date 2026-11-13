@@ -93,7 +93,7 @@ export const MintMarketPage = () => {
           content:
             !isLoading &&
             !isLoanExistsLoading &&
-            !isLiquidationLoading &&
+            !(loanExists && isLiquidationLoading) &&
             (loanExists ? (
               <ManageLoanTabs
                 onPricesUpdated={setPreviewPrices}

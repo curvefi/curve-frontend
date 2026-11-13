@@ -56,12 +56,7 @@ export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
       ? {
           leverageEnabled: true,
           ...(isEquityLeverage
-            ? equityLeverage && {
-                leverageValue: equityLeverage.future,
-                prevLeverageValue: equityLeverage.current,
-                carryApr: equityLeverage.futureCarryApr,
-                prevCarryApr: equityLeverage.currentCarryApr,
-              }
+            ? equityLeverage && { leverageValue: equityLeverage.future, prevLeverageValue: equityLeverage.current }
             : getCollateralLeverageFields(options)),
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,

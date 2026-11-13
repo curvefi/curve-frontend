@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
+import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import {
@@ -44,6 +45,7 @@ export const BorrowInformation = ({
   const isEquityLeverage = useLlamalendEquityLeverage()
   const collateralLeverage = useUserCurrentLeverage(params)
   const equityLeverage = useEquityLeverage({ params })
+  const carryApr = useCarryApr({ params })
   const leverage = isEquityLeverage
     ? equityLeverage?.current
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
@@ -148,14 +150,14 @@ export const BorrowInformation = ({
           borrowUsdRate={q(borrowUsdRate)}
         />
       )}
-      {equityLeverage && (
+      {carryApr && (
         <Metric
           category={BORROW_METRIC_CATEGORY}
           label={t`Carry APR`}
-          value={equityLeverage.currentCarryApr}
+          value={carryApr.current}
           valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
           valueTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-          notional={mapQuery(equityLeverage.yieldMultiplier, multiplier =>
+          notional={mapQuery(carryApr.yieldMultiplier, multiplier =>
             maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
           )}
         />

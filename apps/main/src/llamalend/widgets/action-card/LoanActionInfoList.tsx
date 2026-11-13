@@ -6,6 +6,7 @@ import {
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import { getHealth } from '@/llamalend/health.utils'
+import type { CarryApr } from '@/llamalend/hooks/useCarryApr'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
@@ -59,8 +60,7 @@ export type LoanActionInfoListProps = FuturePositionProps & {
   /** @deprecated Return on equity inputs, collateral leverage path only */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
-  prevCarryApr?: QueryProp<Decimal | null>
-  carryApr?: QueryProp<Decimal | null>
+  carryApr?: CarryApr | null
   prevLeverageCollateral?: QueryProp<Decimal | null>
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
@@ -112,7 +112,6 @@ export const LoanActionInfoList = ({
   leverageValue,
   prevCollateralLeverageValue,
   collateralLeverageValue,
-  prevCarryApr,
   carryApr,
   prevLeverageCollateral,
   leverageCollateral,
@@ -168,6 +167,16 @@ export const LoanActionInfoList = ({
               futureValue={mapQuery(netBorrowApr ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
               testId="borrow-net-apr"
+            />
+          )}
+          {carryApr && (
+            <ActionInfo
+              label={t`Carry APR`}
+              labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
+              value={mapQuery(carryApr.current, data => formatNumber(data, 'percent.rate'))}
+              futureValue={mapQuery(carryApr.future, data => formatNumber(data, 'percent.rate'))}
+              size="small"
+              testId="borrow-carry-apr"
             />
           )}
         </Stack>
@@ -287,35 +296,19 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {(prevCarryApr ?? carryApr) ? (
+          {!carryApr && collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
             <ActionInfo
-              label={t`Carry APR`}
-              labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
-              value={
-                carryApr?.data !== undefined && prevCarryApr
-                  ? mapQuery(prevCarryApr, data => formatNumber(data, 'percent.rate'))
-                  : DISABLED_Q
-              }
-              futureValue={mapQuery(carryApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              label={t`Return on Equity (RoE)`}
+              value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
+              futureValue={formatReturnOnEquity(
+                collateralLeverageValue,
+                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
+                rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
+                collateralApy,
+              )}
               size="small"
-              testId="borrow-carry-apr"
+              testId="borrow-return-on-equity"
             />
-          ) : (
-            collateralApy &&
-            (prevCollateralLeverageValue ?? collateralLeverageValue) && (
-              <ActionInfo
-                label={t`Return on Equity (RoE)`}
-                value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
-                futureValue={formatReturnOnEquity(
-                  collateralLeverageValue,
-                  /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
-                  rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
-                  collateralApy,
-                )}
-                size="small"
-                testId="borrow-return-on-equity"
-              />
-            )
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo

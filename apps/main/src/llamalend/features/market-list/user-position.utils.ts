@@ -70,13 +70,10 @@ export const getUserCollateralShare = (row: LlamaMarketRow) =>
 export const getUserLeverage = (row: LlamaMarketRow) =>
   row.positionQueries.isZapLeveraged.data ? maybe(mapPosition(row, getEquityLeverage), Number) : undefined
 
-/** Only for zap leveraged positions */
 const getCarryAprDecimal = (row: LlamaMarketRow) =>
-  row.positionQueries.isZapLeveraged.data
-    ? mapPosition(row, (position, price) =>
-        getCarryApr(position, price, decimal(row.rates.borrowApr), getMarketListYields(row)),
-      )
-    : undefined
+  mapPosition(row, (position, price) =>
+    getCarryApr(position, price, decimal(row.rates.borrowApr), getMarketListYields(row)),
+  )
 
 export const getUserCarryApr = (row: LlamaMarketRow) => maybe(getCarryAprDecimal(row), Number)
 

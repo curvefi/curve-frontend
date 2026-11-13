@@ -1,3 +1,4 @@
+import { useCreateLoanCarryApr } from '@/llamalend/hooks/useCarryApr'
 import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
@@ -44,6 +45,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useCreateLoanCarryApr(params, isOpen)}
       isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth({ ...params, isFull: true }, !isNewLlamalendHealth && isOpen))}
       liquidationBuffer={q(useCreateLoanHealth({ ...params, isFull: false }, isNewLlamalendHealth && isOpen))}
