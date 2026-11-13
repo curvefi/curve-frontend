@@ -21,6 +21,7 @@ export type TransferProps = {
 } & PageTransferProps
 
 export type TransferTabsParams = TransferProps & {
+  isCrypto: boolean | undefined
   isGaugeManager: boolean | undefined
   isRewardsDistributor: boolean | undefined
 }

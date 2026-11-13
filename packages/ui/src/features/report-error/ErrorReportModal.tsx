@@ -9,6 +9,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -25,7 +26,7 @@ type ErrorReportModalProps = {
   isOpen: boolean
   onClose: () => void
   context: ErrorContext
-  userAddress: Address | undefined
+  userAddress: Address | Nullish
 }
 
 export const ErrorReportModal = ({
@@ -33,7 +34,7 @@ export const ErrorReportModal = ({
   onClose,
   context,
   userAddress,
-}: ErrorReportModalProps & { userAddress?: Address }) => {
+}: ErrorReportModalProps & { userAddress?: Address | Nullish }) => {
   const {
     form,
     values: { address, contact, contactMethod, description },

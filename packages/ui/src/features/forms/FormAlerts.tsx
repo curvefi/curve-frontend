@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, type Nullish } from '@primitives/objects.utils'
 import { CopyIconButton } from '@ui/components/CopyIconButton'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { getErrorMessage } from '@ui/features/errors/errors.util'
@@ -30,7 +30,7 @@ type FormAlertProps<Field extends string> = {
   formErrors: FormErrors<Field>
   /** List of fields that have their errors already displayed elsewhere */
   handledErrors: readonly Field[]
-  userAddress: Address | undefined
+  userAddress: Address | Nullish
 }
 
 const { Spacing } = SizesAndSpaces

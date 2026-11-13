@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { FormProvider } from '@ui/features/forms'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
@@ -27,9 +28,9 @@ export const SlippageSettingsModal = ({
   onClose: () => void
   onChanged: (data: SlippageSettings) => void
   type: SlippageType | SlippageType[] | undefined
-  active?: SlippageType
-  maxSlippage?: Decimal
-  userAddress?: Address
+  active: SlippageType | undefined
+  maxSlippage: Decimal | undefined
+  userAddress: Address | Nullish
 }) => {
   const types = toArray(type)
   const currentType = active ?? (typeof type === 'string' ? type : undefined)

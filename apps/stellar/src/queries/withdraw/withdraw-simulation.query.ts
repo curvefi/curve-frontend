@@ -1,7 +1,7 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { toBigIntArray, toWei, toWeiArray } from '@ui/lib/decimal'
