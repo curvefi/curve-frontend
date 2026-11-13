@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
@@ -43,10 +44,11 @@ export type TokenInfoProps = TokenInfoTokenIconProps | TokenInfoCustomIconProps
 
 const TokenInfoItem = ({
   value: { data, error, isLoading },
+  iconSize,
   ...typographyProps
-}: { value: QueryProp<ReactNode> } & Pick<TypographyProps, 'variant' | 'color'>) => (
+}: { value: QueryProp<ReactNode>; iconSize: IconButtonProps['size'] } & Pick<TypographyProps, 'variant' | 'color'>) => (
   <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
-    {error && <ErrorIconButton error={error} size="extraSmall" />}
+    {error && <ErrorIconButton error={error} size={iconSize} />}
     {isLoading && data != null && <Spinner size={16} sx={{ margin: 0 }} />}
     <WithSkeleton loading={isLoading && data == null}>
       <Typography {...typographyProps} noWrap>
@@ -75,9 +77,20 @@ export const TokenInfo = (props: TokenInfoProps) => {
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
-        <TokenInfoItem value={toQuery(primary)} variant={boldPrimary ? 'tableCellValueStrong' : 'tableCellValue'} />
+        <TokenInfoItem
+          value={toQuery(primary)}
+          variant={boldPrimary ? 'tableCellValueStrong' : 'tableCellValue'}
+          iconSize="extraSmall"
+        />
 
-        {secondary && <TokenInfoItem value={toQuery(secondary)} variant="tableCellSupport" color="textSecondary" />}
+        {secondary && (
+          <TokenInfoItem
+            value={toQuery(secondary)}
+            variant="tableCellSupport"
+            color="textSecondary"
+            iconSize="extraExtraSmall"
+          />
+        )}
       </Stack>
 
       {iconPosition === 'right' && tokenIcon}
