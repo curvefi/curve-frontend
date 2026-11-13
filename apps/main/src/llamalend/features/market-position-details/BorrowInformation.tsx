@@ -31,7 +31,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
 import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -105,47 +105,42 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             }}
           />
         )}
-        {positionPnl && (
-          <Metric
-            category={BORROW_METRIC_CATEGORY}
-            label={t`Equity`}
-            valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-            {...tokenMetric({
-              value: positionPnl.equity,
-              symbol: borrowToken?.symbol,
-              ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
-            })}
-          />
-        )}
+        <Metric
+          category={BORROW_METRIC_CATEGORY}
+          label={t`Equity`}
+          valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
+          {...tokenMetric({
+            value: positionPnl?.equity,
+            symbol: borrowToken?.symbol,
+            ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
+          })}
+        />
         <LiquidationBufferMetric
           position={position}
           thresholds={thresholds}
           borrowSymbol={borrowToken?.symbol}
           showNotional={isDetailsOpen}
         />
-        {carryApr && (
-          <Metric
-            category={BORROW_METRIC_CATEGORY}
-            label={t`Carry APR`}
-            value={carryApr.current}
-            valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
-            valueTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-            {...(isDetailsOpen && {
+        <Metric
+          category={BORROW_METRIC_CATEGORY}
+          label={t`Carry APR`}
+          value={carryApr?.current}
+          valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
+          valueTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
+          {...(isDetailsOpen &&
+            carryApr && {
               notional: mapQuery(carryApr.yieldMultiplier, multiplier =>
                 maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
               ),
             })}
-          />
-        )}
-        {positionPnl && (
-          <PnlMetric
-            pnl={positionPnl.pnl}
-            borrowSymbol={borrowToken?.symbol}
-            collateralSymbol={collateralToken?.symbol}
-            borrowUsdRate={q(borrowUsdRate)}
-            showNotional={isDetailsOpen}
-          />
-        )}
+        />
+        <PnlMetric
+          pnl={positionPnl?.pnl ?? DISABLED_Q}
+          borrowSymbol={borrowToken?.symbol}
+          collateralSymbol={collateralToken?.symbol}
+          borrowUsdRate={q(borrowUsdRate)}
+          showNotional={isDetailsOpen}
+        />
       </MetricsGrid>
       <Collapse in={isDetailsOpen}>
         <MetricsGrid variant="mobileRows" sx={{ paddingBlockStart: Grid.Row_Spacing }}>

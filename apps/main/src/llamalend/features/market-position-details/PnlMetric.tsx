@@ -15,7 +15,6 @@ type PnlMetricProps = Pick<PositionPnlAndEquityQueries, 'pnl'> & {
   borrowSymbol: string | undefined
   collateralSymbol: string | undefined
   borrowUsdRate: QueryProp<Amount>
-  /** Shows the USD value below the PNL */
   showNotional: boolean
 }
 
