@@ -1,4 +1,6 @@
+import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import type { Theme } from '@mui/material/styles'
+import type { Address } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import { formatNumber } from '@primitives/number.utils'
@@ -56,15 +58,18 @@ export type PositionHealthThresholds = {
 /** Buffer cutoffs shared by the correlated and blue chip markets */
 const LIQUIDATION_BUFFER_SHARE_THRESHOLDS = { critical: 0.2, risky: 0.5 } as const
 
-const POSITION_HEALTH_THRESHOLDS = {
+export const POSITION_HEALTH_THRESHOLDS = {
   [MarketAssetsType.Correlated]: { nearRangeHealth: 1.01, liquidationBufferShare: LIQUIDATION_BUFFER_SHARE_THRESHOLDS },
   [MarketAssetsType.BlueChip]: { nearRangeHealth: 1.1, liquidationBufferShare: LIQUIDATION_BUFFER_SHARE_THRESHOLDS },
   [MarketAssetsType.LongTail]: { nearRangeHealth: 1.2, liquidationBufferShare: { critical: 0.1, risky: 0.4 } },
 } as const satisfies Record<MarketAssetsType, PositionHealthThresholds>
 
 /** Thresholds for the market's assets type. Unmapped markets use the long-tail ones. */
-export const getPositionHealthThresholds = (assetsType: MarketAssetsType | undefined): PositionHealthThresholds =>
-  POSITION_HEALTH_THRESHOLDS[assetsType ?? MarketAssetsType.LongTail]
+export const getPositionHealthThresholds = (
+  chainId: number,
+  controllerAddress: Address | undefined,
+): PositionHealthThresholds =>
+  POSITION_HEALTH_THRESHOLDS[getMarketAssetsType(chainId, controllerAddress) ?? MarketAssetsType.LongTail]
 
 // TODO: workaround, remove once the user stats endpoints return price_low and price_high
 /**

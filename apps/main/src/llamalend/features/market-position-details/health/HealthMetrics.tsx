@@ -64,12 +64,8 @@ export const LiquidationBufferMetric = ({
   position,
   thresholds,
   borrowSymbol,
-  showAmount,
-}: HealthMetricProps & {
-  borrowSymbol: string | undefined
-  /** Shows the liquidation buffer in the borrowed token below its percentage */
-  showAmount: boolean
-}) => {
+  showNotional,
+}: HealthMetricProps & { borrowSymbol: string | undefined; showNotional: boolean }) => {
   const theme = useTheme()
   const { data } = position
   return (
@@ -87,7 +83,7 @@ export const LiquidationBufferMetric = ({
       }}
       testId="health-details-liquidation-buffer-metric"
       value={mapQuery(position, ({ liquidationBuffer }) => liquidationBuffer)}
-      {...(showAmount && {
+      {...(showNotional && {
         notional: mapQuery(position, ({ liquidationBufferAmount }) =>
           formatAmount(liquidationBufferAmount, borrowSymbol),
         ),

@@ -11,7 +11,6 @@ import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import { tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
-import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import { usePositionHealth } from '@/llamalend/queries/user/user-health.query'
@@ -38,7 +37,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
-import { HealthMetric, LiquidationBufferMetric } from './health/HealthDetails'
+import { HealthMetric, LiquidationBufferMetric } from './health/HealthMetrics'
 import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } from './market-position-details.utils'
 import { PnlMetric } from './PnlMetric'
 import { DistanceToRangeTooltipContent } from './tooltips/DistanceToRangeTooltipContent'
@@ -47,11 +46,10 @@ const { Grid } = SizesAndSpaces
 
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
-/** The borrow position metrics of the new health. It relies on the beta channel features: equity leverage, carry APR and PNL. */
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const { chainId, controllerAddress } = useMarketContext()
   const [isDetailsOpen] = usePositionDetailsOpen()
-  const thresholds = getPositionHealthThresholds(getMarketAssetsType(chainId, controllerAddress))
+  const thresholds = getPositionHealthThresholds(chainId, controllerAddress)
   const position = usePositionHealth(params, thresholds)
   const userState = useUserState(params)
   const equityLeverage = useEquityLeverage({ params })
@@ -62,7 +60,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const userBands = useUserBands(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 
-  const { collateral, convertedBorrowed: borrowed } = userState.data ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
     getCollateralValue(userState, oraclePrice),
   )
@@ -124,7 +121,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           position={position}
           thresholds={thresholds}
           borrowSymbol={borrowToken?.symbol}
-          showAmount={isDetailsOpen}
+          showNotional={isDetailsOpen}
         />
         {carryApr && (
           <Metric
@@ -160,8 +157,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               title: t`Collateral value`,
               body: (
                 <CollateralMetricTooltipContent
-                  borrow={{ value: borrowed, symbol: borrowToken?.symbol }}
-                  collateral={{ value: collateral, conversionRate: oraclePrice.data, symbol: collateralToken?.symbol }}
+                  borrow={{ value: userState.data?.convertedBorrowed, symbol: borrowToken?.symbol }}
+                  collateral={{
+                    value: userState.data?.collateral,
+                    conversionRate: oraclePrice.data,
+                    symbol: collateralToken?.symbol,
+                  }}
                   totalValue={collateralValue.data}
                   totalValueUsd={combineQueries([collateralValue, borrowUsdRate], (totalValue, borrowUsdRate) =>
                     decimalMultiply(totalValue, borrowUsdRate),
