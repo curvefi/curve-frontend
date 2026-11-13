@@ -1,7 +1,7 @@
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
-import { getIsUserCloseToSoftLiquidation, getLiquidationStatus } from '@/llamalend/llama.utils'
+import { getIsUserCloseToSoftLiquidation, getLegacyLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { getMarketOraclePriceBandKey } from '@/llamalend/queries/market/market-oracle-price-band.query'
@@ -153,33 +153,33 @@ describe('Position status logic', () => {
     })
   })
 
-  describe('getLiquidationStatus', () => {
+  describe('getLegacyLiquidationStatus', () => {
     it('returns undefined when required values are missing', () => {
-      expect(getLiquidationStatus(undefined, false, false, '1', '0')).to.eq(undefined)
-      expect(getLiquidationStatus('1', false, false, undefined, '0')).to.eq(undefined)
-      expect(getLiquidationStatus('1', false, false, '1', undefined)).to.eq(undefined)
+      expect(getLegacyLiquidationStatus(undefined, false, false, '1', '0')).to.eq(undefined)
+      expect(getLegacyLiquidationStatus('1', false, false, undefined, '0')).to.eq(undefined)
+      expect(getLegacyLiquidationStatus('1', false, false, '1', undefined)).to.eq(undefined)
     })
 
     it('prioritizes hard liquidation over all other states', () => {
-      expect(getLiquidationStatus('-0.0001', false, false, '1', '100')).to.eq('hardLiquidation')
-      expect(getLiquidationStatus('-0.0001', true, true, '0', '100')).to.eq('hardLiquidation')
+      expect(getLegacyLiquidationStatus('-0.0001', false, false, '1', '100')).to.eq('hardLiquidation')
+      expect(getLegacyLiquidationStatus('-0.0001', true, true, '0', '100')).to.eq('hardLiquidation')
     })
 
     it('returns conversion states when user is below range', () => {
-      expect(getLiquidationStatus('1', false, true, '0.5', '100')).to.eq('incompleteConversion')
-      expect(getLiquidationStatus('1', false, true, '0', '100')).to.eq('fullyConverted')
-      expect(getLiquidationStatus('1', false, true, '-0.1', '100')).to.eq('fullyConverted')
+      expect(getLegacyLiquidationStatus('1', false, true, '0.5', '100')).to.eq('incompleteConversion')
+      expect(getLegacyLiquidationStatus('1', false, true, '0', '100')).to.eq('fullyConverted')
+      expect(getLegacyLiquidationStatus('1', false, true, '-0.1', '100')).to.eq('fullyConverted')
     })
 
     it('applies dust threshold correctly for soft liquidation', () => {
-      expect(getLiquidationStatus('1', false, false, '1', '0.1')).to.eq('healthy')
-      expect(getLiquidationStatus('1', false, false, '1', '0.1000000001')).to.eq('softLiquidation')
-      expect(getLiquidationStatus('1', true, false, '1', '0')).to.eq('healthy')
-      expect(getLiquidationStatus('1', true, false, '1', '0.0000001')).to.eq('softLiquidation')
+      expect(getLegacyLiquidationStatus('1', false, false, '1', '0.1')).to.eq('healthy')
+      expect(getLegacyLiquidationStatus('1', false, false, '1', '0.1000000001')).to.eq('softLiquidation')
+      expect(getLegacyLiquidationStatus('1', true, false, '1', '0')).to.eq('healthy')
+      expect(getLegacyLiquidationStatus('1', true, false, '1', '0.0000001')).to.eq('softLiquidation')
     })
 
     it('returns healthy when no higher-priority condition matches', () => {
-      expect(getLiquidationStatus('0.1', false, false, '1', '0.05')).to.eq('healthy')
+      expect(getLegacyLiquidationStatus('0.1', false, false, '1', '0.05')).to.eq('healthy')
     })
   })
 

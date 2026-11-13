@@ -3,7 +3,12 @@ import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
 import { getHealthValues } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
-import { getDisplayLegacyHealth, getLiquidationStatus, isBelowRange, isZapV0MintMarket } from '@/llamalend/llama.utils'
+import {
+  getDisplayLegacyHealth,
+  getLegacyLiquidationStatus,
+  isBelowRange,
+  isZapV0MintMarket,
+} from '@/llamalend/llama.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -39,7 +44,7 @@ const normalizeMarketStats = (stats: BorrowStats) => {
     (collateral, convertedBorrowed, debt): UserState => ({ collateral, convertedBorrowed, debt }),
   )
   return {
-    status: getLiquidationStatus(
+    status: getLegacyLiquidationStatus(
       decimal(stats.health),
       stats.softLiquidation,
       isBelowRange(stats.activeBand, stats.n2),

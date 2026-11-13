@@ -1,5 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { getUserHealthOptions } from '@/llamalend/queries/user/user-health.query'
 import { useUserPrices } from '@/llamalend/queries/user/user-prices.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
@@ -34,7 +34,7 @@ export function usePrevLoanState<ChainId extends IChainId>(
   return {
     prevDebt,
     prevCollateral,
-    prevHealth: q(useHealthQueries(isFull => getUserHealthOptions({ ...params, isFull }, enabled))),
+    prevHealth: q(useLegacyHealthQueries(isFull => getUserHealthOptions({ ...params, isFull }, enabled))),
     prevPrices: prevPrices ?? userPrevPrices,
     prevLoanToValue: q(
       useLoanToValueFromUserState(

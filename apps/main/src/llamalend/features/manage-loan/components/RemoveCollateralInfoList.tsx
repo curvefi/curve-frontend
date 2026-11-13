@@ -1,6 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useRemoveCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
@@ -49,7 +49,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       gas={q(useRemoveCollateralEstimateGas(params, isOpen))}
-      health={q(useHealthQueries(isFull => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(useLegacyHealthQueries(isFull => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(

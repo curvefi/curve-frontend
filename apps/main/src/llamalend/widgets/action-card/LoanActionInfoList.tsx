@@ -1,6 +1,6 @@
 import { BORROW_RATE_TITLE } from '@/llamalend/constants'
 import {
-  getHealthValueColor,
+  getLegacyHealthValueColor,
   getLeverageValueColor,
 } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
@@ -163,7 +163,7 @@ export const LoanActionInfoList = ({
                   ? '-'
                   : mapQuery(health, data => formatNumber(data, 'health.compact'))
             }
-            valueColor={getHealthValueColor({
+            valueColor={getLegacyHealthValueColor({
               health: health?.data,
               prevHealth: prevHealth?.data,
               theme: useTheme(),

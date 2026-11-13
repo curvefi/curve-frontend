@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useRepayEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
@@ -115,7 +115,7 @@ export function RepayLoanInfoList({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
-      health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(useLegacyHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       isFullRepay={isFull}

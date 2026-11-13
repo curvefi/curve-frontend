@@ -16,7 +16,7 @@ export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
 
 /** Health percentage thresholds used for color coding and label display */
-export const HEALTH_THRESHOLDS = {
+export const LEGACY_HEALTH_THRESHOLDS = {
   /** Below this value, the position is in hard liquidation */
   HARD_LIQUIDATION: 0,
   /** Below this value, the position is critically at risk */
@@ -48,17 +48,17 @@ const resolveHealthFeedbackKey = ({
   if (isFullRepay) return 'Success'
   if (health == null) return softLiquidation ? 'Warning' : 'Success'
   if (softLiquidation) {
-    if (health < HEALTH_THRESHOLDS.CRITICAL) return 'Error'
-    if (health < HEALTH_THRESHOLDS.SOFT_LIQUIDATION_DANGER) return 'Danger'
+    if (health < LEGACY_HEALTH_THRESHOLDS.CRITICAL) return 'Error'
+    if (health < LEGACY_HEALTH_THRESHOLDS.SOFT_LIQUIDATION_DANGER) return 'Danger'
     return 'Warning'
   }
-  if (health < HEALTH_THRESHOLDS.CRITICAL) return 'Error'
-  if (health < HEALTH_THRESHOLDS.RISKY) return 'Danger'
-  if (health < HEALTH_THRESHOLDS.GOOD) return 'Warning'
+  if (health < LEGACY_HEALTH_THRESHOLDS.CRITICAL) return 'Error'
+  if (health < LEGACY_HEALTH_THRESHOLDS.RISKY) return 'Danger'
+  if (health < LEGACY_HEALTH_THRESHOLDS.GOOD) return 'Warning'
   return 'Success'
 }
 
-export const getHealthValueColor = ({
+export const getLegacyHealthValueColor = ({
   theme,
   isFullRepay,
   health,
@@ -79,8 +79,8 @@ export const getHealthValueColor = ({
 export const getLeverageValueColor = (leverage: Decimal | Nullish) =>
   leverage != null && decimalGreaterThan(ZERO, leverage) ? 'error' : undefined
 
-/** Bar and track fills. Health figures use `getHealthValueColor`. */
-export const getHealthTrackColor = ({
+/** Bar and track fills. Health figures use `getLegacyHealthValueColor`. */
+export const getLegacyHealthTrackColor = ({
   health,
   softLiquidation,
   theme,
