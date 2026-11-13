@@ -1,5 +1,6 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getUserProposalVotes, type ProposalType, type UserProposalVote } from '@curvefi/prices-api/proposal'
+import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import type { UserParams, UserQuery } from '@evm-ui/queries/query-types'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'
@@ -23,8 +24,7 @@ type UserProposalVotesMapper = Record<string, UserProposalVoteFormatted>
 const _fetchUserProposalVotes = async ({ userAddress }: UserQuery) => {
   const results: UserProposalVote[] = await paginate(
     (page, offset) => getUserProposalVotes(userAddress, page, offset),
-    1,
-    1000,
+    { page: DEFAULT_PAGE_START_INDEX },
   )
 
   const userProposalVotesMapper = results.reduce((mapper: UserProposalVotesMapper, vote: UserProposalVote) => {

@@ -5,7 +5,6 @@ import {
   getUserMarkets,
   getUserMarketStats,
   Market,
-  USER_MARKETS_DEFAULT_PER_PAGE,
   USER_MARKETS_FIRST_PAGE,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
@@ -54,11 +53,9 @@ const {
     ({ name: 'user-lending-vaults', version: 3, blockchainId, userAddress }) as const,
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
     (
-      await paginate(
-        page => getUserMarkets(userAddress, blockchainId, { page }),
-        USER_MARKETS_FIRST_PAGE,
-        USER_MARKETS_DEFAULT_PER_PAGE,
-      )
+      await paginate((page, per_page) => getUserMarkets(userAddress, blockchainId, { page, per_page }), {
+        page: USER_MARKETS_FIRST_PAGE,
+      })
     ).map(market => market.controller),
   category: 'llamalend.user',
   validationSuite: userChainNameValidationSuite,
@@ -116,9 +113,8 @@ const {
   category: 'llamalend.user',
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<UserLendingSupplies> => {
     const positions = await paginate(
-      page => getUserLendingPositions(userAddress, blockchainId, { page }),
-      USER_MARKETS_FIRST_PAGE,
-      USER_MARKETS_DEFAULT_PER_PAGE,
+      (page, per_page) => getUserLendingPositions(userAddress, blockchainId, { page, per_page }),
+      { page: USER_MARKETS_FIRST_PAGE },
     )
     return fromEntries(
       positions
