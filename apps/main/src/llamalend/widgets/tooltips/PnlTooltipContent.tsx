@@ -12,3 +12,11 @@ export const PnlTooltipContent = () => (
     <TooltipFooter>{t`Excludes price impact you would pay to close.`}</TooltipFooter>
   </TooltipWrapper>
 )
+
+export const PnlUnavailableTooltipContent = () => (
+  <TooltipWrapper>
+    <TooltipDescription
+      text={t`PNL is not available for this market. Its leverage zap records positions as plain borrows and repays, so the capital you put in is unknown.`}
+    />
+  </TooltipWrapper>
+)
