@@ -166,7 +166,7 @@ export const getMarketCampaigns = (
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
-/** No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%. */
+/** No collateral yield means no carry APR; no borrowed-token yield or no campaign counts as 0%. */
 const toMarketYields = (
   collateralYieldApr: number | Nullish,
   borrowedYieldApr: number | Nullish,
