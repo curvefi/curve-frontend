@@ -5,7 +5,7 @@ import { decimalDiv, decimalMultiply, decimalRound, decimalSum } from '@ui/lib/d
 import type { WithdrawParams } from './types'
 
 /**
- * Balanced and Max one-coin withdrawals burn a fixed LP amount; slippage applies to their outputs.
+ * Balanced and one-coin withdrawals burn a fixed LP amount; slippage applies to their outputs.
  * Imbalance withdrawals add percentage slippage to the expected LP burn, rounding half up to 18 decimals like curve-js.
  * This estimate validates the available LP balance; curve-js requotes when executing the withdrawal.
  */

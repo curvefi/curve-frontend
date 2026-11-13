@@ -7,6 +7,7 @@ import { invalidatePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import type { PoolQuery, UserQuery } from '@/stellar/queries/query-types'
 import { invalidateTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { invalidateWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
+import { invalidateWithdrawOneCoinQuote } from '@/stellar/queries/withdraw/withdraw-one-coin-quote.query'
 import { zip } from '@primitives/array.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { invalidateLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
@@ -28,6 +29,7 @@ export const invalidatePoolLiquidity = async ({
     invalidatePoolSnapshot(params),
     invalidatePoolRates(params),
     invalidateWithdrawMaxAmount({ network, pool }, { partial: true }),
+    invalidateWithdrawOneCoinQuote({ network, pool }, { partial: true }),
     invalidateLitePoolList({ chainId: STELLAR_NETWORKS[network].chainId }),
   ])
 }

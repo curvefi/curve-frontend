@@ -51,13 +51,14 @@ export class NoRetryError extends Error {
 
 async function runQuery<TData, TQuery>(
   queryKey: InternalQueryKey,
-  queryFn: (params: TQuery) => Promise<TData>,
+  queryFn: (params: TQuery, context: QueryFunctionContext) => Promise<TData>,
   disableLog: true | undefined,
+  context: QueryFunctionContext,
 ) {
   try {
     const start = new Date()
     if (!disableLog) logQuery(queryKey)
-    const data = await queryFn(queryKey[0] as TQuery)
+    const data = await queryFn(queryKey[0] as TQuery, context)
     if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), notFalsy(data))
     return data
   } catch (error) {
@@ -86,7 +87,7 @@ export function queryFactory<
 }: {
   queryKey: (params: TParams) => TKey
   validationSuite: Suite<TField, string, TCallback>
-  queryFn: (params: TQuery) => Promise<TData>
+  queryFn: (params: TQuery, context: QueryFunctionContext) => Promise<TData>
   category: QueryCategory
   dependencies?: (params: TParams) => readonly QueryKeyObject[]
   refetchOnWindowFocus?: 'always'
@@ -96,8 +97,8 @@ export function queryFactory<
 }) {
   const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
 
-  const queryFn = async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
-    await runQuery(queryKey, query, disableLog)
+  const queryFn = async (context: QueryFunctionContext<InternalQueryKey<TKey>>) =>
+    await runQuery(context.queryKey, query, disableLog, context)
 
   const getQueryOptions = (
     params: TParams,

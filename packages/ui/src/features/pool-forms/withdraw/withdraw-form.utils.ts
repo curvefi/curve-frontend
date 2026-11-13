@@ -29,6 +29,8 @@ type WithdrawQuoteFields = {
 
 export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
   amount: Decimal | undefined
+  lpAmount: Decimal | undefined
+  quotedAmount: Decimal | undefined
   isMax: boolean
   tokenIndex: number
   poolReserve: Decimal | undefined
@@ -37,20 +39,13 @@ export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
 export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
   PoolTokenFields & { lpAmount: Decimal | undefined; isBalanced: boolean }
 
-/** Max burns the full LP balance; a custom token amount uses an imbalance withdrawal. */
-export const getOneCoinWithdrawParams = ({
-  amount,
-  isMax,
-  tokenIndex,
-  poolReserve,
-  ...quote
-}: OneCoinWithdrawFormValues) => ({
-  ...quote,
-  mode: isMax ? ('one-coin' as const) : ('unbalanced' as const),
-  tokenIndex,
-  lpAmount: isMax ? quote.maxLpAmount : undefined,
-  amounts: quote.decimals?.map((_, index) => (index === tokenIndex ? amount : '0')),
-  maxAmounts: quote.decimals?.map((_, index) => (index === tokenIndex ? poolReserve : '0')),
+/** Manual amounts use the quoted LP burn; Max burns the full balance. */
+export const getOneCoinWithdrawParams = (values: OneCoinWithdrawFormValues) => ({
+  ...values,
+  mode: 'one-coin' as const,
+  lpAmount: values.isMax ? values.maxLpAmount : values.lpAmount,
+  amounts: values.decimals?.map((_, index) => (index === values.tokenIndex ? values.quotedAmount : '0')),
+  maxAmounts: values.decimals?.map((_, index) => (index === values.tokenIndex ? values.poolReserve : '0')),
 })
 
 export const getAdvancedWithdrawParams = (values: AdvancedWithdrawFormValues) => ({

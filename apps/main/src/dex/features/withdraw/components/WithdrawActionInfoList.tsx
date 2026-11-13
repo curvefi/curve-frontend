@@ -14,6 +14,8 @@ export const WithdrawActionInfoList = ({
   maximumLp,
   lpBalance,
   priceImpact,
+  minimumReceived,
+  toSymbol,
   onSlippageChange,
 }: {
   params: WithdrawQuoteParams
@@ -21,6 +23,8 @@ export const WithdrawActionInfoList = ({
   maximumLp: QueryProp<Decimal>
   lpBalance: QueryProp<Decimal>
   priceImpact: QueryProp<Decimal | null>
+  minimumReceived?: QueryProp<Decimal>
+  toSymbol?: string
   onSlippageChange: (slippage: Decimal) => void
 }) => (
   <PoolActionInfoList
@@ -29,6 +33,8 @@ export const WithdrawActionInfoList = ({
     currentLpTestId="pool-withdraw-current-lp"
     projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}
     priceImpact={priceImpact}
+    minimumReceived={minimumReceived}
+    toSymbol={toSymbol}
     gas={useWithdrawEstimateGas(params)}
     slippage={params.slippage}
     onSlippageChange={onSlippageChange}

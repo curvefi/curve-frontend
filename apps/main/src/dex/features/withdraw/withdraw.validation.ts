@@ -86,9 +86,6 @@ const validateWithdraw = (
         .isNumber()
         .inside(range(amounts?.length ?? 0))
     })
-    test('lpAmount', 'Max withdrawal requires the full LP balance', () => {
-      enforce(params.lpAmount).condition(() => decimalEqual(params.lpAmount!, maxLpAmount!))
-    })
     each(amounts ?? [], (amount, index) => {
       skipWhen(index !== params.tokenIndex, () =>
         test(field(index), 'Enter an amount to withdraw', () => {
@@ -142,7 +139,9 @@ export const advancedWithdrawFormValidationSuite = createValidationSuite((values
 export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values: OneCoinWithdrawFormValues) => {
   validateForm(getOneCoinWithdrawParams(values), () => 'amount')
   test('amount', 'Enter an amount to withdraw', () => {
-    enforce(values.amount).isDecimal().gt(0)
+    enforce(values.amount)
+      .isDecimal({ decimal_digits: `0,${values.decimals?.[values.tokenIndex] ?? 0}` })
+      .gt(0)
   })
 })
 
