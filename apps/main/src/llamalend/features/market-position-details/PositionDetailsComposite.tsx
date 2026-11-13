@@ -4,11 +4,14 @@ import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-positi
 import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
 import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
+import Stack from '@mui/material/Stack'
 import type { QueryProp } from '@ui/features/queries/util'
 import { BorrowPositionDetails } from './BorrowPositionDetails'
 import { MarketEmptyPosition } from './MarketEmptyPosition'
 import { PositionDetailsCard } from './PositionDetailsCard'
+import { PositionDetailsToggle } from './PositionDetailsToggle'
 import { SupplyPositionDetails } from './SupplyPositionDetails'
 
 type PositionEvents = {
@@ -40,6 +43,7 @@ export const PositionDetailsComposite = <T extends MarketRateType>({
   hasPosition,
   events,
 }: PositionDetailsCompositeProps<T>) => {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const hasEvents = !!events.data?.length
   const { Details, renderActivity } = POSITION_CONFIG[type]
 
@@ -48,7 +52,14 @@ export const PositionDetailsComposite = <T extends MarketRateType>({
       type={type}
       hasPosition={hasPosition}
       hasEvents={hasEvents}
-      headerAction={type === MarketRateType.Borrow && <LlamaMonitorBotButton />}
+      headerAction={
+        type === MarketRateType.Borrow && (
+          <Stack direction="row" sx={{ alignItems: 'center' }}>
+            {isNewLlamalendHealth && hasPosition && <PositionDetailsToggle />}
+            <LlamaMonitorBotButton />
+          </Stack>
+        )
+      }
       activity={renderActivity(events)}
     >
       {hasPosition ? <Details /> : <MarketEmptyPosition type={type} />}
