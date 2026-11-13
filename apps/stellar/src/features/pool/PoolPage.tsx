@@ -1,11 +1,13 @@
 import { StellarErrorPage } from '@/stellar/components/StellarErrorPage'
 import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
+import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenName } from '@/stellar/queries/token/token-name.query'
+import Alert from '@mui/material/Alert'
 import { Loading } from '@ui/components/Loading'
 import type { RouterState } from '@ui/components/RouterLink'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
@@ -15,6 +17,7 @@ import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { useCreatedPools } from '@ui/features/storage/useSessionStorage'
 import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { StellarPages } from '../../routes/routes'
@@ -59,6 +62,7 @@ export const PoolPage = () => {
   const { network, pool } = useParams<PoolQuery>()
   const { defaultTab } = useLocation().state as RouterState
   const { address: account } = useWallet()
+  const [createdPools] = useCreatedPools(network)
   const params = { network, pool }
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
@@ -68,7 +72,8 @@ export const PoolPage = () => {
   const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals })
   const tokenName = useTokenName({ network, token: pool })
 
-  return litePool.data ? (
+  const isJustCreated = createdPools.includes(asAddress(pool))
+  return litePool.data || isJustCreated ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
@@ -89,6 +94,11 @@ export const PoolPage = () => {
           ),
       }}
     >
+      {isJustCreated && !litePool.data && (
+        <Alert severity="warning" data-testid="pool-unlisted-warning">
+          {t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`}
+        </Alert>
+      )}
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
       <PoolCampaigns {...params} />
       <PoolCompositionCard {...composition} />

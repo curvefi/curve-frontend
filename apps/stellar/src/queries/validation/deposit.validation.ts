@@ -1,4 +1,4 @@
-import { each, test } from 'vest'
+import { each, skipWhen, test } from 'vest'
 import type { DepositForm, DepositMutationParams, DepositParams } from '@/stellar/features/deposit/types'
 import { validateAccount, validatePool } from '@/stellar/queries/validation/pool.validation'
 import { maybe, notFalsyArray } from '@primitives/objects.utils'
@@ -13,7 +13,7 @@ export const depositValidationSuite = createValidationSuite(
     validatePool({ pool, network })
     validateFundedInputs(inputs)
     validateAccount(account)
-    validateSlippage({ slippage })
+    validateSlippage({ slippage, minimum: 0 }) // the initial deposit after pool creation forces slippage 0
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
       enforce(quote).isDecimal().gt(0)
     })
@@ -63,4 +63,9 @@ const validateTokens = ({ tokens }: Pick<DepositMutationParams, 'tokens'>) => {
 export const depositMutationValidationSuite = createValidationSuite((params: DepositMutationParams) => {
   depositValidationSuite.run(params)
   validateTokens(params)
+  skipWhen(!params.isSeed, () => {
+    test('supply', "This pool already has liquidity. Use the pool's deposit form to continue.", () => {
+      enforce(maybe(params.supply, supply => +supply)).equals(0)
+    })
+  })
 })

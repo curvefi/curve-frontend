@@ -19,6 +19,7 @@ export const defineMuiAlert = (
   { bodyXsRegular }: TypographyVariantsOptions,
 ): Components['MuiAlert'] => ({
   defaultProps: {
+    variant: 'filled',
     iconMapping: {
       success: <CheckIcon fontSize="small" />,
       info: <InfoCircledIcon fontSize="small" />,

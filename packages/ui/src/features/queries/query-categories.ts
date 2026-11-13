@@ -38,6 +38,7 @@ export const QUERY_CATEGORIES = {
   'dex.swap': form,
   'dex.deposit': form,
   'dex.deployGauge': form,
+  'dex.createPool': form,
   'stellar.transaction': { meta: { persist: false } }, // values returned by the SDK lose the built transaction, disable persistence for now
 
   // LlamaLend / crvUSD lending

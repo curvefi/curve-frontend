@@ -89,7 +89,7 @@ export const LoanFormTokenInput = <
   const walletBalance = useMemo(
     // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
     () => ({
-      balance: position?.data ?? balance,
+      balance: position ? position.data : balance,
       symbol: token?.symbol,
       loading: position?.isLoading ?? isBalanceLoading,
       usdRate,

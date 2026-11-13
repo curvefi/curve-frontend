@@ -8,13 +8,14 @@ import type {
 import { fetchDepositSimulation, invalidateDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { invalidateExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { depositMutationValidationSuite } from '@/stellar/queries/validation/deposit.validation'
+import { maybe } from '@primitives/objects.utils'
 import { getPoolAmounts, getPoolMaxAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
 
 export const useDepositMutation = ({ network, pool, account, tokens, quote, onReset }: DepositMutationOptions) => {
-  const { mutate, error, isPending } = useStellarMutation<DepositMutation, DepositMutationContext>({
+  const { mutate, error, isPending, isSuccess, status } = useStellarMutation<DepositMutation, DepositMutationContext>({
     mutationKey: [{ network, pool, account, name: 'deposit' }] as const,
     buildContext: (_, baseContext) => ({ ...baseContext, network, pool, tokens, quote }) as DepositMutationContext,
     createTransaction: (values, context) => fetchDepositSimulation({ ...values, ...context }, { staleTime: 0 }),
@@ -36,10 +37,11 @@ export const useDepositMutation = ({ network, pool, account, tokens, quote, onRe
     (values: DepositForm) =>
       mutate({
         ...values,
+        isSeed: maybe(values.supply, s => !+s),
         amounts: getPoolAmounts(values, values.decimals?.length),
         maxAmounts: getPoolMaxAmounts(values, values.decimals?.length),
       } as DepositMutation),
     [mutate],
   )
-  return { onSubmit, mutate, error, isPending }
+  return { onSubmit, mutate, error, isPending, isSuccess, status }
 }

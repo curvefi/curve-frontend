@@ -149,15 +149,10 @@ export const StableswapPricePreview = ({
     })),
   }
 
+  // todo: check if we can put the parameters in the fullscreen dialog
   return (
     <WithWrapper shouldWrap={fullscreen} Wrapper={DialogFullscreen} onClose={closeFullscreen}>
-      <Stack
-        sx={{
-          gap: Spacing.sm,
-          backgroundColor: 'background.paper',
-          ...(fullscreen && { padding: Spacing.md, height: '100%' }),
-        }}
-      >
+      <Stack sx={{ gap: Spacing.sm, ...(fullscreen && { padding: Spacing.md, height: '100%' }) }}>
         <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="headingXsBold">{t`Price as the pool gets imbalanced`}</Typography>
           <Stack direction="row">
