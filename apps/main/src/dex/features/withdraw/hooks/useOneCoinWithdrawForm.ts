@@ -129,7 +129,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
       isPending ||
       isDebouncing ||
       shouldBlockTransaction(priceImpact) ||
-      (values.isMax && (!canWithdrawOneCoin || max.data == null || max.isLoading || !!max.error)),
+      (values.isMax && (!canWithdrawOneCoin || !max.data)),
     error,
     formErrors: formState.visibleErrors,
   }
