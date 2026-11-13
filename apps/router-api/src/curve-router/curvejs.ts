@@ -67,7 +67,7 @@ export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
   instances[chainId] ??= (async () => {
     const curve = createCurve()
     const { url } = await resolveRpc(chainId, curve)
-    await curve.init('JsonRpc', { url }, { chainId })
+    await curve.init('JsonRpc', { url }, { chainId, apiOnlyMetadata: true })
     const instance: CurveInstance = { curve, blacklist: new Set(), poolAddresses: [] }
     await fetchPools(instance, log)
     return instance
