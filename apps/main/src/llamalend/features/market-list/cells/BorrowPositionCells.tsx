@@ -1,6 +1,11 @@
 import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/position-status'
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
-import { getHealthTextColor, getLiquidationBufferTextColor } from '@/llamalend/health.utils'
+import {
+  formatDistanceToRange,
+  formatRangePrices,
+  getHealthTextColor,
+  getLiquidationBufferTextColor,
+} from '@/llamalend/health.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { OpeningLeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
@@ -120,10 +125,8 @@ export const LiquidationBufferCell = ({ row: { original: row }, getValue }: Borr
 /** How far the oracle price is from the liquidation range, with the range prices below it */
 export const DistanceToRangeCell = ({ row: { original: row }, getValue }: BorrowPositionCellProps) => (
   <PositionMetric
-    value={getValue() === 0 ? t`In range` : formatNumber(getValue(), 'percent.delta')}
-    support={maybe(row.positionQueries.stats.data?.rangePrices, prices =>
-      prices.map(price => formatNumber(price, 'token.precise')).join(' – '),
-    )}
+    value={formatDistanceToRange(getValue())}
+    support={maybe(row.positionQueries.stats.data?.rangePrices, formatRangePrices)}
   />
 )
 

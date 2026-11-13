@@ -1,4 +1,4 @@
-import { getPositionHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
+import { POSITION_HEALTH_THRESHOLDS, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
@@ -8,7 +8,7 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalDiv, decimalMultiply } from '@ui/lib/decimal'
-import { HealthDetails } from './HealthDetails'
+import { HealthMetric, LiquidationBufferMetric } from './HealthMetrics'
 
 const { Spacing } = SizesAndSpaces
 const DEBT: Decimal = '10000'
@@ -43,19 +43,18 @@ const HealthDetailsStory = ({
       status,
     }),
   )
+  const position = q({ data, isLoading, error: null })
+  const thresholds = POSITION_HEALTH_THRESHOLDS[assetsType ?? MarketAssetsType.LongTail]
   return (
     <MetricsGrid>
-      <HealthDetails
-        position={q({ data, isLoading, error: null })}
-        thresholds={getPositionHealthThresholds(assetsType)}
-        borrowSymbol="crvUSD"
-      />
+      <HealthMetric position={position} thresholds={thresholds} />
+      <LiquidationBufferMetric position={position} thresholds={thresholds} borrowSymbol="crvUSD" showNotional />
     </MetricsGrid>
   )
 }
 
 const meta: Meta<typeof HealthDetailsStory> = {
-  title: 'Llamalend/Features/HealthDetails',
+  title: 'Llamalend/Features/HealthMetrics',
   component: HealthDetailsStory,
   parameters: {
     layout: 'padded',
