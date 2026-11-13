@@ -1,39 +1,36 @@
-import { useDepositBonus } from '@/dex/queries/deposit/deposit-bonus.query'
+import { getSlippageType } from '@/dex/components/PagePool/utils'
+import { usePoolContext } from '@/dex/features/pool-context'
+import { useDepositPriceImpact } from '@/dex/queries/deposit/deposit-bonus.query'
 import { useDepositEstimateGas } from '@/dex/queries/deposit/deposit-estimate-gas.query'
-import { useDepositExpected } from '@/dex/queries/deposit/deposit-expected.query'
+import { useDepositExpectedLp } from '@/dex/queries/deposit/deposit-expected.query'
+import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui/features/forms'
-import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
-import type { QueryProp } from '@ui/features/queries/util'
+import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { decimalMinus, decimalMultiply, decimalNegate } from '@ui/lib/decimal'
 import type { DepositFormValues, UserDepositParams } from '../types'
 
-type DepositActionInfoListProps = {
-  form: UseFormReturn<DepositFormValues>
-  params: UserDepositParams
-  isSeed: QueryProp<boolean>
-  slippageType: SlippageType | undefined
-}
+type DepositActionInfoListProps = { form: UseFormReturn<DepositFormValues>; params: UserDepositParams }
 
-export const DepositActionInfoList = ({ form, params, isSeed, slippageType }: DepositActionInfoListProps) => {
+export const DepositActionInfoList = ({ form, params }: DepositActionInfoListProps) => {
   const slippage = form.values.slippage
-  const expected = useDepositExpected(params)
+  const expectedLp = q(useDepositExpectedLp(params))
+  const isSeed = mapQuery(usePoolCurrencyReserves(params), reserves => !Number(reserves.total))
+  const priceImpact = useDepositPriceImpact(params, isSeed.data === false)
   return (
     <PoolActionInfoList
-      expectedLp={q(expected)}
+      expectedLp={expectedLp}
       expectedLpLabel="Expected LP received"
       expectedLpTestId="pool-deposit-expected-lp"
-      minimumLp={mapQuery(expected, expected =>
-        decimalMultiply(expected, decimalMinus('1', decimalMultiply(slippage, '0.01'))),
-      )}
-      priceImpact={mapQuery(useDepositBonus(params, isSeed.data === false), decimalNegate)}
+      minimumLp={mapQuery(expectedLp, value => calculateMinimumReceived(value, slippage, LP_TOKEN_DECIMALS))}
+      priceImpact={priceImpact}
       gas={useDepositEstimateGas(params)}
       slippage={slippage}
       onSlippageChange={(slippage: Decimal) => form.update({ slippage })}
       userAddress={params.userAddress}
-      slippageType={slippageType}
+      slippageType={getSlippageType(usePoolContext().pool.data)}
     />
   )
 }

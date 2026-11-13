@@ -1,5 +1,6 @@
 import { simulateContractCall } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
+import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { withdrawSimulationValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
@@ -18,14 +19,13 @@ export const {
     decimals,
     account,
     mode,
-    maximumBurn,
     supply,
     maxAmounts,
     lpAmount,
     maxLpAmount,
     tokenIndex,
     seedLock,
-    expected,
+    expectedLp,
     slippage,
   }: WithdrawSimulationParams) =>
     ({
@@ -36,14 +36,13 @@ export const {
       decimals,
       account,
       mode,
-      maximumBurn,
       supply,
       maxAmounts,
       lpAmount,
       maxLpAmount,
       tokenIndex,
       seedLock,
-      expected,
+      expectedLp,
       slippage,
     }) as const,
   queryFn: async ({
@@ -53,7 +52,7 @@ export const {
     mode,
     amounts,
     decimals,
-    maximumBurn,
+    expectedLp,
     lpAmount,
     tokenIndex,
     slippage,
@@ -84,7 +83,7 @@ export const {
         [
           account,
           toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
-          BigInt(toWei(maximumBurn, LP_TOKEN_DECIMALS)),
+          BigInt(toWei(calculateMaximumBurn(expectedLp, slippage), LP_TOKEN_DECIMALS)),
           account,
         ],
         account,

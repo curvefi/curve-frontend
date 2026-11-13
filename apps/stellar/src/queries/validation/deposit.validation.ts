@@ -1,22 +1,25 @@
 import { each, skipWhen, test } from 'vest'
 import type { DepositForm, DepositMutationParams, DepositParams } from '@/stellar/features/deposit/types'
-import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { validateAccount, validatePool } from '@/stellar/queries/validation/pool.validation'
-import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
+import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import { poolAmountField, poolMaxAmountField, getPoolAmounts } from '@ui/features/pool-forms/pool-form.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import { validateLiquidityInputs } from './liquidity.validation'
 
+const validateExpectedLp = (expectedLp: DepositParams['expectedLp']) =>
+  test('expectedLp', 'Deposit must leave LP after the permanent seed lock', () => {
+    enforce(expectedLp).isDecimal().gt(0)
+  })
+
 export const depositValidationSuite = createValidationSuite(
-  ({ pool, network, account, minMint, ...inputs }: DepositParams) => {
+  ({ pool, network, account, expectedLp, slippage, ...inputs }: DepositParams) => {
     validatePool({ pool, network })
     validateFundedInputs(inputs)
     validateAccount(account)
-    test('minMint', 'Invalid minimum LP amount', () => {
-      enforce(minMint).isDecimal().gte(0)
-    })
+    validateSlippage({ slippage, minimum: 0 }) // the initial deposit after pool creation forces slippage 0
+    validateExpectedLp(expectedLp)
   },
 )
 
@@ -44,8 +47,9 @@ const validateFundedInputs = ({ decimals, maxAmounts, ...inputs }: DepositInputs
   })
 }
 
-const validateForm = ({ decimals, supply, slippage, ...values }: DepositForm) => {
+const validateForm = ({ decimals, supply, slippage, expectedLp, ...values }: DepositForm) => {
   validateSlippage({ slippage })
+  validateExpectedLp(expectedLp)
   validateInputs({
     decimals,
     supply,
@@ -60,36 +64,12 @@ const validateTokens = ({ tokens }: Pick<DepositMutationParams, 'tokens'>) => {
   enforce(tokens?.length).isNumber().gt(0)
 }
 
-export const depositMutationValidationSuite = createValidationSuite(
-  ({
-    pool,
-    amounts,
-    decimals,
-    maxAmounts,
-    network,
-    supply,
-    minMint,
-    slippage,
-    tokens,
-    quote,
-    account,
-    isSeed,
-  }: DepositMutationParams) => {
-    validatePool({ pool, network })
-    validateAccount(account)
-    validateSlippage({ slippage, minimum: 0 }) // the initial deposit after pool creation forces slippage 0
-    validateFundedInputs({ amounts, decimals, maxAmounts, supply })
-    validateTokens({ tokens })
-    skipWhen(!isSeed, () => {
-      test('supply', "This pool already has liquidity. Use the pool's deposit form to continue.", () => {
-        enforce(maybe(supply, supply => +supply)).equals(0)
-      })
+export const depositMutationValidationSuite = createValidationSuite((params: DepositMutationParams) => {
+  depositValidationSuite.run(params)
+  validateTokens(params)
+  skipWhen(!params.isSeed, () => {
+    test('supply', "This pool already has liquidity. Use the pool's deposit form to continue.", () => {
+      enforce(maybe(params.supply, supply => +supply)).equals(0)
     })
-    test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
-      enforce(maybe(quote, quote => +quote)).gt(0)
-    })
-    test('minMint', 'Minimum LP does not match the accepted quote and slippage', () => {
-      enforce(maybes([quote, slippage], calculateMinimumMint)).equals(minMint)
-    })
-  },
-)
+  })
+})
