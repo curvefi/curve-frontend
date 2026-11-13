@@ -8,8 +8,8 @@ import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { oneCoinWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { useWithdrawLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
 import { useWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
+import { useWithdrawOneCoinQuote } from '@/stellar/queries/withdraw/withdraw-one-coin-quote.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
@@ -19,6 +19,7 @@ import {
   getOneCoinWithdrawParams,
   type OneCoinWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalEqual } from '@ui/lib/decimal'
@@ -31,13 +32,14 @@ const formOptions = {
   validation: oneCoinWithdrawFormValidationSuite,
   defaultValues: {
     ...userDefaultValues,
+    quotedAmount: undefined,
     tokenIndex: 0,
     poolReserve: undefined,
     maxLpAmount: undefined,
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    maximumBurn: undefined,
+    expected: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -58,8 +60,24 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index]?.data, lpAmount: lpBalance.data }),
   )
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
-  const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams, account }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const estimated = useWithdrawOneCoinQuote({
+    ...poolParams,
+    amount: isDebouncing || values.isMax ? undefined : debounced.amount,
+    maxLpAmount: lpBalance.data,
+    decimals: decimalsData,
+    index,
+    slippage: values.slippage,
+  })
+  const quote = values.isMax
+    ? combineQueries([max, lpBalance], (amount, lpAmount) => ({ lpAmount, amount }))
+    : q(estimated)
+  const expectedLp = mapQuery(quote, quote => quote.lpAmount)
+  const quotedAmount = quote.data?.amount
+  const params: WithdrawQuoteParams = {
+    ...getOneCoinWithdrawParams({ ...debounced, expected: expectedLp.data, quotedAmount }),
+    ...poolParams,
+    account,
+  }
   const priceImpact = useWithdrawPriceImpact(params, expectedLp)
 
   useFormSync(form, {
@@ -68,7 +86,8 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves?.[index],
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
+    quotedAmount,
   })
   useFormSync(form, { amount: max.data }, values.isMax)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])
@@ -93,23 +112,18 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     max,
     params,
     expectedLp,
-    maximumLp,
     lpBalance: q(lpBalance),
     priceImpact,
+    toSymbol: tokens?.[index]?.data?.symbol,
     isPending,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply || !+supply,
-    isDisabled:
-      isPending ||
-      isDebouncing ||
-      !formState.isValid ||
-      shouldBlockTransaction(priceImpact) ||
-      (values.isMax && !max.data),
-    isLoading: isPending || config.isLoading || priceImpact.isLoading,
+    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isLoading: isPending || config.isLoading || priceImpact.isLoading || expectedLp.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error,
     formErrors: formState.visibleErrors,
-    onSubmit: handleSubmit(values => onSubmit(getOneCoinWithdrawParams(values))),
+    onSubmit: handleSubmit(onSubmit),
     onSlippageChange: (slippage: Decimal) => update({ slippage }),
     onCoinChange: (tokenIndex: number) => update({ ...userDefaultValues, tokenIndex }),
     onMax,

@@ -22,6 +22,7 @@ import { invalidateUserPoolShareQuery } from './user-pool-share.query'
 import { invalidateWithdrawBonus } from './withdraw/withdraw-bonus.query'
 import { invalidateWithdrawExpected } from './withdraw/withdraw-expected.query'
 import { invalidateWithdrawMaxAmounts } from './withdraw/withdraw-max-amounts.query'
+import { invalidateWithdrawOneCoinQuote } from './withdraw/withdraw-one-coin-quote.query'
 
 /** Compatibility helper that refreshes user-pool-info method queries and the user's pool positions. */
 export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
@@ -43,6 +44,7 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidateWithdrawBonus(params, { partial: true }),
     invalidateWithdrawExpected(params, { partial: true }),
     invalidateWithdrawMaxAmounts(params, { partial: true }),
+    invalidateWithdrawOneCoinQuote(params, { partial: true }),
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),
     invalidatePoolIsGaugeKilled(params),

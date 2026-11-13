@@ -39,7 +39,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    maximumBurn: undefined,
+    expected: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -72,7 +72,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     PoolAmountField | 'lpAmount' | 'isBalanced'
   >(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getAdvancedWithdrawParams(debounced), ...poolParams, account }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const { expectedLp } = useWithdrawLp(params)
   const priceImpact = useWithdrawPriceImpact(params, expectedLp)
 
   useFormSync(form, {
@@ -80,7 +80,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
     ...maybe(tokenCount, count =>
       fromEntries(range(count).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
     ),
@@ -121,11 +121,10 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
       update({ ...(values.isBalanced && getUpdatesFromTokenAmount(index, amount)), [poolAmountField(index)]: amount }),
     form,
     expectedLp,
-    maximumLp,
     priceImpact,
     params,
     lpBalance: q(lpBalance),
-    onSubmit: handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),
+    onSubmit: handleSubmit(onSubmit),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,

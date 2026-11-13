@@ -162,7 +162,6 @@ const menu = [
       {
         value: 'withdraw-one-coin',
         label: t`One coin`,
-        visible: ({ isCrypto }) => isCrypto === false,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={OneCoinWithdrawTab} {...props} />,
       },
       {

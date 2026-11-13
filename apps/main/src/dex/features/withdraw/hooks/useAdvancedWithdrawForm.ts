@@ -52,7 +52,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
       slippage: maxSlippage,
       decimals: undefined,
       maxLpAmount: undefined,
-      maximumBurn: undefined,
+      expected: undefined,
       supply: undefined,
       seedLock: undefined,
     },
@@ -68,13 +68,13 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
 
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getAdvancedWithdrawParams(debounced), ...poolParams }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const { expectedLp } = useWithdrawLp(params)
   const priceImpact = useWithdrawPriceImpact(params)
 
   useFormSync(form, {
     decimals,
     maxLpAmount: lpBalance.data,
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
     supply: supply.data,
     ...fromEntries(range(tokenCount).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
   })
@@ -109,7 +109,6 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
     tokens,
     lpBalance,
     expectedLp,
-    maximumLp,
     priceImpact,
     canBalance,
     lpAmountUsd: lpAmountUsd.data,
