@@ -33,13 +33,13 @@ import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } 
 import { PnlMetrics } from './PnlMetrics'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 
-type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; children?: ReactNode }
+type LegacyBorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; children?: ReactNode }
 
-export const BorrowInformation = ({
+export const LegacyBorrowInformation = ({
   params,
   tokens: { collateralToken, borrowToken },
   children,
-}: BorrowInformationProps) => {
+}: LegacyBorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
   const isEquityLeverage = useLlamalendEquityLeverage()

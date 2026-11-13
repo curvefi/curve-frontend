@@ -8,7 +8,7 @@ import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import { BorrowInformation } from './BorrowInformation'
+import { LegacyBorrowInformation } from './LegacyBorrowInformation'
 import { HealthDetails } from './health/HealthDetails'
 import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 
@@ -30,11 +30,11 @@ export const BorrowPositionDetails = () => {
     <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
         {!isNewLlamalendHealth && <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />}
-        <BorrowInformation params={params} tokens={tokens}>
+        <LegacyBorrowInformation params={params} tokens={tokens}>
           {isNewLlamalendHealth && (
             <HealthDetails position={position} thresholds={thresholds} borrowSymbol={borrowToken?.symbol} />
           )}
-        </BorrowInformation>
+        </LegacyBorrowInformation>
       </Stack>
       {!isNewLlamalendHealth && statusContent?.hasMarketAlert && (
         <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
