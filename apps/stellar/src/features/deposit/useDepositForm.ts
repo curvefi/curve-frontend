@@ -28,6 +28,7 @@ const formOptions = {
     tokenIndex: 0,
     decimals: undefined,
     supply: undefined,
+    quote: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -52,7 +53,6 @@ export function useDepositForm(poolParams: PoolQuery) {
   })
   const { formState, reset, values } = form
 
-  useFormSync(form, { decimals: decimalsData, supply: supply.data })
   useEffect(() => reset(userDefaultValues), [reset, userDefaultValues])
 
   const [params, isDebouncing] = useFormDebounce<DepositFormQuery, PoolAmountField>(
@@ -70,6 +70,7 @@ export function useDepositForm(poolParams: PoolQuery) {
     userDefaultValues,
   )
   const quote = useExpectedLp({ ...params, amounts: getPoolAmounts(params, params.tokenCount), isDeposit: true })
+  useFormSync(form, { decimals: decimalsData, supply: supply.data, quote: quote.data })
   const priceImpact = useDepositPriceImpact({ ...params, amounts: getPoolAmounts(params, params.tokenCount) }, q(quote))
   const isSeed = mapQuery(supply, supply => !+supply)
 

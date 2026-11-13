@@ -39,7 +39,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    maximumBurn: undefined,
+    expected: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -80,7 +80,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     supply: supply.data,
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
     ...maybe(tokenCount, count =>
       fromEntries(range(count).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
     ),

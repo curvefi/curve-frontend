@@ -4,7 +4,7 @@ import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-va
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { range } from '@primitives/objects.utils'
+import { maybe, range } from '@primitives/objects.utils'
 import { LP_TOKEN_DECIMALS, poolAmountField, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import {
   getAdvancedWithdrawParams,
@@ -17,6 +17,7 @@ import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 import type { UserWithdrawParams, WithdrawLpParams, WithdrawMaxParams, WithdrawParams } from './types'
+import { getMaximumWithdrawBurn } from './withdraw.utils'
 
 // single-coin form has one field named amount; advanced form uses amount_0, amount_1, etc.
 type AmountField = (index: number) => PoolAmountField | 'amount'
@@ -104,13 +105,14 @@ const validateWithdraw = (
   })
 }
 
-type FormParams = WithdrawParams & { maximumBurn: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
+type FormParams = WithdrawParams & { expected: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
 
 const validateForm = (params: FormParams, field: AmountField = poolAmountField) => {
-  const { maximumBurn, maxLpAmount, mode, amounts, maxAmounts } = params
+  const { expected, maxLpAmount, mode, amounts, maxAmounts } = params
+  const maximumBurn = maybe(expected, expected => getMaximumWithdrawBurn(expected, params))
   validateAmounts(params, field)
   validateWithdraw(params, field)
-  test('maximumBurn', 'Withdrawal quote is unavailable', () => {
+  test('expected', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn)
       .isDecimal({ decimal_digits: `0,${LP_TOKEN_DECIMALS}` })
       .gt(0)
@@ -122,7 +124,7 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
   })
   skipWhen(params.mode !== 'balanced' && params.mode !== 'one-coin', () => {
     if (params.mode !== 'balanced' && params.mode !== 'one-coin') return // type safety inside skipWhen
-    test('maximumBurn', 'LP burn does not match the selected LP amount', () => {
+    test('expected', 'LP burn does not match the selected LP amount', () => {
       enforce(maximumBurn).condition(() => decimalEqual(maximumBurn!, params.lpAmount!))
     })
   })

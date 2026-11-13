@@ -101,11 +101,17 @@ const validateOneCoinSelection = ({ mode, tokenIndex, amounts, lpAmount, maxLpAm
   })
 }
 
-const validateWithdrawBudget = (
-  { lpAmount, maxLpAmount, supply, seedLock, mode }: WithdrawSimulationParams,
-  maximumBurn: Decimal | Nullish,
-) => {
+const validateWithdrawBudget = ({
+  lpAmount,
+  maxLpAmount,
+  supply,
+  seedLock,
+  mode,
+  expected,
+  slippage,
+}: WithdrawSimulationParams) => {
   const isExactBurn = mode !== 'unbalanced'
+  const maximumBurn = isExactBurn ? expected : maybes([expected, slippage], calculateMaximumBurn)
   validateBudget({ lpAmount: isExactBurn ? lpAmount : maximumBurn, maxLpAmount, supply, seedLock })
   validateMaximumBurn({ lpAmount: isExactBurn ? lpAmount : maxLpAmount, maximumBurn, isExactBurn })
 }
@@ -120,7 +126,7 @@ const validateWithdrawAmounts = (params: WithdrawSimulationParams) => {
 export const advancedWithdrawFormValidationSuite = createValidationSuite((values: AdvancedWithdrawFormValues) => {
   const params = getAdvancedWithdrawParams(values)
   validateWithdrawAmounts(params)
-  validateWithdrawBudget(params, values.maximumBurn)
+  validateWithdrawBudget(params)
 })
 
 export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values: OneCoinWithdrawFormValues) => {
@@ -137,15 +143,14 @@ export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values:
   test('amount', 'Amount exceeds the maximum withdrawal', () => {
     enforce(maybes([amount, poolReserve], (amount, reserve) => new BigNumber(amount).lte(reserve))).isTruthy()
   })
-  validateWithdrawBudget(params, values.maximumBurn)
+  validateWithdrawBudget(params)
   validateOneCoinSelection(params)
 })
 
 const validateWithdrawQuote = (params: WithdrawSimulationParams) => {
-  const { expected, slippage, mode } = params
-  validateWithdrawBudget(params, mode !== 'unbalanced' ? expected : maybes([expected, slippage], calculateMaximumBurn))
+  validateWithdrawBudget(params)
   test('root', 'Withdrawal is too small to burn LP', () => {
-    enforce(expected).isDecimal().gt(0)
+    enforce(params.expected).isDecimal().gt(0)
   })
 }
 

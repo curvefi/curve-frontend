@@ -4,6 +4,7 @@ import { usePoolTokens } from '@/dex/features/pool/usePoolTokens'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { hasWrapped } from '@/dex/pool.utils'
 import { useDepositPriceImpact } from '@/dex/queries/deposit/deposit-bonus.query'
+import { useDepositExpected } from '@/dex/queries/deposit/deposit-expected.query'
 import { useSeedAmounts } from '@/dex/queries/deposit/deposit-seed-amounts.query'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
@@ -58,7 +59,7 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   )
   const form = useForm<DepositFormValues>({
     validation: depositFormValidationSuite,
-    defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false, tokenIndex: 0 },
+    defaultValues: { ...userDefaultValues, decimals: undefined, isBalanced: false, tokenIndex: 0, quote: undefined },
   })
   const { formState, handleSubmit, update, reset, values } = form
   const { connect, connectState, wallet } = useWallet()
@@ -75,7 +76,6 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   })
   const reserves = usePoolCurrencyReserves({ chainId, poolAddress, isWrapped })
   const isSeed = mapQuery(reserves, reserves => !Number(reserves.total))
-  useFormSync(form, { decimals })
 
   // Apply the resolved pool's default without replacing a user's slippage choice.
   useFormSync(form, { slippage: maxSlippage }, pool != null && !form.isTouched('slippage'))
@@ -97,6 +97,8 @@ export const useDepositForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   )
 
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
+  const quote = useDepositExpected(queryParams)
+  useFormSync(form, { decimals, quote: quote.data })
   const priceImpact = useDepositPriceImpact(queryParams, isSeed.data === false)
   const seedAmounts = useForceSeedAmounts(queryParams, isSeed, form)
 

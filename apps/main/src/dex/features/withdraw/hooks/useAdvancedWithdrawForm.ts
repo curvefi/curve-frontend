@@ -52,7 +52,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
       slippage: maxSlippage,
       decimals: undefined,
       maxLpAmount: undefined,
-      maximumBurn: undefined,
+      expected: undefined,
       supply: undefined,
       seedLock: undefined,
     },
@@ -74,7 +74,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
   useFormSync(form, {
     decimals,
     maxLpAmount: lpBalance.data,
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
     supply: supply.data,
     ...fromEntries(range(tokenCount).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
   })

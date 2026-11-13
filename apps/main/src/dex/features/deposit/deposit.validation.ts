@@ -38,10 +38,13 @@ const validateAmounts = ({
 }
 
 export const depositFormValidationSuite = createValidationSuite(
-  ({ decimals, slippage, ...values }: DepositFormValues) => {
+  ({ decimals, slippage, quote, ...values }: DepositFormValues) => {
     const amounts = getPoolAmounts(values, decimals?.length)
     validateAmounts({ amounts, decimals })
     validateSlippage({ slippage })
+    test('quote', 'Deposit quote must be positive', () => {
+      enforce(quote).isDecimal().gt(0)
+    })
     amounts?.forEach((amount, index) => {
       const maxAmount = values[poolMaxAmountField(index)]
       skipWhen(maxAmount == null, () => {

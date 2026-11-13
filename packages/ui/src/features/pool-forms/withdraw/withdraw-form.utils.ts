@@ -22,7 +22,7 @@ type WithdrawQuoteFields = {
   maxLpAmount: Decimal | undefined
   supply: Decimal | undefined
   seedLock: Decimal | undefined
-  maximumBurn: Decimal | undefined
+  expected: Decimal | undefined
   slippage: Decimal
 }
 

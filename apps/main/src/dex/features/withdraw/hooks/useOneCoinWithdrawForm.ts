@@ -49,7 +49,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
       decimals: undefined,
       maxLpAmount: undefined,
       poolReserve: undefined,
-      maximumBurn: undefined,
+      expected: undefined,
       supply: undefined,
       seedLock: undefined,
     },
@@ -78,7 +78,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     supply: supply.data,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves.data?.[index],
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
   })
 
   // Keep Max selected as the quote changes, including while its amount is unavailable.

@@ -37,7 +37,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    maximumBurn: undefined,
+    expected: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -68,7 +68,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves?.[index],
-    maximumBurn: maximumLp.data,
+    expected: expectedLp.data,
   })
   useFormSync(form, { amount: max.data }, values.isMax)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])

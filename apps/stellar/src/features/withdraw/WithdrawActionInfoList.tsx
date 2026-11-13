@@ -11,12 +11,14 @@ import type { WithdrawQuoteParams } from './types'
 export const WithdrawActionInfoList = ({
   params,
   expectedLp,
+  maximumLp,
   lpBalance,
   priceImpact,
   onSlippageChange,
 }: {
   params: WithdrawQuoteParams
   expectedLp: QueryProp<Decimal>
+  maximumLp: QueryProp<Decimal>
   lpBalance: QueryProp<Decimal>
   priceImpact: QueryProp<Decimal | null>
   onSlippageChange: (slippage: Decimal) => void
@@ -25,6 +27,7 @@ export const WithdrawActionInfoList = ({
 
   return (
     <PoolActionInfoList
+      {...(params.mode === 'unbalanced' && { maximumLp })} // Other modes burn a fixed LP amount.
       slippageType="stable"
       currentLp={lpBalance}
       currentLpTestId="pool-withdraw-current-lp"
