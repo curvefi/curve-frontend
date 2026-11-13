@@ -47,34 +47,41 @@ export const ErrorPage = ({
 
   return (
     <LlamaBox>
-      <Typography component="h1" variant="headingXxl" data-testid="error-title">
-        {title}
-      </Typography>
-      <Typography component="h2" variant="headingXsMedium" data-testid="error-subtitle" sx={{ textTransform: 'none' }}>
-        {getBoundaryErrorSubtitle(error, subtitle)}
-      </Typography>
-      <Stack direction="row" spacing={Spacing.sm} sx={{ margin: 2 }}>
-        {continueUrl ? (
-          <Button
-            component={Link}
-            href={continueUrl}
-            variant="contained"
-            data-testid="continue-button"
-          >{t`Continue`}</Button>
-        ) : (
-          <Button
-            onClick={() => void onRetry()}
-            color="secondary"
-            variant="contained"
-            data-testid="retry-error-button"
-          >{t`Try again`}</Button>
-        )}
-        <Button component={Link} href="/" variant="contained">
-          {t`Go to homepage`}
-        </Button>
-        <Button onClick={openReportModal} color="secondary" data-testid="submit-error-report-button">
-          {t`Submit error report`}
-        </Button>
+      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, maxWidth: '100%', textAlign: 'center' }}>
+        <Typography component="h1" variant="headingXxl" data-testid="error-title">
+          {title}
+        </Typography>
+        <Typography
+          component="h2"
+          variant="headingXsMedium"
+          data-testid="error-subtitle"
+          sx={{ textTransform: 'none' }}
+        >
+          {getBoundaryErrorSubtitle(error, subtitle)}
+        </Typography>
+        <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.sm, justifyContent: 'center' }}>
+          {continueUrl ? (
+            <Button
+              component={Link}
+              href={continueUrl}
+              variant="contained"
+              data-testid="continue-button"
+            >{t`Continue`}</Button>
+          ) : (
+            <Button
+              onClick={() => void onRetry()}
+              color="secondary"
+              variant="contained"
+              data-testid="retry-error-button"
+            >{t`Try again`}</Button>
+          )}
+          <Button component={Link} href="/" variant="contained">
+            {t`Go to homepage`}
+          </Button>
+          <Button onClick={openReportModal} color="secondary" data-testid="submit-error-report-button">
+            {t`Submit error report`}
+          </Button>
+        </Stack>
       </Stack>
       <ErrorReportModal
         isOpen={isReportOpen}
