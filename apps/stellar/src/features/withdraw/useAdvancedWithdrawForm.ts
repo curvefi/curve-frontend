@@ -86,7 +86,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     ),
   })
 
-  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues, network, pool, account]) // cannot useFormSync with a flexible number of fields
+  useEffect(() => reset(userDefaultValues), [reset, userDefaultValues, network, pool, account])
 
   const {
     onSubmit,

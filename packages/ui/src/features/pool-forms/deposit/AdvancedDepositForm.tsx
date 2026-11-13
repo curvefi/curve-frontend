@@ -16,7 +16,6 @@ export const AdvancedDepositForm = <TValues extends PoolDepositForm>(props: Depo
       {isSeed.data && (
         <Alert severity="info" variant="outlined" data-testid="pool-deposit-seed-alert">
           <AlertTitle>{t`The first deposit must fund every coin`}</AlertTitle>
-          {t`The seed lock is permanent; expected LP is the net amount you receive.`}
         </Alert>
       )}
       <PoolTokenInputs
