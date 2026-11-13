@@ -42,17 +42,11 @@ export function useCarryApr(
     params,
     futurePosition = DISABLED_Q,
     debtDelta,
-    hasPosition = true,
   }: {
     params: UserMarketParams
     futurePosition?: QueryProp<UserState | null>
     /** Debt change of the action, for the future borrow APR */
     debtDelta?: Decimal | null
-    /**
-     * False when opening a loan: there is no current position to read.
-     * Reading the user state there makes the market page unmount the form while it loads.
-     */
-    hasPosition?: boolean
   },
   enabled = true,
 ): CarryApr | null {
@@ -66,7 +60,7 @@ export function useCarryApr(
     currentRates,
   )
   const current = combineQueries(
-    [q(useUserState(params, isEnabled && hasPosition)), oraclePrice, currentRates, marketYields],
+    [q(useUserState(params, isEnabled)), oraclePrice, currentRates, marketYields],
     getPositionCarryApr,
   )
   const carryApr = {
@@ -80,10 +74,7 @@ export function useCarryApr(
 }
 
 export const useCreateLoanCarryApr = (params: CreateLoanFormQueryParams, enabled = true) =>
-  useCarryApr(
-    { params, futurePosition: useCreateLoanFuturePosition(params), debtDelta: params.debt, hasPosition: false },
-    enabled,
-  )
+  useCarryApr({ params, futurePosition: useCreateLoanFuturePosition(params), debtDelta: params.debt }, enabled)
 
 export const useBorrowMoreCarryApr = (params: BorrowMoreParams, enabled = true) =>
   useCarryApr({ params, futurePosition: useBorrowMoreFuturePosition(params), debtDelta: params.debt }, enabled)
