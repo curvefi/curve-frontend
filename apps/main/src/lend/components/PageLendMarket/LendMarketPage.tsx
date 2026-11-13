@@ -100,7 +100,7 @@ export const LendMarketPage = () => {
           content:
             !isLoading &&
             !isLoanExistsLoading &&
-            !isLiquidationLoading &&
+            !(loanExists && isLiquidationLoading) &&
             (loanExists ? (
               <ManageLoanTabs
                 onPricesUpdated={setPreviewPrices}
