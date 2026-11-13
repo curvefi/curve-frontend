@@ -2,6 +2,7 @@ import {
   type Address,
   createPublicClient,
   erc20Abi,
+  formatUnits,
   http,
   isAddressEqual,
   parseAbi,
@@ -28,13 +29,15 @@ export const SUPPLY_PARTIAL_WITHDRAW: Decimal = '2.5'
 
 type FactoryVersion = 'v1' | 'v2'
 
-export type SupplyTestMarket = {
+type SupplyMarket = {
   id: string
   version: FactoryVersion
   controllerAddress: Address
   borrowedTokenAddress: Address
   gaugeAddress: Address
 }
+
+export type SupplyTestMarket = SupplyMarket & { supplyApr: number }
 
 const FACTORY_V1_ABI = parseAbi([
   'function market_count() view returns (uint256)',
@@ -57,10 +60,11 @@ const CONTROLLER_V2_ABI = parseAbi([
 const GAUGE_CONTROLLER_ABI = parseAbi([
   'function gauge_relative_weight_write(address addr, uint256 time) view returns (uint256)',
 ])
-const GAUGE_ABI = parseAbi(['function is_killed() view returns (bool)'])
+const GAUGE_ABI = parseAbi(['function is_killed() view returns (bool)', 'function lp_token() view returns (address)'])
+const VAULT_ABI = parseAbi(['function lend_apr() view returns (uint256)'])
 const WEEK = 7n * 24n * 60n * 60n
 
-const getFactoryMarketsV1 = async (client: PublicClient): Promise<SupplyTestMarket[]> => {
+const getFactoryMarketsV1 = async (client: PublicClient): Promise<SupplyMarket[]> => {
   const address = ALIASES_ETHEREUM.one_way_factory as Address
   const count = await client.readContract({ address, abi: FACTORY_V1_ABI, functionName: 'market_count' })
   return Promise.all(
@@ -76,7 +80,7 @@ const getFactoryMarketsV1 = async (client: PublicClient): Promise<SupplyTestMark
   )
 }
 
-const getFactoryMarketsV2 = async (client: PublicClient): Promise<SupplyTestMarket[]> => {
+const getFactoryMarketsV2 = async (client: PublicClient): Promise<SupplyMarket[]> => {
   const address = ALIASES_ETHEREUM.one_way_factory_v2 as Address
   const count = await client.readContract({ address, abi: FACTORY_V2_ABI, functionName: 'market_count' })
   return Promise.all(
@@ -106,7 +110,7 @@ const getFactoryMarketsV2 = async (client: PublicClient): Promise<SupplyTestMark
 }
 
 // crvUSD only for simplicity, so funding and amounts are the same for every market
-const isSupportedMarket = ({ controllerAddress, borrowedTokenAddress, gaugeAddress }: SupplyTestMarket) =>
+const isSupportedMarket = ({ controllerAddress, borrowedTokenAddress, gaugeAddress }: SupplyMarket) =>
   isAddressEqual(borrowedTokenAddress, CRVUSD_ADDRESS) &&
   !isAddressEqual(gaugeAddress, zeroAddress) &&
   !DEPRECATED_LLAMAS.Lend.ethereum?.[controllerAddress] &&
@@ -143,7 +147,7 @@ const getFreeLiquidityV2 = async (client: PublicClient, controllerAddress: Addre
   return available - adminFees
 }
 
-const getFreeLiquidity = (client: PublicClient, { version, controllerAddress }: SupplyTestMarket) =>
+const getFreeLiquidity = (client: PublicClient, { version, controllerAddress }: SupplyMarket) =>
   version === 'v1'
     ? client.readContract({
         address: CRVUSD_ADDRESS,
@@ -154,7 +158,7 @@ const getFreeLiquidity = (client: PublicClient, { version, controllerAddress }: 
     : getFreeLiquidityV2(client, controllerAddress)
 
 /** The test withdraws its whole deposit, which needs that much unborrowed crvUSD in the market */
-const hasWithdrawableLiquidity = async (client: PublicClient, market: SupplyTestMarket) =>
+const hasWithdrawableLiquidity = async (client: PublicClient, market: SupplyMarket) =>
   (await getFreeLiquidity(client, market)) >= parseUnits(SUPPLY_DEPOSIT, CRVUSD_DECIMALS)
 
 const getSupplyTestMarkets = async (client: PublicClient) => {
@@ -178,13 +182,19 @@ const getSupplyTestMarkets = async (client: PublicClient) => {
  */
 export const pickSupplyTestMarket = (vnet: CreateVirtualTestnetResponse) =>
   cy.then(TIMEOUTS['tenderly.contractRead'], async () => {
-    const markets = await getSupplyTestMarkets(
-      createPublicClient({
-        chain: mainnet,
-        transport: http(getRpcUrls(vnet).publicRpcUrl),
-        batch: { multicall: true },
-      }),
-    )
+    const client = createPublicClient({
+      chain: mainnet,
+      transport: http(getRpcUrls(vnet).publicRpcUrl),
+      batch: { multicall: true },
+    })
+    const markets = await getSupplyTestMarkets(client)
     expect(markets, 'crvUSD lend markets with CRV emissions').to.have.length.greaterThan(0)
-    return oneOf(...markets)
+    const market = oneOf(...markets)
+    const vaultAddress = await client.readContract({
+      address: market.gaugeAddress,
+      abi: GAUGE_ABI,
+      functionName: 'lp_token',
+    })
+    const supplyApr = await client.readContract({ address: vaultAddress, abi: VAULT_ABI, functionName: 'lend_apr' })
+    return { ...market, supplyApr: Number(formatUnits(supplyApr, 18)) }
   })
