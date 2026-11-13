@@ -10,15 +10,19 @@ export type SwapMutation = {
   inputAmount: Decimal
   decimals: number[]
   maxAmount: Decimal
-  minimum: Decimal
+  expectedOutput: Decimal
+  slippage: Decimal
 }
 
-export type SwapFormValues = AllowUndefined<Omit<SwapMutation, 'decimals'>, 'inputAmount' | 'maxAmount' | 'minimum'> & {
+export type SwapFormValues = AllowUndefined<
+  Omit<SwapMutation, 'decimals'>,
+  'inputAmount' | 'maxAmount' | 'expectedOutput'
+> & {
+  isWrapped: boolean
   editedSide: SwapSide
   decimals: (number | undefined)[] | undefined
   maxOutput: Decimal | undefined
   outputAmount: Decimal | undefined
-  slippage: Decimal
 }
 
 export type SwapAmountField = 'inputAmount' | 'outputAmount'

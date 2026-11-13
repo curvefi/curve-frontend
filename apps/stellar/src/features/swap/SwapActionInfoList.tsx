@@ -19,19 +19,23 @@ type SwapActionInfoListProps = SwapFormQuery & {
 }
 
 export const SwapActionInfoList = ({ onSlippageChange, ...params }: SwapActionInfoListProps) => {
-  const { inputAmount, outputAmount } = useQuoteQueries(params)
+  const { inputAmount, expectedOutput } = useQuoteQueries(params)
   const { fromSymbol, account, slippage, toSymbol, toIndex, decimals } = params
-  const minimum = mapQuery(outputAmount, value =>
+  const minimum = mapQuery(expectedOutput, value =>
     maybe(decimals?.[toIndex], precision => calculateMinimumReceived(value, slippage, precision)),
   )
-  const simulation = useSwapSimulation({ ...params, inputAmount: inputAmount.data, minimum: minimum.data })
+  const simulation = useSwapSimulation({
+    ...params,
+    inputAmount: inputAmount.data,
+    expectedOutput: expectedOutput.data,
+  })
 
   return (
     <PoolActionInfoList
       slippageType="stable"
-      exchangeRate={combineQueries([inputAmount, outputAmount], (input, output) => decimalDiv(output, input))}
+      exchangeRate={combineQueries([inputAmount, expectedOutput], (input, output) => decimalDiv(output, input))}
       minimumReceived={minimum}
-      priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, outputAmount)}
+      priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, expectedOutput)}
       gas={useGasEstimation(params, simulation)}
       slippage={slippage}
       onSlippageChange={onSlippageChange}

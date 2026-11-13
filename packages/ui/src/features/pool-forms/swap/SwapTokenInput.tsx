@@ -19,12 +19,14 @@ export const SwapTokenInput = ({
   tokens,
   side,
   balance,
+  max,
   disabled,
 }: {
   form: UseFormReturn<SwapFormValues>
   tokens: QueryProp<PoolToken>[] | undefined
   side: SwapSide
   balance: QueryProp<Decimal>
+  max: QueryProp<Decimal>
   disabled: boolean
 }) => {
   const { amountField: name, amountIndexField, calculatedIndexField } = SWAP_FIELDS[side]
@@ -56,7 +58,7 @@ export const SwapTokenInput = ({
       }}
       inputBalanceUsd={maybes([values[name], token?.usdRate], decimalMultiply)}
       walletBalance={token && { symbol: token.symbol, balance: token.balance }}
-      {...(side === 'pay' && token && { max: { balance: token.balance } })}
+      {...(side === 'pay' && { max: { balance: max } })}
       disabled={disabled}
     />
   )

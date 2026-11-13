@@ -1,7 +1,8 @@
 import { skipWhen, test } from 'vest'
 import type { SwapParams, SwapQuoteParams } from '@/stellar/features/swap/types'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapAmountField, type SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
+import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
@@ -69,7 +70,21 @@ export const swapQuoteValidationSuite = createValidationSuite(
   },
 )
 
-export const swapFormValidationSuite = createValidationSuite(({ editedSide, slippage, ...values }: SwapFormValues) => {
+const validateQuote = ({ expectedOutput, slippage, decimals, toIndex }: SwapParams) => {
+  validateSlippage({ slippage })
+  const minimum = maybes(
+    [expectedOutput, slippage, maybe(toIndex, index => decimals?.[index])],
+    calculateMinimumReceived,
+  )
+  test('root', 'Swap quote is unavailable', () => {
+    enforce(expectedOutput).isDecimal().gt(0)
+  })
+  test('root', 'Minimum received must be positive', () => {
+    enforce(minimum).isDecimal().gt(0)
+  })
+}
+
+export const swapFormValidationSuite = createValidationSuite(({ editedSide, ...values }: SwapFormValues) => {
   test('editedSide', 'Select an amount to edit', () => {
     enforce(editedSide).inside(['pay', 'receive'])
   })
@@ -78,10 +93,10 @@ export const swapFormValidationSuite = createValidationSuite(({ editedSide, slip
   skipWhen(editedSide !== 'receive' && values.outputAmount == null, () => validateSwapAmount(values, 'outputAmount'))
   skipWhen(editedSide !== 'receive', () => validateReserve(values))
   validateBalance(values)
-  validateSlippage({ slippage })
+  validateQuote(values)
 })
 
-const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }: SwapParams) => {
+const validateSwap = ({ network, pool, account, maxAmount, ...values }: SwapParams) => {
   validatePool({ network, pool })
   validateTokens(values)
   validateSwapAmount(values, 'inputAmount')
@@ -90,10 +105,7 @@ const validateSwap = ({ network, pool, account, maxAmount, minimum, ...values }:
   test('maxAmount', 'Wallet balance is unavailable', () => {
     enforce(maxAmount).isDecimal().gte(0)
   })
-  validateAmount('minimum', minimum)
-  test('minimum', 'Minimum received is unavailable', () => {
-    enforce(minimum).isDecimal().gte(0)
-  })
+  validateQuote(values)
 }
 
 export const swapValidationSuite = createValidationSuite(validateSwap)
