@@ -17,10 +17,10 @@ export const ROUTER_FEE_BPS: Record<MarketAssetsType, Decimal> = {
 }
 
 export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<ExternalRouteProvider, Record<number, Address>> = {
-  /** Enso fee splitter contracts distribute router fees 50/50 between Curve and Enso. */
+  /** Enso-owned receivers: all router fees go to Enso. */
   enso: {
-    [Chain.Ethereum]: '0x428C2a762EE70c18d7e370Da1b5A2951bE717c49',
-    [Chain.Optimism]: '0x0124a166a139ce1a9671e6a00a470bed2915ee6f',
+    [Chain.Ethereum]: '0xAb27dB9E0105AF3d9717b0CcEf11e2CC65515609',
+    [Chain.Optimism]: '0x69AFa05352B3797b8D08cE3B5EDf27eb0585D560',
   },
   '0x': {
     [Chain.Ethereum]: '0xB4c2C0B045fA0517cACEebC917443Fa041A9c18B',
