@@ -75,8 +75,8 @@ export const PoolPage = () => {
   const tokenName = useTokenName({ network, token: pool })
 
   const isJustCreated = createdPools.includes(asAddress(pool))
-  const allowUnlisted = STELLAR_NETWORKS[network].isTestnet && !IS_CYPRESS
-  return litePool.data || isJustCreated || allowUnlisted ? (
+  const isUnlisted = isJustCreated || (STELLAR_NETWORKS[network].isTestnet && !IS_CYPRESS && isMissing)
+  return litePool.data || isUnlisted ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
@@ -99,9 +99,9 @@ export const PoolPage = () => {
     >
       {!litePool.data && (
         <Alert severity="warning" data-testid="pool-unlisted-warning">
-          {allowUnlisted
-            ? t`This testnet pool is not listed in the API. Some pool data is unavailable. Proceed with caution and verify the pool address and tokens before interacting.`
-            : t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`}
+          {isJustCreated
+            ? t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`
+            : t`This testnet pool is not listed in the API. Some pool data is unavailable. Proceed with caution and verify the pool address and tokens before interacting.`}
         </Alert>
       )}
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />
