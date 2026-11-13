@@ -201,7 +201,7 @@ export const createCreateLoanScenario = ({
           }
         }
       : () => {
-          expect(normalStubs.createLoanHealth).to.have.been.calledWithExactly(...normalExpected.query)
+          expect(normalStubs.createLoanHealth).to.have.been.calledWithExactly(...normalExpected.query, false)
           expect(normalStubs.createLoanPrices).to.have.been.calledWithExactly(...normalExpected.query)
           expect(normalStubs.createLoanMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
           expect(normalStubs.createLoanIsApproved).to.have.been.calledWithExactly(...normalExpected.approved)

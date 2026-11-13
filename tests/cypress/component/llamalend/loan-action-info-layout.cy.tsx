@@ -9,12 +9,13 @@ import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.help
 import { allViewports } from '@cy/support/ui'
 import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
 import type { NetworkDef } from '@legacy-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
-import { constQ, q } from '@ui/features/queries/util'
+import { constQ, q, type Range } from '@ui/features/queries/util'
 
 const getHeight = (testId: string, subelement?: string) =>
   cy
@@ -76,8 +77,10 @@ allViewports().forEach(([width, height, viewport]) => {
               />
               <LoanActionInfoList
                 isOpen
-                prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
-                health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                prevPrices={q({ data: ['90', '100'] as Range<Decimal>, ...{ isLoading, error } })}
+                prices={q({ data: ['100', '110'] as Range<Decimal>, ...{ isLoading, error, ...state } })}
+                prevLiquidationBuffer={q({ data: '12.4', ...{ isLoading, error } })}
+                liquidationBuffer={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
                 rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
@@ -89,6 +92,7 @@ allViewports().forEach(([width, height, viewport]) => {
         )
 
         getHeight('borrow-health').should('equal', expectedHeight)
+        getHeight('borrow-liquidation-buffer').should('equal', expectedHeight)
         getHeight('borrow-apr').should('equal', expectedHeight)
         getHeight('borrow-exchange-rate').should('equal', expectedHeight)
         getHeight('borrow-router-fee').should('equal', expectedHeight)
@@ -117,6 +121,8 @@ describe('leverage action info', () => {
           prevRates={constQ({ borrowApy: '2' })}
           rates={constQ({ borrowApy: '4' })}
           collateralApy={constQ(5)}
+          prices={constQ(null)}
+          liquidationBuffer={constQ(null)}
           oraclePrice={constQ(null)}
           gas={constQ(null)}
         />

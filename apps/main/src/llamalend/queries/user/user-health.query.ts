@@ -1,37 +1,28 @@
 import {
-  getHealthValues,
-  getLiquidationBuffer,
-} from '@/llamalend/features/market-position-details/market-position-details.utils'
+  getHealth,
+  getPositionStatus,
+  type PositionHealthThresholds,
+  type PositionHealth,
+} from '@/llamalend/health.utils'
 import { pickDisplayLegacyHealth } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
-import { combineQueries, combineQueryState } from '@ui/features/queries/combine'
+import { maybe } from '@primitives/objects.utils'
+import { combineQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import type { QueryData, QueryProp } from '@ui/features/queries/util'
-import { decimalMinus } from '@ui/lib/decimal'
+import { decimalDiv, decimalGreaterThan, decimalMinus, decimalMultiply, decimalPercent, ZERO } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
+import { useMarketOraclePrice } from '../market/market-oracle-price.query'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
+import { useUserPrices } from './user-prices.query'
+import { useUserState } from './user-state.query'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
-type UserHealthValues = {
-  health: Decimal
-  healthFactor: Decimal
-  healthNotFull: Decimal
-  liquidationBuffer: Decimal | undefined
-  debug?: {
-    healthFull: Decimal
-    healthNotFull: Decimal
-    healthDelta: Decimal
-    loanDiscount: Decimal
-    liquidationDiscount: Decimal
-    discountGap: Decimal
-  }
-}
 
 /**
  * Query to get the user's health in a market.
@@ -60,39 +51,36 @@ export const useLegacyUserHealthValue = (params: UserMarketParams) =>
     (full, notFull) => pickDisplayLegacyHealth(full, notFull),
   )
 
-export const useUserHealthValues = (params: UserMarketParams, enabled = true) => {
-  const healthFull = useUserHealth({ ...params, isFull: true }, enabled)
-  const healthNotFull = useUserHealth({ ...params, isFull: false }, enabled)
-  const discounts = useUserDiscounts(params, enabled)
-
-  return {
-    data: maybes(
-      [healthFull.data, healthNotFull.data, discounts.data],
-      (full, notFull, { loanDiscount, liquidationDiscount }): UserHealthValues => {
-        const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
-        const { health, healthFactor, healthDelta } = getHealthValues(full, notFull)
+/** The position's health, liquidation buffer and status. No data when the user has no loan. */
+export const usePositionHealth = (params: UserMarketParams, thresholds: PositionHealthThresholds) =>
+  combineQueries(
+    [
+      useMarketOraclePrice(params),
+      useUserPrices(params),
+      useUserHealth({ ...params, isFull: false }),
+      useUserHealth({ ...params, isFull: true }),
+      useUserState(params),
+      useUserDiscounts(params, useNewLlamalendHealth()),
+    ],
+    (oraclePrice, prices, liquidationBuffer, healthFull, { debt }, { loanDiscount, liquidationDiscount }) =>
+      maybe(prices, (prices): PositionHealth => {
+        const health = getHealth(oraclePrice, prices)
+        // The Controller's `liquidate()` ignores the liquidation buffer: it checks `health(user, full=true) < 0`.
+        // Full health also counts the price distance above the range, so a negative buffer alone is not liquidatable.
+        const isLiquidatable = decimalGreaterThan(ZERO, healthFull)
         return {
           health,
-          healthFactor,
-          /** Raw band-valued margin before full liquidation, as a percentage of debt. */
-          healthNotFull: notFull,
-          /** Distance from liquidation as a percentage of the liquidation-discount gap. */
-          liquidationBuffer: getLiquidationBuffer(notFull, loanDiscount, liquidationDiscount),
-          /** Inputs and intermediate values exposed for developer diagnostics. */
-          debug: {
-            healthFull: full,
-            healthNotFull: notFull,
-            healthDelta,
-            loanDiscount,
-            liquidationDiscount,
-            discountGap,
-          },
+          liquidationBuffer,
+          liquidationBufferAmount: decimalDiv(decimalMultiply(debt, liquidationBuffer), '100'),
+          liquidationBufferShare: decimalDiv(
+            liquidationBuffer,
+            decimalMinus(
+              decimalPercent(decimalMinus('100', liquidationDiscount), decimalMinus('100', loanDiscount)),
+              '100',
+            ),
+          ),
+          isLiquidatable,
+          status: getPositionStatus({ health, isLiquidatable, oraclePrice, prices, thresholds }),
         }
-      },
-    ),
-    ...combineQueryState(healthFull, healthNotFull, discounts),
-  }
-}
-
-export type HealthValues = QueryData<typeof useUserHealthValues>
-export type HealthQuery = QueryProp<HealthValues>
+      }),
+  )

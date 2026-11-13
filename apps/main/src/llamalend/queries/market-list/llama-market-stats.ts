@@ -1,7 +1,7 @@
 import { uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { getEquity } from '@/llamalend/equity-leverage.utils'
-import { getHealthValues } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { getLegacyHealthValues } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { getPositionEventsSummaryOptions } from '@/llamalend/features/user-position-history/queries/position-events-summary'
 import {
   getDisplayLegacyHealth,
@@ -54,7 +54,7 @@ const normalizeMarketStats = (stats: BorrowStats) => {
     legacyHealth: getDisplayLegacyHealth(stats.healthFull, stats.health) ?? undefined,
     healthFactor: maybes(
       [decimal(stats.healthFull), decimal(stats.health)],
-      (full, notFull) => getHealthValues(full, notFull).healthFactor,
+      (full, notFull) => getLegacyHealthValues(full, notFull).healthFactor,
     ),
     /** Band-valued health in percent of the debt, for the liquidation buffer */
     healthNotFull: decimal(stats.health),

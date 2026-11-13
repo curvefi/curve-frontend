@@ -1,6 +1,7 @@
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
+import type { PositionStatus } from '@/llamalend/health.utils'
 import { getIsUserCloseToSoftLiquidation, getLegacyLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
@@ -9,17 +10,20 @@ import { getMarketOraclePriceKey } from '@/llamalend/queries/market/market-oracl
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
+import { getUserDiscountsKey } from '@/llamalend/queries/user/user-discounts.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
+import { getLoanExistsKey } from '@/llamalend/queries/user/user-loan-exists.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { oneViewport, openTooltip } from '@cy/support/ui'
 import { getTokenUsdRateKey } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
 import { constQ, type Range } from '@ui/features/queries/util'
 import { ReleaseChannel } from '@ui/lib/env'
@@ -28,7 +32,7 @@ const ALERT_TEST_ID = '[data-testid="borrow-position-status-alert"]'
 
 const baseProps = {
   params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
-  healthNotFull: 1.56 as number | null,
+  healthNotFull: 1.56,
   healthFull: 96,
   userPrices: [`0.47`, `0.69`] as Range<Decimal>,
   leverage: 1,
@@ -88,9 +92,11 @@ const PositionDetailsTest = ({
           [getMarketOraclePriceBandKey(params), oraclePrice],
           [getUserCurrentLeverageKey(params), `${leverage}`],
           [getUserBandsKey(params), userBands],
-          [getUserPricesKey(params), userPrices],
+          [getLoanExistsKey(params), true],
+          [getUserPricesKey({ ...params, loanExists: true }), userPrices],
           [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-          [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
+          [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+          [getUserDiscountsKey(params), { loanDiscount: '9', liquidationDiscount: '6' }],
           [getMarketOraclePriceKey(params), `${oraclePrice}`],
           [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
           [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
@@ -105,44 +111,6 @@ const PositionDetailsTest = ({
     </MarketContext>
   </ComponentTestWrapper>
 )
-
-type StatusCase = {
-  status: UserPositionStatusKey
-  severity?: 'warning' | 'error'
-  title?: string
-  overrides?: Partial<typeof baseProps>
-}
-
-const statusCases: StatusCase[] = [
-  { status: 'healthy' },
-  {
-    status: 'softLiquidation',
-    severity: 'warning',
-    title: 'Liquidation protection active',
-    overrides: { healthFull: 30, borrow: 1.5 },
-  },
-  {
-    status: 'hardLiquidation',
-    severity: 'error',
-    title: 'Position can be hard-liquidated',
-    overrides: { healthFull: 0, healthNotFull: -2, collateral: 0, borrow: 1 },
-  },
-  {
-    status: 'fullyConverted',
-    severity: 'warning',
-    title: 'Fully converted to crvUSD',
-    overrides: { healthFull: 0, borrow: 1.8, collateral: 0, userBands: [-10, -6] },
-  },
-  {
-    status: 'incompleteConversion',
-    severity: 'error',
-    title: 'Position at risk - incomplete conversion',
-    overrides: { healthFull: 3, borrow: 1.5, collateral: 0.3, userBands: [-10, -6] },
-  },
-]
-
-const expectedSeverityClass = (severity: 'info' | 'warning' | 'error') =>
-  new RegExp(`MuiAlert-(?:outlined|color)${({ info: 'Info', warning: 'Warning', error: 'Error' } as const)[severity]}`)
 
 describe('Position status logic', () => {
   describe('getIsUserCloseToSoftLiquidation', () => {
@@ -222,55 +190,37 @@ describe('Position status logic', () => {
   })
 })
 
-describe('BorrowPositionDetails status alerts', () => {
-  it('hides market alert when status is undefined', () => {
-    cy.mount(<PositionDetailsTest {...baseProps} healthNotFull={null} />)
+describe('BorrowPositionDetails health status', () => {
+  it('hides the market alert', () => {
+    cy.mount(<PositionDetailsTest {...baseProps} healthFull={0} healthNotFull={-2} collateral={0} borrow={1} />)
+    cy.get('[data-testid="health-details-health-metric"]').should('be.visible')
     cy.get(ALERT_TEST_ID).should('not.exist')
   })
 
-  statusCases.forEach(({ overrides, severity, status, title }) => {
-    const hasAlert = !!severity
-    it(`${hasAlert ? 'renders' : 'hides'} market alert for ${status} status`, () => {
+  // userPrices are [0.47, 0.69], the market has no assets type so the long-tail thresholds apply
+  const statusCases: { status: PositionStatus; badge: string; health: string; overrides: Partial<typeof baseProps> }[] =
+    [
+      { status: 'aboveRange', badge: 'Above range', health: '1.4493', overrides: { oraclePrice: 1 } },
+      { status: 'nearRange', badge: 'Near range', health: '1.087', overrides: { oraclePrice: 0.75 } },
+      { status: 'inRange', badge: 'Soft liquidation', health: '1.00', overrides: { oraclePrice: 0.5 } },
+      { status: 'belowRange', badge: 'Below range', health: '1.00', overrides: { oraclePrice: 0.4 } },
+      {
+        status: 'liquidatable',
+        badge: 'Liquidatable',
+        health: '1.00',
+        overrides: { oraclePrice: 0.4, healthFull: -1, healthNotFull: -1 },
+      },
+    ]
+
+  statusCases.forEach(({ status, badge, health, overrides }) => {
+    it(`shows health ${health}, the ${badge} badge and its tooltip status`, () => {
+      const [width, height, breakpoint] = oneViewport()
+      cy.viewport(width, height)
       cy.mount(<PositionDetailsTest {...baseProps} {...overrides} />)
-
-      if (!hasAlert) {
-        cy.get(ALERT_TEST_ID).should('not.exist')
-        return
-      }
-
-      cy.get(ALERT_TEST_ID)
-        .should('be.visible')
-        .within(() => {
-          cy.contains(title ?? 'no title expected').should('be.visible')
-          cy.get('p').invoke('text').should('match', /\S/)
-        })
-
-      cy.get(ALERT_TEST_ID).invoke('text').should('not.include', 'undefined')
-      cy.get(ALERT_TEST_ID).invoke('attr', 'class').should('match', expectedSeverityClass(severity))
-    })
-  })
-
-  const symbolInterpolationCases = [
-    { status: 'softLiquidation' as const, expectedTokens: ['WBTC', 'USDC'], unexpectedTokens: [] },
-    { status: 'fullyConverted' as const, expectedTokens: ['WBTC', 'USDC'], unexpectedTokens: [] },
-    { status: 'incompleteConversion' as const, expectedTokens: ['WBTC'], unexpectedTokens: ['USDC'] },
-  ]
-
-  symbolInterpolationCases.forEach(({ status, expectedTokens, unexpectedTokens }) => {
-    it(`renders symbol-interpolated description for ${status}`, () => {
-      const overrides = statusCases.find(s => s.status === status)?.overrides
-      cy.mount(<PositionDetailsTest {...baseProps} {...overrides} collateralSymbol="WBTC" borrowSymbol="USDC" />)
-
-      cy.get(ALERT_TEST_ID)
-        .should('be.visible')
-        .within(() => {
-          expectedTokens.forEach(token => {
-            cy.contains(token).should('be.visible')
-          })
-          unexpectedTokens.forEach(token => {
-            cy.contains(token).should('not.exist')
-          })
-        })
+      cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', health)
+      cy.get('[data-testid="health-details-status-badge"]').should('have.text', badge)
+      openTooltip('[data-testid="health-details-health-metric-value"]', breakpoint)
+      cy.get(`[data-testid="health-tooltip-status-${status}"]`).should('be.visible')
     })
   })
 })

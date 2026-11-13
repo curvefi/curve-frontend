@@ -7,9 +7,9 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import type { VaultActivityProps } from '@evm-ui/features/activity-table/types'
-import { SOFT_LIQUIDATION_DESCRIPTION } from '@evm-ui/features/candle-chart/constants'
 import { OhlcChart, type OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -43,6 +43,11 @@ import { useMarketPrice } from '../queries/market/market-price.query'
 const { Spacing } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
+
+const LEGACY_SOFT_LIQUIDATION_DESCRIPTION = t`Above the liquidation threshold, health mostly follows price (and slowly declines from interest). In the liquidation range, health drops on any price movement as collateral is worn down inside the bands.`
+
+const SOFT_LIQUIDATION_DESCRIPTION = t`Above the liquidation range, health follows the price. In the liquidation range, health stays at 1.00 and the liquidation buffer drops on any price movement as collateral is worn down inside the bands.`
+
 const PRICE_VALUE_OPTIONS = { abbreviate: false, formatter: (value: Amount) => formatNumber(value, 'token.precise') }
 
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -271,7 +276,10 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
             />
           )}
         </Stack>
-        <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+        <ChartFooter
+          legendSets={chartFooterLegendSets}
+          description={useNewLlamalendHealth() ? SOFT_LIQUIDATION_DESCRIPTION : LEGACY_SOFT_LIQUIDATION_DESCRIPTION}
+        />
       </Stack>
     </Card>
   )
@@ -381,7 +389,10 @@ const LegacyMarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLay
           />
         )}
       </Stack>
-      <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+      <ChartFooter
+        legendSets={chartFooterLegendSets}
+        description={useNewLlamalendHealth() ? SOFT_LIQUIDATION_DESCRIPTION : LEGACY_SOFT_LIQUIDATION_DESCRIPTION}
+      />
     </Stack>
   )
 }

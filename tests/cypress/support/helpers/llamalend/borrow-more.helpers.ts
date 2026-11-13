@@ -68,6 +68,10 @@ export function checkBorrowMoreDetailsLoaded({
     'match',
     DECIMAL_REGEX,
   )
+  getActionValue('borrow-liquidation-buffer', getTimeoutCategory('tenderly', 'simulation', isMocked)).should(
+    'include',
+    '%',
+  )
   checkEstimatedTxCost({
     hasValue: hasApi && controllerApproved,
     category: getTimeoutCategory('tenderly', 'simulation', isMocked),

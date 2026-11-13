@@ -26,6 +26,7 @@ export function ClosePositionInfoList({
   return (
     <LoanActionInfoList
       isOpen
+      isFullRepay
       gas={q(useCloseEstimateGas(params))}
       debt={constQ('0')}
       collateral={constQ('0')}

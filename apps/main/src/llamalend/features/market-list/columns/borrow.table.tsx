@@ -1,4 +1,4 @@
-import { LIQUIDATION_BUFFER_TOOLTIP } from '@/llamalend/features/market-position-details/tooltips/tooltips'
+import { LegacyLiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LegacyLiquidationBufferTooltipContent'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
@@ -150,7 +150,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
           unit: 'percentage',
           tooltip: {
             title: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
-            body: LIQUIDATION_BUFFER_TOOLTIP.body,
+            body: <LegacyLiquidationBufferTooltipContent />,
           },
           defaultHidden: true,
         },

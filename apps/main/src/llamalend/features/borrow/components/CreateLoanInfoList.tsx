@@ -2,7 +2,7 @@ import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendEquityLeverage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
@@ -38,13 +38,15 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   equityLeverage: EquityLeverage | null
   form: UseFormReturn<CreateLoanForm>
 }) => {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useCreateLoanIsApproved(params))}
-      health={q(useCreateLoanHealth(params, isOpen))}
+      health={q(useCreateLoanHealth({ ...params, isFull: true }, !isNewLlamalendHealth && isOpen))}
+      liquidationBuffer={q(useCreateLoanHealth({ ...params, isFull: false }, isNewLlamalendHealth && isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}

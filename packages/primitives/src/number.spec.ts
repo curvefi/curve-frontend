@@ -451,11 +451,11 @@ describe('formatNumber', () => {
   })
 
   describe('categories', () => {
-    it('formats precise health with up to four decimal places', () => {
-      expect(formatNumber('1.001688520114346498', 'health.precise')).toBe('1.0017')
-      expect(formatNumber(1.2, 'health.precise')).toBe('1.20')
-      expect(formatNumber(1, 'health.precise')).toBe('1.00')
-      expect(formatNumber('1.301688520114346498', 'health')).toBe('1.30')
+    it('formats health with up to four decimal places', () => {
+      expect(formatNumber('1.001688520114346498', 'health')).toBe('1.0017')
+      expect(formatNumber(1.2, 'health')).toBe('1.20')
+      expect(formatNumber(1, 'health')).toBe('1.00')
+      expect(formatNumber(1.000001, 'health')).toBe('1.0001')
     })
 
     it('formats token categories', () => {

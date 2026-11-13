@@ -14,8 +14,10 @@ import { applySxProps } from '@ui/lib/mui'
 
 const { Spacing } = SizesAndSpaces
 
-export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ gap: Spacing.sm, [`&:not(.${drawerClasses.paper} *)`]: { maxWidth: '20rem' } }}>{children}</Stack>
+export const TooltipWrapper = ({ children, testId }: { children: ReactNode; testId?: string }) => (
+  <Stack sx={{ gap: Spacing.sm, [`&:not(.${drawerClasses.paper} *)`]: { maxWidth: '20rem' } }} data-testid={testId}>
+    {children}
+  </Stack>
 )
 
 export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
