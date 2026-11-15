@@ -1,4 +1,5 @@
 import { zeroAddress } from 'viem'
+import { LoanPreset } from '@/llamalend/constants'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
@@ -82,6 +83,28 @@ describe('CreateLoanForm (mocked)', () => {
       })
     },
   )
+
+  ;[[LoanPreset.Safe], [LoanPreset.MaxLtv, LoanPreset.Safe]].forEach(presets => {
+    it(`keeps the form valid after selecting ${presets.join(' then ')}`, () => {
+      const { llamaApi, market, collateral } = createCreateLoanScenario({ chainId: CHAIN_ID, approved: false })
+      Object.assign(market, { createLoanMaxRecv: cy.stub().resolves('136083.72') })
+      setLlamaApi(llamaApi)
+      setGasInfo({ chainId: CHAIN_ID })
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={cy.spy()} />
+        </MockLoanTestWrapper>,
+      )
+      writeCreateLoanForm({ collateral, borrow: '1', leverageEnabled: false, hasLeverage: false, isMocked: true })
+      cy.get('[data-testid="create-loan-submit-button"]').should('be.enabled')
+      presets.forEach(preset => {
+        cy.get(`[data-testid="loan-preset-${preset}"]`).click()
+        cy.get('[data-testid="create-loan-submit-button"]').should('be.enabled')
+      })
+      cy.get('[data-testid="borrow-debt-input"] input[type="text"]').should('have.value', '1')
+      cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+    })
+  })
 
   it('hides leverage for an unlisted ZapV2 market', () => {
     const { llamaApi, market } = createCreateLoanScenario({
