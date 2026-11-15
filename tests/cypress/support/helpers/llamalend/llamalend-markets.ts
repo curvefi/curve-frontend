@@ -121,6 +121,13 @@ export function checkCoinSelection(
 export function checkChainSelection(...chains: Chain[]) {
   cy.url().should('include', serializeListFilter(chains))
   chains.forEach(chain => void getTableCellAssets().find(`[data-testid="chain-icon-${chain}"]`).should('be.visible'))
+  getTableCellAssets()
+    .find('[data-testid^="chain-icon-"]')
+    .should($icons => {
+      $icons.each((_, icon) => {
+        expect(chains.map(chain => `chain-icon-${chain}`)).to.include(icon.getAttribute('data-testid'))
+      })
+    })
 }
 
 /** Check the correct selection of the filter's grouped buttons by checking the url and a callback function */
