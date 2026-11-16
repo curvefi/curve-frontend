@@ -32,7 +32,7 @@ export const DistanceToRangeTooltipContent = ({
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Price change needed to reach the liquidation range: − for a drop from above, + for a rise from below.`}
+        text={t`Price change needed to reach the liquidation range: - for a drop from above, + for a rise from below.`}
       />
       <TooltipItems secondary>
         <TooltipItem title={t`Upper boundary`} variant="independent">
