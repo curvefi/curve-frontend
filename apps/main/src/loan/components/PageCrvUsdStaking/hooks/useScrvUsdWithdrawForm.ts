@@ -34,7 +34,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
     isPending,
     error,
   } = useScrvUsdWithdrawMutation({ chainId, userAddress, onReset: () => form.reset(userDefaultValues) })
-  const max = { ...mapQuery(userBalances, ({ scrvUSD }) => scrvUSD), fieldName: 'maxWithdrawAmount' as const }
+  const max = mapQuery(userBalances, ({ scrvUSD }) => scrvUSD)
 
   useFormSync(form, { maxWithdrawAmount: max.data })
   useFormSync(form, { isFull: maybes([withdrawAmount, max.data], (val, max) => decimalEqual(val, max)) })

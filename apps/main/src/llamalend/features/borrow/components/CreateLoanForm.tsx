@@ -113,7 +113,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.blockchainId}
           name="userCollateral"
           form={form}
-          max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
+          max={q(maxCollateral)}
           testId="borrow-collateral-input"
           network={network}
         />
@@ -123,7 +123,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.blockchainId}
           name="debt"
           form={form}
-          max={{ ...maxDebtBalance, fieldName: 'maxDebt', onMax }}
+          max={{ ...maxDebtBalance, onMax }}
           hideBalance
           testId="borrow-debt-input"
           network={network}

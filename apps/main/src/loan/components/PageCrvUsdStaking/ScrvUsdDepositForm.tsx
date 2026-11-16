@@ -50,7 +50,7 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
         blockchainId={networkConfig.blockchainId}
         name="depositAmount"
         form={form}
-        max={{ ...q(max), fieldName: max.fieldName }}
+        max={q(max)}
         testId="scrvusd-deposit-input"
         network={networkConfig}
         hideBalance={!isConnected}

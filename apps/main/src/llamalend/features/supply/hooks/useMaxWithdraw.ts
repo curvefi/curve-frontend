@@ -70,7 +70,7 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
   )
 
   return {
-    maxWithdrawAmount: { ...q(maxWithdrawAmount), fieldName: 'maxWithdrawAmount' as const },
+    maxWithdrawAmount: q(maxWithdrawAmount),
     maxStakedShares: mapQuery(userBalances, d => d.stakedShares),
     isFull,
   }

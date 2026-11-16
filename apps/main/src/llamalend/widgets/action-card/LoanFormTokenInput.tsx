@@ -20,16 +20,12 @@ type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 export type LoanFormTokenInputProps<
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
 > = {
   label: string
   token: { address: Address; symbol?: string } | undefined
   blockchainId: INetworkName | undefined
-  /**
-   * Optional max-value query for this field, including loading and error state.
-   * When present, it also carries an optional related max-field name whose errors should be reflected here.
-   */
-  max?: QueryProp<Decimal> & { fieldName: TMaxFieldName; onMax?: () => void }
+  /** Optional max-value query for this field, including loading and error state. */
+  max?: QueryProp<Decimal> & { onMax?: () => void }
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
@@ -59,7 +55,6 @@ export type LoanFormTokenInputProps<
 export const LoanFormTokenInput = <
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
 >({
   label,
   token,
@@ -76,7 +71,7 @@ export const LoanFormTokenInput = <
   hideBalance,
   onValueChange,
   disabled,
-}: LoanFormTokenInputProps<TFieldValues, TFieldName, TMaxFieldName>) => {
+}: LoanFormTokenInputProps<TFieldValues, TFieldName>) => {
   const { address: userAddress } = useConnection()
   const {
     data: balance,
@@ -128,7 +123,6 @@ export const LoanFormTokenInput = <
       balance={q({ data: value, isLoading: value == null, error: balanceError })}
       onBalance={onBalance}
       {...(!hideBalance && { walletBalance })}
-      {...(max && { relatedFields: [max.fieldName] })}
       max={max && { balance: max, chips: 'range', onMax: max.onMax }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
       message={message ?? maxMessage}

@@ -26,7 +26,7 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
         blockchainId={networkConfig.blockchainId}
         name="withdrawAmount"
         form={form}
-        max={{ ...q(max), fieldName: max.fieldName }}
+        max={q(max)}
         testId="scrvusd-withdraw-input"
         network={networkConfig}
         positionBalance={{ position: positionBalance, tooltip: t`scrvUSD balance` }}

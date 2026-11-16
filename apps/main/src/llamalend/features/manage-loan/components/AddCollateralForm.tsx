@@ -63,7 +63,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           form={form}
           testId="add-collateral-input"
           network={network}
-          max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
+          max={q(maxCollateral)}
         />
       </Stack>
 
