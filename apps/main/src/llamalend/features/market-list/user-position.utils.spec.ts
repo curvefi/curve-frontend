@@ -10,7 +10,7 @@ import {
   getUserHealth,
   getUserLeverage,
   getUserLiquidationBuffer,
-  getUserLoopedApr,
+  getUserCarryApr,
   getUserIncentivesApr,
   getUserPositionLtv,
   getUserSupplyShare,
@@ -102,30 +102,29 @@ describe('borrow position metrics', () => {
   it('shows the leverage as the collateral value over the equity', () =>
     expect(getUserLeverage(createRow())).toBeCloseTo(2))
 
-  it('shows the looped APR on the equity and its yield multiplier', () => {
+  it('shows the carry APR on the equity and its yield multiplier', () => {
     const row = createRow()
     // (10 × 6% − 5 × 3%) / 5 equity
-    expect(getUserLoopedApr(row)).toBeCloseTo(9)
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
     expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows no leverage nor looped APR for a plain borrow', () => {
+  it('shows the carry APR but no leverage for a plain borrow', () => {
     const row = createRow({ isZapLeveraged: false })
     expect(getUserLeverage(row)).toBeUndefined()
-    expect(getUserLoopedApr(row)).toBeUndefined()
-    expect(getUserYieldMultiplier(row)).toBeUndefined()
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
+    expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows no leverage nor looped APR while it is unknown if the position is zap leveraged', () => {
+  it('shows the carry APR but no leverage while it is unknown if the position is zap leveraged', () => {
     const row = createRow({ isZapLeveraged: null })
     expect(getUserLeverage(row)).toBeUndefined()
-    expect(getUserLoopedApr(row)).toBeUndefined()
-    expect(getUserYieldMultiplier(row)).toBeUndefined()
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
   })
 
-  it('shows no looped APR without a collateral yield', () => {
-    const row = createRow({ collateralYieldApr: null })
-    expect(getUserLoopedApr(row)).toBeUndefined()
+  it.each([null, 0])('shows no carry APR with a collateral yield of %s', collateralYieldApr => {
+    const row = createRow({ collateralYieldApr })
+    expect(getUserCarryApr(row)).toBeUndefined()
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })
 
@@ -141,7 +140,7 @@ describe('borrow position metrics', () => {
         getUserPositionLtv(row),
         getUserCollateralShare(row),
         getUserLeverage(row),
-        getUserLoopedApr(row),
+        getUserCarryApr(row),
         getUserBandCount(row),
       ].filter(value => value != null),
     ).toEqual([])
