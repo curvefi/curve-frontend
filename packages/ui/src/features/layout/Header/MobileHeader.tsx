@@ -89,7 +89,7 @@ export const MobileHeader = <TApp extends string>({
           hideBackdrop
           data-testid="mobile-drawer"
         >
-          <Stack sx={{ overflowY: 'auto', ...HIDE_SCROLLBAR }}>
+          <Stack sx={{ flexGrow: 1, overflowY: 'auto', ...HIDE_SCROLLBAR }}>
             <Stack sx={{ padding: 4 }}>
               <HeaderStats appStats={appStats} />
             </Stack>

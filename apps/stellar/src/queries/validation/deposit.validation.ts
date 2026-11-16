@@ -1,4 +1,4 @@
-import { each, test } from 'vest'
+import { each, skipWhen, test } from 'vest'
 import type { DepositForm, DepositMutationParams, DepositParams } from '@/stellar/features/deposit/types'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { validateAccount, validatePool } from '@/stellar/queries/validation/pool.validation'
@@ -73,12 +73,18 @@ export const depositMutationValidationSuite = createValidationSuite(
     tokens,
     quote,
     account,
+    isSeed,
   }: DepositMutationParams) => {
     validatePool({ pool, network })
     validateAccount(account)
-    validateSlippage({ slippage })
+    validateSlippage({ slippage, minimum: 0 }) // the initial deposit after pool creation forces slippage 0
     validateFundedInputs({ amounts, decimals, maxAmounts, supply })
     validateTokens({ tokens })
+    skipWhen(!isSeed, () => {
+      test('supply', "This pool already has liquidity. Use the pool's deposit form to continue.", () => {
+        enforce(maybe(supply, supply => +supply)).equals(0)
+      })
+    })
     test('quote', 'Deposit must leave LP after the permanent seed lock', () => {
       enforce(maybe(quote, quote => +quote)).gt(0)
     })

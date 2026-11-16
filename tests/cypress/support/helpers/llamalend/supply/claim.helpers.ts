@@ -8,7 +8,7 @@ import { formatNumber } from '@primitives/number.utils'
 import { loadTenderlyAccount } from '../../tenderly/account'
 import { sendVnetTransaction } from '../../tenderly/vnet-tx'
 import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionInfo } from '../action-info.helpers'
-import { submitSupplyForm, SupplyActionType } from './supply.helpers'
+import { REWARD_ACCRUAL_SECONDS, submitSupplyForm, SupplyActionType } from './supply.helpers'
 
 const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
 type ClaimRewardType = 'crv' | 'other'
@@ -68,7 +68,7 @@ export const prepareClaimRewards = ({
   vnet,
   userAddress,
   gaugeAddress,
-  rewardAccrualSeconds = 7 * 24 * 60 * 60,
+  rewardAccrualSeconds = REWARD_ACCRUAL_SECONDS,
 }: {
   vnet: CreateVirtualTestnetResponse
   userAddress: Address
