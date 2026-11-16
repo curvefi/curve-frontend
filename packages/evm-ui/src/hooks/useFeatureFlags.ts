@@ -44,7 +44,4 @@ export const useLlamalendPositionPnl = useBetaChannel
 export const useLlamalendPositionTables = useBetaChannel
 
 /** The new position tables need the new health */
-export const useLlamalendHealthTables = () => {
-  const isNewLlamalendHealth = useNewLlamalendHealth()
-  return useLlamalendPositionTables() && isNewLlamalendHealth
-}
+export const useLlamalendHealthTables = () => [useNewLlamalendHealth(), useLlamalendPositionTables()].every(Boolean)

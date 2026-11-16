@@ -74,10 +74,10 @@ export function useCarryApr(
 }
 
 export const useCreateLoanCarryApr = (params: CreateLoanFormQueryParams, enabled = true) =>
-  useCarryApr({ params, futurePosition: useCreateLoanFuturePosition(params), debtDelta: params.debt }, enabled)
+  useCarryApr({ params, futurePosition: useCreateLoanFuturePosition(params, enabled), debtDelta: params.debt }, enabled)
 
 export const useBorrowMoreCarryApr = (params: BorrowMoreParams, enabled = true) =>
-  useCarryApr({ params, futurePosition: useBorrowMoreFuturePosition(params), debtDelta: params.debt }, enabled)
+  useCarryApr({ params, futurePosition: useBorrowMoreFuturePosition(params, enabled), debtDelta: params.debt }, enabled)
 
 export const useRepayCarryApr = (
   params: RepayParams,

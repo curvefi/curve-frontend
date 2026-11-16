@@ -13,8 +13,8 @@ import { constQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalGreaterThan, decimalMinus, decimalSum, ZERO } from '@ui/lib/decimal'
 
 /** The new position: the leverage quote's total collateral, or the deposited collateral without leverage */
-export function useCreateLoanFuturePosition(params: CreateLoanFormQueryParams) {
-  const expectedCollateral = useCreateLoanExpectedCollateral(params, !!params.leverageEnabled)
+export function useCreateLoanFuturePosition(params: CreateLoanFormQueryParams, enabled = true) {
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, enabled && !!params.leverageEnabled)
   return mapQuery(
     params.leverageEnabled
       ? mapQuery(expectedCollateral, ({ totalCollateral }) => totalCollateral)
@@ -23,11 +23,14 @@ export function useCreateLoanFuturePosition(params: CreateLoanFormQueryParams) {
   )
 }
 
-export function useBorrowMoreFuturePosition(params: BorrowMoreParams) {
+export function useBorrowMoreFuturePosition(params: BorrowMoreParams, enabled = true) {
   const { market } = useMarketContext()
-  const expectedCollateral = useBorrowMoreExpectedCollateral(params, !!params.leverageEnabled)
+  const expectedCollateral = useBorrowMoreExpectedCollateral(params, enabled && !!params.leverageEnabled)
   return combineQueries(
-    [q(useUserState(params)), isLeverageBorrowMore(market, params.leverageEnabled) ? expectedCollateral : constQ(null)],
+    [
+      q(useUserState(params, enabled)),
+      isLeverageBorrowMore(market, params.leverageEnabled) ? expectedCollateral : constQ(null),
+    ],
     (position, expected) => ({
       ...position,
       collateral: decimalSum(

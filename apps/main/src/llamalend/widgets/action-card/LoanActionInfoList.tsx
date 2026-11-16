@@ -71,11 +71,8 @@ export type LoanActionInfoListProps = FuturePositionProps & {
   leverageEnabled?: boolean
 }
 
-const formatHealthQuery = (
-  oraclePrice: QueryProp<Decimal | null>,
-  prices: QueryProp<Range<Decimal> | null> | undefined,
-) =>
-  combineQueries([oraclePrice, prices ?? DISABLED_Q], (oraclePrice, prices) =>
+const formatHealthQuery = (oraclePrice: QueryProp<Decimal | null>, prices: QueryProp<Range<Decimal> | null>) =>
+  combineQueries([oraclePrice, prices], (oraclePrice, prices) =>
     maybes([oraclePrice, prices], (oraclePrice, prices) => formatNumber(getHealth(oraclePrice, prices), 'health')),
   )
 
@@ -186,7 +183,7 @@ export const LoanActionInfoList = ({
               <ActionInfo
                 label={t`Health`}
                 labelTooltip={{ title: t`Health`, body: <HealthTooltipContent /> }}
-                value={formatHealthQuery(oraclePrice, prevPrices)}
+                value={formatHealthQuery(oraclePrice, prevPrices ?? DISABLED_Q)}
                 futureValue={prices && !isFullRepay ? formatHealthQuery(oraclePrice, prices) : UNAVAILABLE_NOTATION}
                 size="small"
                 testId="borrow-health"
