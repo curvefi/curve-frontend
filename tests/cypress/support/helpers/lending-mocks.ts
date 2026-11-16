@@ -21,13 +21,16 @@ const oneApiToken = (token: ReturnType<typeof oneToken>) => ({
 
 const oneLendingPool = (
   blockchainId: Chain,
-  { utilization = oneFloat(0, 0.99), tvl = oneTvl() }: { utilization?: number; tvl?: number },
+  {
+    utilization = oneFloat(0, 0.99),
+    tvl = oneTvl(),
+    liquidityUsd = Math.max(0, oneFloat(0, tvl)), // portion of TVL represented by (assets - debt)
+  }: { utilization?: number; tvl?: number; liquidityUsd?: number },
 ): GetMarketsResponse['data'][number] => {
   const collateral = oneToken(blockchainId)
   const borrowed = oneToken(blockchainId)
   const borrowedPrice = borrowed.usdPrice ?? onePrice()
   const collateralPrice = collateral.usdPrice ?? onePrice()
-  const liquidityUsd = Math.max(0, oneFloat(0, tvl)) // portion of TVL represented by (assets - debt)
   const totalAssetsUsd = liquidityUsd / (1 - utilization)
   const totalDebtUsd = totalAssetsUsd * utilization
   // Vault assets and debt are both denominated in the borrowed token.
@@ -116,8 +119,12 @@ function oneLendingVaultResponse(blockchainId: Chain): GetMarketsResponse {
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
           },
           {
-            // largest TVL to test the sorting
-            ...oneLendingPool(blockchainId, { utilization: oneFloat(0.4, 0.8), tvl: MAX_USD_VALUE * 2 }),
+            // largest TVL and liquidity to test the sorting
+            ...oneLendingPool(blockchainId, {
+              utilization: oneFloat(0.4, 0.8),
+              tvl: MAX_USD_VALUE * 2,
+              liquidityUsd: MAX_USD_VALUE * 1.5,
+            }),
             address: HIGH_TVL_ADDRESS,
             vault: HIGH_TVL_ADDRESS,
             controller: HIGH_TVL_ADDRESS,

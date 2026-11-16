@@ -13,7 +13,7 @@ import { NetSupplyRateHeaderTooltipContent } from '../header-tooltips/SupplyRate
 import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
-import { defineMarketTable, inGroup } from './market-table'
+import { adapt, defineMarketTable, inGroup } from './market-table'
 import {
   assetsColumn,
   borrowRateColumn,
@@ -27,7 +27,7 @@ import {
 
 export const MARKETS_TABLE: MarketTable = defineMarketTable({
   testId: 'lamalend-markets',
-  defaultSort: [{ id: MarketColumnId.Tvl, desc: true }],
+  defaultSort: [{ id: MarketColumnId.LiquidityUsd, desc: true }],
   sortQueryField: 'sort',
   storageKey: 'llamalend-markets',
   deprecatedVariants: ['hasPositions', 'noPositions'], // used for the v9 -> v10 migration, this will be removed in the future
@@ -97,7 +97,7 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
         filterFn: rangeFilterFn,
         sortUndefined: 'last',
       }),
-      utilizationColumn,
+      adapt(utilizationColumn, { meta: { defaultHidden: true } }),
       solvencyColumn,
       liquidityUsdColumn,
       columnHelper.accessor('totalDebtUsd', {

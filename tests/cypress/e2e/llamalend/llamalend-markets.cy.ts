@@ -107,7 +107,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       const { toggle, element } = oneOf(
         { toggle: 'tvl', element: 'data-table-header-tvl' },
         { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
-        { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
+        { toggle: 'maxLeverage', element: 'data-table-header-maxLeverage' },
       )
       cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
       cy.get(`[data-testid="${element}"]`).should('be.visible')
@@ -157,6 +157,10 @@ testCases.forEach(([width, height, breakpoint]) => {
         return cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', TIMEOUTS['ui.render'])
       } else {
         cy.get(`[data-testid="data-table-cell-${MarketColumnId.BorrowRate}"]`).first().contains('%')
+        // utilization is hidden by default
+        cy.get(`[data-testid="btn-visibility-settings"]`).click()
+        cy.get(`[data-testid="visibility-toggle-${utilizationColumnId}"]`).click()
+        cy.get('body').click(0, 0) // close popover
         cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
         cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', TIMEOUTS['ui.render'])
         cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
