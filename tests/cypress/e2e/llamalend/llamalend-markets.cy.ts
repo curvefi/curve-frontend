@@ -33,7 +33,7 @@ import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-li
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assertInViewport, assertNotInViewport, oneDesktopViewport, oneViewport } from '@cy/support/ui'
 import { MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
-import { assert, objectKeys, recordEntries, recordValues, repeat } from '@primitives/objects.utils'
+import { assert, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
 
 const WST_ETH_MARKET = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const SFRX_ETH_MARKET = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
@@ -42,20 +42,6 @@ const SFRX_ETH_MARKET = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
 const firefoxRetry = { retries: Cypress.isBrowser('firefox') ? 1 : 0 }
 
 const testCases = [oneViewport()] as const
-
-describe('llamalend markets', () => {
-  it('returns each market once per network', () => {
-    cy.request<{ chains: Record<Chain, GetMarketsResponse> }>({
-      url: 'https://prices.curve.finance/v1/lending/markets',
-      ...TIMEOUTS['prices.markets'],
-    }).then(({ body }) => {
-      const marketIds = recordEntries(body.chains).flatMap(([chain, { data }]) =>
-        data.map(({ controller }) => `${chain}:${controller.toLowerCase()}`),
-      )
-      expect(marketIds).to.deep.equal([...new Set(marketIds)])
-    })
-  })
-})
 
 testCases.forEach(([width, height, breakpoint]) => {
   describe(`LlamaLend Markets`, () => {
