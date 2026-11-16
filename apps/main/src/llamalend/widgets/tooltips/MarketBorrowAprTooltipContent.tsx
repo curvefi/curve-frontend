@@ -2,13 +2,14 @@ import { type CollateralYields, getCollateralYieldLines, sumCollateralYields } f
 import {
   BORROW_APR_DESCRIPTION,
   BORROW_RATE_TITLE,
-  COLLATERAL_REWARDS_CRV_DESCRIPTION,
-  COLLATERAL_REWARDS_CRV_TITLE,
+  COLLATERAL_REWARDS_TITLE,
   COLLATERAL_YIELD_TITLE,
   NET_BORROW_APR_DESCRIPTION,
   NET_BORROW_RATE_TITLE,
 } from '@/llamalend/constants'
 import { hasEstimatedNetBorrowApr } from '@/llamalend/llama.utils'
+import type { ExtraIncentive } from '@evm-ui/types/market'
+import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
@@ -42,6 +43,15 @@ export const MarketBorrowAprTooltipContent = ({
 }: MarketBorrowAprTooltipContentProps) => {
   const hasNetRate = hasEstimatedNetBorrowApr({ extraRewards, collateralYields })
   const collateralYieldApr = maybe(collateralYields, yields => sumCollateralYields(yields, 'collateral'))
+  const collateralRewards: ExtraIncentive[] =
+    maybes([collateralYields, collateralSymbol], (yields, symbol) =>
+      getCollateralYieldLines(yields, 'crv', symbol).map(({ label, apr }) => ({
+        title: label,
+        percentage: -apr,
+        address: MAINNET_CRV_ADDRESS,
+        blockchainId: 'ethereum',
+      })),
+    ) ?? []
   return (
     <TooltipWrapper>
       <TooltipDescription text={BORROW_APR_DESCRIPTION} />
@@ -75,12 +85,14 @@ export const MarketBorrowAprTooltipContent = ({
           </TooltipItems>
         )}
 
-        {collateralYields?.crvApr != null && (
+        {collateralRewards.length > 0 && (
           <TooltipItems secondary>
-            <TooltipItem title={COLLATERAL_REWARDS_CRV_TITLE}>
-              {formatCappedRatePercent(-collateralYields.crvApr)}
-            </TooltipItem>
-            <TooltipItem variant="subItem" title={COLLATERAL_REWARDS_CRV_DESCRIPTION} />
+            <RewardsTooltipItems
+              title={COLLATERAL_REWARDS_TITLE}
+              tooltipType="borrow"
+              extraRewards={[]}
+              extraIncentives={collateralRewards}
+            />
           </TooltipItems>
         )}
 

@@ -1,5 +1,4 @@
 import { sumBy } from 'lodash'
-import { COLLATERAL_REWARDS_CRV_TITLE } from '@/llamalend/constants'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import { type Nullish, notFalsy, recordEntries } from '@primitives/objects.utils'
@@ -20,7 +19,7 @@ type CollateralYieldAsset = 'collateral' | 'crv'
 const COLLATERAL_YIELDS = {
   rebasingApr: { paidIn: 'collateral', label: collateralSymbol => collateralSymbol },
   baseApr: { paidIn: 'collateral', label: () => t`LP base APR` },
-  crvApr: { paidIn: 'crv', label: () => COLLATERAL_REWARDS_CRV_TITLE },
+  crvApr: { paidIn: 'crv', label: () => 'CRV' },
 } satisfies Record<
   keyof CollateralYields,
   { paidIn: CollateralYieldAsset; label: (collateralSymbol: string) => string }
