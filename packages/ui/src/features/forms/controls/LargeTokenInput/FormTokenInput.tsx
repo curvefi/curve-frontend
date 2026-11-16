@@ -25,7 +25,7 @@ export const FormTokenInput = <TValues extends FieldValues>({
   name: FieldPathByValue<TValues, Decimal | undefined>
   relatedFields?: (FieldPath<TValues> | { field: FieldPath<TValues>[]; ignoreTouched: boolean })[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
-  balance?: QueryProp<Decimal>
+  balance?: QueryProp<Decimal | null>
 }) => {
   const error =
     notFalsyArray([name], relatedFields)

@@ -1,4 +1,5 @@
 import { skipWhen, test } from 'vest'
+import { STELLAR_POOL_LIMITS as limits } from '@/stellar/features/create-pool/constants'
 import type { SwapParams, SwapQuoteParams } from '@/stellar/features/swap/types'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapAmountField, type SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
@@ -13,7 +14,7 @@ type SwapInputs = Pick<SwapQuoteParams, 'fromIndex' | 'toIndex' | 'inputAmount' 
 
 const validateTokens = ({ fromIndex, toIndex, decimals }: SwapInputs) => {
   test('decimals', 'Token decimals are unavailable', () => {
-    enforce(decimals?.length).isNumber().gte(2).lte(8)
+    enforce(decimals?.length).isNumber().lte(limits.tokens.max)
     decimals?.forEach(precision => enforce(precision).isNumber())
   })
   test('fromIndex', 'Select different pool tokens', () => {

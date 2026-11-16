@@ -8,22 +8,20 @@ import type { UseFormReturn } from '@ui/features/forms'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
-import { decimalDiv } from '@ui/lib/decimal'
 import type { UserSwapParams } from '../types'
 
 export const SwapActionInfoList = ({
   form,
   params,
-  inputAmount,
+  exchangeRate,
   expectedOutput,
   fromSymbol,
   toSymbol,
 }: {
   form: UseFormReturn<SwapFormValues>
   params: UserSwapParams
-  inputAmount: QueryProp<Decimal>
+  exchangeRate: QueryProp<Decimal>
   expectedOutput: QueryProp<Decimal>
   fromSymbol: string | undefined
   toSymbol: string | undefined
@@ -31,7 +29,7 @@ export const SwapActionInfoList = ({
   const { slippage, decimals, toIndex } = form.values
   return (
     <PoolActionInfoList
-      exchangeRate={combineQueries([inputAmount, expectedOutput], (input, output) => decimalDiv(output, input))}
+      exchangeRate={exchangeRate}
       minimumReceived={mapQuery(expectedOutput, output =>
         maybe(decimals?.[toIndex], precision => calculateMinimumReceived(output, slippage, precision)),
       )}

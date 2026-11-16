@@ -1,6 +1,11 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 
+export const LOW_EXCHANGE_RATE = 0.98
+
+export const isLowExchangeRate = (exchangeRate: string | undefined) =>
+  !!exchangeRate && +exchangeRate < LOW_EXCHANGE_RATE
+
 /** Floor the output guarantee to the receiving token's precision. */
 export const calculateMinimumReceived = (quote: Decimal, slippage: Decimal, decimals: number): Decimal =>
   new BigNumber(quote)

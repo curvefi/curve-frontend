@@ -25,7 +25,7 @@ export const SwapTokenInput = ({
   form: UseFormReturn<SwapFormValues>
   tokens: QueryProp<PoolToken>[] | undefined
   side: SwapSide
-  balance: QueryProp<Decimal>
+  balance: QueryProp<Decimal | null>
   max: QueryProp<Decimal>
   disabled: boolean
 }) => {

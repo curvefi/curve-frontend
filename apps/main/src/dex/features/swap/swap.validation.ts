@@ -17,7 +17,6 @@ const validateTokens = ({ fromIndex, toIndex, decimals, isWrapped }: SwapParams)
   })
   test('decimals', 'Token decimals are unavailable', () => {
     enforce(decimals).isArray()
-    enforce(decimals?.length).gte(2)
   })
   each(decimals ?? [], precision =>
     test('decimals', 'Invalid token decimals', () => {

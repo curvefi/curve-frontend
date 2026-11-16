@@ -1,3 +1,4 @@
+import { GAS_BUFFER } from '@/dex/constants'
 import { EstimatedGas } from '@/dex/types/main.types'
 import { weiToEther } from '@evm-ui/utils'
 
@@ -5,7 +6,7 @@ export function getMaxAmountMinusGas(estimatedGas: EstimatedGas, gasCost: number
   const parsedEstimatedGas = Array.isArray(estimatedGas) ? estimatedGas[0] + estimatedGas[1] : estimatedGas
 
   if (parsedEstimatedGas) {
-    const estGasNeedInWei = parsedEstimatedGas * 1.8 * gasCost
+    const estGasNeedInWei = parsedEstimatedGas * +GAS_BUFFER * gasCost
     const estGasNeedInEther = weiToEther(estGasNeedInWei)
 
     const maxAmount = Number(tokenBalance) - estGasNeedInEther

@@ -1,4 +1,5 @@
 import { ethAddress, isAddressEqual } from 'viem'
+import { GAS_BUFFER } from '@/dex/constants'
 import { useSwapEstimateGas } from '@/dex/queries/swap/swap-estimate-gas.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -22,7 +23,7 @@ export const useSwapMaxAmount = ({
   const gas = useSwapEstimateGas({ ...params, inputAmount: balance.data }, isNative)
   return isNative
     ? combineQueries([balance, mapQuery(gas, gas => gas.estGasCost)], (balance, gasCost) =>
-        decimalRound(decimalMax('0', decimalMinus(balance, decimalMultiply(gasCost, '1.8')))!, DEFAULT_DECIMALS),
+        decimalRound(decimalMax('0', decimalMinus(balance, decimalMultiply(gasCost, GAS_BUFFER)))!, DEFAULT_DECIMALS),
       )
     : balance
 }
