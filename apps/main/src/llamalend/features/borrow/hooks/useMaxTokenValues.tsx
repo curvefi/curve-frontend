@@ -41,7 +41,7 @@ export function useMaxTokenValues({
     decimalMin(userBalance, maxTotalCollateral),
   )
 
-  // params.range: also run when a cached max for the new range equals the previous one
+  // Depends on params.range too, so it still runs when the cached max for the new range equals the old max
   useEffect(() => {
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
@@ -62,7 +62,7 @@ export function useMaxTokenValues({
     (range: number) => {
       const { debt, maxDebt } = getValues()
       updateForm({ range })
-      // when the max for the new range arrives, keep debt at the same ratio. Back on the quoted range, no new max comes.
+      // Rescale the debt when the max for the new range arrives. Going back to the range of the current max fetches nothing new.
       pendingRatioRef.current = range !== params.range && debt && maxDebt && +maxDebt ? decimalDiv(debt, maxDebt) : null
     },
     [getValues, updateForm, params.range],
