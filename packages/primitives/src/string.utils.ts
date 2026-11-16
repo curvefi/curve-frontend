@@ -34,7 +34,7 @@ export const shortenString = (
  *  > 'Approve, Borrow More, Withdraw & Repay'
  */
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
-export const joinButtonText = (...texts: (string | Falsy)[]) =>
+export const joinButtonText = (...texts: (string | number | Falsy)[]) =>
   notFalsy(...texts)
     .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
     .join('')
