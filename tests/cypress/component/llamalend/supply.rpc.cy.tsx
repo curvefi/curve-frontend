@@ -155,7 +155,7 @@ describe('Lend Market Supply', () => {
   it('unstakes from the gauge', () => {
     cy.mount(<SupplyTestWrapper tab="unstake" />)
     selectMaxSupplyInput('unstake')
-    checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
+    checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, supplyApr: market.supplyApr, hasApi })
     submitUnstakeForm()
     touchUnstakeForm()
     checkCurrentStakedAmount({ expectedAmountSupplied: '0' })

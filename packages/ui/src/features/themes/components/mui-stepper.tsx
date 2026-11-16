@@ -8,7 +8,7 @@ import { CheckIcon } from '@ui/icons/CheckIcon'
 const { Sizing, Spacing, IconSize, FontSize } = SizesAndSpaces
 
 export const defineMuiStepLabel = (
-  { Button, Text }: DesignSystem,
+  { Button, Color, Text }: DesignSystem,
   typography: TypographyVariantsOptions,
 ): Components['MuiStepLabel'] => ({
   defaultProps: {
@@ -32,11 +32,13 @@ export const defineMuiStepLabel = (
       alignItems: 'center',
       color: Button.Primary.Disabled.Label,
       backgroundColor: Button.Primary.Disabled.Fill,
-      ...Object.fromEntries(
-        Object.entries({ active: Button.Primary.Default, completed: Button.Success.Default }).map(
-          ([state, { Label, Fill }]) => [`&.Mui-${state}`, { color: Label, backgroundColor: Fill }],
-        ),
-      ),
+      '&.Mui-active': {
+        color: Button.Primary.Default.Label,
+        backgroundColor: Color.Primary[500],
+        outline: `${Button.Focus_Outline_Width} solid ${Color.Primary[500]}`,
+        outlineOffset: Button.Focus_Outline_Width,
+      },
+      '&.Mui-completed': { color: Button.Success.Default.Label, backgroundColor: Button.Success.Default.Fill },
     }),
     // Hide MUI's empty label container so steps without text keep their icons centered.
     labelContainer: ({ ownerState }) => ({ display: ownerState.children || ownerState.optional ? undefined : 'none' }),
@@ -48,7 +50,7 @@ export const defineMuiStepLabel = (
   },
 })
 
-export const defineMuiStepConnector = ({ Button, Layer }: DesignSystem): Components['MuiStepConnector'] => ({
+export const defineMuiStepConnector = ({ Button, Color, Layer }: DesignSystem): Components['MuiStepConnector'] => ({
   styleOverrides: {
     horizontal: { ...handleBreakpoints({ minWidth: Sizing.xs }) },
     vertical: {
@@ -59,9 +61,8 @@ export const defineMuiStepConnector = ({ Button, Layer }: DesignSystem): Compone
       '& .MuiStepConnector-line': { ...handleBreakpoints({ minHeight: Sizing.xs }) },
     },
     root: {
-      '&.Mui-active .MuiStepConnector-line, &.Mui-completed .MuiStepConnector-line': {
-        borderColor: Button.Success.Default.Fill,
-      },
+      '&.Mui-completed .MuiStepConnector-line': { borderColor: Button.Success.Default.Fill },
+      '&.Mui-active .MuiStepConnector-line': { borderColor: Color.Primary[500] },
     },
     line: { borderColor: Layer[3].Outline },
   },

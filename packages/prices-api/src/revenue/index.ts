@@ -55,7 +55,7 @@ export async function getDistributionsPage(
 }
 
 export const getDistributions = async (options?: Options) =>
-  paginate((page, perPage) => getDistributionsPage({ page, per_page: perPage }, options), 1, 100)
+  paginate((page, perPage) => getDistributionsPage({ page, per_page: perPage }, options), { page: 1 })
 
 export async function getCowSwapSettlements(timestamp?: number, options?: Options) {
   const host = getHost(options)
