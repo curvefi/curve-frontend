@@ -27,7 +27,7 @@ import {
 
 export const MARKETS_TABLE: MarketTable = defineMarketTable({
   testId: 'lamalend-markets',
-  defaultSort: [{ id: MarketColumnId.Tvl, desc: true }],
+  defaultSort: [{ id: MarketColumnId.LiquidityUsd, desc: true }],
   sortQueryField: 'sort',
   storageKey: 'llamalend-markets',
   deprecatedVariants: ['hasPositions', 'noPositions'], // used for the v9 -> v10 migration, this will be removed in the future
