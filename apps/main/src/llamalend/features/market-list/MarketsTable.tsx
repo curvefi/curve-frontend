@@ -66,7 +66,9 @@ export const MarketsTable = ({
 
   const hasActiveFilters = !!table.state.columnFilters.length
   // the Favorites chip is always visible, so favorites alone don't open the active-filters row
-  const hasNonFavoriteFilters = table.state.columnFilters.some(({ id }) => id !== MarketColumnId.IsFavorite)
+  const hasNonFavoriteFilters = table.state.columnFilters.some(
+    ({ id }) => (id as MarketColumnId) !== MarketColumnId.IsFavorite,
+  )
 
   return (
     <Stack>
