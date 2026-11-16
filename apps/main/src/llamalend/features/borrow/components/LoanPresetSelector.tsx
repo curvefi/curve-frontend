@@ -40,7 +40,7 @@ export const LoanPresetSelector = ({
         value={preset}
         onChange={useCallback(
           (_: MouseEvent<HTMLElement>, p: LoanPreset | null) => {
-            if (p === null) return
+            if (p == null) return
             setPreset(p)
             if (p !== LoanPreset.Custom) setRange(PRESET_RANGES[p])
           },
