@@ -25,7 +25,7 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { refuelPoolAbi } from '../abi'
-import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
+import { useRefuelTimeseries } from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces
 
@@ -58,13 +58,7 @@ export const RefuelSharesChart = ({
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const timeSeries = useRefuelTimeseries({
-    blockchainId,
-    poolAddress,
-    start,
-    end,
-    pageSize: REFUEL_TIMESERIES_PAGE_SIZE,
-  })
+  const timeSeries = useRefuelTimeseries({ blockchainId, poolAddress, start, end })
 
   const theme = useTheme()
   const palette = createPalette({ theme })

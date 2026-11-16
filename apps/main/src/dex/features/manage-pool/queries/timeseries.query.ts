@@ -1,3 +1,4 @@
+import { paginate } from '@curvefi/prices-api/paginate'
 import { getRefuelTimeseries } from '@curvefi/prices-api/refuel'
 import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import type { ChainNameQuery } from '@evm-ui/queries/query-types'
@@ -7,29 +8,25 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
-export const REFUEL_TIMESERIES_PAGE_SIZE = 1000
+const [PAGE_SIZE, LIMIT] = [100, 1000]
 
-type RefuelTimeseriesQuery = ChainNameQuery & {
-  poolAddress: Address
-  start?: number
-  end?: number
-  page?: number
-  pageSize?: number
-}
+type RefuelTimeseriesQuery = ChainNameQuery & { poolAddress: Address; start?: number; end?: number }
 
 type RefuelTimeseriesParams = FieldsOf<RefuelTimeseriesQuery>
 
 export const { useQuery: useRefuelTimeseries } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, start, end, page, pageSize }: RefuelTimeseriesParams) =>
-    ({ name: 'getRefuelTimeseries', blockchainId, poolAddress, start, end, page, pageSize }) as const,
-  queryFn: async ({
-    blockchainId,
-    poolAddress,
-    start,
-    end,
-    page = DEFAULT_PAGE_START_INDEX,
-    pageSize = REFUEL_TIMESERIES_PAGE_SIZE,
-  }: RefuelTimeseriesQuery) => getRefuelTimeseries({ blockchainId, poolAddress, start, end, page, pageSize }),
+  queryKey: ({ blockchainId, poolAddress, start, end }: RefuelTimeseriesParams) =>
+    ({ name: 'getRefuelTimeseries', blockchainId, poolAddress, start, end }) as const,
+  queryFn: async ({ blockchainId, poolAddress, start, end }: RefuelTimeseriesQuery) => {
+    const getTimeseries = async (page = DEFAULT_PAGE_START_INDEX) =>
+      await getRefuelTimeseries({ blockchainId, poolAddress, start, end, page, pageSize: PAGE_SIZE })
+    const first = await getTimeseries()
+    const data = await paginate(async nextPage => (await getTimeseries(nextPage)).data, {
+      page: 2,
+      limit: LIMIT - first.data.length,
+    })
+    return { ...first, data: [...first.data, ...data] }
+  },
   validationSuite: createValidationSuite(({ blockchainId, poolAddress }: RefuelTimeseriesParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),

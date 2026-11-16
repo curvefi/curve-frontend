@@ -30,7 +30,7 @@ export const PnlMetrics = ({ equity, pnl, borrowSymbol, collateralSymbol, borrow
       <Metric
         category={BORROW_METRIC_CATEGORY}
         label={t`Equity`}
-        labelTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
+        valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
         {...tokenMetric({ value: equity, symbol: borrowSymbol, usdRate: borrowUsdRate })}
       />
       <Metric

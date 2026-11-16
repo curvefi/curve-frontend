@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Nullish } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { HealthBar } from './HealthBar'
+import { LegacyHealthBar } from './LegacyHealthBar'
 
 // Helper component to show both versions
 const HealthBarStory = ({
@@ -14,21 +14,21 @@ const HealthBarStory = ({
 }) => (
   <Box sx={{ minWidth: 400, padding: 2 }}>
     <Stack spacing={4}>
-      <HealthBar health={health} softLiquidation={softLiquidation} />
-      <HealthBar health={health} softLiquidation={softLiquidation} small />
+      <LegacyHealthBar health={health} softLiquidation={softLiquidation} />
+      <LegacyHealthBar health={health} softLiquidation={softLiquidation} small />
     </Stack>
   </Box>
 )
 
 const meta: Meta<typeof HealthBarStory> = {
-  title: 'Llamalend/Features/HealthBar',
+  title: 'Llamalend/Features/LegacyHealthBar',
   component: HealthBarStory,
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component:
-          'HealthBar component displays the health status of a market position with visual indicators for liquidation risk levels. ' +
+          'LegacyHealthBar component displays the health status of a market position with visual indicators for liquidation risk levels. ' +
           'Available in two sizes: large (with labels) and small (compact for tables). ' +
           'Health levels: Pristine (>50), Good (15-50), Risky (0-15), Liquidation protection (soft liquidation active), ' +
           'Liquidation protection disabled (health <= 0).',

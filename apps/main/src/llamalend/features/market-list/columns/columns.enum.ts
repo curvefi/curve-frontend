@@ -1,6 +1,7 @@
 export enum MarketColumnId {
   Assets = 'assets',
   UserHealth = 'userHealth',
+  UserDistanceToRange = 'userDistanceToRange',
   UserBorrowed = 'userBorrowed',
   UserBoostMultiplier = 'userBoostMultiplier', // only for supply positions
   UserCollateral = 'userCollateral',

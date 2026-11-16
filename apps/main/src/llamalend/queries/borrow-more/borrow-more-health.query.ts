@@ -3,11 +3,15 @@ import {
   getBorrowMoreImplementationArgs,
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
+import type { FieldsOf } from '@ui/lib/validation/types'
+
+type BorrowMoreHealthQuery = BorrowMoreQuery & { isFull: boolean }
+type BorrowMoreHealthParams = FieldsOf<BorrowMoreHealthQuery>
 
 export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHealth } = queryFactory({
   queryKey: ({
@@ -21,7 +25,8 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     leverageEnabled,
     slippage,
     routeId,
-  }: BorrowMoreParams) =>
+    isFull,
+  }: BorrowMoreHealthParams) =>
     ({
       name: 'borrowMoreHealth',
       chainId,
@@ -34,6 +39,7 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
       leverageEnabled,
       slippage,
       routeId,
+      isFull,
     }) as const,
   queryFn: async ({
     marketId,
@@ -43,7 +49,8 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     leverageEnabled,
     slippage,
     routeId,
-  }: BorrowMoreQuery) => {
+    isFull,
+  }: BorrowMoreHealthQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
       userBorrowed,
@@ -54,9 +61,9 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     })
     switch (type) {
       case 'zapV2':
-        return (await impl.borrowMoreExpectedMetrics(...args)).health as Decimal
+        return (await impl.borrowMoreExpectedMetrics({ ...args[0], healthIsFull: isFull })).health as Decimal
       case 'unleveraged':
-        return (await impl.borrowMoreHealth(...args)) as Decimal
+        return (await impl.borrowMoreHealth(...args, isFull)) as Decimal
     }
   },
   category: 'llamalend.borrowMore',
