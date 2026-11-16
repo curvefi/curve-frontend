@@ -3,9 +3,8 @@ import IconButton from '@mui/material/IconButton'
 import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { Tooltip } from '@ui/components/Tooltip'
-import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '@ui/features/tables/data-table.utils'
+import { CLICKABLE_IN_ROW_CLASS } from '@ui/features/tables/data-table.utils'
 import { FavoriteHeartIcon } from '@ui/icons/HeartIcon'
-import { classNames } from '@ui/lib/dom'
 import { t } from '@ui/lib/i18n'
 
 export function FavoriteMarketButton({ address, desktopOnly }: { address: Address; desktopOnly?: boolean }) {
@@ -18,8 +17,8 @@ export function FavoriteMarketButton({ address, desktopOnly }: { address: Addres
         data-testid={notFalsy('favorite-btn', isFavorite && '-active').join('')}
         {...{
           ...(desktopOnly && {
-            className: classNames(!isFavorite && DESKTOP_ONLY_HOVER_CLASS, CLICKABLE_IN_ROW_CLASS),
-            sx: { display: { mobile: 'none', tablet: 'flex' } },
+            className: CLICKABLE_IN_ROW_CLASS,
+            sx: { display: { mobile: 'none', tablet: 'flex' }, ...(!isFavorite && { color: 'text.tertiary' }) },
           }),
         }}
       >
