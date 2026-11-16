@@ -1,4 +1,4 @@
-import { type CollateralYields, sumCollateralYields } from '@/llamalend/collateral-yields'
+import { type CollateralYields, getCollateralYieldLines, sumCollateralYields } from '@/llamalend/collateral-yields'
 import {
   BORROW_APR_DESCRIPTION,
   BORROW_RATE_TITLE,
@@ -10,7 +10,7 @@ import {
 } from '@/llamalend/constants'
 import { hasEstimatedNetBorrowApr } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
-import { type Nullish, maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { t } from '@ui/lib/i18n'
@@ -65,10 +65,12 @@ export const MarketBorrowAprTooltipContent = ({
         {collateralYieldApr != null && (
           <TooltipItems secondary>
             <TooltipItem title={COLLATERAL_YIELD_TITLE}>{formatCappedRatePercent(-collateralYieldApr)}</TooltipItem>
-            {!!collateralSymbol && (
-              <TooltipItem variant="subItem" title={collateralSymbol}>
-                {formatCappedRatePercent(-collateralYieldApr)}
-              </TooltipItem>
+            {maybes([collateralYields, collateralSymbol], (yields, symbol) =>
+              getCollateralYieldLines(yields, 'collateral', symbol).map(({ label, apr }) => (
+                <TooltipItem key={label} variant="subItem" title={label}>
+                  {formatCappedRatePercent(-apr)}
+                </TooltipItem>
+              )),
             )}
           </TooltipItems>
         )}
