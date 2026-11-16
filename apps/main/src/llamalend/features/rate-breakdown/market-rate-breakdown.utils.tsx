@@ -16,7 +16,9 @@ import { getPointsCampaignRows, type PointsCampaignRow } from '@ui/features/poin
 import { constQ, type QueryProp } from '@ui/features/queries/util'
 import { aprToApy } from '@ui/lib/rates.utils'
 
-type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; yieldBearing?: boolean }
+export type BreakdownBadge = 'yieldBearing' | 'lpToken'
+
+type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; badge?: BreakdownBadge }
 
 const CRV_SOURCE: BreakdownSource = {
   tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
@@ -60,7 +62,7 @@ export const buildBorrowRateBreakdown = ({
   const collateralRow = notFalsy(
     maybes(
       [sumCollateralYields(rate.collateralYields, 'collateral'), collateralToken],
-      (collateralYieldApr, collateralToken) => ({
+      (collateralYieldApr, collateralToken): RateBreakdownRow => ({
         source: {
           tokenInfo: {
             address: getAddressOrPair(blockchainId, collateralToken.address),
@@ -70,7 +72,10 @@ export const buildBorrowRateBreakdown = ({
           },
           address: collateralToken.address,
           explorerUrl: scanTokenPath(chainId, collateralToken.address),
-          yieldBearing: true,
+          badge:
+            (rate.collateralYields.rebasingApr != null && 'yieldBearing') ||
+            (rate.collateralYields.baseApr != null && 'lpToken') ||
+            undefined,
         },
         price: collateralPrice,
         rate: -collateralYieldApr,
@@ -138,7 +143,7 @@ export const buildSupplyRateBreakdown = ({
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken) => ({
+    maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken): RateBreakdownRow => ({
       source: {
         tokenInfo: {
           address: getAddressOrPair(blockchainId, getAddress(borrowToken.address)),
@@ -148,7 +153,7 @@ export const buildSupplyRateBreakdown = ({
         },
         address: getAddress(borrowToken.address),
         explorerUrl: scanTokenPath(chainId, borrowToken.address),
-        yieldBearing: true,
+        badge: 'yieldBearing',
       },
       price: prices[borrowToken.address],
       rate: rebasingYield,
