@@ -1,6 +1,9 @@
 import { networks } from '@/lend/networks'
 import { ClosePositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ClosePositionForm'
-import { ImproveHealthForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
+import {
+  ImproveHealthForm,
+  ImproveHealthTabLabel,
+} from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
 import { ResetPositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ResetPositionForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
@@ -60,7 +63,7 @@ const LiquidationMenu = [
       } satisfies LendManageLoanSubTab,
       {
         value: 'improve-health',
-        label: t`Improve health`,
+        label: <ImproveHealthTabLabel />,
         component: props => <ImproveHealthForm networks={networks} {...props} />,
       } satisfies LendManageLoanSubTab,
     ],

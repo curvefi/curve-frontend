@@ -1,5 +1,6 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getProposals, type Proposal, type ProposalType } from '@curvefi/prices-api/proposal'
+import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
@@ -45,14 +46,12 @@ const parseProposalData = (proposal: Proposal) => {
 }
 
 const _fetchProposals = async (): Promise<ProposalsMapper> => {
-  const pagination = 100
   const results: Proposal[] = await paginate(
     async (page, offset) => {
       const result = await getProposals(page, offset, '', 'all', 'all')
       return result.proposals
     },
-    1,
-    pagination,
+    { page: DEFAULT_PAGE_START_INDEX },
   )
 
   return results.reduce((mapper, proposal) => {

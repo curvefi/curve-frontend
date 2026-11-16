@@ -237,19 +237,14 @@ const NUMBER_FORMAT_CATEGORIES = {
   health: {
     abbreviate: false,
     fallback: UNAVAILABLE_NOTATION,
-    minimumSignificantDigits: 3,
-    maximumSignificantDigits: 3,
-    trailingZeroDisplay: 'auto',
-  },
-  'health.precise': {
-    abbreviate: false,
-    fallback: UNAVAILABLE_NOTATION,
     minimumFractionDigits: 2,
     maximumFractionDigits: 4,
     roundingPriority: 'lessPrecision',
     trailingZeroDisplay: 'auto',
+    // a health just above 1 must not read as 1.00, where soft liquidation starts
+    roundingMode: 'ceil',
   },
-  'health.compact': { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
+  legacyHealth: { abbreviate: true, fallback: UNAVAILABLE_NOTATION },
   multiplier: {
     abbreviate: false,
     fallback: UNAVAILABLE_NOTATION,

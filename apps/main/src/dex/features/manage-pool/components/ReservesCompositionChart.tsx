@@ -16,7 +16,7 @@ import { ChartSelect } from '@ui/features/charts/ChartSelect'
 import type { LegendItem } from '@ui/features/charts/LegendSet'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { t } from '@ui/lib/i18n'
-import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
+import { useRefuelTimeseries } from '../queries/timeseries.query'
 
 const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]
 
@@ -57,13 +57,7 @@ export const ReservesCompositionChart = ({
   const [fullscreen, , closeFullscreen, toggleFullscreen] = useSwitch(false)
   const { start } = getTimeRange({ daysRange: DAYS[period], end })
 
-  const { data, isFetching: loading } = useRefuelTimeseries({
-    blockchainId,
-    poolAddress,
-    start,
-    end,
-    pageSize: REFUEL_TIMESERIES_PAGE_SIZE,
-  })
+  const { data, isFetching: loading } = useRefuelTimeseries({ blockchainId, poolAddress, start, end })
 
   const theme = useTheme()
   const palette = createPalette({ theme })
