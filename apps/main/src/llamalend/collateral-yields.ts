@@ -40,10 +40,8 @@ export const getSnapshotCollateralYields = (snapshot: LendingSnapshot | CrvUsdSn
   })
 }
 
-/** llamalend.js reads the CRV APR on chain, the other yields have no on-chain source. */
-export const withOnChainCrvApr = (yields: CollateralYields, crvApr: number) => toCollateralYields({ ...yields, crvApr })
-
-const getShownYields = (yields: CollateralYields, paidIn?: CollateralYieldAsset) =>
+/** The yields the market has, all of them or only those paid in one asset. */
+const getYieldsPaidIn = (yields: CollateralYields, paidIn?: CollateralYieldAsset) =>
   notFalsy(
     ...recordEntries(COLLATERAL_YIELDS).map(([key, { label, ...config }]) => {
       const apr = yields[key]
@@ -53,16 +51,16 @@ const getShownYields = (yields: CollateralYields, paidIn?: CollateralYieldAsset)
 
 /** Sum of the yields, all of them or only those paid in one asset. Null when the market has none of them. */
 export const sumCollateralYields = (yields: CollateralYields, paidIn?: CollateralYieldAsset) => {
-  const shownYields = getShownYields(yields, paidIn)
-  return shownYields.length > 0 ? sumBy(shownYields, 'apr') : null
+  const yieldsPaidIn = getYieldsPaidIn(yields, paidIn)
+  return yieldsPaidIn.length > 0 ? sumBy(yieldsPaidIn, 'apr') : null
 }
 
-/** One line per yield the market has that is paid in the asset, for the tooltips that break a sum down. */
-export const getCollateralYieldLines = (
+/** The label and APR of each yield the market has that is paid in the asset, for the tooltips that break a sum down. */
+export const getCollateralYieldBreakdown = (
   yields: CollateralYields,
   paidIn: CollateralYieldAsset,
   collateralSymbol: string,
-) => getShownYields(yields, paidIn).map(({ label, apr }) => ({ label: label(collateralSymbol), apr }))
+) => getYieldsPaidIn(yields, paidIn).map(({ label, apr }) => ({ label: label(collateralSymbol), apr }))
 
 /** Borrow APR minus what the collateral earns and the borrow campaigns, as a 1:1 estimate. Percent. */
 export const getEstimatedNetBorrowApr = (

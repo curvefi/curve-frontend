@@ -326,6 +326,7 @@ const convertMintMarket = (
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
   const collateralYields = toCollateralYields({
     rebasingApr: collateralToken.rebasingYieldApr,
+    // the crvUSD markets API has no LP base or CRV APR: mint collateral has no borrow gauge
     baseApr: null,
     crvApr: null,
   })

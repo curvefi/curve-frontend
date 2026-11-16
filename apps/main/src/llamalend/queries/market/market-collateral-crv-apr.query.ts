@@ -5,7 +5,7 @@ import {
 import type { MarketParams, MarketQuery } from '@evm-ui/queries/query-types'
 import { queryFactory } from '@ui/features/queries/factory'
 
-/** CRV APR on the collateral, in percent of the collateral value. Disabled for markets without collateral rewards. */
+/** CRV APR on the collateral, in percent of the collateral value. */
 export const { useQuery: useMarketCollateralCrvApr } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => ({ name: 'collateralRewards.crvApr', chainId, marketId }) as const,
   queryFn: async ({ marketId }: MarketQuery) =>

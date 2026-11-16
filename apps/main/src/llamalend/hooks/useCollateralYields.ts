@@ -1,4 +1,4 @@
-import { type CollateralYields, getSnapshotCollateralYields, withOnChainCrvApr } from '@/llamalend/collateral-yields'
+import { type CollateralYields, getSnapshotCollateralYields, toCollateralYields } from '@/llamalend/collateral-yields'
 import { useMarketCollateralCrvApr } from '@/llamalend/queries/market/market-collateral-crv-apr.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import type { MarketParams } from '@evm-ui/queries/query-types'
@@ -9,11 +9,8 @@ import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 
-/**
- * Collateral yields of a market page: the live snapshot, with the CRV APR read on chain once llamalend.js has it.
- * The snapshot CRV APR shows while the on-chain read loads, when it fails and when it is disabled (v1 and mint markets).
- * Every caller reads the live snapshot, because the latest daily snapshot of a time range holds an older LP base APR.
- */
+// TODO: get the LP base APR from llamalend.js
+/** Collateral yields from the live snapshot, with the CRV APR read on chain when the market has collateral rewards */
 export const useCollateralYields = (
   {
     marketType,
@@ -33,7 +30,9 @@ export const useCollateralYields = (
     snapshots => getSnapshotCollateralYields(snapshots.at(-1)),
   )
   return fallbackQ(
-    combineQueries([snapshotYields, useMarketCollateralCrvApr(params, enabled)], withOnChainCrvApr),
+    combineQueries([snapshotYields, useMarketCollateralCrvApr(params, enabled)], (yields, crvApr) =>
+      toCollateralYields({ ...yields, crvApr }),
+    ),
     snapshotYields,
   )
 }

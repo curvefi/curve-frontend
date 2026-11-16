@@ -1,8 +1,7 @@
-import { type CollateralYields, getCollateralYieldLines, sumCollateralYields } from '@/llamalend/collateral-yields'
+import { type CollateralYields, getCollateralYieldBreakdown, sumCollateralYields } from '@/llamalend/collateral-yields'
 import {
   BORROW_APR_DESCRIPTION,
   BORROW_RATE_TITLE,
-  COLLATERAL_REWARDS_TITLE,
   COLLATERAL_YIELD_TITLE,
   NET_BORROW_APR_DESCRIPTION,
   NET_BORROW_RATE_TITLE,
@@ -45,7 +44,7 @@ export const MarketBorrowAprTooltipContent = ({
   const collateralYieldApr = maybe(collateralYields, yields => sumCollateralYields(yields, 'collateral'))
   const collateralRewards: ExtraIncentive[] =
     maybes([collateralYields, collateralSymbol], (yields, symbol) =>
-      getCollateralYieldLines(yields, 'crv', symbol).map(({ label, apr }) => ({
+      getCollateralYieldBreakdown(yields, 'crv', symbol).map(({ label, apr }) => ({
         title: label,
         percentage: -apr,
         address: MAINNET_CRV_ADDRESS,
@@ -76,7 +75,7 @@ export const MarketBorrowAprTooltipContent = ({
           <TooltipItems secondary>
             <TooltipItem title={COLLATERAL_YIELD_TITLE}>{formatCappedRatePercent(-collateralYieldApr)}</TooltipItem>
             {maybes([collateralYields, collateralSymbol], (yields, symbol) =>
-              getCollateralYieldLines(yields, 'collateral', symbol).map(({ label, apr }) => (
+              getCollateralYieldBreakdown(yields, 'collateral', symbol).map(({ label, apr }) => (
                 <TooltipItem key={label} variant="subItem" title={label}>
                   {formatCappedRatePercent(-apr)}
                 </TooltipItem>
@@ -88,7 +87,7 @@ export const MarketBorrowAprTooltipContent = ({
         {collateralRewards.length > 0 && (
           <TooltipItems secondary>
             <RewardsTooltipItems
-              title={COLLATERAL_REWARDS_TITLE}
+              title={t`Collateral rewards`}
               tooltipType="borrow"
               extraRewards={[]}
               extraIncentives={collateralRewards}
