@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { resetCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
@@ -11,7 +10,7 @@ import type { UseFormReturn } from '@ui/features/forms'
 import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
-import { decimal, decimalMin } from '@ui/lib/decimal'
+import { decimalDiv, decimalMin, decimalMultiply } from '@ui/lib/decimal'
 import { useCreateLoanMaxReceiveQueries } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
 
@@ -46,8 +45,7 @@ export function useMaxTokenValues({
   useEffect(() => {
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
-      const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      updateForm({ debt, maxDebt }, { automated: true })
+      updateForm({ debt: decimalMultiply(maxDebt, pendingDebtRatio), maxDebt }, { automated: true })
       pendingRatioRef.current = null
     } else {
       updateForm({ maxDebt }, { automated: true })
@@ -65,8 +63,7 @@ export function useMaxTokenValues({
       const { debt, maxDebt } = getValues()
       updateForm({ range })
       // when the max for the new range arrives, keep debt at the same ratio. Back on the quoted range, no new max comes.
-      pendingRatioRef.current =
-        range === params.range ? null : decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
+      pendingRatioRef.current = range !== params.range && debt && maxDebt && +maxDebt ? decimalDiv(debt, maxDebt) : null
     },
     [getValues, updateForm, params.range],
   )
