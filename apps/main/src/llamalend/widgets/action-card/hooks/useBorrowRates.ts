@@ -45,7 +45,7 @@ export function useBorrowRates<ChainId extends IChainId>(
     blockchainId: chainId && BlockchainIds[chainId],
     enabled,
   })
-  const collateralYields = useCollateralYields({ chainId, marketId, snapshots }, enabled)
+  const collateralYields = useCollateralYields({ chainId, marketId, marketType, controllerAddress }, enabled)
   // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netBorrowApr] = addNetApr(
     useMarketFutureRates({ chainId, marketId, debtDelta }, enabled),

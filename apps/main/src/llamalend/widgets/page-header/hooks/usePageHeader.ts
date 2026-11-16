@@ -103,6 +103,7 @@ export type BorrowRate = {
 
 const useBorrowRate = ({
   chainId,
+  controllerAddress,
   apiMarket,
   marketRates,
   marketType,
@@ -111,6 +112,7 @@ const useBorrowRate = ({
   campaigns,
 }: {
   chainId: number
+  controllerAddress: Address | undefined
   apiMarket: QueryProp<LlamaMarket>
   marketRates: QueryProp<MarketRates>
   marketType: MarketType
@@ -124,7 +126,7 @@ const useBorrowRate = ({
     [
       marketRates,
       snapshot,
-      useCollateralYields({ chainId, marketId: marketQuery.data?.id, snapshots: snapshot }),
+      useCollateralYields({ chainId, marketId: marketQuery.data?.id, marketType, controllerAddress }),
       marketQuery,
     ],
     ({ borrowApr }, snapshots, collateralYields): BorrowRate => ({
@@ -295,7 +297,16 @@ export const usePageHeaderRates = () => {
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 
   return {
-    borrowRate: useBorrowRate({ chainId, marketRates, marketQuery, campaigns, marketType, apiMarket, snapshot }),
+    borrowRate: useBorrowRate({
+      chainId,
+      controllerAddress,
+      marketRates,
+      marketQuery,
+      campaigns,
+      marketType,
+      apiMarket,
+      snapshot,
+    }),
     supplyRate: useSupplyRate({
       marketRates,
       marketQuery,

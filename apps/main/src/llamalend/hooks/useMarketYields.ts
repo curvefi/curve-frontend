@@ -14,7 +14,7 @@ export function useMarketYields(enabled: boolean): QueryProp<MarketYields> {
   const { data: campaigns, isLoading, error } = useMarketCampaigns({ blockchainId })
   return combineQueries(
     [
-      useCollateralYields({ chainId, marketId: market?.id, snapshots }, enabled),
+      useCollateralYields({ chainId, marketId: market?.id, marketType, controllerAddress }, enabled),
       snapshots,
       // useMarketCampaigns returns {} while loading; on an error the APR still shows, without the rewards
       { data: isLoading ? undefined : campaigns, isLoading, error },
