@@ -45,7 +45,7 @@ export const DistanceToRangeTooltipContent = ({
           {maybe(bands, getBandCount) ?? UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Bands`} variant="independent">
-          {maybe(bands, ([n1, n2]) => t`${n1} to ${n2}`) ?? UNAVAILABLE_NOTATION}
+          {bands?.join(t` to `) ?? UNAVAILABLE_NOTATION}
         </TooltipItem>
       </TooltipItems>
       <TooltipFooter>

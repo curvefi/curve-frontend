@@ -27,7 +27,7 @@ type HealthMetricProps = { position: QueryProp<PositionHealth>; thresholds: Posi
 /** Health with its status badge. It spans both rows of the borrow position grid from tablet up. */
 export const HealthMetric = ({ position, thresholds }: HealthMetricProps) => {
   const theme = useTheme()
-  const { data } = position
+  const { data, isLoading } = position
   return (
     <Stack sx={{ gridRow: { tablet: 'span 2' }, alignItems: 'start', gap: Spacing.xs }}>
       <Metric
@@ -46,12 +46,7 @@ export const HealthMetric = ({ position, thresholds }: HealthMetricProps) => {
           formatter: value => formatNumber(value, 'health'),
         }}
       />
-      <WithSkeleton
-        loading={position.isLoading}
-        variant="rounded"
-        width="5rem"
-        height={SizesAndSpaces.Badge.Size.extraSmall}
-      >
+      <WithSkeleton loading={isLoading} variant="rounded" width="5rem" height={SizesAndSpaces.Badge.Size.extraSmall}>
         {data && (
           <Badge data-testid="health-details-status-badge" size="extraSmall" {...POSITION_STATUS_BADGE[data.status]} />
         )}
