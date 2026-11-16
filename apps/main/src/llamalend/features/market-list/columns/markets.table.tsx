@@ -3,6 +3,7 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import { MarketRateType } from '@evm-ui/types/market'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
 import { t } from '@ui/lib/i18n'
+import { CollateralYieldCell } from '../cells/CollateralYieldCell'
 import { CompactUsdCell } from '../cells/CompactUsdCell'
 import { LineGraphCell } from '../cells/LineGraphCell'
 import { MaxLeverageCell } from '../cells/MaxLeverageCell'
@@ -53,7 +54,7 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
         {
           id: MarketColumnId.CollateralYield,
           header: MARKET_TITLES[MarketColumnId.CollateralYield],
-          cell: PercentCell,
+          cell: CollateralYieldCell,
           meta: { type: 'numeric', unit: 'percentage', defaultHidden: true },
           sortUndefined: 'last',
         },
