@@ -1,11 +1,8 @@
-import {
-  type CollateralYields,
-  getEstimatedNetBorrowApr,
-  getSnapshotCollateralYields,
-} from '@/llamalend/collateral-yields'
+import { type CollateralYields, getEstimatedNetBorrowApr } from '@/llamalend/collateral-yields'
 import { useMarketCampaignsByAddress } from '@/llamalend/features/market-advanced-information/hooks/useMarketCampaignsByAddress'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
+import { useCollateralYields } from '@/llamalend/hooks/useCollateralYields'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -105,6 +102,7 @@ export type BorrowRate = {
 }
 
 const useBorrowRate = ({
+  chainId,
   apiMarket,
   marketRates,
   marketType,
@@ -112,6 +110,7 @@ const useBorrowRate = ({
   marketQuery,
   campaigns,
 }: {
+  chainId: number
   apiMarket: QueryProp<LlamaMarket>
   marketRates: QueryProp<MarketRates>
   marketType: MarketType
@@ -122,21 +121,23 @@ const useBorrowRate = ({
   const borrowCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Borrow)
 
   const onChainBorrowRate = combineQueries(
-    [marketRates, snapshot, marketQuery],
-    ({ borrowApr }, snapshots): BorrowRate => {
-      const collateralYields = getSnapshotCollateralYields(snapshots.at(-1))
-      return {
-        rate: toNumberOrNull(borrowApr),
-        ...getAverageBorrowRates(snapshots, RATE_WINDOW),
-        averageCategory: RATE_CATEGORY,
-        collateralYields,
-        totalBorrowRate:
-          maybe(borrowApr, borrowApr =>
-            getEstimatedNetBorrowApr(+borrowApr, collateralYields, sumCampaignsApr(borrowCampaigns)),
-          ) ?? null,
-        extraRewards: borrowCampaigns,
-      }
-    },
+    [
+      marketRates,
+      snapshot,
+      useCollateralYields({ chainId, marketId: marketQuery.data?.id, snapshots: snapshot }),
+      marketQuery,
+    ],
+    ({ borrowApr }, snapshots, collateralYields): BorrowRate => ({
+      rate: toNumberOrNull(borrowApr),
+      ...getAverageBorrowRates(snapshots, RATE_WINDOW),
+      averageCategory: RATE_CATEGORY,
+      collateralYields,
+      totalBorrowRate:
+        maybe(borrowApr, borrowApr =>
+          getEstimatedNetBorrowApr(+borrowApr, collateralYields, sumCampaignsApr(borrowCampaigns)),
+        ) ?? null,
+      extraRewards: borrowCampaigns,
+    }),
   )
 
   const useApiMarket = !!apiMarket.data && !marketQuery.data
@@ -294,7 +295,7 @@ export const usePageHeaderRates = () => {
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 
   return {
-    borrowRate: useBorrowRate({ marketRates, marketQuery, campaigns, marketType, apiMarket, snapshot }),
+    borrowRate: useBorrowRate({ chainId, marketRates, marketQuery, campaigns, marketType, apiMarket, snapshot }),
     supplyRate: useSupplyRate({
       marketRates,
       marketQuery,

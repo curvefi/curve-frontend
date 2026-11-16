@@ -1,8 +1,5 @@
-import {
-  type CollateralYields,
-  getEstimatedNetBorrowApr,
-  getSnapshotCollateralYields,
-} from '@/llamalend/collateral-yields'
+import { type CollateralYields, getEstimatedNetBorrowApr } from '@/llamalend/collateral-yields'
+import { useCollateralYields } from '@/llamalend/hooks/useCollateralYields'
 import { useMarketFutureRates } from '@/llamalend/queries/market/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
@@ -48,7 +45,7 @@ export function useBorrowRates<ChainId extends IChainId>(
     blockchainId: chainId && BlockchainIds[chainId],
     enabled,
   })
-  const collateralYields = mapQuery(snapshots, snapshots => getSnapshotCollateralYields(snapshots.at(-1)))
+  const collateralYields = useCollateralYields({ chainId, marketId, snapshots }, enabled)
   // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netBorrowApr] = addNetApr(
     useMarketFutureRates({ chainId, marketId, debtDelta }, enabled),
