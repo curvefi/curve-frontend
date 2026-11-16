@@ -48,13 +48,16 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
         },
         sortUndefined: 'last',
       }),
-      columnHelper.accessor(({ collateralYields }) => sumCollateralYields(collateralYields) ?? undefined, {
-        id: MarketColumnId.CollateralYield,
-        header: MARKET_TITLES[MarketColumnId.CollateralYield],
-        cell: PercentCell,
-        meta: { type: 'numeric', unit: 'percentage', defaultHidden: true },
-        sortUndefined: 'last',
-      }),
+      columnHelper.accessor(
+        ({ collateralYields }) => sumCollateralYields(collateralYields, 'collateral') ?? undefined,
+        {
+          id: MarketColumnId.CollateralYield,
+          header: MARKET_TITLES[MarketColumnId.CollateralYield],
+          cell: PercentCell,
+          meta: { type: 'numeric', unit: 'percentage', defaultHidden: true },
+          sortUndefined: 'last',
+        },
+      ),
     ]),
     ...inGroup(t`Lend`, [
       supplyRateColumn,

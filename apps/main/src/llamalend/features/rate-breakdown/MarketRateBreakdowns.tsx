@@ -31,14 +31,18 @@ const MarketBorrowHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesT
     tokens: { collateralToken },
   } = useMarketContext()
   const { borrowRate } = usePageHeaderRates()
+  const collateralYields = borrowRate.data?.collateralYields
   const collateralPrice = q(
     useTokenUsdRate(
       { chainId, tokenAddress: collateralToken?.address },
-      maybe(borrowRate.data?.collateralYields, sumCollateralYields) != null,
+      maybe(collateralYields, yields => sumCollateralYields(yields, 'collateral')) != null,
     ),
   )
+  const crvPrice = q(
+    useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS }, collateralYields?.crvApr != null),
+  )
   const borrowQuery = mapQuery(borrowRate, rate =>
-    buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, collateralPrice }),
+    buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, collateralPrice, crvPrice }),
   )
 
   return (

@@ -1,7 +1,7 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress, getAddress } from 'viem'
-import { type CollateralYields, getEstimatedNetBorrowApr } from '@/llamalend/collateral-yields'
+import { type CollateralYields, getEstimatedNetBorrowApr, toCollateralYields } from '@/llamalend/collateral-yields'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
@@ -163,6 +163,8 @@ const convertLendingVault = (
     policy,
     oracle,
     adminFee,
+    collateralAprCrv,
+    collateralAprBase,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
@@ -190,7 +192,11 @@ const convertLendingVault = (
     campaignsApy: supplyCampaignsApy,
   })
   const solvencyPercent = calculateMarketSolvency({ totalAssetsUsd, badDebtUsd })
-  const collateralYields = { rebasingApr: collateralToken.rebasingYieldApr }
+  const collateralYields = toCollateralYields({
+    rebasingApr: collateralToken.rebasingYieldApr,
+    baseApr: collateralAprBase,
+    crvApr: collateralAprCrv,
+  })
 
   return {
     blockchainId,
@@ -318,7 +324,11 @@ const convertMintMarket = (
   })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
-  const collateralYields = { rebasingApr: collateralToken.rebasingYieldApr }
+  const collateralYields = toCollateralYields({
+    rebasingApr: collateralToken.rebasingYieldApr,
+    baseApr: null,
+    crvApr: null,
+  })
 
   return {
     blockchainId: chain,

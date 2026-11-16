@@ -2,6 +2,8 @@ import { type CollateralYields, sumCollateralYields } from '@/llamalend/collater
 import {
   BORROW_APR_DESCRIPTION,
   BORROW_RATE_TITLE,
+  COLLATERAL_REWARDS_CRV_DESCRIPTION,
+  COLLATERAL_REWARDS_CRV_TITLE,
   COLLATERAL_YIELD_TITLE,
   NET_BORROW_APR_DESCRIPTION,
   NET_BORROW_RATE_TITLE,
@@ -39,7 +41,7 @@ export const MarketBorrowAprTooltipContent = ({
   isLoading,
 }: MarketBorrowAprTooltipContentProps) => {
   const hasNetRate = hasEstimatedNetBorrowApr({ extraRewards, collateralYields })
-  const collateralYieldApr = maybe(collateralYields, sumCollateralYields)
+  const collateralYieldApr = maybe(collateralYields, yields => sumCollateralYields(yields, 'collateral'))
   return (
     <TooltipWrapper>
       <TooltipDescription text={BORROW_APR_DESCRIPTION} />
@@ -68,6 +70,15 @@ export const MarketBorrowAprTooltipContent = ({
                 {formatCappedRatePercent(-collateralYieldApr)}
               </TooltipItem>
             )}
+          </TooltipItems>
+        )}
+
+        {collateralYields?.crvApr != null && (
+          <TooltipItems secondary>
+            <TooltipItem title={COLLATERAL_REWARDS_CRV_TITLE}>
+              {formatCappedRatePercent(-collateralYields.crvApr)}
+            </TooltipItem>
+            <TooltipItem variant="subItem" title={COLLATERAL_REWARDS_CRV_DESCRIPTION} />
           </TooltipItems>
         )}
 

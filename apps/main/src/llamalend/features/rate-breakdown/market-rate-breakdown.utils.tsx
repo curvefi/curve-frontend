@@ -9,7 +9,7 @@ import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
-import { type Nullish, maybes, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@ui/features/points-campaigns/points-campaigns.utils'
@@ -17,6 +17,12 @@ import { constQ, type QueryProp } from '@ui/features/queries/util'
 import { aprToApy } from '@ui/lib/rates.utils'
 
 type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; yieldBearing?: boolean }
+
+const CRV_SOURCE: BreakdownSource = {
+  tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
+  address: MAINNET_CRV_ADDRESS,
+  explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
+}
 
 export type RateBreakdownRow = {
   source: BreakdownSource
@@ -39,32 +45,37 @@ export const buildBorrowRateBreakdown = ({
   blockchainId,
   collateralToken,
   collateralPrice,
+  crvPrice,
 }: {
   rate: BorrowRate
   chainId: number
   blockchainId: BlockchainId
   collateralToken: MarketToken | undefined
   collateralPrice: QueryProp<number>
+  crvPrice: QueryProp<number>
 }): RateBreakdownData => {
   const incentives = notFalsy(
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
-  const rebasingRow = notFalsy(
-    maybes([sumCollateralYields(rate.collateralYields), collateralToken], (collateralYieldApr, collateralToken) => ({
-      source: {
-        tokenInfo: {
-          address: getAddressOrPair(blockchainId, collateralToken.address),
-          blockchainId,
-          iconPosition: 'left' as const,
-          primary: collateralToken.symbol,
+  const collateralRow = notFalsy(
+    maybes(
+      [sumCollateralYields(rate.collateralYields, 'collateral'), collateralToken],
+      (collateralYieldApr, collateralToken) => ({
+        source: {
+          tokenInfo: {
+            address: getAddressOrPair(blockchainId, collateralToken.address),
+            blockchainId,
+            iconPosition: 'left' as const,
+            primary: collateralToken.symbol,
+          },
+          address: collateralToken.address,
+          explorerUrl: scanTokenPath(chainId, collateralToken.address),
+          yieldBearing: true,
         },
-        address: collateralToken.address,
-        explorerUrl: scanTokenPath(chainId, collateralToken.address),
-        yieldBearing: true,
-      },
-      price: collateralPrice,
-      rate: -collateralYieldApr,
-    })),
+        price: collateralPrice,
+        rate: -collateralYieldApr,
+      }),
+    ),
   )
 
   return {
@@ -82,7 +93,10 @@ export const buildBorrowRateBreakdown = ({
         price: constQ(reward.price),
         rate: -reward.value,
       })),
-      ...rebasingRow,
+      ...notFalsy(
+        maybe(rate.collateralYields.crvApr, crvApr => ({ source: CRV_SOURCE, price: crvPrice, rate: -crvApr })),
+      ),
+      ...collateralRow,
       {
         source: { tokenInfo: { icon: null, iconPosition: 'left', primary: BORROW_RATE_TITLE } },
         price: constQ(undefined), // Base APR/APY rows have no token price.
@@ -113,11 +127,7 @@ export const buildSupplyRateBreakdown = ({
   const crvRates = [rate.supplyApyCrvMinBoost, rate.supplyApyCrvMaxBoost]
   const crvRow: RateBreakdownRow[] = notFalsy(
     crvRates.some(Boolean) && {
-      source: {
-        tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
-        address: MAINNET_CRV_ADDRESS,
-        explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
-      },
+      source: CRV_SOURCE,
       price: crvPrice,
       rate: rate.supplyApyCrvMinBoost,
       maxBoostRate: rate.supplyApyCrvMaxBoost,
