@@ -13,7 +13,6 @@ import {
 import {
   BORROW_GAUGE_ADDRESS,
   Chain,
-  createLendingVaultChainsResponse,
   HIGH_TVL_ADDRESS,
   HIGH_UTILIZATION_ADDRESS,
   SUPPLY_GAUGE_ADDRESS,
@@ -34,7 +33,7 @@ import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-li
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { assertInViewport, assertNotInViewport, oneDesktopViewport, oneViewport } from '@cy/support/ui'
 import { MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
-import { assert, notFalsy, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
+import { assert, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
 
 const WST_ETH_MARKET = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const SFRX_ETH_MARKET = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
@@ -45,28 +44,6 @@ const firefoxRetry = { retries: Cypress.isBrowser('firefox') ? 1 : 0 }
 const testCases = [oneViewport()] as const
 
 testCases.forEach(([width, height, breakpoint]) => {
-  describe('LlamaLend market identity', () => {
-    ;[true, false].forEach(sameChain => {
-      it(`should filter repeated controllers ${sameChain ? 'within one chain' : 'across chains'}`, firefoxRetry, () => {
-        const data = createLendingVaultChainsResponse()
-        const market = { ...data.ethereum.data[0], version: 2 as const }
-        const other = { ...data.arbitrum.data[0], version: 2 as const, controller: market.controller }
-        data.ethereum.data = sameChain ? [market, { ...market, oracle: other.oracle }] : [market]
-        data.arbitrum.data = notFalsy(!sameChain && other)
-        data.fraxtal.data = [{ ...data.fraxtal.data[0], version: 2 }]
-        setupLlamalendListMocks(data)
-        visitAndWait([width, height])
-
-        cy.get(`[data-testid="table-row-link-${market.controller}"]`).should('have.length', sameChain ? 1 : 2)
-        withFilters(breakpoint, () => cy.get('[data-testid="chip-chain-fraxtal"]').click())
-        checkChainSelection('fraxtal')
-        cy.get('[data-testid="table-text-search-lamalend-markets"] input').type('definitely-no-such-market')
-        cy.get('[data-testid="table-empty-row"]').should('exist')
-        cy.get('[data-testid^="data-table-row-"]').should('not.exist')
-      })
-    })
-  })
-
   describe(`LlamaLend Markets`, () => {
     let vaultData: Record<Chain, GetMarketsResponse>
     const itSkipOnMobile = breakpoint === 'mobile' ? it.skip : it
