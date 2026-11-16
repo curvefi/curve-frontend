@@ -3,6 +3,7 @@ import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
+import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSupply } from '@/stellar/queries/pool/pool-supply.query'
 import { PoolQuery } from '@/stellar/queries/query-types'
@@ -19,6 +20,7 @@ import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCreatedPools } from '@ui/features/storage/useSessionStorage'
 import { useLocation, useParams } from '@ui/hooks/router'
+import { IS_CYPRESS } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
 import { StellarPages } from '../../routes/routes'
 import { DepositTab } from '../deposit/DepositTab'
@@ -73,7 +75,8 @@ export const PoolPage = () => {
   const tokenName = useTokenName({ network, token: pool })
 
   const isJustCreated = createdPools.includes(asAddress(pool))
-  return litePool.data || isJustCreated ? (
+  const isUnlisted = isJustCreated || (STELLAR_NETWORKS[network].isTestnet && !IS_CYPRESS && isMissing)
+  return litePool.data || isUnlisted ? (
     <DetailPageLayout
       header={
         <PoolDetailsHeader
@@ -94,9 +97,11 @@ export const PoolPage = () => {
           ),
       }}
     >
-      {isJustCreated && !litePool.data && (
+      {!litePool.data && (
         <Alert severity="warning" data-testid="pool-unlisted-warning">
-          {t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`}
+          {isJustCreated
+            ? t`This pool was created in this session and is not listed yet. Some pool data is unavailable.`
+            : t`This testnet pool is not listed in the API. Some pool data is unavailable. Proceed with caution and verify the pool address and tokens before interacting.`}
         </Alert>
       )}
       <UserPosition {...params} litePool={litePool} totalUsd={composition.totalUsd} />

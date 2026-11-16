@@ -18,14 +18,13 @@ export const DepositActionInfoList = ({ form, params }: DepositActionInfoListPro
   const slippage = form.values.slippage
   const expectedLp = q(useDepositExpectedLp(params))
   const isSeed = mapQuery(usePoolCurrencyReserves(params), reserves => !Number(reserves.total))
-  const priceImpact = useDepositPriceImpact(params, isSeed.data === false)
   return (
     <PoolActionInfoList
       expectedLp={expectedLp}
       expectedLpLabel="Expected LP received"
       expectedLpTestId="pool-deposit-expected-lp"
       minimumLp={mapQuery(expectedLp, value => calculateMinimumReceived(value, slippage, LP_TOKEN_DECIMALS))}
-      priceImpact={priceImpact}
+      priceImpact={useDepositPriceImpact(params, isSeed.data === false)}
       gas={useDepositEstimateGas(params)}
       slippage={slippage}
       onSlippageChange={(slippage: Decimal) => form.update({ slippage })}

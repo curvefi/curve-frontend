@@ -22,9 +22,7 @@ export const WithdrawActionInfoList = ({
 }) => {
   const expectedLp = useWithdrawExpectedLp(params)
   const lpBalance = q(useTokenBalance({ ...params, token: params.pool, decimals: LP_TOKEN_DECIMALS }))
-  const priceImpact = useWithdrawPriceImpact(params, expectedLp)
   const simulation = useWithdrawSimulation({ ...params, expectedLp: expectedLp.data })
-
   return (
     <PoolActionInfoList
       {...(params.mode === 'unbalanced' && {
@@ -34,7 +32,7 @@ export const WithdrawActionInfoList = ({
       currentLp={lpBalance}
       currentLpTestId="pool-withdraw-current-lp"
       projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}
-      priceImpact={priceImpact}
+      priceImpact={useWithdrawPriceImpact(params, expectedLp)}
       gas={useGasEstimation(params, simulation)}
       slippage={params.slippage}
       onSlippageChange={onSlippageChange}

@@ -27,16 +27,11 @@ export const DepositActionInfoList = ({
   const { account, pool, slippage, tokenCount } = params
   const queryParams = { ...params, amounts: getPoolAmounts(params, tokenCount) }
   const expectedLp = q(useExpectedLp({ ...queryParams, isDeposit: true }))
-  const priceImpact = useDepositPriceImpact(queryParams, expectedLp)
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
   const simulation = useDepositSimulation({ ...queryParams, expectedLp: expectedLp.data })
   const lpDecimals = useTokenDecimals({ ...params, token: pool })
   const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals.data })
-  const seedLock = combineQueries([config, supply], ({ seedLock }, value) =>
-    decimalEqual(value, '0') ? seedLock : null,
-  )
-
   return (
     <PoolActionInfoList
       slippageType="stable"
@@ -47,8 +42,8 @@ export const DepositActionInfoList = ({
       currentLp={q(lpBalance)}
       currentLpTestId="pool-deposit-current-lp"
       projectedLp={combineQueries([lpBalance, expectedLp], decimalSum)}
-      priceImpact={priceImpact}
-      seedLock={seedLock}
+      priceImpact={useDepositPriceImpact(queryParams, expectedLp)}
+      seedLock={combineQueries([config, supply], ({ seedLock }, value) => (decimalEqual(value, '0') ? seedLock : null))}
       gas={useGasEstimation(params, simulation)}
       slippage={slippage}
       onSlippageChange={onSlippageChange}

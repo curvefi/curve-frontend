@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useRepayEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
@@ -17,13 +17,14 @@ import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { constQ, mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimal, decimalMinus } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -100,6 +101,7 @@ export function RepayLoanInfoList({
   form: UseFormReturn<RepayFormData>
   isInSoftLiquidation?: boolean
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('stateCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
@@ -114,7 +116,12 @@ export function RepayLoanInfoList({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
-      health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(
+        useLegacyHealthQueries(isHealthFull =>
+          getRepayHealthOptions({ ...params, isHealthFull }, isOpen && !isNewLlamalendHealth),
+        ),
+      )}
+      liquidationBuffer={q(useQuery(getRepayHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
       prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       isFullRepay={isFull}

@@ -459,7 +459,7 @@ export const pickDisplayLegacyHealth = <T extends Decimal | number>(healthFull: 
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
  */
-export function getLiquidationStatus(
+export function getLegacyLiquidationStatus(
   healthNotFull: Decimal | undefined,
   userIsCloseToSoftLiquidation: boolean,
   userIsBelowRange: boolean,

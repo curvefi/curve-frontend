@@ -28,6 +28,13 @@ export const allViewports = () => [oneMobileViewport(), oneTabletViewport(), one
 
 export const oneViewport = () => oneOf(...allViewports())
 
+/** Opens the tooltip of an element: by hover on tablet and desktop, by touch on mobile where it shows in a drawer */
+export const openTooltip = (selector: string, breakpoint: Breakpoint) =>
+  breakpoint === 'mobile'
+    ? // MUI's drawer reads the first touch of every touchstart, which cypress leaves empty
+      cy.get(selector).trigger('touchstart', { touches: [{}] })
+    : cy.get(selector).trigger('mouseover')
+
 /** Browsers and ECharts lay out with fractional pixels that round differently in CI, so allow one CSS pixel. */
 export const SUBPIXEL_TOLERANCE = 1
 
