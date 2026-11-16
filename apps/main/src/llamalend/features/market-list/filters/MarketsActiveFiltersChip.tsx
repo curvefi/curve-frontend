@@ -47,7 +47,9 @@ export const MarketsActiveFiltersChip = ({
   FilterProps<MarketColumnId>,
   'setColumnFilter'
 >) => {
-  const filtersState = table.state.columnFilters as { id: MarketColumnId; value: string }[]
+  const filtersState = (table.state.columnFilters as { id: MarketColumnId; value: string }[]).filter(
+    ({ id }) => id !== MarketColumnId.IsFavorite, // shown by the Favorites chip instead
+  )
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = filtersState.toSorted((a, b) => {
     if (a.id === MarketColumnId.Chain) return -1
