@@ -10,7 +10,7 @@ import type { UseFormReturn } from '@ui/features/forms'
 import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
-import { decimalDiv, decimalMin, decimalMultiply } from '@ui/lib/decimal'
+import { decimalDiv, decimalMultiply } from '@ui/lib/decimal'
 import { useCreateLoanMaxReceiveQueries } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
 
@@ -37,9 +37,6 @@ export function useMaxTokenValues({
 
   const { maxDebt } = maxBorrow.data ?? {}
   const pendingRatioRef = useRef<Decimal>(null) // keep this in a ref so it doesn't trigger re-renders, used when maxDebt changes
-  const maxCollateral = combineQueries([tokenBalance, maxBorrow], (userBalance, { maxTotalCollateral = userBalance }) =>
-    decimalMin(userBalance, maxTotalCollateral),
-  )
 
   // Depends on params.range too, so it still runs when the cached max for the new range equals the old max
   useEffect(() => {
@@ -52,7 +49,7 @@ export function useMaxTokenValues({
     }
   }, [updateForm, maxDebt, params.range])
 
-  useFormSync(form, { maxCollateral: maxCollateral.data })
+  useFormSync(form, { maxCollateral: tokenBalance.data })
 
   // some loan queries depend on LL internal cache for expected collateral, reset when new market data arrives
   useOnChangeCallback(market, () => resetCreateLoanExpectedCollateral(params))
@@ -70,7 +67,7 @@ export function useMaxTokenValues({
 
   return {
     setRange,
-    collateral: maxCollateral,
+    collateral: tokenBalance,
     debt: mapQuery(maxBorrow, ({ maxDebt, router }) => ({ maxDebt, router })),
     maxLeverage: combineQueries(
       [maxLeverage, maxBorrow],
