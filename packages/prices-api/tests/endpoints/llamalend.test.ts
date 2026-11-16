@@ -107,8 +107,8 @@ runEndpointCases('llamalend', [
   ),
 ])
 
-describe('live data / llamalend', () => {
-  it('getAllMarkets returns each market once per network', async () => {
+describe('llamalend markets', () => {
+  it('returns each market once per network', async () => {
     const marketIds = recordEntries(await llamalend.getAllMarkets({}, requestOptions)).flatMap(([chain, markets]) =>
       markets.map(({ controller }) => `${chain}:${controller.toLowerCase()}`),
     )
