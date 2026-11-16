@@ -31,6 +31,7 @@ export function checkUnstakeDetailsLoaded({
   prevVaultShares,
   suppliedAssets,
   prevSuppliedAssets,
+  supplyApr,
   expectedButtonText = 'Unstake',
   symbol = 'crvUSD',
   hasApi = true,
@@ -40,6 +41,7 @@ export function checkUnstakeDetailsLoaded({
   prevVaultShares?: Decimal
   suppliedAssets?: Decimal
   prevSuppliedAssets?: Decimal
+  supplyApr?: number
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
@@ -50,6 +52,7 @@ export function checkUnstakeDetailsLoaded({
     prevVaultShares,
     suppliedAssets,
     prevSuppliedAssets,
+    supplyApr,
     symbol,
     hasApi,
     isMocked,

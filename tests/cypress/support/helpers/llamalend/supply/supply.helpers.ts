@@ -1,7 +1,9 @@
 import { submitAndExpectToast, type ToastOptions } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
+import { closeTo } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import { REFRESH_INTERVAL, TIME_FRAMES } from '@ui/lib/time'
 import {
   checkEstimatedTxCost as checkEstimatedTxCostValue,
   DECIMAL_REGEX,
@@ -10,6 +12,7 @@ import {
 
 type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 export type SupplyActionType = SupplyFormType | 'claim-crv-rewards' | 'claim-other-rewards'
+export const REWARD_ACCRUAL_SECONDS = TIME_FRAMES.WEEK
 
 const getSupplyInput = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, TIMEOUTS['ui.render'])
@@ -77,6 +80,7 @@ export const checkSupplyActionInfoValues = ({
   prevVaultShares,
   suppliedAssets,
   prevSuppliedAssets,
+  supplyApr = 0,
   symbol,
   hasApi = true,
   isMocked = false,
@@ -87,6 +91,7 @@ export const checkSupplyActionInfoValues = ({
   prevVaultShares?: string
   suppliedAssets?: string
   prevSuppliedAssets?: string
+  supplyApr?: number
   symbol?: string
   hasApi?: boolean
   isMocked?: boolean
@@ -124,10 +129,18 @@ export const checkSupplyActionInfoValues = ({
     )
   }
   if (prevSuppliedAssets != null) {
-    getActionValue('supply-amount', getTimeoutCategory('tenderly', 'simulation', isMocked), 'previous').should(
-      'equal',
-      formatNumber(prevSuppliedAssets as Decimal, { abbreviate: false }),
-    )
+    const category = getTimeoutCategory('tenderly', 'simulation', isMocked)
+    if (supplyApr) {
+      const expectedAssets =
+        +prevSuppliedAssets * (1 + (supplyApr * REWARD_ACCRUAL_SECONDS * REFRESH_INTERVAL['1s']) / TIME_FRAMES.YEAR_MS)
+      // Allow one cent for display rounding and the APR estimate's compounding difference.
+      getActionValue('supply-amount', category, 'previous').should(closeTo(expectedAssets, 0.01))
+    } else {
+      getActionValue('supply-amount', category, 'previous').should(
+        'equal',
+        formatNumber(prevSuppliedAssets as Decimal, { abbreviate: false }),
+      )
+    }
   }
   if (symbol) {
     getActionValue('supply-amount', getTimeoutCategory('tenderly', 'simulation', isMocked), 'right').should(

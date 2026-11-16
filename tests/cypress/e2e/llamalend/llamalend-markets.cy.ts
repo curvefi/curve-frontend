@@ -207,8 +207,10 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should find markets by supply and borrow gauge address', () => {
-      const search = (text: string) =>
-        cy.get("[data-testid='table-text-search-lamalend-markets'] input").clear().type(text)
+      const search = (text: string) => {
+        cy.get("[data-testid='table-text-search-lamalend-markets'] input").clear()
+        cy.get("[data-testid='table-text-search-lamalend-markets'] input").type(text)
+      }
 
       cy.get("[data-testid^='table-text-search-'] input").click()
       search(SUPPLY_GAUGE_ADDRESS)

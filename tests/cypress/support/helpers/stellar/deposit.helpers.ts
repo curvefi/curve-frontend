@@ -69,9 +69,11 @@ export const checkDepositDetail = (
 
 export const checkDepositBalances = ({ coins, lp }: PoolState) => {
   checkDepositDetail('current-lp', lp.balance)
-  coins.forEach(({ address, balance }) => {
-    poolInput(address).find('[data-testid="balance-value"]').should('have.attr', 'data-value', balance)
-  })
+  coins.map(({ address, balance }) =>
+    poolInput(address)
+      .find('[data-testid="balance-value"]', TIMEOUTS['stellar.read'])
+      .should('have.attr', 'data-value', balance),
+  )
 }
 
 export const submitDepositForm = ({ coins }: Pick<PoolState, 'coins'>) => {
