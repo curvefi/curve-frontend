@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { skipWhen, test } from 'vest'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
-import { calculateMaximumBurn, LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
+import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { isComplete } from '@primitives/array.utils'
 import { maybes } from '@primitives/objects.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import {
   getAdvancedWithdrawParams,
   getOneCoinWithdrawParams,

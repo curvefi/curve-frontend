@@ -3,6 +3,7 @@ import { capitalize } from '@mui/material/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { ActionInfoSize, ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import type { SlippageSettings, SlippageType } from '@ui/features/forms/slippage/slippage.utils'
@@ -25,7 +26,7 @@ export const SlippageToleranceActionInfo = ({
   size?: ActionInfoSize
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType
-  userAddress: Address | undefined
+  userAddress: Address | Nullish
   disabled?: boolean
 }) => {
   const [isOpen, openModal, closeModal] = useSwitch()
