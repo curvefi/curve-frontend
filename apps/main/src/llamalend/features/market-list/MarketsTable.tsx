@@ -17,6 +17,7 @@ import { MarketsChips } from './chips/MarketsChips'
 import { MarketColumnId } from './columns/columns.enum'
 import { MARKETS_TABLE } from './columns/markets.table'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
+import { getActiveFilterChips } from './filters/activeFilterChips'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
 import { MarketsFiltersCollapsible } from './filters/MarketsFiltersCollapsible'
@@ -65,10 +66,7 @@ export const MarketsTable = ({
   })
 
   const hasActiveFilters = !!table.state.columnFilters.length
-  // the Favorites chip is always visible, so favorites alone don't open the active-filters row
-  const hasNonFavoriteFilters = table.state.columnFilters.some(
-    ({ id }) => (id as MarketColumnId) !== MarketColumnId.IsFavorite,
-  )
+  const hasActiveFilterChips = getActiveFilterChips(table.state.columnFilters).length > 0
 
   return (
     <Stack>
@@ -105,7 +103,7 @@ export const MarketsTable = ({
                 {...filterProps}
               />
             ),
-            hasActiveFilters: hasNonFavoriteFilters,
+            hasActiveFilters: hasActiveFilterChips,
           }}
           filterChip={
             <TableFiltersChip
