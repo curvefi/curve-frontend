@@ -1,5 +1,8 @@
-import { HealthDetails } from '@/llamalend/features/market-position-details/health/HealthDetails'
-import { getPositionHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
+import {
+  HealthMetric,
+  LiquidationBufferMetric,
+} from '@/llamalend/features/market-position-details/health/HealthMetrics'
+import { POSITION_HEALTH_THRESHOLDS, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
@@ -13,20 +16,22 @@ const hexToRgb = (value: string) => {
   return `rgb(${(parsed >> 16) & 255}, ${(parsed >> 8) & 255}, ${parsed & 255})`
 }
 
-const mountHealthDetails = (position: PositionHealth, assetsType: MarketAssetsType, error: Error | null = null) =>
-  cy.mount(
+const mountHealthMetrics = (position: PositionHealth, assetsType: MarketAssetsType, error: Error | null = null) => {
+  const positionQuery = q({ data: position, isLoading: false, error })
+  const thresholds = POSITION_HEALTH_THRESHOLDS[assetsType]
+  return cy.mount(
     <ComponentTestWrapper>
-      <HealthDetails
-        position={q({ data: position, isLoading: false, error })}
-        thresholds={getPositionHealthThresholds(assetsType)}
-        borrowSymbol="crvUSD"
-      />
+      <>
+        <HealthMetric position={positionQuery} thresholds={thresholds} />
+        <LiquidationBufferMetric position={positionQuery} thresholds={thresholds} borrowSymbol="crvUSD" showNotional />
+      </>
     </ComponentTestWrapper>,
   )
+}
 
 type FeedbackKey = 'Success' | 'Warning' | 'Error'
 
-type HealthDetailsTestCase = {
+type HealthMetricsTestCase = {
   title: string
   position: PositionHealth
   assetsType: MarketAssetsType
@@ -55,7 +60,7 @@ const getPosition = (
   status,
 })
 
-const testCases: HealthDetailsTestCase[] = [
+const testCases: HealthMetricsTestCase[] = [
   {
     title: 'renders a position above the range with a buffer above its starting gap',
     position: getPosition('1.6', '20', '200', '1.2', 'aboveRange'),
@@ -123,10 +128,10 @@ const testCases: HealthDetailsTestCase[] = [
   },
 ]
 
-describe('Health details', () => {
+describe('Health metrics', () => {
   testCases.forEach(({ title, position, assetsType, expected }) => {
     it(title, () => {
-      mountHealthDetails(position, assetsType)
+      mountHealthMetrics(position, assetsType)
 
       cy.get('[data-testid="health-details-health-metric-value"]')
         .should('have.text', expected.health)
@@ -147,12 +152,12 @@ describe('Health details', () => {
   })
 
   it('never rounds a health above 1 down to 1.00', () => {
-    mountHealthDetails(getPosition('1.000001', '12', '120', '0.6', 'nearRange'), MarketAssetsType.LongTail)
+    mountHealthMetrics(getPosition('1.000001', '12', '120', '0.6', 'nearRange'), MarketAssetsType.LongTail)
     cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.0001')
   })
 
   it('keeps the last status next to the error icon when a source errors', () => {
-    mountHealthDetails(
+    mountHealthMetrics(
       getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'),
       MarketAssetsType.LongTail,
       new Error('rpc failed'),
