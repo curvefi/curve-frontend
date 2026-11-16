@@ -9,21 +9,21 @@ import { useToggleFilter } from '../hooks/useToggleFilter'
 
 const { Spacing } = SizesAndSpaces
 
-type MarketsTableChipsProps = { hasFavorites: boolean | undefined } & FilterProps<MarketColumnId>
+type MarketsTableChipsProps = { favoritesCount: number } & FilterProps<MarketColumnId>
 
-export const MarketsChips = ({ hasFavorites, ...filterProps }: MarketsTableChipsProps) => {
+export const MarketsChips = ({ favoritesCount, ...filterProps }: MarketsTableChipsProps) => {
   const [favorites, toggleFavorites] = useToggleFilter(MarketColumnId.IsFavorite, filterProps)
   return (
     <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
       <GridChip
-        label={t`Favorites`}
+        label={favoritesCount ? t`Favorites (${favoritesCount})` : t`Favorites`}
         selected={favorites}
         selectableChipSize="medium"
         variant="ghost"
         toggle={toggleFavorites}
         icon={<HeartIcon />}
         data-testid="chip-favorites"
-        disabled={!hasFavorites}
+        disabled={!favoritesCount}
       />
     </Grid>
   )

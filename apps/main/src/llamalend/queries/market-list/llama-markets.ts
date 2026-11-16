@@ -113,11 +113,7 @@ export type LlamaMarket = {
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
 }
 
-export type LlamaMarketsResult = {
-  markets: LlamaMarket[]
-  userHasPositions: UserHasPositions | null
-  hasFavorites: boolean
-}
+export type LlamaMarketsResult = { markets: LlamaMarket[]; userHasPositions: UserHasPositions | null }
 
 const toMarketVersion = (version: number): MarketVersion =>
   assert({ 1: MarketVersion.v1, 2: MarketVersion.v2 }[version], `Unsupported LlamaLend market version: ${version}`)
@@ -468,7 +464,6 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
         const data: LlamaMarketsResult | undefined = marketsReady
           ? {
               userHasPositions,
-              hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? [])
                   .filter(({ createdAt, version }) => version != 1 || createdAt <= LEND_V1_DEPRECATION_DATE.getTime())

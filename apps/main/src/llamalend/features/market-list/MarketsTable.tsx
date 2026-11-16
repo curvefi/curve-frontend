@@ -35,7 +35,8 @@ export const MarketsTable = ({
   onReload: () => Promise<unknown>
   tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
-  const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
+  const { markets: data = [], userHasPositions } = queryData ?? {}
+  const favoritesCount = data.filter(market => market.isFavorite).length
   const [filtersOpen, setFiltersOpen] = useState<boolean | undefined>()
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
@@ -96,7 +97,7 @@ export const MarketsTable = ({
                 table={table}
                 resetFilters={resetFilters}
                 hasActiveFilters={hasActiveFilters}
-                hasFavorites={hasFavorites}
+                hasFavorites={favoritesCount > 0}
                 {...filterProps}
               />
             ),
@@ -120,7 +121,7 @@ export const MarketsTable = ({
               />
             )
           }
-          chips={<MarketsChips hasFavorites={hasFavorites} {...filterProps} />}
+          chips={<MarketsChips favoritesCount={favoritesCount} {...filterProps} />}
         />
       </EvmDataTable>
       <TableVisibilitySettingsPopover<MarketColumnId>
