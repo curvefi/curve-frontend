@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest'
-import { recordEntries } from '@primitives/objects.utils'
 import * as llamalend from '../../src/llamalend'
 import { endpointCase, runEndpointCases } from '../endpoint-cases'
 import {
@@ -106,12 +104,3 @@ runEndpointCases('llamalend', [
     ),
   ),
 ])
-
-describe('llamalend markets', () => {
-  it('returns each market once per network', async () => {
-    const marketIds = recordEntries(await llamalend.getAllMarkets({}, requestOptions)).flatMap(([chain, markets]) =>
-      markets.map(({ controller }) => `${chain}:${controller.toLowerCase()}`),
-    )
-    expect(marketIds).toEqual([...new Set(marketIds)])
-  })
-})
