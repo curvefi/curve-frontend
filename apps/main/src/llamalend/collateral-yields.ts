@@ -1,7 +1,7 @@
 import { sumBy } from 'lodash'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
 import type { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
-import { type Nullish, notFalsy, recordEntries } from '@primitives/objects.utils'
+import { type Nullish, maybe, notFalsy, recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 
 /** What the collateral earns while it backs a loan, as APR in percent of the collateral value. Null when the market has none. */
@@ -22,7 +22,7 @@ const COLLATERAL_YIELDS = {
   crvApr: { paidIn: 'crv', label: () => 'CRV' },
 } satisfies Record<
   keyof CollateralYields,
-  { paidIn: CollateralYieldAsset; label: (collateralSymbol: string) => string }
+  { paidIn: CollateralYieldAsset; label: (collateralSymbol: string | Nullish) => string | Nullish }
 >
 
 /** A CRV APR of 0, from a gauge without weight, counts as no CRV rewards. */
@@ -59,8 +59,13 @@ export const sumCollateralYields = (yields: CollateralYields, paidIn?: Collatera
 export const getCollateralYieldBreakdown = (
   yields: CollateralYields,
   paidIn: CollateralYieldAsset,
-  collateralSymbol: string,
-) => getYieldsPaidIn(yields, paidIn).map(({ label, apr }) => ({ label: label(collateralSymbol), apr }))
+  collateralSymbol: string | Nullish,
+) =>
+  notFalsy(
+    ...getYieldsPaidIn(yields, paidIn).map(({ label, apr }) =>
+      maybe(label(collateralSymbol), label => ({ label, apr })),
+    ),
+  )
 
 /** Borrow APR minus what the collateral earns and the borrow campaigns, as a 1:1 estimate. Percent. */
 export const getEstimatedNetBorrowApr = (
