@@ -1,30 +1,29 @@
+import {
+  type CollateralYields,
+  getEstimatedNetBorrowApr,
+  getSnapshotCollateralYields,
+} from '@/llamalend/collateral-yields'
 import { useMarketFutureRates } from '@/llamalend/queries/market/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
-import { LendingSnapshot } from '@evm-ui/queries/lending-snapshots.query'
 import type { MarketParams } from '@evm-ui/queries/query-types'
 import type { MarketType } from '@evm-ui/types/market'
 import { BlockchainIds } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, Query, type QueryProp } from '@ui/features/queries/util'
-import { decimal, decimalMinus } from '@ui/lib/decimal'
+import { decimal } from '@ui/lib/decimal'
 
-/**
- * Combines the given markets rates and snapshotsQuery to calculate net borrow APR.
- */
 const addNetApr = <T extends { borrowApr?: Decimal }>(
   rates: Query<T>,
-  snapshotsQuery: Query<CrvUsdSnapshot[] | LendingSnapshot[]>,
+  collateralYields: Query<CollateralYields>,
 ): [QueryProp<T>, QueryProp<Decimal | null>] => [
   q(rates),
-  combineQueries(
-    [rates, snapshotsQuery],
-    ({ borrowApr }, data) =>
-      borrowApr && decimalMinus(borrowApr, decimal(data?.at(-1)?.collateralToken?.rebasingYieldApr)),
+  combineQueries([rates, collateralYields], ({ borrowApr }, collateralYields) =>
+    maybe(borrowApr, borrowApr => decimal(getEstimatedNetBorrowApr(+borrowApr, collateralYields, null))),
   ),
 ]
 
@@ -49,9 +48,13 @@ export function useBorrowRates<ChainId extends IChainId>(
     blockchainId: chainId && BlockchainIds[chainId],
     enabled,
   })
+  const collateralYields = mapQuery(snapshots, snapshots => getSnapshotCollateralYields(snapshots.at(-1)))
   // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
-  const [rates, netBorrowApr] = addNetApr(useMarketFutureRates({ chainId, marketId, debtDelta }, enabled), snapshots)
-  const [prevRates, prevNetBorrowApr] = addNetApr(useMarketRates({ chainId, marketId }, enabled), snapshots)
+  const [rates, netBorrowApr] = addNetApr(
+    useMarketFutureRates({ chainId, marketId, debtDelta }, enabled),
+    collateralYields,
+  )
+  const [prevRates, prevNetBorrowApr] = addNetApr(useMarketRates({ chainId, marketId }, enabled), collateralYields)
   return {
     prevRates,
     rates,

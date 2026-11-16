@@ -1,3 +1,4 @@
+import { type CollateralYields, sumCollateralYields } from '@/llamalend/collateral-yields'
 import {
   BORROW_APR_DESCRIPTION,
   BORROW_RATE_TITLE,
@@ -7,7 +8,7 @@ import {
 } from '@/llamalend/constants'
 import { hasEstimatedNetBorrowApr } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
-import type { Nullish } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { t } from '@ui/lib/i18n'
@@ -21,7 +22,7 @@ export type MarketBorrowAprTooltipContentProps = {
   totalAverageBorrowApr: number | Nullish
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: CampaignRewards[] | Nullish
-  rebasingYieldApr: number | Nullish
+  collateralYields: CollateralYields | Nullish
   collateralSymbol: string | Nullish
   isLoading?: boolean
 }
@@ -33,11 +34,12 @@ export const MarketBorrowAprTooltipContent = ({
   averageApr,
   periodLabel,
   extraRewards,
-  rebasingYieldApr,
+  collateralYields,
   collateralSymbol,
   isLoading,
 }: MarketBorrowAprTooltipContentProps) => {
-  const hasNetRate = hasEstimatedNetBorrowApr({ extraRewards, rebasingYieldApr })
+  const hasNetRate = hasEstimatedNetBorrowApr({ extraRewards, collateralYields })
+  const collateralYieldApr = maybe(collateralYields, sumCollateralYields)
   return (
     <TooltipWrapper>
       <TooltipDescription text={BORROW_APR_DESCRIPTION} />
@@ -58,12 +60,12 @@ export const MarketBorrowAprTooltipContent = ({
           </TooltipItems>
         )}
 
-        {rebasingYieldApr != null && (
+        {collateralYieldApr != null && (
           <TooltipItems secondary>
-            <TooltipItem title={COLLATERAL_YIELD_TITLE}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
+            <TooltipItem title={COLLATERAL_YIELD_TITLE}>{formatCappedRatePercent(-collateralYieldApr)}</TooltipItem>
             {!!collateralSymbol && (
               <TooltipItem variant="subItem" title={collateralSymbol}>
-                {formatCappedRatePercent(-rebasingYieldApr)}
+                {formatCappedRatePercent(-collateralYieldApr)}
               </TooltipItem>
             )}
           </TooltipItems>

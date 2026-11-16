@@ -1,38 +1,23 @@
 import { BORROW_RATE_TITLE } from '@/llamalend/constants'
 import { MarketBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowAprTooltipContent'
-import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
+import { AVERAGE_CATEGORIES } from '@evm-ui/utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
-import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { formatCappedRateValue } from '@ui/lib/rates.utils'
 import { formatEstimatedNetBorrowRate, hasEstimatedNetBorrowApr } from '../llama.utils'
+import type { BorrowRate } from './page-header/hooks/usePageHeader'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips/tooltip.utils'
 
-type BorrowRateMetric = {
-  rate: number | Nullish
-  averageRate: number | Nullish
-  averageCategory: AverageCategory
-  rebasingYield: number | Nullish
-  totalBorrowRate: number | Nullish
-  totalAverageBorrowRate: number | Nullish
-  extraRewards: CampaignRewards[]
-}
-
 type BorrowAprMetricProps = {
-  borrowRate: QueryProp<BorrowRateMetric>
+  borrowRate: QueryProp<BorrowRate>
   collateralSymbol: string | Nullish
   alignment?: MetricProps['alignment']
 }
 
 export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
   const averageRatePeriod = AVERAGE_CATEGORIES[borrowRate.data?.averageCategory ?? 'llamalend.market.rate'].period
-  const showNetBorrowApr =
-    borrowRate.data?.totalBorrowRate != null &&
-    hasEstimatedNetBorrowApr({
-      extraRewards: borrowRate.data.extraRewards,
-      rebasingYieldApr: borrowRate.data.rebasingYield,
-    })
+  const showNetBorrowApr = borrowRate.data?.totalBorrowRate != null && hasEstimatedNetBorrowApr(borrowRate.data)
   return (
     <Metric
       category="llamalend.marketHeader"
@@ -54,7 +39,7 @@ export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: Bor
             averageApr={borrowRate.data?.averageRate}
             periodLabel={averageRatePeriod}
             extraRewards={borrowRate.data?.extraRewards}
-            rebasingYieldApr={borrowRate.data?.rebasingYield}
+            collateralYields={borrowRate.data?.collateralYields}
             collateralSymbol={collateralSymbol}
             isLoading={borrowRate.isLoading}
           />

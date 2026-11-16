@@ -1,6 +1,7 @@
 import { getAddress } from 'viem'
+import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
+import { getAddressOrPair, hasEstimatedNetBorrowApr, type MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import type { TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
@@ -49,7 +50,7 @@ export const buildBorrowRateBreakdown = ({
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    maybes([rate.rebasingYield, collateralToken], (rebasingYield, collateralToken) => ({
+    maybes([sumCollateralYields(rate.collateralYields), collateralToken], (collateralYieldApr, collateralToken) => ({
       source: {
         tokenInfo: {
           address: getAddressOrPair(blockchainId, collateralToken.address),
@@ -62,7 +63,7 @@ export const buildBorrowRateBreakdown = ({
         yieldBearing: true,
       },
       price: collateralPrice,
-      rate: -rebasingYield,
+      rate: -collateralYieldApr,
     })),
   )
 
@@ -90,7 +91,7 @@ export const buildBorrowRateBreakdown = ({
     ],
     points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalBorrowRate,
-    hasAdjustments: incentives.length > 0 || rate.rebasingYield != null,
+    hasAdjustments: hasEstimatedNetBorrowApr({ extraRewards: incentives, collateralYields: rate.collateralYields }),
   }
 }
 

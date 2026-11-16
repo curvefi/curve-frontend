@@ -1,3 +1,4 @@
+import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { MarketRateType } from '@evm-ui/types/market'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
@@ -47,7 +48,7 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
         },
         sortUndefined: 'last',
       }),
-      columnHelper.accessor(({ assets }) => assets.collateral.rebasingYieldApr ?? undefined, {
+      columnHelper.accessor(({ collateralYields }) => sumCollateralYields(collateralYields) ?? undefined, {
         id: MarketColumnId.CollateralYield,
         header: MARKET_TITLES[MarketColumnId.CollateralYield],
         cell: PercentCell,

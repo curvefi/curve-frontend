@@ -1,3 +1,4 @@
+import { getSnapshotCollateralYields } from '@/llamalend/collateral-yields'
 import type { MarketYields } from '@/llamalend/equity-leverage.utils'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketCampaigns } from '@/llamalend/features/market-list/hooks/useMarketCampaigns'
@@ -15,7 +16,7 @@ export function useMarketYields(enabled: boolean): QueryProp<MarketYields> {
     // useMarketCampaigns returns {} while loading; on an error the APR still shows, without the rewards
     [snapshots, { data: isLoading ? undefined : campaigns, isLoading, error }],
     (snapshots, campaigns) =>
-      getMarketYields(snapshots, campaigns, {
+      getMarketYields(getSnapshotCollateralYields(snapshots.at(-1)), snapshots, campaigns, {
         marketType,
         controllerAddress,
         vaultAddress: vaultToken?.address,
