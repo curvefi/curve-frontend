@@ -24,6 +24,7 @@ export const SelectableCard = ({
         outlineOffset: `-${Sizing[10]}`,
         transition: `background-color ${TRANSITION_FUNCTION}, outline-color ${TRANSITION_FUNCTION}`,
         '&:hover, &.cypress-hover': { backgroundColor: t.design.Layer.TypeAction.Hover },
+        '&.Mui-disabled': { color: 'text.disabled' },
       }),
       sx,
     )}

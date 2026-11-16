@@ -9,10 +9,15 @@ import { useLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import type { PoolRow } from '@ui/features/pool-list/types'
 import { getPoolRates, isActiveLitePool, litePoolToRowData } from '@ui/features/pool-list/utils'
 import { constQ, useMappedQuery } from '@ui/features/queries/util'
+import { useCreatedPools } from '@ui/features/storage/useSessionStorage'
 
 export function usePoolList({ network, activePoolsFilter }: NetworkQuery & { activePoolsFilter: boolean }) {
   const { chainId } = STELLAR_NETWORKS[network]
   const { data, isLoading, error, isFetching, refetch: refetchList } = useLitePoolList({ chainId })
+  const [createdPools] = useCreatedPools(network)
+  const unlistedPools = createdPools.filter(
+    address => !data?.pools.some(pool => pool.chainId === chainId && pool.address === address),
+  )
   const {
     data: campaigns,
     isLoading: campaignsLoading,
@@ -43,7 +48,7 @@ export function usePoolList({ network, activePoolsFilter }: NetworkQuery & { act
   const refetch = () => Promise.all([refetchList(), refetchCampaigns()])
   if (error instanceof FetchError && error.status === 404 && network === 'stellar') {
     // todo: remove after stellar is implemented in the backend, for now let's just return an empty list.
-    return { query: constQ([]), isFetching, refetch, pageCount: 0 }
+    return { unlistedPools, query: constQ([]), isFetching, refetch, pageCount: 0 }
   }
-  return { query, isFetching, refetch, pageCount: 1 }
+  return { unlistedPools, query, isFetching, refetch, pageCount: 1 }
 }

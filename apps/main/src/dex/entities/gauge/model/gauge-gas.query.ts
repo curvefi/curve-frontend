@@ -26,8 +26,6 @@ const { useQuery: useEstimateGasDepositRewardApprove } = hydratedQueryFactory({
   queryFn: async ({ poolAddress, rewardTokenId, amount }: DepositRewardApproveQuery) =>
     getGauge(poolAddress).estimateGas.depositRewardApprove(rewardTokenId, amount),
   validationSuite: gaugeDepositRewardApproveValidationSuite,
-  refetchOnWindowFocus: 'always',
-  refetchOnMount: 'always',
   category: 'dex.deployGauge',
 })
 
@@ -38,8 +36,6 @@ const { useQuery: useEstimateGasAddRewardToken } = hydratedQueryFactory({
     getGauge(poolAddress).estimateGas.addReward(rewardTokenId, distributorId),
   validationSuite: gaugeAddRewardValidationSuite,
   dependencies: (params: AddRewardParams) => [getDepositRewardAvailableQueryKey(params)],
-  refetchOnWindowFocus: 'always',
-  refetchOnMount: 'always',
   category: 'dex.deployGauge',
 })
 
@@ -50,8 +46,6 @@ const { useQuery: useEstimateGasDepositReward } = hydratedQueryFactory({
     getGauge(poolAddress).estimateGas.depositReward(rewardTokenId, amount, epoch),
   validationSuite: gaugeDepositRewardValidationSuite,
   dependencies: (params: DepositRewardParams) => [getDepositRewardIsApprovedQueryKey(params)],
-  refetchOnWindowFocus: 'always',
-  refetchOnMount: 'always',
   category: 'dex.deployGauge',
 })
 

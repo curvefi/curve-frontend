@@ -1,5 +1,6 @@
 import { asAddress, formatAddress, stellarAddressDisplay } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
+import { CreatedPoolsAlert } from '@/stellar/features/pool-list/CreatedPoolsAlert'
 import { usePoolList } from '@/stellar/features/pool-list/usePoolList'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
 import type { NetworkQuery } from '@/stellar/queries/query-types'
@@ -25,12 +26,13 @@ export const PoolListPage = () => {
   const { isLite } = STELLAR_NETWORKS[network]
   const pagination = usePoolsPagination()
   const filters = usePoolsFilters()
-  const { isFetching, refetch, pageCount, query } = usePoolList({
+  const { unlistedPools, isFetching, refetch, pageCount, query } = usePoolList({
     network,
     activePoolsFilter: filters.activePoolsFilter.isSelected,
   })
   return (
     <ListPageLayout>
+      <CreatedPoolsAlert network={network} unlistedPools={unlistedPools} />
       <PoolsTable
         tableQuery={query}
         isFetching={isFetching}

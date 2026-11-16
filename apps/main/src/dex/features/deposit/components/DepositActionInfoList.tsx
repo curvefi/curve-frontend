@@ -32,7 +32,7 @@ export const DepositActionInfoList = ({ form, params, isSeed, slippageType }: De
       gas={useDepositEstimateGas(params)}
       slippage={slippage}
       onSlippageChange={(slippage: Decimal) => form.update({ slippage })}
-      userAddress={params.userAddress ?? undefined}
+      userAddress={params.userAddress}
       slippageType={slippageType}
     />
   )

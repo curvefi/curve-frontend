@@ -56,7 +56,7 @@ export const MarketsTable = ({
     query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
-    getRowId: row => row.controllerAddress,
+    getRowId: row => `${row.blockchainId}:${row.controllerAddress}`,
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,

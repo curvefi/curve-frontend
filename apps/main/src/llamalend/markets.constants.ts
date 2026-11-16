@@ -63,6 +63,10 @@ export const MARKETS_ALERTS: Record<MarketType, Record<number, Record<Address, M
       '0xdC5D5EE1223D4C8b7eAc8e876793f2171e7e8dEb': DEFAULT_ALERT,
       // one-way-market-24 - crvUSD-ynETH
       '0x757C61d89bD0406BfcBB68178BBfaE79ECa46c0f': DEFAULT_ALERT,
+      // one-way-market-23 - ynETH-crvUSD (2)
+      '0x143985860EFaeAcB92Db23E4b0c4d66Be51b08D2': DEFAULT_ALERT,
+      // one-way-market-29 - ynETHx-crvUSD
+      '0x6f91f33Ac7122F025b73206239CbC81606F022D4': DEFAULT_ALERT,
       // one-way-market-25 - LBTC-crvUSD
       '0xC28C2FD809FC1795f90de1C9dA2131434A77721d': DEFAULT_ALERT,
       // one-way-market-33 - sUSDf-crvUSD
