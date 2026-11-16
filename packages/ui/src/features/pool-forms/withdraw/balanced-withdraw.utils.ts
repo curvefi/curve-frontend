@@ -1,6 +1,6 @@
-import { LP_TOKEN_DECIMALS } from '@/stellar/lib/amounts'
 import type { Decimal } from '@primitives/decimal.utils'
 import { scaleReserves } from '@ui/features/pool-forms/balanced-amounts.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { decimalDivToPrecision, decimalGreaterThan, decimalMultiply, decimalRound, decimalSum } from '@ui/lib/decimal'
 
 /** Convert an edited token amount to LP, rounding up so the proportional payout covers it. */

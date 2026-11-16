@@ -2,6 +2,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, maybe, range } from '@primitives/objects.utils'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
+export const LP_TOKEN_DECIMALS = 18
+
 export type PoolAmountField = `amount_${number}`
 export type PoolMaxAmountField = `maxAmount_${number}`
 export type PoolTokenField = PoolAmountField | PoolMaxAmountField
@@ -35,5 +37,6 @@ export const getPoolDefaultValues = (tokenCount: number): Pick<PoolTokenFields, 
 export const getPoolMaxAmounts = (values: PoolTokenFields, tokenCount: number | undefined) =>
   maybe(tokenCount, count => range(count).map(index => values[poolMaxAmountField(index)]))
 
-export const depositMethod = (isWrapped: boolean) =>
-  (({ true: 'depositWrapped', false: 'deposit' }) as const)[`${isWrapped}`]
+export const wrappedMethod = (isWrapped: boolean) => (({ true: 'Wrapped', false: '' }) as const)[`${isWrapped}`]
+
+export const depositMethod = (isWrapped: boolean) => `deposit${wrappedMethod(isWrapped)}` as const

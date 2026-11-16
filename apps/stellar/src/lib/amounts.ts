@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
-
-export const LP_TOKEN_DECIMALS = 18
 
 const applyLpSlippage = (amount: Decimal, slippage: Decimal, rounding: BigNumber.RoundingMode): Decimal =>
   new BigNumber(amount)
@@ -21,5 +20,5 @@ export const calculateMaximumBurn = (expected: Decimal, slippage: Decimal): Deci
   applyLpSlippage(expected, slippage, BigNumber.ROUND_CEIL)
 
 /** Value of decimal token amounts at their normalized rates. */
-export const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: Decimal[]) =>
+export const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: (Decimal | number)[]) =>
   decimalSum(...rates.map((rate, index) => maybe(amounts[index], amount => decimalMultiply(amount, rate))))

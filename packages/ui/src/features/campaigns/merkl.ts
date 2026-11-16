@@ -107,6 +107,6 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
     return (await resp.json()) as MerklOpportunity[]
   }
 
-  const opportunities = await paginate(fetchPage, 0, 100)
+  const opportunities = await paginate(fetchPage)
   return opportunities.flatMap(opportunityToCampaignRewards)
 }

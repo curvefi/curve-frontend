@@ -19,6 +19,7 @@ export type DepositMutation = {
   decimals: number[]
   supply: Decimal
   slippage: Decimal
+  isSeed: boolean | undefined
 }
 
 export type DepositQuery = QuoteQuery & UserQuery & { minMint: Decimal; maxAmounts: (Decimal | undefined)[] }
@@ -28,4 +29,4 @@ export type DepositMutationContext = Pick<DepositQuery, 'network' | 'pool' | 'ac
   quote: Decimal
 }
 export type DepositMutationParams = FieldsOf<DeepPartial<DepositMutationContext & DepositMutation>>
-export type DepositMutationOptions = FieldsOf<DepositMutationContext> & { onReset: () => void }
+export type DepositMutationOptions = FieldsOf<DeepPartial<DepositMutationContext>> & { onReset?: () => void }

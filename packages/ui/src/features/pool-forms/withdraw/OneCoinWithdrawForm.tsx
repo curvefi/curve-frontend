@@ -10,12 +10,14 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { OneCoinWithdrawFormValues } from './withdraw-form.utils'
+import { WrappedWithdrawCheckbox } from './WrappedWithdrawCheckbox'
 
 export const OneCoinWithdrawForm = ({
   form,
   tokens,
   index,
   max,
+  onMax,
   onCoinChange,
   onAmountChange,
   onSubmit,
@@ -28,9 +30,12 @@ export const OneCoinWithdrawForm = ({
   error,
   formErrors,
   userAddress,
+  canWithdrawWrapped,
 }: PoolFormProps<OneCoinWithdrawFormValues> & {
+  canWithdrawWrapped?: boolean
   index: number
-  max: QueryProp<Decimal> | undefined
+  max: QueryProp<Decimal>
+  onMax: () => void
   inputDisabled: boolean
   onCoinChange: (index: number) => void
   onAmountChange: (amount: Decimal | undefined) => void
@@ -42,7 +47,7 @@ export const OneCoinWithdrawForm = ({
         form={form}
         name="amount"
         relatedFields={['poolReserve']}
-        max={max && { balance: max }}
+        max={{ balance: max, onMax }}
         balance={token && mapQuery(token, () => form.values.amount)}
         label={t`Amount to withdraw`}
         testId={`pool-token-input-${token?.data?.address}`}
@@ -60,6 +65,7 @@ export const OneCoinWithdrawForm = ({
           />
         }
       />
+      {canWithdrawWrapped && <WrappedWithdrawCheckbox disabled={isPending} />}
       <FormButton
         {...wallet}
         pending={isPending}
