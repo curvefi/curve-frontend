@@ -58,7 +58,7 @@ export const validateMaxDebt = (
     })
   })
   skipWhen(maxDebt == null || debt == null, () => {
-    test('maxDebt', `The given debt exceeds the maximum of ${maxDebt}`, () => {
+    test('debt', `The given debt exceeds the maximum of ${maxDebt}`, () => {
       enforce(debt).lte(maxDebt!)
     })
   })
@@ -165,7 +165,7 @@ export const validateMaxCollateral = (
     })
   })
   skipWhen(!userCollateral || !maxCollateral, () => {
-    test('maxCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
+    test('userCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
       enforce(userCollateral).lessThanOrEquals(maxCollateral!)
     })
   })
@@ -182,7 +182,7 @@ export const validateMaxStateCollateral = (
     })
   })
   skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
-    test('maxStateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
+    test('stateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
       enforce(stateCollateral).lte(maxStateCollateral!)
     })
   })
