@@ -257,7 +257,6 @@ export const SizesAndSpaces = {
   Slider: { Height: SliderHeight, ThumbWidth: SliderThumbWidth },
   Width: { modal: MappedModalWidth, column: MappedColumnWidth },
   MinWidth: {
-    healthBar: '0.0625rem', // 1px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
     twoCardLayout: 961, // matches old action card breakpoint (in px)
@@ -296,8 +295,6 @@ export const SizesAndSpaces = {
     chart: MappedChartHeight, // chart libraries require heights in number format
     healthBar: {
       legacy: '2rem', // 32px
-      lg: '1.875rem', // 30px
-      sm: '0.75rem', // 12px
     },
   },
   MinHeight: {

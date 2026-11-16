@@ -17,7 +17,8 @@ export const invalidateBorrowMoreRouteQueries = async (
     invalidateBorrowMoreExpectedCollateral(params),
     invalidateBorrowMoreFutureLeverage(params),
     invalidateBorrowMoreEstimateGasQueries(params),
-    invalidateBorrowMoreHealth(params),
+    // params have no `isFull`, so the partial key matches both the `isFull: true` and `isFull: false` entries
+    invalidateBorrowMoreHealth(params, { partial: true }),
     invalidateBorrowMoreIsApproved(params),
     invalidateBorrowMoreMaxReceive(params),
     invalidateBorrowMorePriceImpact(params),

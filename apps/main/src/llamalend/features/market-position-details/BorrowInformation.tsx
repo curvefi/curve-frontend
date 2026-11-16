@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { getCollateralValue } from '@/llamalend/equity-leverage.utils'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
@@ -31,9 +32,13 @@ import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } 
 import { PnlMetrics } from './PnlMetrics'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 
-type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
+type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty; children?: ReactNode }
 
-export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
+export const BorrowInformation = ({
+  params,
+  tokens: { collateralToken, borrowToken },
+  children,
+}: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
   const isEquityLeverage = useLlamalendEquityLeverage()
@@ -56,6 +61,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
 
   return (
     <MetricsGrid variant="mobileRows">
+      {children}
       <Metric
         category={BORROW_METRIC_CATEGORY}
         label={t`Collateral value`}

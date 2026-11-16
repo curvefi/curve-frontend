@@ -3,7 +3,7 @@ import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-ty
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import { queryFactory } from '@ui/features/queries/factory'
 
-export const { useQuery: useLoanExists } = queryFactory({
+export const { useQuery: useLoanExists, queryKey: getLoanExistsKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
     ({ name: 'loanExists', chainId, marketId, userAddress }) as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {

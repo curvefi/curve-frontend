@@ -1,232 +1,164 @@
 import { HealthDetails } from '@/llamalend/features/market-position-details/health/HealthDetails'
-import type { UserPositionStatus } from '@/llamalend/llamalend.types'
-import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
+import { getPositionHealthThresholds, type PositionHealth, type PositionStatus } from '@/llamalend/health.utils'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Decimal } from '@primitives/decimal.utils'
-import { constQ } from '@ui/features/queries/util'
+import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
+import { q } from '@ui/features/queries/util'
 import { lightTheme } from '@ui/features/themes/themes'
-import { decimalDiv, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 
 const { design } = lightTheme()
-const DISCOUNT_GAP: Decimal = '3'
 
 const hexToRgb = (value: string) => {
   const parsed = Number.parseInt(value.replace('#', ''), 16)
   return `rgb(${(parsed >> 16) & 255}, ${(parsed >> 8) & 255}, ${parsed & 255})`
 }
 
-const checkBarWidth =
-  (expectedPercentage: number) =>
-  ([fill]: JQuery<HTMLElement>) => {
-    const fillWidth = fill.getBoundingClientRect().width
-    const barWidth = fill.parentElement!.getBoundingClientRect().width
-    // Allow half a pixel for browser subpixel rounding.
-    expect(fillWidth).to.be.closeTo((barWidth * expectedPercentage) / 100, 0.5)
-  }
-
-const getHealthQuery = (health: Decimal, liquidationBuffer: Decimal): HealthQuery => {
-  const healthNotFull = decimalMultiply(decimalDiv(liquidationBuffer, '100'), DISCOUNT_GAP)
-
-  return constQ({ health, healthFactor: decimalSum('1', decimalDiv(health, '100')), healthNotFull, liquidationBuffer })
-}
-
-const mountHealthDetails = (health: Decimal, liquidationBuffer: Decimal, positionStatus?: UserPositionStatus) =>
+const mountHealthDetails = (position: PositionHealth, assetsType: MarketAssetsType, error: Error | null = null) =>
   cy.mount(
     <ComponentTestWrapper>
-      <HealthDetails health={getHealthQuery(health, liquidationBuffer)} positionStatus={constQ(positionStatus)} />
+      <HealthDetails
+        position={q({ data: position, isLoading: false, error })}
+        thresholds={getPositionHealthThresholds(assetsType)}
+        borrowSymbol="crvUSD"
+      />
     </ComponentTestWrapper>,
   )
 
+type FeedbackKey = 'Success' | 'Warning' | 'Error'
+
 type HealthDetailsTestCase = {
   title: string
-  health: Decimal
-  liquidationBuffer: Decimal
-  positionStatus?: UserPositionStatus
+  position: PositionHealth
+  assetsType: MarketAssetsType
   expected: {
-    healthFactor: string
-    healthTextColor: string
-    healthColor: string
-    healthBarWidth: number
+    health: string
+    healthFeedback: FeedbackKey
     liquidationBuffer: string
-    debtNotional: string
-    liquidationBufferTextColor: string
-    liquidationBufferColor: string
-    liquidationBufferBarWidth: number
-    badge?: 'Soft Liquidation' | 'Liquidation Protection' | 'Hard Liquidation'
+    liquidationBufferAmount: string
+    liquidationBufferFeedback: FeedbackKey
+    badge: string
   }
 }
 
+const getPosition = (
+  health: Decimal,
+  liquidationBuffer: Decimal,
+  liquidationBufferAmount: Decimal,
+  liquidationBufferShare: Decimal,
+  status: PositionStatus,
+): PositionHealth => ({
+  health,
+  liquidationBuffer,
+  liquidationBufferAmount,
+  liquidationBufferShare,
+  isLiquidatable: status === 'liquidatable',
+  status,
+})
+
 const testCases: HealthDetailsTestCase[] = [
   {
-    title: 'renders pristine health',
-    health: '426.9',
-    liquidationBuffer: '108',
+    title: 'renders a position above the range with a buffer above its starting gap',
+    position: getPosition('1.6', '20', '200', '1.2', 'aboveRange'),
+    assetsType: MarketAssetsType.BlueChip,
     expected: {
-      healthFactor: '5.27',
-      healthTextColor: design.Text.TextColors.Feedback.Info,
-      healthColor: design.Layer.Feedback.Info,
-      healthBarWidth: 100,
-      liquidationBuffer: '108%',
-      debtNotional: '(3.24% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
-      liquidationBufferColor: design.Layer.Feedback.Info,
-      liquidationBufferBarWidth: 100,
+      health: '1.60',
+      healthFeedback: 'Success',
+      liquidationBuffer: '20%',
+      liquidationBufferAmount: '200 crvUSD',
+      liquidationBufferFeedback: 'Success',
+      badge: 'Above range',
     },
   },
   {
-    title: 'renders good health',
-    health: '24.1',
-    liquidationBuffer: '110',
+    title: 'renders a position near the range with a risky buffer',
+    position: getPosition('1.05', '8', '80', '0.4', 'nearRange'),
+    assetsType: MarketAssetsType.BlueChip,
     expected: {
-      healthFactor: '1.24',
-      healthTextColor: design.Text.TextColors.Feedback.Success,
-      healthColor: design.Layer.Feedback.Success,
-      healthBarWidth: 24.1,
-      liquidationBuffer: '110%',
-      debtNotional: '(3.30% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
-      liquidationBufferColor: design.Layer.Feedback.Info,
-      liquidationBufferBarWidth: 100,
+      health: '1.05',
+      healthFeedback: 'Warning',
+      liquidationBuffer: '8%',
+      liquidationBufferAmount: '80 crvUSD',
+      liquidationBufferFeedback: 'Warning',
+      badge: 'Near range',
     },
   },
   {
-    title: 'renders caution health',
-    health: '7.9',
-    liquidationBuffer: '110',
+    title: 'renders a position in the range',
+    position: getPosition('1', '6', '60', '0.3', 'inRange'),
+    assetsType: MarketAssetsType.Correlated,
     expected: {
-      healthFactor: '1.079',
-      healthTextColor: design.Text.TextColors.Feedback.Caution,
-      healthColor: design.Layer.Feedback.Caution,
-      healthBarWidth: 7.9,
-      liquidationBuffer: '110%',
-      debtNotional: '(3.30% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
-      liquidationBufferColor: design.Layer.Feedback.Info,
-      liquidationBufferBarWidth: 100,
+      health: '1.00',
+      healthFeedback: 'Error',
+      liquidationBuffer: '6%',
+      liquidationBufferAmount: '60 crvUSD',
+      liquidationBufferFeedback: 'Warning',
+      badge: 'Soft liquidation',
     },
   },
   {
-    title: 'renders tight health',
-    health: '4.9',
-    liquidationBuffer: '110',
+    title: 'renders a position below the range with a critical buffer',
+    position: getPosition('1', '2.4', '24', '0.08', 'belowRange'),
+    assetsType: MarketAssetsType.LongTail,
     expected: {
-      healthFactor: '1.049',
-      healthTextColor: design.Text.TextColors.Feedback.Error,
-      healthColor: design.Layer.Feedback.Error,
-      healthBarWidth: 4.9,
-      liquidationBuffer: '110%',
-      debtNotional: '(3.30% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Info,
-      liquidationBufferColor: design.Layer.Feedback.Info,
-      liquidationBufferBarWidth: 100,
-    },
-  },
-  {
-    title: 'renders active soft liquidation with a risky buffer',
-    health: '0',
-    liquidationBuffer: '22.5',
-    positionStatus: 'softLiquidation',
-    expected: {
-      healthFactor: '1.00',
-      healthTextColor: design.Text.TextColors.Feedback.Error,
-      healthColor: design.Layer.Feedback.Error,
-      healthBarWidth: 0,
-      liquidationBuffer: '22.50%',
-      debtNotional: '(0.68% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Warning,
-      liquidationBufferColor: design.Layer.Feedback.Warning,
-      liquidationBufferBarWidth: 22.5,
-      badge: 'Soft Liquidation',
-    },
-  },
-  {
-    title: 'renders liquidation protection below the range',
-    health: '0',
-    liquidationBuffer: '2.4',
-    positionStatus: 'fullyConverted',
-    expected: {
-      healthFactor: '1.00',
-      healthTextColor: design.Text.TextColors.Feedback.Error,
-      healthColor: design.Layer.Feedback.Error,
-      healthBarWidth: 0,
+      health: '1.00',
+      healthFeedback: 'Error',
       liquidationBuffer: '2.40%',
-      debtNotional: '(0.07% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Error,
-      liquidationBufferColor: design.Layer.Feedback.Error,
-      liquidationBufferBarWidth: 2.4,
-      badge: 'Liquidation Protection',
+      liquidationBufferAmount: '24 crvUSD',
+      liquidationBufferFeedback: 'Error',
+      badge: 'Below range',
     },
   },
   {
-    title: 'renders the hard liquidation threshold',
-    health: '0',
-    liquidationBuffer: '0',
-    positionStatus: 'hardLiquidation',
+    title: 'renders a liquidatable position',
+    position: getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'),
+    assetsType: MarketAssetsType.LongTail,
     expected: {
-      healthFactor: '1.00',
-      healthTextColor: design.Text.TextColors.Feedback.Error,
-      healthColor: design.Layer.Feedback.Error,
-      healthBarWidth: 0,
-      liquidationBuffer: '0%',
-      debtNotional: '(0% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Error,
-      liquidationBufferColor: design.Layer.Feedback.Error,
-      liquidationBufferBarWidth: 0,
-      badge: 'Hard Liquidation',
-    },
-  },
-  {
-    title: 'renders a position beyond liquidation',
-    health: '0',
-    liquidationBuffer: '-20',
-    positionStatus: 'hardLiquidation',
-    expected: {
-      healthFactor: '1.00',
-      healthTextColor: design.Text.TextColors.Feedback.Error,
-      healthColor: design.Layer.Feedback.Error,
-      healthBarWidth: 0,
-      liquidationBuffer: '-20%',
-      debtNotional: '(-0.60% of debt)',
-      liquidationBufferTextColor: design.Text.TextColors.Feedback.Error,
-      liquidationBufferColor: design.Layer.Feedback.Error,
-      liquidationBufferBarWidth: 0,
-      badge: 'Hard Liquidation',
+      health: '1.00',
+      healthFeedback: 'Error',
+      liquidationBuffer: '-0.50%',
+      liquidationBufferAmount: '-5 crvUSD',
+      liquidationBufferFeedback: 'Error',
+      badge: 'Liquidatable',
     },
   },
 ]
 
 describe('Health details', () => {
-  testCases.forEach(({ title, health, liquidationBuffer, positionStatus, expected }) => {
+  testCases.forEach(({ title, position, assetsType, expected }) => {
     it(title, () => {
-      mountHealthDetails(health, liquidationBuffer, positionStatus)
+      mountHealthDetails(position, assetsType)
 
       cy.get('[data-testid="health-details-health-metric-value"]')
-        .should('have.text', expected.healthFactor)
+        .should('have.text', expected.health)
         .find('p')
-        .should('have.css', 'color', hexToRgb(expected.healthTextColor))
-      cy.get('[data-testid="health-details-health-bar-fill"]')
-        .should('have.css', 'background-color', hexToRgb(expected.healthColor))
-        .then(checkBarWidth(expected.healthBarWidth))
+        .should('have.css', 'color', hexToRgb(design.Text.TextColors.Feedback[expected.healthFeedback]))
+      cy.get('[data-testid="health-details-status-badge"]').should('have.text', expected.badge)
 
       cy.get('[data-testid="health-details-liquidation-buffer-metric-value"]')
-        .should('have.text', expected.liquidationBuffer)
+        .should('contain.text', expected.liquidationBuffer)
         .find('p')
-        .should('have.css', 'color', hexToRgb(expected.liquidationBufferTextColor))
-      cy.get('[data-testid="health-details-liquidation-buffer-metric"]').should('contain.text', expected.debtNotional)
-      cy.get('[data-testid="health-details-liquidation-buffer-bar-fill"]')
-        .should('have.css', 'background-color', hexToRgb(expected.liquidationBufferColor))
-        .then(checkBarWidth(expected.liquidationBufferBarWidth))
-
-      if (expected.badge) {
-        cy.get('[data-testid="health-details-health-bar-badge"]').should('have.text', expected.badge)
-      } else {
-        cy.get('[data-testid="health-details-health-bar-badge"]').should('not.exist')
-      }
+        .first()
+        .should('have.css', 'color', hexToRgb(design.Text.TextColors.Feedback[expected.liquidationBufferFeedback]))
+      cy.get('[data-testid="health-details-liquidation-buffer-metric"]').should(
+        'contain.text',
+        expected.liquidationBufferAmount,
+      )
     })
   })
 
-  it('renders liquidation protection for incomplete conversion below the range', () => {
-    mountHealthDetails('0', '22.5', 'incompleteConversion')
-    cy.get('[data-testid="health-details-health-bar-badge"]').should('have.text', 'Liquidation Protection')
+  it('never rounds a health above 1 down to 1.00', () => {
+    mountHealthDetails(getPosition('1.000001', '12', '120', '0.6', 'nearRange'), MarketAssetsType.LongTail)
+    cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.0001')
+  })
+
+  it('keeps the last status next to the error icon when a source errors', () => {
+    mountHealthDetails(
+      getPosition('1', '-0.5', '-5', '-0.02', 'liquidatable'),
+      MarketAssetsType.LongTail,
+      new Error('rpc failed'),
+    )
+    cy.get('[data-testid="health-details-health-metric"] [data-error="Error: rpc failed"]').should('be.visible')
+    cy.get('[data-testid="health-details-health-metric-value"]').should('have.text', '1.00')
+    cy.get('[data-testid="health-details-status-badge"]').should('have.text', 'Liquidatable')
   })
 })
