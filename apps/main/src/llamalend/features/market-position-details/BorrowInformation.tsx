@@ -31,7 +31,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
-import { DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
 import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -88,23 +88,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
           {...(isDetailsOpen && { notional: mapQuery(userPrices, prices => maybe(prices, formatRangePrices)) })}
         />
-        {equityLeverage && (
-          <Metric
-            category={BORROW_METRIC_CATEGORY}
-            label={t`Leverage`}
-            value={equityLeverage.current}
-            valueOptions={{
-              unit: 'multiplier',
-              fallback: UNAVAILABLE_NOTATION,
-              color: getLeverageValueColor(equityLeverage.current.data),
-            }}
-            valueTooltip={{
-              title: t`Leverage`,
-              body: <LeverageTooltipContent openingLeverage={equityLeverage.opening} />,
-              ...BORROW_METRIC_TOOLTIP,
-            }}
-          />
-        )}
         <Metric
           category={BORROW_METRIC_CATEGORY}
           label={t`Equity`}
@@ -115,10 +98,33 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
           })}
         />
+        <Metric
+          category={BORROW_METRIC_CATEGORY}
+          label={t`Leverage`}
+          value={equityLeverage?.current ?? constQ(null)}
+          valueOptions={{
+            unit: 'multiplier',
+            // only zap leveraged positions have a leverage
+            fallback: equityLeverage ? UNAVAILABLE_NOTATION : t`None`,
+            color: getLeverageValueColor(equityLeverage?.current.data),
+          }}
+          valueTooltip={{
+            title: t`Leverage`,
+            body: <LeverageTooltipContent openingLeverage={equityLeverage?.opening} />,
+            ...BORROW_METRIC_TOOLTIP,
+          }}
+        />
         <LiquidationBufferMetric
           position={position}
           thresholds={thresholds}
           borrowSymbol={borrowToken?.symbol}
+          showNotional={isDetailsOpen}
+        />
+        <PnlMetric
+          pnl={positionPnl?.pnl ?? DISABLED_Q}
+          borrowSymbol={borrowToken?.symbol}
+          collateralSymbol={collateralToken?.symbol}
+          borrowUsdRate={q(borrowUsdRate)}
           showNotional={isDetailsOpen}
         />
         <Metric
@@ -133,13 +139,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
                 maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
               ),
             })}
-        />
-        <PnlMetric
-          pnl={positionPnl?.pnl ?? DISABLED_Q}
-          borrowSymbol={borrowToken?.symbol}
-          collateralSymbol={collateralToken?.symbol}
-          borrowUsdRate={q(borrowUsdRate)}
-          showNotional={isDetailsOpen}
         />
       </MetricsGrid>
       <Collapse in={isDetailsOpen}>
