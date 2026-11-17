@@ -249,7 +249,6 @@ export const createStakeScenario = ({
       stakeIsApproved,
       stakeApprove,
       stake,
-      // llamalend.js returns null when the market has no gauge
       isGaugeKilled: createStub(hasGauge ? gaugeKilled : null),
       estimateGas: { stake: estimateGasStake, stakeApprove: estimateGasStakeApprove },
     },
