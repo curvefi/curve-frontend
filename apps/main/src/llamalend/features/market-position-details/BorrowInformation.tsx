@@ -134,7 +134,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           valueOptions={{ unit: 'percentage', fallback: UNAVAILABLE_NOTATION }}
           valueTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
           {...(isDetailsOpen &&
-            carryApr && {
+            carryApr &&
+            // markets without collateral yield have no multiplier and shouldn't render the notional line
+            carryApr.yieldMultiplier.data !== null && {
               notional: mapQuery(carryApr.yieldMultiplier, multiplier =>
                 maybe(multiplier, value => `${formatNumber(value, 'multiplier')} ${t`yield`}`),
               ),
