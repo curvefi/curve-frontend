@@ -29,6 +29,7 @@ export const { useQuery: useWithdrawOneCoinQuote, invalidate: invalidateWithdraw
     }) as const,
   queryFn: async ({ poolAddress, isWrapped, index, amount, maxLpAmount, decimals, slippage }: WithdrawOneCoinQuery) => {
     const pool = getPool(poolAddress)
+    // Pin all search rounds to one block so cached quote bounds remain comparable.
     const blockTag = await pool.curve.provider.getBlockNumber()
     return estimateOneCoinWithdraw({
       amount,

@@ -92,7 +92,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     ...getOneCoinWithdrawParams({ ...debounced, expectedLp: expectedLp.data, quotedAmount }),
     ...poolParams,
   }
-  const priceImpact = useWithdrawPriceImpact(params)
+  const priceImpact = combineQueries([useWithdrawPriceImpact(params), expectedLp], i => i)
 
   useFormSync(form, {
     decimals,

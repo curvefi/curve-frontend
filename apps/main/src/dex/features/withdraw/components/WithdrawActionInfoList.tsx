@@ -1,31 +1,32 @@
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
-import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { useWithdrawPriceImpact } from '@/dex/queries/withdraw/withdraw-bonus.query'
 import { useWithdrawEstimateGas } from '@/dex/queries/withdraw/withdraw-estimate-gas.query'
-import { useWithdrawExpectedLp } from '@/dex/queries/withdraw/withdraw-expected.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 import type { WithdrawQuoteParams } from '../types'
 import { getMaximumWithdrawBurn } from '../withdraw.utils'
 
 export const WithdrawActionInfoList = ({
   params,
+  expectedLp,
+  lpBalance,
+  priceImpact,
   toSymbol,
   onSlippageChange,
 }: {
   params: WithdrawQuoteParams
+  expectedLp: QueryProp<Decimal>
+  lpBalance: QueryProp<Decimal>
+  priceImpact: QueryProp<Decimal | null>
   toSymbol?: string
   onSlippageChange: (slippage: Decimal) => void
 }) => {
-  const expectedLp = q(useWithdrawExpectedLp(params))
-  const { lpTokenBalance: lpBalance } = usePoolTokenDepositBalances(params)
-  const priceImpact = useWithdrawPriceImpact(params)
+  const { data: pool } = usePoolContext().pool
 
   return (
     <PoolActionInfoList
@@ -48,7 +49,7 @@ export const WithdrawActionInfoList = ({
       slippage={params.slippage}
       onSlippageChange={onSlippageChange}
       userAddress={params.userAddress}
-      slippageType={getSlippageType(usePoolContext().pool.data)}
+      slippageType={getSlippageType(pool)}
     />
   )
 }

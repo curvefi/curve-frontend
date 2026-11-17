@@ -47,7 +47,7 @@ export const estimateOneCoinWithdraw = async ({
     round,
   }: {
     candidates: bigint[]
-    outputsByBurn: ReadonlyMap<bigint, bigint>
+    outputsByBurn: ReadonlyMap<bigint, bigint | null>
     round: number
   }): Promise<{ lpAmount: Decimal; amount: Decimal }> => {
     const burns = [...new Set(candidates)].filter(burn => burn > 0n && !outputsByBurn.has(burn))
@@ -55,23 +55,23 @@ export const estimateOneCoinWithdraw = async ({
       throw new NoRetryError(t`Could not estimate this withdrawal within the requested precision. Try another amount.`)
     }
     const outputs = await quote(burns)
-    const quotes = new Map([
-      ...outputsByBurn,
-      ...zip(burns, outputs).filter((entry): entry is [bigint, bigint] => entry[1] != null),
-    ])
+    const quotes = new Map([...outputsByBurn, ...zip(burns, outputs)])
     const sorted = sortBy([...quotes], ([burn]) => burn)
-    const upperIndex = sorted.findIndex(([, output]) => output >= target)
-    if (upperIndex === -1) throw new NoRetryError(t`Withdrawal quote is unavailable. Try another amount.`)
-    const [upper, output] = sorted[upperIndex]
-    const [lower, lowerOutput] = sorted[upperIndex - 1]
-    if (output - target <= tolerance) {
+    const valid = sorted.filter((entry): entry is [bigint, bigint] => entry[1] != null)
+    const upperIndex = valid.findIndex(([, output]) => output >= target)
+    const [lower, lowerOutput] = valid[upperIndex === -1 ? valid.length - 1 : upperIndex - 1]
+    // If larger burns reverted, subdivide below the next revert until a usable upper quote is found.
+    const upperQuote = upperIndex === -1 ? sorted.find(([burn]) => burn > lower) : valid[upperIndex]
+    if (!upperQuote) throw new NoRetryError(t`Withdrawal quote is unavailable. Try another amount.`)
+    const [upper, output] = upperQuote
+    if (output != null && output - target <= tolerance) {
       return { lpAmount: fromWei(upper, LP_TOKEN_DECIMALS), amount: fromWei(output, decimals) }
     }
     const width = upper - lower
     return refine({
       candidates: fractions
         .map(part =>
-          part === partitions
+          part === partitions && output != null
             ? lower + ((target - lowerOutput) * width) / (output - lowerOutput) + 1n // Round interpolation up.
             : lower + (width * part) / partitions,
         )

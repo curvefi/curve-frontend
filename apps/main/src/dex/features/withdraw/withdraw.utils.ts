@@ -1,9 +1,12 @@
 import { BigNumber } from 'bignumber.js'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { Call } from '@curvefi/ethcall'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { decimalDiv, decimalMultiply, decimalRound, decimalSum } from '@ui/lib/decimal'
 import type { WithdrawOneCoinQuery, WithdrawParams } from './types'
+
+type CalcWithdrawOneCoin = (...args: (string | bigint | number | boolean)[]) => Call
 
 /** Match curve-js's quote target and arguments for plain pools, lending pools and meta-pool zaps. */
 export const getOneCoinWithdrawCalls = (
@@ -13,9 +16,7 @@ export const getOneCoinWithdrawCalls = (
 ) => {
   const useZap = !isWrapped && (pool.isMetaFactory || (!pool.isCrypto && !!pool.zap) || pool.isMeta)
   const { multicallContract } = pool.curve.contracts[useZap ? pool.zap! : pool.address]
-  const calcWithdrawOneCoin = multicallContract.calc_withdraw_one_coin as (
-    ...args: (string | bigint | number | boolean)[]
-  ) => Parameters<typeof pool.curve.multicallProvider.all>[0][number]
+  const calcWithdrawOneCoin = multicallContract.calc_withdraw_one_coin as CalcWithdrawOneCoin
   return burns.map(burn =>
     !isWrapped && pool.isMetaFactory
       ? calcWithdrawOneCoin(pool.address, burn, index)

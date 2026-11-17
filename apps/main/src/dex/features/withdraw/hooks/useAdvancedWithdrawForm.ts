@@ -113,6 +113,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
     canBalance,
     lpAmountUsd: lpAmountUsd.data,
     canWithdrawWrapped: !!hasWrapped(pool),
+    canWithdrawUnbalanced: pool?.isCrypto === false,
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },
     userAddress,
     onLpChange: (lpAmount: Decimal | undefined) => update(getUpdatesFromLpAmount(lpAmount)),
