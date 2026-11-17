@@ -24,5 +24,5 @@ export function useMaxDepositTokenValues<ChainId extends LlamaChainId>({
 
   useFormSync(form, { maxDepositAmount: maxDepositAmount.data })
 
-  return q(maxDepositAmount)
+  return { ...q(maxDepositAmount), fieldName: 'maxDepositAmount' as const }
 }

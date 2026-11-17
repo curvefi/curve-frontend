@@ -32,7 +32,7 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
     error,
   } = useScrvUsdDepositMutation({ chainId, userAddress, onReset: () => form.reset(userDefaultValues) })
 
-  const max = mapQuery(userBalances, ({ crvUSD }) => crvUSD)
+  const max = { ...mapQuery(userBalances, ({ crvUSD }) => crvUSD), fieldName: 'maxDepositAmount' as const }
   useFormSync(form, { maxDepositAmount: max.data })
 
   return {
