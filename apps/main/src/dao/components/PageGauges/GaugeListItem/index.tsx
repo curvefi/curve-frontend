@@ -11,7 +11,7 @@ import { TitleComp } from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
+import { getGaugeDepositUrl } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
@@ -47,17 +47,12 @@ export const GaugeListItem = ({
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress,
     userAddress,
   })
-  const { data: gaugesLegacy } = useGaugesLegacy({})
-
-  const gaugeCurveApiData =
-    gaugesLegacy?.[gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()]
-
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
   const currentDate = useCurrentDate()
   const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
 
-  const gaugeExternalLink = getGaugeDepositUrl(gaugeCurveApiData)
+  const gaugeExternalLink = getGaugeDepositUrl(gaugeData)
 
   return (
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
@@ -104,9 +99,9 @@ export const GaugeListItem = ({
           >
             <ExternalLinkIconButton
               href={gaugeExternalLink}
-              tooltip={t`Visit gauge ${gaugeCurveApiData?.isPool ? 'pool' : 'market'}`}
+              tooltip={t`Visit gauge ${gaugeData.pool ? 'pool' : 'market'}`}
             >
-              {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
+              {t`VISIT ${gaugeData.pool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
             <InternalLinkButton
               to={daoPages.gauge({ gaugeAddress: (gaugeData.effective_address ?? gaugeData.address) as Address })}

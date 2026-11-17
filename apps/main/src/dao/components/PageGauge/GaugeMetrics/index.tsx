@@ -3,7 +3,7 @@ import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
-import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
+import { getGaugeDepositUrl } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
@@ -19,12 +19,10 @@ type GaugeMetricsProps = { gaugeData: GaugeFormattedData | undefined; dataLoadin
 
 export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
-  const { data: gaugesLegacy } = useGaugesLegacy({})
-  const gaugeCurveApiData = gaugesLegacy?.[gaugeAddress]
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
   const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions
-  const gaugeExternalLink = getGaugeDepositUrl(gaugeCurveApiData)
+  const gaugeExternalLink = getGaugeDepositUrl(gaugeData)
 
   return (
     <Wrapper>
@@ -137,10 +135,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
                   <StyledMetricsColumnData>{shortenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
                   <BigScreenButtonsWrapper>
-                    <ExternalLinkIconButton
-                      href={gaugeExternalLink}
-                      tooltip={gaugeCurveApiData?.isPool ? t`Visit pool` : t`Visit market`}
-                    />
+                    <ExternalLinkIconButton href={gaugeExternalLink} tooltip={t`Visit pool`} />
                     <CopyIconButton
                       copyContent={gaugeData?.pool?.address}
                       format={getAddress}

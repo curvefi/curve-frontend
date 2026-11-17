@@ -2,28 +2,13 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
+import { useMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
 import { type AppName } from '@evm-ui/shared/routes'
-import { fetchJson } from '@primitives/fetch.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { queryFactory } from '@ui/features/queries/factory'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useMatchRoute } from '@ui/hooks/router'
 import { useIsDesktop } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { EmptyValidationSuite } from '@ui/lib/validation/lib'
-
-/** Query for getting the daily volume of all crvUSD AMMs */
-const { useQuery: useAppStatsDailyVolume } = queryFactory({
-  queryKey: () => ({ name: 'appStatsDailyVolume' }) as const,
-  queryFn: async () => {
-    const resp = await fetchJson<{ data: { totalVolume: number } }>(
-      'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',
-    )
-    return resp.data.totalVolume
-  },
-  category: 'llamalend.appStats',
-  validationSuite: EmptyValidationSuite,
-})
 
 export function useLlamalendAppStats(
   { chainId, currentApp }: { chainId: number | undefined; currentApp: AppName },
@@ -42,7 +27,8 @@ export function useLlamalendAppStats(
   const { data: marketData } = useLlamaMarkets({ userAddress: address, enableDeprecatedMarkets }, enabled)
   const tvl = useMemo(() => sum((marketData?.markets ?? []).map(m => m.tvl)), [marketData])
 
-  const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
+  const { data: mintMarkets } = useMintMarkets({}, enabled && !!chainId)
+  const dailyVolume = useMemo(() => sum(mintMarkets?.map(market => market.volume24hUsd)), [mintMarkets])
 
   return enabled
     ? [

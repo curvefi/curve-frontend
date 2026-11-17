@@ -1,4 +1,5 @@
 import type { TimestampResponse } from '@curvefi/prices-api/timestamp'
+import { dexPages, lendPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { fetchJson } from '@primitives/fetch.utils'
@@ -14,8 +15,8 @@ type PricesGaugeOverviewData = {
   gauge_type: string
   name: string | null
   version: string | null
-  lp_token: string
-  pool: { address: string; name: string; chain: string; tvl_usd: number; trading_volume_24h: number } | null
+  lp_token: Address | null
+  pool: { address: Address; name: string; chain: string; tvl_usd: number; trading_volume_24h: number } | null
   tokens: [{ symbol: string; address: Address; precision: number }]
   market: { name: string; chain: string } | null
   is_killed: boolean | null
@@ -42,6 +43,16 @@ export type GaugeFormattedData = Omit<PricesGaugeOverviewData, 'gauge_weight'> &
 }
 
 export type GaugeMapper = Record<string, GaugeFormattedData>
+
+export const getGaugeDepositUrl = (gauge: GaugeFormattedData | undefined) =>
+  (gauge &&
+    !['Fundraising', 'LMCallback'].includes(gauge.gauge_type) &&
+    (gauge.pool?.chain
+      ? dexPages.pool({ blockchainId: gauge.pool.chain, poolAddress: gauge.pool.address })
+      : gauge.market?.chain &&
+        gauge.lp_token &&
+        lendPages.vault({ blockchainId: gauge.market.chain, marketId: gauge.lp_token }))) ||
+  undefined
 
 const formatGaugeTitle = (poolName: string | undefined, marketName: string | null, address: string): string => {
   if (poolName) {

@@ -31,7 +31,11 @@ const userChainNameValidationSuite = createValidationSuite((params: UserChainNam
 
 export type MintMarket = MintMarketFromApi & { chain: Chain }
 
-export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } = queryFactory({
+export const {
+  useQuery: useMintMarkets,
+  getQueryOptions: getMintMarketOptions,
+  reset: resetMintMarkets,
+} = queryFactory({
   queryKey: () => ({ name: 'mint-markets', version: 4 }) as const,
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),
