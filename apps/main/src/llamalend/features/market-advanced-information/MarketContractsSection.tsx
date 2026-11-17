@@ -11,6 +11,10 @@ import {
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketBorrowGaugeAddress } from '@/llamalend/queries/market/market-borrow-gauge-address.query'
+import {
+  useMarketBorrowGaugeKilled,
+  useMarketSupplyGaugeKilled,
+} from '@/llamalend/queries/market/market-gauge-killed.query'
 import { useMarketOracleAddress } from '@/llamalend/queries/market/market-oracle-address.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -25,13 +29,14 @@ import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
-import type { QueryProp } from '@ui/features/queries/util'
+import { q, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { MarketIdRow } from './MarketParameterRows'
@@ -52,12 +57,29 @@ type MarketContractsProps = {
   apiMarket: QueryProp<LlamaMarket>
 }
 
-const GaugeLabel = ({ type }: { type: 'supply' | 'borrow' }) => (
+const GaugeLabel = ({
+  type,
+  isKilled: { data: isKilled, isLoading, error },
+}: {
+  type: 'supply' | 'borrow'
+  isKilled: QueryProp<boolean | null>
+}) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     <Typography variant="bodyMRegular" color="textSecondary">
       {{ supply: 'Supply', borrow: 'Borrow' }[type] + ' gauge'}
     </Typography>
-    <Badge size="extraSmall" color="active" label={t`Active`} />
+    {error ? (
+      <ErrorIconButton error={error} size="extraSmall" />
+    ) : (
+      <WithSkeleton loading={isLoading}>
+        <Badge
+          size="extraSmall"
+          color={isKilled ? 'warning' : 'active'}
+          label={isKilled ? t`Inactive` : t`Active`}
+          data-testid={`market-contract-${type}-gauge-status`}
+        />
+      </WithSkeleton>
+    )}
   </Stack>
 )
 
@@ -140,6 +162,10 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
     marketId: market?.id,
   })
 
+  // the queries are disabled until llamalend.js loads the market, so keep the badges loading until then
+  const supplyGaugeKilled = q(useMarketSupplyGaugeKilled({ chainId, marketId: market?.id }))
+  const borrowGaugeKilled = q(useMarketBorrowGaugeKilled({ chainId, marketId: market?.id }))
+
   const hasContractData = !!market || !!apiMarket.data
   const contractsLoading = !hasContractData || (!!market && (oracleAddressIsLoading || borrowGaugeAddressIsLoading))
   const supplyGaugeAddress = getGaugeAddress(market, apiMarket.data)
@@ -165,8 +191,26 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       },
       address: monetaryPolicyAddress,
     },
-    supplyGaugeAddress && { key: 'supply-gauge', label: <GaugeLabel type="supply" />, address: supplyGaugeAddress },
-    borrowGaugeAddress && { key: 'borrow-gauge', label: <GaugeLabel type="borrow" />, address: borrowGaugeAddress },
+    supplyGaugeAddress && {
+      key: 'supply-gauge',
+      label: (
+        <GaugeLabel
+          type="supply"
+          isKilled={{ ...supplyGaugeKilled, isLoading: supplyGaugeKilled.isLoading || !market }}
+        />
+      ),
+      address: supplyGaugeAddress,
+    },
+    borrowGaugeAddress && {
+      key: 'borrow-gauge',
+      label: (
+        <GaugeLabel
+          type="borrow"
+          isKilled={{ ...borrowGaugeKilled, isLoading: borrowGaugeKilled.isLoading || !market }}
+        />
+      ),
+      address: borrowGaugeAddress,
+    },
   )
 
   return (
