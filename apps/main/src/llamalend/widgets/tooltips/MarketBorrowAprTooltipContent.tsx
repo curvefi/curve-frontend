@@ -89,7 +89,6 @@ export const MarketBorrowAprTooltipContent = ({
             <RewardsTooltipItems
               title={t`Collateral rewards`}
               tooltipType="borrow"
-              extraRewards={[]}
               extraIncentives={collateralRewards}
             />
           </TooltipItems>
