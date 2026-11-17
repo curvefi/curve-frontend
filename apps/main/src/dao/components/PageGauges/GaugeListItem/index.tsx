@@ -17,7 +17,6 @@ import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { IconButton } from '@legacy-ui/IconButton'
-import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
@@ -88,7 +87,7 @@ export const GaugeListItem = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
+            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />
           </ChartWrapper>
           <GaugeDetails gaugeData={gaugeData} />
           <Box
@@ -103,9 +102,7 @@ export const GaugeListItem = ({
             >
               {t`VISIT ${gaugeData.pool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton
-              to={daoPages.gauge({ gaugeAddress: (gaugeData.effective_address ?? gaugeData.address) as Address })}
-            >
+            <InternalLinkButton to={daoPages.gauge({ gaugeAddress: gaugeData.effectiveAddress ?? gaugeData.address })}>
               {t`VISIT GAUGE`}
             </InternalLinkButton>
           </Box>

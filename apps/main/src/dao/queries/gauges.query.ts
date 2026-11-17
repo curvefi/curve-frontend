@@ -1,60 +1,25 @@
-import type { TimestampResponse } from '@curvefi/prices-api/timestamp'
+import { getGauges as getPricesGauges, type Gauge } from '@curvefi/prices-api/gauge'
 import { dexPages, lendPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
-import type { Address } from '@primitives/address.utils'
-import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
-const GAUGES_URL = 'https://prices.curve.finance/v1/dao/gauges/overview'
-
-type PricesGaugeOverviewData = {
-  address: string
-  effective_address?: string
-  gauge_type: string
-  name: string | null
-  version: string | null
-  lp_token: Address | null
-  pool: { address: Address; name: string; chain: string; tvl_usd: number; trading_volume_24h: number } | null
-  tokens: [{ symbol: string; address: Address; precision: number }]
-  market: { name: string; chain: string } | null
-  is_killed: boolean | null
-  emissions: number
-  prev_epoch_emissions: number
-  gauge_weight: string
-  gauge_weight_7d_delta: number | null
-  gauge_weight_60d_delta: number | null
-  gauge_relative_weight: number
-  gauge_relative_weight_7d_delta: number | null
-  gauge_relative_weight_60d_delta: number | null
-  creation_tx: string
-  creation_date: TimestampResponse
-  last_vote_date: TimestampResponse
-  last_vote_tx: string
-}
-
-type PricesGaugeOverviewResponse = { gauges: PricesGaugeOverviewData[] }
-
-export type GaugeFormattedData = Omit<PricesGaugeOverviewData, 'gauge_weight'> & {
-  title: string
-  platform: string
-  gauge_weight: number
-}
+export type GaugeFormattedData = Omit<Gauge, 'weight'> & { title: string; platform: string; weight: number }
 
 export type GaugeMapper = Record<string, GaugeFormattedData>
 
 export const getGaugeDepositUrl = (gauge: GaugeFormattedData | undefined) =>
   (gauge &&
-    !['Fundraising', 'LMCallback'].includes(gauge.gauge_type) &&
+    !['Fundraising', 'LMCallback'].includes(gauge.type) &&
     (gauge.pool?.chain
       ? dexPages.pool({ blockchainId: gauge.pool.chain, poolAddress: gauge.pool.address })
       : gauge.market?.chain &&
-        gauge.lp_token &&
-        lendPages.vault({ blockchainId: gauge.market.chain, marketId: gauge.lp_token }))) ||
+        gauge.lpToken &&
+        lendPages.vault({ blockchainId: gauge.market.chain, marketId: gauge.lpToken }))) ||
   undefined
 
-const formatGaugeTitle = (poolName: string | undefined, marketName: string | null, address: string): string => {
+const formatGaugeTitle = (poolName: string | undefined, marketName: string | undefined, address: string): string => {
   if (poolName) {
     return (poolName.split(': ')[1] || poolName)
       .replace(/curve\.fi/i, '')
@@ -64,28 +29,27 @@ const formatGaugeTitle = (poolName: string | undefined, marketName: string | nul
   return marketName ?? shortenAddress(address) ?? ''
 }
 
-/** TODO: This query body implementation can probably be replaced with a simple call of getGauges from prices-api\src\gauge\api.ts? */
 export const {
   useQuery: useGauges,
   getQueryData: getGauges,
   refetchQuery: refetchGauges,
 } = queryFactory({
-  queryKey: () => ({ name: 'gauges' }) as const,
+  queryKey: () => ({ name: 'gauges', version: 2 }) as const,
   queryFn: async () => {
-    const { gauges } = await fetchJson<PricesGaugeOverviewResponse>(GAUGES_URL)
+    const gauges = await getPricesGauges()
 
     return fromEntries(
       gauges.map(gauge => [
-        gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase(),
+        gauge.effectiveAddress?.toLowerCase() ?? gauge.address.toLowerCase(),
         {
-          // effective_address is the sidechain gauge address
+          // effectiveAddress is the sidechain gauge address
           ...gauge,
           platform: gauge.market ? 'Lend' : gauge.pool ? 'AMM' : '',
-          title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name ?? null, gauge.address),
-          gauge_weight: +gauge.gauge_weight,
-          gauge_relative_weight: +(gauge.gauge_relative_weight * 100),
-          gauge_relative_weight_7d_delta: maybe(gauge.gauge_relative_weight_7d_delta, data => +(data * 100)) ?? null,
-          gauge_relative_weight_60d_delta: maybe(gauge.gauge_relative_weight_60d_delta, data => +(data * 100)) ?? null,
+          title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name, gauge.address),
+          weight: Number(gauge.weight),
+          weightRelative: gauge.weightRelative * 100,
+          weightRelativeDelta7d: maybe(gauge.weightRelativeDelta7d, data => data * 100),
+          weightRelativeDelta60d: maybe(gauge.weightRelativeDelta60d, data => data * 100),
         },
       ]),
     )

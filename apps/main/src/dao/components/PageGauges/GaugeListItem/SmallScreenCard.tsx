@@ -9,7 +9,6 @@ import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { IconButton } from '@legacy-ui/IconButton'
-import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
@@ -40,22 +39,18 @@ export const SmallScreenCard = ({
   const [open, setOpen] = useState(false)
 
   const getGaugeListSortingData = (key: string) => {
-    if (key === 'gauge_relative_weight') {
-      return { title: t`Weight`, value: formatNumber(gaugeData.gauge_relative_weight, 'percent.value') }
+    if (key === 'weightRelative') {
+      return { title: t`Weight`, value: formatNumber(gaugeData.weightRelative, 'percent.value') }
     }
-    if (key === 'gauge_relative_weight_7d_delta') {
+    if (key === 'weightRelativeDelta7d') {
       return {
         title: t`7d Delta`,
-        value: gaugeData.gauge_relative_weight_7d_delta
-          ? formatNumber(gaugeData.gauge_relative_weight_7d_delta, 'percent.value')
-          : 'N/A',
+        value: gaugeData.weightRelativeDelta7d ? formatNumber(gaugeData.weightRelativeDelta7d, 'percent.value') : 'N/A',
       }
     }
     return {
       title: t`60d Delta`,
-      value: gaugeData.gauge_relative_weight_60d_delta
-        ? formatNumber(gaugeData.gauge_relative_weight_60d_delta, 'percent.value')
-        : 'N/A',
+      value: gaugeData.weightRelativeDelta60d ? formatNumber(gaugeData.weightRelativeDelta60d, 'percent.value') : 'N/A',
     }
   }
 
@@ -96,12 +91,12 @@ export const SmallScreenCard = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
+            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap="var(--spacing-3)" flexAlignItems="center" margin="var(--spacing-2) auto">
             <InternalLinkButton
-              to={daoPages.gauge({ gaugeAddress: gaugeData.effective_address as Address })}
+              to={daoPages.gauge({ gaugeAddress: gaugeData.effectiveAddress ?? gaugeData.address })}
             >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>

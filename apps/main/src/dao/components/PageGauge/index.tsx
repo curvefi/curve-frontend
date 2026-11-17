@@ -3,7 +3,6 @@ import { useGauges } from '@/dao/queries/gauges.query'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { daoPages } from '@evm-ui/shared/routes'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { PAGE_SPACING } from '@ui/features/layout/DetailPageLayout/constants'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -31,7 +30,7 @@ export const Gauge = () => {
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <Stack sx={{ padding: Spacing.md }}>
-          {gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />}
+          {gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />}
         </Stack>
         {gaugeData && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
       </Stack>
