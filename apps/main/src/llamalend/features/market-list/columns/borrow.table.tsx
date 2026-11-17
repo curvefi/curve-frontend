@@ -1,21 +1,24 @@
-import { LIQUIDATION_BUFFER_TOOLTIP } from '@/llamalend/features/market-position-details/tooltips/tooltips'
+import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
+import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { CarryAprTooltipContent } from '@/llamalend/widgets/tooltips/CarryAprTooltipContent'
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
-import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
 import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { MarketRateType } from '@evm-ui/types/market'
+import { TooltipDescription, TooltipWrapper } from '@ui/components/TooltipComponents'
 import { combineQueries } from '@ui/features/queries/combine'
 import { withQuery } from '@ui/features/tables/withQuery'
 import { t } from '@ui/lib/i18n'
 import {
   BandCountCell,
   CollateralCompositionCell,
+  DistanceToRangeCell,
   EquityCell,
-  HealthFactorCell,
+  HealthCell,
   LeverageCell,
   LiquidationBufferCell,
-  LoopedAprCell,
+  CarryAprCell,
   LtvCell,
   PnlCell,
 } from '../cells/BorrowPositionCells'
@@ -27,10 +30,11 @@ import {
   getUserCollateralShare,
   getUserCollateralUsd,
   getUserEquityUsd,
-  getUserHealthFactor,
+  getUserDistanceToRange,
+  getUserHealth,
   getUserLeverage,
   getUserLiquidationBuffer,
-  getUserLoopedApr,
+  getUserCarryApr,
   getUserPnlUsd,
   getUserLegacyHealth,
   getUserPositionLtv,
@@ -42,7 +46,7 @@ import { assetsColumn, borrowRateColumn, columnHelper, type MarketTable } from '
 
 const getStatsQuery = ({ positionQueries: { stats } }: LlamaMarketRow) => stats
 
-/** The leverage metrics are only shown once we know the position is zap leveraged */
+/** The leverage is only shown once we know the position is zap leveraged */
 const getLeverageQuery = ({ positionQueries: { stats, isZapLeveraged } }: LlamaMarketRow) =>
   combineQueries([stats, isZapLeveraged], stats => stats)
 
@@ -134,11 +138,35 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
       adapt(userCollateralColumn, { header: t`Collateral`, meta: { defaultHidden: true } }),
       adapt(userLtvColumn, { header: t`LTV ratio`, meta: { defaultHidden: true } }),
       borrowRateColumn,
-      columnHelper.accessor(getUserHealthFactor, {
+      columnHelper.accessor(getUserHealth, {
         id: MarketColumnId.UserHealth,
         header: MARKET_TITLES[MarketColumnId.UserHealth],
-        cell: withQuery(getStatsQuery, HealthFactorCell),
-        meta: { type: 'numeric' },
+        cell: withQuery(getStatsQuery, HealthCell),
+        meta: {
+          type: 'numeric',
+          tooltip: { title: MARKET_TITLES[MarketColumnId.UserHealth], body: <HealthTooltipContent /> },
+        },
+        sortUndefined: 'last',
+      }),
+      columnHelper.accessor(getUserDistanceToRange, {
+        id: MarketColumnId.UserDistanceToRange,
+        header: MARKET_TITLES[MarketColumnId.UserDistanceToRange],
+        cell: withQuery(getStatsQuery, DistanceToRangeCell),
+        meta: {
+          type: 'numeric',
+          unit: 'percentage',
+          tooltip: {
+            title: MARKET_TITLES[MarketColumnId.UserDistanceToRange],
+            body: (
+              <TooltipWrapper>
+                <TooltipDescription
+                  text={t`How far the oracle price must move to reach your liquidation range. Shown below are the bottom and top prices of the range.`}
+                />
+              </TooltipWrapper>
+            ),
+          },
+          defaultHidden: true,
+        },
         sortUndefined: 'last',
       }),
       columnHelper.accessor(getUserLiquidationBuffer, {
@@ -150,7 +178,7 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
           unit: 'percentage',
           tooltip: {
             title: MARKET_TITLES[MarketColumnId.UserLiquidationBuffer],
-            body: LIQUIDATION_BUFFER_TOOLTIP.body,
+            body: <LiquidationBufferTooltipContent />,
           },
           defaultHidden: true,
         },
@@ -167,14 +195,14 @@ export const BORROW_TABLE: MarketTable = defineMarketTable({
         },
         sortUndefined: 'last',
       }),
-      columnHelper.accessor(getUserLoopedApr, {
-        id: MarketColumnId.UserLoopedApr,
-        header: MARKET_TITLES[MarketColumnId.UserLoopedApr],
-        cell: withQuery(getLeverageQuery, LoopedAprCell),
+      columnHelper.accessor(getUserCarryApr, {
+        id: MarketColumnId.UserCarryApr,
+        header: MARKET_TITLES[MarketColumnId.UserCarryApr],
+        cell: withQuery(getStatsQuery, CarryAprCell),
         meta: {
           type: 'numeric',
           unit: 'percentage',
-          tooltip: { title: MARKET_TITLES[MarketColumnId.UserLoopedApr], body: <LoopedAprTooltipContent /> },
+          tooltip: { title: MARKET_TITLES[MarketColumnId.UserCarryApr], body: <CarryAprTooltipContent /> },
           defaultHidden: true,
         },
         sortUndefined: 'last',

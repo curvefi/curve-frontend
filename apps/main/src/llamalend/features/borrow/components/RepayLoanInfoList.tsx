@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useRepayCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useRepayEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
@@ -16,13 +17,14 @@ import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
 import { decimal, decimalMinus } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -98,9 +100,10 @@ export function RepayLoanInfoList({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   showLeverage: boolean | undefined
   form: UseFormReturn<RepayFormData>
-  prices?: QueryProp<Range<Decimal> | null>
+  prices: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('stateCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
@@ -113,9 +116,15 @@ export function RepayLoanInfoList({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useRepayCarryApr(params, { debt, debtDelta }, isOpen)}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={q(useRepayEstimateGas({ ...params, isControllerApproved }, isOpen))}
-      health={q(useHealthQueries(isHealthFull => getRepayHealthOptions({ ...params, isHealthFull }, isOpen)))}
+      health={q(
+        useLegacyHealthQueries(isHealthFull =>
+          getRepayHealthOptions({ ...params, isHealthFull }, isOpen && !isNewLlamalendHealth),
+        ),
+      )}
+      liquidationBuffer={q(useQuery(getRepayHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
       prices={prices}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       isFullRepay={isFull}
@@ -141,7 +150,7 @@ export function RepayLoanInfoList({
         collateralLeverageValue: useRepayFutureLeverage(params, isOpen),
         prevCollateralLeverageValue: useUserCurrentLeverage(params, isOpen),
         isEquityLeverage: useLlamalendEquityLeverage(),
-        equityLeverage: useRepayEquityLeverage(params, { debt, debtDelta }, isOpen),
+        equityLeverage: useRepayEquityLeverage(params, debt, isOpen),
         prevCollateral,
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),

@@ -1,3 +1,4 @@
+import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { Accordion } from '@ui/components/Accordion'
@@ -12,18 +13,25 @@ const { Spacing } = SizesAndSpaces
 
 type UserPositionHistoryProps = { eventsQuery: QueryProp<ParsedUserCollateralEvent[]>; variant: 'accordion' | 'flat' }
 
-export const UserPositionHistory = ({ eventsQuery, variant }: UserPositionHistoryProps) => (
-  <WithWrapper shouldWrap={variant === 'accordion'} Wrapper={Accordion} title={t`Activity`} ghost>
-    <Stack sx={{ gap: Spacing.xxs }}>
-      <UserEventsTable eventsQuery={eventsQuery} />
-      <Stack direction="row" sx={{ gap: Spacing.xs }}>
-        <Typography variant="bodyXsRegular">
-          {t`Llamelend liquidations are not price based, but health based.`}
-        </Typography>
-        <Typography variant="bodyXsBold" sx={{ color: t => t.design.Text.TextColors.Highlight }}>
-          {t`Liquidations occur when health reaches 0.`}
-        </Typography>
+export const UserPositionHistory = ({ eventsQuery, variant }: UserPositionHistoryProps) => {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
+  return (
+    <WithWrapper shouldWrap={variant === 'accordion'} Wrapper={Accordion} title={t`Activity`} ghost>
+      <Stack sx={{ gap: Spacing.xxs }}>
+        <UserEventsTable eventsQuery={eventsQuery} />
+        <Stack direction="row" sx={{ gap: Spacing.xs }}>
+          <Typography variant="bodyXsRegular">
+            {isNewLlamalendHealth
+              ? t`LlamaLend liquidations depend on your liquidation buffer, not on price alone.`
+              : t`Llamalend liquidations are not price based, but health based.`}
+          </Typography>
+          <Typography variant="bodyXsBold" sx={{ color: t => t.design.Text.TextColors.Highlight }}>
+            {isNewLlamalendHealth
+              ? t`Your position can be fully liquidated when your liquidation buffer is below 0% and the price is inside or below the range.`
+              : t`Liquidations occur when health reaches 0.`}
+          </Typography>
+        </Stack>
       </Stack>
-    </Stack>
-  </WithWrapper>
-)
+    </WithWrapper>
+  )
+}

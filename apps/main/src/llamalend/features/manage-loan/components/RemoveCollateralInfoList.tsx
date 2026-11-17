@@ -1,6 +1,7 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useRemoveCollateralCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useRemoveCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
@@ -13,10 +14,11 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimalMax, decimalMinus, decimalNegate } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -38,6 +40,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
@@ -48,8 +51,14 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useRemoveCollateralCarryApr(params, isOpen)}
       gas={q(useRemoveCollateralEstimateGas(params, isOpen))}
-      health={q(useHealthQueries(isFull => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(
+        useLegacyHealthQueries(isFull =>
+          getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen && !isNewLlamalendHealth),
+        ),
+      )}
+      liquidationBuffer={q(useQuery(getRemoveCollateralHealthOptions({ ...params, isFull: false }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(

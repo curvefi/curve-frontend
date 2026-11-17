@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useAddCollateralCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useAddCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
@@ -14,10 +15,11 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui/features/forms'
+import { useQuery } from '@ui/features/queries/query-hooks'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -39,6 +41,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
 }) {
+  const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
@@ -49,8 +52,14 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useAddCollateralCarryApr(params, isOpen)}
       gas={q(useAddCollateralEstimateGas(params, isOpen))}
-      health={q(useHealthQueries(isFull => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      health={q(
+        useLegacyHealthQueries(isFull =>
+          getAddCollateralHealthOptions({ ...params, isFull }, isOpen && !isNewLlamalendHealth),
+        ),
+      )}
+      liquidationBuffer={q(useQuery(getAddCollateralHealthOptions({ ...params, isFull: false }, isOpen)))}
       debt={prevDebt}
       loanToValue={q(
         useLoanToValueFromUserState(

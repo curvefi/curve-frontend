@@ -3,10 +3,10 @@ import {
   getCollateralValue,
   getEquityLeverage,
   getLoanToValue,
-  getLoopedApr,
+  getCarryApr,
   getYieldMultiplier,
 } from '@/llamalend/equity-leverage.utils'
-import { getLiquidationBuffer } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { getDistanceToRange } from '@/llamalend/health.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user/user-state.query'
@@ -70,32 +70,28 @@ export const getUserCollateralShare = (row: LlamaMarketRow) =>
 export const getUserLeverage = (row: LlamaMarketRow) =>
   row.positionQueries.isZapLeveraged.data ? maybe(mapPosition(row, getEquityLeverage), Number) : undefined
 
-/** Only for zap leveraged positions */
-const getLoopedAprDecimal = (row: LlamaMarketRow) =>
-  row.positionQueries.isZapLeveraged.data
-    ? mapPosition(row, (position, price) =>
-        getLoopedApr(position, price, decimal(row.rates.borrowApr), getMarketListYields(row)),
-      )
-    : undefined
+const getCarryAprDecimal = (row: LlamaMarketRow) =>
+  mapPosition(row, (position, price) =>
+    getCarryApr(position, price, decimal(row.rates.borrowApr), getMarketListYields(row)),
+  )
 
-export const getUserLoopedApr = (row: LlamaMarketRow) => maybe(getLoopedAprDecimal(row), Number)
+export const getUserCarryApr = (row: LlamaMarketRow) => maybe(getCarryAprDecimal(row), Number)
 
 /** How many times the collateral yield the equity earns */
 export const getUserYieldMultiplier = (row: LlamaMarketRow) =>
-  maybe(getYieldMultiplier(getLoopedAprDecimal(row) ?? null, getMarketListYields(row).collateralYieldApr), Number)
+  maybe(getYieldMultiplier(getCarryAprDecimal(row) ?? null, getMarketListYields(row).collateralYieldApr), Number)
 
-export const getUserLiquidationBuffer = ({
-  positionQueries,
-  parameters: { loanDiscount, liquidationDiscount },
-}: LlamaMarketRow) =>
-  maybe(positionQueries.stats.data?.healthNotFull, health =>
-    maybe(getLiquidationBuffer(health, loanDiscount, liquidationDiscount), Number),
-  )
+export const getUserHealth = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data?.positionHealth, ({ health }) => Number(health))
 
-/** The part of the debt the band-valued health stands for, in the borrowed token */
-export const getUserLiquidationBufferAmount = ({ positionQueries }: LlamaMarketRow) =>
-  maybe(positionQueries.stats.data, ({ borrowed, healthNotFull }) =>
-    maybe(healthNotFull, health => (borrowed * +health) / 100),
+export const getUserLiquidationBuffer = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data?.positionHealth, ({ liquidationBuffer }) => Number(liquidationBuffer))
+
+export const getUserDistanceToRange = ({ positionQueries }: LlamaMarketRow) =>
+  maybe(positionQueries.stats.data, ({ oraclePrice, rangePrices }) =>
+    maybes([oraclePrice, rangePrices], (oraclePrice, rangePrices) =>
+      Number(getDistanceToRange(oraclePrice, rangePrices)),
+    ),
   )
 
 export const getUserBandCount = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.bandCount
@@ -132,9 +128,6 @@ export const getUserIncentivesApr = ({ rates, rewards, lendingPosition }: LlamaM
 }
 
 export const getUserLegacyHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.legacyHealth
-
-export const getUserHealthFactor = ({ positionQueries }: LlamaMarketRow) =>
-  maybe(positionQueries.stats.data?.healthFactor, Number)
 
 export const getUserEquityUsd = ({ positionQueries }: LlamaMarketRow) => positionQueries.equityUsd.data
 

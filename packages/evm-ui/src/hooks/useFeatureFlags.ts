@@ -42,3 +42,6 @@ export const useLlamalendPositionPnl = useBetaChannel
 
 /** LlamaLend borrow and supply position tables with the position card's metrics */
 export const useLlamalendPositionTables = useBetaChannel
+
+/** The new position tables need the new health */
+export const useLlamalendHealthTables = () => [useNewLlamalendHealth(), useLlamalendPositionTables()].every(Boolean)

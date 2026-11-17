@@ -1,15 +1,16 @@
 import { describe, expect, it } from 'vitest'
+import type { PositionHealth } from '@/llamalend/health.utils'
 import type { LlamaMarketRow, MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Decimal } from '@primitives/decimal.utils'
-import { constQ, DISABLED_Q } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, type Range } from '@ui/features/queries/util'
 import {
   getUserBandCount,
   getUserCollateralShare,
-  getUserHealthFactor,
+  getUserDistanceToRange,
+  getUserHealth,
   getUserLeverage,
   getUserLiquidationBuffer,
-  getUserLiquidationBufferAmount,
-  getUserLoopedApr,
+  getUserCarryApr,
   getUserIncentivesApr,
   getUserPositionLtv,
   getUserSupplyShare,
@@ -24,8 +25,15 @@ const STATS = {
   position: POSITION,
   borrowed: 5,
   oraclePrice: '1' as Decimal,
-  healthFactor: '1.2' as Decimal,
-  healthNotFull: '0.6' as Decimal,
+  positionHealth: {
+    health: '1.2',
+    liquidationBuffer: '120',
+    liquidationBufferAmount: '6',
+    liquidationBufferShare: '1',
+    isLiquidatable: false,
+    status: 'aboveRange',
+  } satisfies PositionHealth,
+  rangePrices: ['0.8', '0.9'] satisfies Range<Decimal>,
   bandCount: 4,
 } satisfies Partial<MarketStats>
 
@@ -43,10 +51,8 @@ const createRow = ({
   liquidationDiscount?: string
 } = {}) =>
   ({
-    assets: {
-      collateral: { symbol: 'sDOLA', rebasingYieldApr: collateralYieldApr },
-      borrowed: { symbol: 'crvUSD', rebasingYieldApr: null },
-    },
+    assets: { collateral: { symbol: 'sDOLA' }, borrowed: { symbol: 'crvUSD', rebasingYieldApr: null } },
+    collateralYields: { rebasingApr: collateralYieldApr, baseApr: null, crvApr: null },
     parameters: { loanDiscount, liquidationDiscount },
     rates: { borrowApr: 3 },
     rewards: [],
@@ -57,16 +63,27 @@ const createRow = ({
   }) as unknown as LlamaMarketRow
 
 describe('borrow position metrics', () => {
-  it('shows the liquidation buffer and the debt it stands for', () => {
+  it('shows the health and the liquidation buffer', () => {
     const row = createRow()
-    // 0.6% health over the 0.5% gap between the loan and liquidation discounts
-    expect(getUserLiquidationBuffer(row)).toBeCloseTo(120)
-    // 0.6% of the 5 debt
-    expect(getUserLiquidationBufferAmount(row)).toBeCloseTo(0.03)
+    expect(getUserHealth(row)).toBe(1.2)
+    expect(getUserLiquidationBuffer(row)).toBe(120)
   })
 
-  it('shows no liquidation buffer without a gap between the discounts', () =>
-    expect(getUserLiquidationBuffer(createRow({ loanDiscount: '2.5' }))).toBeUndefined())
+  it('shows the price drop needed to reach the range above it', () =>
+    expect(getUserDistanceToRange(createRow({ stats: { ...STATS, oraclePrice: '1' } }))).toBeCloseTo(-10))
+
+  it('shows no distance inside the range', () =>
+    expect(getUserDistanceToRange(createRow({ stats: { ...STATS, oraclePrice: '0.85' } }))).toBe(0))
+
+  it('shows the price rise needed to reach the range below it', () =>
+    expect(getUserDistanceToRange(createRow({ stats: { ...STATS, oraclePrice: '0.72' } }))).toBeCloseTo(11.11, 2))
+
+  it('shows no health nor distance without the range prices', () => {
+    const row = createRow({ stats: { ...STATS, positionHealth: undefined, rangePrices: undefined } })
+    expect(getUserHealth(row)).toBeUndefined()
+    expect(getUserLiquidationBuffer(row)).toBeUndefined()
+    expect(getUserDistanceToRange(row)).toBeUndefined()
+  })
 
   it('shows the LTV at the oracle price', () => expect(getUserPositionLtv(createRow())).toBeCloseTo(50))
 
@@ -85,34 +102,31 @@ describe('borrow position metrics', () => {
   it('shows the leverage as the collateral value over the equity', () =>
     expect(getUserLeverage(createRow())).toBeCloseTo(2))
 
-  it('shows the looped APR on the equity and its yield multiplier', () => {
+  it('shows the carry APR on the equity and its yield multiplier', () => {
     const row = createRow()
     // (10 × 6% − 5 × 3%) / 5 equity
-    expect(getUserLoopedApr(row)).toBeCloseTo(9)
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
     expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows no leverage nor looped APR for a plain borrow', () => {
+  it('shows the carry APR but no leverage for a plain borrow', () => {
     const row = createRow({ isZapLeveraged: false })
     expect(getUserLeverage(row)).toBeUndefined()
-    expect(getUserLoopedApr(row)).toBeUndefined()
-    expect(getUserYieldMultiplier(row)).toBeUndefined()
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
+    expect(getUserYieldMultiplier(row)).toBeCloseTo(1.5)
   })
 
-  it('shows no leverage nor looped APR while it is unknown if the position is zap leveraged', () => {
+  it('shows the carry APR but no leverage while it is unknown if the position is zap leveraged', () => {
     const row = createRow({ isZapLeveraged: null })
     expect(getUserLeverage(row)).toBeUndefined()
-    expect(getUserLoopedApr(row)).toBeUndefined()
-    expect(getUserYieldMultiplier(row)).toBeUndefined()
+    expect(getUserCarryApr(row)).toBeCloseTo(9)
   })
 
-  it('shows no looped APR without a collateral yield', () => {
-    const row = createRow({ collateralYieldApr: null })
-    expect(getUserLoopedApr(row)).toBeUndefined()
+  it.each([null, 0])('shows no carry APR with a collateral yield of %s', collateralYieldApr => {
+    const row = createRow({ collateralYieldApr })
+    expect(getUserCarryApr(row)).toBeUndefined()
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })
-
-  it('shows the health factor', () => expect(getUserHealthFactor(createRow())).toBe(1.2))
 
   it('shows the band count', () => expect(getUserBandCount(createRow())).toBe(4))
 
@@ -121,11 +135,12 @@ describe('borrow position metrics', () => {
     expect(
       [
         getUserLiquidationBuffer(row),
-        getUserLiquidationBufferAmount(row),
+        getUserHealth(row),
+        getUserDistanceToRange(row),
         getUserPositionLtv(row),
         getUserCollateralShare(row),
         getUserLeverage(row),
-        getUserLoopedApr(row),
+        getUserCarryApr(row),
         getUserBandCount(row),
       ].filter(value => value != null),
     ).toEqual([])

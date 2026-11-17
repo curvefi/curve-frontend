@@ -1,6 +1,7 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress, getAddress } from 'viem'
+import { type CollateralYields, getEstimatedNetBorrowApr, toCollateralYields } from '@/llamalend/collateral-yields'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
@@ -10,7 +11,6 @@ import {
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
 import {
-  computeTotalRate,
   getMarketCampaigns,
   getSupplyCampaigns,
   getSupplyApyMetrics,
@@ -62,6 +62,7 @@ export type LlamaMarket = {
   supplyGaugeAddress: Address | null
   borrowGaugeAddress: Address | null
   assets: Assets
+  collateralYields: CollateralYields
   version: MarketVersion
   minBand?: number
   maxBand?: number
@@ -71,7 +72,14 @@ export type LlamaMarket = {
   ammPrice: number
   monetaryPolicyAddress?: Address
   oracleAddress?: Address
-  parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal; adminFee: Decimal }
+  parameters: {
+    A: number | null
+    // TODO: workaround, remove once the user stats endpoints return price_low and price_high
+    basePrice: number
+    loanDiscount: Decimal
+    liquidationDiscount: Decimal
+    adminFee: Decimal
+  }
   utilizationPercent: number
   liquidity: number
   liquidityUsd: number
@@ -88,9 +96,8 @@ export type LlamaMarket = {
     lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
     borrowApy: number // base borrow APY %
-    borrowTotalApy: number // borrow APY - yield from collateral
     borrowApr: number
-    borrowTotalApr: number // borrow APR - yield from collateral
+    borrowTotalApr: number // borrow APR - collateral yields - borrow campaigns
     // extra lending incentives, like OP rewards (so non CRV)
     incentives: ExtraIncentive[]
   }
@@ -106,11 +113,7 @@ export type LlamaMarket = {
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
 }
 
-export type LlamaMarketsResult = {
-  markets: LlamaMarket[]
-  userHasPositions: UserHasPositions | null
-  hasFavorites: boolean
-}
+export type LlamaMarketsResult = { markets: LlamaMarket[]; userHasPositions: UserHasPositions | null }
 
 const toMarketVersion = (version: number): MarketVersion =>
   assert({ 1: MarketVersion.v1, 2: MarketVersion.v2 }[version], `Unsupported LlamaLend market version: ${version}`)
@@ -143,6 +146,7 @@ const convertLendingVault = (
     extraRewardApr,
     maxLtv,
     ammA,
+    basePrice,
     loanDiscount,
     liquidationDiscount,
     minBand,
@@ -155,6 +159,8 @@ const convertLendingVault = (
     policy,
     oracle,
     adminFee,
+    collateralAprCrv,
+    collateralAprBase,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
@@ -173,7 +179,6 @@ const convertLendingVault = (
     ammAddress: llamma,
   })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
-  const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const supplyCampaignsApy = sumCampaignsApy(getSupplyCampaigns(rewards))
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
@@ -183,6 +188,11 @@ const convertLendingVault = (
     campaignsApy: supplyCampaignsApy,
   })
   const solvencyPercent = calculateMarketSolvency({ totalAssetsUsd, badDebtUsd })
+  const collateralYields = toCollateralYields({
+    rebasingApr: collateralToken.rebasingYieldApr,
+    baseApr: collateralAprBase,
+    crvApr: collateralAprCrv,
+  })
 
   return {
     blockchainId,
@@ -196,6 +206,7 @@ const convertLendingVault = (
       borrowed: { ...borrowedToken, blockchainId, balance: totalDebt, balanceUsd: totalDebtUsd },
       collateral: { ...collateralToken, blockchainId, balance: totalAssets, balanceUsd: totalAssetsUsd },
     },
+    collateralYields,
     maxLtv,
     minBand,
     maxBand,
@@ -206,6 +217,7 @@ const convertLendingVault = (
     oracleAddress: oracle,
     parameters: {
       A: ammA,
+      basePrice,
       loanDiscount: scaledFractionToPercent(loanDiscount),
       liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
       adminFee: scaledFractionToPercent(adminFee),
@@ -227,9 +239,8 @@ const convertLendingVault = (
       lendTotalApyMinBoosted: totalMinBoost,
       lendTotalApyMaxBoosted: totalMaxBoost,
       borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
-      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
+      borrowTotalApr: getEstimatedNetBorrowApr(borrowApr, collateralYields, borrowCampaignsApr),
       incentives: extraRewardApr
         ? extraRewardApr.map(({ address, symbol, rate }) => ({
             title: symbol,
@@ -283,6 +294,7 @@ const convertMintMarket = (
     priceOracle,
     ammPrice,
     ammA,
+    basePrice,
     loanDiscount,
     liquidationDiscount,
     minBand,
@@ -307,8 +319,13 @@ const convertMintMarket = (
     ammAddress: llamma,
   })
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
-  const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
   const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
+  const collateralYields = toCollateralYields({
+    rebasingApr: collateralToken.rebasingYieldApr,
+    // the crvUSD markets API has no LP base or CRV APR: mint collateral has no borrow gauge
+    baseApr: null,
+    crvApr: null,
+  })
 
   return {
     blockchainId: chain,
@@ -343,6 +360,7 @@ const convertMintMarket = (
         rebasingYieldApr: collateralToken.rebasingYieldApr,
       },
     },
+    collateralYields,
     maxLtv,
     minBand,
     maxBand,
@@ -353,6 +371,7 @@ const convertMintMarket = (
     oracleAddress: oracle,
     parameters: {
       A: ammA ?? null,
+      basePrice,
       loanDiscount: scaledFractionToPercent(loanDiscount),
       liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
       adminFee: '0',
@@ -374,9 +393,8 @@ const convertMintMarket = (
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
       borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
-      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
+      borrowTotalApr: getEstimatedNetBorrowApr(borrowApr, collateralYields, borrowCampaignsApr),
       incentives: [],
     },
     type: marketType,
@@ -457,7 +475,6 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
         const data: LlamaMarketsResult | undefined = marketsReady
           ? {
               userHasPositions,
-              hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? [])
                   .filter(({ createdAt, version }) => version != 1 || createdAt <= LEND_V1_DEPRECATION_DATE.getTime())

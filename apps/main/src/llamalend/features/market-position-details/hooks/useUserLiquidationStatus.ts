@@ -1,4 +1,4 @@
-import { getIsUserCloseToSoftLiquidation, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
+import { getIsUserCloseToSoftLiquidation, getLegacyLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
 import { useMarketOraclePriceBand } from '@/llamalend/queries/market/market-oracle-price-band.query'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import { useUserHealth } from '@/llamalend/queries/user/user-health.query'
@@ -16,7 +16,7 @@ export const useLiquidationStatus = (params: UserMarketParams, enabled?: boolean
       useMarketOraclePriceBand(params, enabled),
     ],
     ({ collateral, convertedBorrowed: borrowed }, userHealthNotFull, [upperBoundary, lowerBoundary], oraclePriceBand) =>
-      getLiquidationStatus(
+      getLegacyLiquidationStatus(
         userHealthNotFull,
         getIsUserCloseToSoftLiquidation(upperBoundary, oraclePriceBand),
         isBelowRange(oraclePriceBand, lowerBoundary),

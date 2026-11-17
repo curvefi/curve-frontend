@@ -29,28 +29,36 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
 type ChartPalette = ReturnType<typeof createPalette>
 
 /** Cast is necessary as the typing of echarts is not in sync with the actual data for some reason. */
-type TooltipParam = { axisValue: string; marker: string; seriesName: string; value: number }
+type TooltipParam = { axisValue: string; color: string; seriesName: string; value: number }
 
 /**
  * Creates an ECharts tooltip that renders series rows aligned like a table.
  * Each row displays the series marker, name on the left and the formatted value on the right.
+ * Untrusted labels and formatted values are inserted as text, never HTML.
  *
  * @param formatter - Function to format each numeric series value. The series name is passed for mixed-unit charts.
  * @returns A tooltip object ready to pass to ECharts tooltip options
  */
 export const createTooltip = (formatter: (value: number, seriesName: string) => string) => ({
   trigger: 'axis' as const,
-  formatter: (params: unknown) =>
-    `<strong>${(params as TooltipParam[])[0].axisValue}</strong>` +
-    (params as TooltipParam[])
-      .map(
-        item =>
-          `<div style="display:flex;justify-content:space-between;gap:1rem;font-variant-numeric:tabular-nums">` +
-          `<span>${item.marker}${item.seriesName}</span>` +
-          `<span>${formatter(item.value, item.seriesName)}</span>` +
-          `</div>`,
-      )
-      .join(''),
+  formatter: (params: unknown) => {
+    const items = params as TooltipParam[]
+    const tooltip = document.createElement('div')
+    tooltip.appendChild(document.createElement('strong')).textContent = items[0].axisValue
+
+    for (const { color, seriesName, value } of items) {
+      const row = tooltip.appendChild(document.createElement('div'))
+      row.style.cssText = 'display:flex;justify-content:space-between;gap:1rem;font-variant-numeric:tabular-nums'
+      const label = row.appendChild(document.createElement('span'))
+      const marker = label.appendChild(document.createElement('span'))
+      marker.style.cssText = 'display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px'
+      marker.style.backgroundColor = color
+      label.append(seriesName)
+      row.appendChild(document.createElement('span')).textContent = formatter(value, seriesName)
+    }
+
+    return tooltip
+  },
 })
 
 /** Creates ECharts options merged with opinionated defaults for the Analytics app. */
