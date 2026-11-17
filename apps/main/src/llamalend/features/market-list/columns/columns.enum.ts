@@ -10,7 +10,7 @@ export enum MarketColumnId {
   UserPnl = 'userPnl',
   UserLiquidationBuffer = 'userLiquidationBuffer',
   UserLeverage = 'userLeverage',
-  UserLoopedApr = 'userLoopedApr',
+  UserCarryApr = 'userCarryApr',
   UserBandCount = 'userBandCount',
   UserCollateralComposition = 'userCollateralComposition',
   UserEarnings = 'userEarnings', // only for lend markets

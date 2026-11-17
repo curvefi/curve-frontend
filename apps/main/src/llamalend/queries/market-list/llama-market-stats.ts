@@ -9,7 +9,6 @@ import {
   isBelowRange,
   isZapV0MintMarket,
 } from '@/llamalend/llama.utils'
-import { getMarketAssetsType } from '@/llamalend/market-assets-type.utils'
 import { getPositionPnlAndRoi, type PositionPnlAndRoi } from '@/llamalend/position-pnl.utils'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
@@ -47,9 +46,7 @@ const normalizeMarketStats = (stats: BorrowStats, { parameters, blockchainId, co
   const rangePrices = maybes([decimal(parameters.basePrice), parameters.A], (basePrice, A) =>
     getRangePrices({ basePrice, A, bands: [stats.n1, stats.n2] }),
   )
-  const healthThresholds = getPositionHealthThresholds(
-    getMarketAssetsType(requireChainId(blockchainId), controllerAddress),
-  )
+  const healthThresholds = getPositionHealthThresholds(requireChainId(blockchainId), controllerAddress)
   return {
     legacyStatus: getLegacyLiquidationStatus(
       decimal(stats.health),

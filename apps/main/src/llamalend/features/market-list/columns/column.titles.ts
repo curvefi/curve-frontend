@@ -29,7 +29,7 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
   [MarketColumnId.UserPnl]: t`PNL (ROI %)`,
   [MarketColumnId.UserLiquidationBuffer]: t`Liquidation buffer`,
   [MarketColumnId.UserLeverage]: t`Leverage`,
-  [MarketColumnId.UserLoopedApr]: t`Looped APR`,
+  [MarketColumnId.UserCarryApr]: t`Carry APR`,
   [MarketColumnId.UserBandCount]: t`Band count`,
   [MarketColumnId.UserCollateralComposition]: t`Collateral composition`,
   [MarketColumnId.UserBoostMultiplier]: t`Boost`,
