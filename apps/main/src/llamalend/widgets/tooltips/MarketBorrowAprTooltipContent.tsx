@@ -4,14 +4,21 @@ import {
   BORROW_RATE_TITLE,
   COLLATERAL_YIELD_TITLE,
   NET_BORROW_APR_DESCRIPTION,
+  NEGATIVE_NET_BORROW_APR_NOTE,
   NET_BORROW_RATE_TITLE,
 } from '@/llamalend/constants'
-import { hasEstimatedNetBorrowApr } from '@/llamalend/llama.utils'
+import { getNetBorrowAprColor, hasEstimatedNetBorrowApr, isIncentivizedBorrow } from '@/llamalend/llama.utils'
 import type { ExtraIncentive } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { type Nullish, maybe } from '@primitives/objects.utils'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import {
+  TooltipDescription,
+  TooltipFooter,
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+} from '@ui/components/TooltipComponents'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { t } from '@ui/lib/i18n'
 import { formatCappedRatePercent } from '@ui/lib/rates.utils'
@@ -96,7 +103,11 @@ export const MarketBorrowAprTooltipContent = ({
 
         {totalBorrowApr != null && hasNetRate && (
           <TooltipItems>
-            <TooltipItem variant="primary" title={NET_BORROW_RATE_TITLE}>
+            <TooltipItem
+              variant="primary"
+              title={NET_BORROW_RATE_TITLE}
+              valueColor={getNetBorrowAprColor(totalBorrowApr)}
+            >
               {formatCappedRatePercent(totalBorrowApr)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
@@ -105,6 +116,9 @@ export const MarketBorrowAprTooltipContent = ({
           </TooltipItems>
         )}
       </Stack>
+      {hasNetRate && isIncentivizedBorrow(totalBorrowApr) && (
+        <TooltipFooter>{NEGATIVE_NET_BORROW_APR_NOTE}</TooltipFooter>
+      )}
     </TooltipWrapper>
   )
 }
