@@ -1,7 +1,10 @@
+import type { ComponentProps, ReactNode } from 'react'
+import Alert, { type AlertColor } from '@mui/material/Alert'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Form } from '@ui/features/forms/components/Form'
+import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -9,12 +12,9 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
 import { t } from '@ui/lib/i18n'
 import type { PoolFormProps } from '../pool-form.types'
+import { LowExchangeRateModal } from './LowExchangeRateModal'
 import { reverseSwap, type SwapFormValues } from './swap-form.utils'
 import { SwapTokenInput } from './SwapTokenInput'
-export type SwapFormProps = PoolFormProps<SwapFormValues> & {
-  inputAmount: QueryProp<Decimal>
-  outputAmount: QueryProp<Decimal>
-}
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,7 +22,9 @@ export const SwapForm = ({
   form,
   tokens,
   inputAmount,
-  outputAmount,
+  expectedOutput,
+  max,
+  canSwapWrapped,
   onSubmit,
   isPending,
   isLoading,
@@ -32,10 +34,21 @@ export const SwapForm = ({
   error,
   formErrors,
   footer,
-}: SwapFormProps) => (
+  poolAlert,
+  lowExchangeRate,
+  lowRateModal,
+}: PoolFormProps<SwapFormValues> & {
+  inputAmount: QueryProp<Decimal | null>
+  expectedOutput: QueryProp<Decimal>
+  max: QueryProp<Decimal>
+  canSwapWrapped: boolean
+  poolAlert?: { severity: AlertColor; message: ReactNode }
+  lowExchangeRate: QueryProp<boolean>
+  lowRateModal: Omit<ComponentProps<typeof LowExchangeRateModal>, 'disabled'>
+}) => (
   <Form {...form} onSubmit={onSubmit} footer={footer}>
     <Stack sx={{ gap: Spacing.xxs }}>
-      <SwapTokenInput form={form} tokens={tokens} side="pay" balance={inputAmount} disabled={isPending} />
+      <SwapTokenInput form={form} tokens={tokens} side="pay" balance={inputAmount} max={max} disabled={isPending} />
       <IconButton
         type="button"
         disabled={isPending || !tokens}
@@ -45,8 +58,34 @@ export const SwapForm = ({
       >
         <ArrowsHorizontalIcon sx={{ rotate: '90deg' }} />
       </IconButton>
-      <SwapTokenInput form={form} tokens={tokens} side="receive" balance={outputAmount} disabled={isPending} />
+      <SwapTokenInput
+        form={form}
+        tokens={tokens}
+        side="receive"
+        balance={expectedOutput}
+        max={max}
+        disabled={isPending}
+      />
     </Stack>
+    {canSwapWrapped && (
+      <CheckboxField
+        label={t`Swap Wrapped`}
+        checked={form.values.isWrapped}
+        disabled={isPending}
+        testIdPrefix="pool-swap-wrapped"
+        onChange={({ target: { checked } }) => form.update({ isWrapped: checked })}
+      />
+    )}
+    {poolAlert && (
+      <Alert severity={poolAlert.severity} variant="outlined" data-testid="pool-swap-pool-alert">
+        {poolAlert.message}
+      </Alert>
+    )}
+    {lowExchangeRate.data && (
+      <Alert severity="warning" variant="outlined" data-testid="pool-swap-low-rate-alert">
+        {t`This swap has a low exchange rate.`}
+      </Alert>
+    )}
     <FormButton
       {...wallet}
       pending={isPending}
@@ -62,5 +101,6 @@ export const SwapForm = ({
       handledErrors={['inputAmount', 'outputAmount']}
       userAddress={userAddress}
     />
+    <LowExchangeRateModal {...lowRateModal} disabled={isDisabled || isLoading} />
   </Form>
 )

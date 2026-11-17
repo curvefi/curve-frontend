@@ -6,9 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
 import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
-import { decimalDiv } from '@ui/lib/decimal'
 import type { SwapFormQuery } from './types'
 import { useSwapPriceImpact } from './useSwapPriceImpact'
 
@@ -19,19 +17,23 @@ type SwapActionInfoListProps = SwapFormQuery & {
 }
 
 export const SwapActionInfoList = ({ onSlippageChange, ...params }: SwapActionInfoListProps) => {
-  const { inputAmount, outputAmount } = useQuoteQueries(params)
+  const { inputAmount, expectedOutput, exchangeRate } = useQuoteQueries(params)
   const { fromSymbol, account, slippage, toSymbol, toIndex, decimals } = params
-  const minimum = mapQuery(outputAmount, value =>
+  const minimum = mapQuery(expectedOutput, value =>
     maybe(decimals?.[toIndex], precision => calculateMinimumReceived(value, slippage, precision)),
   )
-  const simulation = useSwapSimulation({ ...params, inputAmount: inputAmount.data, minimum: minimum.data })
+  const simulation = useSwapSimulation({
+    ...params,
+    inputAmount: inputAmount.data,
+    expectedOutput: expectedOutput.data,
+  })
 
   return (
     <PoolActionInfoList
       slippageType="stable"
-      exchangeRate={combineQueries([inputAmount, outputAmount], (input, output) => decimalDiv(output, input))}
+      exchangeRate={exchangeRate}
       minimumReceived={minimum}
-      priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, outputAmount)}
+      priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, expectedOutput)}
       gas={useGasEstimation(params, simulation)}
       slippage={slippage}
       onSlippageChange={onSlippageChange}

@@ -1,4 +1,4 @@
-import { getActionValue, DECIMAL_REGEX } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { getActionDecimal, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import type { PoolState } from '@cy/support/helpers/stellar/pool.helpers'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
@@ -45,10 +45,14 @@ export const readSwapAmounts = (editedSide: SwapSide) =>
       .then(value => value as Decimal),
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
 
-export const readSwapMinimum = () =>
-  getActionValue('pool-swap-minimum-received', 'stellar.simulation')
-    .should('match', DECIMAL_REGEX)
-    .then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
+/** Read the minimum received and exchange rate displayed before submitting a swap. */
+export const readSwapRates = () =>
+  getActionDecimal('pool-swap-minimum-received', 'stellar.simulation').then(minimumOutputAmount =>
+    getActionDecimal('pool-swap-exchange-rate', 'stellar.simulation', { valueIndex: 1 }).then(exchangeRate => ({
+      minimumOutputAmount,
+      exchangeRate,
+    })),
+  )
 
 export const checkSwapDetails = (
   { inputAmount, outputAmount }: { inputAmount: Decimal; outputAmount: Decimal },
@@ -70,8 +74,18 @@ export const checkSwapDetails = (
   )
 }
 
-export const submitSwapForm = () => {
-  submitAndExpectToast(() => swapSubmit().click(), { message: 'Swap confirmed' }, 'stellar.confirmation')
+export const submitSwapForm = ({ lowRate }: { lowRate: boolean }) => {
+  submitAndExpectToast(
+    () => {
+      swapSubmit().click()
+      if (lowRate) {
+        cy.get('[data-testid="pool-swap-low-rate-checkbox"]').find('input').check()
+        cy.get('[data-testid="pool-swap-low-rate-confirm"]').click()
+      }
+    },
+    { message: 'Swap confirmed' },
+    'stellar.confirmation',
+  )
   cyMap(SWAP_SIDES, side => swapAmountInput(side).should('have.value', ''))
   swapSubmit().should('be.disabled')
 }

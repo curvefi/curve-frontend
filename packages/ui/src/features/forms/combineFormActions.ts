@@ -2,7 +2,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import type { FieldValues, UseFormHandleSubmit } from './form.types'
 
 type FormAction = {
-  isRequired: boolean
+  isRequired: boolean | undefined
   isOpen: boolean
   open: () => void
   close: () => void
@@ -26,6 +26,7 @@ export function combineFormActions<T extends FieldValues>({
 }) {
   const givenActions = notFalsy(...actions)
   const runFrom = (index: number) => (values: T) => {
+    if (givenActions.some(action => action.isRequired === undefined)) return
     givenActions.forEach(action => action.close())
     const next = givenActions.slice(index).find(action => action.isRequired)
     if (next) next.open()
