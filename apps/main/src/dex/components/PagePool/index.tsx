@@ -50,7 +50,7 @@ import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdown'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, fallbackQ, mapQuery, q } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useLocation } from '@ui/hooks/router'
 import { usePreviousValue } from '@ui/hooks/usePreviousValue'
@@ -291,13 +291,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <PoolDetailsHeader
             backHref={dexPages.pools({ blockchainId })}
             title={mapQuery(pool, pool => pool.name)}
-            tokens={
-              combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
-                zip(tokens, tokenAddresses)
-                  .filter(([, address]) => address)
-                  .map(([symbol, address]) => constQ({ symbol, address })),
-              ).data
-            }
+            tokens={combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
+              zip(tokens, tokenAddresses)
+                .filter(([, address]) => address)
+                .map(([symbol, address]) => ({ symbol, address })),
+            )}
             blockchainId={blockchainId}
             rightItems={
               <PoolHeaderMetrics

@@ -19,12 +19,13 @@ describe('Pool page', () => {
 
   it('should update slippage settings', () => {
     cy.visitWithoutTestConnector(path)
+    cy.get('[data-testid="page-header-title"]', TIMEOUTS['prices.pools'])
     clickTab('tab', 'deposit', TIMEOUTS['ui.render'])
     cy.get('[data-testid="tab-deposit"]', TIMEOUTS['ui.render']).should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]', TIMEOUTS['ui.render']).contains(
       formatSlippage(slippageConfig.default),
     )
-    cy.get('[data-testid="slippage-settings-button"]', TIMEOUTS['ui.interaction']).click()
+    cy.get('[data-testid="slippage-settings-button"]').click()
     const [isPreset, value] = oneOf<[boolean, string]>(
       [true, oneOf(...slippageConfig.presets)],
       [false, oneFloat(Number(slippageConfig.min), Number(slippageConfig.max)).toFixed(2)],
