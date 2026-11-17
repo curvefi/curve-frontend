@@ -139,6 +139,8 @@ export const seedLendMarketSolvencyQueries = ({
       leverage: 1,
       extraRewardApr: [],
       maxLtv: 80,
+      collateralAprCrv: null,
+      collateralAprBase: null,
       createdAt: new Date('2024-01-01T00:00:00.000Z'),
     } as unknown as LendingVault,
   ])

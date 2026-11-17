@@ -3,7 +3,7 @@ import {
   getCollateralValue,
   getEquityLeverage,
   getLoanToValue,
-  getLoopedApr,
+  getCarryApr,
   getYieldMultiplier,
 } from '@/llamalend/equity-leverage.utils'
 import { getDistanceToRange } from '@/llamalend/health.utils'
@@ -70,19 +70,16 @@ export const getUserCollateralShare = (row: LlamaMarketRow) =>
 export const getUserLeverage = (row: LlamaMarketRow) =>
   row.positionQueries.isZapLeveraged.data ? maybe(mapPosition(row, getEquityLeverage), Number) : undefined
 
-/** Only for zap leveraged positions */
-const getLoopedAprDecimal = (row: LlamaMarketRow) =>
-  row.positionQueries.isZapLeveraged.data
-    ? mapPosition(row, (position, price) =>
-        getLoopedApr(position, price, decimal(row.rates.borrowApr), getMarketListYields(row)),
-      )
-    : undefined
+const getCarryAprDecimal = (row: LlamaMarketRow) =>
+  mapPosition(row, (position, price) =>
+    getCarryApr(position, price, decimal(row.rates.borrowApr), getMarketListYields(row)),
+  )
 
-export const getUserLoopedApr = (row: LlamaMarketRow) => maybe(getLoopedAprDecimal(row), Number)
+export const getUserCarryApr = (row: LlamaMarketRow) => maybe(getCarryAprDecimal(row), Number)
 
 /** How many times the collateral yield the equity earns */
 export const getUserYieldMultiplier = (row: LlamaMarketRow) =>
-  maybe(getYieldMultiplier(getLoopedAprDecimal(row) ?? null, getMarketListYields(row).collateralYieldApr), Number)
+  maybe(getYieldMultiplier(getCarryAprDecimal(row) ?? null, getMarketListYields(row).collateralYieldApr), Number)
 
 export const getUserHealth = ({ positionQueries }: LlamaMarketRow) =>
   maybe(positionQueries.stats.data?.positionHealth, ({ health }) => Number(health))

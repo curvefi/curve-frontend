@@ -17,6 +17,7 @@ import { MarketsChips } from './chips/MarketsChips'
 import { MarketColumnId } from './columns/columns.enum'
 import { MARKETS_TABLE } from './columns/markets.table'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
+import { getActiveFilterChips } from './filters/activeFilterChips'
 import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
 import { getMarketFacetedRowModel } from './filters/marketFaceting'
 import { MarketsFiltersCollapsible } from './filters/MarketsFiltersCollapsible'
@@ -35,7 +36,8 @@ export const MarketsTable = ({
   onReload: () => Promise<unknown>
   tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
-  const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
+  const { markets: data = [], userHasPositions } = queryData ?? {}
+  const favoritesCount = data.filter(market => market.isFavorite).length
   const [filtersOpen, setFiltersOpen] = useState<boolean | undefined>()
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
@@ -56,7 +58,7 @@ export const MarketsTable = ({
     query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
-    getRowId: row => row.controllerAddress,
+    getRowId: row => `${row.blockchainId}:${row.controllerAddress}`,
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,
@@ -64,6 +66,7 @@ export const MarketsTable = ({
   })
 
   const hasActiveFilters = !!table.state.columnFilters.length
+  const hasActiveFilterChips = getActiveFilterChips(table.state.columnFilters).length > 0
 
   return (
     <Stack>
@@ -96,11 +99,11 @@ export const MarketsTable = ({
                 table={table}
                 resetFilters={resetFilters}
                 hasActiveFilters={hasActiveFilters}
-                hasFavorites={hasFavorites}
+                hasFavorites={favoritesCount > 0}
                 {...filterProps}
               />
             ),
-            hasActiveFilters,
+            hasActiveFilters: hasActiveFilterChips,
           }}
           filterChip={
             <TableFiltersChip
@@ -120,7 +123,7 @@ export const MarketsTable = ({
               />
             )
           }
-          chips={<MarketsChips hasFavorites={hasFavorites} {...filterProps} />}
+          chips={<MarketsChips favoritesCount={favoritesCount} {...filterProps} />}
         />
       </EvmDataTable>
       <TableVisibilitySettingsPopover<MarketColumnId>

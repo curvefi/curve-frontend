@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useAddCollateralCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useAddCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
@@ -51,6 +52,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useAddCollateralCarryApr(params, isOpen)}
       gas={q(useAddCollateralEstimateGas(params, isOpen))}
       health={q(
         useLegacyHealthQueries(isFull =>

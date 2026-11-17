@@ -1,4 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useRemoveCollateralCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useRemoveCollateralEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useLegacyHealthQueries } from '@/llamalend/hooks/useLegacyHealthQueries'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
@@ -50,6 +51,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useRemoveCollateralCarryApr(params, isOpen)}
       gas={q(useRemoveCollateralEstimateGas(params, isOpen))}
       health={q(
         useLegacyHealthQueries(isFull =>

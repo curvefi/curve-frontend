@@ -6,10 +6,11 @@ import {
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import { LiquidationBufferTooltipContent } from '@/llamalend/features/market-position-details/tooltips/LiquidationBufferTooltipContent'
 import { getHealth } from '@/llamalend/health.utils'
+import type { CarryApr } from '@/llamalend/hooks/useCarryApr'
 import { type BorrowRates, formatReturnOnEquity } from '@/llamalend/rates.utils'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
-import { LoopedAprTooltipContent } from '@/llamalend/widgets/tooltips/LoopedAprTooltipContent'
+import { CarryAprTooltipContent } from '@/llamalend/widgets/tooltips/CarryAprTooltipContent'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -59,8 +60,7 @@ export type LoanActionInfoListProps = FuturePositionProps & {
   /** @deprecated Return on equity inputs, collateral leverage path only */
   prevCollateralLeverageValue?: QueryProp<Decimal | null>
   collateralLeverageValue?: QueryProp<Decimal | null>
-  prevLoopedApr?: QueryProp<Decimal | null>
-  loopedApr?: QueryProp<Decimal | null>
+  carryApr?: CarryApr | null
   prevLeverageCollateral?: QueryProp<Decimal | null>
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
@@ -71,11 +71,8 @@ export type LoanActionInfoListProps = FuturePositionProps & {
   leverageEnabled?: boolean
 }
 
-const formatHealthQuery = (
-  oraclePrice: QueryProp<Decimal | null>,
-  prices: QueryProp<Range<Decimal> | null> | undefined,
-) =>
-  combineQueries([oraclePrice, prices ?? DISABLED_Q], (oraclePrice, prices) =>
+const formatHealthQuery = (oraclePrice: QueryProp<Decimal | null>, prices: QueryProp<Range<Decimal> | null>) =>
+  combineQueries([oraclePrice, prices], (oraclePrice, prices) =>
     maybes([oraclePrice, prices], (oraclePrice, prices) => formatNumber(getHealth(oraclePrice, prices), 'health')),
   )
 
@@ -112,8 +109,7 @@ export const LoanActionInfoList = ({
   leverageValue,
   prevCollateralLeverageValue,
   collateralLeverageValue,
-  prevLoopedApr,
-  loopedApr,
+  carryApr,
   prevLeverageCollateral,
   leverageCollateral,
   prevLeverageTotalCollateral,
@@ -170,6 +166,16 @@ export const LoanActionInfoList = ({
               testId="borrow-net-apr"
             />
           )}
+          {carryApr && (
+            <ActionInfo
+              label={t`Carry APR`}
+              labelTooltip={{ title: t`Carry APR`, body: <CarryAprTooltipContent /> }}
+              value={mapQuery(carryApr.current, data => formatNumber(data, 'percent.rate'))}
+              futureValue={mapQuery(carryApr.future, data => formatNumber(data, 'percent.rate'))}
+              size="small"
+              testId="borrow-carry-apr"
+            />
+          )}
         </Stack>
         <Stack>
           {useNewLlamalendHealth() ? (
@@ -177,7 +183,7 @@ export const LoanActionInfoList = ({
               <ActionInfo
                 label={t`Health`}
                 labelTooltip={{ title: t`Health`, body: <HealthTooltipContent /> }}
-                value={formatHealthQuery(oraclePrice, prevPrices)}
+                value={formatHealthQuery(oraclePrice, prevPrices ?? DISABLED_Q)}
                 futureValue={prices && !isFullRepay ? formatHealthQuery(oraclePrice, prices) : UNAVAILABLE_NOTATION}
                 size="small"
                 testId="borrow-health"
@@ -287,35 +293,19 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {(prevLoopedApr ?? loopedApr) ? (
+          {!carryApr && collateralApy && (prevCollateralLeverageValue ?? collateralLeverageValue) && (
             <ActionInfo
-              label={t`Looped APR`}
-              labelTooltip={{ title: t`Looped APR`, body: <LoopedAprTooltipContent /> }}
-              value={
-                loopedApr?.data !== undefined && prevLoopedApr
-                  ? mapQuery(prevLoopedApr, data => formatNumber(data, 'percent.rate'))
-                  : DISABLED_Q
-              }
-              futureValue={mapQuery(loopedApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              label={t`Return on Equity (RoE)`}
+              value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
+              futureValue={formatReturnOnEquity(
+                collateralLeverageValue,
+                /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
+                rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
+                collateralApy,
+              )}
               size="small"
-              testId="borrow-looped-apr"
+              testId="borrow-return-on-equity"
             />
-          ) : (
-            collateralApy &&
-            (prevCollateralLeverageValue ?? collateralLeverageValue) && (
-              <ActionInfo
-                label={t`Return on Equity (RoE)`}
-                value={formatReturnOnEquity(prevCollateralLeverageValue, prevRates, collateralApy)}
-                futureValue={formatReturnOnEquity(
-                  collateralLeverageValue,
-                  /** Collateral-only actions have no future rate query, so future return on equity uses the current rate. */
-                  rates?.data === undefined && !rates?.isLoading && !rates?.error ? prevRates : rates,
-                  collateralApy,
-                )}
-                size="small"
-                testId="borrow-return-on-equity"
-              />
-            )
           )}
           {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo
