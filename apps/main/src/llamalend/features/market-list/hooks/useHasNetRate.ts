@@ -5,15 +5,15 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { useMarketExtraIncentives } from './useMarketExtraIncentives'
 
 /** Whether the market has extras (yield, incentives or rewards) on top of its borrow APR or supply APY. */
-export const useHasNetRate = ({ rewards, type, rates, assets }: LlamaMarket, rateType: MarketRateType) => {
+export const useHasNetRate = (
+  { rewards, type, rates, assets, collateralYields }: LlamaMarket,
+  rateType: MarketRateType,
+) => {
   const extraRewards = useFilteredRewards(rewards, type, rateType)
   const extraIncentives = useMarketExtraIncentives(rateType, rates.incentives, rates.lendCrvAprUnboosted)
   return (
     {
-      [MarketRateType.Borrow]: hasEstimatedNetBorrowApr({
-        extraRewards,
-        rebasingYieldApr: assets.collateral.rebasingYieldApr,
-      }),
+      [MarketRateType.Borrow]: hasEstimatedNetBorrowApr({ extraRewards, collateralYields }),
       [MarketRateType.Supply]: hasNetSupplyRate({
         extraRewards,
         extraIncentives,

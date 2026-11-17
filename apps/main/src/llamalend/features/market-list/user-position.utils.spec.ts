@@ -51,10 +51,8 @@ const createRow = ({
   liquidationDiscount?: string
 } = {}) =>
   ({
-    assets: {
-      collateral: { symbol: 'sDOLA', rebasingYieldApr: collateralYieldApr },
-      borrowed: { symbol: 'crvUSD', rebasingYieldApr: null },
-    },
+    assets: { collateral: { symbol: 'sDOLA' }, borrowed: { symbol: 'crvUSD', rebasingYieldApr: null } },
+    collateralYields: { rebasingApr: collateralYieldApr, baseApr: null, crvApr: null },
     parameters: { loanDiscount, liquidationDiscount },
     rates: { borrowApr: 3 },
     rewards: [],

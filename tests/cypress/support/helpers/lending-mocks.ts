@@ -96,6 +96,8 @@ const oneLendingPool = (
     extra_reward_apr: [],
     created_at: createdAt.getTime() / 1000,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
+    collateral_apr_crv: oneOf(null, 0, oneFloat(40)),
+    collateral_apr_base: oneOf(null, 0, oneFloat(5)),
     admin_fee: 100000000000000000,
   }
 }
@@ -204,6 +206,8 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
           collateral_token: { ...oneApiToken(collateral), rebasing_yield: 5, rebasing_yield_apr: 5 },
           borrowed_token: oneApiToken(borrowed),
           max_ltv: 75,
+          collateral_apr_crv: oneOf(null, 0, oneFloat(40)),
+          collateral_apr_base: oneOf(null, 0, oneFloat(5)),
         }
       }),
     },
