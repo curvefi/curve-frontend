@@ -27,7 +27,7 @@ export const useInitialLiquidity = ({
   FieldsOf<InitialLiquidityForm> & { autoDeposit: InitialLiquidityForm | false | undefined }) => {
   const depositStartedRef = useRef(false) // Mutation flags update on the next render; this synchronous guard also prevents StrictMode effect replay.
   const supply = usePoolSupply({ network, pool })
-  const quote = useExpectedLp({
+  const expectedLp = useExpectedLp({
     network,
     pool,
     maxAmounts: params.maxAmounts,
@@ -41,8 +41,7 @@ export const useInitialLiquidity = ({
     pool,
     account,
     tokens: getCreatePoolTokens(params, params.tokenCount)?.map(token => asStellarContract(token?.address)),
-    quote: quote.data,
-    minMint: quote.data, // Initial liquidity must receive the full quoted LP amount.
+    expectedLp: expectedLp.data,
   })
   const onSubmit = useCallback(
     (values: InitialLiquidityForm) => {
@@ -59,28 +58,28 @@ export const useInitialLiquidity = ({
     [mutate, supply.data],
   )
 
-  const preparationError = supply.error ?? quote.error
+  const preparationError = supply.error ?? expectedLp.error
   useEffect(() => {
     // Deployment locks the form, then supplies the pool address. Resume its requested deposit once the quote loads.
     if (
       autoDeposit &&
       !depositStartedRef.current &&
-      quote.data &&
+      expectedLp.data &&
       !preparationError // Failed refetches retain cached data; do not auto-submit that quote.
     ) {
       onSubmit(autoDeposit)
     }
-  }, [autoDeposit, quote.data, preparationError, onSubmit])
+  }, [autoDeposit, expectedLp.data, preparationError, onSubmit])
 
   const isPreparing = !!autoDeposit && !isSuccess && !error && !preparationError
 
   return {
     onSubmit,
-    expectedLp: q(quote),
+    expectedLp: q(expectedLp),
     isSuccess,
     status,
     isPending: isPending || isPreparing,
-    isLoading: isPending || isPreparing || supply.isLoading || quote.isLoading,
+    isLoading: isPending || isPreparing || supply.isLoading || expectedLp.isLoading,
     error: error ?? preparationError,
   }
 }

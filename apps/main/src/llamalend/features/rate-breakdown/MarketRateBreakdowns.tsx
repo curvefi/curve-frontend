@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { type MarketSnapshotsQuery, useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { getMarketRateTypeTabConfig } from '@/llamalend/rates.utils'
@@ -10,7 +11,7 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { Chain } from '@primitives/network.utils'
-import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
+import { maybe, notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import { ChartSelect } from '@ui/features/charts/ChartSelect'
 import { combineQueryState } from '@ui/features/queries/combine'
@@ -30,11 +31,18 @@ const MarketBorrowHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesT
     tokens: { collateralToken },
   } = useMarketContext()
   const { borrowRate } = usePageHeaderRates()
+  const collateralYields = borrowRate.data?.collateralYields
   const collateralPrice = q(
-    useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, borrowRate.data?.rebasingYield != null),
+    useTokenUsdRate(
+      { chainId, tokenAddress: collateralToken?.address },
+      maybe(collateralYields, yields => sumCollateralYields(yields, 'collateral')) != null,
+    ),
+  )
+  const crvPrice = q(
+    useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS }, collateralYields?.crvApr != null),
   )
   const borrowQuery = mapQuery(borrowRate, rate =>
-    buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, collateralPrice }),
+    buildBorrowRateBreakdown({ rate, chainId, blockchainId, collateralToken, collateralPrice, crvPrice }),
   )
 
   return (

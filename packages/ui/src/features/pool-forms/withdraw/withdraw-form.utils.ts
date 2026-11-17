@@ -22,7 +22,7 @@ type WithdrawQuoteFields = {
   maxLpAmount: Decimal | undefined
   supply: Decimal | undefined
   seedLock: Decimal | undefined
-  expected: Decimal | undefined
+  expectedLp: Decimal | undefined
   slippage: Decimal
 }
 
@@ -48,7 +48,7 @@ export const getOneCoinWithdrawParams = ({
   ...values,
   mode: 'one-coin' as const,
   tokenIndex,
-  lpAmount: isMax ? values.maxLpAmount : values.expected,
+  lpAmount: isMax ? values.maxLpAmount : values.expectedLp,
   amounts: getPoolAmounts({ [poolAmountField(tokenIndex)]: quotedAmount }, values.decimals?.length),
   maxAmounts: getPoolAmounts({ [poolAmountField(tokenIndex)]: poolReserve }, values.decimals?.length),
 })

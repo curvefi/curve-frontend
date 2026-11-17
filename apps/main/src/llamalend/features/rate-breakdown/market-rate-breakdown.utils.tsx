@@ -1,6 +1,7 @@
 import { getAddress } from 'viem'
+import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
+import { getAddressOrPair, hasEstimatedNetBorrowApr, type MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import type { TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
@@ -8,14 +9,22 @@ import { MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { scanTokenPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
-import { type Nullish, maybes, notFalsy } from '@primitives/objects.utils'
+import { type Nullish, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import type { TokenInfoProps } from '@ui/components/TokenInfo'
 import { getPointsCampaignRows, type PointsCampaignRow } from '@ui/features/points-campaigns/points-campaigns.utils'
 import { constQ, type QueryProp } from '@ui/features/queries/util'
 import { aprToApy } from '@ui/lib/rates.utils'
 
-type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; yieldBearing?: boolean }
+export type BreakdownBadge = 'yieldBearing' | 'lpToken'
+
+type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; badge?: BreakdownBadge }
+
+const CRV_SOURCE: BreakdownSource = {
+  tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
+  address: MAINNET_CRV_ADDRESS,
+  explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
+}
 
 export type RateBreakdownRow = {
   source: BreakdownSource
@@ -38,32 +47,40 @@ export const buildBorrowRateBreakdown = ({
   blockchainId,
   collateralToken,
   collateralPrice,
+  crvPrice,
 }: {
   rate: BorrowRate
   chainId: number
   blockchainId: BlockchainId
   collateralToken: MarketToken | undefined
   collateralPrice: QueryProp<number>
+  crvPrice: QueryProp<number>
 }): RateBreakdownData => {
   const incentives = notFalsy(
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
-  const rebasingRow = notFalsy(
-    maybes([rate.rebasingYield, collateralToken], (rebasingYield, collateralToken) => ({
-      source: {
-        tokenInfo: {
-          address: getAddressOrPair(blockchainId, collateralToken.address),
-          blockchainId,
-          iconPosition: 'left' as const,
-          primary: collateralToken.symbol,
+  const collateralRow = notFalsy(
+    maybes(
+      [sumCollateralYields(rate.collateralYields, 'collateral'), collateralToken],
+      (collateralYieldApr, collateralToken): RateBreakdownRow => ({
+        source: {
+          tokenInfo: {
+            address: getAddressOrPair(blockchainId, collateralToken.address),
+            blockchainId,
+            iconPosition: 'left' as const,
+            primary: collateralToken.symbol,
+          },
+          address: collateralToken.address,
+          explorerUrl: scanTokenPath(chainId, collateralToken.address),
+          badge:
+            (rate.collateralYields.rebasingApr != null && 'yieldBearing') ||
+            (rate.collateralYields.baseApr != null && 'lpToken') ||
+            undefined,
         },
-        address: collateralToken.address,
-        explorerUrl: scanTokenPath(chainId, collateralToken.address),
-        yieldBearing: true,
-      },
-      price: collateralPrice,
-      rate: -rebasingYield,
-    })),
+        price: collateralPrice,
+        rate: -collateralYieldApr,
+      }),
+    ),
   )
 
   return {
@@ -81,7 +98,10 @@ export const buildBorrowRateBreakdown = ({
         price: constQ(reward.price),
         rate: -reward.value,
       })),
-      ...rebasingRow,
+      ...notFalsy(
+        maybe(rate.collateralYields.crvApr, crvApr => ({ source: CRV_SOURCE, price: crvPrice, rate: -crvApr })),
+      ),
+      ...collateralRow,
       {
         source: { tokenInfo: { icon: null, iconPosition: 'left', primary: BORROW_RATE_TITLE } },
         price: constQ(undefined), // Base APR/APY rows have no token price.
@@ -90,7 +110,7 @@ export const buildBorrowRateBreakdown = ({
     ],
     points: getPointsCampaignRows(rate.extraRewards),
     total: rate.totalBorrowRate,
-    hasAdjustments: incentives.length > 0 || rate.rebasingYield != null,
+    hasAdjustments: hasEstimatedNetBorrowApr({ extraRewards: incentives, collateralYields: rate.collateralYields }),
   }
 }
 
@@ -112,11 +132,7 @@ export const buildSupplyRateBreakdown = ({
   const crvRates = [rate.supplyApyCrvMinBoost, rate.supplyApyCrvMaxBoost]
   const crvRow: RateBreakdownRow[] = notFalsy(
     crvRates.some(Boolean) && {
-      source: {
-        tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
-        address: MAINNET_CRV_ADDRESS,
-        explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
-      },
+      source: CRV_SOURCE,
       price: crvPrice,
       rate: rate.supplyApyCrvMinBoost,
       maxBoostRate: rate.supplyApyCrvMaxBoost,
@@ -127,7 +143,7 @@ export const buildSupplyRateBreakdown = ({
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
   const rebasingRow = notFalsy(
-    maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken) => ({
+    maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken): RateBreakdownRow => ({
       source: {
         tokenInfo: {
           address: getAddressOrPair(blockchainId, getAddress(borrowToken.address)),
@@ -137,7 +153,7 @@ export const buildSupplyRateBreakdown = ({
         },
         address: getAddress(borrowToken.address),
         explorerUrl: scanTokenPath(chainId, borrowToken.address),
-        yieldBearing: true,
+        badge: 'yieldBearing',
       },
       price: prices[borrowToken.address],
       rate: rebasingYield,

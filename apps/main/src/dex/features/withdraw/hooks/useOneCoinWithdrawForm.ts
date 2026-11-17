@@ -51,7 +51,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
       decimals: undefined,
       maxLpAmount: undefined,
       poolReserve: undefined,
-      expected: undefined,
+      expectedLp: undefined,
       supply: undefined,
       seedLock: undefined,
     },
@@ -89,7 +89,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   const expectedLp = mapQuery(quote, quote => quote.lpAmount)
   const quotedAmount = quote.data?.amount
   const params: WithdrawQuoteParams = {
-    ...getOneCoinWithdrawParams({ ...debounced, expected: expectedLp.data, quotedAmount }),
+    ...getOneCoinWithdrawParams({ ...debounced, expectedLp: expectedLp.data, quotedAmount }),
     ...poolParams,
   }
   const priceImpact = useWithdrawPriceImpact(params)
@@ -99,7 +99,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     supply: supply.data,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves.data?.[index],
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
     quotedAmount,
   })
 

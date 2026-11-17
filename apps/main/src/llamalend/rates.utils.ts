@@ -1,5 +1,11 @@
 import { sumBy } from 'lodash'
 import { getAddress } from 'viem'
+import {
+  type CollateralYields,
+  getEstimatedNetBorrowApr,
+  getSnapshotCollateralYields,
+  sumCollateralYields,
+} from '@/llamalend/collateral-yields'
 import type { MarketYields } from '@/llamalend/equity-leverage.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { CrvUsdSnapshot } from '@evm-ui/queries/crvusd-snapshots.query'
@@ -33,18 +39,6 @@ export const getMarketRateTypeTabConfig = ({
     }) satisfies Record<MarketType, { types: readonly MarketRateType[]; defaultValue: MarketRateType }>
   )[marketType]
 
-type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
-  borrowRate: number | Nullish
-  campaignsRate: number | Nullish
-  snapshots: TSnapshot[] | undefined
-  getBorrowRate: (snapshot: TSnapshot) => number | Nullish
-  getRebasingYield: (snapshot: TSnapshot) => number | Nullish
-  daysBack: number
-}
-
-export const computeTotalRate = (rate: number, rebasingYield: number, campaignsRate: number) =>
-  rate - rebasingYield - campaignsRate
-
 /** Annualized return on equity at the given leverage. Input APYs and output are percentage. */
 export const getReturnOnEquity = (
   leverage: number | Nullish,
@@ -73,12 +67,6 @@ export const formatReturnOnEquity = (
   )
 
 export const getSnapshotBorrowApr = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
-export const getSnapshotCollateralRebasingYieldApr = <
-  TSnapshot extends { collateralToken: { rebasingYieldApr: number | Nullish } },
->(
-  snapshot: TSnapshot,
-) => snapshot.collateralToken.rebasingYieldApr
-
 export const getSnapshotBorrowedRebasingYieldApr = (snapshot: LendingSnapshot | CrvUsdSnapshot) =>
   ('borrowedToken' in snapshot ? snapshot.borrowedToken : snapshot.stablecoinToken).rebasingYieldApr
 
@@ -89,33 +77,17 @@ export const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
   const latest = snapshots?.at(-1)
   return latest ? (getValue(latest) ?? null) : null
 }
-/**
- * Get the borrow rate metrics for a given borrow rate and snapshots, like average rate, total net rate.
- */
-export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimestamp>({
-  borrowRate,
-  campaignsRate,
-  snapshots,
-  getBorrowRate,
-  getRebasingYield,
-  daysBack,
-}: BorrowRateMetricsParams<TSnapshot>) => {
-  const rebasingYield = getLatestSnapshotValue(snapshots, getRebasingYield)
-  const totalRate =
-    maybe(borrowRate, borrowRate => computeTotalRate(borrowRate, rebasingYield ?? 0, campaignsRate ?? 0)) ?? null
 
-  const averages = calculateAverageRates(snapshots, daysBack, { rate: getBorrowRate, rebasingYield: getRebasingYield })
-  const averageRate = averages?.rate ?? null
-  const averageRebasingYield = averages?.rebasingYield ?? null
-
-  return {
-    rebasingYield,
-    totalRate,
-    averageRate,
-    averageRebasingYield,
-    averageTotalRate:
-      maybe(averageRate, averageRate => computeTotalRate(averageRate, averageRebasingYield ?? 0, 0)) ?? null,
-  }
+/** Averages of the borrow APR and of the estimated net borrow APR, which leaves the campaigns out. */
+export const getAverageBorrowRates = (
+  snapshots: (LendingSnapshot | CrvUsdSnapshot)[] | undefined,
+  daysBack: number,
+) => {
+  const averages = calculateAverageRates(snapshots, daysBack, {
+    rate: getSnapshotBorrowApr,
+    totalRate: snapshot => getEstimatedNetBorrowApr(snapshot.borrowApr, getSnapshotCollateralYields(snapshot), null),
+  })
+  return { averageRate: averages?.rate ?? null, totalAverageBorrowRate: averages?.totalRate ?? null }
 }
 
 /** Sum a base rate with optional additional components, returning null if the base is null */
@@ -166,32 +138,37 @@ export const getMarketCampaigns = (
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
-/** No collateral yield means no looped APR; no borrowed-token yield or no campaign counts as 0%. */
+/** No collateral yield means no carry APR; no borrowed-token yield or no campaign counts as 0%. */
 const toMarketYields = (
-  collateralYieldApr: number | Nullish,
+  collateralYields: CollateralYields,
   borrowedYieldApr: number | Nullish,
   campaigns: CampaignRewards[],
 ): MarketYields => ({
-  collateralYieldApr: decimal(collateralYieldApr) ?? null,
+  collateralYieldApr: decimal(sumCollateralYields(collateralYields)) ?? null,
   borrowedYieldApr: decimal(borrowedYieldApr) ?? ZERO,
   borrowRewardsApr: decimal(sumCampaignsApr(campaigns.filter(c => c.action === 'borrow'))) ?? ZERO,
 })
 
-/** Yields from the latest snapshot and the borrow campaign rewards of a market. */
+/** Collateral yields, the borrowed token yield of the latest snapshot and the borrow campaign rewards of a market. */
 export const getMarketYields = (
+  collateralYields: CollateralYields,
   snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
   campaigns: Record<string, CampaignRewards[]>,
   addresses: MarketCampaignAddresses & { marketType: MarketType },
 ): MarketYields =>
   toMarketYields(
-    getLatestSnapshotValue(snapshots, getSnapshotCollateralRebasingYieldApr),
+    collateralYields,
     getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr),
     getMarketCampaigns(campaigns, addresses),
   )
 
 /** Yields and borrow campaign rewards of a market in the market list. */
-export const getMarketListYields = ({ assets, rewards }: Pick<LlamaMarket, 'assets' | 'rewards'>) =>
-  toMarketYields(assets.collateral.rebasingYieldApr, assets.borrowed.rebasingYieldApr, rewards)
+export const getMarketListYields = ({
+  collateralYields,
+  assets,
+  rewards,
+}: Pick<LlamaMarket, 'collateralYields' | 'assets' | 'rewards'>) =>
+  toMarketYields(collateralYields, assets.borrowed.rebasingYieldApr, rewards)
 
 export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
@@ -235,7 +212,6 @@ type SupplyRateMetricsParams = {
 
 /**
  * Get the supply rate metrics for a given supply APY and lending snapshots, like average rate, total boosted rates.
- * Parallels `getBorrowRateMetrics` for the supply side.
  */
 export const getSupplyApyMetrics = ({
   supplyApy,

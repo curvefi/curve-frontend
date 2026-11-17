@@ -39,7 +39,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     seedLock: undefined,
-    expected: undefined,
+    expectedLp: undefined,
     slippage: SLIPPAGE.stable.default,
   },
 }
@@ -74,7 +74,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const expectedLp = mapQuery(quote, quote => quote.lpAmount)
   const quotedAmount = quote.data?.amount
   const params: WithdrawQuoteParams = {
-    ...getOneCoinWithdrawParams({ ...debounced, expected: expectedLp.data, quotedAmount }),
+    ...getOneCoinWithdrawParams({ ...debounced, expectedLp: expectedLp.data, quotedAmount }),
     ...poolParams,
     account,
   }
@@ -86,7 +86,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     seedLock: config.data?.seedLock,
     maxLpAmount: lpBalance.data,
     poolReserve: reserves?.[index],
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
     quotedAmount,
   })
   useFormSync(form, { amount: max.data }, values.isMax)
@@ -100,7 +100,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     ...poolParams,
     account,
     tokens: tokenAddresses.data,
-    expected: expectedLp.data,
+    expectedLp: expectedLp.data,
     onReset: () => reset(userDefaultValues),
   })
   const isPending = formState.isSubmitting || isWithdrawing

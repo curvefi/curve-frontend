@@ -1,4 +1,5 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useBorrowMoreCarryApr } from '@/llamalend/hooks/useCarryApr'
 import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -55,6 +56,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
+      carryApr={useBorrowMoreCarryApr(params, isOpen)}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={q(useBorrowMoreEstimateGas({ ...params, isControllerApproved }, isOpen))}
       health={q(useBorrowMoreHealth({ ...params, isFull: true }, !isNewLlamalendHealth && isOpen))}

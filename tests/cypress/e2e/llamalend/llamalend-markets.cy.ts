@@ -143,7 +143,7 @@ testCases.forEach(([width, height, breakpoint]) => {
           cy.get(`[data-testid="table-filter-btn-market-type-${MarketType.Lend}"]`).click()
           return cy.get(`[data-testid="badge-market-type-${MarketType.Mint}"]`).should('not.exist')
         })
-        cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
+        cy.get(`[data-testid="data-table-cell-${MarketColumnId.LiquidityUsd}"]`).first().contains('$')
         openDrawer(breakpoint, 'sort')
         cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', TIMEOUTS['ui.render'])
         cy.get(`[data-testid="drawer-sort-menu-lamalend-markets"] li[value="${utilizationColumnId}"]`).click()

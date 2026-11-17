@@ -10,7 +10,9 @@ import { TokenCell } from '@ui/components/TokenCell'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import type { RateBreakdownRow } from './market-rate-breakdown.utils'
+import type { BreakdownBadge, RateBreakdownRow } from './market-rate-breakdown.utils'
+
+const BADGE_LABELS = { yieldBearing: t`Yield bearing`, lpToken: t`LP token` } satisfies Record<BreakdownBadge, string>
 
 enum RateColumnId {
   Source = 'source',
@@ -25,7 +27,7 @@ const rateColumns = (rateHeader: string) =>
       id: RateColumnId.Source,
       header: t`Source`,
       cell: ({ getValue }) => {
-        const { tokenInfo, address, explorerUrl, yieldBearing } = getValue()
+        const { tokenInfo, address, explorerUrl, badge } = getValue()
         return (
           <TokenCell
             source={tokenInfo}
@@ -33,7 +35,7 @@ const rateColumns = (rateHeader: string) =>
             explorerUrl={explorerUrl}
             displayAddress={maybe(address, shortenAddress)}
             endAdornment={
-              yieldBearing && <Badge size="extraSmall" label={t`Yield bearing`} sx={{ alignSelf: 'flex-end' }} />
+              badge && <Badge size="extraSmall" label={BADGE_LABELS[badge]} sx={{ alignSelf: 'flex-end' }} />
             }
           />
         )
