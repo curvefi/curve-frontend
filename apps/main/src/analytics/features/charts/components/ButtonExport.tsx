@@ -5,11 +5,10 @@ import { DownloadIcon } from '@ui/icons/DownloadIcon'
 /** Plain series data keyed by column name. `time` is a UTC timestamp. */
 type SeriesData = Record<string, { time: number; value: number }[]>
 
-/**
- * Builds CSV content from series data.
- * @remarks Values are not escaped for the delimiter,
- * it's not expected to be part of an actual value.
- */
+/** Adds a prefix to the column name if we detect a column name that could be interpreted as a spreadsheet formula. */
+const escapeColumnName = (column: string) => (/^\s*[=+\-@\t\r\n＝＋－＠]/.test(column) ? `series: ${column}` : column)
+
+/** Builds CSV content with quoted headers, prefixing unsafe headers to prevent spreadsheet formulas. */
 function createCsvData(data: SeriesData): string {
   const columns = llama(Object.keys(data)).orderBy(x => x)
 
@@ -35,7 +34,13 @@ function createCsvData(data: SeriesData): string {
     })
     .value()
 
-  return ['time;' + columns.value().join(';'), ...rows].join('\n')
+  return [
+    ['time', ...columns.value()]
+      .map(escapeColumnName)
+      .map(value => `"${value.replaceAll('"', '""')}"`)
+      .join(';'),
+    ...rows,
+  ].join('\n')
 }
 
 function triggerDownload(filename: string, csvContent: string) {
