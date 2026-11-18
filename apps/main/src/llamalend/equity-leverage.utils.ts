@@ -1,6 +1,6 @@
 import type { UserState } from '@/llamalend/queries/user/user-state.query'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import {
   decimalDiv,
   decimalEqual,
@@ -32,12 +32,12 @@ export const getEquityLeverage = (position: UserState, oraclePrice: Decimal) => 
   return decimalEqual(equity, ZERO) ? null : decimalDiv(decimalMultiply(position.collateral, oraclePrice), equity)
 }
 
-/** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. Null when unknown. */
-export type MarketYields = { collateralYieldApr: Decimal | null; borrowedYieldApr: Decimal; borrowRewardsApr: Decimal }
+/** What the collateral and the borrowed tokens earn, and the borrow rewards, as APR in percent. */
+export type MarketYields = { collateralYieldApr: Decimal; borrowedYieldApr: Decimal; borrowRewardsApr: Decimal }
 
 /**
  * Carry APR: yearly yield on the equity after borrowing costs, in percent.
- * A collateral without yield counts as 0%. Null when the equity is zero or when the borrow rate is unknown.
+ * Null when the equity is zero or when the borrow rate is unknown.
  */
 export const getCarryApr = (
   position: UserState,
@@ -49,7 +49,7 @@ export const getCarryApr = (
   const equity = getEquity(position, oraclePrice)
   if (borrowApr == null || decimalEqual(equity, ZERO)) return null
   const earned = decimalSum(
-    decimalMultiply(collateral, oraclePrice, collateralYieldApr ?? ZERO),
+    decimalMultiply(collateral, oraclePrice, collateralYieldApr),
     decimalMultiply(convertedBorrowed, borrowedYieldApr),
   )
   const borrowCost = decimalMultiply(debt, decimalMinus(borrowApr, borrowRewardsApr))
@@ -57,7 +57,6 @@ export const getCarryApr = (
 }
 
 /** How many times the collateral yield the equity earns. Null when the collateral has no positive yield. */
-export const getYieldMultiplier = (carryApr: Decimal | null, collateralYieldApr: Decimal | null) =>
-  maybes([carryApr, collateralYieldApr], (apr, yieldApr) =>
-    decimalGreaterThan(yieldApr, ZERO) ? decimalDiv(apr, yieldApr) : null,
-  ) ?? null
+export const getYieldMultiplier = (carryApr: Decimal | null, collateralYieldApr: Decimal) =>
+  maybe(carryApr, apr => (decimalGreaterThan(collateralYieldApr, ZERO) ? decimalDiv(apr, collateralYieldApr) : null)) ??
+  null
