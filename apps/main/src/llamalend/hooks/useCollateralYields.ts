@@ -1,5 +1,5 @@
 import { type CollateralYields, getSnapshotCollateralYields, toCollateralYields } from '@/llamalend/collateral-yields'
-import { useMarketCollateralCrvApr } from '@/llamalend/queries/market/market-collateral-crv-apr.query'
+import { useMarketCollateralRewardsStats } from '@/llamalend/queries/market/market-collateral-rewards-stats.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import type { MarketParams } from '@evm-ui/queries/query-types'
 import type { MarketType } from '@evm-ui/types/market'
@@ -30,7 +30,7 @@ export const useCollateralYields = (
     snapshots => getSnapshotCollateralYields(snapshots.at(-1)),
   )
   return fallbackQ(
-    combineQueries([snapshotYields, useMarketCollateralCrvApr(params, enabled)], (yields, crvApr) =>
+    combineQueries([snapshotYields, useMarketCollateralRewardsStats(params, enabled)], (yields, { crvApr }) =>
       toCollateralYields({ ...yields, crvApr }),
     ),
     snapshotYields,

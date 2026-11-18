@@ -165,7 +165,9 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     collateralToken,
     error: formActions.error ?? creationError,
     leverage: isEquityLeverage
-      ? equityLeverage && futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+      ? equityLeverage.isZapLeveraged.data
+        ? futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+        : null
       : {
           data: expectedCollateral.data?.leverage,
           // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.

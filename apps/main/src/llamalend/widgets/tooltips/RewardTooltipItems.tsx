@@ -16,14 +16,14 @@ const { Spacing, IconSize } = SizesAndSpaces
 type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | Nullish
-  extraRewards: CampaignRewards[]
+  extraRewards?: CampaignRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
   extraIncentives?: ExtraIncentive[]
 }
 
 export const RewardsTooltipItems = ({
   title,
-  extraRewards,
+  extraRewards = [],
   extraIncentives = [],
   tooltipType,
 }: RewardsTooltipItemsProps) => {
