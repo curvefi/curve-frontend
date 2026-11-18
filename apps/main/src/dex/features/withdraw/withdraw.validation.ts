@@ -7,9 +7,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, range } from '@primitives/objects.utils'
 import { LP_TOKEN_DECIMALS, poolAmountField, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import {
+  type AdvancedWithdrawFormValues,
   getAdvancedWithdrawParams,
   getOneCoinWithdrawParams,
-  type AdvancedWithdrawFormValues,
   type OneCoinWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { decimalEqual } from '@ui/lib/decimal'
@@ -33,12 +33,14 @@ const validateLpAmount = (
       [allowZero ? 'gte' : 'gt'](0)
   })
 
-const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountField = poolAmountField) => {
+const validateHasAmount = ({ amounts }: WithdrawParams) =>
   test('root', 'Enter an amount to withdraw', () => {
     enforce(amounts)
       .isArray()
       .condition(() => amounts!.some(amount => amount && +amount))
   })
+
+const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountField = poolAmountField) => {
   test('decimals', 'Decimals are required', () => {
     enforce(decimals).isArray().isNotEmpty()
   })
@@ -137,9 +139,10 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
   })
 }
 
-export const advancedWithdrawFormValidationSuite = createValidationSuite((values: AdvancedWithdrawFormValues) =>
-  validateForm(getAdvancedWithdrawParams(values)),
-)
+export const advancedWithdrawFormValidationSuite = createValidationSuite((values: AdvancedWithdrawFormValues) => {
+  validateHasAmount(getAdvancedWithdrawParams(values))
+  validateForm(getAdvancedWithdrawParams(values))
+})
 
 export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values: OneCoinWithdrawFormValues) => {
   validateForm(getOneCoinWithdrawParams(values), () => 'amount')
@@ -151,6 +154,7 @@ export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values:
 export const withdrawQueryValidationSuite = createValidationSuite((params: WithdrawParams) => {
   poolValidationGroup(params)
   curveApiValidationGroup(params, { requireRpc: true })
+  validateHasAmount(params)
   validateAmounts(params)
   validateWithdraw(params)
   test('isWrapped', () => {
