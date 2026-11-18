@@ -1,6 +1,7 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
@@ -21,7 +22,7 @@ export const FormTokenInput = <TValues extends FieldValues>({
   message,
   ...props
 }: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
-  form: Pick<UseFormReturn<TValues>, 'values' | 'formState'>
+  form: Pick<UseFormReturn<TValues> | ValidatedForm<TValues>, 'values' | 'formState'>
   name: FieldPathByValue<TValues, Decimal | undefined>
   relatedFields?: (FieldPath<TValues> | { field: FieldPath<TValues>[]; ignoreTouched: boolean })[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }

@@ -6,7 +6,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLlamalendEquityLeverage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
-import type { UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { constQ, mapQuery, q } from '@ui/features/queries/util'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -37,7 +37,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   equityLeverage: EquityLeverage | null
-  form: UseFormReturn<CreateLoanForm>
+  form: ValidatedForm<CreateLoanForm>
 }) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'debt')

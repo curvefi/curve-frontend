@@ -15,8 +15,8 @@ type CompleteCreateLoanForm = {
   routeId: string | undefined
 }
 
-// todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
-type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
+/** Query context supplied to validation/submission, never stored in editable form state. */
+type CalculatedValues = { maxDebt?: Decimal; maxCollateral?: Decimal }
 
 /** Create loan form as used in the UI, with undefined values for fields still being filled in */
 export type CreateLoanForm = AllowUndefined<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues

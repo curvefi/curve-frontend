@@ -1,43 +1,31 @@
 import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
-import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { resetCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import type { CreateLoanMaxReceiveParams } from '@/llamalend/queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UseFormReturn } from '@ui/features/forms'
-import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
+import type { FormValues } from '@ui/features/forms/useFormValues'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimal, decimalMin } from '@ui/lib/decimal'
 import { useCreateLoanMaxReceiveQueries } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
 
-/**
- * Hook to fetch and set the maximum token values for collateral and debt in a create loan form.
- * It retrieves the user's balance for the collateral token and the maximum borrowable amount,
- * then updates the form with these values.
- */
+/** Query limits and preserve the debt ratio for range edits. */
 export function useMaxTokenValues({
-  market,
   collateralTokenAddress,
-  params,
-  form,
+  inputs: { update: updateForm, values, params },
 }: {
-  market: MarketTemplate | undefined
   collateralTokenAddress: Address | undefined
-  params: CreateLoanMaxReceiveParams & { userAddress?: Address }
-  form: UseFormReturn<CreateLoanForm>
+  inputs: FormValues<CreateLoanForm, CreateLoanMaxReceiveParams>
 }) {
-  const { update: updateForm, getValues } = form
   const tokenBalance = useTokenBalance({ ...params, tokenAddress: collateralTokenAddress })
   const maxBorrow = useCreateLoanMaxReceiveQueries(params)
   const maxLeverage = useMarketMaxLeverage(params)
 
   const { maxDebt } = maxBorrow.data ?? {}
-  const pendingRatioRef = useRef<Decimal>(null) // keep this in a ref so it doesn't trigger re-renders, used when maxDebt changes
+  const pendingRatioRef = useRef<Decimal>(null) // preserve the debt ratio when maxDebt changes
   const maxCollateral = combineQueries([tokenBalance, maxBorrow], (userBalance, { maxTotalCollateral = userBalance }) =>
     decimalMin(userBalance, maxTotalCollateral),
   )
@@ -46,27 +34,18 @@ export function useMaxTokenValues({
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
       const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      updateForm({ debt, maxDebt }, { automated: true })
+      updateForm({ debt }, { mode: 'automatic' })
       pendingRatioRef.current = null
-    } else {
-      updateForm({ maxDebt }, { automated: true })
     }
   }, [updateForm, maxDebt])
-
-  useFormSync(form, { maxCollateral: maxCollateral.data })
-
-  // some loan queries depend on LL internal cache for expected collateral, reset when new market data arrives
-  useOnChangeCallback(market, () => resetCreateLoanExpectedCollateral(params))
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(
     (range: number) => {
-      const { debt, maxDebt } = getValues()
-      updateForm({ maxDebt: undefined, range })
-      // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
-      pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
+      updateForm({ range })
+      pendingRatioRef.current = decimal(values.debt && maxDebt && BigNumber(values.debt).div(maxDebt)) ?? null
     },
-    [getValues, updateForm],
+    [values.debt, maxDebt, updateForm],
   )
 
   return {

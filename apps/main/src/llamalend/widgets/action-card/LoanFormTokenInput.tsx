@@ -8,7 +8,8 @@ import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
+import { FieldPathByValue, FieldValues, type FormUpdates, type UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { q, type QueryProp } from '@ui/features/queries/util'
@@ -31,7 +32,7 @@ export type LoanFormTokenInputProps<
    */
   max?: QueryProp<Decimal> & { fieldName: TMaxFieldName; onMax?: () => void }
   name: TFieldName
-  form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
+  form: UseFormReturn<TFieldValues> | ValidatedForm<TFieldValues>
   testId: string
   message?: LargeTokenInputProps['message']
   maxMessage?: ReactNode
@@ -104,7 +105,7 @@ export const LoanFormTokenInput = <
   const onBalance = useCallback(
     (v?: Decimal) => {
       if (v && max?.onMax && v === max.data) return max.onMax()
-      updateForm({ [name]: v } as FormUpdates<TFieldValues>)
+      updateForm({ [name]: v } as FormUpdates<TFieldValues> & Partial<TFieldValues>)
       onValueChange?.(v)
     },
     [max, name, onValueChange, updateForm],

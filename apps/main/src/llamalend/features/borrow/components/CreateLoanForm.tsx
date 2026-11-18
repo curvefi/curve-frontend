@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
-import { Form } from '@ui/features/forms/components/Form'
+import { FormContainer } from '@ui/features/forms/components/FormContainer'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q, type Range } from '@ui/features/queries/util'
@@ -77,7 +77,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
   const { update: updateForm } = form
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm({ leverageEnabled: event.target.checked, routeId: undefined }, { mode: 'immediate' }),
     [updateForm],
   )
   const maxDebtBalance = mapQuery(maxDebt, ({ maxDebt }) => maxDebt)
@@ -88,8 +89,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   }, [maxDebt.data, routes, updateForm, values.leverageEnabled])
 
   return (
-    <Form
-      {...form}
+    <FormContainer
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
@@ -146,7 +146,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           <LoanActionSettings
             show={values.leverageEnabled}
             slippage={values.slippage}
-            onSlippageChange={slippage => updateForm({ slippage })}
+            onSlippageChange={slippage => updateForm({ slippage }, { mode: 'immediate' })}
             routes={routes}
             exchangeRate={exchangeRate}
             priceImpact={priceImpact}
@@ -189,6 +189,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral', 'debt', 'maxDebt']}
         userAddress={userAddress}
       />
-    </Form>
+    </FormContainer>
   )
 }
