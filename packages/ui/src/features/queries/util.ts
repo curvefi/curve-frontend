@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { type Nullish, objectKeys } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { type QueryOptions } from '@ui/features/queries/query-hooks'
-import type { FieldName } from '@ui/lib/validation/types'
 
 export type Range<T> = [T, T]
 
@@ -57,7 +56,7 @@ export type QueryProp<T> = Query<T> & { readonly __brand: 'QueryProp' }
 export type QueryOrValue<T> = QueryProp<T> | T
 
 // todo: make all fields required
-export type FieldsOrQueries<T extends object> = { [K in FieldName<T>]?: Query<T[K]> | T[K] | Nullish }
+export type FieldsOrQueries<T extends object> = { [K in keyof T as Extract<K, string>]?: QueryOrValue<T[K]> | Nullish }
 
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
@@ -127,7 +126,7 @@ export const useMappedQuery = <TSource, TResult>(
 const queryObjectKeys = objectKeys(DISABLED_Q)
 
 /** Checks if a value is a query. */
-const isQuery = <T>(value: unknown): value is QueryProp<T> =>
+const isQuery = <T>(value: unknown): value is Query<T> =>
   value != null && typeof value === 'object' && queryObjectKeys.every(key => key in value)
 
 export const toQuery = <T>(
@@ -135,4 +134,4 @@ export const toQuery = <T>(
   { isLoading = false, error = null }: { isLoading?: boolean; error?: Error | null } = {},
 ) => (isQuery(value) ? value : q({ data: value, isLoading, error }))
 
-export const toValue = <T>(value: QueryOrValue<T>) => (isQuery(value) ? value.data : value)
+export const toValue = <T>(value: QueryOrValue<T>) => (isQuery<T>(value) ? value.data : value)

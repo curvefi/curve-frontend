@@ -30,7 +30,7 @@ export const DepositActionInfoList = ({
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
   const simulation = useDepositSimulation({ ...queryParams, expectedLp })
-  const lpDecimals = useTokenDecimals({ ...params, token: pool })
+  const lpDecimals = q(useTokenDecimals({ ...params, token: pool }))
   const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals })
   return (
     <PoolActionInfoList

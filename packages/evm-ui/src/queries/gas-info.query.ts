@@ -16,7 +16,7 @@ import { DEFAULT_DECIMALS } from '@primitives/units.util'
 import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import { constQ, type Query as QueryResult, toValue } from '@ui/features/queries/util'
+import { constQ, type Query as QueryResult, type QueryOrValue, toValue } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -417,7 +417,7 @@ export const useEstimateGasValue = (chainId: number | Nullish, estimate: GasEsti
 
 type EstimateValue = number | number[] | Nullish
 
-type WithOptionalChainId = { chainId?: number | Nullish | QueryResult<number | Nullish> }
+type WithOptionalChainId = { chainId?: QueryOrValue<number | Nullish> }
 
 /** Builds a reusable gas-cost hook from a single estimate-gas query hook. */
 export const createEstimateGasHook =

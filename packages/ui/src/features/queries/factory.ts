@@ -67,16 +67,14 @@ async function runQuery<TData, TQuery>(
   }
 }
 
-const unwrapFields = <T extends object>(params: FieldsOrQueries<T>): FieldsOf<T> =>
-  fromEntries(objectKeys(params).map(key => [key, toValue(params[key])])) as FieldsOf<T>
-
-type Params<T extends object> = FieldsOf<DeepPartial<T>>
-type QParams<T extends object> = FieldsOrQueries<Params<T>>
+const unwrapFields = <T extends object>(params: FieldsOrQueries<T>): T =>
+  fromEntries(objectKeys(params).map(key => [key, toValue(params[key])])) as T
 
 export function queryFactory<
   TQuery extends object,
   const TKey extends QueryKeyObject,
   TData,
+  TParams extends FieldsOf<DeepPartial<TQuery>> = FieldsOf<TQuery>,
   TField extends string = FieldName<TQuery>,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
@@ -89,29 +87,29 @@ export function queryFactory<
   keepPreviousData,
   ...options
 }: {
-  queryKey: (params: Params<TQuery>) => TKey
+  queryKey: (params: TParams) => TKey
   validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
   category: QueryCategory
-  dependencies?: (params: Params<TQuery>) => readonly QueryKeyObject[]
+  dependencies?: (params: TParams) => readonly QueryKeyObject[]
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
   keepPreviousData?: boolean | ((previous: TKey, current: TKey) => boolean)
 }) {
-  const internalKey = (params: Params<TQuery>): InternalQueryKey<TKey> => [queryKey(params)]
+  const internalKey = (params: TParams): InternalQueryKey<TKey> => [queryKey(params)]
 
   const queryFn = async ({ queryKey }: QueryFunctionContext<InternalQueryKey<TKey>>) =>
     await runQuery(queryKey, query, disableLog)
 
   const getQueryOptions = (
-    params: Params<TQuery>,
+    params: TParams,
     enabled = true,
   ): QueryOptions<TData, DefaultError, TData, InternalQueryKey<TKey>> => ({
     ...QUERY_CATEGORIES[category],
     queryKey: internalKey(params),
     queryFn,
-    enabled: enabled && isEmpty(validate<Params<TQuery>, typeof validationSuite>(validationSuite, params)),
+    enabled: enabled && isEmpty(validate<TParams, typeof validationSuite>(validationSuite, params)),
     dependencies: maybe(dependencies, deps => () => deps(params)),
     retry: (failureCount, error) =>
       !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
@@ -131,10 +129,10 @@ export function queryFactory<
   return {
     queryKey,
     getQueryOptions,
-    getQueryData: (params: Params<TQuery>): TData | undefined => queryClient.getQueryData(internalKey(params)),
-    setQueryData: (params: Params<TQuery>, data: TData) => queryClient.setQueryData<TData>(internalKey(params), data),
+    getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(internalKey(params)),
+    setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(internalKey(params), data),
     fetchQuery: (
-      params: Params<TQuery>,
+      params: TParams,
       options?: Partial<QueryExecuteOptions<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>>,
     ) =>
       queryClient.query<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>({
@@ -146,23 +144,23 @@ export function queryFactory<
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
-    refetchQuery: (params: Params<TQuery>) =>
+    refetchQuery: (params: TParams) =>
       queryClient.query<TData, DefaultError, TData, TData, InternalQueryKey<TKey>>({
         ...getQueryOptions(params),
         ...options,
         staleTime: 0,
       }),
-    useQuery: (params: QParams<TQuery>, enabled?: boolean) => {
+    useQuery: (params: FieldsOrQueries<TParams>, enabled?: boolean) => {
       const s = useQuery(getQueryOptions(unwrapFields(params), enabled))
       s.isLoading = s.isLoading || Object.values(params).some(p => toQuery(p).isLoading)
       return s
     },
     /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */
-    invalidate: (params: Params<TQuery>, { partial = false } = {}) =>
+    invalidate: (params: TParams, { partial = false } = {}) =>
       queryClient.invalidateQueries({
         queryKey: partial ? [omitBy(queryKey(params), isUndefined)] : internalKey(params),
       }),
     /** Removes all the cached data for the query **/
-    reset: (params: Params<TQuery>) => queryClient.resetQueries({ queryKey: internalKey(params) }),
+    reset: (params: TParams) => queryClient.resetQueries({ queryKey: internalKey(params) }),
   } as const
 }
