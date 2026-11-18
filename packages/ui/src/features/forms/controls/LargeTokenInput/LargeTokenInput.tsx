@@ -200,7 +200,7 @@ export const LargeTokenInput = ({
     [maxBalanceValue],
   )
   const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
-  const chipDisabled = !!disabled || maxBalanceLoading
+  const chipDisabled = !!disabled || (maxBalance?.balance != null && maxBalanceValue == null)
   const isError = !!maxBalanceError || !!error
 
   const handlePercentageChange = useCallback(

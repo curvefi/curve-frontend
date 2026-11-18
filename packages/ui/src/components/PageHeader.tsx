@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { RouterLink } from '@ui/components/RouterLink'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
+import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ArrowLeft } from '@ui/icons/ArrowLeft'
 
@@ -16,20 +17,16 @@ const BackButton = ({ href }: { href: string }) => (
 )
 
 export const PageHeader = ({
-  title,
-  subtitle,
-  titleLoading = false,
-  subtitleLoading = false,
+  title: { data: title, isLoading: titleLoading },
+  subtitle: subtitle,
   disableUpperCase = false,
   icon,
   titleItems,
   rightItems,
   backHref,
 }: {
-  title: string
-  subtitle?: string
-  titleLoading?: boolean
-  subtitleLoading?: boolean
+  title: QueryProp<string>
+  subtitle?: QueryProp<string>
   disableUpperCase?: boolean
   backHref?: string
   icon?: ReactNode
@@ -52,6 +49,7 @@ export const PageHeader = ({
               {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
               <Typography
                 variant="headingSBold"
+                {...(!titleLoading && { 'data-testid': 'page-header-title' })}
                 sx={{ overflowWrap: 'anywhere', ...(disableUpperCase && { textTransform: 'none' }) }}
               >
                 {title ?? 'Page header' /** For skeleton width inference */}
@@ -62,9 +60,9 @@ export const PageHeader = ({
           </Stack>
 
           {subtitle && (
-            <WithSkeleton loading={subtitleLoading}>
+            <WithSkeleton loading={subtitle.isLoading}>
               <Typography variant="bodyXsRegular" color="textSecondary">
-                {subtitle ?? 'Page subtitle' /** For skeleton width inference */}
+                {subtitle.data ?? 'Page subtitle' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>
           )}
