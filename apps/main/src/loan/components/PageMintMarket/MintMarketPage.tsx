@@ -104,7 +104,7 @@ export const MintMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={<MarketPageHeader />}
         {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners chainId={chainId} market={market} />

@@ -81,7 +81,7 @@ export const Page = () => {
           content: (market ?? apiMarket.data) && <VaultTabs />,
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={<MarketPageHeader />}
         {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners
