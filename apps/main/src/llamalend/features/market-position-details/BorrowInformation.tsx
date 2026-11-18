@@ -22,7 +22,7 @@ import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLT
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendEquityLeverage, useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import Collapse from '@mui/material/Collapse'
@@ -32,7 +32,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
-import { DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -55,7 +55,8 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const userState = useUserState(params)
   const equityLeverage = useEquityLeverage({ params })
   const carryApr = useCarryApr({ params })
-  const positionPnl = usePositionPnlAndEquity(params)
+  const isPositionPnl = useLlamalendPositionPnl()
+  const positionPnl = usePositionPnlAndEquity(params, isPositionPnl)
   const oraclePrice = useMarketOraclePrice(params)
   const userPrices = useUserPrices(params)
   const userBands = useUserBands(params)
@@ -89,16 +90,18 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
           {...(isDetailsOpen && { notional: mapQuery(userPrices, prices => maybe(prices, formatRangePrices)) })}
         />
-        <Metric
-          category={BORROW_METRIC_CATEGORY}
-          label={t`Equity`}
-          valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
-          {...tokenMetric({
-            value: positionPnl?.equity,
-            symbol: borrowToken?.symbol,
-            ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
-          })}
-        />
+        {isPositionPnl && (
+          <Metric
+            category={BORROW_METRIC_CATEGORY}
+            label={t`Equity`}
+            valueTooltip={{ title: t`Equity`, body: <EquityTooltipContent />, ...BORROW_METRIC_TOOLTIP }}
+            {...tokenMetric({
+              value: positionPnl.equity,
+              symbol: borrowToken?.symbol,
+              ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
+            })}
+          />
+        )}
         {useLlamalendEquityLeverage() && (
           <Metric
             category={BORROW_METRIC_CATEGORY}
@@ -123,13 +126,15 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           borrowSymbol={borrowToken?.symbol}
           showNotional={isDetailsOpen}
         />
-        <PnlMetric
-          pnl={positionPnl?.pnl ?? DISABLED_Q}
-          borrowSymbol={borrowToken?.symbol}
-          collateralSymbol={collateralToken?.symbol}
-          borrowUsdRate={q(borrowUsdRate)}
-          showNotional={isDetailsOpen}
-        />
+        {isPositionPnl && (
+          <PnlMetric
+            pnl={positionPnl.pnl}
+            borrowSymbol={borrowToken?.symbol}
+            collateralSymbol={collateralToken?.symbol}
+            borrowUsdRate={q(borrowUsdRate)}
+            showNotional={isDetailsOpen}
+          />
+        )}
         <Metric
           category={BORROW_METRIC_CATEGORY}
           label={t`Carry APR`}
