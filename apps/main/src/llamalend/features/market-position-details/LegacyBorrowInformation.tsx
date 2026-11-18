@@ -129,7 +129,7 @@ export const LegacyBorrowInformation = ({
             isEquityLeverage
               ? {
                   title: t`Leverage`,
-                  body: <LeverageTooltipContent openingLeverage={equityLeverage.opening} />,
+                  body: <LeverageTooltipContent equityLeverage={equityLeverage} />,
                   ...BORROW_METRIC_TOOLTIP,
                 }
               : undefined
