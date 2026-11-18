@@ -1,5 +1,6 @@
-import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
+import { getTokens } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { CreateLoanMaxReceiveParams } from '@/llamalend/queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
@@ -8,15 +9,17 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { FormValues } from '@ui/features/forms/useFormValues'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
-import { decimal, decimalMin } from '@ui/lib/decimal'
+import { decimalDivToPrecision, decimalMultiply } from '@ui/lib/decimal'
 import { useCreateLoanMaxReceiveQueries } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
 
 /** Query limits and preserve the debt ratio for range edits. */
 export function useMaxTokenValues({
+  market,
   collateralTokenAddress,
   inputs: { update: updateForm, values, params },
 }: {
+  market: MarketTemplate | undefined
   collateralTokenAddress: Address | undefined
   inputs: FormValues<CreateLoanForm, CreateLoanMaxReceiveParams>
 }) {
@@ -25,32 +28,36 @@ export function useMaxTokenValues({
   const maxLeverage = useMarketMaxLeverage(params)
 
   const { maxDebt } = maxBorrow.data ?? {}
-  const pendingRatioRef = useRef<Decimal>(null) // preserve the debt ratio when maxDebt changes
-  const maxCollateral = combineQueries([tokenBalance, maxBorrow], (userBalance, { maxTotalCollateral = userBalance }) =>
-    decimalMin(userBalance, maxTotalCollateral),
-  )
+  const borrowDecimals = getTokens(market)?.borrowToken.decimals
+  const pendingDebtRef = useRef<{ debt: Decimal; maxDebt: Decimal }>(null)
 
-  useEffect(() => {
-    const pendingDebtRatio = pendingRatioRef.current
-    if (pendingDebtRatio && maxDebt) {
-      const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      updateForm({ debt }, { mode: 'automatic' })
-      pendingRatioRef.current = null
-    }
-  }, [updateForm, maxDebt])
+  useEffect(
+    () => {
+      const pending = pendingDebtRef.current
+      if (pending && maxDebt && borrowDecimals != null) {
+        const debt = decimalDivToPrecision(decimalMultiply(pending.debt, maxDebt), pending.maxDebt, borrowDecimals)
+        updateForm({ debt }, { mode: 'automatic' })
+        pendingDebtRef.current = null
+      }
+    },
+    // Also run when the cached max for the new range equals the previous max.
+    [updateForm, maxDebt, params.range, borrowDecimals],
+  )
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(
     (range: number) => {
       updateForm({ range })
-      pendingRatioRef.current = decimal(values.debt && maxDebt && BigNumber(values.debt).div(maxDebt)) ?? null
+      const debt = values.debt
+      // Keep debt at the same share of the max once the new range's max arrives.
+      pendingDebtRef.current = range !== params.range && debt && maxDebt && +maxDebt ? { debt, maxDebt } : null
     },
-    [values.debt, maxDebt, updateForm],
+    [values.debt, maxDebt, updateForm, params.range],
   )
 
   return {
     setRange,
-    collateral: maxCollateral,
+    collateral: tokenBalance,
     debt: mapQuery(maxBorrow, ({ maxDebt, router }) => ({ maxDebt, router })),
     maxLeverage: combineQueries(
       [maxLeverage, maxBorrow],

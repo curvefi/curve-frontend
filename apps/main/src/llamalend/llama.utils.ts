@@ -496,6 +496,12 @@ export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. n
 
 export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
 
+export const isIncentivizedBorrow = (netBorrowApr: number | Nullish) => netBorrowApr != null && netBorrowApr < 0
+
+/** Shows an incentivized net borrow APR in the success color */
+export const getNetBorrowAprColor = (netBorrowApr: number | Nullish) =>
+  isIncentivizedBorrow(netBorrowApr) ? 'success' : undefined
+
 /** Whether the market has extras (collateral yields or borrow rewards) that make up an estimated net borrow APR. */
 export const hasEstimatedNetBorrowApr = ({
   extraRewards,

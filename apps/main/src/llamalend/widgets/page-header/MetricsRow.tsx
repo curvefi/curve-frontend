@@ -9,7 +9,7 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { formatCappedRateValue } from '@ui/lib/rates.utils'
 import { MarketSupplyRateTooltipContent } from '../tooltips/MarketSupplyRateTooltipContent'
-import { TooltipOptions } from '../tooltips/tooltip.utils'
+import { HeaderTooltipOptions } from '../tooltips/tooltip.utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const METRIC_CATEGORY = 'llamalend.marketHeader'
@@ -72,7 +72,7 @@ export const MetricsRow = ({
             extraIncentives={supplyRate.data?.extraIncentives ?? []}
           />
         ),
-        ...TooltipOptions,
+        ...HeaderTooltipOptions,
       }}
     />
   )

@@ -225,9 +225,10 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
     leverage: isEquityLeverage
-      ? equityLeverage && futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+      ? equityLeverage.isZapLeveraged.data
+        ? futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+        : null
       : collateralLeverage,
-    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
   }

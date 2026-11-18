@@ -67,7 +67,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     routes,
     values,
     leverage,
-    equityLeverage,
     exchangeRate,
     priceImpact,
     solvencyModal,
@@ -101,7 +100,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           isControllerApproved={isControllerApproved.data}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
-          equityLeverage={equityLeverage}
         />
       }
       data-testid="create-loan-form"

@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { AvailableLiquidityTooltip } from '../tooltips/AvailableLiquidityTooltip'
 import { MarketSupplyRateTooltipContent } from '../tooltips/MarketSupplyRateTooltipContent'
-import { TooltipOptions } from '../tooltips/tooltip.utils'
+import { HeaderTooltipOptions } from '../tooltips/tooltip.utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
@@ -84,7 +84,7 @@ export const LegacyMetricsRow = ({
                 extraIncentives={supplyRate.data?.extraIncentives ?? []}
               />
             ),
-            ...TooltipOptions,
+            ...HeaderTooltipOptions,
           }}
         />
       )}
@@ -101,7 +101,7 @@ export const LegacyMetricsRow = ({
           valueTooltip={{
             title: t`Total liquidity`,
             body: t`Total liquidity is the total amount of the borrow token supplied to this lending market, including both available and borrowed liquidity.`,
-            ...TooltipOptions,
+            ...HeaderTooltipOptions,
           }}
         />
       )}
@@ -117,7 +117,7 @@ export const LegacyMetricsRow = ({
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
           body: <AvailableLiquidityTooltip marketType={marketType} />,
-          ...TooltipOptions,
+          ...HeaderTooltipOptions,
         }}
       />
     </Stack>

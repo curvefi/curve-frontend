@@ -80,7 +80,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   })
   const isLeverageSupported = isLeverageCreateLoanSupported(market, leverageProviders)
 
-  const maxTokenValues = useMaxTokenValues({ collateralTokenAddress: collateralToken?.address, inputs })
+  const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress: collateralToken?.address, inputs })
 
   const {
     onSubmit: createLoan,
@@ -147,13 +147,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     collateralToken,
     error: formActions.error ?? creationError ?? form.error,
     leverage: isEquityLeverage
-      ? equityLeverage && futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+      ? equityLeverage.isZapLeveraged.data
+        ? futureOrCurrentQ(equityLeverage.future, equityLeverage.current)
+        : null
       : {
           data: expectedCollateral.data?.leverage,
           // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
           ...combineQueryState(maxTokenValues.debt, expectedCollateral),
         },
-    equityLeverage,
     exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: q(useCreateLoanIsApproved(params)),
     isControllerApproved: q(isControllerApproved),

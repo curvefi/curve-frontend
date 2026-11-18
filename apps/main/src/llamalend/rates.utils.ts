@@ -138,13 +138,13 @@ export const getMarketCampaigns = (
     )[marketType](addresses),
   ).flatMap(address => campaigns[getAddress(address)] ?? [])
 
-/** No collateral yield means no carry APR; no borrowed-token yield or no campaign counts as 0%. */
+/** No collateral yield, no borrowed-token yield or no campaign counts as 0%. */
 const toMarketYields = (
   collateralYields: CollateralYields,
   borrowedYieldApr: number | Nullish,
   campaigns: CampaignRewards[],
 ): MarketYields => ({
-  collateralYieldApr: decimal(sumCollateralYields(collateralYields)) ?? null,
+  collateralYieldApr: decimal(sumCollateralYields(collateralYields)) ?? ZERO,
   borrowedYieldApr: decimal(borrowedYieldApr) ?? ZERO,
   borrowRewardsApr: decimal(sumCampaignsApr(campaigns.filter(c => c.action === 'borrow'))) ?? ZERO,
 })
