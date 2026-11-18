@@ -20,13 +20,14 @@ type AddressCellProps = {
   explorerUrl?: string
   /** Formatter applied when copying the address. */
   formatAddress: (address: string) => string
+  align?: 'start' | 'end'
 }
 
 /**
  * Cell component for displaying blockchain addresses with truncation.
  */
-export const AddressCell = ({ address, label, explorerUrl, formatAddress }: AddressCellProps) => (
-  <InlineTableCell>
+export const AddressCell = ({ address, label, explorerUrl, formatAddress, align }: AddressCellProps) => (
+  <InlineTableCell sx={{ alignItems: align }}>
     {label && (
       <Typography variant="bodyXsRegular" className={TABLE_SECONDARY_TEXT_CLASS}>
         {label}
