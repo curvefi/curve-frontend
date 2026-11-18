@@ -15,6 +15,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -77,7 +78,7 @@ export const PoolPage = () => {
         <PoolDetailsHeader
           backHref={StellarPages.pools({ network })}
           title={q(tokenName)}
-          tokens={tokens}
+          tokens={combineQueries([tokenAddresses, ...(tokens ?? [])], (_, ...tokens) => tokens)}
           blockchainId={network}
           rightItems={<PoolHeaderMetrics tvl={composition.totalUsd} />}
         />

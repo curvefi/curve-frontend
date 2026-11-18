@@ -1,3 +1,4 @@
+import type { EquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -36,7 +37,11 @@ export const OpeningLeverageTooltipContent = ({ openingLeverage }: { openingLeve
   </TooltipWrapper>
 )
 
-export const LeverageTooltipContent = ({ openingLeverage }: { openingLeverage?: QueryProp<Decimal | null> }) => (
+export const LeverageTooltipContent = ({
+  equityLeverage,
+}: {
+  equityLeverage?: Pick<EquityLeverage, 'isZapLeveraged' | 'opening'>
+}) => (
   <TooltipWrapper>
     <TooltipDescription
       text={t`Your exposure to the collateral token: your collateral value divided by your equity.`}
@@ -44,14 +49,14 @@ export const LeverageTooltipContent = ({ openingLeverage }: { openingLeverage?: 
     <TooltipDescription
       text={t`It moves with price: it rises when collateral falls and drops when collateral gains.`}
     />
-    {maybe(openingLeverage, openingLeverage => (
+    {equityLeverage?.isZapLeveraged.data && (
       <TooltipItems secondary>
-        <TooltipItem title={t`Opened at`}>{formatNumber(openingLeverage.data, 'multiplier')}</TooltipItem>
-        {maybe(getOpeningLeverageNotice(openingLeverage), notice => (
+        <TooltipItem title={t`Opened at`}>{formatNumber(equityLeverage.opening.data, 'multiplier')}</TooltipItem>
+        {maybe(getOpeningLeverageNotice(equityLeverage.opening), notice => (
           <TooltipDescription text={notice} />
         ))}
       </TooltipItems>
-    ))}
+    )}
     <TooltipFormula
       formula={
         <>

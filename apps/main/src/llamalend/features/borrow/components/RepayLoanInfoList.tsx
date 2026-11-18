@@ -11,6 +11,7 @@ import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-l
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
+import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
@@ -25,7 +26,7 @@ import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useQuery } from '@ui/features/queries/query-hooks'
-import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui/features/queries/util'
+import { constQ, mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
 import { decimal, decimalMinus } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
@@ -43,14 +44,14 @@ function useRepayRemainingDebt(
   { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
   enabled: boolean,
 ) {
-  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled)
+  const expectedBorrowed = useRepayExpectedBorrowed(params, enabled)
   const prev = prevDebt.data
   const debt: QueryProp<Decimal | null> = isFull
     ? constQ('0')
     : showLeverage
       ? {
-          data: prev && expectedBorrowedQuery.data && remainingDebt(prev, expectedBorrowedQuery.data.totalBorrowed),
-          ...combineQueryState(prevDebt, expectedBorrowedQuery),
+          data: prev && expectedBorrowed.data && remainingDebt(prev, expectedBorrowed.data.totalBorrowed),
+          ...combineQueryState(prevDebt, expectedBorrowed),
         }
       : mapQuery(prevDebt, () => prev && remainingDebt(prev, userBorrowed ?? '0'))
   return { debt, debtDelta: maybes([debt.data, prev], decimalMinus) }
@@ -65,19 +66,19 @@ function useReturnToWallet(
   enabled: boolean,
 ) {
   const userState = useUserState(params, enabled)
-  const userBorrowed = useRepayExpectedBorrowed(params, enabled)
+  const expectedBorrowed = useRepayExpectedBorrowed(params, enabled)
   const data = useMemo(
     () =>
       calculateReturnToWallet({
-        totalBorrowed: userBorrowed.data?.totalBorrowed,
+        totalBorrowed: expectedBorrowed.data?.totalBorrowed,
         userState: userState.data,
         stateCollateralDelta: params.stateCollateral ?? undefined,
         collateralSymbol,
         borrowedSymbol,
       }),
-    [collateralSymbol, params.stateCollateral, borrowedSymbol, userState.data, userBorrowed.data],
+    [collateralSymbol, params.stateCollateral, borrowedSymbol, userState.data, expectedBorrowed.data],
   )
-  return enabled ? { data, ...combineQueryState(userBorrowed, userState) } : undefined
+  return enabled ? { data, ...combineQueryState(expectedBorrowed, userState) } : undefined
 }
 
 export function RepayLoanInfoList({
@@ -89,8 +90,7 @@ export function RepayLoanInfoList({
   tokens: { collateralToken, borrowToken },
   showLeverage,
   form,
-  prices,
-  prevPrices,
+  isInSoftLiquidation,
 }: {
   controllerAddress: Address | undefined
   marketType: MarketType
@@ -100,12 +100,11 @@ export function RepayLoanInfoList({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   showLeverage: boolean | undefined
   form: UseFormReturn<RepayFormData>
-  prices: QueryProp<Range<Decimal> | null>
-  prevPrices?: QueryProp<Range<Decimal> | null>
+  isInSoftLiquidation?: boolean
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('stateCollateral', 'userBorrowed')
-  const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
+  const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
     { params, showLeverage, prevDebt },
@@ -125,7 +124,7 @@ export function RepayLoanInfoList({
         ),
       )}
       liquidationBuffer={q(useQuery(getRepayHealthOptions({ ...params, isHealthFull: false }, isOpen)))}
-      prices={prices}
+      prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       isFullRepay={isFull}
       debt={q(debt)}

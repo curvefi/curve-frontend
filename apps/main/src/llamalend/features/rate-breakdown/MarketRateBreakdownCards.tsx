@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react'
+import { NEGATIVE_NET_BORROW_APR_NOTE } from '@/llamalend/constants'
+import { getNetBorrowAprColor, isIncentivizedBorrow } from '@/llamalend/llama.utils'
 import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import TableCell from '@mui/material/TableCell'
-import Typography from '@mui/material/Typography'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { Column } from '@tanstack/react-table'
 import type { PointsCampaignRow } from '@ui/features/points-campaigns/points-campaigns.utils'
 import { PointsCampaignsTable } from '@ui/features/points-campaigns/PointsCampaignsTable'
@@ -31,6 +34,8 @@ const RATE_BREAKDOWN_CONFIG = {
     emptyTitle: t`No borrow cost breakdown found`,
     errorTitle: t`Could not load borrow cost breakdown`,
     totalTitle: t`Net Borrow APR`,
+    getTotalColor: getNetBorrowAprColor,
+    getTotalNote: (total: number | null) => isIncentivizedBorrow(total) && NEGATIVE_NET_BORROW_APR_NOTE,
   },
   [MarketRateType.Supply]: {
     columns: SUPPLY_COLUMNS,
@@ -38,6 +43,8 @@ const RATE_BREAKDOWN_CONFIG = {
     emptyTitle: t`No yield breakdown found`,
     errorTitle: t`Could not load yield breakdown`,
     totalTitle: t`Total APY`,
+    getTotalColor: () => undefined,
+    getTotalNote: () => null,
   },
 }
 
@@ -45,11 +52,13 @@ const FooterRow = ({
   visibleColumns,
   title,
   total,
+  totalColor,
   maxBoostTotal,
 }: {
   visibleColumns: Column<CurveTableFeatures, RateBreakdownRow>[]
   title: ReactNode
   total: number | null
+  totalColor: TypographyProps['color']
   maxBoostTotal?: number | null
 }) =>
   visibleColumns.map(({ id }) =>
@@ -61,7 +70,9 @@ const FooterRow = ({
       <TableCell key={id} />
     ) : (
       <TableCell key={id} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-        <Typography variant="tableCellValueStrong">{formatNumber(total, 'percent.rate')}</Typography>
+        <Typography variant="tableCellValueStrong" color={totalColor}>
+          {formatNumber(total, 'percent.rate')}
+        </Typography>
         {maxBoostTotal != null && maxBoostTotal !== total && (
           <Typography variant="tableCellSupport" color="textSecondary">
             {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
@@ -78,7 +89,8 @@ export const RateBreakdownTable = ({
   rateType: MarketRateType
   query: QueryProp<RateBreakdownData>
 }) => {
-  const { columns, title, emptyTitle, errorTitle, totalTitle } = RATE_BREAKDOWN_CONFIG[rateType]
+  const { columns, title, emptyTitle, errorTitle, totalTitle, getTotalColor, getTotalNote } =
+    RATE_BREAKDOWN_CONFIG[rateType]
   const table = useCurveTable({
     query: mapQuery(query, ({ rows }) => rows),
     columns,
@@ -100,11 +112,21 @@ export const RateBreakdownTable = ({
               visibleColumns={table.getVisibleLeafColumns()}
               title={totalTitle}
               total={query.data!.total}
+              totalColor={getTotalColor(query.data!.total)}
               maxBoostTotal={query.data!.maxBoostTotal}
             />
           )
         }
       />
+      {maybe(showFooter && getTotalNote(query.data?.total ?? null), note => (
+        <Typography
+          variant="bodyXsRegular"
+          color="textSecondary"
+          sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.xs, textAlign: 'right' }}
+        >
+          {note}
+        </Typography>
+      ))}
     </Card>
   )
 }

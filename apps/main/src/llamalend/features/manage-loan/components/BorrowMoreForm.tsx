@@ -56,7 +56,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     routes,
     max,
     leverage,
-    equityLeverage,
     showUserBorrowed,
     isLeverageSupported,
     exchangeRate,
@@ -92,7 +91,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           marketType={marketType}
           leverageEnabled={values.leverageEnabled}
-          equityLeverage={equityLeverage}
         />
       }
     >
