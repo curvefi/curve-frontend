@@ -65,17 +65,20 @@ const TIME_UNITS = [
 export const ACTIVE_POOL_DAYS = 3 as const
 
 const JUST_NOW_SECONDS = 5 * SECONDS_PER_MINUTE
+// using en-GB instead of en-US or user locale as it is more concise and looks better (yes, it's opiniated)
+const shortRelativeTime = new Intl.RelativeTimeFormat('en-GB', { style: 'short' })
 
 /** Formats an elapsed timestamp using the largest matching unit. */
-export const relativeTime = (nowMs: number, timestampMs: number): string => {
+export const relativeTime = (nowMs: number, timestampMs: number, format: 'long' | 'short' = 'long'): string => {
   const elapsedSeconds = Math.round((nowMs - timestampMs) / MILLISECONDS_PER_SECOND)
+  const isShort = format === 'short'
 
   if (elapsedSeconds < JUST_NOW_SECONDS) return 'just now'
 
   for (const { unit, seconds } of TIME_UNITS) {
     if (elapsedSeconds >= seconds) {
       const value = Math.round(elapsedSeconds / seconds)
-      return `${value} ${value === 1 ? unit : `${unit}s`}`
+      return isShort ? shortRelativeTime.format(-value, unit) : `${value} ${value === 1 ? unit : `${unit}s`}`
     }
   }
 
