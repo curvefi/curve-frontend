@@ -22,6 +22,7 @@ import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLT
 import { EquityTooltipContent } from '@/llamalend/widgets/tooltips/EquityTooltipContent'
 import { LeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import Collapse from '@mui/material/Collapse'
@@ -31,7 +32,7 @@ import { maybe } from '@primitives/objects.utils'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { combineQueries } from '@ui/features/queries/combine'
-import { constQ, DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
+import { DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
 import { usePositionDetailsOpen } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -98,22 +99,24 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             ...(isDetailsOpen && { usdRate: q(borrowUsdRate) }),
           })}
         />
-        <Metric
-          category={BORROW_METRIC_CATEGORY}
-          label={t`Leverage`}
-          value={equityLeverage?.current ?? constQ(null)}
-          valueOptions={{
-            unit: 'multiplier',
-            // only zap leveraged positions have a leverage
-            fallback: equityLeverage ? UNAVAILABLE_NOTATION : t`None`,
-            color: getLeverageValueColor(equityLeverage?.current.data),
-          }}
-          valueTooltip={{
-            title: t`Leverage`,
-            body: <LeverageTooltipContent openingLeverage={equityLeverage?.opening} />,
-            ...BORROW_METRIC_TOOLTIP,
-          }}
-        />
+        {useLlamalendEquityLeverage() && (
+          <Metric
+            category={BORROW_METRIC_CATEGORY}
+            label={t`Leverage`}
+            value={equityLeverage.current}
+            valueOptions={{
+              unit: 'multiplier',
+              // only zap leveraged positions have a leverage
+              fallback: t`None`,
+              color: getLeverageValueColor(equityLeverage.current.data),
+            }}
+            valueTooltip={{
+              title: t`Leverage`,
+              body: <LeverageTooltipContent openingLeverage={equityLeverage.opening} />,
+              ...BORROW_METRIC_TOOLTIP,
+            }}
+          />
+        )}
         <LiquidationBufferMetric
           position={position}
           thresholds={thresholds}

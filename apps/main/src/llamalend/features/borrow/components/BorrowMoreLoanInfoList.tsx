@@ -42,7 +42,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   controllerAddress: Address | undefined
   marketType: MarketType
   leverageEnabled: boolean | undefined
-  equityLeverage: EquityLeverage | null
+  equityLeverage: EquityLeverage
   form: UseFormReturn<BorrowMoreForm>
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()

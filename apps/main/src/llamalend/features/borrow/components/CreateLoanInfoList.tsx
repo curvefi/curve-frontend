@@ -36,7 +36,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  equityLeverage: EquityLeverage | null
+  equityLeverage: EquityLeverage
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()

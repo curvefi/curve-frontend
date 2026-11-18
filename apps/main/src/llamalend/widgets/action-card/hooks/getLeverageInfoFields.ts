@@ -13,7 +13,7 @@ type LeverageInfoFieldsOptions = {
   collateralLeverageValue: Query<Decimal | null>
   prevCollateralLeverageValue: Query<Decimal | null>
   isEquityLeverage: boolean
-  equityLeverage: EquityLeverage | null
+  equityLeverage: EquityLeverage
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   collateralDelta?: Decimal // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
@@ -52,11 +52,15 @@ export const getLeverageInfoFields = (options: LeverageInfoFieldsOptions) => {
   } = options
   return {
     // we show the leverage info even when the leverage is disabled for the current action
-    ...(leverageEnabled || (isEquityLeverage ? equityLeverage : isPositionLeveraged(prevCollateralLeverageValue.data))
+    ...(leverageEnabled ||
+    (isEquityLeverage ? equityLeverage.isZapLeveraged.data : isPositionLeveraged(prevCollateralLeverageValue.data))
       ? {
           leverageEnabled: true,
           ...(isEquityLeverage
-            ? equityLeverage && { leverageValue: equityLeverage.future, prevLeverageValue: equityLeverage.current }
+            ? equityLeverage.isZapLeveraged.data && {
+                leverageValue: equityLeverage.future,
+                prevLeverageValue: equityLeverage.current,
+              }
             : getCollateralLeverageFields(options)),
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
