@@ -62,6 +62,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { values, formState } = form
   const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })
   const stakeShares = values.isFull ? maxStakeShares.data : convertedStakeShares.data
+  useFormSync(form, { maxStakeAssets: maxStakeAssets.data, stakeShares })
 
   const [params, isDebouncing] = useFormDebounce(
     {
@@ -86,9 +87,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     lowSolvency: useLowSolvencyAction({ controllerAddress, marketType: MarketType.Lend, chainId }),
     onConfirmed: stake,
   })
-
-  useFormSync(form, { maxStakeAssets: maxStakeAssets.data })
-  useFormSync(form, { stakeShares })
 
   const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyAlert
   const isPending = formState.isSubmitting || isStaking
