@@ -150,6 +150,10 @@ export function queryFactory<
         ...options,
         staleTime: 0,
       }),
+    /**
+     * Validates unwrapped input data; validation failures disable fetching without becoming query errors.
+     * Input queries propagate loading, but not errors; callers must handle their errors separately (for now).
+     */
     useQuery: (params: FieldsOrQueries<TParams>, enabled?: boolean) => {
       const s = useQuery(getQueryOptions(unwrapFields(params), enabled))
       s.isLoading = s.isLoading || Object.values(params).some(p => toQuery(p).isLoading)

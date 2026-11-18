@@ -59,7 +59,7 @@ import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { usePageVisibleInterval } from '@ui/hooks/usePageVisibleInterval'
 import { useSwitch } from '@ui/hooks/useSwitch'
 import { ArrowsHorizontalIcon } from '@ui/icons/ArrowsHorizontalIcon'
-import { decimal } from '@ui/lib/decimal'
+import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { logSuccess } from '@ui/lib/logging'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
@@ -531,9 +531,7 @@ export const QuickSwap = ({
         })}
         onBalance={setFromAmount}
         name="fromAmount"
-        inputBalanceUsd={decimal(
-          formValues.fromAmount && fromUsdRate.data && fromUsdRate.data * +formValues.fromAmount,
-        )}
+        inputBalanceUsd={maybes([decimal(formValues.fromAmount), fromUsdRate.data], decimalMultiply)}
         walletBalance={{
           balance: { ...mapQuery(userFromBalance, decimal), isLoading: isMaxLoading || userFromBalance.isLoading },
           symbol: fromToken?.symbol,
@@ -585,7 +583,7 @@ export const QuickSwap = ({
       <DebouncedLargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
-        inputBalanceUsd={decimal(formValues.toAmount && toUsdRate.data && toUsdRate.data * +formValues.toAmount)}
+        inputBalanceUsd={maybes([decimal(formValues.toAmount), toUsdRate.data], decimalMultiply)}
         onBalance={setToAmount}
         name="toAmount"
         walletBalance={{ balance: mapQuery(userToBalance, decimal), symbol: toToken?.symbol, usdRate: q(toUsdRate) }}
