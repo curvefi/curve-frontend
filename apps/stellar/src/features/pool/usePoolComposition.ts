@@ -21,7 +21,7 @@ export function usePoolComposition({
   decimals: QueryProp<number>[] | undefined
 }) {
   const precision = maybe(decimals, queries => combineQueries(queries, (...values) => values))
-  const reservesQuery = usePoolReserves({ network, pool, decimals: precision?.data })
+  const reservesQuery = usePoolReserves({ network, pool, decimals: precision })
   const reserves = q({ data: reservesQuery.data, ...combineQueryState(reservesQuery, precision) })
   const usdRates = useTokenUsdRates({ network, tokenAddresses: tokenAddresses.data })
   const prices = tokenAddresses.data?.map(address => usdRates[address])

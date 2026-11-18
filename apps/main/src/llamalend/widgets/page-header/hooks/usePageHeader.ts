@@ -126,7 +126,7 @@ const useBorrowRate = ({
     [
       marketRates,
       snapshot,
-      useCollateralYields({ chainId, marketId: marketQuery.data?.id, marketType, controllerAddress }),
+      useCollateralYields({ chainId, marketId: mapQuery(marketQuery, m => m.id), marketType, controllerAddress }),
       marketQuery,
     ],
     ({ borrowApr }, snapshots, collateralYields): BorrowRate => ({
@@ -182,7 +182,7 @@ const useSupplyRate = ({
   marketType: MarketType
   campaigns: CampaignRewards[]
 }) => {
-  const marketId = marketQuery.data?.id
+  const marketId = mapQuery(marketQuery, m => m.id)
   const enabled = marketType === MarketType.Lend
   const apiSupplySnapshots = useMarketRateHistory<LendingSnapshot>(
     apiMarket.data,
@@ -239,9 +239,11 @@ export const useAvailableLiquidity = ({
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }) => {
-  const { data: market } = marketQuery
-  const borrowTokenAddress = getTokens(market, apiMarket.data)?.borrowToken.address
-  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: market?.id })
+  const borrowTokenAddress = fallbackQ(
+    mapQuery(marketQuery, m => getTokens(m).borrowToken.address),
+    mapQuery(apiMarket, m => m.assets.borrowed.address),
+  )
+  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: mapQuery(marketQuery, m => m.id) })
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
 
   const onChainLiquidity = combineQueries([capAndAvailable, marketQuery], ({ available, totalAssets }) => ({
@@ -292,7 +294,7 @@ export const usePageHeaderRates = () => {
     blockchainId,
     range: { kind: 'limit', limit: RATE_WINDOW },
   })
-  const marketRates = q(useMarketRates({ chainId, marketId: market?.id }))
+  const marketRates = q(useMarketRates({ chainId, marketId: mapQuery(marketQuery, m => m.id) }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 

@@ -26,12 +26,12 @@ export const useInitialLiquidity = ({
   UserParams &
   FieldsOf<InitialLiquidityForm> & { autoDeposit: InitialLiquidityForm | false | undefined }) => {
   const depositStartedRef = useRef(false) // Mutation flags update on the next render; this synchronous guard also prevents StrictMode effect replay.
-  const supply = usePoolSupply({ network, pool })
+  const supply = q(usePoolSupply({ network, pool }))
   const expectedLp = useExpectedLp({
     network,
     pool,
     maxAmounts: params.maxAmounts,
-    supply: supply.data,
+    supply,
     decimals: getCreatePoolDecimals(params, params.tokenCount),
     amounts: getPoolAmounts(params, params.tokenCount),
     isDeposit: true,

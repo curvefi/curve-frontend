@@ -91,8 +91,10 @@ export const QuickSwap = ({
   const { isHydrated } = useCurve()
   const { signerAddress: userAddress } = curve ?? {}
   const { fromAddress, toAddress } = searchedParams
-  const { data: fromToken, isLoading: fromTokenLoading } = useToken({ chainId, tokenAddress: fromAddress })
-  const { data: toToken, isLoading: toTokenLoading } = useToken({ chainId, tokenAddress: toAddress })
+  const fromTokenQuery = useToken({ chainId, tokenAddress: fromAddress })
+  const toTokenQuery = useToken({ chainId, tokenAddress: toAddress })
+  const { data: fromToken, isLoading: fromTokenLoading } = fromTokenQuery
+  const { data: toToken, isLoading: toTokenLoading } = toTokenQuery
   const activeKey = useStore(state => state.quickSwap.activeKey)
   const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore(state => state.quickSwap.formStatus)
@@ -182,8 +184,8 @@ export const QuickSwap = ({
   const userToBalance = useTokenBalance({ chainId, userAddress, tokenAddress: toToken?.address })
   const { isFetched: userToBalanceFetched, refetch: refetchUserToBalance } = userToBalance
 
-  const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromToken?.address })
-  const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toToken?.address })
+  const fromUsdRate = useTokenUsdRate({ chainId, tokenAddress: mapQuery(fromTokenQuery, t => t.address) })
+  const toUsdRate = useTokenUsdRate({ chainId, tokenAddress: mapQuery(toTokenQuery, t => t.address) })
 
   const { balances, tokenPrices } = useTokenSelectorData(
     { chainId, userAddress, tokens },
@@ -529,11 +531,13 @@ export const QuickSwap = ({
         })}
         onBalance={setFromAmount}
         name="fromAmount"
-        inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+        inputBalanceUsd={decimal(
+          formValues.fromAmount && fromUsdRate.data && fromUsdRate.data * +formValues.fromAmount,
+        )}
         walletBalance={{
           balance: { ...mapQuery(userFromBalance, decimal), isLoading: isMaxLoading || userFromBalance.isLoading },
           symbol: fromToken?.symbol,
-          usdRate: fromUsdRate,
+          usdRate: q(fromUsdRate),
         }}
         maxBalance={{ balance: mapQuery(userFromBalance, decimal), chips: 'range' }}
         disabled={isDisable}
@@ -581,10 +585,10 @@ export const QuickSwap = ({
       <DebouncedLargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
-        inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
+        inputBalanceUsd={decimal(formValues.toAmount && toUsdRate.data && toUsdRate.data * +formValues.toAmount)}
         onBalance={setToAmount}
         name="toAmount"
-        walletBalance={{ balance: mapQuery(userToBalance, decimal), symbol: toToken?.symbol, usdRate: toUsdRate }}
+        walletBalance={{ balance: mapQuery(userToBalance, decimal), symbol: toToken?.symbol, usdRate: q(toUsdRate) }}
         disabled={isDisable}
         testId="to-amount"
         tokenSelector={

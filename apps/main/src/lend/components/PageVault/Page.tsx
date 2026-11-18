@@ -20,6 +20,7 @@ import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
+import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -51,7 +52,7 @@ export const Page = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
-  const { data: balances } = useUserBalances({ marketId: market?.id, chainId, userAddress })
+  const { data: balances } = useUserBalances({ marketId: mapQuery(marketQuery, m => m.id), chainId, userAddress })
   const hasPosition = market && balances && +(balances.totalShares ?? 0) > 0
   const events = useUserVaultEvents({
     chainId,

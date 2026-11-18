@@ -13,7 +13,7 @@ import { PongLoader } from '@ui/components/PongLoader'
 import type { PoolClaimables, ResidualClaimsTableData } from '@ui/features/pool-list/types'
 import { hasClaimableRewards, claimablesTotalUsd } from '@ui/features/pool-list/utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { constQ, DISABLED_Q, mapQuery } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { decimalCompare, decimalGreaterThan, decimalSum, ZERO } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -41,7 +41,7 @@ export const useResidualClaimsTable = (
   const campaigns = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const poolAddresses = usePoolAddresses({ chainId }, enabled)
-  const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
+  const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: q(poolAddresses) }, enabled)
 
   const tableQuery = useCombinedQueries(
     [positions, poolAddresses, claimables],

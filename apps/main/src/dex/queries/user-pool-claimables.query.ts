@@ -1,5 +1,5 @@
 import { groupBy } from 'lodash'
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 import { getAddress } from 'viem'
 import { LEGACY_POOLS } from '@/routes/dex.routes'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
@@ -11,7 +11,7 @@ import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { assert, fromEntries, recordEntries } from '@primitives/objects.utils'
 import { NoRetryError } from '@ui/features/queries/factory'
-import { q, type QueryData } from '@ui/features/queries/util'
+import { type FieldsOrQueries, q, type QueryData, toQuery, toValue, useMappedQuery } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -92,16 +92,19 @@ const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
   category: 'dex.claims',
 })
 
-export function useUserPoolClaimables(params: UserPoolClaimablesParams, enabled = true) {
+export function useUserPoolClaimables(params: FieldsOrQueries<UserPoolClaimablesParams>, enabled = true) {
   const { curveApi } = useCurve()
-  const { chainId, poolAddresses } = params
-  const filteredPoolAddresses = useMemo(
-    () => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
-    [chainId, poolAddresses],
+  const chainId = toValue(params.chainId)
+  const filteredPoolAddresses = useMappedQuery(
+    toQuery(params.poolAddresses),
+    useCallback(
+      poolAddresses => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
+      [chainId],
+    ),
   )
   const query = useUserPoolClaimablesQuery(
     { ...params, poolAddresses: filteredPoolAddresses },
-    enabled && !!filteredPoolAddresses?.length && curveApi?.chainId === chainId,
+    enabled && !!filteredPoolAddresses.data?.length && curveApi?.chainId === chainId,
   )
 
   return {
