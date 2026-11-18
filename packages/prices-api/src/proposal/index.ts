@@ -1,8 +1,9 @@
-import { fetchJson as fetch, FetchError } from '@primitives/fetch.utils'
+import { addQueryString, fetchJson as fetch, FetchError } from '@primitives/fetch.utils'
 import { getHost, type Options } from '..'
 import * as Schema from './schema'
 
 export type * from './schema'
+export { proposalStatus as proposalStatusSchema } from './schema'
 
 export async function getProposals(
   page: number,
@@ -10,12 +11,19 @@ export async function getProposals(
   search: string,
   type: Schema.ProposalType | 'all',
   status: Schema.ProposalStatus,
-  options?: Options,
+  options?: Options & { sortBy?: Schema.ProposalSortField; sortOrder?: Schema.ProposalSortOrder },
 ) {
   const host = getHost(options)
-  const response = await fetch(
-    `${host}/v1/dao/proposals?pagination=${pagination}&page=${page}&search_string=${search}&type_filter=${type}&status_filter=${status}`,
-  )
+  const query = addQueryString({
+    pagination,
+    page,
+    search_string: search,
+    type_filter: type,
+    status_filter: status,
+    sort_by: options?.sortBy,
+    sort_direction: options?.sortOrder,
+  })
+  const response = await fetch(`${host}/v1/dao/proposals${query}`, { signal: options?.signal })
 
   return Schema.getProposalsResponse.parse(response)
 }

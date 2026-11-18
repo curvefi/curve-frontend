@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type { ProposalStatus } from '@curvefi/prices-api/proposal'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
@@ -18,7 +19,7 @@ import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { ArrowDownIcon } from '@ui/icons/ArrowDownIcon'
 import { RotatableIcon } from '@ui/icons/RotatableIcon'
 import { t } from '@ui/lib/i18n'
-import { ProposalColumnId } from '../columns'
+import { PROPOSAL_SORT_OPTIONS } from '../constants'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,11 +29,6 @@ const PROPOSAL_FILTERS = [
   { value: 'executable', label: 'Executable' },
   { value: 'executed', label: 'Executed' },
   { value: 'denied', label: 'Denied' },
-] as const
-
-const PROPOSAL_SORTING_METHODS = [
-  { id: ProposalColumnId.TimeCreated, label: 'Time Created' },
-  { id: ProposalColumnId.EndingSoon, label: 'Ending Soon' },
 ] as const
 
 export const ProposalsToolbar = ({
@@ -47,8 +43,8 @@ export const ProposalsToolbar = ({
 }: {
   search: string
   setSearch: (value: string) => void
-  status: string
-  setStatus: (value: string) => void
+  status: ProposalStatus
+  setStatus: (value: ProposalStatus) => void
   sortBy: string
   sortDirection: SortDirection
   resetFilters: () => void
@@ -97,7 +93,7 @@ export const ProposalsToolbar = ({
                 buttonTestId="btn-drawer-sort-proposals"
                 drawerTestId="drawer-sort-menu-proposals"
                 onSortingChange={onSortingChange}
-                options={PROPOSAL_SORTING_METHODS}
+                options={PROPOSAL_SORT_OPTIONS}
                 sortDescending={sortDirection === 'desc'}
                 sortField={sortBy}
               />
@@ -106,10 +102,10 @@ export const ProposalsToolbar = ({
                 size="small"
                 value={sortBy}
                 onChange={event =>
-                  onSortingChange([{ id: event.target.value as ProposalColumnId, desc: sortDirection === 'desc' }])
+                  onSortingChange([{ id: event.target.value as string, desc: sortDirection === 'desc' }])
                 }
               >
-                {PROPOSAL_SORTING_METHODS.map(({ id, label }) => (
+                {PROPOSAL_SORT_OPTIONS.map(({ id, label }) => (
                   <MenuItem key={id} value={id}>
                     {label}
                   </MenuItem>
