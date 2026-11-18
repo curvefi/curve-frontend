@@ -21,7 +21,7 @@ import { Banner } from '@ui/features/banners/Banner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
-import { constQ, fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
@@ -63,7 +63,7 @@ export const ManagePool = () => {
           <PoolDetailsHeader
             backHref={dexPages.pool({ blockchainId, poolAddress })}
             title={mapQuery(pool, pool => pool.name)}
-            tokens={pool.data?.coins.map(constQ)}
+            tokens={mapQuery(pool, pool => pool.coins)}
             blockchainId={blockchainId}
             rightItems={
               <PoolHeaderMetrics

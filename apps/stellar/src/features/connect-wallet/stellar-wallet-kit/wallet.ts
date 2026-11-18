@@ -1,4 +1,5 @@
 import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
+import { LOBSTR_ID } from '@creit.tech/stellar-wallets-kit/modules/lobstr'
 import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { activeModule } from '@creit.tech/stellar-wallets-kit/state'
@@ -19,8 +20,16 @@ export const initWallet = (onError: (error: Error) => void) => {
     ),
   )
   refreshAddress()
-  window.addEventListener('focus', refreshAddress) // some wallets e.g., Varial don't listen to changes, refresh when returning to the app
-  return () => window.removeEventListener('focus', refreshAddress)
+
+  /**
+   * Refresh account changes on focus (e.g. Freighter). LOBSTR 2.1.0 prompts on every getAddress();
+   * closing its popup restores focus and repeats the request. Skip it until silent reads are supported;
+   * LOBSTR users must reconnect after switching accounts.
+   * @see https://github.com/Lobstrco/signer-extension-api/issues/2 (closed but still reproducible in extension 2.1.0)
+   */
+  const refreshAddressOnFocus = () => activeModule.value?.productId !== LOBSTR_ID && refreshAddress()
+  window.addEventListener('focus', refreshAddressOnFocus)
+  return () => window.removeEventListener('focus', refreshAddressOnFocus)
 }
 
 export const onWalletAddressChanged = (onChange: (address: StellarAddress | undefined) => void) =>

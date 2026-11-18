@@ -1,17 +1,19 @@
 import { useConnection } from 'wagmi'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { getTokenOrPair } from '@/llamalend/llama.utils'
+import { getTokenOrPair, getTokens } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { llamalendRoutes } from '@evm-ui/shared/routes'
 import { MarketType } from '@evm-ui/types/market'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { Badge } from '@ui/components/Badge'
 import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ChainIcon } from '@ui/icons/ChainIcon'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
@@ -23,25 +25,12 @@ import { MetricsRow } from './MetricsRow'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
+export const MarketPageHeader = () => {
   const { address: userAddress } = useConnection()
-  const {
-    chainId,
-    blockchainId,
-    marketId,
-    controllerAddress,
-    marketType,
-    tokens: { collateralToken, borrowToken },
-  } = useMarketContext()
+  const { chainId, blockchainId, marketId, controllerAddress, marketType, marketQuery, apiMarket } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
-
-  const title = (collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`) ?? t`Market`
-
-  const subtitle =
-    collateralToken &&
-    borrowToken &&
-    t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
+  const tokens = q({ ...fallbackQ(marketQuery, apiMarket), data: getTokens(marketQuery.data, apiMarket.data) })
 
   const MetricComponent = isNewLlamaMarketDetailPage ? MetricsRow : LegacyMetricsRow
   const metrics = (
@@ -50,8 +39,8 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
       supplyRate={supplyRate}
       availableLiquidity={availableLiquidity}
       marketType={marketType}
-      collateral={collateralToken}
-      borrowToken={borrowToken}
+      collateral={tokens.data?.collateralToken}
+      borrowToken={tokens.data?.borrowToken}
     />
   )
 
@@ -59,25 +48,30 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
     <WithWrapper shouldWrap={isNewLlamaMarketDetailPage} Wrapper={Stack}>
       <PageHeader
         backHref={llamalendRoutes.markets({ blockchainId })}
-        title={title}
-        subtitle={subtitle}
-        titleLoading={isLoading}
-        subtitleLoading={isLoading}
+        title={mapQuery(
+          tokens,
+          ({ collateralToken, borrowToken }) => `${collateralToken.symbol} • ${borrowToken.symbol}`,
+        )}
+        subtitle={mapQuery(
+          tokens,
+          ({ collateralToken, borrowToken }) =>
+            t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`,
+        )}
         disableUpperCase
         icon={
-          <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
-            {collateralToken && borrowToken && (
+          <WithSkeleton loading={tokens.isLoading} variant="rectangular" width={35} height={35}>
+            {maybe(tokens.data, ({ collateralToken, borrowToken }) => (
               <TokenIcons
                 blockchainId={blockchainId}
                 tokens={[getTokenOrPair(blockchainId, collateralToken), getTokenOrPair(blockchainId, borrowToken)]}
                 overflowMode="stack"
               />
-            )}
+            ))}
           </WithSkeleton>
         }
         titleItems={
           <>
-            <WithSkeleton loading={isLoading} width={24}>
+            <WithSkeleton loading={tokens.isLoading} width={24}>
               <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
                 <ChainIcon blockchainId={blockchainId} />
                 <Badge size="extraSmall" label={t`${marketType}`} />

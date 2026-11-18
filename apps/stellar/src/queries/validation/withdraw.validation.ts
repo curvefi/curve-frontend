@@ -3,7 +3,8 @@ import { skipWhen, test } from 'vest'
 import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
 import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { isComplete } from '@primitives/array.utils'
-import { maybes } from '@primitives/objects.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybes, type Nullish } from '@primitives/objects.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import {
   getAdvancedWithdrawParams,
@@ -63,8 +64,8 @@ const validateMaximumBurn = ({
   lpAmount,
   maximumBurn,
   isExactBurn,
-}: Pick<WithdrawSimulationParams, 'lpAmount' | 'maximumBurn'> & { isExactBurn: boolean }) => {
-  test('maximumBurn', 'Withdrawal quote is unavailable', () => {
+}: Pick<WithdrawSimulationParams, 'lpAmount'> & { maximumBurn: Decimal | Nullish; isExactBurn: boolean }) => {
+  test('root', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn).isDecimal().gt(0)
   })
   skipWhen(maximumBurn == null, () => {
@@ -73,7 +74,7 @@ const validateMaximumBurn = ({
     })
   })
   skipWhen(!isExactBurn, () => {
-    test('maximumBurn', 'LP burn does not match the selected LP amount', () => {
+    test('root', 'LP burn does not match the selected LP amount', () => {
       enforce(
         maybes([maximumBurn, lpAmount], (burn, amount) => decimalEqual(burn, decimalRound(amount, LP_TOKEN_DECIMALS))),
       ).isTruthy()
@@ -100,26 +101,37 @@ const validateOneCoinSelection = ({ mode, tokenIndex, amounts, lpAmount, maxLpAm
   })
 }
 
+const validateWithdrawBudget = ({
+  lpAmount,
+  maxLpAmount,
+  supply,
+  seedLock,
+  mode,
+  expectedLp,
+  slippage,
+}: WithdrawSimulationParams) => {
+  const isExactBurn = mode !== 'unbalanced'
+  const maximumBurn = isExactBurn ? expectedLp : maybes([expectedLp, slippage], calculateMaximumBurn)
+  validateBudget({ lpAmount: isExactBurn ? lpAmount : maximumBurn, maxLpAmount, supply, seedLock })
+  validateMaximumBurn({ lpAmount: isExactBurn ? lpAmount : maxLpAmount, maximumBurn, isExactBurn })
+}
+
 /** Keep the editable form and the submitted transaction on the same amount and budget checks. */
 const validateWithdrawAmounts = (params: WithdrawSimulationParams) => {
-  const { lpAmount, maxLpAmount, supply, seedLock, maximumBurn, mode } = params
   validateSlippage({ slippage: params.slippage })
   validateOutputs(params)
   validateOneCoinSelection(params)
-  const isExactBurn = mode !== 'unbalanced'
-  validateBudget({ lpAmount: isExactBurn ? lpAmount : maximumBurn, maxLpAmount, supply, seedLock })
-  validateMaximumBurn({ lpAmount: isExactBurn ? lpAmount : maxLpAmount, maximumBurn, isExactBurn })
-  return isExactBurn
 }
 
-export const advancedWithdrawFormValidationSuite = createValidationSuite((values: AdvancedWithdrawFormValues) =>
-  validateWithdrawAmounts(getAdvancedWithdrawParams(values)),
-)
+export const advancedWithdrawFormValidationSuite = createValidationSuite((values: AdvancedWithdrawFormValues) => {
+  const params = getAdvancedWithdrawParams(values)
+  validateWithdrawAmounts(params)
+  validateWithdrawBudget(params)
+})
 
 export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values: OneCoinWithdrawFormValues) => {
-  const { amount, poolReserve, maxLpAmount, maximumBurn, supply, seedLock, slippage } = values
+  const { amount, poolReserve, slippage } = values
   const params = getOneCoinWithdrawParams(values)
-  const isFull = params.mode === 'one-coin'
   validateSlippage({ slippage })
   validateAmount('amount', amount, true)
   test('amount', 'Enter an amount to withdraw', () => {
@@ -131,29 +143,24 @@ export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values:
   test('amount', 'Amount exceeds the maximum withdrawal', () => {
     enforce(maybes([amount, poolReserve], (amount, reserve) => new BigNumber(amount).lte(reserve))).isTruthy()
   })
-  validateBudget({ lpAmount: isFull ? maxLpAmount : maximumBurn, maxLpAmount, supply, seedLock })
-  validateMaximumBurn({ lpAmount: maxLpAmount, maximumBurn, isExactBurn: isFull })
+  validateWithdrawBudget(params)
   validateOneCoinSelection(params)
 })
 
+const validateWithdrawQuote = (params: WithdrawSimulationParams) => {
+  validateWithdrawBudget(params)
+  test('root', 'Withdrawal is too small to burn LP', () => {
+    enforce(params.expectedLp).isDecimal().gt(0)
+  })
+}
+
+export const withdrawQuoteValidationSuite = createValidationSuite(validateWithdrawQuote)
+
 const validateWithdraw = (params: WithdrawSimulationQuery) => {
-  const { lpAmount, expected, slippage, maximumBurn } = params
   validatePool(params)
   validateAccount(params.account)
-  const isExactBurn = validateWithdrawAmounts(params)
-  test('expected', 'Withdrawal is too small to burn LP', () => {
-    enforce(expected).isDecimal().gt(0)
-  })
-  skipWhen(!isExactBurn, () => {
-    test('expected', 'LP quote does not match the selected LP amount', () => {
-      enforce(decimalEqual(expected, decimalRound(lpAmount!, LP_TOKEN_DECIMALS))).isTruthy()
-    })
-  })
-  skipWhen(isExactBurn, () => {
-    test('maximumBurn', 'Maximum LP does not match the accepted quote and slippage', () => {
-      enforce(maybes([expected, slippage], calculateMaximumBurn)).equals(maximumBurn)
-    })
-  })
+  validateWithdrawAmounts(params)
+  validateWithdrawQuote(params)
 }
 
 export const withdrawSimulationValidationSuite = createValidationSuite(validateWithdraw)

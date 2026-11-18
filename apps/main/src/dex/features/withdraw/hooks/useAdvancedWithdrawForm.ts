@@ -8,7 +8,7 @@ import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { useWithdrawPriceImpact } from '@/dex/queries/withdraw/withdraw-bonus.query'
-import { useWithdrawLp } from '@/dex/queries/withdraw/withdraw-expected.query'
+import { useWithdrawExpectedLp } from '@/dex/queries/withdraw/withdraw-expected.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, range } from '@primitives/objects.utils'
@@ -19,7 +19,7 @@ import {
   getAdvancedWithdrawParams,
   type AdvancedWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { WithdrawQuoteParams } from '../types'
@@ -52,7 +52,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
       slippage: maxSlippage,
       decimals: undefined,
       maxLpAmount: undefined,
-      maximumBurn: undefined,
+      expectedLp: undefined,
       supply: undefined,
       seedLock: undefined,
     },
@@ -68,13 +68,13 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
 
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getAdvancedWithdrawParams(debounced), ...poolParams }
-  const { expectedLp, maximumLp } = useWithdrawLp(params)
+  const expectedLp = q(useWithdrawExpectedLp(params))
   const priceImpact = useWithdrawPriceImpact(params)
 
   useFormSync(form, {
     decimals,
     maxLpAmount: lpBalance.data,
-    maximumBurn: maximumLp.data,
+    expectedLp: expectedLp.data,
     supply: supply.data,
     ...fromEntries(range(tokenCount).map(index => [poolMaxAmountField(index), reserves.data?.[index]])),
   })
@@ -108,9 +108,6 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
     params,
     tokens,
     lpBalance,
-    expectedLp,
-    maximumLp,
-    priceImpact,
     canBalance,
     lpAmountUsd: lpAmountUsd.data,
     canWithdrawWrapped: !!hasWrapped(pool),

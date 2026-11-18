@@ -3,7 +3,13 @@ import type { StellarAddress } from '@/stellar/features/connect-wallet/address'
 import { isContractAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import { isAccountAddress } from '@/stellar/features/connect-wallet/stellar-wallet-kit/wallet'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
-import type { PoolDecimalsQuery, PoolParams, TokenQuery, UserQuery } from '@/stellar/queries/query-types'
+import type {
+  PoolDecimalsQuery,
+  PoolParams,
+  PoolRegistrationParams,
+  TokenQuery,
+  UserQuery,
+} from '@/stellar/queries/query-types'
 import type { Nullish } from '@primitives/objects.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -36,6 +42,12 @@ const validateToken = ({ network, token }: TokenQuery) => {
 }
 
 export const poolValidationSuite = createValidationSuite(validatePool)
+export const poolRegistrationValidationSuite = createValidationSuite((params: PoolRegistrationParams) => {
+  validatePool(params)
+  test('factory', 'Pool factory is unavailable', () => {
+    enforce(params.factory).isNotEmpty().condition(isContractAddress)
+  })
+})
 export const validatePoolDecimals = ({ network, pool, decimals }: PoolDecimalsQuery) => {
   validatePool({ network, pool })
   test('decimals', 'Pool token decimals are unavailable', () => {

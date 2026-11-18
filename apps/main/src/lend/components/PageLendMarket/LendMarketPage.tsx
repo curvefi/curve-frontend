@@ -113,7 +113,7 @@ export const LendMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} showCollateralClaim={showCollateralClaim} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={<MarketPageHeader />}
         {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners

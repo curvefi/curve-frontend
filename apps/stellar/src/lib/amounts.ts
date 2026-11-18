@@ -13,11 +13,11 @@ const applyLpSlippage = (amount: Decimal, slippage: Decimal, rounding: BigNumber
     .toFixed() as Decimal
 
 /** Apply slippage and floor at LP-token precision, returning a decimal LP amount. */
-export const calculateMinimumMint = (quote: Decimal, slippage: Decimal): Decimal =>
-  applyLpSlippage(quote, decimalMinus('0', slippage), BigNumber.ROUND_FLOOR)
+export const calculateMinimumMint = (expectedLp: Decimal, slippage: Decimal): Decimal =>
+  applyLpSlippage(expectedLp, decimalMinus('0', slippage), BigNumber.ROUND_FLOOR)
 
-export const calculateMaximumBurn = (expected: Decimal, slippage: Decimal): Decimal =>
-  applyLpSlippage(expected, slippage, BigNumber.ROUND_CEIL)
+export const calculateMaximumBurn = (expectedLp: Decimal, slippage: Decimal): Decimal =>
+  applyLpSlippage(expectedLp, slippage, BigNumber.ROUND_CEIL)
 
 /** Value of decimal token amounts at their normalized rates. */
 export const rateAdjustedValue = (amounts: (Decimal | undefined)[], rates: (Decimal | number)[]) =>
