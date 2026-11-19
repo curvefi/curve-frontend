@@ -119,6 +119,7 @@ export const LendMarketActivity: StoryObj<typeof meta> = {
     <Stack sx={{ gap: Spacing.md }}>
       <ActivityStoryTable
         query={swapsQuery}
+        hasValue={false}
         emptyTitle="No AMM trades found."
         errorTitle="Could not load AMM trades."
       />

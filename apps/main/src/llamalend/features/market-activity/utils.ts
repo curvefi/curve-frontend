@@ -46,7 +46,7 @@ export const toMarketActivitySwapRow = ({
   address,
   action: { label: t`Swap` },
   breakdownCutoff: SWAP_BREAKDOWN_CUTOFF,
-  valueUsd: maybe(amountBought, Math.abs) ?? null,
+  valueUsd: null,
   deltas: getSwapDeltas(
     { token: tokenSold, amount: amountSold, amountUsd: null },
     { token: tokenBought, amount: amountBought, amountUsd: null },
