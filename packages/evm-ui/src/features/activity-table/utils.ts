@@ -4,7 +4,7 @@ import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
-import type { ActivityTokenDelta } from './types'
+import type { ActivityToken, ActivityTokenDelta } from './types'
 
 const PROCESSING_TIMEOUT_MS = REFRESH_INTERVAL['1h']
 
@@ -62,3 +62,7 @@ export const getSwapDeltas = (
     { ...sold, amount: -sold.amount, label: t`Sold` },
     { ...bought, label: t`Bought` },
   ].filter(({ amount }) => amount !== 0)
+
+/** Give each delta row a specific key in case the query updates with new data so rerendering works correctly. */
+export const getActivityDeltaKey = (label: string, address: ActivityToken['address'] | undefined, index: number) =>
+  JSON.stringify([label, address, index])
