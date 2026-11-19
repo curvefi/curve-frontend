@@ -4,9 +4,7 @@ import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/use
 import { isUserBand } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import type { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { VaultActivityEventsTable } from '@/llamalend/features/vault-activity/VaultActivityEventsTable'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import type { VaultActivityProps } from '@evm-ui/features/activity-table/types'
 import { OhlcChart, type OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
@@ -35,20 +33,19 @@ import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
-import { LlammaActivityEventsTable } from '../features/llamma-activity/LlammaActivityEventsTable'
-import { LlammaActivityTradesTable } from '../features/llamma-activity/LlammaActivityTradesTable'
-import type { LlammaActivityProps } from '../features/llamma-activity/types'
+import { EventsTab as MarketBorrowActivityEventsTab } from '../features/market-activity/EventsTab'
+import { SwapsTab as MarketBorrowActivitySwapsTab } from '../features/market-activity/SwapsTab'
+import type { MarketActivityProps } from '../features/market-activity/types'
+import { EventsTab as MarketSupplyActivityEventsTab } from '../features/vault-activity/EventsTabs'
+import type { VaultActivityProps } from '../features/vault-activity/types'
 import { useMarketOraclePrice } from '../queries/market/market-oracle-price.query'
 import { useMarketPrice } from '../queries/market/market-price.query'
 
 const { Spacing } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
-
 const LEGACY_SOFT_LIQUIDATION_DESCRIPTION = t`Above the liquidation threshold, health mostly follows price (and slowly declines from interest). In the liquidation range, health drops on any price movement as collateral is worn down inside the bands.`
-
 const SOFT_LIQUIDATION_DESCRIPTION = t`Above the liquidation range, health follows the price. In the liquidation range, health stays at 1.00 and the liquidation buffer drops on any price movement as collateral is worn down inside the bands.`
-
 const PRICE_VALUE_OPTIONS = { abbreviate: false, formatter: (value: Amount) => formatNumber(value, 'token.precise') }
 
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -64,6 +61,7 @@ const useMarketTokenPair = () => {
   return { tokenPair: isMarketLoading ? undefined : getTokenPairUnit(symbols), isMarketLoading }
 }
 
+type ActivityProp = { [MarketRateType.Borrow]: MarketActivityProps; [MarketRateType.Supply]: VaultActivityProps }
 type ChartAndActivityLayoutProps = {
   chart: {
     chartMode: LlammaOhlcChartMode | undefined
@@ -74,37 +72,20 @@ type ChartAndActivityLayoutProps = {
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
   bands: QueryProp<ChartDataPoint[]>
-  activity: LlammaActivityProps
+  activity: MarketActivityProps
 }
 
-type MarketActivityProps = { [MarketRateType.Borrow]: LlammaActivityProps; [MarketRateType.Supply]: VaultActivityProps }
-type MarketActivityTabsParams<T extends MarketRateType> = { activity: MarketActivityProps[T] }
+type MarketActivityTabsParams<T extends MarketRateType> = { activity: ActivityProp[T] }
 
-const MarketBorrowActivityEventsTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
-  <LlammaActivityEventsTable {...activity} />
-)
-const MarketBorrowActivityTradesTab = ({ activity }: MarketActivityTabsParams<MarketRateType.Borrow>) => (
-  <LlammaActivityTradesTable {...activity} />
-)
-
-const buildMarketActivityMenu = <T extends MarketRateType>(rateType: T) =>
-  (
-    ({
-      [MarketRateType.Borrow]: [
-        { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
-        { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
-      ],
-      [MarketRateType.Supply]: [
-        {
-          value: 'events',
-          label: t`Activity`,
-          component: ({ activity }: MarketActivityTabsParams<MarketRateType.Supply>) => (
-            <VaultActivityEventsTable {...activity} />
-          ),
-        },
-      ],
-    }) as { [K in MarketRateType]: readonly Omit<TabItem<string, MarketActivityTabsParams<K>>, 'subTabs'>[] }
-  )[rateType]
+const MARKET_ACTIVITY_MENU: {
+  [K in MarketRateType]: readonly Omit<TabItem<string, MarketActivityTabsParams<K>>, 'subTabs'>[]
+} = {
+  [MarketRateType.Borrow]: [
+    { value: 'trades', label: t`Swaps`, component: MarketBorrowActivitySwapsTab },
+    { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
+  ],
+  [MarketRateType.Supply]: [{ value: 'events', label: t`Activity`, component: MarketSupplyActivityEventsTab }],
+}
 
 const LEGACY_CHART_AND_ACTIVITY_MENU = [
   {
@@ -114,7 +95,7 @@ const LEGACY_CHART_AND_ACTIVITY_MENU = [
       <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
     ),
   },
-  { value: 'trades', label: t`Swaps`, component: MarketBorrowActivityTradesTab },
+  { value: 'trades', label: t`Swaps`, component: MarketBorrowActivitySwapsTab },
   { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
 ]
 
@@ -171,7 +152,7 @@ export const MarketActivityLayout = <T extends MarketRateType>({
   activity,
 }: {
   rateType: T
-  activity: MarketActivityProps[NoInfer<T>]
+  activity: ActivityProp[NoInfer<T>]
 }) => (
   <Stack
     data-testid={
@@ -179,7 +160,7 @@ export const MarketActivityLayout = <T extends MarketRateType>({
     }
   >
     <Tabs
-      menu={buildMarketActivityMenu(rateType)}
+      menu={MARKET_ACTIVITY_MENU[rateType]}
       params={{ activity }}
       variant="contained"
       ContentWrapper={ActivityTabsCard}
