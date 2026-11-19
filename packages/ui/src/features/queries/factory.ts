@@ -152,11 +152,12 @@ export function queryFactory<
       }),
     /**
      * Validates unwrapped input data; validation failures disable fetching without becoming query errors.
-     * Input queries propagate loading, but not errors; callers must handle their errors separately (for now).
+     * Input loading propagates; It is only ignored if this query is manually disabled.
+     * Input errors are not propagated; callers must handle them separately (for now).
      */
     useQuery: (params: FieldsOrQueries<TParams>, enabled?: boolean) => {
       const s = useQuery(getQueryOptions(unwrapFields(params), enabled))
-      s.isLoading = s.isLoading || Object.values(params).some(p => toQuery(p).isLoading)
+      s.isLoading = s.isLoading || (enabled !== false && Object.values(params).some(p => toQuery(p).isLoading))
       return s
     },
     /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */

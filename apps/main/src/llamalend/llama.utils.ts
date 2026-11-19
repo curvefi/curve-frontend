@@ -19,20 +19,20 @@ import { type Address, Hex, type Token } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
-  type Nullish,
   type AllOrNone,
   assert,
   DEFAULT_DECIMALS,
   maybe,
   maybes,
   notFalsy,
+  type Nullish,
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
 import type { TokenOrPair } from '@ui/components/TokenIcons'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { QueryProp, toQuery } from '@ui/features/queries/util'
+import { fallbackQ, QueryProp, toQuery } from '@ui/features/queries/util'
 import { decimal, decimalMinus, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { ReleaseChannel } from '@ui/lib/env'
 import { t } from '@ui/lib/i18n'
@@ -261,6 +261,11 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
           },
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
+
+export const getTokensQuery = (market: QueryProp<MarketTemplate>, apiMarket: QueryProp<LlamaMarket>) => ({
+  ...fallbackQ(market, apiMarket),
+  data: getTokens(market.data, apiMarket.data),
+})
 
 /** Returns the token pair of a known LP token */
 const findLpTokenPair = (blockchainId: Chain, address: string) => LP_TOKEN_PAIRS[blockchainId]?.[getAddress(address)]

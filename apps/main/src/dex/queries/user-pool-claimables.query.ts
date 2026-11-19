@@ -1,5 +1,4 @@
 import { groupBy } from 'lodash'
-import { useCallback } from 'react'
 import { getAddress } from 'viem'
 import { LEGACY_POOLS } from '@/routes/dex.routes'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
@@ -11,7 +10,7 @@ import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { assert, fromEntries, recordEntries } from '@primitives/objects.utils'
 import { NoRetryError } from '@ui/features/queries/factory'
-import { type FieldsOrQueries, q, type QueryData, toQuery, toValue, useMappedQuery } from '@ui/features/queries/util'
+import { type FieldsOrQueries, mapQuery, q, type QueryData, toQuery, toValue } from '@ui/features/queries/util'
 import { decimal, decimalMultiply, decimalSum } from '@ui/lib/decimal'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -95,12 +94,8 @@ const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
 export function useUserPoolClaimables(params: FieldsOrQueries<UserPoolClaimablesParams>, enabled = true) {
   const { curveApi } = useCurve()
   const chainId = toValue(params.chainId)
-  const filteredPoolAddresses = useMappedQuery(
-    toQuery(params.poolAddresses),
-    useCallback(
-      poolAddresses => poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
-      [chainId],
-    ),
+  const filteredPoolAddresses = mapQuery(toQuery(params.poolAddresses), poolAddresses =>
+    poolAddresses?.filter(address => chainId && !CLAIMABLES_BLACKLIST[chainId]?.has(address)),
   )
   const query = useUserPoolClaimablesQuery(
     { ...params, poolAddresses: filteredPoolAddresses },
@@ -109,7 +104,6 @@ export function useUserPoolClaimables(params: FieldsOrQueries<UserPoolClaimables
 
   return {
     ...q(query),
-    // We need to expand QueryProp some time, because we only expose isLoading even though we sometimes want isFetching or isPending
     // In this case we want isPending as we want a skeleton during the initial load, but no skeleton during refreshing stale data.
     isLoading: query.isPending,
     isFetching: query.isFetching,
