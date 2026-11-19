@@ -2,6 +2,7 @@ import type { Theme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 
 export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
@@ -66,6 +67,9 @@ export const getLegacyHealthValueColor = ({
     resolveHealthFeedbackKey({ health: value == null ? value : Number(value), isFullRepay })
   ]
 }
+
+/** Shown instead of the leverage of positions that did not borrow through the leverage zap */
+export const NO_LEVERAGE_LABEL = t`None`
 
 export const getLeverageValueColor = (leverage: Decimal | Nullish) =>
   leverage != null && decimalGreaterThan(ZERO, leverage) ? 'error' : undefined
