@@ -18,7 +18,7 @@ import { Form } from '@ui/features/forms/components/Form'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
-import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp, type Range, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
@@ -77,7 +77,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       updateForm({ leverageEnabled: !event.target.checked, routeId: undefined }),
     [updateForm],
   )
-  const isLeverageUnknown = !!isLeverageSupported && values.leverageEnabled === undefined
+  // until the position history loads, the form borrows without leverage and the checkbox waits for its default
+  const leverageEnabled = toQuery(values.leverageEnabled, collateralEvents)
   const maxDebt = mapQuery(max.debt, ({ maxDebt }) => maxDebt)
   const onMax = useCallback(() => {
     const { maxDebt: debt, router } = assert(max.debt.data, 'expected max debt data')
@@ -85,9 +86,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     updateForm({ debt: getMaxBorrowAmount(debt, values.leverageEnabled) })
   }, [max.debt.data, routes, updateForm, values.leverageEnabled])
 
+  const showSettings = values.leverageEnabled === true
   const settings = (
     <LoanActionSettings
-      show={values.leverageEnabled === true}
+      show={showSettings}
       slippage={values.slippage}
       onSlippageChange={slippage => updateForm({ slippage })}
       routes={routes}
@@ -164,11 +166,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       </Stack>
       {isLeverageSupported &&
         (isZapLeveragedPosition ? (
-          <Stack>
+          <Stack sx={{ gap: showSettings ? Spacing.sm : 0 }}>
             {settings}
             <CheckboxField
-              checked={values.leverageEnabled === false}
-              disabled={isLeverageUnknown}
+              checked={mapQuery(leverageEnabled, enabled => enabled === false)}
               label={t`Borrow to wallet`}
               description={t`Borrowed assets will go to your wallet, this will impact your position parameters.`}
               testIdPrefix="borrow-to-wallet"
@@ -177,12 +178,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           </Stack>
         ) : (
           <Stack>
-            <LeverageInput
-              checked={values.leverageEnabled}
-              disabled={isLeverageUnknown}
-              leverage={leverage}
-              onToggle={onLeverageToggle}
-            />
+            <LeverageInput checked={leverageEnabled} leverage={leverage} onToggle={onLeverageToggle} />
             {settings}
           </Stack>
         ))}
@@ -190,9 +186,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={
-          isDisabled || isLeverageUnknown || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)
-        }
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
         label={[
           [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           Number(values.userCollateral) && t`Add`,
