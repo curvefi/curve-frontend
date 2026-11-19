@@ -16,7 +16,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
-import { fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { amount, decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
@@ -46,7 +46,7 @@ export const PoolAdvancedDetails = () => {
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const parameters = usePoolParameters({ chainId, poolAddress })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
+  const gaugeIsKilled = q(usePoolIsGaugeKilled({ chainId, poolAddress }))
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
