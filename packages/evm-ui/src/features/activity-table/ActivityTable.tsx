@@ -1,7 +1,7 @@
 import { EvmDataTable, type EvmDataTableProps } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { formatNumber } from '@primitives/number.utils'
 import type { RowBreakdownConfig } from '@ui/features/tables/DataRow'
 import { ActivityExpandedPanel } from './ActivityExpandedPanel'
+import { ActivityUsdValueCell } from './cells/ActivityUsdValueCell'
 import { BreakdownActionLabelCell } from './cells/BreakdownActionLabelCell'
 import { TokenDeltaAmountCell } from './cells/TokenDeltaAmountCell'
 import { ActivityColumnId } from './columns/columns.enum'
@@ -16,7 +16,8 @@ const ACTIVITY_BREAKDOWN: RowBreakdownConfig<ActivityRow, ActivityTokenDelta> = 
   getItemKey: ({ label }) => label,
   cells: {
     [ActivityColumnId.Action]: ({ label }) => <BreakdownActionLabelCell label={label} />,
-    [ActivityColumnId.Value]: ({ amountUsd }) => formatNumber(amountUsd, 'usd.amount'),
+    [ActivityColumnId.Value]: ({ amount, amountUsd }, { timestamp }) =>
+      amountUsd != undefined && <ActivityUsdValueCell amount={amount} amountUsd={amountUsd} timestamp={timestamp} />,
     [ActivityColumnId.Amount]: (delta, { blockchainId }) => (
       <TokenDeltaAmountCell blockchainId={blockchainId} deltas={[delta]} />
     ),

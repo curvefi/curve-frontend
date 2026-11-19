@@ -47,10 +47,7 @@ export const toMarketActivitySwapRow = ({
   action: { label: t`Swap` },
   breakdownCutoff: SWAP_BREAKDOWN_CUTOFF,
   valueUsd: null,
-  deltas: getSwapDeltas(
-    { token: tokenSold, amount: amountSold, amountUsd: null },
-    { token: tokenBought, amount: amountBought, amountUsd: null },
-  ),
+  deltas: getSwapDeltas({ token: tokenSold, amount: amountSold }, { token: tokenBought, amount: amountBought }),
 })
 
 export const toMarketActivityBorrowEventRow = (event: MarketBorrowEventRow): ActivityRow => {
@@ -105,8 +102,8 @@ export const toMarketActivitySupplyEventRow = ({
     breakdownCutoff: SUPPLY_BREAKDOWN_CUTOFF,
     deltas: amounts
       ? [
-          { label: t`Assets`, token: borrowToken, amount: assetSign * amounts.assets, amountUsd: null },
-          { label: t`Shares`, token: vaultToken, amount: -assetSign * amounts.shares, amountUsd: null },
+          { label: t`Assets`, token: borrowToken, amount: assetSign * amounts.assets },
+          { label: t`Shares`, token: vaultToken, amount: -assetSign * amounts.shares },
         ]
       : [],
   }
