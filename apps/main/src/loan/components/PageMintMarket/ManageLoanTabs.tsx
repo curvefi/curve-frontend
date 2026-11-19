@@ -9,6 +9,7 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LeveragedPositionBadge } from '@/llamalend/widgets/action-card/LeveragedPositionBadge'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -67,5 +68,6 @@ export const ManageLoanTabs = (params: MintManageLoanProps) => (
     key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
     params={params}
     menu={params.isLiquidation ? LiquidationMenu : MintManageMenu}
+    action={<LeveragedPositionBadge collateralEvents={params.collateralEvents} />}
   />
 )
