@@ -104,7 +104,9 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   })
   const { values, params, formState } = form
 
-  useOnChangeCallback(market, () => resetCreateLoanExpectedCollateral(params)) // some loan queries depend on LL internal cache for expected collateral, reset when new market data arrives
+  // some loan queries depend on LL internal cache for expected collateral, reset when new market data arrives
+  useOnChangeCallback(market, () => resetCreateLoanExpectedCollateral(params))
+  // use the default market slippage, unless the user changed it in this form
   useFormSync(form, { slippage: defaultSlippage }, !form.isTouched('slippage'))
   // Clear leverage state if the loaded market is not supported by the current provider
   useFormSync(form, { leverageEnabled: false, routeId: undefined }, isLeverageSupported === false)

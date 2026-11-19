@@ -1,11 +1,11 @@
 import { identity } from 'lodash'
 import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import type { FormUpdates, UseFormReturn, FieldValues } from './form.types'
+import type { FieldValues, FormUpdates, UseFormReturn } from './form.types'
 import type { FormValues } from './useFormValues'
 
 /**
- * Syncs the form when the supplied fields change. Omitted fields are left unchanged.
+ * Syncs supplied fields when they change or the form resets, while enabled. Omitted fields are left unchanged.
  */
 export function useFormSync<T extends FieldValues>(
   form: Pick<UseFormReturn<T>, 'update'>,
@@ -22,12 +22,11 @@ export function useFormSync(
   values: FieldValues,
   enabled = true,
 ) {
-  const update = 'resetVersion' in form ? form.update : undefined
-  const legacyUpdate = 'resetVersion' in form ? undefined : form.update
+  const { update } = form
+  const isFormValues = 'resetVersion' in form // whether we use the newer useFormValues hook.
+  const resetVersion = isFormValues && form.resetVersion
   const stableValues = useShallow(identity<FieldValues>)(values)
   useEffect(() => {
-    if (!enabled) return
-    if (update) update(stableValues, { mode: 'automatic' })
-    else legacyUpdate?.(stableValues, { automated: true })
-  }, [enabled, update, legacyUpdate, stableValues])
+    if (enabled) update(stableValues, isFormValues ? { mode: 'automatic' } : { automated: true })
+  }, [enabled, update, isFormValues, stableValues, resetVersion])
 }

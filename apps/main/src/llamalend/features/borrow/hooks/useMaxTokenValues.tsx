@@ -17,7 +17,7 @@ import type { CreateLoanForm } from '../types'
 export function useMaxTokenValues({
   market,
   collateralTokenAddress,
-  inputs: { update: updateForm, values, params },
+  inputs: { update: updateForm, values, params, resetVersion },
 }: {
   market: MarketTemplate | undefined
   collateralTokenAddress: Address | undefined
@@ -30,6 +30,10 @@ export function useMaxTokenValues({
   const { maxDebt } = maxBorrow.data ?? {}
   const borrowDecimals = getTokens(market)?.borrowToken.decimals
   const pendingDebtRef = useRef<{ debt: Decimal; maxDebt: Decimal }>(null)
+
+  useEffect(() => {
+    pendingDebtRef.current = null
+  }, [resetVersion])
 
   useEffect(
     () => {
