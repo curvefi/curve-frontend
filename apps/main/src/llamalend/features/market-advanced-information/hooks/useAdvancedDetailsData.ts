@@ -3,7 +3,7 @@ import {
   calculateLendMarketTvlUsd,
   calculateMintMarketTvlUsd,
   getControllerAddress,
-  getTokens,
+  getTokensQuery,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
@@ -40,7 +40,7 @@ export const useAdvancedDetailsData = ({
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
 }) => {
-  const tokens = { ...fallbackQ(marketQuery, apiMarket), data: getTokens(marketQuery.data, apiMarket.data) }
+  const tokens = getTokensQuery(marketQuery, apiMarket)
   const { collateralToken, borrowToken } = tokens.data ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(marketQuery.data, apiMarket.data)

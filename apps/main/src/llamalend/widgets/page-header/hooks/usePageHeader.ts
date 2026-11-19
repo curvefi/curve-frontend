@@ -4,7 +4,7 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
 import { useCollateralYields } from '@/llamalend/hooks/useCollateralYields'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
-import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokensQuery, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
 import { useMarketRates, type MarketRates } from '@/llamalend/queries/market/market-rates.query'
@@ -239,10 +239,7 @@ export const useAvailableLiquidity = ({
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }) => {
-  const borrowTokenAddress = fallbackQ(
-    mapQuery(marketQuery, m => getTokens(m).borrowToken.address),
-    mapQuery(apiMarket, m => m.assets.borrowed.address),
-  )
+  const borrowTokenAddress = mapQuery(getTokensQuery(marketQuery, apiMarket), t => t.borrowToken.address)
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: mapQuery(marketQuery, m => m.id) })
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
 
