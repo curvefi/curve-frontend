@@ -17,7 +17,8 @@ const ACTIVITY_BREAKDOWN: RowBreakdownConfig<ActivityRow, ActivityTokenDelta> = 
   cells: {
     [ActivityColumnId.Action]: ({ label }) => <BreakdownActionLabelCell label={label} />,
     [ActivityColumnId.Value]: ({ amount, amountUsd }, { timestamp }) =>
-      amountUsd != undefined && <ActivityUsdValueCell amount={amount} amountUsd={amountUsd} timestamp={timestamp} />,
+      // Allow amountUsd to be null for the 'processing' state
+      amountUsd !== undefined && <ActivityUsdValueCell amount={amount} amountUsd={amountUsd} timestamp={timestamp} />,
     [ActivityColumnId.Amount]: (delta, { blockchainId }) => (
       <TokenDeltaAmountCell blockchainId={blockchainId} deltas={[delta]} />
     ),
