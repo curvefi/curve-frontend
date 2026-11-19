@@ -32,18 +32,24 @@ export const getTransactionActions = (chainId: number, txHash?: string | null) =
     ),
   )
 
-type ActivityUsdValueProps = { amount: number; amountUsd: number | Nullish; timestamp: Timestamp; isSold?: boolean }
+export type ActivityUsdValueProps = {
+  amount: number
+  amountUsd: number | Nullish
+  timestamp: Timestamp
+  isSold?: boolean
+}
 
 /** Historical USD prices can arrive after activity amounts. Show Processing for up to one hour. */
 export const formatActivityUsdValue = (
   { amount, amountUsd, timestamp, isSold = false }: ActivityUsdValueProps,
   currentDate: Date,
+  format: 'usd.amount' | 'usd.notional' = 'usd.notional',
 ) =>
   amountUsd == null
     ? amount && currentDate.getTime() < timestamp + PROCESSING_TIMEOUT_MS
       ? t`Processing`
       : UNAVAILABLE_NOTATION
-    : formatNumber(isSold ? -amountUsd : amountUsd, 'usd.notional')
+    : formatNumber(isSold ? -amountUsd : amountUsd, format)
 
 export const getChangeColor = (amount: number, positive: 'success' | 'error', negative: 'success' | 'error') =>
   amount > 0 ? positive : amount < 0 ? negative : 'textPrimary'

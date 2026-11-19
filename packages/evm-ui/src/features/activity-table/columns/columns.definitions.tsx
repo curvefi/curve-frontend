@@ -3,8 +3,8 @@ import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCel
 import { RelativeTimeCell } from '@evm-ui/shared/ui/DataTable/inline-cells/RelativeTimeCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@primitives/number.utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { ActivityUsdValueCell } from '../cells/ActivityUsdValueCell'
 import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
 import type { ActivityRow } from '../types'
 import { ActivityColumnId } from './columns.enum'
@@ -38,7 +38,11 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
   columnHelper.display({
     id: ActivityColumnId.Value,
     header: ACTIVITY_TITLES[ActivityColumnId.Value],
-    cell: ({ row }) => formatNumber(row.original.valueUsd, 'usd.amount'),
+    cell: ({
+      row: {
+        original: { deltas, timestamp, valueUsd },
+      },
+    }) => <ActivityUsdValueCell amount={deltas[0]?.amount ?? 0} amountUsd={valueUsd} timestamp={timestamp} />,
     meta: { type: 'numeric' },
   }),
   columnHelper.display({
