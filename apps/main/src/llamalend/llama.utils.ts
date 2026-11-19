@@ -337,11 +337,7 @@ export const getVaultToken = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket,
 ): MarketOrApiValue<T, MarketToken | undefined> =>
-  maybe(getVaultAddress(market, apiMarket), address => ({
-    address,
-    symbol: t`Vault shares`,
-    decimals: DEFAULT_DECIMALS,
-  }))
+  maybe(getVaultAddress(market, apiMarket), address => ({ address, symbol: t`Shares`, decimals: DEFAULT_DECIMALS }))
 
 export type BandRange = { minBands: number; maxBands: number }
 export type BandRangeOrEmpty = AllOrNone<BandRange>
