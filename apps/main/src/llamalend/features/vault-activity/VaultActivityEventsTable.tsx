@@ -1,23 +1,49 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, type ReactNode } from 'react'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketVaultEvents } from '@/llamalend/queries/market/market-vault-events.query'
-import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
-import { LlammaTokenAmount } from '@evm-ui/features/activity-table/cells/LlammaTokenAmount'
+import type { Chain } from '@curvefi/prices-api'
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
-import { VaultActivityExpandedPanel } from '@evm-ui/features/activity-table/panels/VaultActivityExpandedPanel'
-import type { VaultActivityProps, VaultActivityRow } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE, getVaultEventChange } from '@evm-ui/features/activity-table/utils'
+import type { ActivityToken } from '@evm-ui/features/activity-table/types'
+import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { getPageCount } from '@evm-ui/utils'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
+import { formatNumber } from '@primitives/number.utils'
 import { recordEntries } from '@primitives/objects.utils'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
+import { TokenInfo } from '@ui/components/TokenInfo'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { createAppColumnHelper, useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
+import type { VaultActivityProps, VaultActivityRow } from './types'
+import { getVaultEventChange } from './utils'
+import { VaultActivityExpandedPanel } from './VaultActivityExpandedPanel'
+
+const LlammaTokenAmount = ({
+  amount,
+  blockchainId,
+  notional,
+  token,
+}: {
+  amount: number
+  blockchainId: Chain
+  notional?: ReactNode
+  token: ActivityToken | undefined
+}) =>
+  token && (
+    <TokenInfo
+      address={token.address}
+      blockchainId={blockchainId}
+      iconPosition="right"
+      iconSize="mui-md"
+      primary={formatNumber(amount, 'token.amount')}
+      secondary={notional}
+    />
+  )
 
 const columnHelper = createAppColumnHelper<VaultActivityRow>()
 
@@ -139,7 +165,8 @@ export const VaultActivityEventsTable = ({ chainId, blockchainId, borrowToken, v
   })
 
   return (
-    <ActivityTable
+    <EvmDataTable
+      category="scrollable"
       table={table}
       emptyState={{ title: t`No activity data found.` }}
       errorState={{ title: t`Could not load activity data.` }}
