@@ -22,12 +22,16 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
       },
     }) => <RelativeTimeCell timestamp={new Date(timestamp)} txUrl={txHash ? scanTxPath(chainId, txHash) : null} />,
   }),
-  columnHelper.accessor('action', {
+  columnHelper.display({
     id: ActivityColumnId.Action,
     header: ACTIVITY_TITLES[ActivityColumnId.Action],
-    cell: ({ getValue }) => (
-      <Typography variant="tableCellValue" color={getValue().color}>
-        {getValue().label}
+    cell: ({
+      row: {
+        original: { action },
+      },
+    }) => (
+      <Typography variant="tableCellValue" color={action.color}>
+        {action.label}
       </Typography>
     ),
   }),
