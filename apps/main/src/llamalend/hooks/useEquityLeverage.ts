@@ -40,7 +40,7 @@ export function useEquityLeverage(
     futurePosition = DISABLED_Q,
     isZapBorrow = false,
   }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; isZapBorrow?: boolean },
-  enabled = true,
+  enabled?: boolean,
 ): EquityLeverage {
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
   const collateralEvents = useUserCollateralEvents({ app: marketType, controllerAddress, chainId, userAddress, tokens })
@@ -80,11 +80,11 @@ export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {
   })
 }
 
-export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled = true) =>
+export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled?: boolean) =>
   useEquityLeverage({ params, futurePosition: useRepayFuturePosition(params, debt, enabled) }, enabled)
 
-export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
+export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled?: boolean) =>
   useEquityLeverage({ params, futurePosition: useAddCollateralFuturePosition(params, enabled) }, enabled)
 
-export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
+export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled?: boolean) =>
   useEquityLeverage({ params, futurePosition: useRemoveCollateralFuturePosition(params, enabled) }, enabled)

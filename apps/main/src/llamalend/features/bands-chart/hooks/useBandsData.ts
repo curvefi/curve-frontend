@@ -12,7 +12,7 @@ import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 export const useBandsData = ({
   chainId,
   market,
-  enabled = true,
+  enabled,
 }: {
   chainId: IChainId
   market: QueryProp<MarketTemplate>

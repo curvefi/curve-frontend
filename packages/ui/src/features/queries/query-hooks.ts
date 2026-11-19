@@ -29,7 +29,7 @@ export function useQuery<
   TError = DefaultError,
   TData = TQueryFnData,
   TKey extends QueryKey = QueryKey,
->({ dependencies, enabled = true, ...options }: QueryOptions<TQueryFnData, TError, TData, TKey>) {
+>({ dependencies, enabled, ...options }: QueryOptions<TQueryFnData, TError, TData, TKey>) {
   const ready = useTanstackQueries({
     queries: dependencies?.().map(key => ({ queryKey: [key], enabled: false })) ?? [],
     combine: results => results.every(q => q.data !== undefined),
@@ -51,9 +51,9 @@ export function useQueries<T extends unknown[], TCombinedResult = QueriesResults
   })
   return useTanstackQueries<T, TCombinedResult>({
     ...options,
-    queries: zip(queryOptions, dependencies).map(([{ enabled = true, ...options }, deps]) => ({
+    queries: zip(queryOptions, dependencies).map(([{ enabled, ...options }, deps]) => ({
       ...options,
-      enabled: enabled && (deps?.every(key => ready[hashKey([key])]) ?? true),
+      enabled: (deps?.every(key => ready[hashKey([key])]) ?? true) && enabled,
     })) as TanstackQueriesOptions<T>,
   })
 }

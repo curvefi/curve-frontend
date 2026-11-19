@@ -19,7 +19,7 @@ import { usePoolStoredRates } from '../queries/pool-stored-rates.query'
 import { usePoolWrappedBalances } from '../queries/pool-wrapped-balances.query'
 
 /** Data and calculations only. Pair indices refer to the pool's wrapped coins, including metapool LP tokens. */
-export const usePoolLiquidityDensity = ([inputCoin, outputCoin]: LiquidityPair, enabled = true) => {
+export const usePoolLiquidityDensity = ([inputCoin, outputCoin]: LiquidityPair, enabled?: boolean) => {
   const { chainId, blockchainId, poolAddress, pool, apiPool } = usePoolContext()
   const params = { chainId, blockchainId: getPricesApiBlockchainId(blockchainId), poolAddress }
   const metadata = usePoolMetadata(params, enabled)

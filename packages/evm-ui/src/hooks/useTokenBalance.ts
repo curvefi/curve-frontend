@@ -156,11 +156,11 @@ const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =
  */
 export function useTokenBalances(
   { chainId, userAddress, tokenAddresses = [] }: FieldsOf<ChainQuery & UserQuery> & { tokenAddresses?: Address[] },
-  enabled = true,
+  enabled?: boolean,
 ) {
   const config = useConfig()
 
-  const isEnabled = enabled && chainId != null && userAddress != null
+  const isEnabled = chainId != null && userAddress != null && enabled
   const uniqueAddresses = useMemo(() => uniqAddresses(tokenAddresses), [tokenAddresses])
 
   return useQueries({

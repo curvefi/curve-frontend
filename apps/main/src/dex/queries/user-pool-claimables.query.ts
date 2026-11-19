@@ -91,7 +91,7 @@ const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
   category: 'dex.claims',
 })
 
-export function useUserPoolClaimables(params: FieldsOrQueries<UserPoolClaimablesParams>, enabled = true) {
+export function useUserPoolClaimables(params: FieldsOrQueries<UserPoolClaimablesParams>, enabled?: boolean) {
   const { curveApi } = useCurve()
   const chainId = toValue(params.chainId)
   const filteredPoolAddresses = mapQuery(toQuery(params.poolAddresses), poolAddresses =>
@@ -99,7 +99,7 @@ export function useUserPoolClaimables(params: FieldsOrQueries<UserPoolClaimables
   )
   const query = useUserPoolClaimablesQuery(
     { ...params, poolAddresses: filteredPoolAddresses },
-    enabled && !!filteredPoolAddresses.data?.length && curveApi?.chainId === chainId,
+    !!filteredPoolAddresses.data?.length && curveApi?.chainId === chainId && enabled,
   )
 
   return {

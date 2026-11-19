@@ -87,7 +87,7 @@ export const useDexOhlcQuery = ({
   anchorEnd,
   blockchainId: chain,
   chartSelection,
-  enabled = true,
+  enabled,
   interval,
   poolAddress,
   timeOption,
@@ -108,7 +108,7 @@ export const useDexOhlcQuery = ({
     ),
     anchorEnd,
     timeOption,
-    enabled: enabled && !!chain && !!poolAddress,
+    enabled: !!chain && !!poolAddress && enabled,
     fetchPage: async ({ pageParam, signal }): Promise<DexOhlcPage> => {
       const validChain = assert(chain, t`Cannot fetch DEX OHLC data without a chain.`)
       const responseData = await fetchDexOhlc(

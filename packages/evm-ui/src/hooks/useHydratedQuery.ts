@@ -8,9 +8,9 @@ import type { FieldName, FieldsOf } from '@ui/lib/validation/types'
 
 /** Some queries require a hydrated instance of curve-js, which we'll gate through the `enabled` property with `isHydrated`. */
 const useHydratedQuery = <TParams, TData>(
-  useQuery: (params: TParams, enabled: boolean) => UseQueryResult<TData>,
+  useQuery: (params: TParams, enabled?: boolean) => UseQueryResult<TData>,
   params: TParams,
-  enabled = true,
+  enabled?: boolean,
 ) => {
   const { isHydrated, error: initializationError } = useCurve()
   const { data, error, isLoading, isPending, isFetching } = useQuery(params, isHydrated && enabled)
