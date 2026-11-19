@@ -4,13 +4,13 @@ import { contractValidationSuite } from '@evm-ui/queries/validation/contract-val
 import { queryFactory } from '@ui/features/queries/factory'
 import type { FieldsOf } from '@ui/lib/validation/types'
 
-type MarketVaultEventsQuery = ContractQuery & Required<Pick<PaginatedOptions, 'page' | 'perPage'>>
-type MarketVaultEventsParams = FieldsOf<MarketVaultEventsQuery>
+type MarketSupplyEventsQuery = ContractQuery & Required<Pick<PaginatedOptions, 'page' | 'perPage'>>
+type MarketSupplyEventsParams = FieldsOf<MarketSupplyEventsQuery>
 
-export const { useQuery: useMarketVaultEvents } = queryFactory({
-  queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketVaultEventsParams) =>
+export const { useQuery: useMarketSupplyEvents } = queryFactory({
+  queryKey: ({ blockchainId, contractAddress, page, perPage }: MarketSupplyEventsParams) =>
     ({ name: 'vault-events', blockchainId, contractAddress, page, perPage }) as const,
-  queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketVaultEventsQuery) =>
+  queryFn: ({ blockchainId, contractAddress, page, perPage }: MarketSupplyEventsQuery) =>
     getVaultEvents(blockchainId, contractAddress, { page, perPage }),
   category: 'llamalend.market',
   validationSuite: contractValidationSuite,

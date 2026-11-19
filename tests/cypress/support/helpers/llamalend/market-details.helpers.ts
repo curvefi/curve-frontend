@@ -98,8 +98,8 @@ const shouldLoadParticipantCard = (rateType: MarketRateType) => {
 
 const shouldLoadLendMarketActivity = (rateType: MarketRateType) => {
   const [visible, hidden] = {
-    [MarketRateType.Borrow]: ['market-activity', 'market-vault-activity'],
-    [MarketRateType.Supply]: ['market-vault-activity', 'market-activity'],
+    [MarketRateType.Borrow]: ['market-activity', 'market-supply-activity'],
+    [MarketRateType.Supply]: ['market-supply-activity', 'market-activity'],
   }[rateType]
   cy.get(`[data-testid="${visible}"] [data-testid="data-table"]`, TIMEOUTS['prices.activity']).should('be.visible')
   cy.get(`[data-testid="${hidden}"]`).should('not.exist')

@@ -3,9 +3,9 @@ import type { ActivityRow, ActivityTokenDelta } from '@evm-ui/features/activity-
 import { getSwapDeltas, SWAP_BREAKDOWN_CUTOFF } from '@evm-ui/features/activity-table/utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
-import type { MarketEventRow, MarketTradeRow } from './types'
+import type { MarketBorrowEventRow, MarketSupplyEventRow, MarketTradeRow } from './types'
 
-const getMarketEventDeltas = (event: MarketEventRow): ActivityTokenDelta[] => {
+const getMarketBorrowEventDeltas = (event: MarketBorrowEventRow): ActivityTokenDelta[] => {
   if (event.type === 'deposit') {
     const { amount, amountUsd } = event.deposit
     return notFalsy(!!amount && { label: t`Collateral`, token: event.collateralToken, amount, amountUsd })
@@ -53,9 +53,9 @@ export const toMarketActivitySwapRow = ({
   ),
 })
 
-export const toMarketActivityEventRow = (event: MarketEventRow): ActivityRow => {
+export const toMarketActivityBorrowEventRow = (event: MarketBorrowEventRow): ActivityRow => {
   const { chainId, blockchainId, txHash, timestamp, provider: address, type } = event
-  const deltas = getMarketEventDeltas(event)
+  const deltas = getMarketBorrowEventDeltas(event)
   const valueUsd =
     deltas.length && deltas.every(({ amountUsd }) => amountUsd != null)
       ? sumBy(deltas, ({ amountUsd }) => Math.abs(amountUsd ?? 0))
@@ -70,5 +70,44 @@ export const toMarketActivityEventRow = (event: MarketEventRow): ActivityRow => 
     action: type === 'deposit' ? { label: t`Deposit`, color: 'success' } : { label: t`Withdraw`, color: 'error' },
     valueUsd: type === 'deposit' ? valueUsd : (maybe(valueUsd, x => -x) ?? null),
     deltas,
+  }
+}
+
+const SUPPLY_BREAKDOWN_CUTOFF = SWAP_BREAKDOWN_CUTOFF // Almost all supply events have 2 deltas, so we can use the same cutoff as swaps.
+
+export const toMarketActivitySupplyEventRow = ({
+  chainId,
+  blockchainId,
+  txHash,
+  timestamp,
+  provider: address,
+  deposit,
+  withdrawal,
+  borrowToken,
+  vaultToken,
+}: MarketSupplyEventRow): ActivityRow => {
+  const amounts = deposit ?? withdrawal
+  const assetSign = deposit ? -1 : 1
+  const action: ActivityRow['action'] = deposit
+    ? { label: t`Deposit`, color: 'success' }
+    : withdrawal
+      ? { label: t`Withdrawal`, color: 'error' }
+      : { label: '' }
+
+  return {
+    chainId,
+    blockchainId,
+    txHash,
+    timestamp,
+    address,
+    action,
+    valueUsd: null,
+    breakdownCutoff: SUPPLY_BREAKDOWN_CUTOFF,
+    deltas: amounts
+      ? [
+          { label: t`Assets`, token: borrowToken, amount: assetSign * amounts.assets, amountUsd: null },
+          { label: t`Shares`, token: vaultToken, amount: -assetSign * amounts.shares, amountUsd: null },
+        ]
+      : [],
   }
 }
