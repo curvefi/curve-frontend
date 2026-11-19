@@ -1,6 +1,8 @@
+import { type CollateralYields, getEstimatedNetBorrowApr } from '@/llamalend/collateral-yields'
 import { useMarketCampaignsByAddress } from '@/llamalend/features/market-advanced-information/hooks/useMarketCampaignsByAddress'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
+import { useCollateralYields } from '@/llamalend/hooks/useCollateralYields'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
@@ -11,10 +13,8 @@ import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   formatSupplyExtraIncentives,
-  getBorrowRateMetrics,
+  getAverageBorrowRates,
   getLatestSnapshotValue,
-  getSnapshotBorrowApr,
-  getSnapshotCollateralRebasingYieldApr,
   getSupplyApyAverageMetrics,
   getSupplyApyMetrics,
   sumCampaignsApr,
@@ -91,7 +91,19 @@ function buildSupplyRate({
   }
 }
 
+export type BorrowRate = {
+  rate: number | null
+  averageRate: number | null
+  averageCategory: AverageCategory
+  collateralYields: CollateralYields
+  totalBorrowRate: number | null
+  totalAverageBorrowRate: number | null
+  extraRewards: CampaignRewards[]
+}
+
 const useBorrowRate = ({
+  chainId,
+  controllerAddress,
   apiMarket,
   marketRates,
   marketType,
@@ -99,6 +111,8 @@ const useBorrowRate = ({
   marketQuery,
   campaigns,
 }: {
+  chainId: number
+  controllerAddress: Address | undefined
   apiMarket: QueryProp<LlamaMarket>
   marketRates: QueryProp<MarketRates>
   marketType: MarketType
@@ -108,26 +122,25 @@ const useBorrowRate = ({
 }) => {
   const borrowCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Borrow)
 
-  const onChainBorrowRate = combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
-    const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
-      borrowRate: toNumberOrNull(borrowApr),
-      campaignsRate: sumCampaignsApr(borrowCampaigns),
-      snapshots,
-      getBorrowRate: getSnapshotBorrowApr,
-      getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-      daysBack: RATE_WINDOW,
-    })
-    return {
+  const onChainBorrowRate = combineQueries(
+    [
+      marketRates,
+      snapshot,
+      useCollateralYields({ chainId, marketId: marketQuery.data?.id, marketType, controllerAddress }),
+      marketQuery,
+    ],
+    ({ borrowApr }, snapshots, collateralYields): BorrowRate => ({
       rate: toNumberOrNull(borrowApr),
-      averageRate,
+      ...getAverageBorrowRates(snapshots, RATE_WINDOW),
       averageCategory: RATE_CATEGORY,
-      rebasingYield,
-      averageRebasingYield,
-      totalBorrowRate: totalRate,
-      totalAverageBorrowRate: averageTotalRate,
+      collateralYields,
+      totalBorrowRate:
+        maybe(borrowApr, borrowApr =>
+          getEstimatedNetBorrowApr(+borrowApr, collateralYields, sumCampaignsApr(borrowCampaigns)),
+        ) ?? null,
       extraRewards: borrowCampaigns,
-    }
-  })
+    }),
+  )
 
   const useApiMarket = !!apiMarket.data && !marketQuery.data
   const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useMarketRateHistory(
@@ -135,11 +148,11 @@ const useBorrowRate = ({
     { type: MarketRateType.Borrow, category: RATE_CATEGORY },
     useApiMarket,
   )
-  const apiBorrowRate = mapQuery(apiMarket, d => ({
+  const apiBorrowRate = mapQuery(apiMarket, (d): BorrowRate => ({
     rate: d.rates.borrowApr,
     averageRate: averageApr,
     averageCategory: RATE_CATEGORY,
-    rebasingYield: d.assets.collateral.rebasingYieldApr,
+    collateralYields: d.collateralYields,
     totalBorrowRate: d.rates.borrowTotalApr,
     totalAverageBorrowRate: totalAverageBorrowApr,
     extraRewards: borrowCampaigns,
@@ -284,7 +297,16 @@ export const usePageHeaderRates = () => {
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 
   return {
-    borrowRate: useBorrowRate({ marketRates, marketQuery, campaigns, marketType, apiMarket, snapshot }),
+    borrowRate: useBorrowRate({
+      chainId,
+      controllerAddress,
+      marketRates,
+      marketQuery,
+      campaigns,
+      marketType,
+      apiMarket,
+      snapshot,
+    }),
     supplyRate: useSupplyRate({
       marketRates,
       marketQuery,
@@ -305,8 +327,6 @@ export const usePageHeader = () => {
   return { ...usePageHeaderRates(), availableLiquidity: useAvailableLiquidity({ chainId, marketQuery, apiMarket }) }
 }
 
-type UsePageHeaderRatesResult = ReturnType<typeof usePageHeaderRates>
-export type BorrowRate = NonNullable<UsePageHeaderRatesResult['borrowRate']['data']>
 export type SupplyRate = ReturnType<typeof buildSupplyRate>
 type UsePageHeaderResult = ReturnType<typeof usePageHeader>
 export type AvailableLiquidity = UsePageHeaderResult['availableLiquidity']

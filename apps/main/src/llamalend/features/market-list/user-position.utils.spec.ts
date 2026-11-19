@@ -51,10 +51,8 @@ const createRow = ({
   liquidationDiscount?: string
 } = {}) =>
   ({
-    assets: {
-      collateral: { symbol: 'sDOLA', rebasingYieldApr: collateralYieldApr },
-      borrowed: { symbol: 'crvUSD', rebasingYieldApr: null },
-    },
+    assets: { collateral: { symbol: 'sDOLA' }, borrowed: { symbol: 'crvUSD', rebasingYieldApr: null } },
+    collateralYields: { rebasingApr: collateralYieldApr, baseApr: null, crvApr: null },
     parameters: { loanDiscount, liquidationDiscount },
     rates: { borrowApr: 3 },
     rewards: [],
@@ -124,9 +122,10 @@ describe('borrow position metrics', () => {
     expect(getUserCarryApr(row)).toBeCloseTo(9)
   })
 
-  it.each([null, 0])('shows no carry APR with a collateral yield of %s', collateralYieldApr => {
+  it.each([null, 0])('shows the borrow cost as the carry APR with a collateral yield of %s', collateralYieldApr => {
     const row = createRow({ collateralYieldApr })
-    expect(getUserCarryApr(row)).toBeUndefined()
+    // −5 × 3% / 5 equity
+    expect(getUserCarryApr(row)).toBeCloseTo(-3)
     expect(getUserYieldMultiplier(row)).toBeUndefined()
   })
 

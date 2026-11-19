@@ -1,11 +1,6 @@
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import {
-  getBorrowRateMetrics,
-  getSnapshotBorrowApr,
-  getSnapshotCollateralRebasingYieldApr,
-  getSupplyApyAverageMetrics,
-} from '@/llamalend/rates.utils'
+import { getAverageBorrowRates, getSupplyApyAverageMetrics } from '@/llamalend/rates.utils'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/queries/crvusd-snapshots.query'
 import { LendingSnapshot, useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
@@ -58,22 +53,15 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
         error: mintError,
       }
 
-  const borrowRateMetrics = useMemo(
+  const borrowAverages = useMemo(
     () =>
       (
         ({
-          [MarketRateType.Borrow]: () =>
-            getBorrowRateMetrics({
-              borrowRate: rates?.borrowApr,
-              snapshots: snapshots ?? undefined,
-              getBorrowRate: getSnapshotBorrowApr,
-              getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-              daysBack: rateWindow,
-            } as Parameters<typeof getBorrowRateMetrics>[0]),
+          [MarketRateType.Borrow]: () => getAverageBorrowRates(snapshots ?? undefined, rateWindow),
           [MarketRateType.Supply]: () => null,
-        }) satisfies Record<MarketRateType, () => ReturnType<typeof getBorrowRateMetrics> | null>
+        }) satisfies Record<MarketRateType, () => ReturnType<typeof getAverageBorrowRates> | null>
       )[type](),
-    [rateWindow, rates?.borrowApr, snapshots, type],
+    [rateWindow, snapshots, type],
   )
 
   const supplyRateMetrics = useMemo(
@@ -92,8 +80,8 @@ export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>
     averageRate:
       type === MarketRateType.Supply
         ? (supplyRateMetrics?.averageLendApy ?? null)
-        : (borrowRateMetrics?.averageRate ?? null),
-    averageTotalBorrowRate: borrowRateMetrics?.averageTotalRate ?? null,
+        : (borrowAverages?.averageRate ?? null),
+    averageTotalBorrowRate: borrowAverages?.totalAverageBorrowRate ?? null,
     minBoostedAprAverage: supplyRateMetrics?.totalAverageMinBoost ?? null,
     maxBoostedAprAverage: supplyRateMetrics?.totalAverageMaxBoost ?? null,
     error,

@@ -22,8 +22,9 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
     rewards,
     type: marketType,
     rates: { borrowApr, borrowTotalApr: totalBorrowApr },
+    collateralYields,
     assets: {
-      collateral: { rebasingYieldApr, symbol: collateralSymbol },
+      collateral: { symbol: collateralSymbol },
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
@@ -42,7 +43,7 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
           totalBorrowApr={totalBorrowApr}
           totalAverageBorrowApr={totalAverageBorrowApr}
           extraRewards={poolRewards}
-          rebasingYieldApr={rebasingYieldApr}
+          collateralYields={collateralYields}
           periodLabel={period}
           collateralSymbol={collateralSymbol}
           isLoading={isLoading}

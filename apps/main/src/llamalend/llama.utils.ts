@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { getAddress, isAddressEqual, zeroAddress } from 'viem'
+import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -495,12 +496,18 @@ export const formatEstimatedNetBorrowRate = (rate: number | Nullish) => t`Est. n
 
 export const formatNetSupplyRate = (rate: number | Nullish) => t`Total ${formatCappedRatePercent(rate)}`
 
-/** Whether the market has extras (collateral yield or borrow rewards) that make up an estimated net borrow APR. */
+export const isIncentivizedBorrow = (netBorrowApr: number | Nullish) => netBorrowApr != null && netBorrowApr < 0
+
+/** Shows an incentivized net borrow APR in the success color */
+export const getNetBorrowAprColor = (netBorrowApr: number | Nullish) =>
+  isIncentivizedBorrow(netBorrowApr) ? 'success' : undefined
+
+/** Whether the market has extras (collateral yields or borrow rewards) that make up an estimated net borrow APR. */
 export const hasEstimatedNetBorrowApr = ({
   extraRewards,
-  rebasingYieldApr,
-}: Pick<MarketBorrowAprTooltipContentProps, 'extraRewards' | 'rebasingYieldApr'>) =>
-  !!extraRewards?.length || rebasingYieldApr != null
+  collateralYields,
+}: Pick<MarketBorrowAprTooltipContentProps, 'extraRewards' | 'collateralYields'>) =>
+  !!extraRewards?.length || maybe(collateralYields, sumCollateralYields) != null
 
 /** Whether the market has extras (incentives with CRV, rewards or borrowed token yield) that make up a net supply APY. */
 export const hasNetSupplyRate = ({

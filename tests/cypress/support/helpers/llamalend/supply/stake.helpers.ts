@@ -29,12 +29,16 @@ export const writeStakeForm = ({ assets }: { assets: Decimal }) => writeSupplyIn
 export function checkStakeSubmit({
   buttonText,
   hasGauge = true,
+  gaugeKilled = false,
   isMocked = false,
 }: {
   buttonText: string
   hasGauge?: boolean
+  gaugeKilled?: boolean
   isMocked?: boolean
 }) {
+  cy.get('[data-testid="alert-gauge-killed"]').should(gaugeKilled ? 'be.visible' : 'not.exist')
+
   if (!hasGauge) {
     cy.get('[data-testid="supply-stake-submit-button"]').should('not.exist')
 

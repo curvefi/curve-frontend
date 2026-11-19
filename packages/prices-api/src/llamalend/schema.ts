@@ -71,6 +71,8 @@ const market = z
     extra_reward_apr: z.array(extraRewardApr),
     created_at: timestamp,
     max_ltv: z.number().nullable(),
+    collateral_apr_crv: z.number().nullable(),
+    collateral_apr_base: z.number().nullable(),
   })
   .transform(camelizeKeys)
   .transform(({ lendApy, lendApr, lendAprCrv0Boost, lendAprCrvMaxBoost, ...data }) => ({
@@ -119,6 +121,8 @@ const snapshot = z
     borrowed_token: token,
     timestamp,
     max_ltv: z.number(),
+    collateral_apr_crv: z.number().nullable(),
+    collateral_apr_base: z.number().nullable(),
   })
   .transform(camelizeKeys)
   .transform(

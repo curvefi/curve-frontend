@@ -25,7 +25,7 @@ const MarketInfoSections = ({
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
   maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }) => {
-  const { chainId, blockchainId, marketId, marketType, market, apiMarket, tokens } = useMarketContext()
+  const { chainId, blockchainId, marketId, marketType, marketQuery, apiMarket, tokens } = useMarketContext()
 
   return (
     <Box
@@ -40,7 +40,7 @@ const MarketInfoSections = ({
         key="contracts"
         chainId={chainId}
         blockchainId={blockchainId}
-        market={market}
+        market={marketQuery}
         apiMarket={apiMarket}
       />
       <MarketParametersSection

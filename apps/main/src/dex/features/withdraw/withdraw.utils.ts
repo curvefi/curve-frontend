@@ -9,11 +9,11 @@ import type { WithdrawParams } from './types'
  * Imbalance withdrawals add percentage slippage to the expected LP burn, rounding half up to 18 decimals like curve-js.
  * This estimate validates the available LP balance; curve-js requotes when executing the withdrawal.
  */
-export const getMaximumWithdrawBurn = (expected: Decimal, { mode, slippage }: WithdrawParams) =>
+export const getMaximumWithdrawBurn = (expectedLp: Decimal, { mode, slippage }: WithdrawParams) =>
   mode === 'unbalanced'
     ? decimalRound(
-        decimalMultiply(expected, decimalSum('1', decimalDiv(slippage!, '100'))),
+        decimalMultiply(expectedLp, decimalSum('1', decimalDiv(slippage!, '100'))),
         LP_TOKEN_DECIMALS,
         BigNumber.ROUND_HALF_UP,
       )
-    : expected
+    : expectedLp

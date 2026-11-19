@@ -14,3 +14,6 @@ export const formatPercentage = (
     : null
 
 export const TooltipOptions = { placement: 'top', arrow: false, clickable: true } as const
+
+/** The market page header sticks below the navbar, so there is never room above it for tall tooltips */
+export const HeaderTooltipOptions = { ...TooltipOptions, placement: 'bottom' } as const
