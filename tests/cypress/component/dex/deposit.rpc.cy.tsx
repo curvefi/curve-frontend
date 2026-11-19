@@ -3,10 +3,10 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { DepositTab } from '@/dex/features/deposit/components/DepositTab'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { oneDecimal, oneOf } from '@cy/support/generators'
+import { TEST_POOLS } from '@cy/support/helpers/dex/curve.helpers'
 import {
   checkBalancedPoolDepositAmounts,
   checkPoolDepositDetailsLoaded,
-  DEPOSIT_TEST_POOLS,
   getPoolDepositAllowance,
   getPoolDepositAmounts,
   poolDepositInput,
@@ -27,8 +27,6 @@ import type { DepositType } from '@ui/features/pool-forms/deposit/deposit-form.u
 import { constQ } from '@ui/features/queries/util'
 
 const FUND_AMOUNT = '100'
-const SINGLE_COIN_AMOUNTS = ['0', '12.5', '0'] as const
-const ALL_COIN_AMOUNTS = ['12.5', '10', '7.5'] as const
 const CHAIN_ID = Chain.Ethereum
 
 describe('Pool Deposit (RPC)', () => {
@@ -42,7 +40,7 @@ describe('Pool Deposit (RPC)', () => {
     chain_id: CHAIN_ID,
     fork_config: { block_number: 'latest' },
   }))
-  const pool = oneOf(...DEPOSIT_TEST_POOLS)
+  const pool = oneOf(...TEST_POOLS)
 
   const TestWrapper = ({ type = 'advanced' }: { type?: DepositType }) => (
     <PoolTestCase vnet={getVirtualNetwork()} account={privateKey} chainId={CHAIN_ID} poolAddress={pool.address}>
@@ -60,6 +58,7 @@ describe('Pool Deposit (RPC)', () => {
     submitPoolDepositAndCheck({ ...getRpcUrls(getVirtualNetwork()), userAddress, amounts, pool, tokenIndex })
 
   before(() => {
+    cy.task('log', `Deposit test pool: ${pool.id}`)
     const { adminRpcUrl } = getRpcUrls(getVirtualNetwork())
     fundEth({ adminRpcUrl, amountWei: toHex(parseUnits('100', 18)), recipientAddresses: [userAddress] })
     pool.coins.map(({ address, decimals }) =>
@@ -102,22 +101,29 @@ describe('Pool Deposit (RPC)', () => {
   })
 
   it('deposits all coins with different token decimals', () => {
+    const amounts = pool.coins.map(({ decimals }) => oneDecimal(5, 15, decimals))
     cy.mount(<TestWrapper />)
-    writePoolDepositForm(ALL_COIN_AMOUNTS, pool)
+    writePoolDepositForm(amounts, pool)
     checkPoolDepositDetailsLoaded()
-    submitAndCheck(ALL_COIN_AMOUNTS)
+    submitAndCheck(amounts)
   })
 
   it('blocks empty deposits and amounts exceeding the wallet balance', () => {
+    const coin = oneOf(...pool.coins)
     cy.mount(<TestWrapper />)
     poolDepositSubmit().should('be.disabled')
-    writePoolDepositForm(['0', '101', '0'], pool)
-    poolDepositSubmit().should('be.disabled')
-    cy.get(`[data-testid="pool-token-input-${pool.coins[1].address}"]`).should(
-      'contain.text',
-      'Insufficient token balance',
+    writePoolDepositForm(
+      pool.coins.map(({ address }) => (address === coin.address ? '101' : '0')),
+      pool,
     )
-    writePoolDepositForm(SINGLE_COIN_AMOUNTS, pool)
+    poolDepositSubmit().should('be.disabled')
+    cy.get(`[data-testid="pool-token-input-${coin.address}"]`)
+      .contains('Insufficient token balance')
+      .should('be.visible')
+    writePoolDepositForm(
+      pool.coins.map(({ address, decimals }) => (address === coin.address ? oneDecimal(1, 10, decimals) : '0')),
+      pool,
+    )
     checkPoolDepositDetailsLoaded()
   })
 
@@ -126,7 +132,7 @@ describe('Pool Deposit (RPC)', () => {
     cy.get('[data-testid="pool-deposit-balanced-checkbox"]', TIMEOUTS['ui.render']).find('input').check()
     checkPoolDepositDetailsLoaded()
     getPoolDepositAmounts(pool).then(amounts => {
-      checkBalancedPoolDepositAmounts({ ...getRpcUrls(getVirtualNetwork()), amounts, pool })
+      checkBalancedPoolDepositAmounts({ amounts, pool })
       submitAndCheck(amounts)
     })
   })
