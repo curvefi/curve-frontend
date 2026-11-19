@@ -111,7 +111,7 @@ export const TooltipItem = ({
   sx,
 }: TooltipItemProps) => (
   <Stack direction="row" sx={applySxProps({ gap: Spacing.sm, justifyContent: 'space-between' }, sx)}>
-    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center', flexShrink: 0 }}>
       {titleAdornment && <Stack sx={{ alignItems: 'center', marginLeft: Spacing.md }}>{titleAdornment}</Stack>}
       {titleIcon && (
         <TokenIcon
@@ -146,7 +146,7 @@ export const TooltipItem = ({
               variant={typographyVariant}
               color={typographyColor}
               component="span"
-              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
+              sx={{ textAlign: 'right' }}
             >
               {child}
             </Typography>
