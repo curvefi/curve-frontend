@@ -9,10 +9,15 @@ import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import type { MarketActivityProps } from '../types'
+import type { MarketBorrowActivityProps } from '../types'
 import { toMarketActivitySwapRow } from '../utils'
 
-export const useMarketActivitySwapsTable = ({ chainId, blockchainId, ammAddress, endpoint }: MarketActivityProps) => {
+export const useMarketActivitySwapsTable = ({
+  chainId,
+  blockchainId,
+  ammAddress,
+  endpoint,
+}: MarketBorrowActivityProps) => {
   const columnVisibility = useActivityVisibility({ hasValue: true })
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
