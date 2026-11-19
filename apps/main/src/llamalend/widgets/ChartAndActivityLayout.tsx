@@ -32,11 +32,10 @@ import type { TabItem } from '@ui/hooks/useTabs'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit } from '@ui/lib/tokens'
-import { EventsTab as MarketBorrowActivityEventsTab } from '../features/market-activity/EventsTab'
+import { BorrowEventsTab } from '../features/market-activity/BorrowEventsTab'
+import { SupplyEventsTab } from '../features/market-activity/SupplyEventsTab'
 import { SwapsTab as MarketBorrowActivitySwapsTab } from '../features/market-activity/SwapsTab'
-import type { MarketActivityProps } from '../features/market-activity/types'
-import { EventsTab as MarketSupplyActivityEventsTab } from '../features/vault-activity/EventsTabs'
-import type { VaultActivityProps } from '../features/vault-activity/types'
+import type { MarketBorrowActivityProps, MarketSupplyActivityProps } from '../features/market-activity/types'
 import { useMarketOraclePrice } from '../queries/market/market-oracle-price.query'
 import { useMarketPrice } from '../queries/market/market-price.query'
 
@@ -60,7 +59,10 @@ const useMarketTokenPair = () => {
   return { tokenPair: isMarketLoading ? undefined : getTokenPairUnit(symbols), isMarketLoading }
 }
 
-type ActivityProp = { [MarketRateType.Borrow]: MarketActivityProps; [MarketRateType.Supply]: VaultActivityProps }
+type ActivityProp = {
+  [MarketRateType.Borrow]: MarketBorrowActivityProps
+  [MarketRateType.Supply]: MarketSupplyActivityProps
+}
 type ChartAndActivityLayoutProps = {
   chart: {
     chartMode: LlammaOhlcChartMode | undefined
@@ -71,7 +73,7 @@ type ChartAndActivityLayoutProps = {
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
   bands: QueryProp<ChartDataPoint[]>
-  activity: MarketActivityProps
+  activity: MarketBorrowActivityProps
 }
 
 type MarketActivityTabsParams<T extends MarketRateType> = { activity: ActivityProp[T] }
@@ -81,9 +83,9 @@ const MARKET_ACTIVITY_MENU: {
 } = {
   [MarketRateType.Borrow]: [
     { value: 'trades', label: t`Swaps`, component: MarketBorrowActivitySwapsTab },
-    { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
+    { value: 'events', label: t`Activity`, component: BorrowEventsTab },
   ],
-  [MarketRateType.Supply]: [{ value: 'events', label: t`Activity`, component: MarketSupplyActivityEventsTab }],
+  [MarketRateType.Supply]: [{ value: 'events', label: t`Activity`, component: SupplyEventsTab }],
 }
 
 const LEGACY_CHART_AND_ACTIVITY_MENU = [
@@ -95,7 +97,7 @@ const LEGACY_CHART_AND_ACTIVITY_MENU = [
     ),
   },
   { value: 'trades', label: t`Swaps`, component: MarketBorrowActivitySwapsTab },
-  { value: 'events', label: t`Activity`, component: MarketBorrowActivityEventsTab },
+  { value: 'events', label: t`Activity`, component: BorrowEventsTab },
 ]
 
 const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
@@ -153,7 +155,7 @@ export const MarketActivityLayout = <T extends MarketRateType>({
 }) => (
   <Stack
     data-testid={
-      { [MarketRateType.Borrow]: 'market-activity', [MarketRateType.Supply]: 'market-vault-activity' }[rateType]
+      { [MarketRateType.Borrow]: 'market-activity', [MarketRateType.Supply]: 'market-supply-activity' }[rateType]
     }
   >
     <Tabs
