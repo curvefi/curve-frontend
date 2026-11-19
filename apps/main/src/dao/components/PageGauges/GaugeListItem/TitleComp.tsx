@@ -20,7 +20,7 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
     )}
     <Box flex flexColumn flexGap="var(--spacing-1)">
       <BoxedDataComp>
-        {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
+        {gaugeData.killed && <SmallLabel description={t`Killed`} isKilled />}
         {gaugeData.platform && <SmallLabel description={gaugeData.platform} />}
         {gaugeData.pool?.chain && <SmallLabel description={gaugeData.pool.chain} isNetwork />}
         {gaugeData.market?.chain && <SmallLabel description={gaugeData.market.chain} isNetwork />}

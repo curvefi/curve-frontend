@@ -1,7 +1,6 @@
 import { styled } from 'styled-components'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -23,7 +22,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
 
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
-  const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions
+  const emissions = isSideChain ? gaugeData?.prevEpochEmissions : gaugeData?.emissions
 
   return (
     <Wrapper className={className}>
@@ -31,18 +30,16 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         <Box flex flexColumn>
           <StatsRow>
             <StatTitle>{t`Weight`}</StatTitle>
-            <StatData>{formatNumber(gaugeData.gauge_relative_weight, { abbreviate: false })}</StatData>
+            <StatData>{formatNumber(gaugeData.weightRelative, { abbreviate: false })}</StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`7d Delta`}</StatTitle>
-            <StatData>
-              {formatNumber(gaugeData.gauge_relative_weight_7d_delta, { abbreviate: false, fallback: 'N/A' })}
-            </StatData>
+            <StatData>{formatNumber(gaugeData.weightRelativeDelta7d, { abbreviate: false, fallback: 'N/A' })}</StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`60d Delta`}</StatTitle>
             <StatData>
-              {formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: false, fallback: 'N/A' })}
+              {formatNumber(gaugeData.weightRelativeDelta60d, { abbreviate: false, fallback: 'N/A' })}
             </StatData>
           </StatsRow>
         </Box>
@@ -72,7 +69,7 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Deployment Date`}</StatTitle>
-          <StatData>{formatDate(parseTimestamp(gaugeData.creation_date), 'long')}</StatData>
+          <StatData>{formatDate(gaugeData.creationDate, 'long')}</StatData>
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
@@ -87,11 +84,11 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
           <>
             <StatsRow>
               <StatTitle>{t`24 Volume`}</StatTitle>
-              <StatData>{formatNumber(gaugeData.pool.trading_volume_24h, 'usd.amount')}</StatData>
+              <StatData>{formatNumber(gaugeData.pool.tradingVolume24h, 'usd.amount')}</StatData>
             </StatsRow>
             <StatsRow>
               <StatTitle>{t`TVL`}</StatTitle>
-              <StatData>{formatNumber(gaugeData.pool.tvl_usd, 'usd.amount')}</StatData>
+              <StatData>{formatNumber(gaugeData.pool.tvlUsd, 'usd.amount')}</StatData>
             </StatsRow>
           </>
         )}

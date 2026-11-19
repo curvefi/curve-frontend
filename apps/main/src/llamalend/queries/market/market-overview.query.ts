@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
+import { getLendingVaultsOptions } from '@evm-ui/queries/lending-vaults.query'
 import { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
@@ -9,7 +10,6 @@ import { combineQueryState } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
 import { q } from '@ui/features/queries/util'
 import { TIME_FRAMES } from '@ui/lib/time'
-import { getLendingVaultsOptions } from '../market-list/lending-vaults'
 import { getMintMarketOptions } from '../market-list/mint-markets'
 
 type OverviewQueries = [ReturnType<typeof getLendingVaultsOptions>, ReturnType<typeof getMintMarketOptions>]

@@ -11,7 +11,7 @@ import { t } from '@ui/lib/i18n'
 
 type GaugesBarChartCustomTooltipProps = { datum: GaugeFormattedData }
 
-type DeltaTooltipRowProps = { label: string; value: number | null }
+type DeltaTooltipRowProps = { label: string; value: number | undefined }
 
 const DeltaTooltipRow = ({ label, value }: DeltaTooltipRowProps) => {
   const theme = useTheme()
@@ -30,12 +30,9 @@ const DeltaTooltipRow = ({ label, value }: DeltaTooltipRowProps) => {
 export const GaugesBarChartCustomTooltip = ({ datum }: GaugesBarChartCustomTooltipProps) => (
   <ChartTooltipShell title={datum.title}>
     <ChartTooltipSeriesGroup>
-      <ChartTooltipDataRow
-        label={t`Relative Weight`}
-        value={formatNumber(datum.gauge_relative_weight, 'percent.value')}
-      />
-      <DeltaTooltipRow label={t`Gauge weight 7d delta`} value={datum.gauge_relative_weight_7d_delta} />
-      <DeltaTooltipRow label={t`Gauge weight 60d delta`} value={datum.gauge_relative_weight_60d_delta} />
+      <ChartTooltipDataRow label={t`Relative Weight`} value={formatNumber(datum.weightRelative, 'percent.value')} />
+      <DeltaTooltipRow label={t`Gauge weight 7d delta`} value={datum.weightRelativeDelta7d} />
+      <DeltaTooltipRow label={t`Gauge weight 60d delta`} value={datum.weightRelativeDelta60d} />
     </ChartTooltipSeriesGroup>
   </ChartTooltipShell>
 )
