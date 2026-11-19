@@ -47,12 +47,18 @@ export const Contracts = ({
           <AddressActionInfo chainId={chainId} address={lpTokenAddress} title={t`Token`} display={addressDisplay} />
         )}
 
-        {hasGauge && gaugeIsKilled && (
+        {hasGauge && (
           <AddressActionInfo
             chainId={chainId}
             address={gaugeAddress}
             display={addressDisplay}
-            title={<GaugeStatusLabel label={t`Gauge`} isKilled={gaugeIsKilled} testId="pool-contract-gauge-status" />}
+            title={
+              gaugeIsKilled ? (
+                <GaugeStatusLabel label={t`Gauge`} isKilled={gaugeIsKilled} testId="pool-contract-gauge-status" />
+              ) : (
+                t`Gauge`
+              )
+            }
           />
         )}
       </SectionContentCard>
