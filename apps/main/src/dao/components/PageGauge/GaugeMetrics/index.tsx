@@ -3,7 +3,7 @@ import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
-import { getGaugeDepositUrl } from '@/dao/queries/gauges.query'
+import { useGaugeDepositUrl } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { shortenAddress } from '@evm-ui/utils'
@@ -21,7 +21,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
   const emissions = isSideChain ? gaugeData?.prevEpochEmissions : gaugeData?.emissions
-  const gaugeExternalLink = getGaugeDepositUrl(gaugeData)
+  const gaugeExternalLink = useGaugeDepositUrl(gaugeData)
 
   return (
     <Wrapper>

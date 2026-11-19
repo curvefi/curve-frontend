@@ -1,4 +1,5 @@
 import { getGauges as getPricesGauges, type Gauge } from '@curvefi/prices-api/gauge'
+import { useLendingVault } from '@evm-ui/queries/lending-vaults.query'
 import { dexPages, lendPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
 import { fromEntries, maybe } from '@primitives/objects.utils'
@@ -9,15 +10,21 @@ export type GaugeFormattedData = Omit<Gauge, 'weight'> & { title: string; platfo
 
 export type GaugeMapper = Record<string, GaugeFormattedData>
 
-export const getGaugeDepositUrl = (gauge: GaugeFormattedData | undefined) =>
-  (gauge &&
-    !['Fundraising', 'LMCallback'].includes(gauge.type) &&
-    (gauge.pool?.chain
-      ? dexPages.pool({ blockchainId: gauge.pool.chain, poolAddress: gauge.pool.address })
-      : gauge.market?.chain &&
-        gauge.lpToken &&
-        lendPages.vault({ blockchainId: gauge.market.chain, marketId: gauge.lpToken }))) ||
-  undefined
+/**
+ * Prices omits getAllGauges deposit URLs; resolve lending lp_token vault addresses to controllers via lending markets.
+ * Prices also labels some pool-backed gauges Fundraising; use their pool metadata to preserve deposit links.
+ */
+export const useGaugeDepositUrl = (gauge: GaugeFormattedData | undefined) => {
+  const isLendingGauge = !!gauge?.market && !['Fundraising', 'LMCallback'].includes(gauge.type)
+  const { data: market } = useLendingVault(
+    { blockchainId: gauge?.market?.chain, vaultAddress: gauge?.lpToken },
+    isLendingGauge,
+  )
+  return (
+    maybe(gauge?.pool, ({ chain, address }) => dexPages.pool({ blockchainId: chain, poolAddress: address })) ??
+    maybe(market, ({ chain, controller }) => lendPages.vault({ blockchainId: chain, marketId: controller }))
+  )
+}
 
 const formatGaugeTitle = (poolName: string | undefined, marketName: string | undefined, address: string): string => {
   if (poolName) {

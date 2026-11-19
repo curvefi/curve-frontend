@@ -11,7 +11,7 @@ import { TitleComp } from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import { getGaugeDepositUrl } from '@/dao/queries/gauges.query'
+import { useGaugeDepositUrl } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
@@ -51,7 +51,7 @@ export const GaugeListItem = ({
   const currentDate = useCurrentDate()
   const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
 
-  const gaugeExternalLink = getGaugeDepositUrl(gaugeData)
+  const gaugeExternalLink = useGaugeDepositUrl(gaugeData)
 
   return (
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
