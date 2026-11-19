@@ -4,7 +4,7 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import type { ActivityRow } from '../types'
-import { DEFAULT_BREAKDOWN_CUTOFF } from '../utils'
+import { DEFAULT_BREAKDOWN_CUTOFF, getActivityDeltaKey } from '../utils'
 
 export const TokenDeltaAmountCell = ({
   blockchainId,
@@ -14,9 +14,9 @@ export const TokenDeltaAmountCell = ({
   <InlineTableCell sx={{ alignItems: 'end', height: 'auto' }}>
     {deltas.length >= breakdownCutoff ? (
       <IconStack iconSize="md">
-        {deltas.map(({ label, token }) => (
+        {deltas.map(({ label, token }, index) => (
           <TokenIcon
-            key={label}
+            key={getActivityDeltaKey(label, token?.address, index)}
             blockchainId={blockchainId}
             address={token?.address}
             tooltip={token?.symbol}
@@ -25,11 +25,11 @@ export const TokenDeltaAmountCell = ({
         ))}
       </IconStack>
     ) : (
-      deltas.map(({ label, token, amount }) => {
+      deltas.map(({ label, token, amount }, index) => {
         const formattedAmount = formatNumber(amount, 'token.delta')
         return (
           <TokenInfo
-            key={label}
+            key={getActivityDeltaKey(label, token?.address, index)}
             icon={token && <TokenIcon address={token.address} blockchainId={blockchainId} size="mui-md" />}
             iconPosition="right"
             primary={token?.symbol ? `${formattedAmount} ${token.symbol}` : formattedAmount}
