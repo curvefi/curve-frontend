@@ -19,9 +19,9 @@ export const { useQuery: useLpTokenPools, fetchQuery: fetchLpTokenPools } = quer
 /** Returns the address of the Curve pool whose LP token is the given token, or null when the token is not a Curve LP token */
 export const useLpTokenPool = (
   { blockchainId, tokenAddress }: ChainNameParams & { tokenAddress: Address | undefined },
-  enabled = true,
+  enabled?: boolean,
 ) =>
   mapQuery(
-    useLpTokenPools({ blockchainId }, enabled && !!tokenAddress),
+    useLpTokenPools({ blockchainId }, !!tokenAddress && enabled),
     (pools): Address | null => (tokenAddress && pools[tokenAddress.toLowerCase()]) || null,
   )

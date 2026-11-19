@@ -16,7 +16,7 @@ const buildOracleAbi = (fnName: string) =>
 
 type UseOracleRateParams = { address?: Address; functionName?: string; enabled?: boolean }
 
-export function useOracleRate({ address, functionName, enabled = true }: UseOracleRateParams) {
+export function useOracleRate({ address, functionName, enabled }: UseOracleRateParams) {
   const cleanFunctionName = functionName?.replace('()', '') ?? ''
 
   const {
@@ -28,14 +28,14 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
     address,
     abi: buildOracleAbi(cleanFunctionName),
     functionName: cleanFunctionName,
-    query: { enabled: enabled && !!address && !!cleanFunctionName, retry: false },
+    query: { enabled: !!address && !!cleanFunctionName && enabled, retry: false },
   })
 
   const { data: decimals, isFetching: isLoadingDecimals } = useReadContract({
     address,
     abi: erc20Abi,
     functionName: 'decimals',
-    query: { enabled: enabled && !!address && isSuccess, retry: false },
+    query: { enabled: !!address && isSuccess && enabled, retry: false },
   })
 
   return { rate: decimal(rate?.toString()), decimals, isLoading: isLoadingRate || isLoadingDecimals, isSuccess, error }

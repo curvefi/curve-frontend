@@ -32,7 +32,7 @@ const getPoolUserPosition = (claimables: PoolClaimables) => ({
 
 export const useResidualClaimsTable = (
   { network }: { network: NetworkConfig },
-  enabled = true,
+  enabled?: boolean,
 ): ResidualClaimsTableData => {
   const { chainId, blockchainId } = network
   const { address: userAddress } = useConnection()

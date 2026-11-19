@@ -424,7 +424,7 @@ export const createEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
     useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
   ) =>
-  (query: Query & WithOptionalChainId, enabled = true) => {
+  (query: Query & WithOptionalChainId, enabled?: boolean) => {
     const estimate = useEstimate(query, enabled)
     const converted = useEstimateGas(toValue(query.chainId), estimate, enabled)
     return combineQueries([converted, estimate], data => data)
@@ -442,7 +442,7 @@ export const createClaimEstimateGasHook = <
 ) =>
   createEstimateGasHook((query: Query, enabled?: boolean) => {
     const claimable = useClaimable(query, enabled)
-    const estimateGas = useEstimateGasQuery(query, enabled && isClaimEnabled(claimable.data))
+    const estimateGas = useEstimateGasQuery(query, isClaimEnabled(claimable.data) && enabled)
 
     return combineQueries([claimable, estimateGas], (_, estimateGas) => estimateGas)
   })
@@ -458,10 +458,10 @@ export const createApprovedEstimateGasHook =
     useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
     useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
   }) =>
-  (query: Query & WithOptionalChainId, enabled = true) => {
+  (query: Query & WithOptionalChainId, enabled?: boolean) => {
     const isApproved = useIsApproved(query, enabled)
-    const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
-    const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)
+    const approveEstimate = useApproveEstimate(query, isApproved.data === false && enabled)
+    const actionEstimate = useActionEstimate(query, isApproved.data === true && enabled)
     const estimate = isApproved.data ? actionEstimate : approveEstimate
     const gas = useEstimateGas(toValue(query.chainId), estimate, enabled)
     return combineQueries([isApproved, gas], (_, gas) => gas)
