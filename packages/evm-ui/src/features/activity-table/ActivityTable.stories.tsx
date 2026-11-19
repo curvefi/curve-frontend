@@ -14,14 +14,16 @@ const wagmiConfig = createTestWagmiConfig()
 
 export const ActivityStoryTable = ({
   query,
+  hasValue = true,
   emptyTitle = 'No activity found.',
   errorTitle = 'Could not load activity.',
 }: {
   query: QueryProp<ActivityRow[]>
+  hasValue?: boolean
   emptyTitle?: string
   errorTitle?: string
 }) => {
-  const columnVisibility = useActivityVisibility({ hasValue: true })
+  const columnVisibility = useActivityVisibility({ hasValue })
   const table = useCurveTable({ query, columns: ACTIVITY_COLUMNS, state: { columnVisibility } })
 
   return <ActivityTable table={table} emptyState={{ title: emptyTitle }} errorState={{ title: errorTitle }} />
