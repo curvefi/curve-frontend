@@ -47,14 +47,12 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
     maxDebt: maxReceive.data?.maxDebt,
   })
   const isEquityLeverage = useLlamalendEquityLeverage()
-  // the leverage checkbox is disabled until this value is known, purposefully override the value if the backend changes
+  // purposefully override the value if the backend changes. Without the position history it stays unknown, a plain borrow.
   useFormSync(form, {
     leverageEnabled: maybe(
       params.leverageProviders,
       providers =>
         providers.length > 0 &&
-        // without the position history, default to a plain borrow
-        !collateralEvents.error &&
         maybe(collateralEvents.data, events =>
           isEquityLeverage ? events.isZapLeveraged : isPositionLeveraged(events.originalLeverage),
         ),
