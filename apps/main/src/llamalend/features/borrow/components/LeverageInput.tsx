@@ -11,16 +11,19 @@ const TEST_ID_PREFIX = 'leverage'
 
 export const LeverageInput = ({
   checked,
+  disabled,
   leverage,
   onToggle,
 }: {
   checked: boolean | undefined
+  disabled?: boolean
   /** A `null` query hides the leverage, a `null` value shows it as unavailable */
   leverage: QueryProp<Decimal | null> | null
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
 }) => (
   <CheckboxField
     checked={!!checked}
+    disabled={disabled}
     label={t`Enable leverage`}
     testIdPrefix={TEST_ID_PREFIX}
     onChange={onToggle}

@@ -15,6 +15,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { Form } from '@ui/features/forms/components/Form'
+import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
@@ -58,6 +59,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     leverage,
     showUserBorrowed,
     isLeverageSupported,
+    isZapLeveragedPosition,
     exchangeRate,
     priceImpact,
     disabledAlert,
@@ -70,12 +72,32 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
+  const onBorrowToWalletToggle = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm({ leverageEnabled: !event.target.checked, routeId: undefined }),
+    [updateForm],
+  )
+  const isLeverageUnknown = !!isLeverageSupported && values.leverageEnabled === undefined
   const maxDebt = mapQuery(max.debt, ({ maxDebt }) => maxDebt)
   const onMax = useCallback(() => {
     const { maxDebt: debt, router } = assert(max.debt.data, 'expected max debt data')
     if (router) routes?.onChange(router)
     updateForm({ debt: getMaxBorrowAmount(debt, values.leverageEnabled) })
   }, [max.debt.data, routes, updateForm, values.leverageEnabled])
+
+  const settings = (
+    <LoanActionSettings
+      show={values.leverageEnabled === true}
+      slippage={values.slippage}
+      onSlippageChange={slippage => updateForm({ slippage })}
+      routes={routes}
+      exchangeRate={exchangeRate}
+      priceImpact={priceImpact}
+      collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
+      userAddress={userAddress}
+    />
+  )
 
   return (
     <Form
@@ -140,27 +162,37 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           }
         />
       </Stack>
-      {isLeverageSupported && (
-        <Stack>
-          <LeverageInput checked={values.leverageEnabled} leverage={leverage} onToggle={onLeverageToggle} />
-          <LoanActionSettings
-            show={values.leverageEnabled === true}
-            slippage={values.slippage}
-            onSlippageChange={slippage => updateForm({ slippage })}
-            routes={routes}
-            exchangeRate={exchangeRate}
-            priceImpact={priceImpact}
-            collateralSymbol={collateralToken?.symbol}
-            borrowSymbol={borrowToken?.symbol}
-            userAddress={userAddress}
-          />
-        </Stack>
-      )}
+      {isLeverageSupported &&
+        (isZapLeveragedPosition ? (
+          <Stack>
+            {settings}
+            <CheckboxField
+              checked={values.leverageEnabled === false}
+              disabled={isLeverageUnknown}
+              label={t`Borrow to wallet`}
+              description={t`Borrowed assets will go to your wallet, this will impact your position parameters.`}
+              testIdPrefix="borrow-to-wallet"
+              onChange={onBorrowToWalletToggle}
+            />
+          </Stack>
+        ) : (
+          <Stack>
+            <LeverageInput
+              checked={values.leverageEnabled}
+              disabled={isLeverageUnknown}
+              leverage={leverage}
+              onToggle={onLeverageToggle}
+            />
+            {settings}
+          </Stack>
+        ))}
       <HighPriceImpactAlert priceImpact={priceImpact} />
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
+        disabled={
+          isDisabled || isLeverageUnknown || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)
+        }
         label={[
           [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           Number(values.userCollateral) && t`Add`,

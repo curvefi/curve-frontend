@@ -11,6 +11,7 @@ const { Spacing } = SizesAndSpaces
 export const CheckboxField = ({
   checked,
   label,
+  description,
   testIdPrefix,
   onChange,
   endContent,
@@ -19,6 +20,8 @@ export const CheckboxField = ({
 }: {
   checked: boolean
   label: ReactNode
+  /** Secondary text displayed under the label */
+  description?: ReactNode
   disabled?: boolean
   testIdPrefix?: string
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
@@ -33,11 +36,17 @@ export const CheckboxField = ({
       sx={{ justifyContent: 'space-between', gap: Spacing.sm, alignItems: 'center', flexWrap: 'wrap' }}
     >
       <FormControlLabel
-        sx={{ margin: 0 }} // with default margin, the checkbox overflows
+        // with default margin, the checkbox overflows. With a description, the checkbox aligns with the label
+        sx={{ margin: 0, ...(description && { alignItems: 'flex-start' }) }}
         label={
-          <Typography variant="bodyMBold" sx={{ userSelect: 'none' }}>
-            {label}
-          </Typography>
+          <Stack sx={{ userSelect: 'none' }}>
+            <Typography variant="bodyMBold">{label}</Typography>
+            {description && (
+              <Typography variant="bodyXsRegular" color="textSecondary">
+                {description}
+              </Typography>
+            )}
+          </Stack>
         }
         control={
           <Checkbox
