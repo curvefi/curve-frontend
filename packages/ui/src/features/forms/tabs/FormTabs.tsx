@@ -6,7 +6,6 @@ import { WithWrapper } from '@ui/components/WithWrapper'
 import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { type TabItem, useTabs } from '@ui/hooks/useTabs'
-import { applySxProps } from '@ui/lib/mui'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'> & {
@@ -81,7 +80,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', act
             value={subTab.value}
             options={subTabs}
             overflow="fullWidth"
-            sx={applySxProps(!isMobileDrawer && { backgroundColor: t => t.design.Layer[1].Fill })}
+            sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
             onChange={onChange}
           />
         )}
