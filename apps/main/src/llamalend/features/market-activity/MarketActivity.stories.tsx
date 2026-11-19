@@ -6,13 +6,12 @@ import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import type { MarketEventRow, MarketTradeRow } from './types'
-import { toMarketActivityEventRow, toMarketActivitySwapRow } from './utils'
+import type { MarketBorrowEventRow, MarketTradeRow } from './types'
+import { toMarketActivityBorrowEventRow, toMarketActivitySwapRow } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}`
-
 const generateTxHash = (seed: number): Address => `0x${seed.toString(16).padStart(64, '0')}`
 
 // Lending Mock Tokens (WETH/crvUSD market)
@@ -50,7 +49,7 @@ const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken
 }
 
 // Llamma Events Mock Data Generator
-const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken: Token): MarketEventRow[] => {
+const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken: Token): MarketBorrowEventRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => {
@@ -95,7 +94,7 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
 }
 
 const swapsQuery = constQ(generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN).map(toMarketActivitySwapRow))
-const eventsQuery = constQ(generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN).map(toMarketActivityEventRow))
+const eventsQuery = constQ(generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN).map(toMarketActivityBorrowEventRow))
 
 const meta: Meta = {
   title: 'Llamalend/Features/MarketActivity',
