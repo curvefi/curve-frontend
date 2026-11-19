@@ -15,7 +15,7 @@ import { t } from '@ui/lib/i18n'
 import { ActivityColumnId } from './columns/columns.enum'
 import { ACTIVITY_TITLES } from './columns/columns.titles'
 import type { ActivityRow } from './types'
-import { formatActivityUsdValue, getChangeColor, getTransactionActions } from './utils'
+import { formatActivityUsdValue, getActivityDeltaKey, getChangeColor, getTransactionActions } from './utils'
 
 export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
   row: {
@@ -53,9 +53,9 @@ export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
       </Subscribe>
       {deltas.length ? (
         <MetricsGrid variant="mobileRows">
-          {deltas.map(({ label, token, amount, amountUsd }) => (
+          {deltas.map(({ label, token, amount, amountUsd }, index) => (
             <MetricExpandedPanel
-              key={label}
+              key={getActivityDeltaKey(label, token?.address, index)}
               label={token?.symbol ? `${label} (${token.symbol})` : label}
               value={amount}
               valueOptions={{
