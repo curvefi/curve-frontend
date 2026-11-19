@@ -1,5 +1,5 @@
 import { POSITION_STATUS_BADGE } from '@/llamalend/features/market-position-details/health/position-status'
-import { NO_LEVERAGE_LABEL } from '@/llamalend/features/market-position-details/market-position-details.utils'
+import { getLeverageFallback } from '@/llamalend/features/market-position-details/market-position-details.utils'
 import { HealthTooltipContent } from '@/llamalend/features/market-position-details/tooltips/HealthTooltipContent'
 import {
   formatDistanceToRange,
@@ -142,7 +142,10 @@ export const LeverageCell = ({ row, getValue }: BorrowPositionCellProps) => (
   >
     <Stack>
       <PositionMetric
-        value={maybe(getValue(), leverage => formatNumber(leverage, 'multiplier')) ?? NO_LEVERAGE_LABEL}
+        value={
+          maybe(getValue(), leverage => formatNumber(leverage, 'multiplier')) ??
+          getLeverageFallback(row.original.positionQueries.isZapLeveraged.data)
+        }
       />
     </Stack>
   </Tooltip>

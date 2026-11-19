@@ -10,7 +10,7 @@ import {
 import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
-import { tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { isZapV0MintMarket, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import { usePositionHealth } from '@/llamalend/queries/user/user-health.query'
@@ -43,7 +43,7 @@ import {
   BORROW_METRIC_CATEGORY,
   BORROW_METRIC_TOOLTIP,
   getLeverageValueColor,
-  NO_LEVERAGE_LABEL,
+  getLeverageFallback,
 } from './market-position-details.utils'
 import { PnlMetric } from './PnlMetric'
 import { DistanceToRangeTooltipContent } from './tooltips/DistanceToRangeTooltipContent'
@@ -53,7 +53,7 @@ const { Grid } = SizesAndSpaces
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
-  const { chainId, controllerAddress } = useMarketContext()
+  const { chainId, blockchainId, controllerAddress } = useMarketContext()
   const [isDetailsOpen] = usePositionDetailsOpen()
   const thresholds = getPositionHealthThresholds(chainId, controllerAddress)
   const position = usePositionHealth(params, thresholds)
@@ -114,7 +114,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             value={equityLeverage.current}
             valueOptions={{
               unit: 'multiplier',
-              fallback: NO_LEVERAGE_LABEL,
+              // the history reports the zap borrows of V0 zap mint markets as plain borrows, so their leverage is unknown
+              fallback: getLeverageFallback(
+                isZapV0MintMarket(blockchainId, controllerAddress) ? undefined : equityLeverage.isZapLeveraged.data,
+              ),
               color: getLeverageValueColor(equityLeverage.current.data),
             }}
             valueTooltip={{
