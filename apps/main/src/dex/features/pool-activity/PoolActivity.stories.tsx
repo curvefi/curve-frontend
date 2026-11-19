@@ -134,6 +134,7 @@ export const DexPoolActivity: StoryObj<typeof meta> = {
       />
       <ActivityStoryTable
         query={liquidityQuery}
+        hasValue={false}
         emptyTitle="No liquidity data found."
         errorTitle="Could not load liquidity data."
       />
