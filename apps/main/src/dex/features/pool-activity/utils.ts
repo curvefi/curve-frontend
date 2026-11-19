@@ -56,7 +56,6 @@ export const toPoolActivityLiquidityRow = ({
         label: isAdd ? t`Add` : t`Remove`,
         token: poolTokens[index],
         amount: isAdd ? amount : -amount,
-        amountUsd: null,
       }))
       .filter(({ amount }) => amount !== 0),
   }

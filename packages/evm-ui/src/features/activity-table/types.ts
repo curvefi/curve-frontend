@@ -11,7 +11,8 @@ export type ActivityTokenDelta = {
   label: string
   token: ActivityToken | undefined
   amount: number // Positive when the wallet receives tokens, negative when it sends them.
-  amountUsd: number | null
+  /** Omit when the source has no USD pricing. Use null when a historical price is missing. */
+  amountUsd?: number | null
 }
 
 export type ActivityRow = {
