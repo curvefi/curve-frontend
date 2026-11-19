@@ -18,7 +18,7 @@ export const useMarketActivitySwapsTable = ({
   ammAddress,
   endpoint,
 }: MarketBorrowActivityProps) => {
-  const columnVisibility = useActivityVisibility({ hasValue: true })
+  const columnVisibility = useActivityVisibility({ hasValue: false })
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
   const tradesQuery = useLlammaTrades({
