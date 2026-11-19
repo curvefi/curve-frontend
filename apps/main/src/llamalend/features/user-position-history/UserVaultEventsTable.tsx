@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { EvmDataTable } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import type { SortingState } from '@tanstack/react-table'
 import type { QueryProp } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
@@ -23,8 +23,10 @@ export const UserVaultEventsTable = ({ eventsQuery }: { eventsQuery: QueryProp<P
     initialState: { pagination },
     onSortingChange: setSorting,
   })
+
   return (
-    <ActivityTable
+    <EvmDataTable
+      category="scrollable"
       table={table}
       emptyState={{ title: t`No events found` }}
       errorState={{ title: t`Could not load events` }}
