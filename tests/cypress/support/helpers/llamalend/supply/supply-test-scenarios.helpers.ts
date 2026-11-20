@@ -210,13 +210,11 @@ export const createStakeScenario = ({
   chainId,
   approved,
   hasGauge = true,
-  gaugeRegistered = true,
   gaugeKilled = false,
 }: {
   chainId: number
   approved: boolean
   hasGauge?: boolean
-  gaugeRegistered?: boolean
   gaugeKilled?: boolean
 }) => {
   const input = { amount: '15' as const }
@@ -252,7 +250,7 @@ export const createStakeScenario = ({
       stakeApprove,
       stake,
       isGaugeKilled: createStub(hasGauge ? gaugeKilled : null),
-      isGaugeRegistered: createStub(hasGauge ? gaugeRegistered : null),
+      isGaugeRegistered: createStub(hasGauge ? true : null),
       estimateGas: { stake: estimateGasStake, stakeApprove: estimateGasStakeApprove },
     },
   })
