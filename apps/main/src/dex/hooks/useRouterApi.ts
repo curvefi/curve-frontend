@@ -9,7 +9,7 @@ import type { RouteResponse, RoutesQuery } from '@evm-ui/queries/router-api/type
 import { fromWei } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useMappedQuery } from '@ui/features/queries/util'
+import { mapQuery, useMappedQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { toWei } from '@ui/lib/decimal'
 
@@ -92,14 +92,10 @@ export function useRouterApi(
   const activeKey = useStore(state => state.quickSwap.activeKey)
 
   const { data: tokens, error: tokensError, isLoading: tokensLoading } = useTokens({ chainId })
-  const { data: { address: fromAddress, decimals: fromDecimals } = {} } = useToken({
-    chainId,
-    tokenAddress: searchedParams.fromAddress,
-  })
-  const { data: { address: toAddress, decimals: toDecimals } = {} } = useToken({
-    chainId,
-    tokenAddress: searchedParams.toAddress,
-  })
+  const fromToken = useToken({ chainId, tokenAddress: searchedParams.fromAddress })
+  const toToken = useToken({ chainId, tokenAddress: searchedParams.toAddress })
+  const { address: fromAddress, decimals: fromDecimals } = fromToken.data ?? {}
+  const { address: toAddress, decimals: toDecimals } = toToken.data ?? {}
 
   const { isFrom, fromAmount, toAmount } = formValues
   const enteredAmount = isFrom ? fromAmount : toAmount
@@ -107,13 +103,13 @@ export function useRouterApi(
   const { data, isLoading, isPending, error } = useRouterApiQuery(
     {
       chainId,
-      tokenIn: fromAddress,
-      tokenOut: toAddress,
+      tokenIn: mapQuery(fromToken, t => t.address),
+      tokenOut: mapQuery(toToken, t => t.address),
       router: 'curve',
       userAddress,
       ...(isFrom
-        ? { ...(fromDecimals != null && { amountIn: toWei(fromAmount, fromDecimals) }) }
-        : { ...(toDecimals != null && { amountOut: toWei(toAmount, toDecimals) }) }),
+        ? { amountIn: mapQuery(fromToken, t => toWei(fromAmount, t.decimals)) }
+        : { amountOut: mapQuery(toToken, t => toWei(toAmount, t.decimals)) }),
     },
     enabled && !tokensError,
   )

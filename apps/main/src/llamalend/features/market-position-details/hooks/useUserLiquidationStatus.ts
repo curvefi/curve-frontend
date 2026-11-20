@@ -5,9 +5,9 @@ import { useUserHealth } from '@/llamalend/queries/user/user-health.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery } from '@ui/features/queries/util'
+import { type FieldsOrQueries, mapQuery } from '@ui/features/queries/util'
 
-export const useLiquidationStatus = (params: UserMarketParams, enabled?: boolean) =>
+export const useLiquidationStatus = (params: FieldsOrQueries<UserMarketParams>, enabled?: boolean) =>
   combineQueries(
     [
       useUserState(params, enabled),
@@ -25,7 +25,7 @@ export const useLiquidationStatus = (params: UserMarketParams, enabled?: boolean
       ),
   )
 
-export const useIsInLiquidation = (params: UserMarketParams, enabled?: boolean) =>
+export const useIsInLiquidation = (params: FieldsOrQueries<UserMarketParams>, enabled?: boolean) =>
   mapQuery(useLiquidationStatus(params, enabled), status =>
     ['softLiquidation', 'hardLiquidation', 'fullyConverted'].includes(status),
   )

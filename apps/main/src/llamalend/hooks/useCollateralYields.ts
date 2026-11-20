@@ -7,7 +7,7 @@ import { BlockchainIds } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, type FieldsOrQueries, mapQuery, type QueryProp, toValue } from '@ui/features/queries/util'
 
 // TODO: get the LP base APR from llamalend.js
 /** Collateral yields from the live snapshot, with the CRV APR read on chain when the market has collateral rewards */
@@ -16,14 +16,14 @@ export const useCollateralYields = (
     marketType,
     controllerAddress,
     ...params
-  }: MarketParams & { marketType: MarketType; controllerAddress: Address | undefined },
+  }: FieldsOrQueries<MarketParams> & { marketType: MarketType; controllerAddress: Address | undefined },
   enabled?: boolean,
 ): QueryProp<CollateralYields> => {
   const snapshotYields = mapQuery(
     useMarketSnapshots({
       marketType,
       controllerAddress,
-      blockchainId: maybe(params.chainId, chainId => BlockchainIds[chainId]),
+      blockchainId: maybe(toValue(params.chainId), chainId => BlockchainIds[chainId]),
       range: { kind: 'limit', limit: 1 },
       enabled,
     }),

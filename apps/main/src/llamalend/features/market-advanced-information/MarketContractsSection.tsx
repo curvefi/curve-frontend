@@ -25,12 +25,10 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
-import { Badge } from '@ui/components/Badge'
-import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { ExternalLink } from '@ui/components/ExternalLink'
+import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -57,32 +55,6 @@ type MarketContractsProps = {
   market: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }
-
-const GaugeLabel = ({
-  type,
-  isKilled: { data: isKilled, isLoading, error },
-}: {
-  type: 'supply' | 'borrow'
-  isKilled: QueryProp<boolean | null>
-}) => (
-  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-    <Typography variant="bodyMRegular" color="textSecondary">
-      {{ supply: 'Supply', borrow: 'Borrow' }[type] + ' gauge'}
-    </Typography>
-    {error ? (
-      <ErrorIconButton error={error} size="extraSmall" />
-    ) : (
-      <WithSkeleton loading={isLoading}>
-        <Badge
-          size="extraSmall"
-          color={isKilled ? 'warning' : 'active'}
-          label={isKilled ? t`Inactive` : t`Active`}
-          data-testid={`market-contract-${type}-gauge-status`}
-        />
-      </WithSkeleton>
-    )}
-  </Stack>
-)
 
 const AssetRow = ({
   title,
@@ -201,7 +173,13 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       ({ type, address, isKilled }) =>
         address && {
           key: `${type}-gauge`,
-          label: <GaugeLabel type={type} isKilled={combineQueries([market, isKilled], (_, isKilled) => isKilled)} />,
+          label: (
+            <GaugeStatusLabel
+              label={{ supply: t`Supply gauge`, borrow: t`Borrow gauge` }[type]}
+              isKilled={combineQueries([market, isKilled], (_, isKilled) => isKilled)}
+              testId={`market-contract-${type}-gauge-status`}
+            />
+          ),
           address,
         },
     ),

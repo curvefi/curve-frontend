@@ -7,6 +7,7 @@ const GAUGE_WEIGHT_SCALE = 1e18
 const gauge = z
   .object({
     address,
+    effective_address: address.nullable(),
     gauge_type: z.string(),
     name: z.string().nullable(),
     version: z.string().nullable(),
@@ -18,6 +19,7 @@ const gauge = z
     market: z.object({ name: z.string(), chain: z.string() }).nullable(),
     is_killed: z.boolean(),
     emissions: z.number(),
+    prev_epoch_emissions: z.number(),
     gauge_weight: z.string(),
     gauge_weight_7d_delta: z.number().nullable(),
     gauge_weight_60d_delta: z.number().nullable(),
@@ -32,6 +34,7 @@ const gauge = z
   .transform(camelizeKeys)
   .transform(data => ({
     address: data.address,
+    effectiveAddress: data.effectiveAddress ?? undefined,
     type: data.gaugeType,
     name: data.name ?? undefined,
     version: data.version ?? undefined,
@@ -49,6 +52,7 @@ const gauge = z
     market: data.market ? { name: data.market.name, chain: data.market.chain as Chain } : undefined,
     killed: data.isKilled,
     emissions: data.emissions,
+    prevEpochEmissions: data.prevEpochEmissions,
     weight: BigInt(data.gaugeWeight),
     weightDelta7d: data.gaugeWeight7dDelta ?? undefined,
     weightDelta60d: data.gaugeWeight60dDelta ?? undefined,

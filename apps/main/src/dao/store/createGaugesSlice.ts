@@ -63,7 +63,7 @@ export type GaugesSlice = {
 const DEFAULT_STATE: SliceState = {
   txCastVoteState: null,
   filteringGaugesLoading: true,
-  gaugeListSortBy: { key: 'gauge_relative_weight', order: 'desc' },
+  gaugeListSortBy: { key: 'weightRelative', order: 'desc' },
   searchValue: '',
   gaugeVotesMapper: {},
   filteredGauges: [],
@@ -274,7 +274,7 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   const fuse = new Fuse<GaugeFormattedData>(gauges, {
     ignoreLocation: true,
     threshold: 0.01,
-    keys: ['address', 'effective_address', 'title', 'platform', 'pool.chain', 'market.chain'],
+    keys: ['address', 'effectiveAddress', 'title', 'platform', 'pool.chain', 'market.chain'],
   })
 
   const result = fuse.search(filterValue)

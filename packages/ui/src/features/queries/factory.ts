@@ -2,7 +2,7 @@ import { isUndefined, omitBy } from 'lodash'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import { FetchError } from '@primitives/fetch.utils'
-import { isEmpty, maybe, notFalsy, type Nullish } from '@primitives/objects.utils'
+import { fromEntries, isEmpty, maybe, notFalsy, type Nullish, objectKeys } from '@primitives/objects.utils'
 import {
   type DefaultError,
   keepPreviousData as keepPreviousDataTanstack,
@@ -12,11 +12,11 @@ import {
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
 import { useQuery, type QueryOptions } from '@ui/features/queries/query-hooks'
-import type { DeepPartial } from '@ui/features/queries/util'
+import { type DeepPartial, type FieldsOrQueries, toQuery, toValue } from '@ui/features/queries/util'
 import { logError, logQuery, logSuccess } from '@ui/lib/logging'
 import { formatTimeDiff } from '@ui/lib/time'
 import { validate } from '@ui/lib/validation/lib'
-import { FieldName, FieldsOf } from '@ui/lib/validation/types'
+import { FieldName, type FieldsOf } from '@ui/lib/validation/types'
 
 /** Make sure we only use simple types for query keys, safe for caching and logging. */
 type QueryKeyItem = string | number | boolean | Nullish | readonly QueryKeyItem[]
@@ -66,6 +66,9 @@ async function runQuery<TData, TQuery>(
     throw error
   }
 }
+
+const unwrapFields = <T extends object>(params: FieldsOrQueries<T>): T =>
+  fromEntries(objectKeys(params).map(key => [key, toValue(params[key])])) as T
 
 export function queryFactory<
   TQuery extends object,
@@ -147,7 +150,16 @@ export function queryFactory<
         ...options,
         staleTime: 0,
       }),
-    useQuery: (params: TParams, enabled?: boolean) => useQuery(getQueryOptions(params, enabled)),
+    /**
+     * Validates unwrapped input data; validation failures disable fetching without becoming query errors.
+     * Input loading propagates; It is only ignored if this query is manually disabled.
+     * Input errors are not propagated; callers must handle them separately (for now).
+     */
+    useQuery: (params: FieldsOrQueries<TParams>, enabled?: boolean) => {
+      const s = useQuery(getQueryOptions(unwrapFields(params), enabled))
+      s.isLoading = s.isLoading || (enabled !== false && Object.values(params).some(p => toQuery(p).isLoading))
+      return s
+    },
     /** Invalidates cached queries. Partial invalidation omits undefined key fields to match all their values. */
     invalidate: (params: TParams, { partial = false } = {}) =>
       queryClient.invalidateQueries({

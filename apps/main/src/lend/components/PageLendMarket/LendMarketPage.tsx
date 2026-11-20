@@ -51,9 +51,9 @@ export const LendMarketPage = () => {
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const network = networks[chainId]
-  const queryParams = { chainId, marketId: market?.id, userAddress }
+  const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m.id), userAddress }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
-  const { data: collateralRewardsEnabled } = useMarketCollateralRewardsEnabled({ chainId, marketId: market?.id })
+  const { data: collateralRewardsEnabled } = useMarketCollateralRewardsEnabled(queryParams)
   const showCollateralClaim = collateralRewardsEnabled === true
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)

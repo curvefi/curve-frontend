@@ -7,26 +7,23 @@ import { useMarketLiquidationBand } from '@/llamalend/queries/market/market-liqu
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { combineQueryState } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 
 export const useBandsData = ({
   chainId,
   market,
-  enabled = true,
+  enabled,
 }: {
   chainId: IChainId
   market: QueryProp<MarketTemplate>
   enabled?: boolean
 }) => {
-  const marketId = market.data?.id
+  const marketId = mapQuery(market, m => m.id)
   const { address: userAddress } = useConnection()
-  const loanExists = useLoanExists({ chainId, marketId, userAddress }, enabled)
-  const liquidationBand = useMarketLiquidationBand({ chainId, marketId }, enabled)
-  const userBands = useUserBandsBalances(
-    { chainId, marketId, userAddress, loanExists: loanExists.data, liquidationBand: liquidationBand.data },
-    enabled,
-  )
-  const marketBands = useMarketBandsBalances({ chainId, marketId, liquidationBand: liquidationBand.data }, enabled)
+  const loanExists = q(useLoanExists({ chainId, marketId, userAddress }, enabled))
+  const liquidationBand = q(useMarketLiquidationBand({ chainId, marketId }, enabled))
+  const userBands = useUserBandsBalances({ chainId, marketId, userAddress, loanExists, liquidationBand }, enabled)
+  const marketBands = useMarketBandsBalances({ chainId, marketId, liquidationBand }, enabled)
 
   const chartData = useProcessedBandsData({ marketBandsBalances: marketBands.data, userBandsBalances: userBands.data })
   return q({ data: chartData, ...combineQueryState(market, loanExists, liquidationBand, userBands, marketBands) })

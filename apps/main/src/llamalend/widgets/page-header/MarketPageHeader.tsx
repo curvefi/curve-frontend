@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { getTokenOrPair, getTokens } from '@/llamalend/llama.utils'
+import { getTokenOrPair, getTokensQuery } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { llamalendRoutes } from '@evm-ui/shared/routes'
@@ -13,7 +13,7 @@ import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
-import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { ChainIcon } from '@ui/icons/ChainIcon'
 import { ReloadIcon } from '@ui/icons/ReloadIcon'
@@ -30,7 +30,7 @@ export const MarketPageHeader = () => {
   const { chainId, blockchainId, marketId, controllerAddress, marketType, marketQuery, apiMarket } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
-  const tokens = q({ ...fallbackQ(marketQuery, apiMarket), data: getTokens(marketQuery.data, apiMarket.data) })
+  const tokens = getTokensQuery(marketQuery, apiMarket)
 
   const MetricComponent = isNewLlamaMarketDetailPage ? MetricsRow : LegacyMetricsRow
   const metrics = (

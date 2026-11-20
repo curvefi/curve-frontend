@@ -14,10 +14,10 @@ const { getQueryOptions: getBadDebtMarketsOptionsQuery, reset: resetBadDebtMarke
   validationSuite: EmptyValidationSuite,
 })
 
-export const getBadDebtLendMarketsOptions = (enabled = true) =>
+export const getBadDebtLendMarketsOptions = (enabled?: boolean) =>
   getBadDebtMarketsOptionsQuery({ type: MarketType.Lend }, enabled)
 
-export const getBadDebtMintMarketsOptions = (enabled = true) =>
+export const getBadDebtMintMarketsOptions = (enabled?: boolean) =>
   getBadDebtMarketsOptionsQuery({ type: MarketType.Mint }, enabled)
 
 export const resetBadDebtMarkets = async () =>

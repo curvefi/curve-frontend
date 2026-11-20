@@ -3,7 +3,7 @@ import {
   calculateLendMarketTvlUsd,
   calculateMintMarketTvlUsd,
   getControllerAddress,
-  getTokens,
+  getTokensQuery,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
@@ -40,20 +40,20 @@ export const useAdvancedDetailsData = ({
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
 }) => {
-  const market = marketQuery.data
-  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
+  const tokens = getTokensQuery(marketQuery, apiMarket)
+  const { collateralToken, borrowToken } = tokens.data ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
-  const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const controllerAddress = getControllerAddress(marketQuery.data, apiMarket.data)
   const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
-  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: market?.minBands ?? 0 })
+  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: mapQuery(marketQuery, m => m.minBands) })
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
-  const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
-  const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
+  const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: mapQuery(tokens, t => t.collateralToken.address) })
+  const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: mapQuery(tokens, t => t.borrowToken.address) })
   const solvency = useSolvencyMarket({ blockchainId, controllerAddress, marketType })
   const tvl = fallbackQ(
     marketType === MarketType.Lend

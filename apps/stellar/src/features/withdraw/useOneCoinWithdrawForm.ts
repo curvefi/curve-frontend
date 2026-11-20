@@ -50,13 +50,11 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const { lp_supply: supply, active_balances: reserves } = snapshot.data ?? {}
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, decimals, decimalsData } = usePoolTokens({ ...poolParams, account, tokenAddresses }) ?? {}
-  const lpBalance = useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS })
+  const lpBalance = q(useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS }))
   const form = useForm<OneCoinWithdrawFormValues>(formOptions)
   const { values, formState, reset, update, handleSubmit } = form
   const index = values.tokenIndex
-  const max = q(
-    useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index]?.data, lpAmount: lpBalance.data }),
-  )
+  const max = q(useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index], lpAmount: lpBalance }))
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams, account }
   const expectedLp = useWithdrawExpectedLp(params)

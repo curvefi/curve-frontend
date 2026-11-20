@@ -3,14 +3,14 @@ import { usePoolRegistration } from '@/stellar/queries/pool/pool-registration.qu
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import type { LitePool } from '@curvefi/prices-api/pools'
 import { combineQueryState } from '@ui/features/queries/combine'
-import { q, type Query, type QueryData } from '@ui/features/queries/util'
+import { mapQuery, q, type Query, type QueryData } from '@ui/features/queries/util'
 
 export const useIsRegisteredPool = (
   params: PoolQuery,
   config: Query<QueryData<typeof usePoolConfig>>,
   litePool: Query<LitePool | null>,
 ): Query<boolean> => {
-  const registration = usePoolRegistration({ ...params, factory: config.data?.factory })
+  const registration = usePoolRegistration({ ...params, factory: mapQuery(config, config => config.factory) })
   return q({
     data: !!litePool.data || registration.data?.pool === params.pool,
     ...combineQueryState(config, registration, litePool),

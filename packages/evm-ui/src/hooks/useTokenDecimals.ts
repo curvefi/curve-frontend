@@ -6,11 +6,11 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 type TokenDecimalsQuery = ChainQuery & { tokenAddress: Address }
 
 /** Fetch ERC-20 token decimals for a token on a specific chain. */
-export const useTokenDecimals = ({ chainId, tokenAddress }: FieldsOf<TokenDecimalsQuery>, enabled = true) =>
+export const useTokenDecimals = ({ chainId, tokenAddress }: FieldsOf<TokenDecimalsQuery>, enabled?: boolean) =>
   useReadContract({
     chainId: chainId ?? undefined,
     address: tokenAddress ?? undefined,
     abi: erc20Abi,
     functionName: 'decimals',
-    query: { enabled: enabled && chainId != null && tokenAddress != null },
+    query: { enabled: chainId != null && tokenAddress != null && enabled },
   })

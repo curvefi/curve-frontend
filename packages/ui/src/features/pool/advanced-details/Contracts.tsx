@@ -3,9 +3,10 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import type { Address } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { Badge } from '@ui/components/Badge'
+import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 export type ContractsProps = {
@@ -13,7 +14,7 @@ export type ContractsProps = {
   poolAddress: Address
   lpTokenAddress: Address | Nullish
   gaugeAddress?: Address
-  gaugeIsKilled?: boolean | null
+  gaugeIsKilled?: QueryProp<boolean | null>
   hasGauge?: boolean
   oracles?: { address: Address; title: string }[]
   addressDisplay: AddressDisplay
@@ -52,9 +53,11 @@ export const Contracts = ({
             address={gaugeAddress}
             display={addressDisplay}
             title={
-              <>
-                {t`Gauge`} {gaugeIsKilled && <Badge disabled size="small" label={t`Inactive`} />}
-              </>
+              gaugeIsKilled ? (
+                <GaugeStatusLabel label={t`Gauge`} isKilled={gaugeIsKilled} testId="pool-contract-gauge-status" />
+              ) : (
+                t`Gauge`
+              )
             }
           />
         )}

@@ -24,7 +24,7 @@ export const SwapActionInfoList = ({ onSlippageChange, ...params }: SwapActionIn
   const minimum = mapQuery(outputAmount, value =>
     maybe(decimals?.[toIndex], precision => calculateMinimumReceived(value, slippage, precision)),
   )
-  const simulation = useSwapSimulation({ ...params, inputAmount: inputAmount.data, minimum: minimum.data })
+  const simulation = useSwapSimulation({ ...params, inputAmount, minimum })
 
   return (
     <PoolActionInfoList
