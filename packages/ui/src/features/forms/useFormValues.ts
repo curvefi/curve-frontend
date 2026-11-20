@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { changedKeys, fromEntries } from '@primitives/objects.utils'
+import { changedKeys, fromEntries, isEmpty } from '@primitives/objects.utils'
 import { useDebounced } from '@ui/hooks/useDebounce'
 import { useShallowData } from '@ui/hooks/useShallowData'
 
@@ -53,6 +53,11 @@ export function useFormValues<TValues extends object, TContext extends object = 
   const [state, setState] = useState<FormState<TValues>>(() => initialState(defaultValues))
 
   const { params, resetVersion, values, touched, defaults } = state
+  const dirtyFields = useShallowData(
+    fromEntries<keyof TValues, true>(
+      [...touched].filter(field => !isEqual(values[field], defaults[field])).map(field => [field, true]),
+    ),
+  )
 
   const debounce = useDebounced(
     useCallback(
@@ -67,7 +72,8 @@ export function useFormValues<TValues extends object, TContext extends object = 
     params: useShallowData<TValues & TContext>({ ...params, ...context }),
     resetVersion,
     touchedFields: useMemo(() => fromEntries<keyof TValues, true>([...touched].map(field => [field, true])), [touched]),
-    isDirty: [...touched].some(field => !isEqual(values[field], defaults[field])),
+    dirtyFields,
+    isDirty: !isEmpty(dirtyFields),
     isDebouncing: !isEqual(values, params),
     isTouched: useCallback((...fields: (keyof TValues)[]) => fields.some(field => touched.has(field)), [touched]),
     update: useCallback(

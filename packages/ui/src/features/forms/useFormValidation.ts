@@ -19,7 +19,18 @@ const getValidationFields = (data: object, computed: Record<string, unknown>, is
 
 /** Validate inputs and computed limits; touched state only controls error visibility. */
 export function useFormValidation<TValues extends object, TContext extends object, TComputed extends object>({
-  inputs,
+  inputs: {
+    values,
+    touchedFields,
+    dirtyFields,
+    isDirty,
+    isDebouncing,
+    resetVersion,
+    params: inputParams,
+    reset,
+    isTouched,
+    update,
+  },
   validation,
   computed,
   isSubmitting,
@@ -31,7 +42,6 @@ export function useFormValidation<TValues extends object, TContext extends objec
   isSubmitting: boolean
   disabled?: boolean
 }) {
-  const { values, touchedFields, isDirty, isDebouncing, resetVersion, params: inputParams } = inputs
   const session = useMemo(() => {
     validation.reset()
     return { validation, resetVersion }
@@ -42,13 +52,12 @@ export function useFormValidation<TValues extends object, TContext extends objec
   const data = useShallowData({ ...values, ...computedValues })
 
   const result = session.validation.run(data, getValidationFields(data, computedValues, isDebouncing))
-  const errors = mapRecord(result.getErrors(), (_, messages) => new Error(messages[0]))
-  // Missing computed limits block submission even though their validation is deferred.
-  const isValid = Object.values(computedValues).every(v => v !== undefined) && isEmpty(errors)
+  const errors = mapRecord(result.getErrors(), (_, [message]) => new Error(message)) // computed checks wait until errors are checked
+  const isValid = isEmpty(session.validation.runStatic(data).getErrors()) // fails while waiting for any required value
   const isDisabled = disabled || isDebouncing || !isValid || isSubmitting
 
   return {
-    ...inputs,
+    values,
     params: useShallowData({ ...inputParams, ...computedValues }),
     handleSubmit: useCallback<UseFormHandleSubmit<TValues & Partial<TComputed>>>(
       onSubmit => async event => {
@@ -60,6 +69,7 @@ export function useFormValidation<TValues extends object, TContext extends objec
     formState: {
       errors,
       touchedFields,
+      dirtyFields,
       isDirty,
       isValid,
       isSubmitting,
@@ -68,6 +78,11 @@ export function useFormValidation<TValues extends object, TContext extends objec
     error,
     isLoading: isDebouncing || isLoading || isSubmitting,
     isDisabled,
+    isDebouncing,
+    isTouched,
+    resetVersion,
+    reset,
+    update,
   }
 }
 
