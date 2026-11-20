@@ -10,33 +10,34 @@ import { mapQuery } from '@ui/features/queries/util'
 import { decimalGreaterThan, decimalMultiply, ZERO } from '@ui/lib/decimal'
 import { useUserVaultEventsQuery } from '../queries/user-vault-events'
 
-export type ParsedUserVaultEvent = Omit<UserVaultEvent, 'type'> & {
+export type ParsedUserSupplyEvent = Omit<UserVaultEvent, 'type'> & {
   type: 'Deposit' | 'Withdraw' | 'TransferIn' | 'TransferOut'
   chainId: number
   amount: Decimal | undefined
   shareChange: Decimal
-  symbol: string
+  borrowToken: MarketToken
+  vaultToken: MarketToken
 }
 
-export type UserVaultEventsProps = {
+export type UserSupplyEventsProps = {
   userAddress: Address | undefined
   chainId: LlamaChainId
   tokens: Partial<MarketTokens>
   vaultToken: MarketToken | undefined
 }
 
-export const useUserVaultEvents = ({
+export const useUserSupplyEvents = ({
   chainId,
   userAddress,
   vaultToken,
   tokens: { borrowToken },
-}: UserVaultEventsProps) => {
+}: UserSupplyEventsProps) => {
   const blockchainId = BlockchainIds[chainId]
   const query = useUserVaultEventsQuery({ blockchainId, userAddress, contractAddress: vaultToken?.address })
   return mapQuery(query, ({ events }) =>
     maybes([borrowToken, vaultToken], (borrowToken, vaultToken) =>
       events
-        .map((event): ParsedUserVaultEvent => {
+        .map((event): ParsedUserSupplyEvent => {
           const sign = event.type === 'Withdraw' ? -1 : 1
           const shareChange = decimalMultiply(fromWei(event.shares, vaultToken.decimals), sign)
           return {
@@ -48,7 +49,8 @@ export const useUserVaultEvents = ({
                   : 'TransferIn'
                 : event.type,
             chainId,
-            symbol: borrowToken.symbol,
+            borrowToken,
+            vaultToken,
             amount:
               event.type === 'Transfer'
                 ? undefined

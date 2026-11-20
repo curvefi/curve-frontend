@@ -6,8 +6,11 @@ import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import type { MarketBorrowEventRow, MarketTradeRow } from './types'
-import { toMarketActivityBorrowEventRow, toMarketActivitySwapRow } from './utils'
+import {
+  type MarketBorrowEventRow,
+  toActivityRow as toBorrowActivityRow,
+} from './hooks/useMarketActivityBorrowEventsTable'
+import { type MarketSwapRow, toActivityRow as toSwapActivityRow } from './hooks/useMarketActivitySwapsTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -20,7 +23,7 @@ const COLLATERAL_TOKEN: Token = { symbol: 'WETH', address: '0xC02aaA39b223FE8D0A
 const BORROW_TOKEN: Token = { symbol: 'crvUSD', address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' }
 
 // Llamma Trades Mock Data Generator
-const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken: Token): MarketTradeRow[] => {
+const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken: Token): MarketSwapRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => {
@@ -93,8 +96,8 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
   })
 }
 
-const swapsQuery = constQ(generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN).map(toMarketActivitySwapRow))
-const eventsQuery = constQ(generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN).map(toMarketActivityBorrowEventRow))
+const swapsQuery = constQ(generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN).map(toSwapActivityRow))
+const eventsQuery = constQ(generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN).map(toBorrowActivityRow))
 
 const meta: Meta = {
   title: 'Llamalend/Features/MarketActivity',
