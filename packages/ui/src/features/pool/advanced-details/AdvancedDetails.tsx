@@ -59,7 +59,7 @@ export const AdvancedDetails = ({
                 <Grid size={GRID_SIZE}>
                   <Stack>
                     <Contracts chainId={chainId} {...contracts} addressDisplay={addressDisplay} />
-                    {!contracts.hasGauge && addGaugeLink}
+                    {!contracts.gauge && addGaugeLink}
                   </Stack>
                 </Grid>
 
