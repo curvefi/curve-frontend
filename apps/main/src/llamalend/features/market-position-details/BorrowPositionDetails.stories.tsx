@@ -88,6 +88,7 @@ const BorrowPositionDetailsStory = ({
           userAddress: params.userAddress,
           api: null,
           releaseChannel: ReleaseChannel.Beta,
+          tokens: undefined,
         }),
         marketId: params.marketId,
         tokens: {

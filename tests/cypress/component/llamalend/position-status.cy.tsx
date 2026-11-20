@@ -79,12 +79,12 @@ const PositionDetailsTest = ({
           userAddress: params.userAddress,
           api: null,
           releaseChannel: ReleaseChannel.Beta,
+          tokens: {
+            collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
+            borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
+          },
         }),
         marketId: params.marketId,
-        tokens: {
-          collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
-          borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
-        },
       }}
     >
       <TestQueryProvider

@@ -9,7 +9,8 @@ import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details/PositionDetailsComposite'
 import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { getTokens, getVaultToken } from '@/llamalend/llama.utils'
+import { useMarketTokens } from '@/llamalend/hooks/useMarketTokens'
+import { getVaultToken } from '@/llamalend/llama.utils'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
@@ -57,7 +58,7 @@ export const Page = () => {
   const events = useUserVaultEvents({
     chainId,
     userAddress,
-    tokens: getTokens(market, apiMarket.data) ?? {},
+    tokens: useMarketTokens({ blockchainId: network.blockchainId, market, apiMarket: apiMarket.data }) ?? {},
     vaultToken: getVaultToken(market, apiMarket.data),
   })
 

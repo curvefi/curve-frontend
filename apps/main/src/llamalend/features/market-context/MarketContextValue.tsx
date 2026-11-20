@@ -12,9 +12,9 @@ import {
   getGaugeAddress,
   getMarketBandRange,
   getMarketLeverageProviders,
-  getTokens,
   getVaultToken,
   getZapAddress,
+  type MarketTokens,
   type MarketTokensOrEmpty,
 } from '../../llama.utils'
 import type { MarketTemplate } from '../../llamalend.types'
@@ -29,12 +29,15 @@ export const createMarketContextValue = <ChainId extends IChainId>({
   userAddress,
   api,
   releaseChannel,
+  tokens,
 }: {
   chainId: ChainId
   blockchainId: LlamaNetworkId
   userAddress: Address | undefined
   api: LlamaApi | null
   releaseChannel: ReleaseChannel
+  /** The market tokens, with the coins of LP tokens, see `useMarketTokens` */
+  tokens: MarketTokens | undefined
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
   marketType: MarketType
@@ -54,7 +57,7 @@ export const createMarketContextValue = <ChainId extends IChainId>({
     zapAddress: getZapAddress(marketQuery.data),
     controllerAddress,
     leverageProviders: getMarketLeverageProviders(chainId, controllerAddress, releaseChannel),
-    tokens: (getTokens(marketQuery.data, apiMarket.data) ?? {}) as MarketTokensOrEmpty,
+    tokens: (tokens ?? {}) as MarketTokensOrEmpty,
     vaultToken: getVaultToken(marketQuery.data, apiMarket.data),
     gaugeAddress: getGaugeAddress(marketQuery.data, apiMarket.data),
     bands: (getMarketBandRange(marketQuery.data, apiMarket.data) ?? {}) as BandRangeOrEmpty,

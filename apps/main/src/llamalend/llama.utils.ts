@@ -199,7 +199,7 @@ export const formatTokenAmounts = (
     userCollateral && +userCollateral && formatToken(userCollateral, getCollateralSymbol(market), 'amount'),
   ).join(', ')
 
-export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
+export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals' | 'lpCoins'>
 
 export type MarketTokens = { collateralToken: MarketToken; borrowToken: MarketToken }
 
@@ -261,6 +261,9 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
           },
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
+
+export const withLpCoins = <T extends Token>(token: T, lpCoins: Token[] | Nullish): T =>
+  lpCoins ? { ...token, lpCoins } : token
 
 export const getTokensQuery = (market: QueryProp<MarketTemplate>, apiMarket: QueryProp<LlamaMarket>) => ({
   ...fallbackQ(market, apiMarket),
