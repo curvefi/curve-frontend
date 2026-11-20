@@ -1,3 +1,4 @@
+import type { PartialRecord } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { ActivityColumnId } from '../columns/columns.enum'
 
@@ -6,26 +7,27 @@ type VisibilityProps = {
   hasValue: boolean
 }
 
-const getDesktopColumnVisibility = ({ hasValue }: VisibilityProps): Record<ActivityColumnId, boolean> => ({
-  [ActivityColumnId.Time]: true,
-  [ActivityColumnId.Action]: true,
-  [ActivityColumnId.Value]: hasValue,
-  [ActivityColumnId.Amount]: true,
-  [ActivityColumnId.Address]: true,
-})
+type VisibilityOverrides =
+  | PartialRecord<ActivityColumnId, boolean>
+  | PartialRecord<'desktop' | 'mobile', PartialRecord<ActivityColumnId, boolean>>
 
-const getMobileColumnVisibility = ({ hasValue }: VisibilityProps): Record<ActivityColumnId, boolean> => ({
-  [ActivityColumnId.Time]: true,
-  [ActivityColumnId.Action]: true,
-  // Prefer showing dollar value, unless not supported, then we fallback to the (token) amount
-  [ActivityColumnId.Value]: hasValue,
-  [ActivityColumnId.Amount]: !hasValue,
-  [ActivityColumnId.Address]: false,
-})
+/** Applies a flat override map on all screens or selects the map for the current screen size. */
+export const useActivityVisibility = (
+  { hasValue }: VisibilityProps,
+  overrides?: VisibilityOverrides,
+): Record<ActivityColumnId, boolean> => {
+  const isMobile = useIsMobile()
+  const columnOverrides =
+    overrides && ('desktop' in overrides || 'mobile' in overrides)
+      ? overrides[isMobile ? 'mobile' : 'desktop']
+      : overrides
 
-/**
- * Returns column visibility settings for the ActivityTable based on the current screen size.
- * Params are explicitly required without defaults for clarity.
- */
-export const useActivityVisibility = (params: VisibilityProps) =>
-  useIsMobile() ? getMobileColumnVisibility(params) : getDesktopColumnVisibility(params)
+  return {
+    [ActivityColumnId.Time]: true,
+    [ActivityColumnId.Action]: true,
+    [ActivityColumnId.Value]: hasValue,
+    [ActivityColumnId.Amount]: !isMobile || !hasValue,
+    [ActivityColumnId.Address]: !isMobile,
+    ...columnOverrides,
+  }
+}

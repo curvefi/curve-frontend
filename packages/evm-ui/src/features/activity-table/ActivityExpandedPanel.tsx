@@ -53,14 +53,14 @@ export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
       </Subscribe>
       {deltas.length ? (
         <MetricsGrid variant="mobileRows">
-          {deltas.map(({ label, token, amount, amountUsd }, index) => (
+          {deltas.map(({ label, token, amount, amountColor, amountUsd }, index) => (
             <MetricExpandedPanel
               key={getActivityDeltaKey(label, token?.address, index)}
-              label={token?.symbol ? `${label} (${token.symbol})` : label}
+              label={token?.symbol && token.symbol !== label ? `${label} (${token.symbol})` : label}
               value={amount}
               valueOptions={{
                 formatter: value => formatNumber(value, 'token.delta'),
-                color: getChangeColor(amount, 'success', 'error'),
+                color: amountColor ?? getChangeColor(amount, 'success', 'error'),
               }}
               // Skip undefined only so the formatter can show Processing for null prices.
               notional={

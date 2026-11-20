@@ -1,16 +1,47 @@
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
+import type { Chain } from '@curvefi/prices-api'
+import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import { ACTIVITY_COLUMNS } from '@evm-ui/features/activity-table/columns/columns.definitions'
 import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
-import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
+import type { ActivityRow, ActivityToken } from '@evm-ui/features/activity-table/types'
+import { DEFAULT_PAGE_SIZE, getSwapDeltas, SWAP_BREAKDOWN_CUTOFF } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { MarketBorrowActivityProps } from '../types'
-import { toMarketActivitySwapRow } from '../utils'
+
+export type MarketSwapRow = Omit<LlammaTrade, 'tokenBought' | 'tokenSold'> & {
+  chainId: number
+  blockchainId: Chain
+  tokenBought: ActivityToken
+  tokenSold: ActivityToken
+}
+
+export const toActivityRow = ({
+  chainId,
+  blockchainId,
+  txHash,
+  timestamp,
+  buyer: address,
+  amountSold,
+  tokenSold,
+  amountBought,
+  tokenBought,
+}: MarketSwapRow): ActivityRow => ({
+  chainId,
+  blockchainId,
+  txHash,
+  timestamp,
+  address,
+  action: { label: t`Swap` },
+  breakdownCutoff: SWAP_BREAKDOWN_CUTOFF,
+  valueUsd: null,
+  deltas: getSwapDeltas({ token: tokenSold, amount: amountSold }, { token: tokenBought, amount: amountBought }),
+})
 
 export const useMarketActivitySwapsTable = ({
   chainId,
@@ -34,7 +65,7 @@ export const useMarketActivitySwapsTable = ({
   const activityQuery = mapQuery(tradesQuery, ({ trades }) =>
     maybe(blockchainId, blockchainId =>
       trades.map(trade =>
-        toMarketActivitySwapRow({
+        toActivityRow({
           ...trade,
           chainId,
           blockchainId,
