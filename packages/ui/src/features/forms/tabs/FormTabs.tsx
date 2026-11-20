@@ -29,7 +29,7 @@ const marginInline = { tablet: 'auto', desktop: 0 } as const
 
 const TabsWithAction = ({ children, action }: { children: ReactNode; action: ReactNode }) => (
   <Stack direction="row">
-    <Stack sx={{ flex: 1, minWidth: 0 }}>{children}</Stack>
+    {children}
     {action}
   </Stack>
 )
