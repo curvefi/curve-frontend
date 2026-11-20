@@ -3,6 +3,8 @@ import { getPoolAmounts, getPoolMaxAmounts, poolAmountField, type PoolTokenField
 
 export type WithdrawMode = 'balanced' | 'unbalanced' | 'one-coin'
 
+export const oneCoinWithdrawDefaultValues = { amount: undefined, isMax: false }
+
 export type WithdrawMutation = {
   amounts: (Decimal | undefined)[]
   maxAmounts: (Decimal | undefined)[]
@@ -37,9 +39,8 @@ export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
 export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
   PoolTokenFields & { lpAmount: Decimal | undefined; isBalanced: boolean }
 
-/** Manual amounts use the quoted LP burn; Max burns the full balance. */
+/** The resolved quote supplies the LP burn for both manual amounts and Max. */
 export const getOneCoinWithdrawParams = ({
-  isMax,
   tokenIndex,
   quotedAmount,
   poolReserve,
@@ -48,7 +49,7 @@ export const getOneCoinWithdrawParams = ({
   ...values,
   mode: 'one-coin' as const,
   tokenIndex,
-  lpAmount: isMax ? values.maxLpAmount : values.expectedLp,
+  lpAmount: values.expectedLp,
   amounts: getPoolAmounts({ [poolAmountField(tokenIndex)]: quotedAmount }, values.decimals?.length),
   maxAmounts: getPoolAmounts({ [poolAmountField(tokenIndex)]: poolReserve }, values.decimals?.length),
 })

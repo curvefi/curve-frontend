@@ -8,26 +8,21 @@ import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { oneCoinWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { useWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
-import { useWithdrawOneCoinQuote } from '@/stellar/queries/withdraw/withdraw-one-coin-quote.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import {
-  getOneCoinWithdrawParams,
+  oneCoinWithdrawDefaultValues as userDefaultValues,
   type OneCoinWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalEqual } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
-import type { WithdrawQuoteParams } from './types'
-import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
+import { useWithdrawQuoteQueries } from './useWithdrawQuoteQueries'
 
-const userDefaultValues = { amount: undefined, isMax: false }
 const formOptions = {
   validation: oneCoinWithdrawFormValidationSuite,
   defaultValues: {
@@ -55,28 +50,17 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const lpBalance = q(useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS }))
   const form = useForm<OneCoinWithdrawFormValues>(formOptions)
   const { values, formState, reset, update, handleSubmit } = form
-  const index = values.tokenIndex
-  const max = q(useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index], lpAmount: lpBalance }))
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
-  const estimated = useWithdrawOneCoinQuote({
-    ...poolParams,
-    amount: isDebouncing || values.isMax ? undefined : debounced.amount,
-    maxLpAmount: lpBalance.data,
-    decimals: decimalsData,
-    index,
-    slippage: values.slippage,
-  })
-  const quote = values.isMax
-    ? combineQueries([max, lpBalance], (amount, lpAmount) => ({ lpAmount, amount }))
-    : q(estimated)
-  const expectedLp = mapQuery(quote, quote => quote.lpAmount)
-  const quotedAmount = quote.data?.amount
-  const params: WithdrawQuoteParams = {
-    ...getOneCoinWithdrawParams({ ...debounced, expectedLp: expectedLp.data, quotedAmount }),
+  const index = values.tokenIndex
+  const { max, expectedLp, quotedAmount, params, priceImpact } = useWithdrawQuoteQueries({
     ...poolParams,
     account,
-  }
-  const priceImpact = useWithdrawPriceImpact(params, expectedLp)
+    values,
+    debounced,
+    isDebouncing,
+    decimals,
+    lpBalance,
+  })
 
   useFormSync(form, {
     decimals: decimalsData,

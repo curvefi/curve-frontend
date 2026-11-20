@@ -41,22 +41,13 @@ export const estimateOneCoinWithdraw = async ({
   const fractions = range(QUOTES_PER_ROUND).map(index => BigInt(index + 1))
   const partitions = BigInt(QUOTES_PER_ROUND)
 
-  const refine = async ({
-    candidates,
-    outputsByBurn,
-    round,
-  }: {
-    candidates: bigint[]
-    outputsByBurn: ReadonlyMap<bigint, bigint | null>
-    round: number
-  }): Promise<{ lpAmount: Decimal; amount: Decimal }> => {
+  const outputsByBurn = new Map<bigint, bigint | null>([[0n, 0n]]) // Burning zero LP returns zero tokens.
+  let candidates = fractions.map(part => (maximum * part) / partitions)
+  for (let round = 0; round < MAX_ROUNDS; round++) {
     const burns = [...new Set(candidates)].filter(burn => burn > 0n && !outputsByBurn.has(burn))
-    if (round === MAX_ROUNDS || !burns.length) {
-      throw new NoRetryError(t`Could not estimate this withdrawal within the requested precision. Try another amount.`)
-    }
-    const outputs = await quote(burns)
-    const quotes = new Map([...outputsByBurn, ...zip(burns, outputs)])
-    const sorted = sortBy([...quotes], ([burn]) => burn)
+    if (!burns.length) break
+    zip(burns, await quote(burns)).forEach(([burn, output]) => outputsByBurn.set(burn, output))
+    const sorted = sortBy([...outputsByBurn], ([burn]) => burn)
     const valid = sorted.filter((entry): entry is [bigint, bigint] => entry[1] != null)
     const upperIndex = valid.findIndex(([, output]) => output >= target)
     const [lower, lowerOutput] = valid[upperIndex === -1 ? valid.length - 1 : upperIndex - 1]
@@ -68,21 +59,13 @@ export const estimateOneCoinWithdraw = async ({
       return { lpAmount: fromWei(upper, LP_TOKEN_DECIMALS), amount: fromWei(output, decimals) }
     }
     const width = upper - lower
-    return refine({
-      candidates: fractions
-        .map(part =>
-          part === partitions && output != null
-            ? lower + ((target - lowerOutput) * width) / (output - lowerOutput) + 1n // Round interpolation up.
-            : lower + (width * part) / partitions,
-        )
-        .filter(burn => burn > lower && burn < upper),
-      outputsByBurn: quotes,
-      round: round + 1,
-    })
+    candidates = fractions
+      .map(part =>
+        part === partitions && output != null
+          ? lower + ((target - lowerOutput) * width) / (output - lowerOutput) + 1n // Round interpolation up.
+          : lower + (width * part) / partitions,
+      )
+      .filter(burn => burn > lower && burn < upper)
   }
-  return refine({
-    candidates: fractions.map(part => (maximum * part) / partitions),
-    outputsByBurn: new Map([[0n, 0n]]), // Burning zero LP returns zero tokens.
-    round: 0,
-  })
+  throw new NoRetryError(t`Could not estimate this withdrawal within the required precision. Try another amount.`)
 }
