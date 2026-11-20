@@ -9,7 +9,7 @@ export const BorrowToWalletCheckbox = ({
   checked,
   onChange,
 }: {
-  checked: QueryOrValue<boolean | undefined>
+  checked: QueryOrValue<boolean>
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
 }) => (
   <CheckboxField

@@ -1,4 +1,4 @@
-import { type ChangeEvent, useCallback } from 'react'
+import { useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -67,16 +67,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   } = useBorrowMoreForm({ networks, onPricesUpdated, collateralEvents })
 
   const { update: updateForm } = form
-
-  const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
-    [updateForm],
-  )
-  const onBorrowToWalletToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      updateForm({ leverageEnabled: !event.target.checked, routeId: undefined }),
-    [updateForm],
-  )
 
   const leverageEnabled = toQuery(values.leverageEnabled, collateralEvents)
   const maxDebt = mapQuery(max.debt, ({ maxDebt }) => maxDebt)
@@ -169,12 +159,16 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             {settings}
             <BorrowToWalletCheckbox
               checked={mapQuery(leverageEnabled, enabled => enabled === false)}
-              onChange={onBorrowToWalletToggle}
+              onChange={event => updateForm({ leverageEnabled: !event.target.checked, routeId: undefined })}
             />
           </>
         ) : (
           <>
-            <LeverageInput checked={leverageEnabled} leverage={leverage} onToggle={onLeverageToggle} />
+            <LeverageInput
+              checked={leverageEnabled}
+              leverage={leverage}
+              onToggle={event => updateForm({ leverageEnabled: event.target.checked, routeId: undefined })}
+            />
             {settings}
           </>
         ))}
