@@ -12,5 +12,5 @@ const { getQueryOptions } = queryFactory({
   category: 'global.campaigns',
 })
 
-export const getCampaignsMarketsMerklOptions = (getAddress: (address: string) => Address, enabled = true) =>
+export const getCampaignsMarketsMerklOptions = (getAddress: (address: string) => Address, enabled?: boolean) =>
   queryOptions({ ...getQueryOptions({}, enabled), select: groupCampaignsByAddress(getAddress) })

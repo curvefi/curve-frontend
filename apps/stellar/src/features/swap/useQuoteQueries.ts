@@ -9,7 +9,7 @@ export function useQuoteQueries(params: SwapFormQuery) {
   const inverseQuote = useSwapQuote(params, isReceive)
   const inputAmount = isReceive ? q(inverseQuote) : constQ(params.inputAmount)
   // get_dx is approximate: use get_dy for the output this input will actually buy.
-  const forwardQuote = useSwapQuote({ ...params, inputAmount: inputAmount.data, editedSide: 'pay' })
+  const forwardQuote = useSwapQuote({ ...params, inputAmount, editedSide: 'pay' })
   const outputAmount = combineQueries([inputAmount, forwardQuote], (_, output) => output)
   return { inputAmount, outputAmount }
 }

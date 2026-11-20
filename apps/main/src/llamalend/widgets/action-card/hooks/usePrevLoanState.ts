@@ -18,7 +18,7 @@ export function usePrevLoanState<ChainId extends IChainId>(
     collateralToken,
     borrowToken,
   }: { params: UserMarketParams<ChainId>; collateralToken: Token | undefined; borrowToken: Token | undefined },
-  enabled = true,
+  enabled?: boolean,
 ) {
   const userState = q(useUserState(params, enabled))
   const prevDebt = mapQuery(userState, ({ debt }) => debt)

@@ -61,5 +61,5 @@ const { getQueryOptions, reset } = queryFactory({
 
 export const resetCampaignsExternal = reset
 
-export const getCampaignsExternalOptions = (getAddress: (address: string) => Address, enabled = true) =>
+export const getCampaignsExternalOptions = (getAddress: (address: string) => Address, enabled?: boolean) =>
   queryOptions({ ...getQueryOptions({}, enabled), select: groupCampaignsByAddress(getAddress) })

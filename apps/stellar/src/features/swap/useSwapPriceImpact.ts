@@ -20,7 +20,7 @@ export function useSwapPriceImpact(
       getSmallSwapAmount(input, output, inputDecimals, outputDecimals),
     ),
   )
-  const smallQuote = useSwapQuote({ ...params, inputAmount: smallAmount.data, editedSide: 'pay' })
+  const smallQuote = useSwapQuote({ ...params, inputAmount: smallAmount, editedSide: 'pay' })
   return combineQueries([quote, smallQuote, smallAmount], (output, smallOutput, smallInput) =>
     maybe(
       inputAmount,

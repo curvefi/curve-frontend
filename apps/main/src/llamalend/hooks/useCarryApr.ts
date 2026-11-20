@@ -73,20 +73,20 @@ export function useCarryApr(
   return isEnabled ? carryApr : null
 }
 
-export const useCreateLoanCarryApr = (params: CreateLoanFormQueryParams, enabled = true) =>
+export const useCreateLoanCarryApr = (params: CreateLoanFormQueryParams, enabled?: boolean) =>
   useCarryApr({ params, futurePosition: useCreateLoanFuturePosition(params, enabled), debtDelta: params.debt }, enabled)
 
-export const useBorrowMoreCarryApr = (params: BorrowMoreParams, enabled = true) =>
+export const useBorrowMoreCarryApr = (params: BorrowMoreParams, enabled?: boolean) =>
   useCarryApr({ params, futurePosition: useBorrowMoreFuturePosition(params, enabled), debtDelta: params.debt }, enabled)
 
 export const useRepayCarryApr = (
   params: RepayParams,
   { debt, debtDelta }: { debt: QueryProp<Decimal | null>; debtDelta: Decimal | undefined },
-  enabled = true,
+  enabled?: boolean,
 ) => useCarryApr({ params, futurePosition: useRepayFuturePosition(params, debt, enabled), debtDelta }, enabled)
 
-export const useAddCollateralCarryApr = (params: CollateralParams, enabled = true) =>
+export const useAddCollateralCarryApr = (params: CollateralParams, enabled?: boolean) =>
   useCarryApr({ params, futurePosition: useAddCollateralFuturePosition(params, enabled) }, enabled)
 
-export const useRemoveCollateralCarryApr = (params: CollateralParams, enabled = true) =>
+export const useRemoveCollateralCarryApr = (params: CollateralParams, enabled?: boolean) =>
   useCarryApr({ params, futurePosition: useRemoveCollateralFuturePosition(params, enabled) }, enabled)

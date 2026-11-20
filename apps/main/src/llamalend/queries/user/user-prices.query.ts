@@ -31,8 +31,8 @@ const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactor
 })
 
 export const useUserPrices = (params: UserMarketParams, enabled?: boolean) => {
-  const loan = useLoanExists(params, enabled)
-  const prices = useUserPricesQuery({ ...params, loanExists: loan.data }, enabled)
+  const loan = q(useLoanExists(params, enabled))
+  const prices = useUserPricesQuery({ ...params, loanExists: loan }, enabled)
   return { ...(loan.data === false ? constQ(null) : q(prices)), ...combineQueryState(loan, prices) }
 }
 
