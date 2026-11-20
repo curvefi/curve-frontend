@@ -33,7 +33,7 @@ import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loa
 import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanFormValidationSuite } from '../../../queries/validation/borrow.validation'
 import { useMarketContext } from '../../market-context'
-import { type CreateLoanForm } from '../types'
+import { type CreateLoanFormValues } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
@@ -65,16 +65,18 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
-  const validation = useMemo(() => createLoanFormValidationSuite(marketId), [marketId])
+  const lowSolvency = useLowSolvencyAction({ controllerAddress, marketType, chainId })
+  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? lowSolvency.disabledAlert
+
   const userDefaultValues = {
     userCollateral: undefined,
     userBorrowed: `0` satisfies Decimal,
     debt: undefined,
     range: PRESET_RANGES[preset],
     routeId: undefined,
-  } satisfies Partial<CreateLoanForm>
+  } satisfies Partial<CreateLoanFormValues>
 
-  const inputs = useFormValues<CreateLoanForm>({
+  const inputs = useFormValues<CreateLoanFormValues>({
     defaultValues: { ...userDefaultValues, leverageEnabled: false, slippage: defaultSlippage },
     context: { chainId, marketId, userAddress, leverageProviders, slippageType: LEVERAGE },
   })
@@ -94,13 +96,15 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     leverageProviders,
   })
 
-  const form = useFormValidation(inputs, {
-    validation,
+  const form = useFormValidation({
+    inputs,
+    validation: useMemo(() => createLoanFormValidationSuite(marketId), [marketId]),
     computed: {
       maxDebt: mapQuery(maxTokenValues.debt, ({ maxDebt }) => maxDebt),
       maxCollateral: maxTokenValues.collateral,
     },
     isSubmitting: isPending,
+    disabled: !!disabledAlert,
   })
   const { values, params, formState } = form
 
@@ -118,14 +122,12 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     leverageEnabled: values.leverageEnabled,
   })
 
-  const { onSubmit, solvencyModal, solvencyAlert, delegationModal, ...formActions } = marketFormActions({
+  const { onSubmit, solvencyModal, delegationModal, ...formActions } = marketFormActions({
     handleSubmit: form.handleSubmit,
-    lowSolvency: useLowSolvencyAction({ controllerAddress, marketType, chainId }),
+    lowSolvency,
     delegation: useControllerDelegationAction({ chainId, userAddress, marketId, approval: q(isControllerApproved) }),
     onConfirmed: createLoan,
   })
-
-  const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyAlert
 
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
   const isEquityLeverage = useLlamalendEquityLeverage()
@@ -141,7 +143,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     params,
     isPending,
     isLoading: form.isLoading || formActions.isLoading,
-    isDisabled: form.isDisabled || !!disabledAlert,
     userAddress,
     onSubmit,
     maxTokenValues,

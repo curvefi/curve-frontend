@@ -16,7 +16,7 @@ import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLev
 import { useBorrowRates } from '../../../widgets/action-card/hooks/useBorrowRates'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
+import { type CreateLoanFormQueryParams, type CreateLoanFormValues } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   marketType,
@@ -31,11 +31,11 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   marketType: MarketType
   controllerAddress: Address | undefined
   params: CreateLoanFormQueryParams<ChainId>
-  values: CreateLoanForm
+  values: CreateLoanFormValues
   isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  form: ValidatedForm<CreateLoanForm>
+  form: ValidatedForm<CreateLoanFormValues>
 }) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'debt')

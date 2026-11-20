@@ -15,11 +15,14 @@ type CompleteCreateLoanForm = {
   routeId: string | undefined
 }
 
-/** Query context supplied to validation/submission, never stored in editable form state. */
-type CalculatedValues = { maxDebt?: Decimal; maxCollateral?: Decimal }
+/** Editable create loan values, with undefined values for fields still being filled in. */
+export type CreateLoanFormValues = AllowUndefined<CompleteCreateLoanForm, 'debt' | 'userCollateral'>
 
-/** Create loan form as used in the UI, with undefined values for fields still being filled in */
-export type CreateLoanForm = AllowUndefined<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
+/** Computed limits merged for validation/submission, not stored in editable form state. */
+export type CreateLoanCalculatedValues = { maxDebt?: Decimal; maxCollateral?: Decimal }
+
+/** Inputs and computed limits passed to validation/submission. */
+export type CreateLoanForm = CreateLoanFormValues & CreateLoanCalculatedValues
 
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
@@ -28,6 +31,6 @@ export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateL
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 
 /** Create loan form query including max debt field */
-export type CreateLoanDebtQuery<T = IChainId> = CreateLoanFormQuery<T> & Pick<CreateLoanForm, 'maxDebt'>
+export type CreateLoanDebtQuery<T = IChainId> = CreateLoanFormQuery<T> & Pick<CreateLoanCalculatedValues, 'maxDebt'>
 /** Fields of the create loan debt query before validation */
 export type CreateLoanDebtParams<T = IChainId> = FieldsOf<CreateLoanDebtQuery<T>>

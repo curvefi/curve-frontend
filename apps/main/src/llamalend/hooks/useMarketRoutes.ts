@@ -1,11 +1,9 @@
-import { identity } from 'lodash'
 import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { useShallow } from 'zustand/react/shallow'
 import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { usePinRouteById, useRouterQueries, type GetGasCallback } from '@evm-ui/queries/router-api/query'
+import { type GetGasCallback, usePinRouteById, useRouterQueries } from '@evm-ui/queries/router-api/query'
 import type { RouteQueries, RouteResponse } from '@evm-ui/queries/router-api/types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { fromWei } from '@evm-ui/utils'
@@ -17,7 +15,8 @@ import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
 import { q, type QueryProp } from '@ui/features/queries/util'
-import { decimalCompare, decimalMax, toWei, decimalMultiply } from '@ui/lib/decimal'
+import { useShallowData } from '@ui/hooks/useShallowData'
+import { decimalCompare, decimalMax, decimalMultiply, toWei } from '@ui/lib/decimal'
 import { calculatePriceImpact as calculateValuePriceImpact, type PriceImpact } from '@ui/lib/price-impact.util'
 
 export type MarketRoutes = {
@@ -110,7 +109,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     providers,
     routesEnabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
-  const queries = useShallow(identity<RouteQueries>)(routeQueries)
+  const queries = useShallowData(routeQueries)
 
   // Disabled providers can retain cached query data after switching release channels, so exclude them from selection.
   const selectedRoute = useMemo(

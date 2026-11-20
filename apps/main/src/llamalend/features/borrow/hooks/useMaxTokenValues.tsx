@@ -11,7 +11,7 @@ import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalDivToPrecision, decimalMultiply } from '@ui/lib/decimal'
 import { useCreateLoanMaxReceiveQueries } from '../../../queries/create-loan/create-loan-max-receive.query'
-import type { CreateLoanForm } from '../types'
+import type { CreateLoanFormValues } from '../types'
 
 /** Query limits and preserve the debt ratio for range edits. */
 export function useMaxTokenValues({
@@ -21,7 +21,7 @@ export function useMaxTokenValues({
 }: {
   market: MarketTemplate | undefined
   collateralTokenAddress: Address | undefined
-  inputs: FormValues<CreateLoanForm, CreateLoanMaxReceiveParams>
+  inputs: FormValues<CreateLoanFormValues, CreateLoanMaxReceiveParams>
 }) {
   const tokenBalance = useTokenBalance({ ...params, tokenAddress: collateralTokenAddress })
   const maxBorrow = useCreateLoanMaxReceiveQueries(params)

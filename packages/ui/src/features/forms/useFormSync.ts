@@ -1,6 +1,5 @@
-import { identity } from 'lodash'
 import { useEffect } from 'react'
-import { useShallow } from 'zustand/react/shallow'
+import { useShallowData } from '@ui/hooks/useShallowData'
 import type { FieldValues, FormUpdates, UseFormReturn } from './form.types'
 import type { FormValues } from './useFormValues'
 
@@ -25,7 +24,7 @@ export function useFormSync(
   const { update } = form
   const isFormValues = 'resetVersion' in form // whether we use the newer useFormValues hook.
   const resetVersion = isFormValues && form.resetVersion
-  const stableValues = useShallow(identity<FieldValues>)(values)
+  const stableValues = useShallowData(values)
   useEffect(() => {
     if (enabled) update(stableValues, isFormValues ? { mode: 'automatic' } : { automated: true })
   }, [enabled, update, isFormValues, stableValues, resetVersion])

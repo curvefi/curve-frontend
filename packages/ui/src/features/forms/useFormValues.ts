@@ -1,53 +1,56 @@
 import { isEqual } from 'lodash'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { changedKeys, fromEntries } from '@primitives/objects.utils'
 import { useDebounced } from '@ui/hooks/useDebounce'
+import { useShallowData } from '@ui/hooks/useShallowData'
 
 /** Immediate and automatic updates sync only supplied fields; automatic updates do not touch fields. */
 type UpdateMode = 'debounced' | 'immediate' | 'automatic'
 
-type FormState<T> = {
-  /** what’s currently in the inputs**/
-  values: T
-  /** what queries should use**/
-  params: T
-  /** baseline for isDirty, restored by reset() and replaced by reset(updates) */
-  defaults: T
-  touched: Set<keyof T>
-  /** resets validation even when values are unchanged**/
+type FormState<TValues> = {
+  /** Current input values, updated immediately. */
+  values: TValues
+  /** Debounced query values; immediate/automatic updates sync supplied fields only. */
+  params: TValues
+  /** Baseline for isDirty, restored by reset() and replaced by reset(updates). */
+  defaults: TValues
+  /** Fields changed by non-automatic updates; syncing params does not touch fields. */
+  touched: Set<keyof TValues>
+  /** Resets validation even when values are unchanged. */
   resetVersion: number
 }
 
-const initialState = <T>(defaultValues: T, resetVersion = 0) => ({
+const initialState = <TValues>(defaultValues: TValues, resetVersion = 0) => ({
   values: defaultValues,
   params: defaultValues,
   defaults: defaultValues,
-  touched: new Set<keyof T>(),
+  touched: new Set<keyof TValues>(),
   resetVersion,
 })
 
-function updateForm<T>(prev: FormState<T>, updates: Partial<T>, mode: UpdateMode) {
+function updateForm<TValues>(prev: FormState<TValues>, updates: Partial<TValues>, mode: UpdateMode) {
   const values = { ...prev.values, ...updates }
   const params = mode === 'debounced' ? prev.params : { ...prev.params, ...updates }
 
   if (isEqual(values, prev.values) && isEqual(params, prev.params)) return prev
 
-  const touched =
-    mode === 'automatic' ? prev.touched : new Set([...prev.touched, ...changedKeys(updates, prev.values, isEqual)])
+  const justTouched =
+    mode === 'automatic' ? [] : changedKeys(updates, prev.values, isEqual).filter(field => !prev.touched.has(field))
+  const touched = justTouched.length ? new Set([...prev.touched, ...justTouched]) : prev.touched
   return { ...prev, values, params, touched }
 }
 
 /**
  * Editable values with debounced query params.
  */
-export function useFormValues<T extends object, C extends object = object>({
+export function useFormValues<TValues extends object, TContext extends object = object>({
   defaultValues,
   context,
 }: {
-  defaultValues: T
-  context: C
+  defaultValues: TValues
+  context: TContext
 }) {
-  const [state, setState] = useState<FormState<T>>(() => initialState(defaultValues))
+  const [state, setState] = useState<FormState<TValues>>(() => initialState(defaultValues))
 
   const { params, resetVersion, values, touched, defaults } = state
 
@@ -61,25 +64,27 @@ export function useFormValues<T extends object, C extends object = object>({
 
   return {
     values,
-    params: { ...params, ...context },
+    params: useShallowData<TValues & TContext>({ ...params, ...context }),
     resetVersion,
-    touchedFields: fromEntries<keyof T, true>([...touched].map(field => [field, true])),
+    touchedFields: useMemo(() => fromEntries<keyof TValues, true>([...touched].map(field => [field, true])), [touched]),
     isDirty: [...touched].some(field => !isEqual(values[field], defaults[field])),
     isDebouncing: !isEqual(values, params),
-    isTouched: (...fields: (keyof T)[]) => fields.some(field => touched.has(field)),
+    isTouched: useCallback((...fields: (keyof TValues)[]) => fields.some(field => touched.has(field)), [touched]),
     update: useCallback(
-      (updates: Partial<T>, { mode = 'debounced' }: { mode?: UpdateMode } = {}) => {
+      (updates: Partial<TValues>, { mode = 'debounced' }: { mode?: UpdateMode } = {}) => {
         setState(prev => updateForm(prev, updates, mode))
         if (mode === 'debounced') debounce()
       },
       [debounce],
     ),
     reset: useCallback(
-      (updates?: Partial<T>) =>
+      (updates?: Partial<TValues>) =>
         setState(prev => initialState(updates ? { ...prev.values, ...updates } : prev.defaults, prev.resetVersion + 1)),
       [],
     ),
   }
 }
 
-export type FormValues<T extends object, C extends object = object> = ReturnType<typeof useFormValues<T, C>>
+export type FormValues<TValues extends object, TContext extends object = object> = ReturnType<
+  typeof useFormValues<TValues, TContext>
+>
