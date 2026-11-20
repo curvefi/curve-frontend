@@ -14,7 +14,6 @@ const { Spacing } = SizesAndSpaces
 export const CheckboxField = ({
   checked,
   label,
-  description,
   testIdPrefix,
   onChange,
   endContent,
@@ -24,8 +23,6 @@ export const CheckboxField = ({
   /** A query shows a spinner and disables the checkbox while loading, and an error icon when it fails */
   checked: QueryOrValue<boolean | undefined>
   label: ReactNode
-  /** Helper text displayed below the label when the checkbox is checked. */
-  description?: ReactNode
   disabled?: boolean
   testIdPrefix?: string
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
@@ -44,19 +41,11 @@ export const CheckboxField = ({
         {/* the status icons stay outside the label, so clicking them does not toggle the checkbox */}
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
           <FormControlLabel
-            // with default margin, the checkbox overflows. With a description, the checkbox aligns with the label
-            sx={{ margin: 0, ...(description && { alignItems: 'flex-start' }) }}
+            sx={{ margin: 0 }} // with default margin, the checkbox overflows
             label={
-              <Stack sx={{ userSelect: 'none' }}>
-                <Typography variant="bodyMBold">{label}</Typography>
-                {description && (
-                  <Collapse in={!!data}>
-                    <Typography variant="bodyXsRegular" color="textSecondary">
-                      {description}
-                    </Typography>
-                  </Collapse>
-                )}
-              </Stack>
+              <Typography variant="bodyMBold" sx={{ userSelect: 'none' }}>
+                {label}
+              </Typography>
             }
             control={
               <Checkbox

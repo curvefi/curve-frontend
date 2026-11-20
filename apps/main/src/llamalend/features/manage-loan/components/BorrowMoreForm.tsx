@@ -15,7 +15,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { Form } from '@ui/features/forms/components/Form'
-import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q, type QueryProp, type Range, toQuery } from '@ui/features/queries/util'
@@ -24,6 +23,7 @@ import { t } from '@ui/lib/i18n'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import { useMarketContext } from '../../market-context'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
+import { BorrowToWalletCheckbox } from './BorrowToWalletCheckbox'
 
 const { Spacing } = SizesAndSpaces
 
@@ -168,11 +168,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         (isZapLeveragedPosition ? (
           <Stack sx={{ gap: showSettings ? Spacing.sm : 0 }}>
             {settings}
-            <CheckboxField
+            <BorrowToWalletCheckbox
               checked={mapQuery(leverageEnabled, enabled => enabled === false)}
-              label={t`Borrow to wallet`}
-              description={t`Borrowed assets will go to your wallet, this will impact your position parameters.`}
-              testIdPrefix="borrow-to-wallet"
               onChange={onBorrowToWalletToggle}
             />
           </Stack>
