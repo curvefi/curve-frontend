@@ -69,12 +69,9 @@ export const getLegacyHealthValueColor = ({
   ]
 }
 
-/** Shown instead of the leverage of positions that did not borrow through the leverage zap */
-export const NO_LEVERAGE_LABEL = t`None`
-
 /** `None` only when the position history shows a plain borrow, unavailable while it is unknown */
 export const getLeverageFallback = (isZapLeveraged: boolean | undefined) =>
-  isZapLeveraged === false ? NO_LEVERAGE_LABEL : UNAVAILABLE_NOTATION
+  isZapLeveraged === false ? t`None` : UNAVAILABLE_NOTATION
 
 export const getLeverageValueColor = (leverage: Decimal | Nullish) =>
   leverage != null && decimalGreaterThan(ZERO, leverage) ? 'error' : undefined

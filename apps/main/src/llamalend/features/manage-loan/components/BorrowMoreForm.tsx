@@ -77,7 +77,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       updateForm({ leverageEnabled: !event.target.checked, routeId: undefined }),
     [updateForm],
   )
-  // until the position history loads, the form borrows without leverage and the checkbox waits for its default
+
   const leverageEnabled = toQuery(values.leverageEnabled, collateralEvents)
   const maxDebt = mapQuery(max.debt, ({ maxDebt }) => maxDebt)
   const onMax = useCallback(() => {
@@ -86,10 +86,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     updateForm({ debt: getMaxBorrowAmount(debt, values.leverageEnabled) })
   }, [max.debt.data, routes, updateForm, values.leverageEnabled])
 
-  const showSettings = values.leverageEnabled === true
   const settings = (
     <LoanActionSettings
-      show={showSettings}
+      show={values.leverageEnabled === true}
       slippage={values.slippage}
       onSlippageChange={slippage => updateForm({ slippage })}
       routes={routes}
@@ -166,18 +165,18 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       </Stack>
       {isLeverageSupported &&
         (isZapLeveragedPosition ? (
-          <Stack sx={{ gap: showSettings ? Spacing.sm : 0 }}>
+          <>
             {settings}
             <BorrowToWalletCheckbox
               checked={mapQuery(leverageEnabled, enabled => enabled === false)}
               onChange={onBorrowToWalletToggle}
             />
-          </Stack>
+          </>
         ) : (
-          <Stack>
+          <>
             <LeverageInput checked={leverageEnabled} leverage={leverage} onToggle={onLeverageToggle} />
             {settings}
-          </Stack>
+          </>
         ))}
       <HighPriceImpactAlert priceImpact={priceImpact} />
       <EvmFormButton

@@ -114,7 +114,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             value={equityLeverage.current}
             valueOptions={{
               unit: 'multiplier',
-              // the history reports the zap borrows of V0 zap mint markets as plain borrows, so their leverage is unknown
+              // backend doesn't support leverage outside zapV2
               fallback: getLeverageFallback(
                 isZapV0MintMarket(blockchainId, controllerAddress) ? undefined : equityLeverage.isZapLeveraged.data,
               ),

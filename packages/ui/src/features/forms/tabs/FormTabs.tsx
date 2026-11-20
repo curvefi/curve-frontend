@@ -37,7 +37,6 @@ const TabsWithAction = ({ children, action }: { children: ReactNode; action: Rea
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
   overflow?: TabsSwitcherProps<string>['overflow']
-  /** Content displayed at the end of the tab bar, e.g. a badge */
   action?: ReactNode
 }
 
