@@ -14,4 +14,5 @@ const LP_TOKEN_COINS: PartialRecord<Chain, Record<Address, Token[]>> = {
   },
 }
 
-export const findLpCoins = (blockchainId: Chain, address: string) => LP_TOKEN_COINS[blockchainId]?.[getAddress(address)]
+export const findLpCoins = (blockchainId: Chain, address: Address) =>
+  LP_TOKEN_COINS[blockchainId]?.[getAddress(address)]

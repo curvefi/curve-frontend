@@ -39,7 +39,8 @@ const STACK_ICON_SIZE = {
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
 /** The coins' symbols for an LP token, e.g. reUSD/sfrxUSD, otherwise the token's symbol */
-const getTooltip = ({ symbol, lpCoins }: Token) => (lpCoins ? lpCoins.map(coin => coin.symbol).join('/') : symbol)
+const getTooltip = ({ symbol, lpCoins }: Token) =>
+  lpCoins?.length ? lpCoins.map(coin => coin.symbol).join('/') : symbol
 
 export type TokenIconsProps = {
   blockchainId: string
