@@ -26,7 +26,7 @@ export const toPoolActivitySwapRow = ({
   valueUsd: maybe(tokensBoughtUsd, Math.abs) ?? null,
   breakdownCutoff: SWAP_BREAKDOWN_CUTOFF,
   deltas: getSwapDeltas(
-    { token: tokenSold, amount: tokensSold, amountUsd: tokensSoldUsd },
+    { token: tokenSold, amount: tokensSold, amountUsd: maybe(tokensSoldUsd, usd => (usd > 0 ? -usd : usd)) ?? null },
     { token: tokenBought, amount: tokensBought, amountUsd: tokensBoughtUsd },
   ),
 })
