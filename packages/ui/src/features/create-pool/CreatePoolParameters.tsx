@@ -16,14 +16,16 @@ const { Spacing } = SizesAndSpaces
 const CREATE_POOL_GRID_SIZE = { mobile: 12, tablet: 6 } as const
 
 const ParameterField = ({
+  form,
   name,
   label,
   unit,
   helperText,
   disabled,
-}: PoolParameter & { disabled: boolean; helperText: string }) => (
+}: PoolParameter & { form: UseFormReturn<CreatePoolFormValues>; disabled: boolean; helperText: string }) => (
   <Grid size={CREATE_POOL_GRID_SIZE}>
     <CreatePoolField
+      form={form}
       name={name}
       label={label}
       helperText={helperText}
@@ -35,24 +37,25 @@ const ParameterField = ({
 )
 
 export const CreatePoolParameters = ({
+  form,
   disabled,
   poolType,
   preset,
   ranges,
-  values,
-  update,
-  errors,
   tokenSymbol,
 }: {
+  form: UseFormReturn<CreatePoolFormValues>
   disabled: boolean
   poolType: PoolTypeOption | undefined
   preset: PoolPreset | undefined
   ranges: PoolParameterRanges
-  values: Pick<CreatePoolFormValues, 'feeMultiplier' | 'amplification' | 'tokenCount'>
   tokenSymbol: string | undefined
-  update: UseFormReturn<CreatePoolFormValues>['update']
-  errors: UseFormReturn<CreatePoolFormValues>['formState']['errors']
 }) => {
+  const {
+    values,
+    update,
+    formState: { errors },
+  } = form
   if (!poolType) {
     return (
       // empty state until the pool type is chosen
@@ -60,6 +63,7 @@ export const CreatePoolParameters = ({
         {EMPTY_POOL_PARAMETERS.map(parameter => (
           <Grid key={parameter.name} size={CREATE_POOL_GRID_SIZE}>
             <CreatePoolField
+              form={form}
               name={parameter.name}
               label={parameter.label}
               unit={parameter.unit}
@@ -111,6 +115,7 @@ export const CreatePoolParameters = ({
             .map(parameter => (
               <ParameterField
                 key={parameter.name}
+                form={form}
                 {...parameter}
                 helperText={helperText[parameter.name]}
                 disabled={disabled}
@@ -125,6 +130,7 @@ export const CreatePoolParameters = ({
             .map(parameter => (
               <ParameterField
                 key={parameter.name}
+                form={form}
                 {...parameter}
                 helperText={helperText[parameter.name]}
                 disabled={disabled}

@@ -38,6 +38,7 @@ export const AdvancedDepositForm = <TValues extends PoolDepositForm>(props: Depo
         }}
       />
       <BalancedDepositCheckbox
+        form={form}
         reserves={reserves}
         isConnected={wallet.isConnected}
         disabled={

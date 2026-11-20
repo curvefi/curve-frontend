@@ -11,7 +11,7 @@ import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { shortenAddress } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import { maybe, maybes, recordEntries } from '@primitives/objects.utils'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { type TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector } from '@ui/features/select-token/ui/TokenSelector'
@@ -20,17 +20,18 @@ import { decimal, decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
 export const AmountTokenInput = ({
+  form: { update: updateForm, formState, values },
   chainId,
   poolAddress,
   blockchainId,
   disabled,
 }: {
+  form: UseFormReturn<DepositRewardFormValues>
   chainId: ChainId
   poolAddress: Address
   blockchainId: NetworkEnum
   disabled: boolean
 }) => {
-  const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
   const { rewardTokenId, amount } = values
 
   const [isOpen, openModal, closeModal] = useSwitch()
