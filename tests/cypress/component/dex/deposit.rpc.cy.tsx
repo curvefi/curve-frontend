@@ -94,7 +94,9 @@ describe('Pool Deposit (RPC)', () => {
 
     cy.mount(<TestWrapper type="one-coin" />)
     selectCoin(from)
-    poolDepositInput(pool.coins[from].address).type(oneDecimal(...SINGLE_COIN_AMOUNT_RANGE)).blur()
+    poolDepositInput(pool.coins[from].address)
+      .type(oneDecimal(...SINGLE_COIN_AMOUNT_RANGE))
+      .blur()
     selectCoin(to)
     poolDepositInput(coin.address).type(amount).blur()
     checkPoolDepositDetailsLoaded()
