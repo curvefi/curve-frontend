@@ -67,7 +67,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         onValueChange={value => updateForm({ isFull: value === max.data })}
       />
 
-      {gauge.isKilled && <AlertGaugeKilled />}
+      {gauge?.isKilled && <AlertGaugeKilled />}
 
       <EvmFormButton
         pending={isPending}
@@ -76,11 +76,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         label={[isApproved.data === false && t`Approve`, t`Stake`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
       >
-        {gauge.hasGauge ? (
-          disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
-        ) : (
-          <AlertNoGauge />
-        )}
+        {gauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}
       </EvmFormButton>
 
       <LowSolvencyActionModal {...solvencyModal} action="stake" tokenSymbol={borrowToken?.symbol} />

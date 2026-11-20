@@ -103,10 +103,11 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     userAddress,
     borrowToken,
     collateralToken,
-    error: formActions.error ?? stakeError ?? gaugeStatus.error,
+    error: formActions.error ?? stakeError,
     max: maxStakeAssets,
     isApproved: q(useStakeIsApproved(params)),
-    gauge: { hasGauge: marketHasGauge, isKilled: gaugeStatus.data === 'inactive' },
+    /** Missing when the market has no gauge to stake in. The killed warning is skipped when the status fails to load. */
+    gauge: marketHasGauge ? { isKilled: gaugeStatus.data === 'inactive' } : undefined,
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal,
