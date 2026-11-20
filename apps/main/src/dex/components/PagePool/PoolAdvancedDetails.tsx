@@ -87,10 +87,10 @@ export const PoolAdvancedDetails = () => {
       contracts={{
         poolAddress: maybe(poolAddress, poolAddress => getAddress(poolAddress)),
         lpTokenAddress: maybe(lpToken, lpToken => getAddress(lpToken)),
-        gauge:
-          gauge && !isAddressEqual(gauge.address as Address, zeroAddress)
-            ? { address: getAddress(gauge.address), status: gaugeStatus }
-            : undefined,
+        ...(gauge &&
+          !isAddressEqual(gauge.address as Address, zeroAddress) && {
+            gauge: { address: getAddress(gauge.address), status: gaugeStatus },
+          }),
         oracles: assetTypes?.flatMap((assetType, index) => {
           const oracle = oracles?.[index]
           if (assetType !== 1 || !oracle?.oracleAddress || isAddressEqual(oracle.oracleAddress, zeroAddress)) return []

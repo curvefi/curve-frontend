@@ -4,8 +4,8 @@ import {
 } from '@/llamalend/queries/validation/borrow-claim.validation'
 import { marketVaultValidationSuite, requireVault } from '@/llamalend/queries/validation/supply.validation'
 import type { MarketParams, MarketQuery } from '@evm-ui/queries/query-types'
+import { fetchGaugeStatus } from '@evm-ui/utils/gauge-status'
 import { queryFactory } from '@ui/features/queries/factory'
-import { fetchGaugeStatus } from '@ui/lib/gauge-status'
 
 /** Whether the supply gauge receives CRV. On sidechains this is the status of the Ethereum root gauge. */
 export const { useQuery: useMarketSupplyGaugeStatus } = queryFactory({
