@@ -69,8 +69,8 @@ export const getLegacyHealthValueColor = ({
   ]
 }
 
-/** `None` only when the position history shows a plain borrow, unavailable while it is unknown */
-export const getLeverageFallback = (isZapLeveraged: boolean | undefined) =>
+/** `None` when the position history shows a plain borrow, unavailable when it can't tell or the leverage can't be computed */
+export const getLeverageFallback = (isZapLeveraged: boolean | Nullish) =>
   isZapLeveraged === false ? t`None` : UNAVAILABLE_NOTATION
 
 export const getLeverageValueColor = (leverage: Decimal | Nullish) =>

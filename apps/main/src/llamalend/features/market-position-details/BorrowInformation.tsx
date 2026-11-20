@@ -10,7 +10,7 @@ import {
 import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
-import { isZapV0MintMarket, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import { usePositionHealth } from '@/llamalend/queries/user/user-health.query'
@@ -53,7 +53,7 @@ const { Grid } = SizesAndSpaces
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
-  const { chainId, blockchainId, controllerAddress } = useMarketContext()
+  const { chainId, controllerAddress } = useMarketContext()
   const [isDetailsOpen] = usePositionDetailsOpen()
   const thresholds = getPositionHealthThresholds(chainId, controllerAddress)
   const position = usePositionHealth(params, thresholds)
@@ -114,10 +114,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             value={equityLeverage.current}
             valueOptions={{
               unit: 'multiplier',
-              // backend doesn't support leverage outside zapV2
-              fallback: getLeverageFallback(
-                isZapV0MintMarket(blockchainId, controllerAddress) ? undefined : equityLeverage.isZapLeveraged.data,
-              ),
+              fallback: getLeverageFallback(equityLeverage.isZapLeveraged.data),
               color: getLeverageValueColor(equityLeverage.current.data),
             }}
             valueTooltip={{

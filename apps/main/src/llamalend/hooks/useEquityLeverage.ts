@@ -23,8 +23,8 @@ import { constQ, DISABLED_Q, mapQuery, q, type QueryProp } from '@ui/features/qu
 
 /** Leverage of the open position (current) and of the position after the action (future) */
 export type EquityLeverage = {
-  /** Whether the open position or the action borrows through the zap */
-  isZapLeveraged: QueryProp<boolean>
+  /** Whether the open position or the action borrows through the zap, null when the history can't tell */
+  isZapLeveraged: QueryProp<boolean | null>
   /** Null when neither the open position nor the action borrows through the zap */
   current: QueryProp<Decimal | null>
   /** Null when neither the open position nor the action borrows through the zap */

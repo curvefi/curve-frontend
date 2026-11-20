@@ -54,7 +54,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
       providers =>
         providers.length > 0 &&
         maybe(collateralEvents.data, events =>
-          isEquityLeverage ? events.isZapLeveraged : isPositionLeveraged(events.originalLeverage),
+          isEquityLeverage ? !!events.isZapLeveraged : isPositionLeveraged(events.originalLeverage),
         ),
     ),
   })
