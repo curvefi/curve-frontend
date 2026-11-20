@@ -87,7 +87,7 @@ const SummaryCard = ({
               key={poolAmountField(index)}
               label={
                 <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
-                  {token && <TokenIcon blockchainId={blockchainId} address={token.address} size="xs" />}
+                  {token && <TokenIcon blockchainId={blockchainId} token={token} size="xs" />}
                   {token?.symbol ?? `${t`Token`} ${index + 1}`}
                 </Stack>
               }

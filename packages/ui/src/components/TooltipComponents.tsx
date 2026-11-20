@@ -116,7 +116,7 @@ export const TooltipItem = ({
       {titleIcon && (
         <TokenIcon
           blockchainId={titleIcon.blockchainId}
-          address={titleIcon.address}
+          token={titleIcon}
           size={titleIcon.size}
           sx={{ ...(variant !== 'independent' && { marginLeft: Spacing.md }) }}
         />

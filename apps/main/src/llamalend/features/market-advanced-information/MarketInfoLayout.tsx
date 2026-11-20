@@ -42,6 +42,7 @@ const MarketInfoSections = ({
         blockchainId={blockchainId}
         market={marketQuery}
         apiMarket={apiMarket}
+        tokens={tokens}
       />
       <MarketParametersSection
         key="parameters"

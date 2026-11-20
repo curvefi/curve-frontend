@@ -1,5 +1,6 @@
 import { type ReactNode, useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { useMarketTokens } from '@/llamalend/hooks/useMarketTokens'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import type { MarketType } from '@evm-ui/types/market'
@@ -26,6 +27,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const { llamaApi: api = null } = useCurve()
   const [releaseChannel] = useReleaseChannel()
+  const tokens = useMarketTokens({ blockchainId: network.blockchainId, market, apiMarket: apiMarketData })
   return (
     <MarketContext
       value={useMemo(
@@ -39,6 +41,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
             userAddress,
             api,
             releaseChannel,
+            tokens,
           }),
         [
           api,
@@ -52,6 +55,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
           network.chainId,
           network.blockchainId,
           releaseChannel,
+          tokens,
           userAddress,
         ],
       )}

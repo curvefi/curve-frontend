@@ -18,7 +18,7 @@ export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate
   <CardHeader
     title={
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
-        <TokenIcon blockchainId="ethereum" address={underlyingCoinAddresses[0]} />
+        <TokenIcon blockchainId="ethereum" token={{ address: underlyingCoinAddresses[0] }} />
         {underlyingCoins[0]}
       </Stack>
     }

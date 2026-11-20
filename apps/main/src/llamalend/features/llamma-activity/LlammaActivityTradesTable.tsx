@@ -3,20 +3,8 @@ import { MarketTradesExpandedPanel } from '@evm-ui/features/activity-table/panel
 import { useLlammaActivityTradesConfig } from './hooks/useLlammaActivityTradesConfig'
 import type { LlammaActivityProps } from './types'
 
-export type LlammaActivityTradesProps = Omit<LlammaActivityProps, 'borrowToken' | 'collateralToken'>
-
-export const LlammaActivityTradesTable = ({
-  chainId,
-  blockchainId,
-  ammAddress,
-  endpoint,
-}: LlammaActivityTradesProps) => {
-  const { table, emptyState, errorState } = useLlammaActivityTradesConfig({
-    chainId,
-    blockchainId,
-    ammAddress,
-    endpoint,
-  })
+export const LlammaActivityTradesTable = (props: LlammaActivityProps) => {
+  const { table, emptyState, errorState } = useLlammaActivityTradesConfig(props)
 
   return (
     <ActivityTable

@@ -22,7 +22,8 @@ import { type Chain } from '@curvefi/prices-api'
 import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lending-vaults.query'
 import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
-import type { Address } from '@primitives/address.utils'
+import { findLpCoins } from '@evm-ui/utils/lp-token-coins'
+import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
@@ -53,6 +54,7 @@ export type AssetDetails = {
   balanceUsd: number | null
   rebasingYield: number | null
   rebasingYieldApr: number | null
+  lpCoins?: Token[]
 }
 
 export type LlamaMarket = {
@@ -203,9 +205,22 @@ const convertLendingVault = (
     supplyGaugeAddress,
     borrowGaugeAddress,
     version: toMarketVersion(version),
+    // TODO: read the LP coins from the market list once the prices API returns them
     assets: {
-      borrowed: { ...borrowedToken, blockchainId, balance: totalDebt, balanceUsd: totalDebtUsd },
-      collateral: { ...collateralToken, blockchainId, balance: totalAssets, balanceUsd: totalAssetsUsd },
+      borrowed: {
+        ...borrowedToken,
+        blockchainId,
+        balance: totalDebt,
+        balanceUsd: totalDebtUsd,
+        lpCoins: findLpCoins(blockchainId, borrowedToken.address),
+      },
+      collateral: {
+        ...collateralToken,
+        blockchainId,
+        balance: totalAssets,
+        balanceUsd: totalAssetsUsd,
+        lpCoins: findLpCoins(blockchainId, collateralToken.address),
+      },
     },
     collateralYields,
     maxLtv,
@@ -339,6 +354,7 @@ const convertMintMarket = (
     version: [collateralSymbol, stablecoinToken.symbol].some(symbol => symbol.toLowerCase().includes('llv2'))
       ? MarketVersion.v2
       : MarketVersion.v1,
+    // TODO: read the LP coins from the market list once the prices API returns them
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,
@@ -349,6 +365,7 @@ const convertMintMarket = (
         balanceUsd: borrowedUsd,
         rebasingYield: stablecoinToken.rebasingYield,
         rebasingYieldApr: stablecoinToken.rebasingYieldApr,
+        lpCoins: findLpCoins(chain, stablecoinToken.address),
       },
       collateral: {
         symbol: collateralSymbol,
@@ -359,6 +376,7 @@ const convertMintMarket = (
         balanceUsd: collateralAmountUsd,
         rebasingYield: collateralToken.rebasingYield,
         rebasingYieldApr: collateralToken.rebasingYieldApr,
+        lpCoins: findLpCoins(chain, collateralAddress),
       },
     },
     collateralYields,

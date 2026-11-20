@@ -165,11 +165,7 @@ export const SelectTokenButton = ({
       <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant="filled" fillWidth>
         {selectedToken ? (
           <>
-            <ButtonTokenIcon
-              blockchainId={blockchainId}
-              tooltip={selectedToken.symbol}
-              address={selectedToken.address}
-            />
+            <ButtonTokenIcon blockchainId={blockchainId} tooltip={selectedToken.symbol} token={selectedToken} />
             <LabelTextWrapper>
               <SelectedLabelText>
                 {selectedToken.symbol}{' '}

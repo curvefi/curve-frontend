@@ -1,5 +1,4 @@
 import { noop, type Dictionary } from 'lodash'
-import { getAddressOrPair } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { TokenLabel } from '@ui/components/TokenLabel'
@@ -23,16 +22,8 @@ const { Spacing } = SizesAndSpaces
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
 const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
-  const { blockchainId: chain, address = null } = tokens[symbol] ?? {}
-  return (
-    <TokenLabel
-      blockchainId={chain}
-      tooltip={symbol}
-      address={getAddressOrPair(chain, address)}
-      label={symbol}
-      size="xl"
-    />
-  )
+  const token = tokens[symbol]
+  return <TokenLabel blockchainId={token?.blockchainId} tooltip={symbol} token={token} label={symbol} size="xl" />
 }
 
 /**

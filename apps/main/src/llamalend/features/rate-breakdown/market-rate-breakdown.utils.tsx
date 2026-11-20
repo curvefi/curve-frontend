@@ -1,7 +1,7 @@
 import { getAddress } from 'viem'
 import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { getAddressOrPair, hasEstimatedNetBorrowApr, type MarketToken } from '@/llamalend/llama.utils'
+import { hasEstimatedNetBorrowApr, type MarketToken } from '@/llamalend/llama.utils'
 import type { BorrowRate, SupplyRate } from '@/llamalend/widgets/page-header/hooks/usePageHeader'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import type { TokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
@@ -21,7 +21,12 @@ export type BreakdownBadge = 'yieldBearing' | 'lpToken'
 type BreakdownSource = { tokenInfo: TokenInfoProps; address?: Address; explorerUrl?: string; badge?: BreakdownBadge }
 
 const CRV_SOURCE: BreakdownSource = {
-  tokenInfo: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
+  tokenInfo: {
+    token: { address: MAINNET_CRV_ADDRESS },
+    blockchainId: 'ethereum',
+    iconPosition: 'left',
+    primary: 'CRV',
+  },
   address: MAINNET_CRV_ADDRESS,
   explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
 }
@@ -65,7 +70,7 @@ export const buildBorrowRateBreakdown = ({
       (collateralYieldApr, collateralToken): RateBreakdownRow => ({
         source: {
           tokenInfo: {
-            address: getAddressOrPair(blockchainId, collateralToken.address),
+            token: collateralToken,
             blockchainId,
             iconPosition: 'left' as const,
             primary: collateralToken.symbol,
@@ -145,12 +150,7 @@ export const buildSupplyRateBreakdown = ({
   const rebasingRow = notFalsy(
     maybes([rate.rebasingYield, borrowToken], (rebasingYield, borrowToken): RateBreakdownRow => ({
       source: {
-        tokenInfo: {
-          address: getAddressOrPair(blockchainId, getAddress(borrowToken.address)),
-          blockchainId,
-          iconPosition: 'left' as const,
-          primary: borrowToken.symbol,
-        },
+        tokenInfo: { token: borrowToken, blockchainId, iconPosition: 'left' as const, primary: borrowToken.symbol },
         address: getAddress(borrowToken.address),
         explorerUrl: scanTokenPath(chainId, borrowToken.address),
         badge: 'yieldBearing',
@@ -165,7 +165,12 @@ export const buildSupplyRateBreakdown = ({
       ...crvRow,
       ...directIncentives.map(({ address, blockchainId, percentage, title }) => ({
         source: {
-          tokenInfo: { address: getAddress(address), blockchainId, iconPosition: 'left' as const, primary: title },
+          tokenInfo: {
+            token: { address: getAddress(address) },
+            blockchainId,
+            iconPosition: 'left' as const,
+            primary: title,
+          },
           address: getAddress(address),
           explorerUrl: scanTokenPath(chainId, address),
         },

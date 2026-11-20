@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenIcons, type TokenOrPair } from '@ui/components/TokenIcons'
+import { TokenIcons } from '@ui/components/TokenIcons'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -26,10 +26,14 @@ const TOKENS = [
   { symbol: 'MKR', address: '0x9f8F72aA9304c8B593d555F12ef6589cC3A579A2' },
 ] satisfies Token[]
 
-const TOKEN_PAIR = [
-  { symbol: 'reUSD', address: '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' },
-  { symbol: 'sfrxUSD', address: '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6' },
-] satisfies TokenOrPair
+const LP_TOKEN = {
+  symbol: 'reusdsfrx',
+  address: '0xed785Af60bEd688baa8990cD5c4166221599A441',
+  lpCoins: [
+    { symbol: 'reUSD', address: '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' },
+    { symbol: 'sfrxUSD', address: '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6' },
+  ],
+} satisfies Token
 
 const TOKEN_COUNT_CASES = [0, 1, 2, 3, 4, 5, 9, 13] as const
 
@@ -137,12 +141,12 @@ export const WithStackOverflow: Story = {
   },
 }
 
-export const WithTokenPair: Story = {
-  args: { tokens: [TOKEN_PAIR, { symbol: 'crvUSD', address: CRVUSD_ADDRESS }] },
+export const WithLpToken: Story = {
+  args: { tokens: [LP_TOKEN, { symbol: 'crvUSD', address: CRVUSD_ADDRESS }] },
   parameters: {
     docs: {
       description: {
-        story: 'A token pair takes one slot as a split icon, e.g. a market with an LP token as collateral.',
+        story: 'An LP token takes one slot, split between its coins, e.g. a market with an LP token as collateral.',
       },
     },
   },

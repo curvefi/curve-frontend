@@ -1,10 +1,9 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
+import type { Token } from '@primitives/address.utils'
 import { IconStack } from '@ui/components/IconStack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
-import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
@@ -39,22 +38,13 @@ const STACK_ICON_SIZE = {
   '4xl': '3xl',
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
-type IconToken = { symbol?: string | null; address: Address }
-
-/** A token, or the pair of tokens it is made of (e.g. the coins of an LP token) */
-export type TokenOrPair = IconToken | [IconToken, IconToken]
-
-/** Merges a token pair into the addresses, symbol and key of a single icon */
-const toIconToken = (token: TokenOrPair) => {
-  if (!Array.isArray(token)) return { ...token, symbol: token?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL, key: token.address }
-  const [first, second] = token
-  const address = [first.address, second.address]
-  return { address, symbol: getTokenPairUnit([first.symbol, second.symbol]), key: address.join('-') }
-}
+/** The coins' symbols for an LP token, e.g. reUSD/sfrxUSD, otherwise the token's symbol */
+const getTooltip = ({ symbol, lpCoins }: Token) =>
+  lpCoins?.length ? lpCoins.map(coin => coin.symbol).join('/') : symbol
 
 export type TokenIconsProps = {
   blockchainId: string
-  tokens: TokenOrPair[] | undefined
+  tokens: Token[] | undefined
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean
@@ -75,7 +65,7 @@ export type TokenIconsProps = {
  * | 5 or more | A 2x2 grid containing three tokens and a box showing how many additional tokens are hidden. |
  *
  * When `overflowMode` is `stack`, collections of five or more tokens are rendered as an `IconStack` instead.
- * A token pair takes one slot and is rendered as a single split icon.
+ * An LP token takes one slot, and its icon is made of its coins.
  */
 export function TokenIcons({
   blockchainId,
@@ -90,16 +80,14 @@ export function TokenIcons({
     return null
   }
 
-  const iconTokens = tokens.map(toIconToken)
-
   // With only one token we fall back to a normal TokenIcon, but can't directly set the size property, that's for a later refactor.
   if (tokens.length === 1) {
-    const [{ address, symbol }] = iconTokens
+    const [token] = tokens
     return (
       <TokenIcon
         blockchainId={blockchainId}
-        address={address}
-        {...(showTooltips && symbol && { tooltip: symbol })}
+        token={token}
+        {...(showTooltips && { tooltip: getTooltip(token) })}
         showChainIcon={showChainIcon}
         sx={{ width: IconSize[size], height: IconSize[size] }}
       />
@@ -112,12 +100,12 @@ export function TokenIcons({
   if (hasOverflow && overflowMode === 'stack') {
     return (
       <IconStack iconSize={STACK_ICON_SIZE[size]}>
-        {iconTokens.map(({ address, symbol, key }, index) => (
+        {tokens.map((token, index) => (
           <TokenIcon
-            key={key}
+            key={token.address}
             blockchainId={blockchainId}
-            address={address}
-            {...(showTooltips && symbol && { tooltip: symbol })}
+            token={token}
+            {...(showTooltips && { tooltip: getTooltip(token) })}
             showChainIcon={showChainIcon && index === 0}
             sx={{
               width: IconSize[STACK_ICON_SIZE[size]],
@@ -131,15 +119,15 @@ export function TokenIcons({
   }
 
   // We now fall back to the counter layout, which is used for 2-4 tokens and 5+ tokens when overflowMode is 'counter'.
-  const displayedTokens = hasOverflow ? iconTokens.slice(0, 3) : iconTokens
+  const displayedTokens = hasOverflow ? tokens.slice(0, 3) : tokens
   const positions = TOKEN_LAYOUTS[tokens.length > 4 ? 'overflow' : (tokens.length as 2 | 3 | 4)]
 
   return (
     <Box data-testid="token-icons" sx={{ position: 'relative', width: IconSize[size], height: IconSize[size] }}>
-      {displayedTokens.map(({ address, symbol, key }, index) => (
+      {displayedTokens.map((token, index) => (
         // Wrapper box is needed because positioning TokenIcon directly breaks when the optional chain icon adds an extra wrapper.
         <Box
-          key={key}
+          key={token.address}
           sx={{
             position: 'absolute',
             width: TOKEN_SIZE,
@@ -151,8 +139,8 @@ export function TokenIcons({
         >
           <TokenIcon
             blockchainId={blockchainId}
-            address={address}
-            {...(showTooltips && symbol && { tooltip: symbol })}
+            token={token}
+            {...(showTooltips && { tooltip: getTooltip(token) })}
             showChainIcon={showChainIcon && index === 0}
             sx={{ width: '100%', height: '100%' }}
           />

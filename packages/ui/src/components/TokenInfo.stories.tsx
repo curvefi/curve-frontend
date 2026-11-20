@@ -6,9 +6,9 @@ const meta: Meta<typeof TokenInfo> = {
   title: 'UI/Components/TokenInfo',
   component: TokenInfo,
   argTypes: {
-    address: { control: 'text', description: 'Token contract address' },
+    token: { control: 'object', description: 'Token whose icon is shown, with the coins of an LP token' },
     blockchainId: { control: 'text', description: 'Network the token is on' },
-    icon: { control: false, description: 'Custom icon node. Mutually exclusive with address and blockchainId.' },
+    icon: { control: false, description: 'Custom icon node. Mutually exclusive with token and blockchainId.' },
     iconPosition: {
       control: 'select',
       options: ['left', 'right'],
@@ -24,7 +24,7 @@ const meta: Meta<typeof TokenInfo> = {
 type Story = StoryObj<typeof TokenInfo>
 
 export const AssetCellUsage: Story = {
-  args: { blockchainId: 'ethereum', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+  args: { blockchainId: 'ethereum', token: { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' } },
   parameters: {
     docs: {
       description: {
@@ -38,7 +38,7 @@ export const AssetCellUsage: Story = {
 export const PoolSwapUsage: Story = {
   args: {
     blockchainId: 'ethereum',
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    token: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
     iconPosition: 'right',
     primary: '10.420M',
     secondary: '$37.24M',
@@ -56,7 +56,7 @@ export const PoolSwapUsage: Story = {
 export const CrvClaimRewardsUsage: Story = {
   args: {
     blockchainId: 'ethereum',
-    address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
+    token: { address: '0xd533a949740bb3306d119cc777fa900ba034cd52' },
     iconPosition: 'left',
     primary: '1,234.56',
     secondary: 'CRV',
@@ -75,7 +75,7 @@ export const CrvClaimRewardsUsage: Story = {
 export const NoSecondary: Story = {
   args: {
     blockchainId: 'ethereum',
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    token: { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
     primary: 'USDC',
     secondary: undefined,
   },

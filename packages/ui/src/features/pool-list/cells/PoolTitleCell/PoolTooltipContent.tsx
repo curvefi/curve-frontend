@@ -38,7 +38,7 @@ export const PoolTooltipContent = ({ pool, addressDisplay }: { pool: PoolRow; ad
               title={
                 <TokenLabel
                   blockchainId={pool.blockchainId}
-                  address={address}
+                  token={{ address }}
                   label={symbol}
                   size="mui-sm"
                   typographyVariant="bodyXsRegular"

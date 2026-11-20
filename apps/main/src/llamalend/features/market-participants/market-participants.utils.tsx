@@ -1,4 +1,4 @@
-import { getAddressOrPair, type MarketToken } from '@/llamalend/llama.utils'
+import type { MarketToken } from '@/llamalend/llama.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { MarketBorrower, VaultDepositor } from '@curvefi/prices-api/llamalend'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
@@ -27,15 +27,15 @@ export type SupplierRow = VaultDepositor &
 export const TokenHeader = ({
   label,
   blockchainId,
-  tokenAddress,
+  token,
 }: {
   label: string
   blockchainId: Chain
-  tokenAddress: string | undefined
+  token: MarketToken | undefined
 }) => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     {label}
-    <TokenIcon blockchainId={blockchainId} address={getAddressOrPair(blockchainId, tokenAddress)} size="mui-md" />
+    <TokenIcon blockchainId={blockchainId} token={token} size="mui-md" />
   </Stack>
 )
 
@@ -61,19 +61,13 @@ export const BorrowerExpandedPanel: ExpandedPanelComponent<BorrowerRow> = ({ row
         )}
         value={borrower.collateral}
         notional={constQ({ value: borrower.collateralUsd, unit: 'dollar' })}
-        icon={{
-          blockchainId: borrower.blockchainId,
-          token: { address: getAddressOrPair(borrower.blockchainId, borrower.collateralToken?.address) },
-        }}
+        icon={{ blockchainId: borrower.blockchainId, token: borrower.collateralToken }}
       />
       <MetricExpandedPanel
         label={notFalsy(t`Loan`, borrower.borrowToken?.symbol && `(${borrower.borrowToken.symbol})`).join(' ')}
         value={borrower.debt}
         notional={constQ({ value: borrower.debtUsd, unit: 'dollar' })}
-        icon={{
-          blockchainId: borrower.blockchainId,
-          token: { address: getAddressOrPair(borrower.blockchainId, borrower.borrowToken?.address) },
-        }}
+        icon={{ blockchainId: borrower.blockchainId, token: borrower.borrowToken }}
       />
       <MetricExpandedPanel label={healthLabel} value={borrower.health} valueOptions={{ unit: 'percentage' }} />
     </MetricsGrid>
@@ -86,10 +80,7 @@ export const SupplierExpandedPanel: ExpandedPanelComponent<SupplierRow> = ({ row
       label={notFalsy(t`Supplied`, supplier.borrowToken?.symbol && `(${supplier.borrowToken.symbol})`).join(' ')}
       value={supplier.assets}
       notional={maybe(supplier.assetsUsd, value => constQ({ value, unit: 'dollar' as const }))}
-      icon={{
-        blockchainId: supplier.blockchainId,
-        token: { address: getAddressOrPair(supplier.blockchainId, supplier.borrowToken?.address) },
-      }}
+      icon={{ blockchainId: supplier.blockchainId, token: supplier.borrowToken }}
     />
   </MetricsGrid>
 )

@@ -168,7 +168,13 @@ export const CustomRendering: Story = {
       options={options.map(x => x)}
       placeholder="Select tokens"
       renderItem={(symbol: (typeof options)[number]) => (
-        <TokenLabel blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} label={symbol} size="mui-sm" />
+        <TokenLabel
+          blockchainId="ethereum"
+          token={{ address: addresses[symbol] }}
+          tooltip={symbol}
+          label={symbol}
+          size="mui-sm"
+        />
       )}
     />
   ),

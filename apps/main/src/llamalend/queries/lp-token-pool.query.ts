@@ -6,6 +6,7 @@ import { fromEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { mapQuery } from '@ui/features/queries/util'
 
+// TODO: replace with the prices API token endpoint, which returns the pool of an LP token, instead of fetching every pool
 export const { useQuery: useLpTokenPools, fetchQuery: fetchLpTokenPools } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) => ({ name: 'lp-token-pools', blockchainId }) as const,
   queryFn: async ({ blockchainId }: ChainNameQuery) => {

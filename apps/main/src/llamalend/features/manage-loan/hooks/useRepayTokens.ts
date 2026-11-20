@@ -32,18 +32,12 @@ const getRepayTokenOptions = ({
   hasLeverageProvider: boolean
 }) =>
   notFalsy<RepayTokenOption>(
-    borrowToken && {
-      address: borrowToken.address,
-      chain: blockchainId,
-      symbol: borrowToken.symbol,
-      field: 'userBorrowed',
-    },
+    borrowToken && { ...borrowToken, chain: blockchainId, field: 'userBorrowed' },
     collateralToken &&
       canRepayFromStateCollateral(market) &&
       (!hasZapV2(market) || hasLeverageProvider) && {
-        address: collateralToken.address,
+        ...collateralToken,
         chain: blockchainId,
-        symbol: collateralToken.symbol,
         field: 'stateCollateral',
       },
   )

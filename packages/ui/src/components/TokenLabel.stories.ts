@@ -7,7 +7,7 @@ const meta: Meta<typeof TokenLabel> = {
   argTypes: {
     blockchainId: { control: 'text', description: 'Network the token is on' },
     tooltip: { control: 'text', description: 'Icon tooltip, mostly used for token symbol' },
-    address: { control: 'text', description: 'Token contract address' },
+    token: { control: 'object', description: 'Token whose icon is shown, with the coins of an LP token' },
     label: { control: 'text', description: 'Optional label to the right of the icon, usually the token symbol' },
     disabled: { control: 'boolean', description: 'Whether the icon and label belong to a disabled element or not' },
     size: { control: 'select', options: ['sm', 'mui-sm', 'mui-md', 'lg', 'xl'], description: 'Size of the icon' },
@@ -15,7 +15,7 @@ const meta: Meta<typeof TokenLabel> = {
   args: {
     blockchainId: 'ethereum',
     tooltip: 'ETH',
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    token: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
     label: 'ETH',
     disabled: false,
     size: 'sm',
@@ -35,6 +35,8 @@ export const Default: Story = {
   },
 }
 
-export const Disabled: Story = { args: { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', disabled: true } }
+export const Disabled: Story = {
+  args: { token: { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }, disabled: true },
+}
 
 export default meta

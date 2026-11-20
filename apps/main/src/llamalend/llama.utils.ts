@@ -10,7 +10,6 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
-import type { ActivityToken } from '@evm-ui/features/activity-table/types'
 import { getLib, requireLib } from '@evm-ui/features/connect-wallet'
 import type { Wallet } from '@evm-ui/features/connect-wallet/lib/types'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
@@ -29,7 +28,6 @@ import {
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
-import type { TokenOrPair } from '@ui/components/TokenIcons'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, QueryProp, toQuery } from '@ui/features/queries/util'
@@ -41,7 +39,6 @@ import { formatToken } from '@ui/lib/tokens'
 import { getMarketAssetsType } from './market-assets-type.utils'
 import {
   DELEGATION_ZAP_ALIASES,
-  LP_TOKEN_PAIRS,
   MARKETS_LEVERAGE_CONFIG,
   SOLVENCY_THRESHOLDS,
   // eslint-disable-next-line no-restricted-imports -- the only reader of ZAP_V0_MINT_MARKETS, through isZapV0MintMarket
@@ -199,7 +196,7 @@ export const formatTokenAmounts = (
     userCollateral && +userCollateral && formatToken(userCollateral, getCollateralSymbol(market), 'amount'),
   ).join(', ')
 
-export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
+export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals' | 'lpCoins'>
 
 export type MarketTokens = { collateralToken: MarketToken; borrowToken: MarketToken }
 
@@ -262,31 +259,13 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
 
+export const withLpCoins = <T extends Token>(token: T, lpCoins: Token[] | Nullish): T =>
+  lpCoins ? { ...token, lpCoins } : token
+
 export const getTokensQuery = (market: QueryProp<MarketTemplate>, apiMarket: QueryProp<LlamaMarket>) => ({
   ...fallbackQ(market, apiMarket),
   data: getTokens(market.data, apiMarket.data),
 })
-
-/** Returns the token pair of a known LP token */
-const findLpTokenPair = (blockchainId: Chain, address: string) => LP_TOKEN_PAIRS[blockchainId]?.[getAddress(address)]
-
-/** Returns the token pair of a known LP token, or the token itself */
-export const getTokenOrPair = (blockchainId: Chain, token: Token): TokenOrPair =>
-  findLpTokenPair(blockchainId, token.address) ?? token
-
-/** Returns the addresses of the token pair of a known LP token, or the address itself */
-export const getAddressOrPair = <T extends string | Nullish>(
-  blockchainId: Chain | Nullish,
-  address: T,
-): T | Address[] =>
-  maybe(maybes([blockchainId, address], findLpTokenPair), ([first, second]): Address[] => [
-    first.address,
-    second.address,
-  ]) ?? address
-
-/** Returns the token of an activity row, with the addresses of its token pair when it is a known LP token */
-export const getActivityToken = (blockchainId: Chain, token: Token | Nullish): ActivityToken | undefined =>
-  maybe(token, ({ symbol, address }) => ({ symbol, address: getAddressOrPair(blockchainId, address) }))
 
 export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,

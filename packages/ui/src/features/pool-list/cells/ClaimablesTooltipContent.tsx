@@ -41,7 +41,7 @@ export const ClaimablesTooltipContent = ({
             .map(reward => (
               <Fragment key={reward.token}>
                 <Stack direction="row" sx={{ gap: Spacing.xs }}>
-                  <TokenIcon blockchainId={blockchainId} address={reward.token} size="mui-sm" />
+                  <TokenIcon blockchainId={blockchainId} token={{ address: reward.token }} size="mui-sm" />
                   <Typography variant="bodySRegular" color="textSecondary">
                     {reward.symbol}
                   </Typography>

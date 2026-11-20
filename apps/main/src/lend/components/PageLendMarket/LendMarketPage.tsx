@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
@@ -12,7 +12,8 @@ import { useIsInLiquidation } from '@/llamalend/features/market-position-details
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details/PositionDetailsComposite'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
+import { useMarketTokens } from '@/llamalend/hooks/useMarketTokens'
+import { getControllerAddress, hasResetPosition } from '@/llamalend/llama.utils'
 import { useMarketCollateralRewardsEnabled } from '@/llamalend/queries/market/market-collateral-rewards-enabled.query'
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
@@ -67,7 +68,7 @@ export const LendMarketPage = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
-  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
+  const tokens = useMarketTokens({ blockchainId: network.blockchainId, market, apiMarket: apiMarket.data }) ?? {}
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const collateralEvents = useUserCollateralEvents({
     chainId,

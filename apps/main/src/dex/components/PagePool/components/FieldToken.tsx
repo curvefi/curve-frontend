@@ -65,7 +65,7 @@ export const FieldToken = ({
           blockchainId={blockchainId}
           label={token}
           tooltip={isNetworkToken ? t`Balance minus estimated gas` : (tokenAddress ?? '')}
-          address={tokenAddress}
+          token={{ address: tokenAddress }}
         />
       }
       {...(haveSameTokenName && { label: `${token} ${shortenAddress(tokenAddress)}` })}

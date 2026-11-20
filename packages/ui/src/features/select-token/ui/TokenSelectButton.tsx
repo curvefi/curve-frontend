@@ -36,7 +36,7 @@ export const TokenSelectButton = ({
       token ? (
         <TokenLabel
           blockchainId={token.chain}
-          address={token.address}
+          token={token}
           size="mui-md"
           label={token.symbol}
           disabled={disabled}
