@@ -4,8 +4,8 @@ import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ } from '@ui/features/queries/util'
-import type { PoolLiquidityRow, PoolSwapRow } from './types'
-import { toPoolActivityLiquidityRow, toPoolActivitySwapRow } from './utils'
+import { type PoolLiquidityRow, toActivityRow as toLiquidityActivityRow } from './hooks/usePoolActivityLiquidityTable'
+import { type PoolSwapRow, toActivityRow as toSwapActivityRow } from './hooks/usePoolActivitySwapsTable'
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}`
 const generateTxHash = (seed: number): Address => `0x${seed.toString(16).padStart(64, '0')}`
@@ -103,8 +103,8 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
   }))
 }
 
-const swapsQuery = constQ(generatePoolTrades(20).map(toPoolActivitySwapRow))
-const liquidityQuery = constQ(generatePoolLiquidity(15).map(toPoolActivityLiquidityRow))
+const swapsQuery = constQ(generatePoolTrades(20).map(toSwapActivityRow))
+const liquidityQuery = constQ(generatePoolLiquidity(15).map(toLiquidityActivityRow))
 
 const meta: Meta = {
   title: 'DEX/Features/PoolActivity',
