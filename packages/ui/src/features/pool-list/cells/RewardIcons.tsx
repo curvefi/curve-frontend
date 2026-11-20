@@ -116,7 +116,7 @@ const ExtraRewardIcon = ({
     testId="pool-extra-reward-badge"
     title={t`Extra pool reward`}
   >
-    <TokenIcon blockchainId={pool.blockchainId} address={reward.address} size="mui-sm" />
+    <TokenIcon blockchainId={pool.blockchainId} token={reward.address && { address: reward.address }} size="mui-sm" />
   </RewardIconTooltip>
 )
 
@@ -159,7 +159,7 @@ const CrvRewardIcon = ({
     testId="pool-crv-reward-badge"
     title={t`CRV gauge reward`}
   >
-    <TokenIcon {...crvToken} size="mui-sm" />
+    <TokenIcon blockchainId={crvToken.blockchainId} token={crvToken} size="mui-sm" />
   </RewardIconTooltip>
 )
 
@@ -255,7 +255,7 @@ export const ClaimablesIcons = ({
 }) => (
   <IconStack iconSize="sm">
     {claimables.map(reward => (
-      <TokenIcon key={reward.token} blockchainId={blockchainId} address={reward.token} size="mui-sm" />
+      <TokenIcon key={reward.token} blockchainId={blockchainId} token={{ address: reward.token }} size="mui-sm" />
     ))}
   </IconStack>
 )

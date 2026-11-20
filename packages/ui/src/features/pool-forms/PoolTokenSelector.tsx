@@ -1,4 +1,3 @@
-import { shortenString } from '@primitives/string.utils'
 import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
 import { PoolTokenList } from '@ui/features/pool-forms/PoolTokenList'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -23,13 +22,7 @@ export function PoolTokenSelector({
   onToken: (index: number) => void
 }) {
   const [isOpen, onOpen, onClose] = useSwitch(false)
-  const options = tokens?.map(token =>
-    mapQuery(token, token => ({
-      ...token,
-      symbol: token.symbol ?? shortenString(token.address),
-      chain: token.blockchainId,
-    })),
-  )
+  const options = tokens?.map(token => mapQuery(token, token => ({ ...token, chain: token.blockchainId })))
   return (
     <TokenSelector
       selectedToken={options?.[selectedIndex]?.data}

@@ -37,7 +37,7 @@ export const FieldLockedAmount = ({
       onBalance={onBalance}
       walletBalance={{ balance: q(crv), symbol: 'CRV' }}
       tokenSelector={
-        <TokenLabel blockchainId={MAINNET_CRV.blockchainId} address={MAINNET_CRV.address} label={MAINNET_CRV.symbol} />
+        <TokenLabel blockchainId={MAINNET_CRV.blockchainId} token={MAINNET_CRV} label={MAINNET_CRV.symbol} />
       }
     />
   )

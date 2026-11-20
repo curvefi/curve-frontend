@@ -34,7 +34,7 @@ export const SelectedLpTokenExpected = ({
 
         return (
           <Box key={tokenAddress} as="li" flex flexAlignItems="center">
-            <StyledTokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}
+            <StyledTokenIcon blockchainId={blockchainId} tooltip={symbol} token={{ address: tokenAddress }} /> {symbol}
             {haveSameTokenName && <Chip>{shortenAddress(tokenAddress)}</Chip>}
             <Spacer />
             {loading ? (

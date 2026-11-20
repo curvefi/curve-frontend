@@ -63,7 +63,7 @@ export const TokenIcons: Story = {
   render: args => (
     <IconStack {...args}>
       {TOKENS.map(({ address, symbol }) => (
-        <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" address={address} tooltip={symbol} />
+        <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" token={{ address }} tooltip={symbol} />
       ))}
     </IconStack>
   ),
@@ -82,7 +82,7 @@ export const OverlapPercentages: Story = {
           </IconStack>
           <IconStack iconSize="lg" overlap={overlap}>
             {TOKENS.map(({ address, symbol }) => (
-              <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" address={address} tooltip={symbol} />
+              <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" token={{ address }} tooltip={symbol} />
             ))}
           </IconStack>
         </Stack>

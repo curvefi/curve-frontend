@@ -1,4 +1,5 @@
-import { getActivityToken } from '@/llamalend/llama.utils'
+import { isAddressEqual } from 'viem'
+import { withLpCoins } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import { LLAMMA_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-trades-columns'
@@ -6,18 +7,21 @@ import { useLlammaActivityVisibility } from '@evm-ui/features/activity-table/hoo
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
 import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
+import type { Token } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
-import { LlammaActivityTradesProps } from '../LlammaActivityTradesTable'
+import type { LlammaActivityProps } from '../types'
 
 export const useLlammaActivityTradesConfig = ({
   chainId,
   blockchainId,
+  collateralToken,
+  borrowToken,
   ammAddress,
   endpoint,
-}: LlammaActivityTradesProps) => {
+}: LlammaActivityProps) => {
   const { tradesColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
@@ -29,6 +33,15 @@ export const useLlammaActivityTradesConfig = ({
     perPage: DEFAULT_PAGE_SIZE,
   })
 
+  /** The market tokens carry the coins of LP tokens, which the prices API doesn't return */
+  const withMarketLpCoins = (token: Token) =>
+    withLpCoins(
+      token,
+      [collateralToken, borrowToken].find(
+        marketToken => marketToken && isAddressEqual(marketToken.address, token.address),
+      )?.lpCoins,
+    )
+
   const pageCount = getPageCount(tradesQuery.data?.count, DEFAULT_PAGE_SIZE)
 
   // Transform trades data with block explorer URLs
@@ -38,8 +51,8 @@ export const useLlammaActivityTradesConfig = ({
         ...trade,
         chainId,
         blockchainId,
-        tokenBought: getActivityToken(blockchainId, trade.tokenBought) ?? trade.tokenBought,
-        tokenSold: getActivityToken(blockchainId, trade.tokenSold) ?? trade.tokenSold,
+        tokenBought: withMarketLpCoins(trade.tokenBought),
+        tokenSold: withMarketLpCoins(trade.tokenSold),
       })),
     ),
   )

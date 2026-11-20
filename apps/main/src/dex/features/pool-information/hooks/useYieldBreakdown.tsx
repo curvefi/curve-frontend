@@ -65,7 +65,12 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
     if (rewards.crv.some(Boolean)) {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
-        source: { address: MAINNET_CRV_ADDRESS, blockchainId: 'ethereum', iconPosition: 'left', primary: 'CRV' },
+        source: {
+          token: { address: MAINNET_CRV_ADDRESS },
+          blockchainId: 'ethereum',
+          iconPosition: 'left',
+          primary: 'CRV',
+        },
         address: getAddress(MAINNET_CRV_ADDRESS),
         displayAddress: shortenAddress(MAINNET_CRV_ADDRESS),
         explorerUrl: scanTokenPath(Chain.Ethereum, MAINNET_CRV_ADDRESS),
@@ -91,7 +96,7 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
     extraRewards.forEach(({ apr: rate, address, symbol, tokenAddress, tokenPrice }) => {
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
-        source: { address, blockchainId: network.blockchainId, iconPosition: 'left', primary: symbol },
+        source: { token: { address }, blockchainId: network.blockchainId, iconPosition: 'left', primary: symbol },
         address,
         displayAddress: shortenAddress(address),
         explorerUrl: scanTokenPath(chainId, tokenAddress),

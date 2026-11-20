@@ -13,13 +13,7 @@ export const TokenDeltaAmountCell = ({ deltas }: { deltas: readonly ActivityToke
       {deltas.length > 1 ? (
         <IconStack iconSize="md">
           {deltas.map(({ label, token, blockchainId }) => (
-            <TokenIcon
-              key={label}
-              blockchainId={blockchainId}
-              address={token?.address}
-              tooltip={token?.symbol}
-              size="mui-md"
-            />
+            <TokenIcon key={label} blockchainId={blockchainId} token={token} tooltip={token?.symbol} size="mui-md" />
           ))}
         </IconStack>
       ) : (
@@ -27,7 +21,7 @@ export const TokenDeltaAmountCell = ({ deltas }: { deltas: readonly ActivityToke
           icon={
             first?.token && (
               <TokenIcon
-                address={first.token.address}
+                token={first.token}
                 blockchainId={first.blockchainId}
                 tooltip={first.token.symbol}
                 size="mui-md"

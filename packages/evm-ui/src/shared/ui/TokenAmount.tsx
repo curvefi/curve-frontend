@@ -2,10 +2,9 @@ import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { TokenIcon, type Size } from '@ui/components/TokenIcon'
+import { TokenIcon, type IconToken, type Size } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { q } from '@ui/features/queries/util'
@@ -18,8 +17,8 @@ type TokenAmountProps = {
   amount: number | undefined
   amountUsd: number | Nullish
   blockchainId?: string
-  /** Token contract address used to render the token icon, or the addresses of a token pair. */
-  tokenAddress?: Address | Address[]
+  /** Token used to render the token icon */
+  token?: IconToken
   amountLoading?: boolean
   usdLoading?: boolean
   /** Shown as an error icon, next to the USD amount if there is one */
@@ -35,7 +34,7 @@ export const TokenAmount = ({
   amount,
   amountUsd,
   blockchainId,
-  tokenAddress,
+  token,
   amountLoading = false,
   usdLoading = false,
   usdError = null,
@@ -69,9 +68,7 @@ export const TokenAmount = ({
         <Tooltip title={tooltipTitle ?? ''} body={tooltipBody}>
           <Stack direction="row" spacing={Spacing.xs} sx={{ alignItems: 'center' }}>
             <Typography variant="tableCellValue">{formatNumber(amount, { abbreviate, fallback: '-' })}</Typography>
-            {blockchainId && tokenAddress && (
-              <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={iconSize} />
-            )}
+            {blockchainId && token && <TokenIcon blockchainId={blockchainId} token={token} size={iconSize} />}
           </Stack>
         </Tooltip>
       </WithSkeleton>

@@ -35,7 +35,7 @@ export const POOL_TRADES_COLUMNS = columnHelper.columns([
     cell: ({ row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
         <TokenInfo
-          address={row.original.tokenBought.address}
+          token={row.original.tokenBought}
           blockchainId={row.original.blockchainId}
           iconPosition="right"
           primary={formatNumber(row.original.tokensBought, { abbreviate: false })}
@@ -57,7 +57,7 @@ export const POOL_TRADES_COLUMNS = columnHelper.columns([
     cell: ({ row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
         <TokenInfo
-          address={row.original.tokenSold.address}
+          token={row.original.tokenSold}
           blockchainId={row.original.blockchainId}
           iconPosition="right"
           primary={formatNumber(-row.original.tokensSold, { abbreviate: false })}

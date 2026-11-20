@@ -51,7 +51,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
           tokenSelector={
             <TokenLabel
               blockchainId={blockchainId}
-              address={tokenA.address}
+              token={tokenA}
               label={tokenA.symbol ?? '?'}
               tooltip={tokenA.symbol}
             />
@@ -69,7 +69,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
           tokenSelector={
             <TokenLabel
               blockchainId={blockchainId}
-              address={tokenB.address}
+              token={tokenB}
               label={tokenB.symbol ?? '?'}
               tooltip={tokenB.symbol}
             />

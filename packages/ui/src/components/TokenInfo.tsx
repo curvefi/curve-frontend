@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps, SxProps } from '@ui/lib/mui'
 import { ErrorIconButton } from './ErrorIconButton'
 import { Spinner } from './Spinner'
-import { TokenIcon, type Size } from './TokenIcon'
+import { TokenIcon, type IconToken, type Size } from './TokenIcon'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing } = SizesAndSpaces
@@ -23,7 +23,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  address: Address | Address[]
+  token: IconToken & { address: Address }
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size
@@ -33,7 +33,7 @@ export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
 
 type TokenInfoCustomIconProps = TokenInfoBaseProps & {
   icon?: ReactNode
-  address?: never
+  token?: never
   blockchainId?: never
   showChainIcon?: never
   iconSize?: never
@@ -61,10 +61,10 @@ const TokenInfoItem = ({
 export const TokenInfo = (props: TokenInfoProps) => {
   const { iconPosition, iconAlignment = 'center', primary, secondary, boldPrimary } = props
   const tokenIcon =
-    'address' in props ? (
+    'token' in props ? (
       <TokenIcon
         blockchainId={props.blockchainId}
-        address={props.address}
+        token={props.token}
         size={props.iconSize ?? 'lg'}
         showChainIcon={props.showChainIcon}
       />

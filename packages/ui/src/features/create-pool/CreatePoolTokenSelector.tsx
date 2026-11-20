@@ -106,7 +106,7 @@ export const CreatePoolTokenSelector = ({
           selectedToken ? (
             <TokenLabel
               blockchainId={blockchainId}
-              address={selectedToken.address}
+              token={selectedToken}
               label={selectedToken.symbol}
               size="mui-md"
               noWrap

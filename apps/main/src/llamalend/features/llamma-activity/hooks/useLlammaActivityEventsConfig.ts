@@ -1,4 +1,3 @@
-import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
 import { LLAMMA_EVENTS_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-events-columns'
@@ -27,13 +26,7 @@ export const useLlammaActivityEventsConfig = ({
 
   // Transform events data with block explorer URLs
   const query = combineQueries([eventsQuery, loadingQ(llamma)], ({ events }) =>
-    events.map((event: LlammaEvent) => ({
-      ...event,
-      chainId,
-      blockchainId,
-      collateralToken: getActivityToken(blockchainId, collateralToken),
-      borrowToken: getActivityToken(blockchainId, borrowToken),
-    })),
+    events.map((event: LlammaEvent) => ({ ...event, chainId, blockchainId, collateralToken, borrowToken })),
   )
 
   return {

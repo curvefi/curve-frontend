@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Address } from '@primitives/address.utils'
+import type { Token } from '@primitives/address.utils'
 import { PageHeader } from '@ui/components/PageHeader'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -16,7 +16,7 @@ export const PoolDetailsHeader = ({
   rightItems,
 }: {
   title: QueryProp<string>
-  tokens: QueryProp<{ symbol: string | undefined; address: Address }[]>
+  tokens: QueryProp<Token[]>
   blockchainId: string
   backHref: string
   rightItems: ReactNode
@@ -24,7 +24,7 @@ export const PoolDetailsHeader = ({
   <PageHeader
     backHref={backHref}
     title={title}
-    subtitle={mapQuery(tokens, tokens => tokens.map((t, i) => t.symbol ?? `Token ${i}`).join(' / '))}
+    subtitle={mapQuery(tokens, tokens => tokens.map(t => t.symbol).join(' / '))}
     icon={
       <WithSkeleton loading={tokens.isLoading} variant="rectangular" width={ICON_SIZE} height={ICON_SIZE}>
         <TokenIcons blockchainId={blockchainId} tokens={tokens.data} overflowMode="stack" />

@@ -51,8 +51,13 @@ export const SelectedOneCoinExpected = ({
               aria-label={`Withdraw from ${symbol} for ${amounts[idx]?.value ?? '0'}`}
               value={tokenAddress}
             >
-              <StyledTokenIcon size="sm" blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}{' '}
-              {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
+              <StyledTokenIcon
+                size="sm"
+                blockchainId={blockchainId}
+                tooltip={symbol}
+                token={{ address: tokenAddress }}
+              />{' '}
+              {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
               <Spacer />
               {loading ? (
                 <Loader skeleton={[90, 20]} />

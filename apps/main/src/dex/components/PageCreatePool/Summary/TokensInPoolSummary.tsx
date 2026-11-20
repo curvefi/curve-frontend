@@ -191,7 +191,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
   const { data: network } = useNetworkByChain({ chainId })
   return (
     <TokenRow>
-      <ButtonTokenIcon blockchainId={blockchainId} tooltip={token.symbol} address={token.address} />
+      <ButtonTokenIcon blockchainId={blockchainId} tooltip={token.symbol} token={token} />
       <Box flex flexColumn>
         <TokenSymbol className="token-symbol">
           {token.symbol}

@@ -1,4 +1,3 @@
-import { getAddressOrPair } from '@/llamalend/llama.utils'
 import { formatActivityUsdValue, getChangeColor } from '@evm-ui/features/activity-table/utils'
 import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
 import { BlockchainIds } from '@evm-ui/utils/network'
@@ -42,7 +41,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
             ),
           ),
         })}
-        icon={{ blockchainId, token: { address: getAddressOrPair(blockchainId, collateralToken?.address) } }}
+        icon={{ blockchainId, token: collateralToken }}
       />
       <MetricExpandedPanel
         label={notFalsy(t`Debt`, borrowToken?.symbol && `(${borrowToken.symbol})`).join(' ')}
@@ -56,7 +55,7 @@ export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent>
             formatActivityUsdValue({ amount: loanChange, amountUsd: loanChangeUsd, timestamp }, currentDate),
           ),
         })}
-        icon={{ blockchainId, token: { address: getAddressOrPair(blockchainId, borrowToken?.address) } }}
+        icon={{ blockchainId, token: borrowToken }}
       />
     </MetricsGrid>
   )
