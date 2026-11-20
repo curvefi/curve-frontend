@@ -4,6 +4,9 @@ import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
+export const TEST_SLIPPAGE = '0.5'
+export const TEST_ETH_FUND_AMOUNT = '100'
+
 /**
  * Use CurveJS for metadata, LP seeding and metapool balances so tests don't duplicate pool/zap logic.
  * Runtime helpers reuse PoolTestCase's hydrated instance; mount it before calling them.
@@ -39,8 +42,8 @@ export const seedPoolForWithdraw = (poolAddress: Address, amounts: Decimal[]) =>
   cy.then(TIMEOUTS['tenderly.submit'], async () => {
     const pool = globalLibs.require('curveApi').getPool(poolAddress)
     await pool.depositApprove(amounts) // CurveJS waits for approval receipts.
-    const receipt = await pool.curve.provider.waitForTransaction(await pool.deposit(amounts, 0.5))
-    expect(receipt?.status).to.equal(1)
+    const receipt = await pool.curve.provider.waitForTransaction(await pool.deposit(amounts, +TEST_SLIPPAGE))
+    expect(receipt).to.have.property('status', 1)
   })
 
 export const getPoolUnderlyingBalances = (poolAddress: Address) =>

@@ -3,7 +3,12 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { AdvancedWithdrawTab } from '@/dex/features/withdraw/components/AdvancedWithdrawTab'
 import { OneCoinWithdrawTab } from '@/dex/features/withdraw/components/OneCoinWithdrawTab'
 import { oneBool, oneDecimal, oneOf } from '@cy/support/generators'
-import { seedPoolForWithdraw, TEST_POOLS } from '@cy/support/helpers/dex/curve.helpers'
+import {
+  seedPoolForWithdraw,
+  TEST_ETH_FUND_AMOUNT,
+  TEST_POOLS,
+  TEST_SLIPPAGE,
+} from '@cy/support/helpers/dex/curve.helpers'
 import { PoolTestCase } from '@cy/support/helpers/dex/PoolTestCase'
 import {
   checkPoolWithdrawDetail,
@@ -28,9 +33,17 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
-import { decimalMinus, decimalSum } from '@ui/lib/decimal'
+import { DEFAULT_DECIMALS } from '@primitives/units.util'
+import { decimalMinus, decimalMultiply, decimalRound } from '@ui/lib/decimal'
 
 const CHAIN_ID = Chain.Ethereum
+const FUND_AMOUNT_RANGE = [50, 100] as const
+// Keep liquidity for subsequent tests; only the last test withdraws everything.
+const PARTIAL_WITHDRAW_RATIOS = [0.1, 0.2] as const
+const EXCESSIVE_WITHDRAW_RATIOS = [1.1, 10] as const
+
+const oneWithdrawAmount = (amount: Decimal, ratios: readonly [number, number], decimals = DEFAULT_DECIMALS) =>
+  decimalRound(decimalMultiply(amount, oneDecimal(...ratios)), decimals)
 
 describe('Pool Withdraw (RPC)', () => {
   skipTestsAfterFailure()
@@ -46,13 +59,13 @@ describe('Pool Withdraw (RPC)', () => {
   const pool = oneOf(...TEST_POOLS)
   const isWrapped = !!pool.wrappedCoins && oneBool()
   const coins = isWrapped ? pool.wrappedCoins! : pool.coins
-  const fundAmount = oneDecimal(50, 100)
+  const fundAmount = oneDecimal(...FUND_AMOUNT_RANGE)
 
   const mountWithdraw = ({ advanced = true } = {}) => {
     const Tab = advanced ? AdvancedWithdrawTab : OneCoinWithdrawTab
     cy.mount(
       <PoolTestCase vnet={getVirtualNetwork()} account={privateKey} chainId={CHAIN_ID} poolAddress={pool.address}>
-        <Tab maxSlippage="0.5" />
+        <Tab maxSlippage={TEST_SLIPPAGE} />
       </PoolTestCase>,
     )
     if (isWrapped) cy.get('[data-testid="pool-withdraw-wrapped-checkbox"] input').check()
@@ -61,7 +74,11 @@ describe('Pool Withdraw (RPC)', () => {
   before(() => {
     cy.task('log', `Withdraw test pool: ${pool.id}, wrapped: ${isWrapped}`)
     const { adminRpcUrl } = getRpcUrls(getVirtualNetwork())
-    fundEth({ adminRpcUrl, amountWei: toHex(parseUnits('100', 18)), recipientAddresses: [userAddress] })
+    fundEth({
+      adminRpcUrl,
+      amountWei: toHex(parseUnits(TEST_ETH_FUND_AMOUNT, DEFAULT_DECIMALS)),
+      recipientAddresses: [userAddress],
+    })
     pool.coins.map(({ address, decimals }) =>
       fundErc20({
         adminRpcUrl,
@@ -87,14 +104,14 @@ describe('Pool Withdraw (RPC)', () => {
         const initialLpBalance = value as Decimal
         const invalidAmounts = [
           ['0', 'Enter a valid LP amount'],
-          [decimalSum(initialLpBalance, '1'), 'Insufficient LP balance'],
+          [oneWithdrawAmount(initialLpBalance, EXCESSIVE_WITHDRAW_RATIOS), 'Insufficient LP balance'],
         ] as const
         invalidAmounts.map(([amount, message]) => {
           writePoolWithdrawLp(amount)
           poolWithdrawLpInput().find('[data-testid="helper-message-error"]').contains(message).should('be.visible')
           poolWithdrawSubmit().should('be.disabled')
         })
-        const lpAmount = oneDecimal(+initialLpBalance * 0.1, +initialLpBalance * 0.2)
+        const lpAmount = oneWithdrawAmount(initialLpBalance, PARTIAL_WITHDRAW_RATIOS)
         writePoolWithdrawLp(lpAmount)
         checkPoolWithdrawDetail('projected-lp', decimalMinus(initialLpBalance, lpAmount))
         cy.get('[data-testid="withdraw-unbalanced-checkbox"] input').should('not.be.checked')
@@ -111,7 +128,7 @@ describe('Pool Withdraw (RPC)', () => {
       cy.get('[data-testid="pool-withdraw-lp-input"]').should('not.exist')
       const coin = oneOf(...coins)
       const index = coins.indexOf(coin)
-      const excessive = oneDecimal(+amounts[index] * 3, +amounts[index] * 4, coin.decimals)
+      const excessive = oneWithdrawAmount(amounts[index], EXCESSIVE_WITHDRAW_RATIOS, coin.decimals)
       writePoolWithdrawAmount(coin.address, excessive)
       coins.map(({ address }, i) =>
         poolWithdrawInput(address)
@@ -123,7 +140,7 @@ describe('Pool Withdraw (RPC)', () => {
         .should('be.visible')
       poolWithdrawSubmit().should('be.disabled')
       coins.map(({ address, decimals }, index) =>
-        writePoolWithdrawAmount(address, oneDecimal(+amounts[index] * 0.1, +amounts[index] * 0.2, decimals)),
+        writePoolWithdrawAmount(address, oneWithdrawAmount(amounts[index], PARTIAL_WITHDRAW_RATIOS, decimals)),
       )
     })
     getActionValue('pool-withdraw-maximum-lp', 'tenderly.simulation').should(value => expect(Number(value)).gt(0))
@@ -143,12 +160,12 @@ describe('Pool Withdraw (RPC)', () => {
     getPoolWithdrawAmount(to.address).then(maximum => {
       writePoolWithdrawAmount(to.address, '0')
       poolWithdrawSubmit().should('be.disabled')
-      writePoolWithdrawAmount(to.address, oneDecimal(+maximum * 2, +maximum * 3, to.decimals))
+      writePoolWithdrawAmount(to.address, oneWithdrawAmount(maximum, EXCESSIVE_WITHDRAW_RATIOS, to.decimals))
       cy.get('[data-testid="loan-form-errors"]', TIMEOUTS['tenderly.simulation'])
         .contains('Maximum LP required exceeds the available LP balance')
         .should('be.visible')
       poolWithdrawSubmit().should('be.disabled')
-      writePoolWithdrawAmount(to.address, oneDecimal(+maximum * 0.1, +maximum * 0.2, to.decimals))
+      writePoolWithdrawAmount(to.address, oneWithdrawAmount(maximum, PARTIAL_WITHDRAW_RATIOS, to.decimals))
     })
     getActionValue('pool-withdraw-maximum-lp', 'tenderly.simulation').should(value => expect(Number(value)).gt(0))
     submitPoolWithdrawAndCheck()
@@ -160,7 +177,7 @@ describe('Pool Withdraw (RPC)', () => {
     const coin = oneOf(...coins)
     selectPoolWithdrawMax(coin.address)
     getPoolWithdrawAmount(coin.address).then(maximum => {
-      writePoolWithdrawAmount(coin.address, oneDecimal(+maximum * 0.1, +maximum * 0.2, coin.decimals))
+      writePoolWithdrawAmount(coin.address, oneWithdrawAmount(maximum, PARTIAL_WITHDRAW_RATIOS, coin.decimals))
       getActionValue('pool-withdraw-maximum-lp', 'tenderly.simulation').should(value => expect(Number(value)).gt(0))
       getPoolWithdrawDetail('projected-lp').should(value => expect(Number(value)).gt(0))
       writePoolWithdrawAmount(coin.address, maximum)
