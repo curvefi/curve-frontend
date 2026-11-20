@@ -2,6 +2,7 @@ import { zeroAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
+import { useMarketSupplyGaugeKilled } from '@/llamalend/queries/market/market-gauge-killed.query'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import {
   type AssetsToSharesParams,
@@ -46,6 +47,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const marketHasGauge = !!gaugeAddress && gaugeAddress !== zeroAddress
+  const gaugeIsKilled = useMarketSupplyGaugeKilled({ chainId, marketId })
   const marketAlert = useMarketAlert(chainId, controllerAddress, MarketType.Lend)
 
   const { borrowToken, collateralToken } = tokens
@@ -62,6 +64,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { values, formState } = form
   const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })
   const stakeShares = values.isFull ? maxStakeShares.data : convertedStakeShares.data
+  useFormSync(form, { maxStakeAssets: maxStakeAssets.data, stakeShares })
 
   const [params, isDebouncing] = useFormDebounce(
     {
@@ -87,9 +90,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     onConfirmed: stake,
   })
 
-  useFormSync(form, { maxStakeAssets: maxStakeAssets.data })
-  useFormSync(form, { stakeShares })
-
   const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyAlert
   const isPending = formState.isSubmitting || isStaking
   return {
@@ -103,10 +103,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     userAddress,
     borrowToken,
     collateralToken,
-    error: formActions.error ?? stakeError,
+    error: formActions.error ?? stakeError ?? gaugeIsKilled.error,
     max: maxStakeAssets,
     isApproved: q(useStakeIsApproved(params)),
-    hasGauge: marketHasGauge,
+    gauge: { hasGauge: marketHasGauge, isKilled: gaugeIsKilled.data },
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal,

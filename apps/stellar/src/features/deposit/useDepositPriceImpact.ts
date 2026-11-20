@@ -23,7 +23,7 @@ export function useDepositPriceImpact(params: QuoteParams, expectedLp: Query<Dec
       return scaleReserves(reserves, decimals, value, reserveValue)
     }),
   )
-  const balancedQuote = useExpectedLp({ ...params, amounts: balancedAmounts.data, isDeposit: true })
+  const balancedQuote = useExpectedLp({ ...params, amounts: balancedAmounts, isDeposit: true })
   return combineQueries([expectedLp, balancedQuote, balancedAmounts], (expectedLp, balancedQuote) =>
     calculatePriceImpact(expectedLp, balancedQuote),
   )

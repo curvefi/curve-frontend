@@ -9,7 +9,7 @@ import {
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { OpeningLeverageTooltipContent } from '@/llamalend/widgets/tooltips/LeverageTooltipContent'
-import { TokenPnlTooltipContent } from '@/llamalend/widgets/tooltips/TokenPnlTooltipContent'
+import { PnlTooltipContent } from '@/llamalend/widgets/tooltips/PnlTooltipContent'
 import { getChangeColor } from '@evm-ui/features/activity-table/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -55,13 +55,15 @@ export const PnlCell = ({ row, getValue }: BorrowPositionCellProps) => {
   const roi = maybe(pnl?.debt.roi, Number)
   return (
     <Tooltip
-      title={pnl && t`PNL (ROI %)`}
-      body={maybe(pnl, ({ collateral, debt }) => (
-        <TokenPnlTooltipContent
-          debt={{ pnl: debt, symbol: assets.borrowed.symbol }}
-          collateral={maybe(collateral, pnl => ({ pnl, symbol: assets.collateral.symbol }))}
+      title={t`PNL (ROI %)`}
+      body={
+        <PnlTooltipContent
+          {...maybe(pnl, ({ collateral, debt }) => ({
+            debt: { pnl: debt, symbol: assets.borrowed.symbol },
+            collateral: maybe(collateral, pnl => ({ pnl, symbol: assets.collateral.symbol })),
+          }))}
         />
-      ))}
+      }
       placement="top"
     >
       <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>

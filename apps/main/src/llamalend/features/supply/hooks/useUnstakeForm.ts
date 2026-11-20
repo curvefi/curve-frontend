@@ -59,6 +59,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     assets: values.unstakeAssets,
   })
   const unstakeShares = values.isFull ? maxUnstakeShares.data : convertedUnstakeShares.data
+  useFormSync(form, { maxUnstakeAssets: maxUnstakeAssets.data, unstakeShares })
 
   const [params, isDebouncing] = useFormDebounce(
     {
@@ -77,9 +78,6 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     isPending: isUnstaking,
     error: unstakeError,
   } = useUnstakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
-
-  useFormSync(form, { maxUnstakeAssets: maxUnstakeAssets.data })
-  useFormSync(form, { unstakeShares })
 
   const isPending = formState.isSubmitting || isUnstaking
   return {

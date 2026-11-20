@@ -51,7 +51,7 @@ export const { useQuery: useTokenUsdRate, getQueryOptions: getTokenUsdRateQueryO
 
 export const useTokenUsdRates = (
   { network, tokenAddresses = [] }: NetworkParams & { tokenAddresses?: StellarContract[] },
-  enabled = true,
+  enabled?: boolean,
 ) => {
   const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
   return useQueries({

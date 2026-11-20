@@ -101,6 +101,7 @@ export type MockLendVault = {
   claimableRewards: MockMethod
   claimCrv: MockMethod
   claimRewards: MockMethod
+  isGaugeKilled: MockMethod
 }
 
 export const createMockLendVault = (): MockLendVault => ({
@@ -127,6 +128,7 @@ export const createMockLendVault = (): MockLendVault => ({
   claimableRewards: cy.stub().resolves([]),
   claimCrv: cy.stub().resolves(zeroAddress),
   claimRewards: cy.stub().resolves(zeroAddress),
+  isGaugeKilled: cy.stub().resolves(false),
 })
 
 // Supply-side tests rely on the LendMarketTemplate prototype plus vault/gauge APIs.

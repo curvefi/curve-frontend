@@ -12,6 +12,7 @@ import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { PageHeader } from '@ui/components/PageHeader'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
+import { constQ } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useParams } from '@ui/hooks/router'
 import { RCScrvUSDLogoSM } from '@ui/images'
@@ -44,8 +45,8 @@ export const CrvUsdStakingPage = () => {
       header={
         <PageHeader
           icon={<Box component="img" sx={{ height: IconSize.xxl }} src={RCScrvUSDLogoSM} alt="crvUSD logo" />}
-          title={t`Savings crvUSD`}
-          subtitle={t`Let your idle crvUSD do more for you.`}
+          title={constQ(t`Savings crvUSD`)}
+          subtitle={constQ(t`Let your idle crvUSD do more for you.`)}
         />
       }
       formTabs={{ content: <DepositWithdraw params={params} /> }}

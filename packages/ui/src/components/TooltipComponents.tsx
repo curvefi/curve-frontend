@@ -91,6 +91,8 @@ type TooltipItemProps = {
   /** Shows a skeleton in place of the value. */
   loading?: boolean
   variant?: TooltipItemVariant
+  /** Overrides the color of the value, instead of the one of the variant. */
+  valueColor?: TypographyProps['color']
   /** Token metadata used to render a token icon before the title. */
   titleIcon?: { blockchainId: string; address: string; size: Size }
   /** Custom content rendered before the title. */
@@ -103,12 +105,13 @@ export const TooltipItem = ({
   children,
   loading = false,
   variant = 'default',
+  valueColor,
   titleIcon,
   titleAdornment,
   sx,
 }: TooltipItemProps) => (
   <Stack direction="row" sx={applySxProps({ gap: Spacing.sm, justifyContent: 'space-between' }, sx)}>
-    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center', flexShrink: 0 }}>
       {titleAdornment && <Stack sx={{ alignItems: 'center', marginLeft: Spacing.md }}>{titleAdornment}</Stack>}
       {titleIcon && (
         <TokenIcon
@@ -136,14 +139,14 @@ export const TooltipItem = ({
         {Children.map(children, (child, index) => {
           const isFirstChild = index === 0
           const typographyVariant = isFirstChild ? valueTypographyVariant[variant] : 'bodyXsRegular'
-          const typographyColor = isFirstChild ? valueTypographyColor[variant] : 'tertiary'
+          const typographyColor = isFirstChild ? (valueColor ?? valueTypographyColor[variant]) : 'tertiary'
 
           return (
             <Typography
               variant={typographyVariant}
               color={typographyColor}
               component="span"
-              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
+              sx={{ textAlign: 'right' }}
             >
               {child}
             </Typography>

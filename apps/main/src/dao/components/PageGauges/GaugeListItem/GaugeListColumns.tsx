@@ -11,37 +11,29 @@ export const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
   return (
     <>
       <BoxColumn>
-        <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
-          {formatNumber(gaugeData.gauge_relative_weight, { decimals: 5, abbreviate: true })}%
+        <GaugeData className={`${gaugeListSortBy.key === 'weightRelative' ? 'bold' : ''}`}>
+          {formatNumber(gaugeData.weightRelative, { decimals: 5, abbreviate: true })}%
         </GaugeData>
       </BoxColumn>
       <BoxColumn>
         <GaugeData
           className={`${
-            gaugeData.gauge_relative_weight_7d_delta
-              ? gaugeData.gauge_relative_weight_7d_delta > 0
-                ? 'green'
-                : 'red'
-              : ''
-          } ${gaugeListSortBy.key === 'gauge_relative_weight_7d_delta' ? 'bold' : ''}`}
+            gaugeData.weightRelativeDelta7d ? (gaugeData.weightRelativeDelta7d > 0 ? 'green' : 'red') : ''
+          } ${gaugeListSortBy.key === 'weightRelativeDelta7d' ? 'bold' : ''}`}
         >
-          {gaugeData.gauge_relative_weight_7d_delta
-            ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, { decimals: 5, abbreviate: true })}%`
+          {gaugeData.weightRelativeDelta7d
+            ? `${formatNumber(gaugeData.weightRelativeDelta7d, { decimals: 5, abbreviate: true })}%`
             : 'N/A'}
         </GaugeData>
       </BoxColumn>
       <BoxColumn>
         <GaugeData
           className={`${
-            gaugeData.gauge_relative_weight_60d_delta
-              ? gaugeData.gauge_relative_weight_60d_delta > 0
-                ? 'green'
-                : 'red'
-              : ''
-          } ${gaugeListSortBy.key === 'gauge_relative_weight_60d_delta' ? 'bold' : ''}`}
+            gaugeData.weightRelativeDelta60d ? (gaugeData.weightRelativeDelta60d > 0 ? 'green' : 'red') : ''
+          } ${gaugeListSortBy.key === 'weightRelativeDelta60d' ? 'bold' : ''}`}
         >
-          {gaugeData.gauge_relative_weight_60d_delta
-            ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: true })}%`
+          {gaugeData.weightRelativeDelta60d
+            ? `${formatNumber(gaugeData.weightRelativeDelta60d, { abbreviate: true })}%`
             : 'N/A'}
         </GaugeData>
       </BoxColumn>

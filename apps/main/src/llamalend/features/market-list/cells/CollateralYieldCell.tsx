@@ -6,6 +6,7 @@ import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui/components/Tooltip'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { WithWrapper } from '@ui/components/WithWrapper'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 
 /** The collateral yield, with a tooltip that breaks it down into the yields the market has. */
@@ -16,9 +17,10 @@ export const CollateralYieldCell = ({
   getValue,
 }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const breakdown = getCollateralYieldBreakdown(collateralYields, 'collateral', assets.collateral.symbol)
-  const value = <Typography variant="tableCellValue">{formatNumber(getValue(), 'percent.rate')}</Typography>
-  return breakdown.length > 0 ? (
-    <Tooltip
+  return (
+    <WithWrapper
+      Wrapper={Tooltip}
+      shouldWrap={breakdown.length}
       title={COLLATERAL_YIELD_TITLE}
       body={
         <TooltipWrapper>
@@ -32,9 +34,7 @@ export const CollateralYieldCell = ({
         </TooltipWrapper>
       }
     >
-      {value}
-    </Tooltip>
-  ) : (
-    value
+      <Typography variant="tableCellValue">{formatNumber(getValue(), 'percent.rate')}</Typography>
+    </WithWrapper>
   )
 }

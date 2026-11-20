@@ -43,7 +43,7 @@ export const LegacyBorrowInformation = ({
   const equityLeverage = useEquityLeverage({ params })
   const carryApr = useCarryApr({ params })
   const leverage = isEquityLeverage
-    ? equityLeverage?.current
+    ? equityLeverage.isZapLeveraged.data && equityLeverage.current
     : isPositionLeveraged(collateralLeverage.data) && q(collateralLeverage)
   const oraclePrice = useMarketOraclePrice(params)
   const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
@@ -129,7 +129,7 @@ export const LegacyBorrowInformation = ({
             isEquityLeverage
               ? {
                   title: t`Leverage`,
-                  body: <LeverageTooltipContent openingLeverage={equityLeverage?.opening} />,
+                  body: <LeverageTooltipContent equityLeverage={equityLeverage} />,
                   ...BORROW_METRIC_TOOLTIP,
                 }
               : undefined

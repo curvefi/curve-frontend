@@ -11,6 +11,10 @@ import {
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketBorrowGaugeAddress } from '@/llamalend/queries/market/market-borrow-gauge-address.query'
+import {
+  useMarketBorrowGaugeKilled,
+  useMarketSupplyGaugeKilled,
+} from '@/llamalend/queries/market/market-gauge-killed.query'
 import { useMarketOracleAddress } from '@/llamalend/queries/market/market-oracle-address.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -21,17 +25,17 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
-import { Badge } from '@ui/components/Badge'
 import { ExternalLink } from '@ui/components/ExternalLink'
+import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
-import type { QueryProp } from '@ui/features/queries/util'
+import { combineQueries } from '@ui/features/queries/combine'
+import { q, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { MarketIdRow } from './MarketParameterRows'
@@ -48,18 +52,9 @@ type AddressItem = {
 type MarketContractsProps = {
   chainId: IChainId
   blockchainId: Chain
-  market: MarketTemplate | undefined
+  market: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }
-
-const GaugeLabel = ({ type }: { type: 'supply' | 'borrow' }) => (
-  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-    <Typography variant="bodyMRegular" color="textSecondary">
-      {{ supply: 'Supply', borrow: 'Borrow' }[type] + ' gauge'}
-    </Typography>
-    <Badge size="extraSmall" color="active" label={t`Active`} />
-  </Stack>
-)
 
 const AssetRow = ({
   title,
@@ -102,13 +97,13 @@ const MarketDataSkeleton = ({
   apiMarket,
   children,
 }: Pick<MarketContractsProps, 'market' | 'apiMarket'> & { children: ReactNode }) => (
-  <WithSkeleton loading={!market && !apiMarket.data} variant="rectangular" height="4lh" width="100%">
+  <WithSkeleton loading={!market.data && !apiMarket.data} variant="rectangular" height="4lh" width="100%">
     <Stack>{children}</Stack>
   </WithSkeleton>
 )
 
 const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
-  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
+  const { collateralToken, borrowToken } = getTokens(market.data, apiMarket.data) ?? {}
 
   return (
     <MarketDataSkeleton market={market} apiMarket={apiMarket}>
@@ -133,31 +128,35 @@ const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: MarketContra
 export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
   const { data: onChainOracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
-    marketId: market?.id,
+    marketId: market.data?.id,
   })
   const { data: onChainBorrowGaugeAddress, isLoading: borrowGaugeAddressIsLoading } = useMarketBorrowGaugeAddress({
     chainId,
-    marketId: market?.id,
+    marketId: market.data?.id,
   })
 
-  const hasContractData = !!market || !!apiMarket.data
-  const contractsLoading = !hasContractData || (!!market && (oracleAddressIsLoading || borrowGaugeAddressIsLoading))
-  const supplyGaugeAddress = getGaugeAddress(market, apiMarket.data)
-  const borrowGaugeAddress = market ? onChainBorrowGaugeAddress : null // todo: the prices API should return the borrow gauge
-  const vaultAddress = getVaultAddress(market, apiMarket.data) ?? undefined
-  const monetaryPolicyAddress = getMonetaryPolicy(market, apiMarket.data)
-  const oracleAddress = market ? onChainOracleAddress : apiMarket.data?.oracleAddress
+  const supplyGaugeKilled = q(useMarketSupplyGaugeKilled({ chainId, marketId: market.data?.id }))
+  const borrowGaugeKilled = q(useMarketBorrowGaugeKilled({ chainId, marketId: market.data?.id }))
+
+  const hasContractData = !!market.data || !!apiMarket.data
+  const contractsLoading =
+    !hasContractData || (!!market.data && (oracleAddressIsLoading || borrowGaugeAddressIsLoading))
+  const supplyGaugeAddress = getGaugeAddress(market.data, apiMarket.data)
+  const borrowGaugeAddress = market.data ? onChainBorrowGaugeAddress : null // todo: the prices API should return the borrow gauge
+  const vaultAddress = getVaultAddress(market.data, apiMarket.data) ?? undefined
+  const monetaryPolicyAddress = getMonetaryPolicy(market.data, apiMarket.data)
+  const oracleAddress = market.data ? onChainOracleAddress : apiMarket.data?.oracleAddress
 
   const infraAddressItems = notFalsy<AddressItem>(
     oracleAddress && { key: 'oracle', label: t`Oracle`, address: oracleAddress as Address },
-    hasContractData && { key: 'amm', label: t`AMM`, address: getAmmAddress(market, apiMarket.data) },
+    hasContractData && { key: 'amm', label: t`AMM`, address: getAmmAddress(market.data, apiMarket.data) },
     vaultAddress && { key: 'vault', label: t`Vault`, address: vaultAddress },
     hasContractData && {
       key: 'controller',
       label: t`Controller`,
-      address: getControllerAddress(market, apiMarket.data),
+      address: getControllerAddress(market.data, apiMarket.data),
     },
-    (market ?? monetaryPolicyAddress) && {
+    (market.data ?? monetaryPolicyAddress) && {
       key: 'monetary-policy',
       label: t`Monetary Policy`,
       labelTooltip: {
@@ -165,8 +164,25 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       },
       address: monetaryPolicyAddress,
     },
-    supplyGaugeAddress && { key: 'supply-gauge', label: <GaugeLabel type="supply" />, address: supplyGaugeAddress },
-    borrowGaugeAddress && { key: 'borrow-gauge', label: <GaugeLabel type="borrow" />, address: borrowGaugeAddress },
+    ...(
+      [
+        { type: 'supply', address: supplyGaugeAddress, isKilled: supplyGaugeKilled },
+        { type: 'borrow', address: borrowGaugeAddress, isKilled: borrowGaugeKilled },
+      ] as const
+    ).map(
+      ({ type, address, isKilled }) =>
+        address && {
+          key: `${type}-gauge`,
+          label: (
+            <GaugeStatusLabel
+              label={{ supply: t`Supply gauge`, borrow: t`Borrow gauge` }[type]}
+              isKilled={combineQueries([market, isKilled], (_, isKilled) => isKilled)}
+              testId={`market-contract-${type}-gauge-status`}
+            />
+          ),
+          address,
+        },
+    ),
   )
 
   return (
@@ -196,7 +212,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
                   />
                 ))}
               </Stack>
-              <MarketIdRow chainId={chainId} marketId={market?.id ?? apiMarket.data?.controllerAddress} />
+              <MarketIdRow chainId={chainId} marketId={market.data?.id ?? apiMarket.data?.controllerAddress} />
             </Stack>
           </WithSkeleton>
         </CardContent>

@@ -23,7 +23,7 @@ export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefine
 export const findRootGauge = (gaugeAddress: string, gaugeMapper: GaugeMapper) => {
   for (const key in gaugeMapper) {
     if (gaugeMapper[key].address === gaugeAddress) {
-      return gaugeMapper[key].effective_address ?? gaugeMapper[key].address
+      return gaugeMapper[key].effectiveAddress ?? gaugeMapper[key].address
     }
   }
   return ''

@@ -150,7 +150,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   category: 'global.routerApi',
 })
 
-function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled = true): RouteQuery {
+function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching, isEnabled } = useRouterApi({ ...params, router }, enabled)
   const route = maybe(data, ([route]) => route) ?? null
   return useMemo(

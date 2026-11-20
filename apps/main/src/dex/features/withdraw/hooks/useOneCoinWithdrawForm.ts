@@ -66,7 +66,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
 
   // Max needs one-coin quote for the entire LP balance. For lending pools with zap, curve-js has no withdrawOneCoinWrappedExpected implementation, so wrapped-token Max is unavailable
   const canWithdrawOneCoin = !isWrapped || !pool?.isLending || !pool.zap
-  const max = q(useWithdrawMaxAmount({ ...poolParams, index, lpAmount: lpBalance.data }, canWithdrawOneCoin))
+  const max = q(useWithdrawMaxAmount({ ...poolParams, index, lpAmount: lpBalance }, canWithdrawOneCoin))
 
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams }

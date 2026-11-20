@@ -54,12 +54,6 @@ const mockEmptyMarketBadDebt = () =>
     cy.intercept({ method: 'GET', pathname, query: { fetch_on_chain: 'true' } }, { body: { data: [] } }),
   )
 
-const mockEmptyCrvUsdAmms = () =>
-  cy.intercept(
-    { method: 'GET', pathname: '/api/getVolumes/ethereum/crvusd-amms' },
-    { body: { success: true, data: { amms: [], totalVolume: 0 }, generatedTimeMs: Date.now() } },
-  )
-
 /** Empty collateral history, optionally limited to post-transaction refresh requests. */
 export const mockCollateralEvents = (newTxOnly = false) => {
   cy.intercept(
@@ -100,7 +94,6 @@ export function setupLlamalendListMocks(vaultData = createLendingVaultChainsResp
   blockUnmockedApis()
   mockEmptyMarketUserData()
   mockEmptyMarketBadDebt()
-  mockEmptyCrvUsdAmms()
   mockLlamalendChartApis()
   mockTokenPrices()
   const lendingVaults = mockLendingVaults(vaultData)

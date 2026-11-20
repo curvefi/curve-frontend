@@ -13,7 +13,7 @@ type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
 
 /** Hook to get lp token and possible gauge token balances */
-export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress }: Params, enabled = true) {
+export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress }: Params, enabled?: boolean) {
   const { curveApi, isHydrated } = useCurve()
   const pool = useMemo(
     () => (isHydrated && poolAddress ? tryGetPool(poolAddress, curveApi) : undefined),
@@ -25,7 +25,7 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolAddress 
     hasGauge,
     lpTokenBalance: q(useTokenBalance({ chainId, userAddress, tokenAddress: pool?.lpToken as Address }, enabled)),
     gaugeTokenBalance: q(
-      useTokenBalance({ chainId, userAddress, tokenAddress: pool?.gauge.address as Address }, enabled && hasGauge),
+      useTokenBalance({ chainId, userAddress, tokenAddress: pool?.gauge.address as Address }, hasGauge && enabled),
     ),
   }
 }
