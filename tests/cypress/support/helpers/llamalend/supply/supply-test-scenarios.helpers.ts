@@ -250,6 +250,7 @@ export const createStakeScenario = ({
       stakeApprove,
       stake,
       isGaugeKilled: createStub(hasGauge ? gaugeKilled : null),
+      isGaugeRegistered: createStub(hasGauge ? true : null),
       estimateGas: { stake: estimateGasStake, stakeApprove: estimateGasStakeApprove },
     },
   })

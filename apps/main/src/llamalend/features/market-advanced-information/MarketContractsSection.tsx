@@ -12,9 +12,9 @@ import {
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketBorrowGaugeAddress } from '@/llamalend/queries/market/market-borrow-gauge-address.query'
 import {
-  useMarketBorrowGaugeKilled,
-  useMarketSupplyGaugeKilled,
-} from '@/llamalend/queries/market/market-gauge-killed.query'
+  useMarketBorrowGaugeStatus,
+  useMarketSupplyGaugeStatus,
+} from '@/llamalend/queries/market/market-gauge-status.query'
 import { useMarketOracleAddress } from '@/llamalend/queries/market/market-oracle-address.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -135,8 +135,8 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
     marketId: market.data?.id,
   })
 
-  const supplyGaugeKilled = q(useMarketSupplyGaugeKilled({ chainId, marketId: market.data?.id }))
-  const borrowGaugeKilled = q(useMarketBorrowGaugeKilled({ chainId, marketId: market.data?.id }))
+  const supplyGaugeStatus = q(useMarketSupplyGaugeStatus({ chainId, marketId: market.data?.id }))
+  const borrowGaugeStatus = q(useMarketBorrowGaugeStatus({ chainId, marketId: market.data?.id }))
 
   const hasContractData = !!market.data || !!apiMarket.data
   const contractsLoading =
@@ -166,17 +166,17 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
     },
     ...(
       [
-        { type: 'supply', address: supplyGaugeAddress, isKilled: supplyGaugeKilled },
-        { type: 'borrow', address: borrowGaugeAddress, isKilled: borrowGaugeKilled },
+        { type: 'supply', address: supplyGaugeAddress, status: supplyGaugeStatus },
+        { type: 'borrow', address: borrowGaugeAddress, status: borrowGaugeStatus },
       ] as const
     ).map(
-      ({ type, address, isKilled }) =>
+      ({ type, address, status }) =>
         address && {
           key: `${type}-gauge`,
           label: (
             <GaugeStatusLabel
               label={{ supply: t`Supply gauge`, borrow: t`Borrow gauge` }[type]}
-              isKilled={combineQueries([market, isKilled], (_, isKilled) => isKilled)}
+              status={combineQueries([market, status], (_, status) => status)}
               testId={`market-contract-${type}-gauge-status`}
             />
           ),

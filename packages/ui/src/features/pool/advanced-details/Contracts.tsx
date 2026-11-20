@@ -6,7 +6,8 @@ import type { Nullish } from '@primitives/objects.utils'
 import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
-import type { QueryProp } from '@ui/features/queries/util'
+import { DISABLED_Q, type QueryProp } from '@ui/features/queries/util'
+import type { GaugeStatus } from '@ui/lib/gauge-status'
 import { t } from '@ui/lib/i18n'
 
 export type ContractsProps = {
@@ -14,7 +15,7 @@ export type ContractsProps = {
   poolAddress: Address
   lpTokenAddress: Address | Nullish
   gaugeAddress?: Address
-  gaugeIsKilled?: QueryProp<boolean | null>
+  gaugeStatus?: QueryProp<GaugeStatus | null>
   hasGauge?: boolean
   oracles?: { address: Address; title: string }[]
   addressDisplay: AddressDisplay
@@ -25,7 +26,7 @@ export const Contracts = ({
   poolAddress,
   lpTokenAddress,
   gaugeAddress,
-  gaugeIsKilled,
+  gaugeStatus,
   hasGauge,
   oracles,
   addressDisplay,
@@ -53,11 +54,11 @@ export const Contracts = ({
             address={gaugeAddress}
             display={addressDisplay}
             title={
-              gaugeIsKilled ? (
-                <GaugeStatusLabel label={t`Gauge`} isKilled={gaugeIsKilled} testId="pool-contract-gauge-status" />
-              ) : (
-                t`Gauge`
-              )
+              <GaugeStatusLabel
+                label={t`Gauge`}
+                status={gaugeStatus ?? DISABLED_Q}
+                testId="pool-contract-gauge-status"
+              />
             }
           />
         )}

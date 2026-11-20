@@ -2,7 +2,7 @@ import { zeroAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
-import { useMarketSupplyGaugeKilled } from '@/llamalend/queries/market/market-gauge-killed.query'
+import { useMarketSupplyGaugeStatus } from '@/llamalend/queries/market/market-gauge-status.query'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import {
   type AssetsToSharesParams,
@@ -47,7 +47,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const marketHasGauge = !!gaugeAddress && gaugeAddress !== zeroAddress
-  const gaugeIsKilled = useMarketSupplyGaugeKilled({ chainId, marketId })
+  const gaugeStatus = useMarketSupplyGaugeStatus({ chainId, marketId })
   const marketAlert = useMarketAlert(chainId, controllerAddress, MarketType.Lend)
 
   const { borrowToken, collateralToken } = tokens
@@ -103,10 +103,10 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     userAddress,
     borrowToken,
     collateralToken,
-    error: formActions.error ?? stakeError ?? gaugeIsKilled.error,
+    error: formActions.error ?? stakeError ?? gaugeStatus.error,
     max: maxStakeAssets,
     isApproved: q(useStakeIsApproved(params)),
-    gauge: { hasGauge: marketHasGauge, isKilled: gaugeIsKilled.data },
+    gauge: { hasGauge: marketHasGauge, isKilled: gaugeStatus.data === 'inactive' },
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal,
