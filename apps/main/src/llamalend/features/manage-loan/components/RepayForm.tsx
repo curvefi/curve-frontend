@@ -18,7 +18,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { Form } from '@ui/features/forms/components/Form'
+import { FormContainer } from '@ui/features/forms/components/FormContainer'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { type QueryProp, type Range } from '@ui/features/queries/util'
@@ -75,10 +75,8 @@ export const RepayForm = <ChainId extends IChainId>({
   const {
     form,
     values,
-    params,
     isPending,
     isLoading,
-    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -132,16 +130,13 @@ export const RepayForm = <ChainId extends IChainId>({
   )
 
   return (
-    <Form
-      {...form}
+    <FormContainer
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
           controllerAddress={controllerAddress}
           marketType={marketType}
           form={form}
-          params={params}
-          values={values}
           isControllerApproved={isControllerApproved.data}
           tokens={{ collateralToken, borrowToken }}
           showLeverage={showLeverage}
@@ -187,7 +182,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <LoanActionSettings
         show={showLeverage}
         slippage={values.slippage}
-        onSlippageChange={slippage => updateForm({ slippage })}
+        onSlippageChange={slippage => updateForm({ slippage }, { mode: 'immediate' })}
         routes={routes}
         exchangeRate={exchangeRate}
         priceImpact={priceImpact}
@@ -200,7 +195,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
+        disabled={form.isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
         label={[
           [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
@@ -219,6 +214,6 @@ export const RepayForm = <ChainId extends IChainId>({
         userAddress={userAddress}
       />
       <LeverageDelegationModal {...delegationModal} />
-    </Form>
+    </FormContainer>
   )
 }
