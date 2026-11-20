@@ -216,7 +216,6 @@ export const createStakeScenario = ({
   chainId: number
   approved: boolean
   hasGauge?: boolean
-  /** Whether the DAO added the gauge to the GaugeController */
   gaugeRegistered?: boolean
   gaugeKilled?: boolean
 }) => {

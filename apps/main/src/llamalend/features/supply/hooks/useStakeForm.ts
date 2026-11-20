@@ -47,7 +47,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const gaugeStatus = useMarketSupplyGaugeStatus({ chainId, marketId })
-  /** Missing when the market has no gauge to stake in. The status is left out when it fails to load. */
   const gauge = gaugeAddress && gaugeAddress !== zeroAddress ? { status: gaugeStatus.data } : undefined
   const marketAlert = useMarketAlert(chainId, controllerAddress, MarketType.Lend)
 
