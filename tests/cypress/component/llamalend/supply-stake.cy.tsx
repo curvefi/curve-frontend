@@ -18,23 +18,37 @@ import {
 import { Chain } from '@primitives/network.utils'
 
 const chainId = Chain.Ethereum
-const testCases: { approved: boolean; title: string; buttonText: string; hasGauge?: boolean; gaugeKilled?: boolean }[] =
-  [
-    { approved: true, title: 'fills and submits (already approved)', buttonText: 'Stake' },
-    { approved: false, title: 'fills, approves, and submits', buttonText: 'Approve & Stake' },
-    { approved: true, title: 'fills and cannot submit (no gauge)', buttonText: '', hasGauge: false },
-    { approved: true, title: 'warns and still submits (killed gauge)', buttonText: 'Stake', gaugeKilled: true },
-  ]
+const testCases: {
+  approved: boolean
+  title: string
+  buttonText: string
+  hasGauge?: boolean
+  gaugeRegistered?: boolean
+  gaugeKilled?: boolean
+}[] = [
+  { approved: true, title: 'fills and submits (already approved)', buttonText: 'Stake' },
+  { approved: false, title: 'fills, approves, and submits', buttonText: 'Approve & Stake' },
+  { approved: true, title: 'fills and cannot submit (no gauge)', buttonText: '', hasGauge: false },
+  { approved: true, title: 'warns and still submits (killed gauge)', buttonText: 'Stake', gaugeKilled: true },
+  {
+    approved: true,
+    title: 'does not warn and still submits (killed gauge never approved by the DAO)',
+    buttonText: 'Stake',
+    gaugeRegistered: false,
+    gaugeKilled: true,
+  },
+]
 
 describe('StakeForm (mocked)', () => {
   beforeEach(setupMockedLlamalendComponentTest)
 
-  testCases.forEach(({ approved, title, buttonText, hasGauge, gaugeKilled }) => {
+  testCases.forEach(({ approved, title, buttonText, hasGauge, gaugeRegistered, gaugeKilled }) => {
     it(title, () => {
       const { input, market, llamaApi, expected, stubs } = createStakeScenario({
         chainId,
         approved,
         hasGauge,
+        gaugeRegistered,
         gaugeKilled,
       })
 
@@ -49,7 +63,7 @@ describe('StakeForm (mocked)', () => {
 
       readStakeAvailableAssets(true)
       writeStakeForm({ assets: input.amount })
-      checkStakeSubmit({ buttonText, hasGauge, gaugeKilled, isMocked: true })
+      checkStakeSubmit({ buttonText, hasGauge, gaugeKilled: gaugeKilled && gaugeRegistered !== false, isMocked: true })
       // stop test if no gauge because no gas estimation and submit disabled
       if (!hasGauge) return
       checkSupplyActionInfoValues({ ...expected.actionInfo, isMocked: true })

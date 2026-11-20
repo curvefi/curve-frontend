@@ -46,8 +46,9 @@ const { useQuery: useStakeAssetsToShares } = queryFactory({
 export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
   const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
-  const marketHasGauge = !!gaugeAddress && gaugeAddress !== zeroAddress
   const gaugeStatus = useMarketSupplyGaugeStatus({ chainId, marketId })
+  /** Missing when the market has no gauge to stake in. The status is left out when it fails to load. */
+  const gauge = gaugeAddress && gaugeAddress !== zeroAddress ? { status: gaugeStatus.data } : undefined
   const marketAlert = useMarketAlert(chainId, controllerAddress, MarketType.Lend)
 
   const { borrowToken, collateralToken } = tokens
@@ -99,15 +100,14 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     isPending,
     isLoading: isPending || !marketId || formActions.isLoading,
     onSubmit,
-    isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
+    isDisabled: !!disabledAlert || !formState.isValid || !gauge || isPending || isDebouncing,
     userAddress,
     borrowToken,
     collateralToken,
     error: formActions.error ?? stakeError,
     max: maxStakeAssets,
     isApproved: q(useStakeIsApproved(params)),
-    /** Missing when the market has no gauge to stake in. The killed warning is skipped when the status fails to load. */
-    gauge: marketHasGauge ? { isKilled: gaugeStatus.data === 'inactive' } : undefined,
+    gauge,
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal,

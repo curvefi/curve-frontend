@@ -210,11 +210,14 @@ export const createStakeScenario = ({
   chainId,
   approved,
   hasGauge = true,
+  gaugeRegistered = true,
   gaugeKilled = false,
 }: {
   chainId: number
   approved: boolean
   hasGauge?: boolean
+  /** Whether the DAO added the gauge to the GaugeController */
+  gaugeRegistered?: boolean
   gaugeKilled?: boolean
 }) => {
   const input = { amount: '15' as const }
@@ -250,7 +253,7 @@ export const createStakeScenario = ({
       stakeApprove,
       stake,
       isGaugeKilled: createStub(hasGauge ? gaugeKilled : null),
-      isGaugeRegistered: createStub(hasGauge ? true : null),
+      isGaugeRegistered: createStub(hasGauge ? gaugeRegistered : null),
       estimateGas: { stake: estimateGasStake, stakeApprove: estimateGasStakeApprove },
     },
   })

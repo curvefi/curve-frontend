@@ -67,7 +67,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         onValueChange={value => updateForm({ isFull: value === max.data })}
       />
 
-      {gauge?.isKilled && <AlertGaugeKilled />}
+      {gauge?.status === 'inactive' && <AlertGaugeKilled />}
 
       <EvmFormButton
         pending={isPending}
