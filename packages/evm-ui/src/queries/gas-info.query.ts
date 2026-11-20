@@ -34,7 +34,7 @@ const BASE_CHAIN_GAS_CONFIG: ChainGasConfig = {
 }
 
 const CHAIN_GAS_CONFIGS: PartialRecord<Chain, Partial<ChainGasConfig>> = {
-  [Chain.Ethereum]: { gasPricesUrl: 'https://api.curve.finance/api/getGas', gasPricesDefault: 1 },
+  [Chain.Ethereum]: { gasPricesUrl: 'https://prices.curve.finance/v1/gas', gasPricesDefault: 1 },
   [Chain.Optimism]: { gasL2: true },
   [Chain.Polygon]: { gasPricesUrl: 'https://gasstation.polygon.technology/v2', gasPricesDefault: 0 },
   [Chain.Kava]: { gasPricesUnit: 'UKAVA' },

@@ -47,8 +47,7 @@ export type UserGaugeVoteWeight = {
 
 type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
-export type SortByFilterGaugesKeys =
-  'gauge_relative_weight' | 'gauge_relative_weight_7d_delta' | 'gauge_relative_weight_60d_delta'
+export type SortByFilterGaugesKeys = 'weightRelative' | 'weightRelativeDelta7d' | 'weightRelativeDelta60d'
 export type SortByFilterGauges = { key: SortByFilterGaugesKeys; order: SortDirection }
 export type SortDirection = 'asc' | 'desc'
 export type TopHoldersSortBy = 'weight' | 'locked' | 'weightRatio'

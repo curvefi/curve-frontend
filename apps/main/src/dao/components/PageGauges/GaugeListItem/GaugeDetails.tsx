@@ -4,7 +4,6 @@ import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
@@ -28,7 +27,7 @@ const StyledInformationSquare16: IStyledComponent<'web', SvgIconProps> = styled(
 export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
-  const emissions = isSideChain ? gaugeData.prev_epoch_emissions : gaugeData.emissions
+  const emissions = isSideChain ? gaugeData.prevEpochEmissions : gaugeData.emissions
 
   return (
     <Wrapper className={className}>
@@ -58,18 +57,18 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
                 </Box>
               )}
               <h5>
-                {gaugeData.pool?.trading_volume_24h
-                  ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                      ...(gaugeData.pool.trading_volume_24h > 10 && { decimals: 0 }),
+                {gaugeData.pool?.tradingVolume24h
+                  ? formatNumber(gaugeData.pool.tradingVolume24h, {
+                      ...(gaugeData.pool.tradingVolume24h > 10 && { decimals: 0 }),
                       unit: 'dollar',
                       abbreviate: false,
                     })
                   : 'N/A'}
               </h5>
               <h5>
-                {gaugeData.pool?.tvl_usd
-                  ? formatNumber(gaugeData.pool.tvl_usd, {
-                      ...(gaugeData.pool.tvl_usd > 10 && { decimals: 0 }),
+                {gaugeData.pool?.tvlUsd
+                  ? formatNumber(gaugeData.pool.tvlUsd, {
+                      ...(gaugeData.pool.tvlUsd > 10 && { decimals: 0 }),
                       unit: 'dollar',
                       abbreviate: false,
                     })
@@ -105,7 +104,7 @@ export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormatt
               {isSideChain && <StyledInformationSquare16 sx={{ fontSize: 16 }} className="svg-tooltip" />}
             </h5>
           </Chip>
-          <h5>{formatDate(parseTimestamp(gaugeData.creation_date), 'long')}</h5>
+          <h5>{formatDate(gaugeData.creationDate, 'long')}</h5>
         </StatsRow>
       </Box>
     </Wrapper>

@@ -19,6 +19,7 @@ import {
   sumExtraIncentivesApy,
 } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
+import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lending-vaults.query'
 import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
@@ -37,7 +38,7 @@ import { aprToApy } from '@ui/lib/rates.utils'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
-import { getLendingVaultsOptions, type LendingPosition, LendingVault } from './lending-vaults'
+import { type LendingPosition } from './lending-vaults'
 import { type UserHasPosition, type UserHasPositions, useUserLlamaPositions } from './llama-market-positions'
 import { getMintMarketOptions, MintMarket } from './mint-markets'
 
