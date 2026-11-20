@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography'
 import { InlineLink } from '@ui/components/InlineLink'
 import { ModalDialog } from '@ui/components/ModalDialog'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
-import { FormStateDebug } from '@ui/features/forms/FormStateDebug'
 import { usePinataJwt } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { EyeClosed } from '@ui/icons/EyeClosed'
@@ -139,7 +138,6 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
           userAddress={userAddress}
         />
       </Stack>
-      <FormStateDebug {...form} />
     </ModalDialog>
   )
 }
