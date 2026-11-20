@@ -26,8 +26,7 @@ export const WithdrawActionInfoList = ({
   toSymbol?: string
   onSlippageChange: (slippage: Decimal) => void
 }) => {
-  const simulation = useWithdrawSimulation({ ...params, expectedLp: expectedLp.data })
-
+  const simulation = useWithdrawSimulation({ ...params, expectedLp })
   return (
     <PoolActionInfoList
       {...(params.mode === 'unbalanced' && {

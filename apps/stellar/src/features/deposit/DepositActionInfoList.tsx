@@ -29,9 +29,9 @@ export const DepositActionInfoList = ({
   const expectedLp = q(useExpectedLp({ ...queryParams, isDeposit: true }))
   const config = usePoolConfig(params)
   const supply = usePoolSupply(params)
-  const simulation = useDepositSimulation({ ...queryParams, expectedLp: expectedLp.data })
-  const lpDecimals = useTokenDecimals({ ...params, token: pool })
-  const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals.data })
+  const simulation = useDepositSimulation({ ...queryParams, expectedLp })
+  const lpDecimals = q(useTokenDecimals({ ...params, token: pool }))
+  const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals })
   return (
     <PoolActionInfoList
       slippageType="stable"

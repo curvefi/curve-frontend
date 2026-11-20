@@ -49,8 +49,8 @@ export const useUserPositionsTable = (
     positions,
     useCallback(positions => positions.map(({ address }) => address), []),
   )
-  const boosts = useUserPoolBoosts({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled && !isLite)
-  const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: poolAddresses.data }, enabled)
+  const boosts = useUserPoolBoosts({ chainId, userAddress, poolAddresses }, enabled && !isLite)
+  const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses }, enabled)
 
   const tokenAddresses = useMappedQuery(
     positions,

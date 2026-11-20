@@ -16,45 +16,47 @@ import { type UserState, useUserState } from '@/llamalend/queries/user/user-stat
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { DISABLED_Q, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 
 /** Leverage of the open position (current) and of the position after the action (future) */
 export type EquityLeverage = {
+  /** Whether the open position or the action borrows through the zap */
+  isZapLeveraged: QueryProp<boolean>
+  /** Null when neither the open position nor the action borrows through the zap */
   current: QueryProp<Decimal | null>
+  /** Null when neither the open position nor the action borrows through the zap */
   future: QueryProp<Decimal | null>
   /** The leverage the open position opened at */
   opening: QueryProp<Decimal | null>
 }
 
-/**
- * Equity leverage of the open position and of the position after the action.
- * Returns null when it is not shown: disabled, or neither the open position nor the action borrows through the zap.
- */
+/** Equity leverage of the open position and of the position after the action */
 export function useEquityLeverage(
   {
     params,
     futurePosition = DISABLED_Q,
     isZapBorrow = false,
   }: { params: UserMarketParams; futurePosition?: QueryProp<UserState | null>; isZapBorrow?: boolean },
-  enabled = true,
-): EquityLeverage | null {
-  const isEnabled = useLlamalendEquityLeverage() && enabled
+  enabled?: boolean,
+): EquityLeverage {
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
   const collateralEvents = useUserCollateralEvents({ app: marketType, controllerAddress, chainId, userAddress, tokens })
-  const oraclePrice = q(useMarketOraclePrice(params, isEnabled))
-  const equityLeverage = {
-    current: combineQueries([q(useUserState(params, isEnabled)), oraclePrice], getEquityLeverage),
-    future: combineQueries(
-      [futurePosition, oraclePrice],
-      (position, oraclePrice) => position && getEquityLeverage(position, oraclePrice),
+  const oraclePrice = q(useMarketOraclePrice(params, enabled))
+  const isZapLeveraged = isZapBorrow ? constQ(true) : mapQuery(collateralEvents, events => events.isZapLeveraged)
+  return {
+    isZapLeveraged,
+    current: combineQueries(
+      [isZapLeveraged, q(useUserState(params, enabled)), oraclePrice],
+      (isZapLeveraged, position, oraclePrice) => (isZapLeveraged ? getEquityLeverage(position, oraclePrice) : null),
+    ),
+    future: combineQueries([isZapLeveraged, futurePosition, oraclePrice], (isZapLeveraged, position, oraclePrice) =>
+      isZapLeveraged && position ? getEquityLeverage(position, oraclePrice) : null,
     ),
     opening: mapQuery(collateralEvents, ({ openingLeverage }) => openingLeverage),
   }
-  return isEnabled && (isZapBorrow || collateralEvents.data?.isZapLeveraged) ? equityLeverage : null
 }
 
 export function useCreateLoanEquityLeverage(params: CreateLoanFormQueryParams) {
@@ -78,11 +80,11 @@ export function useBorrowMoreEquityLeverage(params: BorrowMoreParams) {
   })
 }
 
-export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled = true) =>
+export const useRepayEquityLeverage = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled?: boolean) =>
   useEquityLeverage({ params, futurePosition: useRepayFuturePosition(params, debt, enabled) }, enabled)
 
-export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
+export const useAddCollateralEquityLeverage = (params: CollateralParams, enabled?: boolean) =>
   useEquityLeverage({ params, futurePosition: useAddCollateralFuturePosition(params, enabled) }, enabled)
 
-export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled = true) =>
+export const useRemoveCollateralEquityLeverage = (params: CollateralParams, enabled?: boolean) =>
   useEquityLeverage({ params, futurePosition: useRemoveCollateralFuturePosition(params, enabled) }, enabled)

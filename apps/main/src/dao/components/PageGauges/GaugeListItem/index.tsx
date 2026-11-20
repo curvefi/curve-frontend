@@ -11,13 +11,12 @@ import { TitleComp } from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
+import { useGaugeDepositUrl } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { daoPages } from '@evm-ui/shared/routes'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { IconButton } from '@legacy-ui/IconButton'
-import type { Address } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { ChevronDownIcon } from '@ui/icons/ChevronDownIcon'
@@ -47,17 +46,12 @@ export const GaugeListItem = ({
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress,
     userAddress,
   })
-  const { data: gaugesLegacy } = useGaugesLegacy({})
-
-  const gaugeCurveApiData =
-    gaugesLegacy?.[gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()]
-
   const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
   const currentDate = useCurrentDate()
   const canVote = !userGaugeVoteNextTime || currentDate.getTime() > userGaugeVoteNextTime
 
-  const gaugeExternalLink = getGaugeDepositUrl(gaugeCurveApiData)
+  const gaugeExternalLink = useGaugeDepositUrl(gaugeData)
 
   return (
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
@@ -93,7 +87,7 @@ export const GaugeListItem = ({
                 />
               </VoteGaugeFieldWrapper>
             )}
-            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
+            <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} />
           </ChartWrapper>
           <GaugeDetails gaugeData={gaugeData} />
           <Box
@@ -104,13 +98,11 @@ export const GaugeListItem = ({
           >
             <ExternalLinkIconButton
               href={gaugeExternalLink}
-              tooltip={t`Visit gauge ${gaugeCurveApiData?.isPool ? 'pool' : 'market'}`}
+              tooltip={t`Visit gauge ${gaugeData.pool ? 'pool' : 'market'}`}
             >
-              {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
+              {t`VISIT ${gaugeData.pool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton
-              to={daoPages.gauge({ gaugeAddress: (gaugeData.effective_address ?? gaugeData.address) as Address })}
-            >
+            <InternalLinkButton to={daoPages.gauge({ gaugeAddress: gaugeData.effectiveAddress ?? gaugeData.address })}>
               {t`VISIT GAUGE`}
             </InternalLinkButton>
           </Box>

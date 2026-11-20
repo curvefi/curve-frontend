@@ -2,7 +2,8 @@ import { skipWhen, test } from 'vest'
 import { getMarket, hasGauge, hasVault, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
+import type { MarketParams, UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
+import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, assert } from '@primitives/objects.utils'
@@ -135,6 +136,11 @@ const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketPa
   userMarketValidationSuite.run(params)
   validateHasVault(params.marketId)
 }
+
+export const marketVaultValidationSuite = createValidationSuite((params: MarketParams) => {
+  marketIdValidationSuite.run(params)
+  validateHasVault(params.marketId)
+})
 
 export const supplyUserValidationSuite = createValidationSuite<UserMarketParams>(params => {
   supplyUserValidationGroup(params)

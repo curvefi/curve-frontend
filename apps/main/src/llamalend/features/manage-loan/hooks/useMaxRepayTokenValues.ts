@@ -1,9 +1,6 @@
 import { useEffect } from 'react'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import {
-  resetRepayExpectedBorrowed,
-  useRepayExpectedBorrowed,
-} from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import { resetRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
@@ -38,12 +35,11 @@ export function useMaxRepayTokenValues({
     mapQuery(userState, d => d.debt),
   )
 
-  useFormSync(form, { maxBorrowed: maxBorrowed.data })
+  useFormSync(form, { maxBorrowed: maxBorrowed.data, maxStateCollateral: userState.data?.collateral })
   useEffect(
     () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],
   )
-  useFormSync(form, { maxStateCollateral: userState.data?.collateral })
 
   // some repay queries depend on LL internal cache for expected collateral, reset when new market data arrives
   useOnChangeCallback(market, () => resetRepayExpectedBorrowed(params))
@@ -53,7 +49,6 @@ export function useMaxRepayTokenValues({
     max: {
       userBorrowed: { ...q(maxBorrowed), fieldName: 'maxBorrowed' as const },
       stateCollateral: { ...mapQuery(userState, d => d.collateral), fieldName: 'maxStateCollateral' as const },
-      expected: useRepayExpectedBorrowed(params),
     },
   }
 }

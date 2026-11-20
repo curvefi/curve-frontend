@@ -3,10 +3,9 @@ import { getAddress } from 'viem'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
-import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
+import { useGaugeDepositUrl } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { scanAddressPath } from '@legacy-ui/utils/'
@@ -18,13 +17,11 @@ import { t } from '@ui/lib/i18n'
 type GaugeMetricsProps = { gaugeData: GaugeFormattedData | undefined; dataLoading: boolean }
 
 export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
-  const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
-  const { data: gaugesLegacy } = useGaugesLegacy({})
-  const gaugeCurveApiData = gaugesLegacy?.[gaugeAddress]
+  const gaugeAddress = gaugeData?.effectiveAddress?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
-  const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions
-  const gaugeExternalLink = getGaugeDepositUrl(gaugeCurveApiData)
+  const emissions = isSideChain ? gaugeData?.prevEpochEmissions : gaugeData?.emissions
+  const gaugeExternalLink = useGaugeDepositUrl(gaugeData)
 
   return (
     <Wrapper>
@@ -58,11 +55,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
         <MetricsComp
           loading={dataLoading}
           title={t`Created`}
-          data={
-            <StyledMetricsColumnData>
-              {gaugeData && formatDate(parseTimestamp(gaugeData.creation_date))}
-            </StyledMetricsColumnData>
-          }
+          data={<StyledMetricsColumnData>{gaugeData && formatDate(gaugeData.creationDate)}</StyledMetricsColumnData>}
         />
         {emissions ? (
           <MetricsComp
@@ -82,9 +75,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           title={t`Relative Weight`}
           data={
             <StyledMetricsColumnData>
-              {gaugeData?.gauge_relative_weight
-                ? `${formatNumber(gaugeData.gauge_relative_weight, { abbreviate: true })}%`
-                : 'N/A'}
+              {gaugeData?.weightRelative ? `${formatNumber(gaugeData.weightRelative, { abbreviate: true })}%` : 'N/A'}
             </StyledMetricsColumnData>
           }
         />
@@ -94,15 +85,11 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           data={
             <StyledMetricsColumnData
               className={`${
-                gaugeData?.gauge_relative_weight_7d_delta
-                  ? gaugeData?.gauge_relative_weight_7d_delta > 0
-                    ? 'green'
-                    : 'red'
-                  : ''
+                gaugeData?.weightRelativeDelta7d ? (gaugeData?.weightRelativeDelta7d > 0 ? 'green' : 'red') : ''
               }`}
             >
-              {gaugeData?.gauge_relative_weight_7d_delta
-                ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, { abbreviate: true })}%`
+              {gaugeData?.weightRelativeDelta7d
+                ? `${formatNumber(gaugeData.weightRelativeDelta7d, { abbreviate: true })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -113,15 +100,11 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           data={
             <StyledMetricsColumnData
               className={`${
-                gaugeData?.gauge_relative_weight_60d_delta
-                  ? gaugeData?.gauge_relative_weight_60d_delta > 0
-                    ? 'green'
-                    : 'red'
-                  : ''
+                gaugeData?.weightRelativeDelta60d ? (gaugeData?.weightRelativeDelta60d > 0 ? 'green' : 'red') : ''
               }`}
             >
-              {gaugeData?.gauge_relative_weight_60d_delta
-                ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, { abbreviate: true })}%`
+              {gaugeData?.weightRelativeDelta60d
+                ? `${formatNumber(gaugeData.weightRelativeDelta60d, { abbreviate: true })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -137,10 +120,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
                   <StyledMetricsColumnData>{shortenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
                   <BigScreenButtonsWrapper>
-                    <ExternalLinkIconButton
-                      href={gaugeExternalLink}
-                      tooltip={gaugeCurveApiData?.isPool ? t`Visit pool` : t`Visit market`}
-                    />
+                    <ExternalLinkIconButton href={gaugeExternalLink} tooltip={t`Visit pool`} />
                     <CopyIconButton
                       copyContent={gaugeData?.pool?.address}
                       format={getAddress}
@@ -159,23 +139,23 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             </SmallScreenButtonsWrapper>
           </Box>
         )}
-        {gaugeData?.pool?.tvl_usd ? (
+        {gaugeData?.pool?.tvlUsd ? (
           <MetricsComp
             loading={dataLoading}
             title={t`Pool TVL`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, 'usd.notional')}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvlUsd, 'usd.notional')}`}</StyledMetricsColumnData>
             }
           />
         ) : (
           ''
         )}
-        {gaugeData?.pool?.trading_volume_24h ? (
+        {gaugeData?.pool?.tradingVolume24h ? (
           <MetricsComp
             loading={dataLoading}
             title={t`24h Pool Volume`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, 'usd.notional')}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tradingVolume24h, 'usd.notional')}`}</StyledMetricsColumnData>
             }
           />
         ) : (

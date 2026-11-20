@@ -45,7 +45,7 @@ export const MintMarketPage = () => {
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
 
-  const queryParams = { chainId, marketId: market?.id, userAddress: address }
+  const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m.id), userAddress: address }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
 
   const network = networks[chainId]
@@ -104,7 +104,7 @@ export const MintMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={<MarketPageHeader />}
         {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners chainId={chainId} market={market} />

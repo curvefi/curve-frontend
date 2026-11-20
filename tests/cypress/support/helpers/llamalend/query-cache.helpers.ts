@@ -1,7 +1,7 @@
 import { type Address, erc20Abi, parseUnits } from 'viem'
 import { getBadDebtLendMarketsOptions } from '@/llamalend/queries/market/market-bad-debt.query'
-import { getLendingVaultsOptions, type LendingVault } from '@/llamalend/queries/market-list/lending-vaults'
 import { oneAddress, oneInt } from '@cy/support/generators'
+import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lending-vaults.query'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import type { Decimal } from '@primitives/decimal.utils'

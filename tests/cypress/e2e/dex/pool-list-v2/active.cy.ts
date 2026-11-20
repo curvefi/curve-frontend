@@ -22,7 +22,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get('[data-testid^="data-table-row-"]').should('have.length', active ? 2 : 3)
       cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
     }
-    cy.get('@dex-v2-lite-pools.all').should('have.length', 1)
+    cy.get('@dex-v2-lite-pools.all').should('have.length', 2)
     cy.get('@dex-v2-pools.all').should('have.length', 0)
   })
 })
