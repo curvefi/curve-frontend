@@ -1,6 +1,5 @@
-import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, maybe, maybes } from '@primitives/objects.utils'
-import type { FieldPath, FieldPathByValue } from '@ui/features/forms'
+import type { FieldPath } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
@@ -17,7 +16,7 @@ export const OneCoinDepositForm = <TValues extends PoolDepositForm>(props: Depos
     <DepositForm {...props}>
       <FormTokenInput
         form={form}
-        name={field as FieldPathByValue<TValues, Decimal | undefined>}
+        name={field}
         max={maybe(maxAmounts?.[index], balance => ({ balance }))}
         relatedFields={[poolMaxAmountField(index) as FieldPath<TValues>]}
         label={t`Deposit`}

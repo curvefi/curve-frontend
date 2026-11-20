@@ -1,18 +1,31 @@
-import { identity } from 'lodash'
 import { useEffect } from 'react'
-import { useShallow } from 'zustand/react/shallow'
-import type { FormUpdates, UseFormReturn, FieldValues } from './form.types'
+import { useShallowData } from '@ui/hooks/useShallowData'
+import type { FieldValues, FormUpdates, UseFormReturn } from './form.types'
+import type { FormValues } from './useFormValues'
 
 /**
- * Syncs the form when the supplied fields change. Omitted fields are left unchanged.
+ * Syncs supplied fields when they change or the form resets, while enabled. Omitted fields are left unchanged.
  */
-export const useFormSync = <T extends FieldValues>(
-  { update: updateForm }: Pick<UseFormReturn<T>, 'update'>,
+export function useFormSync<T extends FieldValues>(
+  form: Pick<UseFormReturn<T>, 'update'>,
   values: FormUpdates<T>,
+  enabled?: boolean,
+): void
+export function useFormSync<T extends object>(
+  form: Pick<FormValues<T>, 'update' | 'resetVersion'>,
+  values: Partial<T>,
+  enabled?: boolean,
+): void
+export function useFormSync(
+  form: Pick<UseFormReturn, 'update'> | Pick<FormValues<FieldValues>, 'update' | 'resetVersion'>,
+  values: FieldValues,
   enabled = true,
-) => {
-  const stableValues = useShallow(identity<FormUpdates<T>>)(values)
+) {
+  const { update } = form
+  const isFormValues = 'resetVersion' in form // whether we use the newer useFormValues hook.
+  const resetVersion = isFormValues && form.resetVersion
+  const stableValues = useShallowData(values)
   useEffect(() => {
-    if (enabled) updateForm(stableValues, { automated: true })
-  }, [enabled, updateForm, stableValues])
+    if (enabled) update(stableValues, isFormValues ? { mode: 'automatic' } : { automated: true })
+  }, [enabled, update, isFormValues, stableValues, resetVersion])
 }
