@@ -3,14 +3,19 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 
 const { Spacing } = SizesAndSpaces
 
-export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
-  const { update: updateForm, formState, values } = useFormContext<AddRewardFormValues>()
+export const DistributorInput = ({
+  form: { update: updateForm, formState, values },
+  disabled,
+}: {
+  form: UseFormReturn<AddRewardFormValues>
+  disabled: boolean
+}) => {
   const distributorError = formState.visibleErrors.find(([field]) => field === 'distributorId')?.[1]
   return (
     <Stack sx={{ flex: 1, gap: Spacing.xxs }}>
