@@ -41,7 +41,10 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
       row: {
         original: { deltas, timestamp, valueUsd },
       },
-    }) => <ActivityUsdValueCell amount={deltas[0]?.amount ?? 0} amountUsd={valueUsd} timestamp={timestamp} />,
+    }) =>
+      valueUsd !== undefined && (
+        <ActivityUsdValueCell amount={deltas[0]?.amount ?? 0} amountUsd={valueUsd} timestamp={timestamp} />
+      ),
     meta: { type: 'numeric' },
   }),
   columnHelper.display({

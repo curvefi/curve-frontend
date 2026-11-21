@@ -28,7 +28,7 @@ import {
  * Borrow more = "Borrow" type when debt increases but collateral doesn't.
  * Repay and Close = "Repay" when debt goes to 0.
  */
-export type UserCollateralEventType =
+export type UserBorrowEventType =
   | 'Open Position'
   | 'Borrow'
   | 'Liquidate'
@@ -42,6 +42,7 @@ export type UserCollateralEventType =
   | 'Partial Liquidation'
 
 const OriginalFields = [
+  'user',
   'loanChange',
   'loanChangeUsd',
   'collateralChange',
@@ -50,13 +51,13 @@ const OriginalFields = [
   'txHash',
 ] as const
 
-export type ParsedUserCollateralEvent = Pick<ApiCollateralEvent, (typeof OriginalFields)[number]> & {
+export type ParsedUserBorrowEvent = Pick<ApiCollateralEvent, (typeof OriginalFields)[number]> & {
   chainId: number
-  type: UserCollateralEventType
+  type: UserBorrowEventType
 } & Partial<MarketTokens>
 
-export type UserCollateralEvents = {
-  events: ParsedUserCollateralEvent[]
+export type UserBorrowEvents = {
+  events: ParsedUserBorrowEvent[]
   /** @deprecated Total deposit ÷ deposit from the user. Use `isZapLeveraged` to know if the position borrowed through the zap. */
   originalLeverage: Decimal
   /** The open position borrowed through the leverage zap */
@@ -68,7 +69,7 @@ export type UserCollateralEvents = {
 const parseEventType = (
   { type, loanChange, collateralChange, liquidation, user, isPositionClosed }: ApiCollateralEvent,
   previousEvent: ApiCollateralEvent | undefined,
-): UserCollateralEventType => {
+): UserBorrowEventType => {
   // when !previousEvent it's the first event. if isPositionClosed, the next 'Borrow' must be 'Open position'
   if (type === 'Borrow' && (!previousEvent || previousEvent.isPositionClosed)) return 'Open Position'
   if (type === 'Borrow' && loanChange > 0 && collateralChange === 0) return 'Borrow More'
@@ -81,7 +82,7 @@ const parseEventType = (
   return type
 }
 
-export type UserCollateralEventsProps = {
+export type UserBorrowEventsProps = {
   app: MarketType
   userAddress: Address | undefined
   controllerAddress: Address | undefined
@@ -89,13 +90,13 @@ export type UserCollateralEventsProps = {
   tokens: Partial<MarketTokens>
 }
 
-export const useUserCollateralEvents = ({
+export const useUserBorrowEvents = ({
   app,
   userAddress,
   controllerAddress,
   chainId,
   tokens: { collateralToken, borrowToken },
-}: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
+}: UserBorrowEventsProps): QueryProp<UserBorrowEvents> => {
   const params = { blockchainId: BlockchainIds[chainId], contractAddress: controllerAddress, userAddress }
   const { data, isLoading, error } = {
     [MarketType.Lend]: useUserLendCollateralEventsQuery(params, app === MarketType.Lend),
