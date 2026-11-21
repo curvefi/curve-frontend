@@ -8,11 +8,14 @@ import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { oneCoinWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
+import { useWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
+import { useWithdrawOneCoinQuote } from '@/stellar/queries/withdraw/withdraw-one-coin-quote.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
+import { useWithdrawQuoteQueries } from '@ui/features/pool-forms/withdraw/useWithdrawQuoteQueries'
 import {
   oneCoinWithdrawDefaultValues as userDefaultValues,
   type OneCoinWithdrawFormValues,
@@ -21,7 +24,7 @@ import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalEqual } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
-import { useWithdrawQuoteQueries } from './useWithdrawQuoteQueries'
+import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 
 const formOptions = {
   validation: oneCoinWithdrawFormValidationSuite,
@@ -53,13 +56,15 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const index = values.tokenIndex
   const { max, expectedLp, quotedAmount, params, priceImpact } = useWithdrawQuoteQueries({
-    ...poolParams,
-    account,
+    poolParams: { ...poolParams, account },
     values,
     debounced,
     isDebouncing,
     decimals,
     lpBalance,
+    useWithdrawMaxAmount,
+    useWithdrawOneCoinQuote,
+    useWithdrawPriceImpact,
   })
 
   useFormSync(form, {

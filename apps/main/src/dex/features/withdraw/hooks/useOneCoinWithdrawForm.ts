@@ -6,10 +6,14 @@ import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBala
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
+import { useWithdrawPriceImpact } from '@/dex/queries/withdraw/withdraw-bonus.query'
+import { useWithdrawMaxAmount } from '@/dex/queries/withdraw/withdraw-max-amounts.query'
+import { useWithdrawOneCoinQuote } from '@/dex/queries/withdraw/withdraw-one-coin-quote.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
+import { useWithdrawQuoteQueries } from '@ui/features/pool-forms/withdraw/useWithdrawQuoteQueries'
 import {
   oneCoinWithdrawDefaultValues as userDefaultValues,
   type OneCoinWithdrawFormValues,
@@ -20,7 +24,6 @@ import { decimalEqual } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import { useWithdrawMutation } from '../withdraw.mutation'
 import { oneCoinWithdrawFormValidationSuite } from '../withdraw.validation'
-import { useWithdrawQuoteQueries } from './useWithdrawQuoteQueries'
 
 export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const {
@@ -64,13 +67,16 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   // curve-js has no wrapped one-coin quote or withdrawal for lending pools with a zap.
   const canWithdrawWrapped = !!hasWrapped(pool) && !(pool?.isLending && pool.zap)
   const { max, expectedLp, quotedAmount, params, priceImpact } = useWithdrawQuoteQueries({
-    ...poolParams,
+    poolParams,
     values,
     debounced,
     isDebouncing,
     decimals,
     lpBalance,
     enabled: !isWrapped || canWithdrawWrapped,
+    useWithdrawMaxAmount,
+    useWithdrawOneCoinQuote,
+    useWithdrawPriceImpact,
   })
 
   useFormSync(form, {
