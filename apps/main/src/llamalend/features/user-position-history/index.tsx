@@ -6,19 +6,19 @@ import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
-import { UserEventsTable } from './UserEventsTable'
+import { ParsedUserBorrowEvent } from './hooks/useUserBorrowEvents'
+import { UserBorrowEventsTable } from './UserBorrowEventsTable'
 
 const { Spacing } = SizesAndSpaces
 
-type UserPositionHistoryProps = { eventsQuery: QueryProp<ParsedUserCollateralEvent[]>; variant: 'accordion' | 'flat' }
+type UserPositionHistoryProps = { eventsQuery: QueryProp<ParsedUserBorrowEvent[]>; variant: 'accordion' | 'flat' }
 
 export const UserPositionHistory = ({ eventsQuery, variant }: UserPositionHistoryProps) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
   return (
     <WithWrapper shouldWrap={variant === 'accordion'} Wrapper={Accordion} title={t`Activity`} ghost>
       <Stack sx={{ gap: Spacing.xxs }}>
-        <UserEventsTable eventsQuery={eventsQuery} />
+        <UserBorrowEventsTable eventsQuery={eventsQuery} />
         <Stack direction="row" sx={{ gap: Spacing.xs }}>
           <Typography variant="bodyXsRegular">
             {isNewLlamalendHealth

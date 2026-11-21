@@ -24,7 +24,7 @@ export type RowBreakdownConfig<TData extends RowData, TItem> = {
   /** Items to render as breakdown rows under the parent row. Fewer than 2 items means no breakdown rows. */
   getItems: (data: TData) => readonly TItem[]
   /** Unique key of an item within its parent row */
-  getItemKey: (item: TItem) => string
+  getItemKey: (item: TItem, index: number) => string
   /** Cell renderers keyed by column id. Columns without a renderer are left empty. */
   cells: Partial<Record<string, (item: TItem, data: TData) => ReactNode>>
 }

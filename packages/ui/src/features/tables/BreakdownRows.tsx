@@ -42,8 +42,8 @@ export const BreakdownRows = <TData extends RowData, TItem>({
   const items = getItems(row.original)
   return (
     items.length > 1 &&
-    items.map(item => (
-      <TableRow key={getItemKey(item)}>
+    items.map((item, itemIndex) => (
+      <TableRow key={getItemKey(item, itemIndex)}>
         {visibleCells.map((cell, index) => (
           <BreakdownCell key={cell.id} cell={cell} isSticky={!!shouldStickFirstColumn && !index}>
             {cells[cell.column.id]?.(item, row.original)}

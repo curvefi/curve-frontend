@@ -1,8 +1,8 @@
 import type { ComponentType, ReactNode } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
-import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
-import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
+import type { ParsedUserBorrowEvent } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
+import type { ParsedUserSupplyEvent } from '@/llamalend/features/user-position-history/hooks/useUserSupplyEvents'
+import { UserSupplyEventsTable } from '@/llamalend/features/user-position-history/UserSupplyEventsTable'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
@@ -16,8 +16,8 @@ import { PositionDetailsToggle } from './PositionDetailsToggle'
 import { SupplyPositionDetails } from './SupplyPositionDetails'
 
 type PositionEvents = {
-  [MarketRateType.Borrow]: ParsedUserCollateralEvent[]
-  [MarketRateType.Supply]: ParsedUserVaultEvent[]
+  [MarketRateType.Borrow]: ParsedUserBorrowEvent[]
+  [MarketRateType.Supply]: ParsedUserSupplyEvent[]
 }
 
 type PositionDetailsCompositeProps<T extends MarketRateType> = {
@@ -37,7 +37,7 @@ const POSITION_CONFIG: {
   },
   [MarketRateType.Supply]: {
     Details: SupplyPositionDetails,
-    renderActivity: events => <UserVaultEventsTable eventsQuery={events} />,
+    renderActivity: events => <UserSupplyEventsTable eventsQuery={events} />,
   },
 }
 

@@ -19,13 +19,14 @@ type AddressCellProps = {
   label?: string
   /** Optional explorer URL for the address. */
   explorerUrl?: string
+  align?: 'start' | 'end'
 }
 
 /**
  * Cell component for displaying blockchain addresses with truncation.
  */
-export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) => (
-  <InlineTableCell>
+export const AddressCell = ({ address, label, explorerUrl, align }: AddressCellProps) => (
+  <InlineTableCell sx={{ alignItems: align }}>
     {label && (
       <Typography variant="bodyXsRegular" className={TABLE_SECONDARY_TEXT_CLASS}>
         {label}

@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
-import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
@@ -58,6 +57,7 @@ import { amount } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
 import { PoolAlertBanner } from '../PoolAlertBanner'
+import { OhlcAndActivity } from './components/OhlcAndActivity'
 
 const legacyMenu = [
   {
@@ -330,7 +330,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         <CampaignRewardsBanner />
         <UserPosition />
         {!isLiteChain(chainId) && apiPool.data && (
-          <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={apiPool.data} />
+          <OhlcAndActivity chainId={chainId} pricesApiPoolData={apiPool.data} />
         )}
         <Stack sx={stackedCardHeadersSx}>
           {!isLiteChain(chainId) && <PoolHistoricalBaseRateChart />}
