@@ -120,9 +120,11 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onTokenChange: (index: number, amount: Decimal | undefined) =>
       update({ ...(values.isBalanced && getUpdatesFromTokenAmount(index, amount)), [poolAmountField(index)]: amount }),
     form,
+    expectedLp,
+    priceImpact,
     params,
     lpBalance: q(lpBalance),
-    onSubmit: handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),
+    onSubmit: handleSubmit(onSubmit),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
@@ -133,5 +135,6 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onSlippageChange: (newSlippage: Decimal) => update({ slippage: newSlippage }),
     tokens,
     canWithdrawWrapped: false,
+    canWithdrawUnbalanced: true,
   }
 }
