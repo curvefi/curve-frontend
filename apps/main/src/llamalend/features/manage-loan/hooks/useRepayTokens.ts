@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { UserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import {
   canRepayFromStateCollateral,
   hasZapV2,
@@ -58,7 +58,7 @@ export const useRepayTokens = ({
 }: {
   tokens: MarketTokensOrEmpty
   blockchainId: string
-  collateralEvents: QueryProp<UserCollateralEvents>
+  collateralEvents: QueryProp<UserBorrowEvents>
 }) => {
   const { market, leverageProviders } = useMarketContext()
   const tokens = useMemo(

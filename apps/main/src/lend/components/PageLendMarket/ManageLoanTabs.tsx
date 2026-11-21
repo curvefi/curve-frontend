@@ -9,7 +9,7 @@ import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/A
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { UserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { LeveragedPositionBadge } from '@/llamalend/widgets/action-card/LeveragedPositionBadge'
 import { Decimal } from '@primitives/decimal.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
@@ -20,7 +20,7 @@ import { borrowClaimTab, BorrowTabsClaimVisibility } from './borrow-claim-tab'
 
 type LendManageLoanProps = BorrowTabsClaimVisibility & {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  collateralEvents: QueryProp<UserCollateralEvents>
+  collateralEvents: QueryProp<UserBorrowEvents>
   showReset: boolean
   isLiquidation: boolean
 }

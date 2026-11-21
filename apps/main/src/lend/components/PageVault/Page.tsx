@@ -7,7 +7,7 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details/PositionDetailsComposite'
-import { useUserVaultEvents } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
+import { useUserSupplyEvents } from '@/llamalend/features/user-position-history/hooks/useUserSupplyEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
@@ -53,7 +53,7 @@ export const Page = () => {
     useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress }),
     balances => +(balances.totalShares ?? 0) > 0,
   )
-  const events = useUserVaultEvents({
+  const events = useUserSupplyEvents({
     chainId,
     userAddress,
     tokens: getTokens(market, apiMarket.data) ?? {},

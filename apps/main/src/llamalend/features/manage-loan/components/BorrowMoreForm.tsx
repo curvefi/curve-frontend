@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { UserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
@@ -34,7 +34,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
 }: {
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  collateralEvents: QueryProp<UserCollateralEvents>
+  collateralEvents: QueryProp<UserBorrowEvents>
 }) => {
   const { chainId, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]

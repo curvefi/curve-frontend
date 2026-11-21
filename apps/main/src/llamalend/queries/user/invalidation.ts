@@ -1,4 +1,4 @@
-import { invalidateUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { invalidateUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { invalidateUserVaultEventsQuery } from '@/llamalend/features/user-position-history/queries/user-vault-events'
 import { getMarket, getVaultAddress, isLendMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'

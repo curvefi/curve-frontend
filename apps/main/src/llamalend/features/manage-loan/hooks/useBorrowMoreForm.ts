@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { UserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { useBorrowMoreEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import {
@@ -76,7 +76,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 }: {
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  collateralEvents: QueryProp<UserCollateralEvents>
+  collateralEvents: QueryProp<UserBorrowEvents>
 }) => {
   const {
     chainId,

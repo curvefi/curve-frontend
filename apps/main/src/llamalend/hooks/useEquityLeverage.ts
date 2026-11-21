@@ -1,7 +1,7 @@
 import { getEquityLeverage } from '@/llamalend/equity-leverage.utils'
 import type { CreateLoanFormQueryParams } from '@/llamalend/features/borrow/types'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import {
   useAddCollateralFuturePosition,
   useBorrowMoreFuturePosition,
@@ -43,7 +43,7 @@ export function useEquityLeverage(
   enabled?: boolean,
 ): EquityLeverage {
   const { marketType, controllerAddress, chainId, userAddress, tokens } = useMarketContext()
-  const collateralEvents = useUserCollateralEvents({ app: marketType, controllerAddress, chainId, userAddress, tokens })
+  const collateralEvents = useUserBorrowEvents({ app: marketType, controllerAddress, chainId, userAddress, tokens })
   const oraclePrice = q(useMarketOraclePrice(params, enabled))
   const isZapLeveraged = isZapBorrow ? constQ(true) : mapQuery(collateralEvents, events => events.isZapLeveraged)
   return {

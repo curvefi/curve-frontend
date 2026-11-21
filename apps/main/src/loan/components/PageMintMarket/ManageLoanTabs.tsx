@@ -7,7 +7,7 @@ import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/A
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { UserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LeveragedPositionBadge } from '@/llamalend/widgets/action-card/LeveragedPositionBadge'
 import { networks } from '@/loan/networks'
@@ -23,7 +23,7 @@ const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 
 type MintManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  collateralEvents: QueryProp<UserCollateralEvents>
+  collateralEvents: QueryProp<UserBorrowEvents>
   isLiquidation: boolean
 }
 
