@@ -10,7 +10,7 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details/PositionDetailsComposite'
-import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
 import { useMarketCollateralRewardsEnabled } from '@/llamalend/queries/market/market-collateral-rewards-enabled.query'
@@ -66,7 +66,7 @@ export const LendMarketPage = () => {
   )
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const collateralEvents = useUserCollateralEvents({
+  const collateralEvents = useUserBorrowEvents({
     chainId,
     app: MarketType.Lend,
     controllerAddress,
