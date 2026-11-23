@@ -1,5 +1,6 @@
 import { asAddress, stellarAddressDisplay } from '@/stellar/features/connect-wallet/address'
 import { STELLAR_NETWORKS } from '@/stellar/lib/networks'
+import { STELLAR_POOL_TYPE_LABEL } from '@/stellar/lib/pool.constants'
 import { usePoolInfo } from '@/stellar/queries/pool/pool-info.query'
 import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import { usePoolVirtualPrice } from '@/stellar/queries/pool/pool-virtual-price.query'
@@ -36,8 +37,8 @@ export const PoolAdvancedDetails = ({
       isLoading={isInfoLoading || isSnapshotLoading}
       info={{
         poolType: fallbackQ(
-          mapQuery(litePool, pool => notFalsy(t`Stableswap`, pool?.isMetaPool && t`Metapool`).join(', ')),
-          constQ(t`Stableswap`),
+          mapQuery(litePool, pool => notFalsy(STELLAR_POOL_TYPE_LABEL, pool?.isMetaPool && t`Metapool`).join(', ')),
+          constQ(STELLAR_POOL_TYPE_LABEL),
         ),
       }}
       contracts={{ poolAddress: asAddress(pool), lpTokenAddress: asAddress(pool) }}
