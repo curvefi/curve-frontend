@@ -16,7 +16,8 @@ export const useMarketTokens = ({
   market: MarketTemplate | undefined
   apiMarket: LlamaMarket | undefined
 }) => {
-  // the React compiler can't cache a value created before the hook calls below
+  // without useMemo, the React compiler doesn't cache `tokens`: it's passed to functions after the hook calls,
+  // so the compiler assumes they may modify it, and a cached block can't contain hooks
   const tokens = useMemo(() => getTokens(market, apiMarket), [market, apiMarket])
   const { data: collateralLpCoins } = useTokenLpCoins({ blockchainId, tokenAddress: tokens?.collateralToken.address })
   const { data: borrowLpCoins } = useTokenLpCoins({ blockchainId, tokenAddress: tokens?.borrowToken.address })
