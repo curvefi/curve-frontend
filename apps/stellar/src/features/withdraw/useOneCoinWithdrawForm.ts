@@ -55,7 +55,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const { values, formState, reset, update, handleSubmit } = form
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
   const index = values.tokenIndex
-  const { max, expectedLp, quotedAmount, params, priceImpact } = useWithdrawQuoteQueries({
+  const { max, expectedLp, quotedAmount, minimumReceived, params, priceImpact } = useWithdrawQuoteQueries({
     poolParams: { ...poolParams, account },
     values,
     debounced,
@@ -74,7 +74,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     maxLpAmount: lpBalance.data,
     poolReserve: reserves?.[index],
     expectedLp: expectedLp.data,
-    quotedAmount,
+    quotedAmount: quotedAmount.data,
   })
   useFormSync(form, { amount: max.data }, values.isMax)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])
@@ -98,6 +98,10 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     index,
     max,
     params,
+    network,
+    mode: params.mode,
+    slippage: values.slippage,
+    minimumReceived,
     expectedLp,
     lpBalance: q(lpBalance),
     priceImpact,

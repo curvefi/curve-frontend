@@ -66,7 +66,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
 
   // curve-js has no wrapped one-coin quote or withdrawal for lending pools with a zap.
   const canWithdrawWrapped = !!hasWrapped(pool) && !(pool?.isLending && pool.zap)
-  const { max, expectedLp, quotedAmount, params, priceImpact } = useWithdrawQuoteQueries({
+  const { max, expectedLp, quotedAmount, minimumReceived, params, priceImpact } = useWithdrawQuoteQueries({
     poolParams,
     values,
     debounced,
@@ -85,7 +85,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     maxLpAmount: lpBalance.data,
     poolReserve: reserves.data?.[index],
     expectedLp: expectedLp.data,
-    quotedAmount,
+    quotedAmount: quotedAmount.data,
   })
 
   // Keep Max selected as the quote changes, including while its amount is unavailable.
@@ -112,6 +112,9 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   return {
     form,
     params,
+    mode: params.mode,
+    slippage: values.slippage,
+    minimumReceived,
     tokens,
     index,
     max,

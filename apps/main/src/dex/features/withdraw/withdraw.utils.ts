@@ -31,7 +31,10 @@ export const getOneCoinWithdrawCalls = (
  * Imbalance withdrawals add percentage slippage to the expected LP burn, rounding half up to 18 decimals like curve-js.
  * This estimate validates the available LP balance; curve-js requotes when executing the withdrawal.
  */
-export const getMaximumWithdrawBurn = (expectedLp: Decimal, { mode, slippage }: WithdrawParams) =>
+export const getMaximumWithdrawBurn = (
+  expectedLp: Decimal,
+  { mode, slippage }: Pick<WithdrawParams, 'mode' | 'slippage'>,
+) =>
   mode === 'unbalanced'
     ? decimalRound(
         decimalMultiply(expectedLp, decimalSum('1', decimalDiv(slippage!, '100'))),
