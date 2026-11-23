@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import { PLACEHOLDER, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -23,7 +22,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  token: IconToken & { address: Address }
+  token: IconToken
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size
