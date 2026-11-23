@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
+import type { BaseSyntheticEvent } from 'react'
 import type { Suite } from 'vest'
-import { mapRecord, objectKeys, recordEntries } from '@primitives/objects.utils'
+import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import type { AllowUndefined, Query } from '@ui/features/queries/util'
 import { useShallowData } from '@ui/hooks/useShallowData'
@@ -14,20 +14,15 @@ const getVisibleErrors = (errors: Record<string, Error>, touchedFields: object, 
     .filter(([field]) => field in touchedFields || (field.startsWith('root') && isDirty))
     .map<[string, string]>(([field, error]) => [field, error.message])
 
+/** Validate every input; defer computed checks while values debounce or results are missing. */
+const getValidationFields = <T extends object>(data: T, computed: Record<string, unknown>, isDebouncing: boolean) =>
+  (Object.keys(data) as FieldName<T>[]).filter(
+    field => !(field in computed) || (!isDebouncing && computed[field] !== undefined),
+  )
+
 /** Validate inputs and computed limits; touched state only controls error visibility. */
 export function useFormValidation<TValues extends object, TContext extends object, TComputed extends object>({
-  inputs: {
-    values,
-    touchedFields,
-    dirtyFields,
-    isDirty,
-    isDebouncing,
-    resetVersion,
-    params: inputParams,
-    reset,
-    isTouched,
-    update,
-  },
+  inputs,
   validation,
   computed,
   isSubmitting,
@@ -39,27 +34,27 @@ export function useFormValidation<TValues extends object, TContext extends objec
   isSubmitting: boolean
   disabled?: boolean
 }) {
+  const { values, touchedFields, dirtyFields, isDirty, isDebouncing, resetVersion, params: inputParams } = inputs
+
   const { error, isLoading } = combineQueryState(...Object.values<Query<unknown>>(computed))
   const computedValues = mapRecord(computed, (_, q) => q.data) as AllowUndefined<TComputed>
   const data = useShallowData({ ...values, ...computedValues })
 
-  const fieldsToValidate = [
-    ...objectKeys(data),
-    ...objectKeys(computedValues).filter(field => !isDebouncing && computedValues[field] !== undefined),
-  ]
-  const { errors, isValid } = useVestValidation<TValues & TComputed>(validation, resetVersion, data, fieldsToValidate)
+  const { errors, isValid } = useVestValidation<TValues & TComputed>(
+    validation,
+    resetVersion,
+    data,
+    getValidationFields(data, computedValues, isDebouncing),
+  )
   const isDisabled = disabled || isDebouncing || !isValid || isSubmitting
 
   return {
-    values,
+    ...inputs,
     params: useShallowData({ ...inputParams, ...computedValues }),
-    handleSubmit: useCallback<UseFormHandleSubmit<TValues & Partial<TComputed>>>(
-      onSubmit => async event => {
-        event?.preventDefault()
-        if (!isDisabled) await onSubmit(data) // Modals call this directly, button state doesn't cover every submission
-      },
-      [data, isDisabled],
-    ),
+    handleSubmit: (onSubmit => async (event?: BaseSyntheticEvent) => {
+      event?.preventDefault()
+      if (!isDisabled) await onSubmit(data) // Modals call this directly, button state doesn't cover every submission
+    }) satisfies UseFormHandleSubmit<TValues & Partial<TComputed>>,
     formState: {
       errors,
       touchedFields,
@@ -72,11 +67,6 @@ export function useFormValidation<TValues extends object, TContext extends objec
     error,
     isLoading: isDebouncing || isLoading || isSubmitting,
     isDisabled,
-    isDebouncing,
-    isTouched,
-    resetVersion,
-    reset,
-    update,
   }
 }
 

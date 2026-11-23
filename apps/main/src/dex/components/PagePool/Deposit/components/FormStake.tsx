@@ -18,7 +18,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
@@ -44,7 +44,7 @@ export const FormStake = ({ seed }: TransferProps) => {
     api: curve,
     isWrapped,
   } = usePoolContext()
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
+  const { data: gaugeStatus } = usePoolGaugeStatus({ chainId, poolAddress })
   const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.poolDeposit.activeKey)
@@ -194,7 +194,7 @@ export const FormStake = ({ seed }: TransferProps) => {
 
   return (
     <FormContent>
-      {gaugeIsKilled && <AlertGaugeKilled />}
+      {gaugeStatus === 'inactive' && <AlertGaugeKilled />}
       {/* input fields */}
       <FieldsWrapper>
         <FieldLpToken

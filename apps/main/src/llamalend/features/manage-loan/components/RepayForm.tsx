@@ -18,7 +18,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { FormContainer } from '@ui/features/forms/components/FormContainer'
+import { Form } from '@ui/features/forms/components/Form'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { type QueryProp, type Range } from '@ui/features/queries/util'
@@ -130,7 +130,7 @@ export const RepayForm = <ChainId extends IChainId>({
   )
 
   return (
-    <FormContainer
+    <Form
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
@@ -214,6 +214,6 @@ export const RepayForm = <ChainId extends IChainId>({
         userAddress={userAddress}
       />
       <LeverageDelegationModal {...delegationModal} />
-    </FormContainer>
+    </Form>
   )
 }

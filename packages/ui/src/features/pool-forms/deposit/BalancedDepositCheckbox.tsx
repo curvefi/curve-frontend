@@ -1,7 +1,7 @@
 import { completeArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, maybes } from '@primitives/objects.utils'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
@@ -23,15 +23,16 @@ const getBalancedUpdates = (reserves: Decimal[], decimals: number[], amounts: De
   )
 
 export const BalancedDepositCheckbox = ({
+  form: { values, update },
   reserves: { data: reserves },
   isConnected,
   disabled,
 }: {
+  form: Pick<UseFormReturn<PoolForm>, 'values' | 'update'>
   reserves: QueryProp<Decimal[]>
   isConnected: boolean
   disabled: boolean
 }) => {
-  const { values, update } = useFormContext<PoolForm>()
   const decimals = completeArray(values.decimals)
   const amounts = decimals?.map(
     (_, index) => values[(isConnected ? poolMaxAmountField : poolAmountField)(index)] ?? '0',

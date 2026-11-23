@@ -11,7 +11,6 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { InlineLink } from '@ui/components/InlineLink'
 import { ModalDialog } from '@ui/components/ModalDialog'
-import { FormProvider } from '@ui/features/forms'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { usePinataJwt } from '@ui/features/storage/useLocalStorage'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -64,83 +63,81 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
         </Button>
       }
     >
-      <FormProvider {...form}>
-        <Stack spacing={Spacing.lg}>
-          <Stack spacing={Spacing.xs}>
-            <Typography variant="bodySBold">{t`Requirements:`}</Typography>
+      <Stack spacing={Spacing.lg}>
+        <Stack spacing={Spacing.xs}>
+          <Typography variant="bodySBold">{t`Requirements:`}</Typography>
 
-            <Typography variant="bodySRegular">
-              {t`1. New gauge votes are encouraged to have a proposal on the governance forum`}{' '}
-              <InlineLink to={EXTERNAL_LINKS.curve.gov} hideIcon>{t`at this address`}</InlineLink>
-            </Typography>
+          <Typography variant="bodySRegular">
+            {t`1. New gauge votes are encouraged to have a proposal on the governance forum`}{' '}
+            <InlineLink to={EXTERNAL_LINKS.curve.gov} hideIcon>{t`at this address`}</InlineLink>
+          </Typography>
 
-            <Typography variant="bodySRegular">
-              {t`2. You must have a minimum of 2,500 veCRV to create this vote`}
-            </Typography>
-          </Stack>
-
-          <FormControl fullWidth error={!!gaugeAddressError}>
-            <FormLabel>{t`Gauge Address`}</FormLabel>
-            <TextField
-              fullWidth
-              placeholder={zeroAddress}
-              value={gaugeAddress}
-              onChange={e => form.update({ gaugeAddress: e.target.value })}
-            />
-            <FormHelperText>{gaugeAddressError ?? t`Enter the gauge contract address`}</FormHelperText>
-          </FormControl>
-
-          <FormControl fullWidth error={!!descriptionError}>
-            <FormLabel>{t`Vote Description`}</FormLabel>
-            <TextField fullWidth value={description} onChange={e => form.update({ description: e.target.value })} />
-            <FormHelperText>{descriptionError ?? t`A few words describing what this gauge is for`}</FormHelperText>
-          </FormControl>
-
-          <FormControl fullWidth error={!!pinataJwtError}>
-            <FormLabel>{t`Pinata JWT`}</FormLabel>
-            <TextField
-              fullWidth
-              type={showPinataJwt ? 'text' : 'password'}
-              placeholder={t`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`}
-              value={pinataJwt}
-              onChange={e => setStoredJwt(e.target.value)}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Button color="ghost" size="small" onClick={() => setShowPinataJwt(!showPinataJwt)}>
-                        {showPinataJwt ? <EyeClosed /> : <EyeOpen />}
-                      </Button>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-            <FormHelperText>
-              {pinataJwtError ?? (
-                <>
-                  {t`The vote description is uploaded to IPFS via Pinata. You need a Pinata API key to proceed.`}{' '}
-                  <InlineLink to="https://docs.pinata.cloud/account-management/api-keys" hideIcon>
-                    {t`Here's an explanation on how to create one`}
-                  </InlineLink>
-                  <br />
-                  <br />
-                  <Box component="span" sx={{ color: t => t.design.Text.TextColors.Feedback.Warning }}>
-                    {t`IMPORTANT: You must enable the "pinFileToIPFS" legacy endpoint when creating your API key, otherwise it will not work.`}
-                  </Box>
-                </>
-              )}
-            </FormHelperText>
-          </FormControl>
-
-          <FormAlerts
-            error={createVoteError}
-            formErrors={formErrors}
-            handledErrors={['gaugeAddress', 'description', 'pinataJwt']}
-            userAddress={userAddress}
-          />
+          <Typography variant="bodySRegular">
+            {t`2. You must have a minimum of 2,500 veCRV to create this vote`}
+          </Typography>
         </Stack>
-      </FormProvider>
+
+        <FormControl fullWidth error={!!gaugeAddressError}>
+          <FormLabel>{t`Gauge Address`}</FormLabel>
+          <TextField
+            fullWidth
+            placeholder={zeroAddress}
+            value={gaugeAddress}
+            onChange={e => form.update({ gaugeAddress: e.target.value })}
+          />
+          <FormHelperText>{gaugeAddressError ?? t`Enter the gauge contract address`}</FormHelperText>
+        </FormControl>
+
+        <FormControl fullWidth error={!!descriptionError}>
+          <FormLabel>{t`Vote Description`}</FormLabel>
+          <TextField fullWidth value={description} onChange={e => form.update({ description: e.target.value })} />
+          <FormHelperText>{descriptionError ?? t`A few words describing what this gauge is for`}</FormHelperText>
+        </FormControl>
+
+        <FormControl fullWidth error={!!pinataJwtError}>
+          <FormLabel>{t`Pinata JWT`}</FormLabel>
+          <TextField
+            fullWidth
+            type={showPinataJwt ? 'text' : 'password'}
+            placeholder={t`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`}
+            value={pinataJwt}
+            onChange={e => setStoredJwt(e.target.value)}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button color="ghost" size="small" onClick={() => setShowPinataJwt(!showPinataJwt)}>
+                      {showPinataJwt ? <EyeClosed /> : <EyeOpen />}
+                    </Button>
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+          <FormHelperText>
+            {pinataJwtError ?? (
+              <>
+                {t`The vote description is uploaded to IPFS via Pinata. You need a Pinata API key to proceed.`}{' '}
+                <InlineLink to="https://docs.pinata.cloud/account-management/api-keys" hideIcon>
+                  {t`Here's an explanation on how to create one`}
+                </InlineLink>
+                <br />
+                <br />
+                <Box component="span" sx={{ color: t => t.design.Text.TextColors.Feedback.Warning }}>
+                  {t`IMPORTANT: You must enable the "pinFileToIPFS" legacy endpoint when creating your API key, otherwise it will not work.`}
+                </Box>
+              </>
+            )}
+          </FormHelperText>
+        </FormControl>
+
+        <FormAlerts
+          error={createVoteError}
+          formErrors={formErrors}
+          handledErrors={['gaugeAddress', 'description', 'pinataJwt']}
+          userAddress={userAddress}
+        />
+      </Stack>
     </ModalDialog>
   )
 }

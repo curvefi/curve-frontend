@@ -2,7 +2,7 @@ import { partition, sum } from 'lodash'
 import { type Address, getAddress } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolCampaignsByAddress } from '@/dex/features/pool-information/hooks/usePoolCampaignsByAddress'
-import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolRewardsApy } from '@/dex/queries/pool-rewards-apy.query'
 import type { ChainId } from '@/dex/types/main.types'
 import { useTokenUsdRate, useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
@@ -40,9 +40,9 @@ export const useYieldBreakdown = ({ chainId, poolAddress }: { chainId: ChainId; 
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
 
-  const gaugeIsKilled = usePoolIsGaugeKilled({ chainId, poolAddress })
+  const gaugeStatus = usePoolGaugeStatus({ chainId, poolAddress })
   const breakdown = combineQueries([rewards, campaigns], (rewards, campaigns) => {
-    const [unboostedCrvRate, maxBoostCrvRate] = gaugeIsKilled.data ? [] : rewards.crv
+    const [unboostedCrvRate, maxBoostCrvRate] = gaugeStatus.data === 'inactive' ? [] : rewards.crv
     const crvRateRange = maybes([unboostedCrvRate, maxBoostCrvRate], (unboostedRate, boostedRate) => ({
       unboostedRate,
       boostedRate,

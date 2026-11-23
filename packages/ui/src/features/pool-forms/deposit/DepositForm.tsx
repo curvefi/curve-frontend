@@ -45,7 +45,7 @@ export const DepositForm = <TValues extends PoolDepositForm>({
   return (
     <Form {...form} onSubmit={onSubmit} footer={footer}>
       {children}
-      {canDepositWrapped && <WrappedDepositCheckbox disabled={isPending || inputsDisabled !== false} />}
+      {canDepositWrapped && <WrappedDepositCheckbox form={form} disabled={isPending || inputsDisabled !== false} />}
       <FormButton
         {...wallet}
         pending={isPending}

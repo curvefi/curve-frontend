@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { changedKeys, fromEntries, isEmpty } from '@primitives/objects.utils'
 import { useDebounced } from '@ui/hooks/useDebounce'
 import { useShallowData } from '@ui/hooks/useShallowData'
@@ -60,34 +60,25 @@ export function useFormValues<TValues extends object, TContext extends object = 
   )
 
   const debounce = useDebounced(
-    useCallback(
-      // Each call restarts the timer; when it fires, copy the latest values into params.
-      () => setState(prev => (isEqual(prev.params, prev.values) ? prev : { ...prev, params: prev.values })),
-      [],
-    ),
+    // Each call restarts the timer; when it fires, copy the latest values into params.
+    () => setState(prev => (isEqual(prev.params, prev.values) ? prev : { ...prev, params: prev.values })),
   )
 
   return {
     values,
     params: useShallowData<TValues & TContext>({ ...params, ...context }),
     resetVersion,
-    touchedFields: useMemo(() => fromEntries<keyof TValues, true>([...touched].map(field => [field, true])), [touched]),
+    touchedFields: fromEntries<keyof TValues, true>([...touched].map(field => [field, true])),
     dirtyFields,
     isDirty: !isEmpty(dirtyFields),
     isDebouncing: !isEqual(values, params),
-    isTouched: useCallback((...fields: (keyof TValues)[]) => fields.some(field => touched.has(field)), [touched]),
-    update: useCallback(
-      (updates: Partial<TValues>, { mode = 'debounced' }: { mode?: UpdateMode } = {}) => {
-        setState(prev => updateForm(prev, updates, mode))
-        if (mode === 'debounced') debounce()
-      },
-      [debounce],
-    ),
-    reset: useCallback(
-      (updates?: Partial<TValues>) =>
-        setState(prev => initialState(updates ? { ...prev.values, ...updates } : prev.defaults, prev.resetVersion + 1)),
-      [],
-    ),
+    isTouched: (...fields: (keyof TValues)[]) => fields.some(field => touched.has(field)),
+    update: (updates: Partial<TValues>, { mode = 'debounced' }: { mode?: UpdateMode } = {}) => {
+      setState(prev => updateForm(prev, updates, mode))
+      if (mode === 'debounced') debounce()
+    },
+    reset: (updates?: Partial<TValues>) =>
+      setState(prev => initialState(updates ? { ...prev.values, ...updates } : prev.defaults, prev.resetVersion + 1)),
   }
 }
 
