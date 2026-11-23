@@ -5,7 +5,7 @@ import FormLabel from '@mui/material/FormLabel'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import { fromEntries } from '@primitives/objects.utils'
-import { useFormContext, type FormUpdates } from '@ui/features/forms'
+import type { FormUpdates, UseFormReturn } from '@ui/features/forms'
 import { NumericTextField } from '@ui/features/forms/controls/NumericTextField'
 import type { PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { decimal } from '@ui/lib/decimal'
@@ -16,6 +16,12 @@ import type { CreatePoolFormValues, PoolParameters } from './types'
  * Ideally the text/number components should be children, but I think this solution makes sense to share the error handling.
  **/
 export const CreatePoolField = ({
+  form: {
+    values,
+    update,
+    isTouched,
+    formState: { errors },
+  },
   name,
   inputType,
   label,
@@ -25,6 +31,7 @@ export const CreatePoolField = ({
   placeholder,
   additionalUpdates,
 }: {
+  form: UseFormReturn<CreatePoolFormValues>
   label: string
   helperText?: ReactNode
   unit?: string
@@ -36,12 +43,6 @@ export const CreatePoolField = ({
   | { inputType?: 'number'; name: keyof PoolParameters | PoolAmountField }
 )) => {
   const id = useId()
-  const {
-    values,
-    update,
-    isTouched,
-    formState: { errors },
-  } = useFormContext<CreatePoolFormValues>()
   const error = isTouched(name) && errors[name]?.message
   const inputProps = { id, size: 'small', variant: 'outlined', error: !!error, disabled, placeholder } as const
   return (

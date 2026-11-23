@@ -1,21 +1,23 @@
 import { type ReactNode } from 'react'
-import { FormProvider } from '@ui/features/forms'
-import type { FieldValues, FormSubmitHandler, UseFormReturn } from '@ui/features/forms'
-import { FormContainer } from './FormContainer'
+import type { FormSubmitHandler } from '@ui/features/forms'
+import { FormContent } from '@ui/features/forms/components/FormContent'
 
 /**
- * A form element that includes a provider, a form tag, and a content wrapper.
+ * A form element with a content wrapper and development form state display.
  * Supports a footer below the form (outside the background area).
  */
-export const Form = <TFieldValues extends FieldValues>({
+export const Form = ({
   onSubmit,
   children,
   footer,
-  ...form
-}: { onSubmit: FormSubmitHandler; children: ReactNode; footer: ReactNode } & UseFormReturn<TFieldValues>) => (
-  <FormProvider {...form}>
-    <FormContainer onSubmit={onSubmit} footer={footer}>
-      {children}
-    </FormContainer>
-  </FormProvider>
+  ...props
+}: {
+  onSubmit: FormSubmitHandler
+  children: ReactNode
+  footer: ReactNode
+  'data-testid'?: string
+}) => (
+  <form {...props} onSubmit={event => void onSubmit(event)} style={{ overflowWrap: 'break-word' }}>
+    <FormContent footer={footer}>{children}</FormContent>
+  </form>
 )

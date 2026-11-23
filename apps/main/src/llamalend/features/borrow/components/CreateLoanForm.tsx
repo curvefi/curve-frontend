@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
-import { FormContainer } from '@ui/features/forms/components/FormContainer'
+import { Form } from '@ui/features/forms/components/Form'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import { mapQuery, q, type Range } from '@ui/features/queries/util'
@@ -87,7 +87,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   }, [maxDebt.data, routes, updateForm, values.leverageEnabled])
 
   return (
-    <FormContainer
+    <Form
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
@@ -186,6 +186,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral', 'debt', 'maxDebt']}
         userAddress={userAddress}
       />
-    </FormContainer>
+    </Form>
   )
 }

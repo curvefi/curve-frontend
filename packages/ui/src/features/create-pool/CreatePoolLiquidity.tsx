@@ -13,7 +13,7 @@ import type { CreatePoolLiquidityProps } from './types'
 const { Spacing } = SizesAndSpaces
 
 export const CreatePoolLiquidity = ({
-  form: { values, update },
+  form,
   maxAmounts,
   totalDepositValueUsd,
   inputsDisabled,
@@ -21,17 +21,18 @@ export const CreatePoolLiquidity = ({
   <Stack component="fieldset" disabled={inputsDisabled} sx={{ minWidth: 0, gap: Spacing.sm }}>
     <CheckboxField
       testIdPrefix="create-pool-seed"
-      checked={values.addLiquidity}
+      checked={form.values.addLiquidity}
       disabled={inputsDisabled}
       label={t`Seed pool after deployment`}
-      onChange={event => update({ addLiquidity: event.target.checked })}
+      onChange={event => form.update({ addLiquidity: event.target.checked })}
     />
-    {values.addLiquidity && (
+    {form.values.addLiquidity && (
       <>
         <Stack sx={{ gap: Spacing.sm }}>
-          {getCreatePoolTokens(values, values.tokenCount).map((token, index) => (
+          {getCreatePoolTokens(form.values, form.values.tokenCount).map((token, index) => (
             <Stack key={poolAmountField(index)} data-testid="create-pool-liquidity-input">
               <CreatePoolField
+                form={form}
                 name={poolAmountField(index)}
                 label={token?.symbol ?? `${t`Token`} ${index + 1}`}
                 unit={token?.symbol}
@@ -48,7 +49,7 @@ export const CreatePoolLiquidity = ({
             </Stack>
           ))}
         </Stack>
-        {values.poolType && (
+        {form.values.poolType && (
           <ActionInfo
             size="small"
             label={t`Pool TVL at deposit`}
