@@ -6,22 +6,19 @@ import {
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import { resetUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
-import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
-import {
-  type CollateralForm,
-  removeCollateralFormValidationSuite,
-} from '@/llamalend/queries/validation/manage-loan.validation'
+import type { CollateralCalculatedValues, CollateralFormValues } from '@/llamalend/queries/validation/manage-loan.types'
+import { removeCollateralFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { NetworkDef } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCallbackSync, useFormSync, useForm, useOnChangeCallback } from '@ui/features/forms'
+import { useCallbackSync, useOnChangeCallback } from '@ui/features/forms'
+import { useFormValidation } from '@ui/features/forms/useFormValidation'
+import { useFormValues } from '@ui/features/forms/useFormValues'
 import { mapQuery, type Range } from '@ui/features/queries/util'
-import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 
-const userDefaultValues = { userCollateral: undefined }
-const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
-const formOptions = { validation: removeCollateralFormValidationSuite, defaultValues }
+const defaultValues = { userCollateral: undefined }
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -39,48 +36,42 @@ export const useRemoveCollateralForm = <
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
 
-  const form = useForm<CollateralForm>(formOptions)
+  const inputs = useFormValues<CollateralFormValues, UserMarketParams<ChainId>>({
+    defaultValues,
+    context: { chainId, marketId, userAddress },
+  })
+  const maxRemovable = useMaxRemovableCollateral(inputs.params)
 
-  const { values, formState } = form
-
-  const [params, isDebouncing] = useFormDebounce(
-    {
-      chainId,
-      marketId,
-      userAddress,
-      userCollateral: values.userCollateral,
-      maxCollateral: values.maxCollateral,
-    } satisfies CollateralParams<ChainId>,
-    userDefaultValues,
-  )
-
-  const { onSubmit, ...action } = useRemoveCollateralMutation({
+  const { onSubmit, isPending, error } = useRemoveCollateralMutation({
     marketId,
     network,
-    onReset: () => form.reset(userDefaultValues),
+    onReset: () => inputs.reset(defaultValues),
     userAddress,
   })
-  const maxRemovable = useMaxRemovableCollateral(params)
+
+  const form = useFormValidation<CollateralFormValues, UserMarketParams<ChainId>, CollateralCalculatedValues>({
+    inputs,
+    validation: removeCollateralFormValidationSuite,
+    computed: { maxCollateral: maxRemovable },
+    isSubmitting: isPending,
+  })
+  const { values, params, formState } = form
 
   useCallbackSync(useRemoveCollateralPrices(params), onPricesUpdated)
-
-  useFormSync(form, { maxCollateral: maxRemovable.data })
 
   useOnChangeCallback(market, () =>
     // collateral remove queries depend on LL internal cache, reset when new market data arrives
     Promise.all([resetUserCurrentLeverage(params), invalidateMaxRemovableCollateral(params)]),
   )
 
-  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending || isDebouncing,
     userAddress,
     onSubmit: form.handleSubmit(onSubmit),
-    action,
+    error: error ?? form.error,
     maxRemovable,
     positionCollateral: mapQuery(useUserState(params), d => d.collateral),
     collateralToken,

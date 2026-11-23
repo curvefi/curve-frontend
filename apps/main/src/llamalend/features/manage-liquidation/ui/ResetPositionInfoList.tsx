@@ -6,7 +6,7 @@ import { getResetHealthOptions } from '@/llamalend/queries/reset/reset-health.qu
 import { useResetIsApproved } from '@/llamalend/queries/reset/reset-is-approved.query'
 import { useResetPrices } from '@/llamalend/queries/reset/reset-prices.query'
 import { getResetDebtReduction } from '@/llamalend/queries/reset/reset-query.helpers'
-import type { ResetForm, ResetParams } from '@/llamalend/queries/validation/reset.validation'
+import type { ResetFormValues, ResetParams } from '@/llamalend/queries/validation/reset.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -27,13 +27,13 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   marketType,
 }: {
   params: ResetParams<ChainId>
-  values: ResetForm
+  values: ResetFormValues
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   controllerAddress: Address | undefined
   marketType: MarketType
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()
-  const debtReduction = getResetDebtReduction(values)
+  const debtReduction = getResetDebtReduction({ ...values, convertedBorrowed: params.convertedBorrowed })
   const isOpen = +debtReduction > 0
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevDebt, prevCollateral } = prevLoanState

@@ -7,6 +7,8 @@ import {
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
   CloseLoanParams,
+  CollateralCalculatedValues,
+  CollateralFormValues,
   CollateralHealthParams,
   CollateralParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
@@ -15,11 +17,10 @@ import { chainValidationGroup } from '@evm-ui/queries/validation/chain-validatio
 import { llamaApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
-import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { validateSlippage } from '@ui/lib/validation/slippage.validation'
 
-export type CollateralForm = { userCollateral: Decimal | undefined; maxCollateral: Decimal | undefined }
+export type CollateralForm = CollateralFormValues & CollateralCalculatedValues
 
 const collateralValidationGroup = ({
   chainId,
