@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import type { Suite } from 'vest'
 import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
@@ -51,13 +50,10 @@ export function useFormValidation<TValues extends object, TContext extends objec
   return {
     ...inputs,
     params: useShallowData({ ...inputParams, ...computedValues }),
-    handleSubmit: useCallback<UseFormHandleSubmit<TValues & Partial<TComputed>>>(
-      onSubmit => async event => {
-        event?.preventDefault()
-        if (!isDisabled) await onSubmit(data) // Modals call this directly, button state doesn't cover every submission
-      },
-      [data, isDisabled],
-    ),
+    handleSubmit: (onSubmit => async event => {
+      event?.preventDefault()
+      if (!isDisabled) await onSubmit(data) // Modals call this directly, button state doesn't cover every submission
+    }) satisfies UseFormHandleSubmit<TValues & Partial<TComputed>>,
     formState: {
       errors,
       touchedFields,
