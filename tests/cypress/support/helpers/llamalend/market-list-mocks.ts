@@ -1,3 +1,4 @@
+import type { HttpRequestInterceptor } from 'cypress/types/net-stubbing'
 import { LEND_CHAINS, MINT_CHAINS } from '@curvefi/prices-api'
 import {
   createLendingVaultChainsResponse,
@@ -13,7 +14,7 @@ import { mockTokenPrices } from '../tokens'
 /**
  * To make sure our tests do not depend on real APIs, we just block them.
  */
-export const blockUnmockedApis = () => {
+export const blockUnmockedApis = (onUnexpectedRequest: HttpRequestInterceptor = UnexpectedApiRequest) => {
   ;[
     'api-core.curve.finance',
     'api.coingecko.com',
@@ -22,8 +23,8 @@ export const blockUnmockedApis = () => {
     'api2.curve.finance',
     'prices.curve.finance',
     'api.testnet.stellarindex.io',
-  ].forEach(hostname => void cy.intercept({ hostname }, UnexpectedApiRequest))
-  cy.intercept('/api/merkl/*', UnexpectedApiRequest)
+  ].forEach(hostname => void cy.intercept({ hostname }, onUnexpectedRequest))
+  cy.intercept({ pathname: '/api/merkl/**' }, onUnexpectedRequest)
 }
 
 /** The cypress-wagmi-test-connector generates a fresh address at runtime, so we have to mock by pattern. */

@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
 import type { Hex } from 'viem'
+import { isLendMarket } from '@/llamalend/llama.utils'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import { MarketVersion } from '@evm-ui/types/market'
 import { decimal } from '@ui/lib/decimal'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
+import { seedLendMarketSolvencyQueries } from '../query-cache.helpers'
 import { createIsApprovedStub, createStub, createSyncStub, createTransactionStub } from '../test-stub.utils'
 import {
   DEFAULT_COLLATERAL_ADDRESS,
@@ -154,12 +156,14 @@ export const createCreateLoanScenario = ({
         leverage: { maxLeverage: leverageStubs.maxLeverage },
         leverageZapV2,
         stats: { parameters: createStub(oneAprPair()) },
+        userState: createStub({ collateral: '0', stablecoin: '0', debt: '0' }),
       })
     : createMockMintMarket({
         version: marketVersion,
         collateral: collateralAddress,
         controller: oneAddress(),
         stats: { parameters: createStub(oneAprPair()) },
+        userState: createStub({ collateral: '0', stablecoin: '0', debt: '0' }),
         estimateGas: {
           createLoan: normalStubs.estimateGasCreateLoan,
           createLoanApprove: normalStubs.estimateGasCreateLoanApprove,
@@ -171,6 +175,8 @@ export const createCreateLoanScenario = ({
         createLoanApprove: normalStubs.createLoanApprove,
         createLoan: normalStubs.createLoan,
       })
+
+  if (isLendMarket(market)) seedLendMarketSolvencyQueries({ chainId, market, solvencyPercent: 100 })
 
   return {
     collateral,

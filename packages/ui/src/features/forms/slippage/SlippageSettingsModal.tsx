@@ -5,7 +5,6 @@ import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { ModalDialog } from '@ui/components/ModalDialog'
-import { FormProvider } from '@ui/features/forms'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { SLIPPAGE_TYPES, type SlippageSettings, type SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageFormField } from '@ui/features/forms/slippage/SlippageFormField'
@@ -38,37 +37,35 @@ export const SlippageSettingsModal = ({
     currentType && maxSlippage !== undefined ? { type: currentType, value: maxSlippage } : undefined
   const { onSubmit, form, reset } = useSlippageSettingsForm({ onChanged, current: currentSlippage })
   return (
-    <FormProvider {...form} hideFormState>
-      <ModalDialog
-        open={isOpen}
-        onClose={onClose}
-        onTransitionExited={reset}
-        title={t`Slippage Settings`}
-        footer={
-          <Stack sx={{ gap: Spacing.sm, flexGrow: 1 }}>
-            <Button
-              disabled={!form.formState.isValid}
-              fullWidth
-              type={form.formState.isDirty ? 'submit' : 'button'}
-              data-testid="slippage-save-button"
-              {...(!form.formState.isDirty && { onClick: onClose })}
-            >{t`Save`}</Button>
-            <FormAlerts
-              formErrors={form.formState.visibleErrors}
-              handledErrors={SLIPPAGE_TYPES}
-              userAddress={userAddress}
-            />
-          </Stack>
-        }
-        formProps={{ onSubmit }}
-        compact
-      >
-        <Stack sx={{ gap: Spacing.md }}>
-          {types.map(type => (
-            <SlippageFormField key={type} type={type} isActive={active === type} form={form} />
-          ))}
+    <ModalDialog
+      open={isOpen}
+      onClose={onClose}
+      onTransitionExited={reset}
+      title={t`Slippage Settings`}
+      footer={
+        <Stack sx={{ gap: Spacing.sm, flexGrow: 1 }}>
+          <Button
+            disabled={!form.formState.isValid}
+            fullWidth
+            type={form.formState.isDirty ? 'submit' : 'button'}
+            data-testid="slippage-save-button"
+            {...(!form.formState.isDirty && { onClick: onClose })}
+          >{t`Save`}</Button>
+          <FormAlerts
+            formErrors={form.formState.visibleErrors}
+            handledErrors={SLIPPAGE_TYPES}
+            userAddress={userAddress}
+          />
         </Stack>
-      </ModalDialog>
-    </FormProvider>
+      }
+      formProps={{ onSubmit }}
+      compact
+    >
+      <Stack sx={{ gap: Spacing.md }}>
+        {types.map(type => (
+          <SlippageFormField key={type} type={type} isActive={active === type} form={form} />
+        ))}
+      </Stack>
+    </ModalDialog>
   )
 }

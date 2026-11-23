@@ -81,3 +81,6 @@ export const maybe = <T, R>(value: T, mapper: (value: NonNullable<T>) => R) =>
     : undefined extends T
       ? R | undefined
       : R
+
+export const changedKeys = <T>(updates: Partial<T>, prevValues: T, isEqual: (a: unknown, b: unknown) => boolean) =>
+  objectKeys(updates).filter(key => !isEqual(prevValues[key], updates[key]))

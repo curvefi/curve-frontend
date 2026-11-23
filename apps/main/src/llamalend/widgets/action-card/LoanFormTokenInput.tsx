@@ -6,20 +6,22 @@ import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
+import type { FormControl } from '@ui/features/forms/useFormValidation'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { decimal } from '@ui/lib/decimal'
+import type { FieldName } from '@ui/lib/validation/types'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
 export type LoanFormTokenInputProps<
-  TFieldValues extends FieldValues,
-  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TForm extends FormControl<Record<TFieldName, Decimal | undefined>>,
+  TFieldName extends string,
+  TMaxFieldName extends FieldName<TForm['formState']['errors']>,
 > = {
   label: string
   token: Token | undefined
@@ -30,7 +32,7 @@ export type LoanFormTokenInputProps<
    */
   max?: QueryProp<Decimal> & { fieldName: TMaxFieldName; onMax?: () => void }
   name: TFieldName
-  form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
+  form: TForm
   testId: string
   message?: LargeTokenInputProps['message']
   maxMessage?: ReactNode
@@ -56,9 +58,9 @@ export type LoanFormTokenInputProps<
  * A large token input field for loan forms, with balance and max handling.
  */
 export const LoanFormTokenInput = <
-  TFieldValues extends FieldValues,
-  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TForm extends FormControl<Record<TFieldName, Decimal | undefined>>,
+  TFieldName extends string,
+  TMaxFieldName extends FieldName<TForm['formState']['errors']>,
 >({
   label,
   token,
@@ -75,7 +77,7 @@ export const LoanFormTokenInput = <
   hideBalance,
   onValueChange,
   disabled,
-}: LoanFormTokenInputProps<TFieldValues, TFieldName, TMaxFieldName>) => {
+}: LoanFormTokenInputProps<TForm, TFieldName, TMaxFieldName>) => {
   const { address: userAddress } = useConnection()
   const {
     data: balance,
@@ -103,7 +105,7 @@ export const LoanFormTokenInput = <
   const onBalance = useCallback(
     (v?: Decimal) => {
       if (v && max?.onMax && v === max.data) return max.onMax()
-      updateForm({ [name]: v } as FormUpdates<TFieldValues>)
+      updateForm(fromEntries([[name, v]]))
       onValueChange?.(v)
     },
     [max, name, onValueChange, updateForm],

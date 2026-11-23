@@ -58,7 +58,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     delegationModal,
     isPending,
     isLoading,
-    isDisabled,
     userAddress,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, setRange },
     onSubmit,
@@ -76,7 +75,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
   const { update: updateForm } = form
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm({ leverageEnabled: event.target.checked, routeId: undefined }, { mode: 'immediate' }),
     [updateForm],
   )
   const maxDebtBalance = mapQuery(maxDebt, ({ maxDebt }) => maxDebt)
@@ -88,7 +88,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
@@ -139,12 +138,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         />
       </Stack>
       {isLeverageSupported && (
-        <Stack>
+        <>
           <LeverageInput checked={values.leverageEnabled} leverage={leverage} onToggle={toggleLeverage} />
           <LoanActionSettings
             show={values.leverageEnabled}
             slippage={values.slippage}
-            onSlippageChange={slippage => updateForm({ slippage })}
+            onSlippageChange={slippage => updateForm({ slippage }, { mode: 'immediate' })}
             routes={routes}
             exchangeRate={exchangeRate}
             priceImpact={priceImpact}
@@ -152,7 +151,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             borrowSymbol={borrowToken?.symbol}
             userAddress={userAddress}
           />
-        </Stack>
+        </>
       )}
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>
@@ -169,7 +168,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
+        disabled={form.isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
         label={[[isControllerApproved.data, isApproved.data].includes(false) && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
         connectWalletTestId="form-market-page"

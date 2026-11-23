@@ -110,7 +110,8 @@ jobs:
         run: yarn vite optimize --config vite.config.mts
         working-directory: tests
 
-      - run: |
+      - name: Run component tests
+        run: |
           set -o pipefail
           yarn run cy:run:component --browser ${{ matrix.browser }} 2>&1 | \
             tee ../cypress-component-${{ matrix.browser }}-${{ matrix.iteration }}.log \

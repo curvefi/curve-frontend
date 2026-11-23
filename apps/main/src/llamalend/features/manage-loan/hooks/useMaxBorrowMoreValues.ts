@@ -10,6 +10,7 @@ import {
 import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
 import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -23,7 +24,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   market,
   borrowTokenAddress,
   collateralTokenAddress,
-  collateralEvents: { data: events },
+  collateralEvents,
 }: {
   params: BorrowMoreMaxReceiveParams<ChainId>
   form: UseFormReturn<BorrowMoreForm>
@@ -45,11 +46,16 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
     maxBorrowed: maxUserBorrowed.data,
     maxDebt: maxReceive.data?.maxDebt,
   })
-  // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  // purposefully override the value if the backend changes. Without the position history it stays unknown, a plain borrow.
   useFormSync(form, {
     leverageEnabled: maybe(
       params.leverageProviders,
-      providers => providers.length > 0 && events && isPositionLeveraged(events.originalLeverage),
+      providers =>
+        providers.length > 0 &&
+        maybe(collateralEvents.data, events =>
+          isEquityLeverage ? !!events.isZapLeveraged : isPositionLeveraged(events.originalLeverage),
+        ),
     ),
   })
 

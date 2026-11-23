@@ -60,8 +60,14 @@ export const AddRewardToken = () => {
     <Form {...form} onSubmit={handleSubmit(onSubmit)} footer={<ActionInfoGasEstimate gas={q(gas)} />}>
       <Stack sx={{ gap: Spacing.sm }}>
         <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.sm }}>
-          <TokenSelector chainId={chainId} poolAddress={poolAddress} userAddress={userAddress} disabled={isDisabled} />
-          <DistributorInput disabled={isDisabled} />
+          <TokenSelector
+            form={form}
+            chainId={chainId}
+            poolAddress={poolAddress}
+            userAddress={userAddress}
+            disabled={isDisabled}
+          />
+          <DistributorInput form={form} disabled={isDisabled} />
         </Stack>
         <EvmFormButton
           disabled={isDisabled || !isValid}

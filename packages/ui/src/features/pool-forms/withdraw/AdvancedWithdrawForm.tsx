@@ -69,7 +69,7 @@ export const AdvancedWithdrawForm = ({
       disabled={isPending || !canBalance}
       testIdPrefix="withdraw-unbalanced"
     />
-    {canWithdrawWrapped && <WrappedWithdrawCheckbox disabled={isPending} />}
+    {canWithdrawWrapped && <WrappedWithdrawCheckbox form={form} disabled={isPending} />}
     <FormButton
       {...wallet}
       pending={isPending}
