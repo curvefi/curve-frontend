@@ -124,8 +124,6 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     priceImpact,
     params,
     network,
-    mode: params.mode,
-    slippage: values.slippage,
     lpBalance: q(lpBalance),
     onSubmit: handleSubmit(onSubmit),
     isPending,

@@ -99,8 +99,6 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     max,
     params,
     network,
-    mode: params.mode,
-    slippage: values.slippage,
     minimumReceived,
     expectedLp,
     lpBalance: q(lpBalance),

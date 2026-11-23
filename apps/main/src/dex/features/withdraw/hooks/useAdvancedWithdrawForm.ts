@@ -106,8 +106,6 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
   return {
     form,
     params,
-    mode: params.mode,
-    slippage: values.slippage,
     tokens,
     lpBalance,
     expectedLp,

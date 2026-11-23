@@ -112,8 +112,6 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   return {
     form,
     params,
-    mode: params.mode,
-    slippage: values.slippage,
     minimumReceived,
     tokens,
     index,
