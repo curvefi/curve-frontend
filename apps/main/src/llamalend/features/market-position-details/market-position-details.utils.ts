@@ -1,7 +1,9 @@
 import type { Theme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
+import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { decimalGreaterThan, ZERO } from '@ui/lib/decimal'
+import { t } from '@ui/lib/i18n'
 
 export const BORROW_METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 export const BORROW_METRIC_TOOLTIP = { placement: 'top', arrow: false, clickable: true } as const
@@ -66,6 +68,10 @@ export const getLegacyHealthValueColor = ({
     resolveHealthFeedbackKey({ health: value == null ? value : Number(value), isFullRepay })
   ]
 }
+
+/** `None` when the position history shows a plain borrow, unavailable when it can't tell or the leverage can't be computed */
+export const getLeverageFallback = (isZapLeveraged: boolean | Nullish) =>
+  isZapLeveraged === false ? t`None` : UNAVAILABLE_NOTATION
 
 export const getLeverageValueColor = (leverage: Decimal | Nullish) =>
   leverage != null && decimalGreaterThan(ZERO, leverage) ? 'error' : undefined

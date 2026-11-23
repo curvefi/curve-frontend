@@ -24,7 +24,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
-import { DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp } from '@ui/features/queries/util'
+import { constQ, DISABLED_Q, mapQuery, q, type QueryOptionsData, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 
 type LendBorrowStats = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
@@ -98,8 +98,8 @@ type UserPositionQueries = {
   pnl: QueryProp<PositionPnlAndRoi>
   /** PNL in the debt token, in USD at the borrowed token's USD rate */
   pnlUsd: QueryProp<number>
-  /** The open position borrowed through the leverage zap */
-  isZapLeveraged: QueryProp<boolean>
+  /** The open position borrowed through the leverage zap, null when the history can't tell */
+  isZapLeveraged: QueryProp<boolean | null>
   /** The leverage the open position opened at */
   openingLeverage: QueryProp<Decimal | null>
 }
@@ -220,7 +220,10 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
           pnlUsd: combineQueries([pnl, prices.borrowed], (pnl, rate) =>
             maybe(pnl, ({ debt }) => Number(debt.pnl) * rate),
           ),
-          isZapLeveraged: mapQuery(events, ({ isZapLeveraged }) => isZapLeveraged),
+          // V0 zap mint markets skip the events, their history can't tell
+          isZapLeveraged: isZapV0MintMarket(market.blockchainId, market.controllerAddress)
+            ? constQ(null)
+            : mapQuery(events, ({ isZapLeveraged }) => isZapLeveraged),
           openingLeverage: mapQuery(events, ({ openingLeverage }) => openingLeverage),
         },
       }

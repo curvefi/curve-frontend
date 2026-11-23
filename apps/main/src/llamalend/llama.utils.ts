@@ -118,7 +118,7 @@ export const isMintMarket = (market: MarketTemplate | Nullish): market is MintMa
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   isMintMarket(market) && market.index == null && market.leverageZap !== zeroAddress
 
-export const isZapV0MintMarket = (blockchainId: Chain | undefined, controllerAddress: Address | undefined) =>
+export const isZapV0MintMarket = (blockchainId: Chain | Nullish, controllerAddress: Address | Nullish) =>
   maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
     ZAP_V0_MINT_MARKETS[blockchainId]?.includes(controllerAddress.toLowerCase() as Address),
   )

@@ -10,6 +10,7 @@ import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/Borr
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { LeveragedPositionBadge } from '@/llamalend/widgets/action-card/LeveragedPositionBadge'
 import { Decimal } from '@primitives/decimal.utils'
 import { type FormTab, FormTabs } from '@ui/features/forms/tabs/FormTabs'
 import { type QueryProp, type Range } from '@ui/features/queries/util'
@@ -76,5 +77,6 @@ export const ManageLoanTabs = (params: LendManageLoanProps) => (
     key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
     params={params}
     menu={params.isLiquidation ? LiquidationMenu : LendManageMenu}
+    action={<LeveragedPositionBadge collateralEvents={params.collateralEvents} />}
   />
 )

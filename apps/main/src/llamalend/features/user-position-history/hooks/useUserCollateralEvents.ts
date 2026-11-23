@@ -9,7 +9,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, pick } from '@primitives/objects.utils'
 import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimalDiv } from '@ui/lib/decimal'
-import { type ApiCollateralEvent, getOpeningLeverage, hasZapBorrowInOpenPosition } from '../collateral-events.utils'
+import { type ApiCollateralEvent, getOpeningLeverage } from '../collateral-events.utils'
 import {
   invalidateUserCrvUsdCollateralEventsQuery,
   useUserCrvUsdCollateralEventsQuery,
@@ -18,6 +18,7 @@ import {
   invalidateUserLendCollateralEventsQuery,
   useUserLendCollateralEventsQuery,
 } from '../queries/user-lend-collateral-events'
+import { getIsZapLeveraged } from '../zap-leverage.utils'
 
 /**
  * Types:
@@ -59,8 +60,8 @@ export type UserCollateralEvents = {
   events: ParsedUserCollateralEvent[]
   /** @deprecated Total deposit ÷ deposit from the user. Use `isZapLeveraged` to know if the position borrowed through the zap. */
   originalLeverage: Decimal
-  /** The open position borrowed through the leverage zap */
-  isZapLeveraged: boolean
+  /** The open position borrowed through the leverage zap, null when the history can't tell */
+  isZapLeveraged: boolean | null
   /** The leverage the open position opened at */
   openingLeverage: Decimal | Nullish
 }
@@ -108,7 +109,10 @@ export const useUserCollateralEvents = ({
           originalLeverage: Number(data.totalDepositFromUserPrecise)
             ? decimalDiv(data.totalDepositPrecise, data.totalDepositFromUserPrecise)
             : '0', // deposit should only be 0 if there is no loan, this is just a guard for div-by-zero errors
-          isZapLeveraged: hasZapBorrowInOpenPosition(data.events),
+          isZapLeveraged: getIsZapLeveraged(data.events, {
+            blockchainId: BlockchainIds[chainId],
+            contractAddress: controllerAddress,
+          }),
           openingLeverage: getOpeningLeverage(data.events),
           events:
             data.events
@@ -124,7 +128,7 @@ export const useUserCollateralEvents = ({
         isLoading,
         error,
       }),
-    [data, isLoading, error, chainId, borrowToken, collateralToken],
+    [data, isLoading, error, chainId, controllerAddress, borrowToken, collateralToken],
   )
 }
 
