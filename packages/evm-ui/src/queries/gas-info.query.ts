@@ -16,7 +16,7 @@ import { DEFAULT_DECIMALS } from '@primitives/units.util'
 import type { TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { queryFactory } from '@ui/features/queries/factory'
-import { constQ, type Query as QueryResult } from '@ui/features/queries/util'
+import { constQ, type Query as QueryResult, type QueryOrValue, toValue } from '@ui/features/queries/util'
 import { fromWei } from '@ui/lib/decimal'
 import { formatToken } from '@ui/lib/tokens'
 import { enforce } from '@ui/lib/validation/enforce-extension'
@@ -34,7 +34,7 @@ const BASE_CHAIN_GAS_CONFIG: ChainGasConfig = {
 }
 
 const CHAIN_GAS_CONFIGS: PartialRecord<Chain, Partial<ChainGasConfig>> = {
-  [Chain.Ethereum]: { gasPricesUrl: 'https://api.curve.finance/api/getGas', gasPricesDefault: 1 },
+  [Chain.Ethereum]: { gasPricesUrl: 'https://prices.curve.finance/v1/gas', gasPricesDefault: 1 },
   [Chain.Optimism]: { gasL2: true },
   [Chain.Polygon]: { gasPricesUrl: 'https://gasstation.polygon.technology/v2', gasPricesDefault: 0 },
   [Chain.Kava]: { gasPricesUnit: 'UKAVA' },
@@ -417,16 +417,16 @@ export const useEstimateGasValue = (chainId: number | Nullish, estimate: GasEsti
 
 type EstimateValue = number | number[] | Nullish
 
-type WithOptionalChainId = { chainId?: number | Nullish }
+type WithOptionalChainId = { chainId?: QueryOrValue<number | Nullish> }
 
 /** Builds a reusable gas-cost hook from a single estimate-gas query hook. */
 export const createEstimateGasHook =
   <Query extends WithOptionalChainId, Estimate extends EstimateValue>(
     useEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>,
   ) =>
-  (query: Query & { chainId?: number | Nullish }, enabled = true) => {
+  (query: Query & WithOptionalChainId, enabled?: boolean) => {
     const estimate = useEstimate(query, enabled)
-    const converted = useEstimateGas(query.chainId, estimate, enabled)
+    const converted = useEstimateGas(toValue(query.chainId), estimate, enabled)
     return combineQueries([converted, estimate], data => data)
   }
 
@@ -442,7 +442,7 @@ export const createClaimEstimateGasHook = <
 ) =>
   createEstimateGasHook((query: Query, enabled?: boolean) => {
     const claimable = useClaimable(query, enabled)
-    const estimateGas = useEstimateGasQuery(query, enabled && isClaimEnabled(claimable.data))
+    const estimateGas = useEstimateGasQuery(query, isClaimEnabled(claimable.data) && enabled)
 
     return combineQueries([claimable, estimateGas], (_, estimateGas) => estimateGas)
   })
@@ -458,11 +458,11 @@ export const createApprovedEstimateGasHook =
     useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
     useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
   }) =>
-  (query: Query & { chainId?: number | Nullish }, enabled = true) => {
+  (query: Query & WithOptionalChainId, enabled?: boolean) => {
     const isApproved = useIsApproved(query, enabled)
-    const approveEstimate = useApproveEstimate(query, enabled && isApproved.data === false)
-    const actionEstimate = useActionEstimate(query, enabled && isApproved.data === true)
+    const approveEstimate = useApproveEstimate(query, isApproved.data === false && enabled)
+    const actionEstimate = useActionEstimate(query, isApproved.data === true && enabled)
     const estimate = isApproved.data ? actionEstimate : approveEstimate
-    const gas = useEstimateGas(query.chainId, estimate, enabled)
+    const gas = useEstimateGas(toValue(query.chainId), estimate, enabled)
     return combineQueries([isApproved, gas], (_, gas) => gas)
   }

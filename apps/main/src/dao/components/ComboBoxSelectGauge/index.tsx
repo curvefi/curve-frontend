@@ -47,11 +47,11 @@ export const ComboBoxGauges = ({
         !userGaugeWeightVotes?.gauges.some(
           userGauge =>
             userGauge.gaugeAddress.toLowerCase() ===
-            (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),
+            (gauge.effectiveAddress?.toLowerCase() ?? gauge.address.toLowerCase()),
         ),
     )
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-    .sort((a, b) => b.gauge_weight - a.gauge_weight)
+    .sort((a, b) => b.weight - a.weight)
 
   const [result, setResult] = useState<GaugeFormattedData[] | undefined>()
 

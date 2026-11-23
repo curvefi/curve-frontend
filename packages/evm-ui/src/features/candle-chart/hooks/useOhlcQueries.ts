@@ -79,7 +79,7 @@ const FETCH_NEXT_PAGE_OPTIONS = { cancelRefetch: false } as const
 
 export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey extends QueryKey>({
   anchorEnd,
-  enabled = true,
+  enabled,
   fetchPage,
   queryKey,
   timeOption,

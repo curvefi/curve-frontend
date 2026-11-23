@@ -22,7 +22,7 @@ export const WithdrawActionInfoList = ({
 }) => {
   const expectedLp = useWithdrawExpectedLp(params)
   const lpBalance = q(useTokenBalance({ ...params, token: params.pool, decimals: LP_TOKEN_DECIMALS }))
-  const simulation = useWithdrawSimulation({ ...params, expectedLp: expectedLp.data })
+  const simulation = useWithdrawSimulation({ ...params, expectedLp })
   return (
     <PoolActionInfoList
       {...(params.mode === 'unbalanced' && {

@@ -7,7 +7,7 @@ import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { formatCappedRateValue } from '@ui/lib/rates.utils'
 import { formatEstimatedNetBorrowRate, hasEstimatedNetBorrowApr } from '../llama.utils'
 import type { BorrowRate } from './page-header/hooks/usePageHeader'
-import { TooltipOptions as defaultTooltipOptions } from './tooltips/tooltip.utils'
+import { HeaderTooltipOptions } from './tooltips/tooltip.utils'
 
 type BorrowAprMetricProps = {
   borrowRate: QueryProp<BorrowRate>
@@ -44,7 +44,7 @@ export const BorrowAprMetric = ({ borrowRate, collateralSymbol, alignment }: Bor
             isLoading={borrowRate.isLoading}
           />
         ),
-        ...defaultTooltipOptions,
+        ...HeaderTooltipOptions,
       }}
     />
   )

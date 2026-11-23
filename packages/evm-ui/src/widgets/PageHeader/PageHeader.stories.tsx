@@ -35,7 +35,7 @@ const meta: Meta<typeof PageHeader> = {
   title: 'EVM UI/Widgets/PageHeader',
   component: PageHeader,
   parameters: { layout: 'fullscreen' },
-  args: { title: 'Page title' },
+  args: { title: constQ('Page title') },
   render: args => (
     <Box sx={{ width: '100%', padding: '4rem 2rem' }}>
       <PageHeader {...args} />
@@ -49,7 +49,7 @@ type Story = StoryObj<typeof PageHeader>
 
 export const DexPool: Story = {
   args: {
-    title: 'crvUSD/USDC/USDT',
+    title: constQ('crvUSD/USDC/USDT'),
     icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.crvUSD, TOKENS.usdc, TOKENS.usdt]} />,
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xl }}>
@@ -75,8 +75,8 @@ export const DexPool: Story = {
 export const LlamalendLendMarket: Story = {
   args: {
     backHref: '/llamalend/ethereum/markets',
-    title: `${TOKENS.wstETH.symbol.toUpperCase()} • ${TOKENS.crvUSD.symbol.toUpperCase()}`,
-    subtitle: `Use ${TOKENS.wstETH.symbol} to borrow ${TOKENS.crvUSD.symbol}`,
+    title: constQ(`${TOKENS.wstETH.symbol.toUpperCase()} • ${TOKENS.crvUSD.symbol.toUpperCase()}`),
+    subtitle: constQ(`Use ${TOKENS.wstETH.symbol} to borrow ${TOKENS.crvUSD.symbol}`),
     icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.wstETH, TOKENS.crvUSD]} />,
     titleItems: <LlamaTitleItems marketType="Lend" />,
     rightItems: (
@@ -112,18 +112,16 @@ export const LlamalendLendMarket: Story = {
 
 export const SavingsCrvUsd: Story = {
   args: {
-    title: 'Savings crvUSD',
-    subtitle: 'Let your idle crvUSD do more for you.',
+    title: constQ('Savings crvUSD'),
+    subtitle: constQ('Let your idle crvUSD do more for you.'),
     icon: <TokenIcon blockchainId="ethereum" address={TOKENS.scrvUSD.address} tooltip="scrvUSD" size="xl" />,
   },
 }
 
 export const Loading: Story = {
   args: {
-    title: 'Loading market',
-    subtitle: 'Loading subtitle',
-    titleLoading: true,
-    subtitleLoading: true,
+    title: q({ data: 'Loading market', isLoading: true, error: null }),
+    subtitle: q({ data: 'Loading subtitle', isLoading: true, error: null }),
     icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.wstETH, TOKENS.crvUSD]} />,
     titleItems: <LlamaTitleItems marketType="Lend" />,
     rightItems: (

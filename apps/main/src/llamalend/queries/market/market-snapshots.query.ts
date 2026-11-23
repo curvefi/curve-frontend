@@ -21,7 +21,7 @@ export type MarketSnapshotsQuery<TMarketType extends MarketType = MarketType> = 
 
 export function useMarketSnapshots<TMarketType extends MarketType>({
   blockchainId,
-  enabled = true,
+  enabled,
   range = { kind: 'timeRange', timeOption: '1M' },
   controllerAddress,
   marketType,
@@ -37,11 +37,11 @@ export function useMarketSnapshots<TMarketType extends MarketType>({
   const snapshotsByMarketType = {
     Lend: useLendingSnapshots(
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
-      enabled && marketType === MarketType.Lend,
+      marketType === MarketType.Lend && enabled,
     ),
     Mint: useCrvUsdSnapshots(
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
-      enabled && marketType === MarketType.Mint,
+      marketType === MarketType.Mint && enabled,
     ),
   } satisfies { [T in MarketType]: UseQueryResult<SnapshotByMarketType[T][]> }
 

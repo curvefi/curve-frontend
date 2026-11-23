@@ -1,13 +1,10 @@
 import { useCallback } from 'react'
 import { resetBadDebtMarkets } from '@/llamalend/queries/market/market-bad-debt.query'
-import {
-  resetLendingVaults,
-  resetAllUserLendingVaults,
-  resetUserLendingSupplies,
-} from '@/llamalend/queries/market-list/lending-vaults'
+import { resetAllUserLendingVaults, resetUserLendingSupplies } from '@/llamalend/queries/market-list/lending-vaults'
 import { useLlamaMarketRows, type LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useLlamaMarkets, type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { resetMintMarkets, resetAllUserMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
+import { resetLendingVaults } from '@evm-ui/queries/lending-vaults.query'
 import type { Address } from '@primitives/address.utils'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'

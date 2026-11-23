@@ -10,7 +10,7 @@ import { groupCampaignsByAddress } from '@ui/features/campaigns/campaigns.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useQueries } from '@ui/features/queries/query-hooks'
 
-const getMerklOptions = (formatAddress: (address: string) => Address, enabled = true) =>
+const getMerklOptions = (formatAddress: (address: string) => Address, enabled?: boolean) =>
   queryOptions({ ...getCampaignsPoolsMerklOptions({}, enabled), select: groupCampaignsByAddress(formatAddress) })
 
 /**

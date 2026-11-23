@@ -1,4 +1,5 @@
 import { type Address, createPublicClient, erc20Abi, formatUnits, http, parseUnits } from 'viem'
+import { getPoolUnderlyingBalances, type TestPool } from '@cy/support/helpers/dex/curve.helpers'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
@@ -6,28 +7,13 @@ import { cyMap } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimal, ZERO } from '@ui/lib/decimal'
 
-export const DEPOSIT_TEST_POOLS = [
-  {
-    id: '3pool',
-    address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7',
-    lpToken: '0x6c3f90f043a72fa612cbac8115ee7e52bde6e490',
-    coins: [
-      { address: '0x6b175474e89094c44da98b954eedeac495271d0f', symbol: 'DAI', decimals: 18 },
-      { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', symbol: 'USDC', decimals: 6 },
-      { address: '0xdac17f958d2ee523a2206206994597c13d831ec7', symbol: 'USDT', decimals: 6 },
-    ],
-  },
-] as const
-
-export type DepositTestPool = (typeof DEPOSIT_TEST_POOLS)[number]
-
 export const poolDepositInput = (tokenAddress: Address) =>
   cy.get(`[data-testid="pool-token-input-${tokenAddress}"] input[type="text"]`, TIMEOUTS['ui.render'])
 
 export const poolDepositSubmit = () => cy.get('[data-testid="pool-deposit-submit"]', TIMEOUTS['ui.render'])
 
-export const writePoolDepositForm = (amounts: readonly Decimal[], { coins }: DepositTestPool) =>
-  coins.forEach(({ address }, index) => {
+export const writePoolDepositForm = (amounts: readonly Decimal[], { coins }: TestPool) =>
+  coins.map(({ address }, index) => {
     poolDepositInput(address).clear()
     if (Number(amounts[index])) poolDepositInput(address).type(amounts[index])
     poolDepositInput(address).blur()
@@ -51,19 +37,19 @@ export const getPoolDepositAllowance = ({
   publicRpcUrl,
   userAddress,
   tokenAddress,
-  pool: { address },
+  pool: { depositAddress },
 }: {
   publicRpcUrl: string
   userAddress: Address
   tokenAddress: Address
-  pool: DepositTestPool
+  pool: TestPool
 }) =>
   cy.then(TIMEOUTS['tenderly.allowance'], () =>
     createPublicClient({ transport: http(publicRpcUrl) }).readContract({
       address: tokenAddress,
       abi: erc20Abi,
       functionName: 'allowance',
-      args: [userAddress, address],
+      args: [userAddress, depositAddress],
     }),
   )
 
@@ -78,7 +64,7 @@ export const submitPoolDepositAndCheck = ({
   publicRpcUrl: string
   userAddress: Address
   amounts: readonly Decimal[]
-  pool: DepositTestPool
+  pool: TestPool
   tokenIndex?: number
 }) => {
   const client = createPublicClient({ transport: http(publicRpcUrl) })
@@ -95,13 +81,13 @@ export const submitPoolDepositAndCheck = ({
       { message: 'Deposit successful!', approvalMessage: 'Approved deposit' },
       'tenderly.submit',
     )
-    coins.forEach(({ address }, index) => {
+    coins.map(({ address }, index) => {
       if (tokenIndex == null || index === tokenIndex) poolDepositInput(address).should('have.value', '')
     })
     poolDepositSubmit().should('be.disabled')
 
     cy.then(TIMEOUTS['tenderly.balances'], readBalances).then(after => {
-      coins.forEach((coin, index) => {
+      coins.map((coin, index) => {
         const spent = parseUnits(amounts[index], coin.decimals)
         expect(before[index] - after[index], `${coin.symbol} spent`).to.equal(spent)
         const { address, decimals } = coin
@@ -118,7 +104,7 @@ export const submitPoolDepositAndCheck = ({
 }
 
 /** Read amounts selected by the balanced checkbox or Max chip without rounding the displayed input. */
-export const getPoolDepositAmounts = ({ coins }: DepositTestPool) =>
+export const getPoolDepositAmounts = ({ coins }: TestPool) =>
   cyMap(coins, ({ address }) =>
     poolDepositInput(address)
       .invoke('attr', 'data-value')
@@ -127,36 +113,14 @@ export const getPoolDepositAmounts = ({ coins }: DepositTestPool) =>
 
 /** Compare selected amounts against on-chain reserve ratios, allowing one base unit for rounding. */
 export const checkBalancedPoolDepositAmounts = ({
-  publicRpcUrl,
   amounts,
   pool: { coins, address },
 }: {
-  publicRpcUrl: string
   amounts: readonly Decimal[]
-  pool: DepositTestPool
+  pool: TestPool
 }) =>
-  cy
-    .then(TIMEOUTS['tenderly.contractRead'], async () => {
-      const client = createPublicClient({ transport: http(publicRpcUrl) })
-      return await Promise.all(
-        coins.map((_, index) =>
-          client.readContract({
-            address,
-            abi: [
-              {
-                name: 'balances',
-                type: 'function',
-                stateMutability: 'view',
-                inputs: [{ type: 'uint256' }],
-                outputs: [{ type: 'uint256' }],
-              },
-            ] as const,
-            functionName: 'balances',
-            args: [BigInt(index)],
-          }),
-        ),
-      )
-    })
+  getPoolUnderlyingBalances(address)
+    .then(balances => balances.map((balance, index) => parseUnits(balance, coins[index].decimals)))
     .then(reserves => {
       cy.get('[data-testid^="pool-token-input-"] [data-testid="balance-value"]', TIMEOUTS['tenderly.balances'])
         .should('have.length', coins.length)

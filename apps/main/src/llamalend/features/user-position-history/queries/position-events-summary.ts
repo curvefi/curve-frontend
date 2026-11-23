@@ -36,14 +36,14 @@ export const getPositionEventsSummaryOptions = (
     [MarketType.Mint]: selectFromEvents(getUserCrvUsdCollateralEventsOptions(params, enabled), toPositionEventsSummary),
   })[marketType]
 
-export const usePositionCapital = (marketType: MarketType, params: UserContractParams, enabled = true) =>
+export const usePositionCapital = (marketType: MarketType, params: UserContractParams, enabled?: boolean) =>
   ({
     [MarketType.Lend]: useQuery({
-      ...getUserLendCollateralEventsOptions(params, enabled && marketType === MarketType.Lend),
+      ...getUserLendCollateralEventsOptions(params, marketType === MarketType.Lend && enabled),
       select: toPositionCapital,
     }),
     [MarketType.Mint]: useQuery({
-      ...getUserCrvUsdCollateralEventsOptions(params, enabled && marketType === MarketType.Mint),
+      ...getUserCrvUsdCollateralEventsOptions(params, marketType === MarketType.Mint && enabled),
       select: toPositionCapital,
     }),
   })[marketType]

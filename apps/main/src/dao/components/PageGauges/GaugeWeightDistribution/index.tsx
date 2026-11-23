@@ -32,8 +32,8 @@ const toUserVoteRows = (votes: QueryData<typeof useUserGaugeWeightVotesQuery>, g
 
 const toTopGaugeRows = (gauges: GaugeMapper) =>
   sortBy(
-    recordValues(gauges).filter(gauge => gauge.gauge_relative_weight > 0.5),
-    gauge => gauge.gauge_relative_weight,
+    recordValues(gauges).filter(gauge => gauge.weightRelative > 0.5),
+    gauge => gauge.weightRelative,
     'desc',
   )
 
@@ -100,7 +100,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               <EChartsBarChart
                 data={data}
                 xKey="title"
-                yKey="gauge_relative_weight"
+                yKey="weightRelative"
                 barColor={getBarColor}
                 height={DAO_COMPACT_CHART_HEIGHT}
                 renderTooltip={GaugesBarChartCustomTooltip}

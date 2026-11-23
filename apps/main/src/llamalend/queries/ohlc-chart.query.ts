@@ -61,7 +61,7 @@ export const useOraclePoolOhlcQuery = ({
   timeOption,
   units,
   anchorEnd,
-  enabled = true,
+  enabled,
 }: OraclePoolOhlcQueryParams) =>
   useOhlcInfiniteQuery({
     queryKey: createCandleChartQueryKey(
@@ -77,7 +77,7 @@ export const useOraclePoolOhlcQuery = ({
     ),
     anchorEnd,
     timeOption,
-    enabled: enabled && !!chain && !!controller,
+    enabled: !!chain && !!controller && enabled,
     fetchPage: async ({ pageParam, signal }): Promise<OraclePoolOhlcPage> => {
       const validChain = assert(chain, t`Cannot fetch oracle-pool OHLC data without a chain.`)
       const { data, pools, ohlc } = await getOracle(
@@ -108,7 +108,7 @@ export const useLlammaOhlcQuery = ({
   timeOption,
   units,
   anchorEnd,
-  enabled = true,
+  enabled,
 }: LlammaOhlcQueryParams) =>
   useOhlcInfiniteQuery({
     queryKey: createCandleChartQueryKey(
@@ -124,7 +124,7 @@ export const useLlammaOhlcQuery = ({
     ),
     anchorEnd,
     timeOption,
-    enabled: enabled && !!chain && !!llamma,
+    enabled: !!chain && !!llamma && enabled,
     fetchPage: async ({ pageParam, signal }): Promise<LlammaOhlcPage> => {
       const validChain = assert(chain, t`Cannot fetch LLAMMA OHLC data without a chain.`)
       const ohlc = await getOHLC(

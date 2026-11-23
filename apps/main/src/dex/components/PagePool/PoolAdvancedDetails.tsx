@@ -6,7 +6,7 @@ import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { useBasePools } from '@/dex/queries/base-pools.query'
-import { usePoolIsGaugeKilled } from '@/dex/queries/pool-is-gauge-killed.query'
+import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
@@ -16,7 +16,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
-import { fallbackQ, mapQuery } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { amount, decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
@@ -46,7 +46,7 @@ export const PoolAdvancedDetails = () => {
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const parameters = usePoolParameters({ chainId, poolAddress })
-  const { data: gaugeIsKilled } = usePoolIsGaugeKilled({ chainId, poolAddress })
+  const gaugeStatus = q(usePoolGaugeStatus({ chainId, poolAddress }))
   const snapshots = usePoolSnapshots({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const {
     priceOracle: priceOracleApi,
@@ -87,9 +87,10 @@ export const PoolAdvancedDetails = () => {
       contracts={{
         poolAddress: maybe(poolAddress, poolAddress => getAddress(poolAddress)),
         lpTokenAddress: maybe(lpToken, lpToken => getAddress(lpToken)),
-        gaugeAddress: maybe(gauge, gauge => getAddress(gauge.address)),
-        hasGauge: maybe(gauge, gauge => !isAddressEqual(gauge.address as Address, zeroAddress)),
-        gaugeIsKilled,
+        ...(gauge &&
+          !isAddressEqual(gauge.address as Address, zeroAddress) && {
+            gauge: { address: getAddress(gauge.address), status: gaugeStatus },
+          }),
         oracles: assetTypes?.flatMap((assetType, index) => {
           const oracle = oracles?.[index]
           if (assetType !== 1 || !oracle?.oracleAddress || isAddressEqual(oracle.oracleAddress, zeroAddress)) return []

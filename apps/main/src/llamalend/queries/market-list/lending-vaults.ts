@@ -1,10 +1,8 @@
-import { Chain as ChainName, LEND_CHAINS } from '@curvefi/prices-api'
+import { LEND_CHAINS } from '@curvefi/prices-api'
 import {
-  getAllMarkets,
   getUserLendingPositions,
   getUserMarkets,
   getUserMarketStats,
-  Market,
   USER_MARKETS_FIRST_PAGE,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
@@ -20,7 +18,7 @@ import {
 import type { Address } from '@primitives/address.utils'
 import { type Nullish, fromEntries } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { createValidationSuite, EmptyValidationSuite } from '@ui/lib/validation/lib'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
 type UserChainNameQuery = UserQuery & ChainNameQuery
@@ -29,18 +27,6 @@ type UserChainNameParams = FieldsOf<UserChainNameQuery>
 const userChainNameValidationSuite = createValidationSuite((params: UserChainNameParams) => {
   userAddressValidationGroup(params)
   pricesApiChainNameValidationGroup(params)
-})
-
-export type LendingVault = Market & { chain: ChainName }
-
-export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaults } = queryFactory({
-  queryKey: () => ({ name: 'lending-vaults', version: 6 }) as const,
-  queryFn: async (): Promise<LendingVault[]> =>
-    Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
-      markets.map(market => ({ ...market, chain: chain as ChainName })),
-    ),
-  category: 'llamalend.marketList',
-  validationSuite: EmptyValidationSuite,
 })
 
 const {

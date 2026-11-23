@@ -13,8 +13,8 @@ import { constQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalGreaterThan, decimalMinus, decimalSum, ZERO } from '@ui/lib/decimal'
 
 /** The new position: the leverage quote's total collateral, or the deposited collateral without leverage */
-export function useCreateLoanFuturePosition(params: CreateLoanFormQueryParams, enabled = true) {
-  const expectedCollateral = useCreateLoanExpectedCollateral(params, enabled && !!params.leverageEnabled)
+export function useCreateLoanFuturePosition(params: CreateLoanFormQueryParams, enabled?: boolean) {
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, !!params.leverageEnabled && enabled)
   return mapQuery(
     params.leverageEnabled
       ? mapQuery(expectedCollateral, ({ totalCollateral }) => totalCollateral)
@@ -23,9 +23,9 @@ export function useCreateLoanFuturePosition(params: CreateLoanFormQueryParams, e
   )
 }
 
-export function useBorrowMoreFuturePosition(params: BorrowMoreParams, enabled = true) {
+export function useBorrowMoreFuturePosition(params: BorrowMoreParams, enabled?: boolean) {
   const { market } = useMarketContext()
-  const expectedCollateral = useBorrowMoreExpectedCollateral(params, enabled && !!params.leverageEnabled)
+  const expectedCollateral = useBorrowMoreExpectedCollateral(params, !!params.leverageEnabled && enabled)
   return combineQueries(
     [
       q(useUserState(params, enabled)),
@@ -42,7 +42,7 @@ export function useBorrowMoreFuturePosition(params: BorrowMoreParams, enabled = 
   )
 }
 
-export const useRepayFuturePosition = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled = true) =>
+export const useRepayFuturePosition = (params: RepayParams, debt: QueryProp<Decimal | null>, enabled?: boolean) =>
   combineQueries(
     [q(useUserState(params, enabled)), debt],
     // a partial repay keeps the borrowed tokens in the AMM: a partial repay from collateral reverts in soft liquidation
@@ -53,13 +53,13 @@ export const useRepayFuturePosition = (params: RepayParams, debt: QueryProp<Deci
         : { ...position, collateral: decimalMinus(position.collateral, params.stateCollateral ?? ZERO), debt }),
   )
 
-export const useAddCollateralFuturePosition = (params: CollateralParams, enabled = true) =>
+export const useAddCollateralFuturePosition = (params: CollateralParams, enabled?: boolean) =>
   mapQuery(q(useUserState(params, enabled)), position => ({
     ...position,
     collateral: decimalSum(position.collateral, params.userCollateral ?? ZERO),
   }))
 
-export const useRemoveCollateralFuturePosition = (params: CollateralParams, enabled = true) =>
+export const useRemoveCollateralFuturePosition = (params: CollateralParams, enabled?: boolean) =>
   mapQuery(q(useUserState(params, enabled)), position => ({
     ...position,
     collateral: decimalGreaterThan(params.userCollateral ?? ZERO, position.collateral)

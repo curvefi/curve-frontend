@@ -9,6 +9,7 @@ import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
 import { useStakeForm } from '../hooks/useStakeForm'
+import { AlertGaugeKilled } from './alerts/AlertGaugeKilled'
 import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
@@ -34,7 +35,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
     error,
     formErrors,
     isApproved,
-    hasGauge,
+    gauge,
     max,
     disabledAlert,
     solvencyModal,
@@ -66,6 +67,8 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         onValueChange={value => updateForm({ isFull: value === max.data })}
       />
 
+      {gauge?.status === 'inactive' && <AlertGaugeKilled />}
+
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
@@ -73,7 +76,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         label={[isApproved.data === false && t`Approve`, t`Stake`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
       >
-        {hasGauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}
+        {gauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}
       </EvmFormButton>
 
       <LowSolvencyActionModal {...solvencyModal} action="stake" tokenSymbol={borrowToken?.symbol} />
