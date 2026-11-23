@@ -4,15 +4,24 @@ import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui/features/queries/combine'
 import type { AllowUndefined, Query } from '@ui/features/queries/util'
 import { useShallowData } from '@ui/hooks/useShallowData'
-import type { FieldName } from '@ui/lib/validation/types'
+import type { FieldName, ValidationErrors, ValidationKey } from '@ui/lib/validation/types'
 import type { FieldValues, UseFormHandleSubmit, UseFormReturn } from './form.types'
 import type { FormValues } from './useFormValues'
 import { useVestValidation } from './useVestValidation'
 
-const getVisibleErrors = (errors: Record<string, Error>, touchedFields: object, isDirty: boolean) =>
+const getVisibleErrors = <T extends object>(
+  errors: ValidationErrors<T>,
+  touchedFields: object,
+  isDirty: boolean,
+  computed: Record<string, unknown>,
+) =>
   recordEntries(errors)
-    .filter(([field]) => field in touchedFields || (field.startsWith('root') && isDirty))
-    .map<[string, string]>(([field, error]) => [field, error.message])
+    .filter(([field]) =>
+      field in computed
+        ? computed[field] !== undefined
+        : field in touchedFields || (field.startsWith('root') && isDirty),
+    )
+    .map<[ValidationKey<T>, string]>(([field, error]) => [field, error.message])
 
 /** Validate every input; defer computed checks while values debounce or results are missing. */
 const getValidationFields = <T extends object>(data: T, computed: Record<string, unknown>, isDebouncing: boolean) =>
@@ -20,7 +29,7 @@ const getValidationFields = <T extends object>(data: T, computed: Record<string,
     field => !(field in computed) || (!isDebouncing && computed[field] !== undefined),
   )
 
-/** Validate inputs and computed limits; touched state only controls error visibility. */
+/** Validate inputs and computed limits; computed errors are visible once their data is ready. */
 export function useFormValidation<TValues extends object, TContext extends object, TComputed extends object>({
   inputs,
   validation,
@@ -29,7 +38,7 @@ export function useFormValidation<TValues extends object, TContext extends objec
   disabled = false,
 }: {
   inputs: FormValues<TValues, TContext>
-  validation: Suite<FieldName<TValues & TComputed>, string>
+  validation: Suite<ValidationKey<TValues & TComputed>, string>
   computed: { [K in keyof TComputed]: Query<TComputed[K]> }
   isSubmitting: boolean
   disabled?: boolean
@@ -62,7 +71,7 @@ export function useFormValidation<TValues extends object, TContext extends objec
       isDirty,
       isValid,
       isSubmitting,
-      visibleErrors: getVisibleErrors(errors, touchedFields, isDirty),
+      visibleErrors: getVisibleErrors<TValues & TComputed>(errors, touchedFields, isDirty, computedValues),
     },
     error,
     isLoading: isDebouncing || isLoading || isSubmitting,
