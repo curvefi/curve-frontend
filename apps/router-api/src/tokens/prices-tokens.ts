@@ -1,19 +1,24 @@
-import { getAddress, zeroAddress, type Address } from 'viem'
+import { getAddress, zeroAddress } from 'viem'
+import { STANDALONE_WRAPPERS } from '@curvefi/api/lib/constants/standaloneWrappers.js'
 import { getPools, type Pool, type V2PoolChain } from '@curvefi/prices-api/pools'
 import { sumBy } from '@primitives/array.utils'
-import { Chain } from '@primitives/network.utils'
 import { fromEntries, maybe, notFalsy, notFalsyArray, recordEntries } from '@primitives/objects.utils'
 import { getPoolNativeCoin } from './native-tokens'
 import { LP_TOKEN_DECIMALS, MIN_POOL_TVL_USD } from './tokens.constants'
 import { getUnderlyingCoins } from './underlying-coins'
 
-/** Small workaround for custom tokens. Primarily tokens that are used in lending markets and are supported by the router, but have no proper Curve pool. There's a ticket to add tokens from llamalend to the token selector. */
-const CUSTOM_TOKENS: Record<number, readonly [Address, { symbol: string; decimals: number; volume: number }][]> = {
-  [Chain.Ethereum]: [
-    ['0xE5F130253fF137f9917C0107659A4c5262abf6b0', { symbol: 'svZCHF', decimals: 18, volume: 0 }],
-    ['0xD2af830E8CBdFed6CC11Bab697bB25496ed6FA62', { symbol: 'WOUSD', decimals: 18, volume: 0 }],
-  ],
-}
+/**
+ * Add standalone tokens from curve-js, such a wrapper tokens or tokens that are used in lending markets and are supported
+ * by the router, but have no proper Curve pool. There's a ticket to add tokens from llamalend to the token selector.
+ */
+const STANDALONE_TOKENS = fromEntries(
+  Object.entries(STANDALONE_WRAPPERS).map(([chainId, tokens]) => [
+    Number(chainId),
+    recordEntries(tokens).map(
+      ([symbol, { address, decimals }]) => [getAddress(address), { symbol, decimals, volume: 0 }] as const,
+    ),
+  ]),
+)
 
 export const getPricesTokens = async ({ chainId, name }: V2PoolChain, blacklist: ReadonlySet<string>) => {
   const { pools } = await getPools(name)
@@ -54,5 +59,5 @@ export const getPricesTokens = async ({ chainId, name }: V2PoolChain, blacklist:
       ([address, { symbol: lpTokenSymbol, decimals: LP_TOKEN_DECIMALS, lp: true, volume: volumes[address] }] as const)
     )
   })
-  return fromEntries(notFalsy(...poolTokens, ...lpTokens, ...(CUSTOM_TOKENS[chainId] ?? [])))
+  return fromEntries(notFalsy(...poolTokens, ...lpTokens, ...(STANDALONE_TOKENS[chainId] ?? [])))
 }
