@@ -31,9 +31,7 @@ const mockedReceiptTransport = custom(
         return Promise.resolve(testTransactionReceipt)
       const error = new Error(`Unmocked RPC request: ${method} ${JSON.stringify(params)}`)
       // Contract reads can swallow RPC errors with allowFailure, so also fail the test directly.
-      queueMicrotask(() => {
-        throw error
-      })
+      reportError(error)
       return Promise.reject(error)
     },
   },
