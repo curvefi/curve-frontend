@@ -138,7 +138,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         />
       </Stack>
       {isLeverageSupported && (
-        <Stack>
+        <>
           <LeverageInput checked={values.leverageEnabled} leverage={leverage} onToggle={toggleLeverage} />
           <LoanActionSettings
             show={values.leverageEnabled}
@@ -151,7 +151,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             borrowSymbol={borrowToken?.symbol}
             userAddress={userAddress}
           />
-        </Stack>
+        </>
       )}
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>
