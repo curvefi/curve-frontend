@@ -1,6 +1,6 @@
 import { noop } from 'lodash'
 import { create, only, type Suite } from 'vest'
-import { FieldName, FieldsOf } from '@ui/lib/validation/types'
+import { FieldsOf, ValidationKey } from '@ui/lib/validation/types'
 
 /**
  * This is using `any` because `vest` will try to match every single field,
@@ -12,7 +12,7 @@ export type ValidationSuite = Suite<any, any> | Suite<never, any>
 export const validate = <D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
-  fields?: FieldName<D>[],
+  fields?: ValidationKey<D>[],
 ) => {
   suite.reset() // reset the validation state so all fields get revalidated even if they didn't change
   return suite.run(data, fields).getErrors()
@@ -21,7 +21,7 @@ export const validate = <D extends object, S extends ValidationSuite>(
 export function assertValidity<D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
-  fields?: FieldName<D>[],
+  fields?: ValidationKey<D>[],
 ): D {
   const entries = Object.entries(validate(suite, data, fields))
   if (entries.length > 0) {
@@ -33,9 +33,10 @@ export function assertValidity<D extends object, S extends ValidationSuite>(
 
 export const createValidationSuite = <T extends object, TGroupName extends string = string>(
   validationGroup: (data: T) => void,
-): Suite<FieldName<T>, TGroupName> =>
-  create<FieldName<T>, TGroupName>((data: T, fieldsList?: FieldName<T>[]) => {
-    only(fieldsList)
+): Suite<ValidationKey<T>, TGroupName> =>
+  create<ValidationKey<T>, TGroupName>((data: T, fieldsList?: ValidationKey<T>[]) => {
+    // Empty selections validate all fields, including in legacy form resolvers.
+    only(fieldsList?.length ? [...fieldsList, 'root'] : fieldsList)
     validationGroup(data)
   })
 
