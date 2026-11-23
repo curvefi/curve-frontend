@@ -59,6 +59,8 @@ export const createRepayScenario = ({
     repayExpectedBorrowed: createStub(expectedBorrowed),
     repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
     repayPriceImpact: createStub(oneDecimal(0.01, 1, 3)),
+    loanExists: createStub(true),
+    userPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
   } as const
   const leverageStubs = {
     parameters: normalStubs.parameters,
@@ -146,6 +148,8 @@ export const createRepayScenario = ({
         stats: { parameters: normalStubs.parameters },
         userState: createStub({ collateral, stablecoin: '0', debt: currentDebt }),
         userHealth: createStub(oneDecimal(20, 80, 2)),
+        loanExists: normalStubs.loanExists,
+        userPrices: normalStubs.userPrices,
       })
     : createMockMintMarket({
         version: marketVersion,
@@ -154,6 +158,8 @@ export const createRepayScenario = ({
         estimateGas: loan.estimateGas,
         userState: createStub({ collateral, stablecoin: '0', debt: currentDebt }),
         userHealth: createStub(oneDecimal(20, 80, 2)),
+        loanExists: normalStubs.loanExists,
+        userPrices: normalStubs.userPrices,
         repayHealth: normalStubs.repayHealth,
         repayPrices: normalStubs.repayPrices,
         repayIsApproved: normalStubs.repayIsApproved,

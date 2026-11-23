@@ -1,12 +1,10 @@
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { oneDecimal } from '@cy/support/generators'
-import { mockLendingSnapshots } from '@cy/support/helpers/lending-mocks'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
   writeBorrowMoreForm,
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
-import { mockCollateralEvents } from '@cy/support/helpers/llamalend/market-list-mocks'
 import {
   DEFAULT_CONTROLLER_APPROVAL_TEST_CASE,
   fakeCollateralEvents,
@@ -73,13 +71,7 @@ const testCases = [
 ]
 
 describe('BorrowMoreForm (mocked)', () => {
-  beforeEach(() => {
-    setupMockedLlamalendComponentTest()
-    cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', { fixture: 'minting-snapshots.json' })
-    mockLendingSnapshots('ethereum')
-    mockCollateralEvents()
-    cy.intercept({ pathname: '/api/merkl/v1/opportunities' }, { body: [] })
-  })
+  beforeEach(setupMockedLlamalendComponentTest)
 
   testCases.forEach(
     ({
