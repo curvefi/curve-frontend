@@ -4,7 +4,7 @@ import { formatLeverage } from '@/llamalend/widgets/action-card/info-actions.hel
 import type { Decimal } from '@primitives/decimal.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { CheckboxField } from '@ui/features/forms/controls/CheckboxField'
-import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, type QueryOrValue, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 const TEST_ID_PREFIX = 'leverage'
@@ -14,13 +14,14 @@ export const LeverageInput = ({
   leverage,
   onToggle,
 }: {
-  checked: boolean | undefined
+  /** A query shows its loading and error states on the checkbox */
+  checked: QueryOrValue<boolean | undefined>
   /** A `null` query hides the leverage, a `null` value shows it as unavailable */
   leverage: QueryProp<Decimal | null> | null
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
 }) => (
   <CheckboxField
-    checked={!!checked}
+    checked={checked}
     label={t`Enable leverage`}
     testIdPrefix={TEST_ID_PREFIX}
     onChange={onToggle}
