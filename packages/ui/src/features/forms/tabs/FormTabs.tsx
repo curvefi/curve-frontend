@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { TabsSwitcher, TabsSwitcherProps } from '@ui/components/Tabs/TabsSwitcher'
@@ -5,7 +6,6 @@ import { WithWrapper } from '@ui/components/WithWrapper'
 import { useIsMobileFormDrawer } from '@ui/features/form-context/FormPlacementContext'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { type TabItem, useTabs } from '@ui/hooks/useTabs'
-import { applySxProps } from '@ui/lib/mui'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FormTabBase<Props extends object> = Omit<TabItem<string, Props>, 'subTabs'> & {
@@ -27,9 +27,17 @@ const useFormTabs = <T extends object>(options: UseFormTabOptions<T>) => ({
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
 
+const TabsWithAction = ({ children, action }: { children: ReactNode; action: ReactNode }) => (
+  <Stack direction="row">
+    {children}
+    {action}
+  </Stack>
+)
+
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
   overflow?: TabsSwitcherProps<string>['overflow']
+  action?: ReactNode
 }
 
 /**
@@ -37,9 +45,10 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param shouldWrap Whether to wrap the form content in a `FormContent` component
  *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
  * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
+ * @param action - content displayed at the end of the tab bar
  * @param options - useFormTabs options
  */
-export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
+export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', action, ...options }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, content, onChange, isMobileDrawer } = useFormTabs(options)
   return (
     <WithWrapper
@@ -52,9 +61,17 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
     >
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
-          <CardHeader title={tab.label} data-testid="mobile-form-active-action" />
+          <CardHeader title={tab.label} action={action} data-testid="mobile-form-active-action" />
         ) : (
-          <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChange} overflow={overflow} />
+          <WithWrapper shouldWrap={!!action} Wrapper={TabsWithAction} action={action}>
+            <TabsSwitcher
+              variant="contained"
+              value={tab.value}
+              options={tabs}
+              onChange={onChange}
+              overflow={overflow}
+            />
+          </WithWrapper>
         )}
         {subTab && subTabs.length > 1 && (
           <TabsSwitcher
@@ -62,7 +79,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
             value={subTab.value}
             options={subTabs}
             overflow="fullWidth"
-            sx={applySxProps(!isMobileDrawer && { backgroundColor: t => t.design.Layer[1].Fill })}
+            sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
             onChange={onChange}
           />
         )}

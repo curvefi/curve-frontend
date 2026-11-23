@@ -72,7 +72,7 @@ export const OneCoinWithdrawForm = ({
           />
         }
       />
-      {canWithdrawWrapped && <WrappedWithdrawCheckbox disabled={isPending} />}
+      {canWithdrawWrapped && <WrappedWithdrawCheckbox form={form} disabled={isPending} />}
       <FormButton
         {...wallet}
         pending={isPending}

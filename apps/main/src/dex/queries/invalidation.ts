@@ -7,7 +7,7 @@ import { invalidateDepositBonus } from './deposit/deposit-bonus.query'
 import { invalidateDepositExpectedLp } from './deposit/deposit-expected.query'
 import { resetPoolAddresses } from './pool-addresses.query'
 import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
-import { invalidatePoolIsGaugeKilled } from './pool-is-gauge-killed.query'
+import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
 import { getPoolListRootQueryKey, resetPoolChains, resetLitePoolChains } from './pool-list.query'
 import { invalidatePoolParameters } from './pool-parameters.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
@@ -47,7 +47,7 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidateWithdrawOneCoinQuote(params, { partial: true }),
     invalidatePoolParameters(params),
     invalidatePoolCurrencyReserves(params),
-    invalidatePoolIsGaugeKilled(params),
+    invalidatePoolGaugeStatus(params),
     invalidatePoolRewardsApy(params),
     invalidatePoolTotalStaked(params),
   ])

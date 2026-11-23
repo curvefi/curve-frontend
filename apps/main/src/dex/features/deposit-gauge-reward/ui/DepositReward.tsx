@@ -89,12 +89,13 @@ export const DepositReward = () => {
     >
       <Stack sx={{ gap: Spacing.sm }}>
         <AmountTokenInput
+          form={form}
           chainId={chainId}
           poolAddress={poolAddress}
           blockchainId={network.blockchainId}
           disabled={isPending}
         />
-        <EpochInput disabled={isPending} />
+        <EpochInput form={form} disabled={isPending} />
         <EvmFormButton
           pending={isPending}
           loading={isLoading}
