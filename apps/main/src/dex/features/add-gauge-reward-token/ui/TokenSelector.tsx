@@ -11,7 +11,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy, objectKeys, recordEntries } from '@primitives/objects.utils'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { TokenOption } from '@ui/features/select-token/types'
 import { TokenSelector as TokenSelectorUIKit } from '@ui/features/select-token/ui/TokenSelector'
@@ -22,11 +22,16 @@ import { t } from '@ui/lib/i18n'
 const { Spacing } = SizesAndSpaces
 
 export const TokenSelector = ({
+  form: {
+    update: updateForm,
+    values: { rewardTokenId },
+  },
   chainId,
   poolAddress,
   disabled,
   userAddress,
 }: {
+  form: UseFormReturn<AddRewardFormValues>
   chainId: ChainId
   poolAddress: Address
   disabled: boolean
@@ -34,10 +39,6 @@ export const TokenSelector = ({
 }) => {
   const { curveApi } = useCurve()
   const crvAddress = maybe(curveApi?.getNetworkConstants()?.ALIASES?.crv, crv => getAddress(crv))
-  const {
-    update: updateForm,
-    values: { rewardTokenId },
-  } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })
   const [isOpen, openModal, closeModal] = useSwitch()
 

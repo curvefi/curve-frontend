@@ -3,15 +3,20 @@ import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-rewar
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { useFormContext } from '@ui/features/forms'
+import type { UseFormReturn } from '@ui/features/forms'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { TIME_FRAMES } from '@ui/lib/time'
 
 const { Spacing } = SizesAndSpaces
 
-export const EpochInput = ({ disabled }: { disabled: boolean }) => {
-  const { update: updateForm, formState, values } = useFormContext<DepositRewardFormValues>()
+export const EpochInput = ({
+  form: { update: updateForm, formState, values },
+  disabled,
+}: {
+  form: UseFormReturn<DepositRewardFormValues>
+  disabled: boolean
+}) => {
   const { epoch } = values
 
   const onEpochChange = useCallback(
