@@ -30,7 +30,7 @@ export const useDepositMaxAmounts = ({
         ),
       },
       nativeIndex >= 0,
-    ).data?.estGasCost ?? ZERO
+    ).data?.estGasCost ?? ZERO // If estimation or USD pricing is unavailable, keep balance usable
 
   return tokenAddresses.map((address, index) =>
     mapQuery(balances[address], balance =>

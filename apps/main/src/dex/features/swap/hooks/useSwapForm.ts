@@ -10,7 +10,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { useSwapFormActions } from '@ui/features/pool-forms/swap/useSwapFormActions'
-import { combineQueries } from '@ui/features/queries/combine'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
@@ -86,7 +85,7 @@ export const useSwapForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const {
     onSubmit: submit,
     isPending: isSwapping,
-    error,
+    error: swapError,
   } = useSwapMutation({ chainId, poolAddress, onReset: () => reset(userDefaultValues) })
   const { onSubmit, lowRateModal } = useSwapFormActions({
     handleSubmit: form.handleSubmit,
@@ -100,7 +99,7 @@ export const useSwapForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
     params: queryParams,
     tokens,
     inputAmount,
-    expectedOutput: combineQueries([expectedOutput, lowExchangeRate], output => output),
+    expectedOutput,
     exchangeRate,
     max,
     canSwapWrapped: !!hasWrapped(pool),
@@ -127,7 +126,7 @@ export const useSwapForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
       lowExchangeRate.isLoading,
     isDisabled:
       isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact) || !!lowExchangeRate.error,
-    error,
+    error: swapError ?? lowExchangeRate.error,
     formErrors: formState.visibleErrors,
   }
 }

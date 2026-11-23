@@ -16,7 +16,7 @@ import { isHighPriceImpact } from '@ui/lib/price-impact.util'
 import { getToken, type TokenMapper } from '../queries/tokens.query'
 
 // exclude these pairs from displaying Exchange rate is low
-export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: string, routes: Route[]) {
+export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: string, routes: Route[] = []) {
   // if routes does not have a pool, exclude from low exchange rate check
   if (Array.isArray(routes) && routes.some(r => r.routeUrlId === '')) {
     return true

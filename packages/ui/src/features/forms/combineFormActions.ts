@@ -26,7 +26,7 @@ export function combineFormActions<T extends FieldValues>({
 }) {
   const givenActions = notFalsy(...actions)
   const runFrom = (index: number) => (values: T) => {
-    if (givenActions.some(action => action.isRequired === undefined)) return
+    if (givenActions.some(action => action.isRequired === undefined)) return // isRequired check pending
     givenActions.forEach(action => action.close())
     const next = givenActions.slice(index).find(action => action.isRequired)
     if (next) next.open()

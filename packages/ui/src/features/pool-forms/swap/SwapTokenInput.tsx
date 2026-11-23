@@ -7,7 +7,7 @@ import { q, type QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { PoolToken } from '../PoolTokenInput'
-import { SWAP_FIELDS, type SwapFormValues, type SwapSide } from './swap-form.utils'
+import { reverseSwap, SWAP_FIELDS, type SwapFormValues, type SwapSide } from './swap-form.utils'
 
 const INPUT_BY_SIDE = {
   pay: { label: t`You pay`, testId: 'pool-swap-pay', selectorLabel: t`Token to sell` },
@@ -47,8 +47,11 @@ export const SwapTokenInput = ({
           selectedIndex={values[amountIndexField]}
           disabled={disabled}
           label={selectorLabel}
-          excludedIndex={values[calculatedIndexField]}
-          onToken={index => form.update({ [amountIndexField]: index })}
+          onToken={index =>
+            form.update(
+              index === values[calculatedIndexField] ? reverseSwap(form.getValues()) : { [amountIndexField]: index },
+            )
+          }
         />
       }
       balance={q({ ...balance, error: tokenError ?? balance.error })}
