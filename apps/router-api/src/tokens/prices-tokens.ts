@@ -12,7 +12,7 @@ import { getUnderlyingCoins } from './underlying-coins'
  * by the router, but have no proper Curve pool. There's a ticket to add tokens from llamalend to the token selector.
  */
 const STANDALONE_TOKENS = fromEntries(
-  Object.entries(STANDALONE_WRAPPERS).map(([chainId, tokens]) => [
+  recordEntries(STANDALONE_WRAPPERS).map(([chainId, tokens]) => [
     Number(chainId),
     recordEntries(tokens).map(
       ([symbol, { address, decimals }]) => [getAddress(address), { symbol, decimals, volume: 0 }] as const,
