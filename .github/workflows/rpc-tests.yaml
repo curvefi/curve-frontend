@@ -33,7 +33,8 @@ jobs:
         run: yarn vite optimize --config vite.config.mts
         working-directory: tests
 
-      - run: |
+      - name: Run RPC tests
+        run: |
           set -o pipefail # fail tee if the main command fails
           yarn run cy:run:rpc --browser electron ${SPEC:+--spec "cypress/component/**/$SPEC.rpc.cy.*"} 2>&1 | \
             tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null # rpc tests are expensive, stick to one browser
