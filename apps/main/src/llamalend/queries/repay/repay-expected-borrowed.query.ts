@@ -56,6 +56,6 @@ export const {
     }
   },
   category: 'llamalend.repay',
-  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
+  validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false, requireIsFull: false }),
   dependencies: params => [getUserStateKey(params)],
 })
