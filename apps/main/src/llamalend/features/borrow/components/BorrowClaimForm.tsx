@@ -17,13 +17,13 @@ const TEST_ID_PREFIX = 'borrow-claim'
 export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowClaimFormProps<ChainId>) => {
   const { chainId } = useMarketContext<ChainId>()
   const {
-    form,
     params,
     userAddress,
     table,
     claimableTokens,
     totalNotionals,
     usdRateLoading,
+    isClaimablesLoading,
     isLoading,
     onSubmit,
     isDisabled,
@@ -32,18 +32,14 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
   } = useBorrowClaimForm({ network: networks[chainId] })
 
   return (
-    <Form
-      {...form}
-      onSubmit={onSubmit}
-      footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}
-    >
+    <Form onSubmit={onSubmit} footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
       <EvmDataTable
         category="form"
         table={table}
         emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}
         footerRow={
           !!claimableTokens.length &&
-          !isLoading && (
+          !isClaimablesLoading && (
             <TotalNotionalRow
               sx={{ backgroundColor: t => t.design.Table.Row.Hover }}
               totalNotionals={totalNotionals}
