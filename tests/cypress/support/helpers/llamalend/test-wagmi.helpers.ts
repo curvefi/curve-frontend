@@ -1,6 +1,6 @@
-import { custom, fallback, http, type RpcTransactionReceipt, zeroAddress } from 'viem'
+import { custom, type RpcTransactionReceipt, zeroAddress } from 'viem'
 import { createChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
-import { defaultGetRpcUrls, WAGMI_HTTP_OPTIONS } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
+import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import { createWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
 import { createTestConnector } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test'
 import { Chain } from '@primitives/network.utils'
@@ -23,23 +23,27 @@ const testTransactionReceipt: RpcTransactionReceipt = {
   type: '0x2',
 }
 
-const mockedReceiptTransport = custom({
-  request: ({ method, params }: { method: string; params?: unknown[] }): Promise<unknown> => {
-    const [hash] = params ?? []
-    if (method === 'eth_getTransactionReceipt' && hash === TEST_TX_HASH) return Promise.resolve(testTransactionReceipt)
-    return Promise.reject(new Error(`Unsupported method: ${method}, http fallback is used`))
+const mockedReceiptTransport = custom(
+  {
+    request: ({ method, params }: { method: string; params?: unknown[] }): Promise<unknown> => {
+      const [hash] = params ?? []
+      if (method === 'eth_getTransactionReceipt' && hash === TEST_TX_HASH)
+        return Promise.resolve(testTransactionReceipt)
+      const error = new Error(`Unmocked RPC request: ${method} ${JSON.stringify(params)}`)
+      // Contract reads can swallow RPC errors with allowFailure, so also fail the test directly.
+      queueMicrotask(() => {
+        throw error
+      })
+      return Promise.reject(error)
+    },
   },
-})
+  { retryCount: 0 },
+)
 
 const mainnet = createChain(Chain.Ethereum, defaultGetRpcUrls)
 
 export const mockedWagmiConfig = createWagmiConfig({
   chains: [mainnet],
   connectors: [createTestConnector({ account: TEST_PRIVATE_KEY, chain: mainnet })],
-  transports: {
-    [mainnet.id]: fallback([
-      mockedReceiptTransport,
-      ...mainnet.rpcUrls.default.http.map(url => http(url, WAGMI_HTTP_OPTIONS)),
-    ]),
-  },
+  transports: { [mainnet.id]: mockedReceiptTransport },
 })

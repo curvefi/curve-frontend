@@ -21,7 +21,21 @@ export const resetLlamaTestContext = () => {
 
 export const setupMockedLlamalendComponentTest = () => {
   resetLlamaTestContext()
-  blockUnmockedApis()
+  const unsubscribe = queryClient.getQueryCache().subscribe(event => {
+    if (event.type !== 'updated' || (event.action.type !== 'failed' && event.action.type !== 'error')) return
+    const error: unknown = event.action.error
+    // Throw outside the query promise so React Query cannot swallow the test failure.
+    queueMicrotask(() => {
+      throw new Error(
+        `Unexpected query failure in mocked test ${event.query.queryHash}: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
+      )
+    })
+  })
+  cy.once('test:after:run', unsubscribe)
+  blockUnmockedApis(req => {
+    throw new Error(`Unmocked API request: ${req.method} ${req.url}`)
+  })
   cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', { fixture: 'minting-snapshots.json' })
   mockLendingSnapshots('ethereum')
   mockCollateralEvents()
