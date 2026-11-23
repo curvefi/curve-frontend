@@ -39,18 +39,14 @@ export type BorrowMoreMutation = {
   routeId: string | undefined
 }
 
-type CalculatedValues = {
-  maxDebt: Decimal | undefined
-  maxCollateral: Decimal | undefined
-  maxBorrowed: Decimal | undefined
-}
+export type BorrowMoreCalculatedValues = { maxDebt?: Decimal; maxCollateral?: Decimal; maxBorrowed?: Decimal }
 
-export type BorrowMoreForm = AllowUndefined<BorrowMoreMutation, 'userCollateral' | 'userBorrowed' | 'debt'> &
-  CalculatedValues
+export type BorrowMoreFormValues = AllowUndefined<BorrowMoreMutation, 'userCollateral' | 'userBorrowed' | 'debt'>
+export type BorrowMoreForm = BorrowMoreFormValues & BorrowMoreCalculatedValues
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
   BorrowMoreMutation &
-  Pick<CalculatedValues, 'maxDebt'>
+  Pick<BorrowMoreCalculatedValues, 'maxDebt'>
 export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainId>>
 
 const validateBorrowMoreFieldsForMarket = ({
