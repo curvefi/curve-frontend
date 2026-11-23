@@ -7,17 +7,21 @@ import { useWithdrawSimulation } from '@/stellar/queries/withdraw/withdraw-simul
 import type { Decimal } from '@primitives/decimal.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
+import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
+import { getWithdrawMinimumAmounts } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 import type { WithdrawQuoteParams } from './types'
 import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 
 export const WithdrawActionInfoList = ({
   params,
+  tokens,
   onSlippageChange,
 }: {
   params: WithdrawQuoteParams
+  tokens: QueryProp<PoolToken>[] | undefined
   onSlippageChange: (slippage: Decimal) => void
 }) => {
   const expectedLp = useWithdrawExpectedLp(params)
@@ -37,6 +41,7 @@ export const WithdrawActionInfoList = ({
       slippage={params.slippage}
       onSlippageChange={onSlippageChange}
       userAddress={asAddress(params.account)}
+      minimumWithdrawAmounts={getWithdrawMinimumAmounts(params, tokens, expectedLp)}
     />
   )
 }

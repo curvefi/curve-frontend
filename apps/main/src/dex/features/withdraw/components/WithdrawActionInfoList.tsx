@@ -6,17 +6,21 @@ import { useWithdrawEstimateGas } from '@/dex/queries/withdraw/withdraw-estimate
 import { useWithdrawExpectedLp } from '@/dex/queries/withdraw/withdraw-expected.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
+import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
+import { getWithdrawMinimumAmounts } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
 import type { WithdrawQuoteParams } from '../types'
 import { getMaximumWithdrawBurn } from '../withdraw.utils'
 
 export const WithdrawActionInfoList = ({
   params,
+  tokens,
   onSlippageChange,
 }: {
   params: WithdrawQuoteParams
+  tokens: QueryProp<PoolToken>[] | undefined
   onSlippageChange: (slippage: Decimal) => void
 }) => {
   const expectedLp = q(useWithdrawExpectedLp(params))
@@ -36,6 +40,7 @@ export const WithdrawActionInfoList = ({
       onSlippageChange={onSlippageChange}
       userAddress={params.userAddress}
       slippageType={getSlippageType(usePoolContext().pool.data)}
+      minimumWithdrawAmounts={getWithdrawMinimumAmounts(params, tokens, expectedLp)}
     />
   )
 }
