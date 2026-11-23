@@ -2,11 +2,12 @@ import { ethAddress } from 'viem'
 import { networks as lendNetworks } from '@/lend/networks'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { mockLendingSnapshots } from '@cy/support/helpers/lending-mocks'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
 import { queryClient } from '@ui/features/queries/query-client'
-import { blockUnmockedApis, mockNewTxCollateralEvents } from './market-list-mocks'
+import { blockUnmockedApis, mockCollateralEvents } from './market-list-mocks'
 
 export const llamaNetworks: NetworkDict<LlamaChainId> = lendNetworks
 
@@ -21,7 +22,10 @@ export const resetLlamaTestContext = () => {
 export const setupMockedLlamalendComponentTest = () => {
   resetLlamaTestContext()
   blockUnmockedApis()
-  mockNewTxCollateralEvents()
+  cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', { fixture: 'minting-snapshots.json' })
+  mockLendingSnapshots('ethereum')
+  mockCollateralEvents()
+  cy.intercept({ pathname: '/api/merkl/v1/opportunities' }, { body: [] })
 }
 
 export const setGasInfo = (

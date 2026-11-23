@@ -20,7 +20,6 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { constQ } from '@ui/features/queries/util'
 
@@ -85,7 +84,6 @@ describe('ZapV2 router calldata size', () => {
   })
 
   it('warns and blocks borrow more calldata above the size limit', () => {
-    mockMintSnapshots({ limit: 1 })
     const { borrow, llamaApi, market } = createBorrowMoreScenario({
       chainId: CHAIN_ID,
       approved: true,
