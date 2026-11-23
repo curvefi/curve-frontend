@@ -1,4 +1,4 @@
-import { include, skipWhen, test } from 'vest'
+import { skipWhen, test } from 'vest'
 import { hasResetPosition, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getResetDebtReduction } from '@/llamalend/queries/reset/reset-query.helpers'
@@ -138,7 +138,6 @@ export const resetValidationSuite = createValidationSuite(
 
 export const resetFormValidationSuite = (market: MarketTemplate | undefined) =>
   createValidationSuite((params: ResetForm) => {
-    include('root').when(true)
     validateResetSupported(market)
     resetValidationGroup(params, { requireLoadedAvailability: false })
   })
