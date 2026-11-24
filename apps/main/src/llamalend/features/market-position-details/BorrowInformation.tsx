@@ -39,7 +39,12 @@ import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { getTokenPairUnit, UNAVAILABLE_TOKEN_SYMBOL } from '@ui/lib/tokens'
 import { HealthMetric, LiquidationBufferMetric } from './health/HealthMetrics'
-import { BORROW_METRIC_CATEGORY, BORROW_METRIC_TOOLTIP, getLeverageValueColor } from './market-position-details.utils'
+import {
+  BORROW_METRIC_CATEGORY,
+  BORROW_METRIC_TOOLTIP,
+  getLeverageValueColor,
+  getLeverageFallback,
+} from './market-position-details.utils'
 import { PnlMetric } from './PnlMetric'
 import { DistanceToRangeTooltipContent } from './tooltips/DistanceToRangeTooltipContent'
 
@@ -109,8 +114,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             value={equityLeverage.current}
             valueOptions={{
               unit: 'multiplier',
-              // only zap leveraged positions have a leverage
-              fallback: t`None`,
+              fallback: getLeverageFallback(equityLeverage.isZapLeveraged.data),
               color: getLeverageValueColor(equityLeverage.current.data),
             }}
             valueTooltip={{

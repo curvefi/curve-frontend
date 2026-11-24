@@ -1,5 +1,5 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { UserMarketParams, UserMarketQuery } from '@evm-ui/queries/query-types'
+import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { AllowUndefined } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -11,15 +11,10 @@ type CompleteRepayForm = {
   routeId: string | undefined
 }
 
-type RepayCalculatedValues = {
-  maxBorrowed: Decimal | undefined
-  maxStateCollateral: Decimal | undefined
-  isFull: boolean | undefined
-}
+export type RepayCalculatedValues = { maxBorrowed?: Decimal; maxStateCollateral?: Decimal; isFull?: boolean }
 
-export type RepayFormData = AllowUndefined<CompleteRepayForm, 'userBorrowed' | 'stateCollateral'> &
-  RepayCalculatedValues
-export type RepayFormParams = RepayFormData & UserMarketParams<IChainId>
+export type RepayFormValues = AllowUndefined<CompleteRepayForm, 'userBorrowed' | 'stateCollateral'>
+export type RepayFormData = RepayFormValues & RepayCalculatedValues
 
 export type RepayQuery = UserMarketQuery<IChainId> & CompleteRepayForm & RepayCalculatedValues
 export type RepayParams = FieldsOf<RepayQuery>

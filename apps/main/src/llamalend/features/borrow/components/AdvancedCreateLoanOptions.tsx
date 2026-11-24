@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
-import type { CreateLoanForm } from '../types'
+import type { CreateLoanFormValues } from '../types'
 import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces
@@ -11,7 +11,7 @@ export const AdvancedCreateLoanOptions = ({
   minBands,
   maxBands,
 }: {
-  values: CreateLoanForm
+  values: CreateLoanFormValues
   setRange: (n: number) => void
   minBands: number | undefined
   maxBands: number | undefined

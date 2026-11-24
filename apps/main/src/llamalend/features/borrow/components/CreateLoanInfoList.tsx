@@ -6,7 +6,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLlamalendEquityLeverage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
-import type { UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { constQ, mapQuery, q } from '@ui/features/queries/util'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -16,7 +16,7 @@ import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLev
 import { useBorrowRates } from '../../../widgets/action-card/hooks/useBorrowRates'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
+import { type CreateLoanFormQueryParams, type CreateLoanFormValues } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   marketType,
@@ -31,11 +31,11 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   marketType: MarketType
   controllerAddress: Address | undefined
   params: CreateLoanFormQueryParams<ChainId>
-  values: CreateLoanForm
+  values: CreateLoanFormValues
   isControllerApproved: boolean | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  form: UseFormReturn<CreateLoanForm>
+  form: Pick<ValidatedForm<CreateLoanFormValues>, 'isTouched'>
 }) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
   const isOpen = form.isTouched('userCollateral', 'debt')

@@ -7,25 +7,23 @@ import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { useWithdrawPriceImpact } from '@/dex/queries/withdraw/withdraw-bonus.query'
-import { useWithdrawExpectedLp } from '@/dex/queries/withdraw/withdraw-expected.query'
 import { useWithdrawMaxAmount } from '@/dex/queries/withdraw/withdraw-max-amounts.query'
+import { useWithdrawOneCoinQuote } from '@/dex/queries/withdraw/withdraw-one-coin-quote.query'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
+import { useWithdrawQuoteQueries } from '@ui/features/pool-forms/withdraw/useWithdrawQuoteQueries'
 import {
-  getOneCoinWithdrawParams,
+  oneCoinWithdrawDefaultValues as userDefaultValues,
   type OneCoinWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalEqual } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
-import type { WithdrawQuoteParams } from '../types'
 import { useWithdrawMutation } from '../withdraw.mutation'
 import { oneCoinWithdrawFormValidationSuite } from '../withdraw.validation'
-
-const userDefaultValues = { amount: undefined, isMax: false }
 
 export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }) => {
   const {
@@ -43,6 +41,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     validation: oneCoinWithdrawFormValidationSuite,
     defaultValues: {
       ...userDefaultValues,
+      quotedAmount: undefined,
       isWrapped: initialWrapped,
       tokenIndex: 0,
       slippage: maxSlippage,
@@ -55,6 +54,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     },
   })
   const { formState, handleSubmit, update, reset, values } = form
+  const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
 
   const isWrapped = values.isWrapped! // isWrapped is optional but always passed in this app.
   const index = values.tokenIndex
@@ -64,14 +64,20 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   const reserves = mapQuery(usePoolCurrencyReserves(poolParams), data => data.tokens.map(token => token.balance))
   const supply = mapQuery(usePoolParameters(poolParams), data => data.lpTokenSupply as Decimal)
 
-  // Max needs one-coin quote for the entire LP balance. For lending pools with zap, curve-js has no withdrawOneCoinWrappedExpected implementation, so wrapped-token Max is unavailable
-  const canWithdrawOneCoin = !isWrapped || !pool?.isLending || !pool.zap
-  const max = q(useWithdrawMaxAmount({ ...poolParams, index, lpAmount: lpBalance }, canWithdrawOneCoin))
-
-  const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
-  const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams }
-  const expectedLp = q(useWithdrawExpectedLp(params))
-  const priceImpact = useWithdrawPriceImpact(params)
+  // curve-js has no wrapped one-coin quote or withdrawal for lending pools with a zap.
+  const canWithdrawWrapped = !!hasWrapped(pool) && !(pool?.isLending && pool.zap)
+  const { max, expectedLp, quotedAmount, minimumReceived, params, priceImpact } = useWithdrawQuoteQueries({
+    poolParams,
+    values,
+    debounced,
+    isDebouncing,
+    decimals,
+    lpBalance,
+    enabled: !isWrapped || canWithdrawWrapped,
+    useWithdrawMaxAmount,
+    useWithdrawOneCoinQuote,
+    useWithdrawPriceImpact,
+  })
 
   useFormSync(form, {
     decimals,
@@ -79,6 +85,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     maxLpAmount: lpBalance.data,
     poolReserve: reserves.data?.[index],
     expectedLp: expectedLp.data,
+    quotedAmount: quotedAmount.data,
   })
 
   // Keep Max selected as the quote changes, including while its amount is unavailable.
@@ -86,6 +93,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
 
   // Apply the resolved pool's default without replacing a user's slippage choice.
   useFormSync(form, { slippage: maxSlippage }, pool != null && !form.isTouched('slippage'))
+  useFormSync(form, { isWrapped: false }, pool != null && !canWithdrawWrapped)
 
   useEffect(() => setIsWrapped(isWrapped), [isWrapped, setIsWrapped])
 
@@ -104,11 +112,16 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   return {
     form,
     params,
+    minimumReceived,
     tokens,
     index,
     max,
+    lpBalance,
+    expectedLp,
+    priceImpact,
+    toSymbol: tokens?.[index]?.data?.symbol,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply.data || !+supply.data,
-    canWithdrawWrapped: !!hasWrapped(pool),
+    canWithdrawWrapped,
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },
     userAddress,
     onSlippageChange: (slippage: Decimal) => update({ slippage }),
@@ -119,13 +132,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     onSubmit: handleSubmit(onSubmit),
     isPending,
     isLoading: isPoolLoading || isPending || priceImpact.isLoading || expectedLp.isLoading,
-    isDisabled:
-      pool == null ||
-      !formState.isValid ||
-      isPending ||
-      isDebouncing ||
-      shouldBlockTransaction(priceImpact) ||
-      (values.isMax && (!canWithdrawOneCoin || !max.data)),
+    isDisabled: pool == null || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact),
     error,
     formErrors: formState.visibleErrors,
   }

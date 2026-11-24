@@ -107,8 +107,11 @@ const createBaseSupplyMarket = ({
     addresses: { ...SUPPLY_MARKET_ADDRESSES, controller, ...(!hasGauge && { gauge: zeroAddress }) },
     stats: { rates: statsRates, futureRates: statsFutureRates },
     wallet: { balances: walletBalancesStub },
+    userPosition: { userBoost: createStub('1') },
     vault: {
       ...defaultVault,
+      rewardsApr: createStub([]),
+      crvApr: createStub([0, 0]),
       ...otherVaultOverrides,
       convertToAssets,
       convertToShares,
@@ -254,6 +257,8 @@ export const createStakeScenario = ({
       estimateGas: { stake: estimateGasStake, stakeApprove: estimateGasStakeApprove },
     },
   })
+
+  seedLendMarketSolvencyQueries({ chainId, market, solvencyPercent: 100 })
 
   return {
     input,

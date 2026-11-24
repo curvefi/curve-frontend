@@ -3,7 +3,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
-import { useFormSync, type FieldPath, type FieldPathByValue, type UseFormReturn } from '@ui/features/forms'
+import { useFormSync, type FieldPath, type UseFormReturn } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import type { QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
@@ -54,7 +54,7 @@ export const PoolTokenInput = <TValues extends PoolForm>({
   return (
     <FormTokenInput
       form={form}
-      name={field as FieldPathByValue<TValues, Decimal | undefined>}
+      name={field}
       relatedFields={[maxField as FieldPath<TValues>]}
       max={max && { balance: max, onMax: onMax && (() => onMax(index)) }}
       tokenSelector={

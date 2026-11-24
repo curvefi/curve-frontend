@@ -50,7 +50,7 @@ export const OneCoinWithdrawForm = ({
         relatedFields={['poolReserve']}
         max={{ balance: max, onMax }}
         balance={token && mapQuery(token, () => form.values.amount)}
-        label={t`Amount to withdraw`}
+        label={t`Expected amount to withdraw`}
         testId={`pool-token-input-${token?.data?.address}`}
         inputBalanceUsd={maybes([form.values.amount, token?.data?.usdRate], decimalMultiply)}
         walletBalance={{
