@@ -17,7 +17,6 @@ const TEST_ID_PREFIX = 'borrow-claim'
 export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowClaimFormProps<ChainId>) => {
   const { chainId } = useMarketContext<ChainId>()
   const {
-    form,
     params,
     userAddress,
     table,
@@ -32,11 +31,7 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
   } = useBorrowClaimForm({ network: networks[chainId] })
 
   return (
-    <Form
-      {...form}
-      onSubmit={onSubmit}
-      footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}
-    >
+    <Form onSubmit={onSubmit} footer={<BorrowClaimActionInfoList params={params} isOpen={!!claimableTokens.length} />}>
       <EvmDataTable
         category="form"
         table={table}

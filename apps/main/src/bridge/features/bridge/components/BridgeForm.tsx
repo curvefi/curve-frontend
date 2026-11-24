@@ -55,7 +55,6 @@ export const BridgeForm = ({
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <>

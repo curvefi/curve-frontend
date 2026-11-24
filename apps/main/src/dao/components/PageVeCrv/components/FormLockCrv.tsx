@@ -31,7 +31,6 @@ export const FormLockCrv = ({ chainId }: { chainId: ChainId }) => {
   const isOpen = form.isTouched('lockedAmount')
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <VeCrvActionInfo

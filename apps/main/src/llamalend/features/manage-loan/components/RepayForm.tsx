@@ -133,7 +133,6 @@ export const RepayForm = <ChainId extends IChainId>({
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
