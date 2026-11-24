@@ -137,12 +137,14 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
       .gt(0)
   })
   skipWhen(maximumBurn == null, () => {
+    const fieldName = mode === 'one-coin' ? 'expectedLp' : mode === 'balanced' ? 'lpAmount' : 'root'
     test(
-      mode === 'one-coin' ? 'expectedLp' : 'root',
+      fieldName,
       'Maximum LP required exceeds the available LP balance. Reduce the token amounts.',
       () => {
         enforce(maximumBurn).lte(maxLpAmount!)
       },
+      fieldName,
     )
   })
   skipWhen(params.mode !== 'balanced' && params.mode !== 'one-coin', () => {

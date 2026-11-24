@@ -86,7 +86,10 @@ describe('Pool Withdraw (mocked)', () => {
       .should('contain.text', 'Amount exceeds the maximum withdrawal')
     poolWithdrawSubmit().should('be.disabled')
     writePoolWithdrawAmount(coins[0].address, '11')
-    cy.get('[data-testid="loan-form-errors"]').should('contain.text', 'Maximum LP required exceeds')
+    poolWithdrawInput(coins[0].address)
+      .find('[data-testid="helper-message-error"]')
+      .should('contain.text', 'Maximum LP required exceeds')
+    cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     getActionValue('pool-swap-minimum-received', 'mock.simulation').should(
       'equal',
       formatToken('10.945', coins[0].symbol, 'balance'),
@@ -199,6 +202,7 @@ describe('Pool Withdraw (mocked)', () => {
       poolWithdrawLpInput().find('[data-testid="helper-message-error"]').should('contain.text', message)
       poolWithdrawSubmit().should('be.disabled')
     })
+    cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     writePoolWithdrawAmount(coins[0].address, '0.5')
     poolWithdrawLpInput().find('input').should('have.attr', 'data-value', '5')
     poolWithdrawInput(coins[1].address).find('input[name^="amount"]').should('have.attr', 'data-value', '0.5')

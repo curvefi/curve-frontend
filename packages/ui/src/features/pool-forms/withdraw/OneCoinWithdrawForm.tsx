@@ -52,7 +52,7 @@ export const OneCoinWithdrawForm = ({
       <FormTokenInput
         form={form}
         name="amount"
-        relatedFields={['decimals', 'poolReserve']}
+        relatedFields={['decimals', 'poolReserve', 'expectedLp', 'lpAmount', 'maxLpAmount']}
         max={{ balance: max, onMax }}
         balance={token && mapQuery(token, () => form.values.amount)}
         label={t`Expected amount to withdraw`}
@@ -91,7 +91,7 @@ export const OneCoinWithdrawForm = ({
       <FormAlerts
         error={error}
         formErrors={formErrors}
-        handledErrors={['amount', 'decimals', 'poolReserve']}
+        handledErrors={['amount', 'decimals', 'poolReserve', 'expectedLp', 'lpAmount', 'maxLpAmount']}
         userAddress={userAddress}
       />
     </Form>
