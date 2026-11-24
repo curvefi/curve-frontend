@@ -20,7 +20,7 @@ export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributi
       yKey="weeklyRevenue"
       barColor={barColor}
       height={height}
-      renderTooltip={DistributionsChartTooltip}
+      renderTooltip={props => <DistributionsChartTooltip {...props} />}
       xTickFormatter={time => formatDate(time)}
       yTickFormatter={value => formatNumber(+value, 'usd.notional')}
     />

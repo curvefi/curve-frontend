@@ -81,7 +81,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
                 yKey="userPower"
                 barColor={getBarColor}
                 height={DAO_COMPACT_CHART_HEIGHT}
-                renderTooltip={GaugeVotingBarChartCustomTooltip}
+                renderTooltip={props => <GaugeVotingBarChartCustomTooltip {...props} />}
                 xAxisInterval={getXAxisInterval(data.length)}
                 xAxisLabelRotate={CHART_X_AXIS_LABEL_ROTATION}
                 xTickFormatter={value => truncateToShortenedAddressLength(String(value))}
@@ -103,7 +103,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
                 yKey="weightRelative"
                 barColor={getBarColor}
                 height={DAO_COMPACT_CHART_HEIGHT}
-                renderTooltip={GaugesBarChartCustomTooltip}
+                renderTooltip={props => <GaugesBarChartCustomTooltip {...props} />}
                 xAxisInterval={getXAxisInterval(data.length)}
                 xAxisLabelRotate={CHART_X_AXIS_LABEL_ROTATION}
                 xTickFormatter={value => truncateToShortenedAddressLength(String(value))}
