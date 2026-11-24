@@ -43,7 +43,7 @@ export function useFormValidation<TValues extends object, TContext extends objec
   isSubmitting: boolean
   disabled?: boolean
 }) {
-  const { values, touchedFields, isDirty, isDebouncing, resetVersion, params: inputParams } = inputs
+  const { values, touchedFields, dirtyFields, isDirty, isDebouncing, resetVersion, params: inputParams } = inputs
 
   const { error, isLoading } = combineQueryState(...Object.values<Query<unknown>>(computed))
   const computedValues = mapRecord(computed, (_, q) => q.data) as AllowUndefined<TComputed>
@@ -67,6 +67,7 @@ export function useFormValidation<TValues extends object, TContext extends objec
     formState: {
       errors,
       touchedFields,
+      dirtyFields,
       isDirty,
       isValid,
       isSubmitting,

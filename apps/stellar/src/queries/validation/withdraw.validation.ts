@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { skipWhen, test } from 'vest'
+import { omitWhen, skipWhen, test } from 'vest'
 import type {
   WithdrawOneCoinParams,
   WithdrawSimulationParams,
@@ -37,7 +37,7 @@ const validateOutputs = ({
       enforce(isComplete(amounts)).isTruthy()
     })
   })
-  skipWhen(mode === 'balanced', () => validateMaxAmounts({ amounts, maxAmounts }))
+  omitWhen(mode === 'balanced', () => validateMaxAmounts({ amounts, maxAmounts }))
 }
 
 const validateBudget = ({
@@ -84,7 +84,7 @@ const validateMaximumBurn = ({
       fieldName,
     )
   })
-  skipWhen(mode === 'unbalanced', () => {
+  omitWhen(mode === 'unbalanced', () => {
     test('root', 'LP burn does not match the selected LP amount', () => {
       enforce(
         maybes([maximumBurn, lpAmount], (burn, amount) => decimalEqual(burn, decimalRound(amount, LP_TOKEN_DECIMALS))),
