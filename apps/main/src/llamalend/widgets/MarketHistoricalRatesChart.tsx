@@ -228,7 +228,7 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
               xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
               yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
               yPaddingRatio={0.05}
-              renderTooltip={HistoricalRatesTooltip}
+              renderTooltip={props => <HistoricalRatesTooltip {...props} />}
             />
           )}
         </EvmChartStateWrapper>
