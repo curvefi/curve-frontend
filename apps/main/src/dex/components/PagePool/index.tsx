@@ -160,14 +160,14 @@ const menu = [
     visible: ({ seed }) => seed.data === false,
     subTabs: [
       {
+        value: 'withdraw-advanced',
+        label: t`Balanced`,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={AdvancedWithdrawTab} {...props} />,
+      },
+      {
         value: 'withdraw-one-coin',
         label: t`One coin`,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={OneCoinWithdrawTab} {...props} />,
-      },
-      {
-        value: 'withdraw-advanced',
-        label: t`Advanced`,
-        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={AdvancedWithdrawTab} {...props} />,
       },
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
       { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },

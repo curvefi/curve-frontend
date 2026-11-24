@@ -46,7 +46,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
   const index = values.tokenIndex
   const poolParams = { chainId, poolAddress, isWrapped, userAddress }
   const { tokens, decimals } = usePoolTokens({ chainId, blockchainId, pool, userAddress, isWrapped })
-  const { lpTokenBalance: lpBalance } = usePoolTokenDepositBalances(poolParams)
+  const { lpTokenBalance: lpBalance, gaugeTokenBalance } = usePoolTokenDepositBalances(poolParams)
   const reserves = mapQuery(usePoolCurrencyReserves(poolParams), data => data.tokens.map(token => token.balance))
   const supply = mapQuery(usePoolParameters(poolParams), data => data.lpTokenSupply as Decimal)
 
@@ -109,6 +109,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     lpBalance,
     expectedLp,
     priceImpact,
+    hasStaked: Number(gaugeTokenBalance.data) > 0,
     toSymbol: tokens?.[index]?.data?.symbol,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply.data || !+supply.data,
     wrapped: canWithdrawWrapped

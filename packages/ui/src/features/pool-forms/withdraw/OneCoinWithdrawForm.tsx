@@ -34,8 +34,10 @@ export const OneCoinWithdrawForm = ({
   formErrors,
   userAddress,
   wrapped,
+  hasStaked,
 }: Omit<PoolFormProps<OneCoinWithdrawFormValues>, 'form'> & {
   form: FormControl<OneCoinWithdrawValues>
+  hasStaked: boolean
   wrapped?: Omit<ComponentProps<typeof WrappedWithdrawCheckbox>, 'disabled'>
   index: number
   max: QueryProp<Decimal>
@@ -74,6 +76,7 @@ export const OneCoinWithdrawForm = ({
             testId="withdraw-token-select"
           />
         }
+        {...(hasStaked && { message: t`You have staked LP tokens. Use the Unstake tab before withdrawing them.` })}
       />
       {wrapped && <WrappedWithdrawCheckbox {...wrapped} disabled={isPending} />}
       <FormButton

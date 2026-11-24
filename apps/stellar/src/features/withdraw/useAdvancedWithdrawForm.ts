@@ -122,6 +122,7 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     form,
     expectedLp,
     priceImpact,
+    hasStaked: false,
     params,
     network,
     lpBalance: q(lpBalance),

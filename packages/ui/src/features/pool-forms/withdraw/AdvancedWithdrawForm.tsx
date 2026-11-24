@@ -32,7 +32,9 @@ export const AdvancedWithdrawForm = ({
   onTokenChange,
   canWithdrawWrapped,
   canWithdrawUnbalanced,
+  hasStaked,
 }: PoolFormProps<AdvancedWithdrawFormValues> & {
+  hasStaked: boolean
   canWithdrawWrapped: boolean | undefined
   canWithdrawUnbalanced: boolean
   lpAmountUsd: Decimal | undefined
@@ -55,6 +57,7 @@ export const AdvancedWithdrawForm = ({
         walletBalance={{ symbol: t`LP Tokens`, balance: lpBalance }}
         disabled={isPending || !canBalance}
         testId="pool-withdraw-lp-input"
+        {...(hasStaked && { message: t`You have staked LP tokens. Use the Unstake tab before withdrawing them.` })}
       />
     )}
     <PoolTokenInputs
