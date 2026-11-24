@@ -14,16 +14,23 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
-import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
+import type {
+  RepayCalculatedValues,
+  RepayFormData,
+  RepayFormValues,
+  RepayParams,
+} from '@/llamalend/queries/validation/repay.types'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
-import type { UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { useQuery } from '@ui/features/queries/query-hooks'
 import { constQ, mapQuery, q, type Query, type QueryProp } from '@ui/features/queries/util'
@@ -84,31 +91,32 @@ function useReturnToWallet(
 export function RepayLoanInfoList({
   controllerAddress,
   marketType,
-  params,
-  values: { stateCollateral, userBorrowed, isFull },
   isControllerApproved,
   tokens: { collateralToken, borrowToken },
   showLeverage,
-  form,
+  form: {
+    params,
+    params: { isFull },
+    isTouched,
+    values: { stateCollateral, userBorrowed },
+  },
   isInSoftLiquidation,
 }: {
   controllerAddress: Address | undefined
   marketType: MarketType
-  params: RepayParams
-  values: RepayFormData
   isControllerApproved: boolean | undefined
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   showLeverage: boolean | undefined
-  form: UseFormReturn<RepayFormData>
+  form: ValidatedForm<RepayFormValues, UserMarketParams<IChainId>, RepayCalculatedValues>
   isInSoftLiquidation?: boolean
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()
-  const isOpen = form.isTouched('stateCollateral', 'userBorrowed')
+  const isOpen = isTouched('stateCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
     { params, showLeverage, prevDebt },
-    { isFull, userBorrowed },
+    { isFull: params.isFull, userBorrowed },
     isOpen,
   )
 
