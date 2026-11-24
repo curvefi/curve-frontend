@@ -126,6 +126,13 @@ const toMarketVersion = (version: number): MarketVersion =>
 const scaledFractionToPercent = (value: number): Decimal =>
   decimalDiv(assert(decimal(value), `Invalid scaled discount: ${value}`), '10000000000000000')
 
+/** Leverage is only shown for markets on the leverage allowlist and V0 zap mint markets */
+const getAllowedLeverage = (blockchainId: Chain, controllerAddress: Address, leverage: number) =>
+  getMarketLeverageConfig(requireChainId(blockchainId), controllerAddress) ||
+  isZapV0MintMarket(blockchainId, controllerAddress)
+    ? leverage
+    : null
+
 const convertLendingVault = (
   {
     controller,
@@ -262,7 +269,7 @@ const convertLendingVault = (
       lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: getMarketLeverageConfig(requireChainId(blockchainId), controller) ? leverage : null,
+    leverage: getAllowedLeverage(blockchainId, controller, leverage),
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: !!hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -406,8 +413,7 @@ const convertMintMarket = (
     url: crvUsdPages.market({ blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
-    leverage:
-      getMarketLeverageConfig(requireChainId(chain), address) || isZapV0MintMarket(chain, address) ? leverage : null,
+    leverage: getAllowedLeverage(chain, address, leverage),
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: llamma,
