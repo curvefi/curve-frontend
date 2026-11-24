@@ -137,6 +137,7 @@ export const seedLendMarketSolvencyQueries = ({
       aprLendCrv0Boost: 0,
       aprLendCrvMaxBoost: 0,
       leverage: 1,
+      maxEquityLeverage: 1,
       extraRewardApr: [],
       maxLtv: 80,
       collateralAprCrv: null,

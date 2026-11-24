@@ -8,6 +8,7 @@ import {
   calculateMarketSolvency,
   calculateMintMarketTvlUsd,
   createGetBadDebtMarket,
+  getMarketLeverageConfig,
   isLeverageAllowed,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
@@ -110,6 +111,8 @@ export type LlamaMarket = {
   rewards: CampaignRewards[]
   isFavorite: boolean
   leverage: number | null
+  /** The highest equity leverage a user can open, collateral value ÷ equity */
+  maxEquityLeverage: number | null
   deprecatedMessage: string | null
   userHasPositions: UserHasPosition | null // null means no positions in either market and makes easy to filter
   createdAt: number
@@ -125,8 +128,18 @@ const toMarketVersion = (version: number): MarketVersion =>
 const scaledFractionToPercent = (value: number): Decimal =>
   decimalDiv(assert(decimal(value), `Invalid scaled discount: ${value}`), '10000000000000000')
 
-const getAllowedLeverage = (blockchainId: Chain, controllerAddress: Address, leverage: number | null) =>
-  isLeverageAllowed(requireChainId(blockchainId), controllerAddress) ? leverage : null
+/** Max equity leverage needs the zap V2, so the V0 zap mint markets have none */
+const getAllowedLeverage = (
+  blockchainId: Chain,
+  controllerAddress: Address,
+  { leverage, maxEquityLeverage }: Pick<LlamaMarket, 'leverage' | 'maxEquityLeverage'>,
+): Pick<LlamaMarket, 'leverage' | 'maxEquityLeverage'> => {
+  const chainId = requireChainId(blockchainId)
+  return {
+    leverage: isLeverageAllowed(chainId, controllerAddress) ? leverage : null,
+    maxEquityLeverage: getMarketLeverageConfig(chainId, controllerAddress) ? maxEquityLeverage : null,
+  }
+}
 
 const convertLendingVault = (
   {
@@ -149,6 +162,7 @@ const convertLendingVault = (
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
+    maxEquityLeverage,
     extraRewardApr,
     maxLtv,
     ammA,
@@ -264,7 +278,7 @@ const convertLendingVault = (
       lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: getAllowedLeverage(blockchainId, controller, leverage),
+    ...getAllowedLeverage(blockchainId, controller, { leverage, maxEquityLeverage }),
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: !!hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -293,6 +307,7 @@ const convertMintMarket = (
     debtCeiling,
     loans,
     leverage,
+    maxEquityLeverage,
     chain,
     maxLtv,
     monetaryPolicyAddress,
@@ -408,7 +423,7 @@ const convertMintMarket = (
     url: crvUsdPages.market({ blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
-    leverage: getAllowedLeverage(chain, address, leverage),
+    ...getAllowedLeverage(chain, address, { leverage, maxEquityLeverage }),
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: llamma,

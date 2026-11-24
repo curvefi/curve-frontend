@@ -8,12 +8,14 @@ import {
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
+import { useMarketMaxEquityLeverage } from '@/llamalend/queries/market/market-max-equity-leverage.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
 import { useMarketOverview } from '@/llamalend/queries/market/market-overview.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { useMarketTotalCollateral } from '@/llamalend/queries/market/market-total-collateral.query'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getReturnOnEquity } from '@/llamalend/rates.utils'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { MarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
@@ -49,10 +51,19 @@ export const useAdvancedDetailsData = ({
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
-  const maxLeverage = useMarketMaxLeverage(
-    { chainId, marketId, range: mapQuery(marketQuery, m => m?.minBands) },
-    !!isLeverageAllowed(chainId, controllerAddress),
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const isLeverageEnabled = !!isLeverageAllowed(chainId, controllerAddress)
+  const minBands = mapQuery(marketQuery, m => m?.minBands)
+  const maxTotalLeverage = useMarketMaxLeverage(
+    { chainId, marketId, range: minBands },
+    isLeverageEnabled && !isEquityLeverage,
   )
+  const maxEquityLeverage = useMarketMaxEquityLeverage(
+    { chainId, marketId, range: minBands },
+    isLeverageEnabled && isEquityLeverage,
+  )
+  const maxLeverage = isEquityLeverage ? maxEquityLeverage : maxTotalLeverage
+  const apiMaxLeverage = mapQuery(apiMarket, market => (isEquityLeverage ? market?.maxEquityLeverage : market?.leverage))
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
@@ -120,17 +131,17 @@ export const useAdvancedDetailsData = ({
       ),
     ),
     maxLeverage: fallbackQ(
-      mapQuery(maxLeverage, value => ({ value })),
-      mapQuery(apiMarket, market => maybe(market?.leverage, value => ({ value }))),
+      mapQuery(maxLeverage, leverage => maybe(leverage, value => ({ value }))),
+      mapQuery(apiMaxLeverage, leverage => maybe(leverage, value => ({ value }))),
     ),
     maxReturnOnEquity: fallbackQ(
       combineQueries([maxLeverage, snapshots], (leverage, snapshots) =>
-        maybe(snapshots.at(-1), ({ borrowApy, collateralToken }) =>
+        maybes([leverage, snapshots.at(-1)], (leverage, { borrowApy, collateralToken }) =>
           maxReturnOnEquity(+leverage, collateralToken.rebasingYield, borrowApy),
         ),
       ),
-      mapQuery(apiMarket, market =>
-        maybe(market, ({ leverage, assets, rates }) =>
+      combineQueries([apiMaxLeverage, apiMarket], (leverage, market) =>
+        maybe(market, ({ assets, rates }) =>
           maxReturnOnEquity(leverage, assets.collateral.rebasingYield, rates.borrowApy),
         ),
       ),

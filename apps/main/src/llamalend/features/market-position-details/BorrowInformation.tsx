@@ -11,6 +11,7 @@ import { useCarryApr } from '@/llamalend/hooks/useCarryApr'
 import { useEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { usePositionPnlAndEquity } from '@/llamalend/hooks/usePositionPnlAndEquity'
 import { tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { useMarketMaxEquityLeverage } from '@/llamalend/queries/market/market-max-equity-leverage.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserBands } from '@/llamalend/queries/user/user-bands.query'
 import { usePositionHealth } from '@/llamalend/queries/user/user-health.query'
@@ -53,12 +54,17 @@ const { Grid } = SizesAndSpaces
 type BorrowInformationProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
-  const { chainId, controllerAddress } = useMarketContext()
+  const { chainId, controllerAddress, bands } = useMarketContext()
   const [isDetailsOpen] = usePositionDetailsOpen()
   const thresholds = getPositionHealthThresholds(chainId, controllerAddress)
   const position = usePositionHealth(params, thresholds)
   const userState = useUserState(params)
   const equityLeverage = useEquityLeverage({ params })
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const maxLeverage = useMarketMaxEquityLeverage(
+    { chainId: params.chainId, marketId: params.marketId, range: bands.minBands },
+    isEquityLeverage,
+  )
   const carryApr = useCarryApr({ params })
   const isPositionPnl = useLlamalendPositionPnl()
   const positionPnl = usePositionPnlAndEquity(params, isPositionPnl)
@@ -107,7 +113,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             })}
           />
         )}
-        {useLlamalendEquityLeverage() && (
+        {isEquityLeverage && (
           <Metric
             category={BORROW_METRIC_CATEGORY}
             label={t`Leverage`}
@@ -117,6 +123,11 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
               fallback: getLeverageFallback(equityLeverage.isZapLeveraged.data),
               color: getLeverageValueColor(equityLeverage.current.data),
             }}
+            {...(maxLeverage.data !== null && {
+              notional: mapQuery(maxLeverage, value =>
+                maybe(value, value => t`Max ${formatNumber(value, 'multiplier')}`),
+              ),
+            })}
             valueTooltip={{
               title: t`Leverage`,
               body: <LeverageTooltipContent equityLeverage={equityLeverage} />,
