@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
 import { type Nullish, maybe } from '@primitives/objects.utils'
@@ -27,16 +26,13 @@ const extrapolateYearly = (value: number | null, donationsPerYear: number) =>
   maybe(value, value => value * donationsPerYear)
 
 export const RefuelFormList = ({ values, tokenARate, tokenBRate, poolTvl }: RefuelFormListProps) => {
+  const { tokenAAmount, tokenBAmount } = values
   const refuelTvlPercentage = useCombinedQueries(
     [tokenARate, tokenBRate, poolTvl],
-    useCallback(
-      (tokenAUsdRate, tokenBUsdRate, poolUsd) =>
-        poolUsd === 0 || (values.tokenAAmount == null && values.tokenBAmount == null)
-          ? null
-          : ((+(values.tokenAAmount ?? 0) * tokenAUsdRate + +(values.tokenBAmount ?? 0) * tokenBUsdRate) / poolUsd) *
-            100,
-      [values.tokenAAmount, values.tokenBAmount],
-    ),
+    (tokenAUsdRate, tokenBUsdRate, poolUsd) =>
+      poolUsd === 0 || (tokenAAmount == null && tokenBAmount == null)
+        ? null
+        : ((+(tokenAAmount ?? 0) * tokenAUsdRate + +(tokenBAmount ?? 0) * tokenBUsdRate) / poolUsd) * 100,
   )
 
   return (

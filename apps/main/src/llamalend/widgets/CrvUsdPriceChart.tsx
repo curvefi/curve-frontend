@@ -1,5 +1,5 @@
 import { sortBy, uniqBy } from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
 import { useCrvUsdPriceHistory } from '@evm-ui/queries/crvusd-price.query'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
@@ -97,12 +97,8 @@ export const CrvUsdPriceChart = () => {
     )
   }, [pricePoints, priceHistory.dataUpdatedAt, timeOption])
 
-  const deviations = useCombinedQueries(
-    [priceHistory, currentPrice],
-    useCallback(
-      (priceHistory, price) => getDeviations(priceHistory, price, new Date(currentPrice.dataUpdatedAt), dataUpdatedAt),
-      [currentPrice.dataUpdatedAt, dataUpdatedAt],
-    ),
+  const deviations = useCombinedQueries([priceHistory, currentPrice], (priceHistory, price) =>
+    getDeviations(priceHistory, price, new Date(currentPrice.dataUpdatedAt), dataUpdatedAt),
   )
   const showOneYearDeviation = deviations.isLoading || deviations.data?.hasFullYear
 
