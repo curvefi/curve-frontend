@@ -22,7 +22,6 @@ export const FormWithdraw = ({ chainId }: { chainId: ChainId }) => {
   const isOpen = !!canUnlock
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={<VeCrvActionInfo gas={q(useWithdrawLockGasEstimate(params, isOpen))} isOpen={isOpen} />}
     >

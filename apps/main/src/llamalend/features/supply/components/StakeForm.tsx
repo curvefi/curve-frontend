@@ -43,7 +43,6 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <StakeSupplyInfoList
