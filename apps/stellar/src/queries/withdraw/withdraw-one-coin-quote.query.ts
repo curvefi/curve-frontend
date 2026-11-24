@@ -5,12 +5,12 @@ import { estimateOneCoinWithdraw } from '@ui/features/pool-forms/withdraw/one-co
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useWithdrawOneCoinQuote, invalidate: invalidateWithdrawOneCoinQuote } = queryFactory({
-  queryKey: ({ network, pool, amount, maxLpAmount, decimals, index, slippage }: WithdrawOneCoinParams) =>
-    ({ name: 'withdrawOneCoinQuote', network, pool, amount, maxLpAmount, decimals, index, slippage }) as const,
-  queryFn: ({ network, pool, index, amount, maxLpAmount, decimals, slippage }: WithdrawOneCoinQuery) =>
+  queryKey: ({ network, pool, amount, supply, decimals, index, slippage }: WithdrawOneCoinParams) =>
+    ({ name: 'withdrawOneCoinQuote', network, pool, amount, supply, decimals, index, slippage }) as const,
+  queryFn: ({ network, pool, index, amount, supply, decimals, slippage }: WithdrawOneCoinQuery) =>
     estimateOneCoinWithdraw({
       amount,
-      maxLpAmount,
+      supply,
       decimals: decimals[index],
       slippage,
       quote: burns =>
