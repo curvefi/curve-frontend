@@ -71,23 +71,14 @@ const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountFie
   })
 }
 
-const validateWithdraw = (
-  { amounts, maxLpAmount, slippage, ...params }: WithdrawParams,
-  field: AmountField = poolAmountField,
-) => {
+const validateWithdraw = ({ amounts, slippage, ...params }: WithdrawParams, field: AmountField = poolAmountField) => {
   validateSlippage({ slippage })
   test('mode', 'Invalid withdrawal mode', () => {
     enforce(params.mode).inside(['balanced', 'unbalanced', 'one-coin'])
   })
-  test('maxLpAmount', 'LP balance is unavailable', () => {
-    enforce(maxLpAmount).isDecimal().gte(0)
-  })
   skipWhen(params.mode !== 'balanced' && params.mode !== 'one-coin', () => {
     if (params.mode !== 'balanced' && params.mode !== 'one-coin') return // type safety inside skipWhen
     validateLpAmount(params.lpAmount, { allowZero: false })
-    test('lpAmount', 'Insufficient LP balance', () => {
-      enforce(params.lpAmount).lte(maxLpAmount!)
-    })
   })
   skipWhen(params.mode !== 'one-coin', () => {
     if (params.mode !== 'one-coin') return // type safety inside skipWhen
@@ -111,6 +102,18 @@ const validateWithdraw = (
   })
 }
 
+const validateWithdrawBalance = ({ maxLpAmount, ...params }: WithdrawParams) => {
+  test('maxLpAmount', 'LP balance is unavailable', () => {
+    enforce(maxLpAmount).isDecimal().gte(0)
+  })
+  skipWhen(params.mode !== 'balanced' && params.mode !== 'one-coin', () => {
+    if (params.mode !== 'balanced' && params.mode !== 'one-coin') return
+    test('lpAmount', 'Insufficient LP balance', () => {
+      enforce(params.lpAmount).lte(maxLpAmount!)
+    })
+  })
+}
+
 type FormParams = WithdrawParams & { expectedLp: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
 
 const validateForm = (params: FormParams, field: AmountField = poolAmountField) => {
@@ -118,6 +121,7 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
   const maximumBurn = maybe(expectedLp, expectedLp => getMaximumWithdrawBurn(expectedLp, params))
   validateAmounts(params, field)
   validateWithdraw(params, field)
+  validateWithdrawBalance(params)
   test('expectedLp', 'Withdrawal quote is unavailable', () => {
     enforce(expectedLp)
       .isDecimal({ decimal_digits: `0,${LP_TOKEN_DECIMALS}` })
@@ -171,6 +175,7 @@ export const withdrawQueryValidationSuite = createValidationSuite((params: Withd
 export const userWithdrawParamsValidationSuite = createValidationSuite(
   ({ userAddress, ...params }: UserWithdrawParams) => {
     withdrawQueryValidationSuite.run(params)
+    validateWithdrawBalance(params)
     evmAddressValidationGroup({ evmAddress: userAddress })
   },
 )
@@ -196,7 +201,7 @@ export const withdrawMaxValidationSuite = createValidationSuite(({ index, ...par
 })
 
 export const withdrawOneCoinQuoteValidationSuite = createValidationSuite((params: WithdrawOneCoinParams) => {
-  withdrawMaxValidationSuite.run({ ...params, lpAmount: params.maxLpAmount })
+  withdrawMaxValidationSuite.run({ ...params, lpAmount: params.supply })
   validateOneCoinWithdrawQuote(params)
   test('isWrapped', 'Wrapped one-coin withdrawal is unavailable', () => {
     const pool = tryGetPool(params.poolAddress)

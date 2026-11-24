@@ -45,6 +45,18 @@ const EXCESSIVE_WITHDRAW_RATIOS = [1.1, 10] as const
 const oneWithdrawAmount = (amount: Decimal, ratios: readonly [number, number], decimals = DEFAULT_DECIMALS) =>
   decimalRound(decimalMultiply(amount, oneDecimal(...ratios)), decimals)
 
+const checkPartialOneCoinWithdraw = (symbol: string) => {
+  getPoolWithdrawDetail('current-lp').then(current =>
+    getPoolWithdrawDetail('projected-lp').should(value => expect(Number(value)).gt(0).and.lt(Number(current))),
+  )
+  getActionValue('pool-swap-minimum-received', 'tenderly.simulation').should(value => {
+    expect(Number.parseFloat(value!)).gt(0)
+    expect(value).to.include(` ${symbol}`)
+  })
+  cy.get('[data-testid="high-price-impact-error"]').should('not.exist')
+  cy.get('[data-testid="pool-withdraw-maximum-lp-value"]').should('not.exist')
+}
+
 describe('Pool Withdraw (RPC)', () => {
   skipTestsAfterFailure()
 
@@ -164,10 +176,13 @@ describe('Pool Withdraw (RPC)', () => {
       cy.get('[data-testid="loan-form-errors"]', TIMEOUTS['tenderly.simulation'])
         .contains('Maximum LP required exceeds the available LP balance')
         .should('be.visible')
+      getPoolWithdrawDetail('projected-lp').should(value => expect(Number(value!.replaceAll(',', ''))).lt(0))
+      getActionValue('pool-price-impact', 'tenderly.simulation').should('include', '%')
+      cy.get('[data-testid="high-price-impact-error"]').should('not.exist')
       poolWithdrawSubmit().should('be.disabled')
       writePoolWithdrawAmount(to.address, oneWithdrawAmount(maximum, PARTIAL_WITHDRAW_RATIOS, to.decimals))
     })
-    getActionValue('pool-withdraw-maximum-lp', 'tenderly.simulation').should(value => expect(Number(value)).gt(0))
+    checkPartialOneCoinWithdraw(to.symbol)
     submitPoolWithdrawAndCheck()
   })
 
@@ -178,8 +193,7 @@ describe('Pool Withdraw (RPC)', () => {
     selectPoolWithdrawMax(coin.address)
     getPoolWithdrawAmount(coin.address).then(maximum => {
       writePoolWithdrawAmount(coin.address, oneWithdrawAmount(maximum, PARTIAL_WITHDRAW_RATIOS, coin.decimals))
-      getActionValue('pool-withdraw-maximum-lp', 'tenderly.simulation').should(value => expect(Number(value)).gt(0))
-      getPoolWithdrawDetail('projected-lp').should(value => expect(Number(value)).gt(0))
+      checkPartialOneCoinWithdraw(coin.symbol)
       writePoolWithdrawAmount(coin.address, maximum)
     })
     checkPoolWithdrawDetail('projected-lp', '0')
