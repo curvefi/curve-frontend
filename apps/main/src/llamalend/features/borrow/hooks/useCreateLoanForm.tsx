@@ -19,7 +19,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, pick } from '@primitives/objects.utils'
+import { type Nullish, maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { useFormValidation } from '@ui/features/forms/useFormValidation'
@@ -37,7 +37,7 @@ import { type CreateLoanFormValues } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
-const isLeverageCreateLoanSupported = <T extends MarketTemplate | undefined>(
+const isLeverageCreateLoanSupported = <T extends MarketTemplate | Nullish>(
   market: T,
   leverageProviders: readonly RouteProvider[] | undefined,
 ) => maybe(market, market => hasLegacyMintLeverage(market) || (hasZapV2(market) && !!leverageProviders?.length))

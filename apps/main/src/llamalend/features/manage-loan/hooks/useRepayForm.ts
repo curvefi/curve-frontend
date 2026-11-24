@@ -21,7 +21,7 @@ import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormAct
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { notFalsy, pick } from '@primitives/objects.utils'
+import { type Nullish, notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
 import { type AllowUndefined, mapQuery, q, type Range } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
@@ -69,7 +69,7 @@ const defaultValues = {
 }
 
 const isRepayRouteRequired = (
-  market: MarketTemplate | undefined,
+  market: MarketTemplate | Nullish,
   { stateCollateral = '0', userBorrowed = '0' }: AllowUndefined<RepayFormFields>,
 ) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userBorrowed }))
 

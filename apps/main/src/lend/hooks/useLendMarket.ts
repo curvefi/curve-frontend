@@ -1,28 +1,19 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useLlamaQuery } from '@evm-ui/features/connect-wallet/lib/CurveContext'
-import type { LlamaApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { useCombinedQueries } from '@ui/features/queries/combine'
-import { useMappedQuery } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
-import { type LendMarketData, useLendMarkets } from '../queries/lend-markets.query'
+import { useLendMarkets } from '../queries/lend-markets.query'
 import { ChainId } from '../types/lend.types'
 
 type MarketUrlParams = { chainId: ChainId; rMarket: string }
 
-function useLendMarketData({ chainId, rMarket }: MarketUrlParams, enabled?: boolean) {
-  const lendMarkets = useLendMarkets({ chainId }, enabled)
-  const lendMarket = useMappedQuery(
-    lendMarkets,
-    useCallback(data => data?.[rMarket], [rMarket]),
-  )
-  const error = useMemo(
-    () => lendMarkets.data && !lendMarket.data && new Error(`${t`Market`} ${rMarket} ${t`Not Found`}`),
-    [lendMarket.data, lendMarkets.data, rMarket],
-  )
-  return { ...lendMarket, ...(error && { error }) }
-}
-
-const getLendMarketByData = (data: LendMarketData, api: LlamaApi) => api.getLendMarketByData(data.id, data)
-
 export const useLendMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) =>
-  useCombinedQueries([useLendMarketData({ chainId, rMarket }, enabled), useLlamaQuery()], getLendMarketByData)
+  useCombinedQueries(
+    [useLendMarkets({ chainId }, enabled), useLlamaQuery()],
+    useCallback(
+      (markets, api) => {
+        const market = markets[rMarket]
+        return market ? api.getLendMarketByData(market.id, market) : null
+      },
+      [rMarket],
+    ),
+  )

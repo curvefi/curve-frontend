@@ -23,7 +23,7 @@ export const MarketLoanParameters = ({
 }: {
   chainId: IChainId
   marketId: string | undefined
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
   maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>
 }) => {
@@ -54,7 +54,7 @@ export const MarketLoanParameters = ({
         value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.admin_fee),
-            mapQuery(apiMarket, m => m.parameters.adminFee),
+            mapQuery(apiMarket, m => m?.parameters.adminFee),
           ),
           value => formatNumber(value, 'percent.rate'),
         )}
@@ -69,7 +69,7 @@ export const MarketLoanParameters = ({
         value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.A),
-            mapQuery(apiMarket, m => m.parameters.A),
+            mapQuery(apiMarket, m => m?.parameters.A),
           ),
           value => formatNumber(value, { abbreviate: false, useGrouping: false }),
         )}
@@ -82,7 +82,7 @@ export const MarketLoanParameters = ({
         value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.loan_discount),
-            mapQuery(apiMarket, m => m.parameters.loanDiscount),
+            mapQuery(apiMarket, m => m?.parameters.loanDiscount),
           ),
           value => formatNumber(value, 'percent.rate'),
         )}
@@ -97,7 +97,7 @@ export const MarketLoanParameters = ({
         value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.liquidation_discount),
-            mapQuery(apiMarket, m => m.parameters.liquidationDiscount),
+            mapQuery(apiMarket, m => m?.parameters.liquidationDiscount),
           ),
           value => formatNumber(value, 'percent.rate'),
         )}
@@ -141,7 +141,7 @@ const MarketMaxLtvRow = ({
 }: {
   chainId: IChainId
   marketId: string | undefined
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
 }) => {
   const parameters = useMarketParameters({ chainId, marketId })
 
@@ -154,7 +154,7 @@ const MarketMaxLtvRow = ({
       value={mapQuery(
         fallbackQ(
           mapQuery(parameters, ({ A, loan_discount }) => getMaxLtv(A, loan_discount)),
-          mapQuery(apiMarket, m => m.maxLtv),
+          mapQuery(apiMarket, m => m?.maxLtv),
         ),
         value => formatNumber(value, 'percent.rate'),
       )}

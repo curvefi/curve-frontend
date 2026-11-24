@@ -155,7 +155,7 @@ export const repayValidationSuite = (options: {
   )
 }
 
-export const repayFormValidationSuite = (market: MarketTemplate | undefined) =>
+export const repayFormValidationSuite = (market: MarketTemplate | Nullish) =>
   createValidationSuite((params: RepayFormData) =>
     repayValidationGroup(market, params, { validateMax: true, leverageRequired: false }),
   )

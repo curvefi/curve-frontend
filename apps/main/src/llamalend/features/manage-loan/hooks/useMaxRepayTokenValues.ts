@@ -6,7 +6,7 @@ import { useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { queryMinimum } from '@ui/features/queries/combine'
@@ -18,7 +18,7 @@ export function useMaxRepayTokenValues({
   params,
   form,
 }: {
-  market: MarketTemplate | undefined
+  market: MarketTemplate | Nullish
   borrowTokenAddress: Address | undefined
   params: RepayParams
   form: UseFormReturn<RepayFormData>
