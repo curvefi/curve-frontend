@@ -4,9 +4,8 @@ import { createTestWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TestQueryProvider } from '@ui/features/queries/test-query.provider.test'
 import { constQ, loadingQ, q, type QueryProp } from '@ui/features/queries/util'
-import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { ActivityTable } from './ActivityTable'
-import { ACTIVITY_COLUMNS } from './columns/columns.definitions'
+import { useActivityTable } from './hooks/useActivityTable'
 import { useActivityVisibility } from './hooks/useActivityVisibility'
 import type { ActivityRow } from './types'
 
@@ -24,7 +23,7 @@ export const ActivityStoryTable = ({
   errorTitle?: string
 }) => {
   const columnVisibility = useActivityVisibility({ hasValue })
-  const table = useCurveTable({ query, columns: ACTIVITY_COLUMNS, state: { columnVisibility } })
+  const table = useActivityTable({ query, state: { columnVisibility } })
 
   return <ActivityTable table={table} emptyState={{ title: emptyTitle }} errorState={{ title: errorTitle }} />
 }
@@ -51,7 +50,7 @@ const meta: Meta = {
       description: {
         component:
           'Curve pools and markets use the same columns for swaps and other activity. ' +
-          'Swaps show both token amounts in one cell. Multi-token liquidity and collateral events show per-token rows.',
+          'Expand multi-token activity rows, including swaps, to see a breakdown by token.',
       },
     },
   },

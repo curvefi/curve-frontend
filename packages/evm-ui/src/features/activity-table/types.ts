@@ -28,6 +28,4 @@ export type ActivityRow = {
   /** Use undefined when the row has no USD summary, or null when its historical price is missing. */
   valueUsd: number | Nullish
   deltas: ActivityTokenDelta[]
-  /** Number of required deltas before breakdown presentation kicks in. In some cases, like swaps, having a breakdown at 2 tokens doesn't offer much value, as all swap info can be seen from the 'amounts' column. */
-  breakdownCutoff?: number
 }

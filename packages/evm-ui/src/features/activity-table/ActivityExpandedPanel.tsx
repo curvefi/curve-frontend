@@ -43,7 +43,7 @@ export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
             <ActionInfo
               label={t`Value`}
               value={formatActivityUsdValue(
-                { amount: deltas[0]?.amount ?? 0, amountUsd: valueUsd, timestamp },
+                { amount: deltas.find(({ amount }) => amount !== 0)?.amount ?? 0, amountUsd: valueUsd, timestamp },
                 currentDate,
                 'usd.amount',
               )}

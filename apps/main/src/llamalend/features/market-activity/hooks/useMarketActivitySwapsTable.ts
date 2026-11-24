@@ -2,15 +2,14 @@ import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { Chain } from '@curvefi/prices-api'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
-import { ACTIVITY_COLUMNS } from '@evm-ui/features/activity-table/columns/columns.definitions'
+import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
 import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
 import type { ActivityRow, ActivityToken } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE, getSwapDeltas, SWAP_BREAKDOWN_CUTOFF } from '@evm-ui/features/activity-table/utils'
+import { DEFAULT_PAGE_SIZE, getSwapDeltas } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
-import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { MarketBorrowActivityProps } from '../types'
 
@@ -38,7 +37,6 @@ export const toActivityRow = ({
   timestamp,
   address,
   action: { label: t`Swap` },
-  breakdownCutoff: SWAP_BREAKDOWN_CUTOFF,
   valueUsd: null,
   deltas: getSwapDeltas({ token: tokenSold, amount: amountSold }, { token: tokenBought, amount: amountBought }),
 })
@@ -76,13 +74,12 @@ export const useMarketActivitySwapsTable = ({
     ),
   )
 
-  const table = useCurveTable({
+  const table = useActivityTable({
     query: q({
       data: activityQuery.data,
       isLoading: activityQuery.isLoading || !ammAddress,
       error: ammAddress ? activityQuery.error : null,
     }),
-    columns: ACTIVITY_COLUMNS,
     state: { columnVisibility, pagination },
     manualPagination: true,
     pageCount,

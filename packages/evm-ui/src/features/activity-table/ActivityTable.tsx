@@ -6,13 +6,12 @@ import { BreakdownActionLabelCell } from './cells/BreakdownActionLabelCell'
 import { TokenDeltaAmountCell } from './cells/TokenDeltaAmountCell'
 import { ActivityColumnId } from './columns/columns.enum'
 import type { ActivityRow, ActivityTokenDelta } from './types'
-import { DEFAULT_BREAKDOWN_CUTOFF, getActivityDeltaKey } from './utils'
+import { getActivityDeltaKey } from './utils'
 
 type ActivityTableProps = Pick<EvmDataTableProps<ActivityRow>, 'table' | 'emptyState' | 'errorState'>
 
 const ACTIVITY_BREAKDOWN: RowBreakdownConfig<ActivityRow, ActivityTokenDelta> = {
-  getItems: ({ deltas, breakdownCutoff = DEFAULT_BREAKDOWN_CUTOFF }) =>
-    deltas.length >= breakdownCutoff ? deltas : [],
+  getItems: ({ deltas }) => deltas,
   getItemKey: ({ label, token }, index) => getActivityDeltaKey(label, token?.address, index),
   cells: {
     [ActivityColumnId.Action]: ({ label }) => <BreakdownActionLabelCell label={label} />,

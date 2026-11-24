@@ -1,13 +1,12 @@
 import { getActivityToken } from '@/llamalend/llama.utils'
-import { ACTIVITY_COLUMNS } from '@evm-ui/features/activity-table/columns/columns.definitions'
 import { ActivityColumnId } from '@evm-ui/features/activity-table/columns/columns.enum'
+import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
 import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
 import type { ActivityRow, ActivityTokenDelta } from '@evm-ui/features/activity-table/types'
 import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import { notFalsy } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
-import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { ParsedUserBorrowEvent } from './useUserBorrowEvents'
 
@@ -50,7 +49,7 @@ const toActivityRow = ({
     timestamp,
     address,
     action: { label: type },
-    valueUsd: deltas.length === 1 ? deltas[0]?.amountUsd : undefined,
+    valueUsd: deltas[1]?.amountUsd,
     deltas,
   }
 }
@@ -68,9 +67,8 @@ export const useUserBorrowActivityTable = (eventsQuery: QueryProp<ParsedUserBorr
   )
 
   return {
-    table: useCurveTable({
+    table: useActivityTable({
       query,
-      columns: ACTIVITY_COLUMNS,
       state: { columnVisibility },
       initialState: { pagination: { pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE } },
     }),
