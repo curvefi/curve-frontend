@@ -1,4 +1,4 @@
-import { type MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
+import { type MouseEvent, ReactNode, useMemo, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { Subscribe, type Cell, type ReactTable, type Row, type RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
@@ -19,6 +19,7 @@ import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 const { Height } = SizesAndSpaces
+const ROW_CONTROLS = `.${CLICKABLE_IN_ROW_CLASS}, a[href], button, input, select, textarea, [role=button], [role=link]`
 
 export type RowBreakdownConfig<TData extends RowData, TItem> = {
   /** Items to render as breakdown rows under the parent row. Fewer than 2 items means no breakdown rows. */
@@ -52,6 +53,9 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
+const isRowSurfaceClick = ({ currentTarget, defaultPrevented, target }: MouseEvent<HTMLTableRowElement>) =>
+  !defaultPrevented && target instanceof Element && currentTarget.contains(target) && !target.closest(ROW_CONTROLS)
+
 export const DataRow = <TData extends RowData>(props: DataRowProps<TData>) => (
   <Subscribe source={props.row.table.atoms.columnVisibility} selector={() => props.row.getVisibleCells()}>
     {visibleCells => <DataRowContent {...props} visibleCells={visibleCells} />}
@@ -73,11 +77,17 @@ const DataRowContent = <TData extends RowData>({
   const push = useNavigate()
   const href = table.options.meta?.getRowHref?.(row.original)
   const hasExpansionRow = isMobile && !!expandedPanel
-  const isInteractive = !!href || hasExpansionRow
-  const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => href && onCellClick(e.target, href, push),
-    [href, push],
-  )
+  const breakdownItems = isMobile ? undefined : rowBreakdown?.getItems(row.original)
+  const hasBreakdown = !!breakdownItems && breakdownItems.length > 1
+  const isInteractive = !!href || hasExpansionRow || hasBreakdown
+
+  const onClickRow = (event: MouseEvent<HTMLTableRowElement>) => {
+    if (isMobile || hasBreakdown) {
+      if (!rowBreakdown || isRowSurfaceClick(event)) row.toggleExpanded()
+    } else if (href) {
+      onCellClick(event.target, href, push)
+    }
+  }
 
   return (
     <>
@@ -115,7 +125,7 @@ const DataRowContent = <TData extends RowData>({
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : href ? onClickDesktop : undefined}
+          onClick={isMobile || isInteractive ? onClickRow : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell
@@ -128,9 +138,10 @@ const DataRowContent = <TData extends RowData>({
         </TableRow>
       </InvertOnHover>
 
-      {!isMobile && rowBreakdown && (
+      {hasBreakdown && rowBreakdown && (
         <BreakdownRows
           row={row}
+          items={breakdownItems}
           visibleCells={visibleCells}
           config={rowBreakdown}
           shouldStickFirstColumn={shouldStickFirstColumn}

@@ -1,8 +1,8 @@
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { RelativeTimeCell } from '@evm-ui/shared/ui/DataTable/inline-cells/RelativeTimeCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
-import Typography from '@mui/material/Typography'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { ActivityActionCell } from '../cells/ActivityActionCell'
 import { ActivityUsdValueCell } from '../cells/ActivityUsdValueCell'
 import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
 import type { ActivityRow } from '../types'
@@ -24,15 +24,7 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
   columnHelper.display({
     id: ActivityColumnId.Action,
     header: ACTIVITY_TITLES[ActivityColumnId.Action],
-    cell: ({
-      row: {
-        original: { action },
-      },
-    }) => (
-      <Typography variant="tableCellValue" color={action.color}>
-        {action.label}
-      </Typography>
-    ),
+    cell: ActivityActionCell,
   }),
   columnHelper.display({
     id: ActivityColumnId.Value,
@@ -52,9 +44,9 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
     header: ACTIVITY_TITLES[ActivityColumnId.Amount],
     cell: ({
       row: {
-        original: { blockchainId, deltas, breakdownCutoff },
+        original: { blockchainId, deltas },
       },
-    }) => <TokenDeltaAmountCell blockchainId={blockchainId} deltas={deltas} breakdownCutoff={breakdownCutoff} />,
+    }) => <TokenDeltaAmountCell blockchainId={blockchainId} deltas={deltas} />,
     meta: { type: 'numeric' },
   }),
   columnHelper.display({

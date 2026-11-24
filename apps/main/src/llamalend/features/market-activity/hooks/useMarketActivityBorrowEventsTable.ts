@@ -3,7 +3,7 @@ import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { Chain } from '@curvefi/prices-api'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
-import { ACTIVITY_COLUMNS } from '@evm-ui/features/activity-table/columns/columns.definitions'
+import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
 import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
 import type { ActivityRow, ActivityToken, ActivityTokenDelta } from '@evm-ui/features/activity-table/types'
@@ -12,7 +12,6 @@ import { getPageCount } from '@evm-ui/utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { loadingQ } from '@ui/features/queries/util'
-import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { MarketBorrowActivityProps } from '../types'
 
@@ -92,9 +91,8 @@ export const useMarketActivityBorrowEventsTable = ({
   )
 
   return {
-    table: useCurveTable({
+    table: useActivityTable({
       query,
-      columns: ACTIVITY_COLUMNS,
       state: { columnVisibility, pagination },
       manualPagination: true,
       pageCount: getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE),

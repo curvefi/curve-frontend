@@ -1,18 +1,15 @@
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketSupplyEvents } from '@/llamalend/queries/market/market-supply-events.query'
 import type { VaultEvent } from '@curvefi/prices-api/llamalend'
-import { ACTIVITY_COLUMNS } from '@evm-ui/features/activity-table/columns/columns.definitions'
+import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
 import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
 import type { ActivityRow, ActivityToken } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE, SWAP_BREAKDOWN_CUTOFF } from '@evm-ui/features/activity-table/utils'
+import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
 import { mapQuery } from '@ui/features/queries/util'
-import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { MarketSupplyActivityProps } from '../types'
-
-const SUPPLY_BREAKDOWN_CUTOFF = SWAP_BREAKDOWN_CUTOFF // Almost all supply events have 2 deltas, so we can use the same cutoff as swaps.
 
 export type MarketSupplyEventRow = VaultEvent &
   Pick<MarketSupplyActivityProps, 'chainId' | 'blockchainId'> & {
@@ -47,7 +44,6 @@ export const toActivityRow = ({
     address,
     action,
     valueUsd: null,
-    breakdownCutoff: SUPPLY_BREAKDOWN_CUTOFF,
     deltas: amounts
       ? [
           { label: t`Assets`, token: borrowToken, amount: assetSign * amounts.assets },
@@ -80,9 +76,8 @@ export const useMarketActivitySupplyEventsTable = ({
   })
 
   return {
-    table: useCurveTable({
+    table: useActivityTable({
       query,
-      columns: ACTIVITY_COLUMNS,
       state: { columnVisibility, pagination },
       manualPagination: true,
       pageCount: getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE),

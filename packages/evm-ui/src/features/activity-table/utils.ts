@@ -8,12 +8,6 @@ import type { ActivityToken, ActivityTokenDelta } from './types'
 
 const PROCESSING_TIMEOUT_MS = REFRESH_INTERVAL['1h']
 
-/** Required amount of deltas before breakdown rows are being shown. */
-export const DEFAULT_BREAKDOWN_CUTOFF = 2
-
-/** Swap activity is most often limited to just 2 tokens, which can be represented in the 'amounts' column, so we only show breakdowns for 3+ tokens. */
-export const SWAP_BREAKDOWN_CUTOFF = 3
-
 export const DEFAULT_PAGE_SIZE = 50
 export const DEFAULT_PAGE_START_INDEX = 1
 
@@ -57,11 +51,10 @@ export const getChangeColor = (amount: number, positive: 'success' | 'error', ne
 export const getSwapDeltas = (
   sold: Omit<ActivityTokenDelta, 'label'>,
   bought: Omit<ActivityTokenDelta, 'label'>,
-): ActivityTokenDelta[] =>
-  [
-    { ...sold, amount: -sold.amount, label: t`Sold` },
-    { ...bought, label: t`Bought` },
-  ].filter(({ amount }) => amount !== 0)
+): ActivityTokenDelta[] => [
+  { ...sold, amount: -sold.amount, label: t`Sold` },
+  { ...bought, label: t`Bought` },
+]
 
 /** Give each delta row a specific key in case the query updates with new data so rerendering works correctly. */
 export const getActivityDeltaKey = (label: string, address: ActivityToken['address'] | undefined, index: number) =>

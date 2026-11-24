@@ -4,15 +4,13 @@ import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { TokenInfo } from '@ui/components/TokenInfo'
 import type { ActivityRow } from '../types'
-import { DEFAULT_BREAKDOWN_CUTOFF, getActivityDeltaKey } from '../utils'
+import { getActivityDeltaKey } from '../utils'
 
-export const TokenDeltaAmountCell = ({
-  blockchainId,
-  deltas,
-  breakdownCutoff = DEFAULT_BREAKDOWN_CUTOFF,
-}: Pick<ActivityRow, 'blockchainId' | 'deltas' | 'breakdownCutoff'>) => (
+const ICON_STACK_MIN_DELTAS = 3
+
+export const TokenDeltaAmountCell = ({ blockchainId, deltas }: Pick<ActivityRow, 'blockchainId' | 'deltas'>) => (
   <InlineTableCell sx={{ alignItems: 'end', height: 'auto' }}>
-    {deltas.length >= breakdownCutoff ? (
+    {deltas.length >= ICON_STACK_MIN_DELTAS ? (
       <IconStack iconSize="md">
         {deltas.map(({ label, token }, index) => (
           <TokenIcon

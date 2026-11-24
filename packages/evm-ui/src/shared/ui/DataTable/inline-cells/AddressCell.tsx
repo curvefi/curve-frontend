@@ -5,7 +5,7 @@ import { shortenString } from '@primitives/string.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { InlineTableCell } from '@ui/components/InlineTableCell'
 import { Tooltip } from '@ui/components/Tooltip'
-import { TABLE_SECONDARY_TEXT_CLASS } from '@ui/features/tables/data-table.utils'
+import { CLICKABLE_IN_ROW_CLASS, TABLE_SECONDARY_TEXT_CLASS } from '@ui/features/tables/data-table.utils'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useCopyToClipboard } from '@ui/hooks/useCopyToClipboard'
 import { t } from '@ui/lib/i18n'
@@ -40,6 +40,7 @@ export const AddressCell = ({ address, label, explorerUrl, align }: AddressCellP
       <Stack direction="row" sx={{ gap: Spacing.xs }}>
         <Typography
           variant="tableCellValueStrong"
+          className={CLICKABLE_IN_ROW_CLASS}
           onClick={useCopyToClipboard({ copyText: address, format: getAddress })}
           sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
         >
