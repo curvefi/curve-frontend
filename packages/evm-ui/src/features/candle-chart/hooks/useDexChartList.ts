@@ -1,11 +1,11 @@
 import _ from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import type { PoolCoin } from '@curvefi/prices-api/pools'
+import type { Token } from '@primitives/address.utils'
 import type { ChartSelections } from '@ui/features/charts/ChartHeader'
 import { t } from '@ui/lib/i18n'
 import type { ChartSelection } from '../types'
 
-type UseDexChartListArgs = { coins: PoolCoin[]; nCoins: number }
+type UseDexChartListArgs = { coins: Token[]; nCoins: number }
 
 /**
  * Calculates all possible combinations without repetition of a certain size. Copied from `lodash.combinations`.
@@ -38,13 +38,13 @@ const combinations = <T>(collection: T[], n: number): T[][] => {
   return recur(array, n)
 }
 
-const buildChartCombinations = (coins: PoolCoin[], nCoins: number): PoolCoin[][] => {
+const buildChartCombinations = (coins: Token[], nCoins: number): Token[][] => {
   const baseCoins = coins.slice(0, nCoins)
   const extraCombinations = coins.slice(nCoins).map(item => [item, baseCoins[0]])
   return [...extraCombinations, ...combinations(baseCoins, 2)]
 }
 
-const formatPairLabel = (main: PoolCoin, ref: PoolCoin) => `${ref.symbol} / ${main.symbol}`
+const formatPairLabel = (main: Token, ref: Token) => `${ref.symbol} / ${main.symbol}`
 
 const DEFAULT_CHART_SELECTION: ChartSelection = { type: 'lp-usd' }
 
