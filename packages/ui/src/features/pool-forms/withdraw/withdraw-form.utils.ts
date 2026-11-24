@@ -1,13 +1,14 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes, notFalsy } from '@primitives/objects.utils'
+import { maybes, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import type { DeepPartial, QueryProp } from '@ui/features/queries/util'
-import type { FieldsOf } from '@ui/lib/validation/types'
-import { getPoolAmounts, getPoolMaxAmounts, type PoolTokenFields } from '../pool-form.utils'
+import { toQuery, type QueryOrValue, type QueryProp } from '@ui/features/queries/util'
+import { getPoolAmounts, getPoolMaxAmounts, poolAmountField, type PoolTokenFields } from '../pool-form.utils'
 import type { PoolToken } from '../PoolTokenInput'
 import { calculateMinimumReceived } from '../swap/swap.utils'
 
 export type WithdrawMode = 'balanced' | 'unbalanced' | 'one-coin'
+
+export const oneCoinWithdrawDefaultValues = { amount: undefined, isMax: false }
 
 export type WithdrawMutation = {
   amounts: (Decimal | undefined)[]
@@ -34,6 +35,7 @@ type WithdrawQuoteFields = {
 
 export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
   amount: Decimal | undefined
+  quotedAmount: Decimal | undefined
   isMax: boolean
   tokenIndex: number
   poolReserve: Decimal | undefined
@@ -42,20 +44,19 @@ export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
 export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
   PoolTokenFields & { lpAmount: Decimal | undefined; isBalanced: boolean }
 
-/** Max burns the full LP balance; a custom token amount uses an imbalance withdrawal. */
+/** The resolved quote supplies the LP burn for both manual amounts and Max. */
 export const getOneCoinWithdrawParams = ({
-  amount,
-  isMax,
   tokenIndex,
+  quotedAmount,
   poolReserve,
   ...values
 }: OneCoinWithdrawFormValues) => ({
   ...values,
-  mode: isMax ? ('one-coin' as const) : ('unbalanced' as const),
+  mode: 'one-coin' as const,
   tokenIndex,
-  lpAmount: isMax ? values.maxLpAmount : undefined,
-  amounts: values.decimals?.map((_, index) => (index === tokenIndex ? amount : '0')),
-  maxAmounts: values.decimals?.map((_, index) => (index === tokenIndex ? poolReserve : '0')),
+  lpAmount: values.expectedLp,
+  amounts: getPoolAmounts({ [poolAmountField(tokenIndex)]: quotedAmount }, values.decimals?.length),
+  maxAmounts: getPoolAmounts({ [poolAmountField(tokenIndex)]: poolReserve }, values.decimals?.length),
 })
 
 export const getAdvancedWithdrawParams = (values: AdvancedWithdrawFormValues) => ({
@@ -73,8 +74,11 @@ export const getWithdrawMinimumAmounts = (
     decimals,
     slippage,
     tokenIndex,
-  }: Pick<WithdrawMutation, 'mode' | 'slippage'> &
-    FieldsOf<DeepPartial<Pick<WithdrawMutation, 'amounts' | 'decimals' | 'tokenIndex'>>>,
+  }: Pick<WithdrawMutation, 'mode' | 'slippage'> & {
+    amounts?: QueryOrValue<(Decimal | undefined)[]> | Nullish
+    decimals?: QueryOrValue<(number | undefined)[]> | Nullish
+    tokenIndex?: number | Nullish
+  },
   tokens: QueryProp<PoolToken>[] | undefined,
   expectedLp: QueryProp<Decimal>,
 ) =>
@@ -82,11 +86,13 @@ export const getWithdrawMinimumAmounts = (
     notFalsy(
       (mode === 'balanced' || (mode === 'one-coin' && index === tokenIndex)) && {
         index,
-        value: combineQueries([token, expectedLp], ({ symbol }) =>
-          maybes([amounts?.[index], decimals?.[index]], (amount, precision) => ({
-            amount: calculateMinimumReceived(amount, slippage, precision),
-            symbol,
-          })),
+        value: combineQueries(
+          [token, expectedLp, toQuery(amounts), toQuery(decimals)],
+          ({ symbol }, _, amounts, decimals) =>
+            maybes([amounts?.[index], decimals?.[index]], (amount, precision) => ({
+              amount: calculateMinimumReceived(amount, slippage, precision),
+              symbol,
+            })),
         ),
       },
     ),

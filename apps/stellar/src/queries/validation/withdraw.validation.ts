@@ -1,6 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { skipWhen, test } from 'vest'
-import type { WithdrawSimulationParams, WithdrawSimulationQuery } from '@/stellar/features/withdraw/types'
+import type {
+  WithdrawOneCoinParams,
+  WithdrawSimulationParams,
+  WithdrawSimulationQuery,
+} from '@/stellar/features/withdraw/types'
 import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { isComplete } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -12,6 +16,7 @@ import {
   type AdvancedWithdrawFormValues,
   type OneCoinWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import { validateOneCoinWithdrawQuote } from '@ui/features/pool-forms/withdraw/withdraw.validation'
 import { decimalEqual, decimalMinus, decimalRound } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -82,16 +87,15 @@ const validateMaximumBurn = ({
   })
 }
 
-const validateOneCoinSelection = ({ mode, tokenIndex, amounts, lpAmount, maxLpAmount }: WithdrawSimulationParams) => {
+const validateOneCoinSelection = ({ mode, tokenIndex, amounts }: WithdrawSimulationParams) => {
   skipWhen(mode !== 'one-coin', () => {
-    test('root', 'Max withdrawal requires the full LP balance and a single token output', () => {
+    test('root', 'One-coin withdrawal requires a single token output', () => {
       enforce(
         maybes(
           [tokenIndex, amounts],
           (index, amounts) => Number.isInteger(index) && index >= 0 && index < amounts.length,
         ),
       ).isTruthy()
-      enforce(maybes([lpAmount, maxLpAmount], decimalEqual)).isTruthy()
       enforce(
         amounts?.every((amount, index) =>
           index === tokenIndex ? +(amount || '0') > 0 : decimalEqual(amount || '0', '0'),
@@ -135,7 +139,9 @@ export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values:
   validateSlippage({ slippage })
   validateAmount('amount', amount, true)
   test('amount', 'Enter an amount to withdraw', () => {
-    enforce(amount).isDecimal().gt(0)
+    enforce(amount)
+      .isDecimal({ decimal_digits: `0,${values.decimals?.[values.tokenIndex] ?? 0}` })
+      .gt(0)
   })
   test('poolReserve', 'Pool reserve is unavailable', () => {
     enforce(poolReserve).isDecimal().gte(0)
@@ -165,3 +171,8 @@ const validateWithdraw = (params: WithdrawSimulationQuery) => {
 
 export const withdrawSimulationValidationSuite = createValidationSuite(validateWithdraw)
 export const withdrawValidationSuite = createValidationSuite(validateWithdraw)
+
+export const withdrawOneCoinQuoteValidationSuite = createValidationSuite((params: WithdrawOneCoinParams) => {
+  validatePool(params)
+  validateOneCoinWithdrawQuote(params)
+})

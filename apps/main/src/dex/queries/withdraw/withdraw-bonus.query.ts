@@ -4,7 +4,7 @@ import { getPool } from '@/dex/pool.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, type FieldsOrQueries } from '@ui/features/queries/util'
 import { decimalNegate } from '@ui/lib/decimal'
 
 export const { useQuery: useWithdrawBonus, invalidate: invalidateWithdrawBonus } = queryFactory({
@@ -37,4 +37,5 @@ export const { useQuery: useWithdrawBonus, invalidate: invalidateWithdrawBonus }
   validationSuite: withdrawQueryValidationSuite,
 })
 
-export const useWithdrawPriceImpact = (params: WithdrawParams) => mapQuery(useWithdrawBonus(params), decimalNegate)
+export const useWithdrawPriceImpact = (params: FieldsOrQueries<WithdrawParams>) =>
+  mapQuery(useWithdrawBonus(params), decimalNegate)
