@@ -31,8 +31,10 @@ export const AdvancedWithdrawForm = ({
   onLpChange,
   onTokenChange,
   canWithdrawWrapped,
+  canWithdrawUnbalanced,
 }: PoolFormProps<AdvancedWithdrawFormValues> & {
   canWithdrawWrapped: boolean | undefined
+  canWithdrawUnbalanced: boolean
   lpAmountUsd: Decimal | undefined
   lpBalance: QueryProp<Decimal>
   canBalance: boolean | undefined
@@ -62,13 +64,15 @@ export const AdvancedWithdrawForm = ({
       showBalance={false}
       onValueChange={onTokenChange}
     />
-    <CheckboxField
-      label={t`Withdraw custom balances`}
-      checked={!form.values.isBalanced}
-      onChange={event => onBalancedChange(!event.target.checked)}
-      disabled={isPending || !canBalance}
-      testIdPrefix="withdraw-unbalanced"
-    />
+    {canWithdrawUnbalanced && (
+      <CheckboxField
+        label={t`Withdraw custom balances`}
+        checked={!form.values.isBalanced}
+        onChange={event => onBalancedChange(!event.target.checked)}
+        disabled={isPending || !canBalance}
+        testIdPrefix="withdraw-unbalanced"
+      />
+    )}
     {canWithdrawWrapped && <WrappedWithdrawCheckbox form={form} disabled={isPending} />}
     <FormButton
       {...wallet}

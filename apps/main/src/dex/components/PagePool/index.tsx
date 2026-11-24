@@ -162,20 +162,12 @@ const menu = [
       {
         value: 'withdraw-one-coin',
         label: t`One coin`,
-        visible: ({ isCrypto }) => isCrypto === false,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={OneCoinWithdrawTab} {...props} />,
       },
       {
         value: 'withdraw-advanced',
         label: t`Advanced`,
-        visible: ({ isCrypto }) => isCrypto === false,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={AdvancedWithdrawTab} {...props} />,
-      },
-      {
-        value: 'WITHDRAW',
-        label: t`Withdraw`,
-        visible: ({ isCrypto }) => isCrypto !== false, // todo: implement new form for crypto pools
-        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={FormWithdraw} {...props} />,
       },
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
       { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
@@ -267,13 +259,12 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       poolAlert,
       maxSlippage,
       seed,
-      isCrypto: pool.data?.isCrypto,
       isGaugeManager: !!(gaugeManager && signerAddress && isAddressEqual(gaugeManager, signerAddress)),
       isRewardsDistributor: maybes([rewardDistributors, signerAddress], (rewardDistributors, signerAddress) =>
         Object.values(rewardDistributors).some(distributorId => isAddressEqual(distributorId, signerAddress)),
       ),
     }),
-    [params, poolAlert, maxSlippage, seed, pool.data?.isCrypto, gaugeManager, signerAddress, rewardDistributors],
+    [params, poolAlert, maxSlippage, seed, gaugeManager, signerAddress, rewardDistributors],
   )
 
   return (
