@@ -1,4 +1,4 @@
-import { each, skipWhen, test } from 'vest'
+import { each, omitWhen, skipWhen, test } from 'vest'
 import { tryGetPool } from '@/dex/pool.utils'
 import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
@@ -88,12 +88,12 @@ const validateWithdraw = ({ amounts, slippage, ...params }: WithdrawParams, fiel
         .inside(range(amounts?.length ?? 0))
     })
     each(amounts ?? [], (amount, index) => {
-      skipWhen(index !== params.tokenIndex, () =>
+      omitWhen(index !== params.tokenIndex, () =>
         test(field(index), 'Enter an amount to withdraw', () => {
           enforce(amount).gt(0)
         }),
       )
-      skipWhen(index === params.tokenIndex, () =>
+      omitWhen(index === params.tokenIndex, () =>
         test(field(index), 'Only the selected token can have a withdrawal amount', () => {
           enforce(amount).condition(() => decimalEqual(amount!, '0'))
         }),
@@ -139,7 +139,7 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
     })
   })
   each(amounts ?? [], (amount, index) => {
-    skipWhen(mode === 'balanced' || maxAmounts?.[index] == null, () => {
+    omitWhen(mode === 'balanced' || maxAmounts?.[index] == null, () => {
       test(field(index), 'Amount exceeds the maximum withdrawal', () => {
         enforce(amount).lte(maxAmounts![index]!)
       })
