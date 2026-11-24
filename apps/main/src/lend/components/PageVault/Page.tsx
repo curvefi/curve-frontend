@@ -72,7 +72,10 @@ export const Page = () => {
         marketType={MarketType.Lend}
       >
         <DetailPageLayout
-          formTabs={{ content: <VaultTabs />, placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline' }}
+          formTabs={{
+            content: query.data && <VaultTabs />, // TODO: Let VaultTabs render its own skeleton while market data loads.
+            placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          }}
           header={<MarketPageHeader />}
           {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
         >
