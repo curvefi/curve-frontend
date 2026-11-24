@@ -4,7 +4,6 @@ import { QUERY_CATEGORIES } from '@ui/features/queries/query-categories'
 import { queryClient } from '@ui/features/queries/query-client'
 
 export const setupMockedPoolComponentTest = () => {
-  queryClient.clear()
   globalLibs.current = {}
   globalLibs.hydrated = {}
   const unsubscribe = queryClient.getQueryCache().subscribe(event => {

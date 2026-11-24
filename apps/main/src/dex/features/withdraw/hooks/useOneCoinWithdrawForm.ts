@@ -117,7 +117,7 @@ export const useOneCoinWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal }
     wallet: { connect, isConnected: !!wallet, isConnecting: isLoading(connectState) },
     userAddress,
     onSlippageChange: (slippage: Decimal) => update({ slippage }, { mode: 'immediate' }),
-    onCoinChange: (tokenIndex: number) => update({ ...userDefaultValues, tokenIndex }, { mode: 'immediate' }),
+    onCoinChange: (tokenIndex: number) => reset({ ...userDefaultValues, tokenIndex }),
     onMax,
     onAmountChange: (amount: Decimal | undefined) =>
       maybes([amount, max.data], decimalEqual) ? onMax() : update({ amount, isMax: false }),

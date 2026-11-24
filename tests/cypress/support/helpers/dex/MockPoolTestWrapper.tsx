@@ -17,7 +17,7 @@ export const MockPoolTestWrapper = ({
 }) => {
   const [isWrapped, setIsWrapped] = useState(false)
   return (
-    <CurveComponentTestWrapper curve={curve}>
+    <CurveComponentTestWrapper curve={curve} connected={!!curve.signerAddress}>
       <PoolContext
         value={createPoolContextValue({
           chainId: curve.chainId,

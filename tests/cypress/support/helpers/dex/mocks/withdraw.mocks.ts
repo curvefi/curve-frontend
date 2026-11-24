@@ -15,8 +15,26 @@ import type { CurveApi } from '@evm-ui/features/connect-wallet/lib/types'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { setTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { WithdrawMode } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
+import { decimalMultiply, decimalSum } from '@ui/lib/decimal'
 
-export const createWithdrawScenario = ({ approved = true, delayQuote = false, bonus = '0', wrapped = false } = {}) => {
+export const createWithdrawScenario = ({
+  approved = true,
+  delayQuote = false,
+  bonus = '0',
+  wrapped = false,
+  connected = true,
+  lpBalance = '10',
+  mode = 'one-coin',
+}: {
+  approved?: boolean
+  delayQuote?: boolean
+  bonus?: Decimal
+  wrapped?: boolean
+  connected?: boolean
+  lpBalance?: Decimal
+  mode?: WithdrawMode
+} = {}) => {
   const chainId = 1
   const address = oneAddress()
   const lpToken = oneAddress()
@@ -36,8 +54,12 @@ export const createWithdrawScenario = ({ approved = true, delayQuote = false, bo
   const withdraw = createTransactionStub(TEST_TX_HASH)
   const withdrawWrapped = createTransactionStub(TEST_TX_HASH)
   const expected = cy.stub().callsFake((lpAmount: string) => Promise.resolve(lpAmount))
+  const imbalanceQuote = cy
+    .stub()
+    .callsFake((amounts: Decimal[]) => Promise.resolve(decimalMultiply(decimalSum(...amounts), '5')))
   const estimateGas = createStub(180_000)
   const estimateApprove = createStub(70_000)
+  const method = { 'one-coin': 'withdrawOneCoin', balanced: 'withdraw', unbalanced: 'withdrawImbalance' }[mode]
   const pool = {
     id: 'mock-pool',
     address,
@@ -68,21 +90,19 @@ export const createWithdrawScenario = ({ approved = true, delayQuote = false, bo
     },
     withdrawOneCoinExpected: expected,
     withdrawOneCoinWrappedExpected: expected,
-    withdrawOneCoinBonus: createStub(bonus),
-    withdrawOneCoinWrappedBonus: createStub(bonus),
-    withdrawOneCoinIsApproved: approved ? createStub(true) : createIsApprovedStub(approve),
-    withdrawOneCoinApprove: approve,
-    withdrawOneCoin: withdraw,
-    withdrawOneCoinWrapped: withdrawWrapped,
-    estimateGas: {
-      withdrawOneCoin: estimateGas,
-      withdrawOneCoinWrapped: estimateGas,
-      withdrawOneCoinApprove: estimateApprove,
-    },
+    withdrawImbalanceExpected: imbalanceQuote,
+    withdrawImbalanceWrappedExpected: imbalanceQuote,
+    [`${method}Bonus`]: createStub(bonus),
+    [`${method}WrappedBonus`]: createStub(bonus),
+    [`${method}IsApproved`]: approved ? createStub(true) : createIsApprovedStub(approve),
+    [`${method}Approve`]: approve,
+    [method]: withdraw,
+    [`${method}Wrapped`]: withdrawWrapped,
+    estimateGas: { [method]: estimateGas, [`${method}Wrapped`]: estimateGas, [`${method}Approve`]: estimateApprove },
   } as unknown as PoolTemplate
   const curve = {
     chainId,
-    signerAddress: TEST_ADDRESS,
+    signerAddress: connected ? TEST_ADDRESS : undefined,
     isNoRPC: false,
     getPool: createSyncStub(pool),
     getUsdRate: createStub(1),
@@ -94,7 +114,7 @@ export const createWithdrawScenario = ({ approved = true, delayQuote = false, bo
       chainId,
       tokenAddress,
       addresses: [TEST_ADDRESS],
-      rawBalance: parseUnits('10', decimals),
+      rawBalance: parseUnits(tokenAddress === lpToken ? lpBalance : '10', decimals),
       decimals,
     })
     setTokenUsdRateQueryData({ chainId, tokenAddress }, 1)
@@ -107,19 +127,25 @@ export const createWithdrawScenario = ({ approved = true, delayQuote = false, bo
     coins,
     quote,
     withdraw,
+    approve,
     releaseQuote: () => quoteReady.resolve(),
-    assertPreSubmit: (lpAmount: Decimal = '1.250000000000000001', index = 0) => {
+    assertPreSubmit: (amount: Decimal | Decimal[] = '1.250000000000000001', index = 0) => {
       expect(withdraw.callCount).to.equal(0)
       expect(approve.callCount).to.equal(0)
-      if (approved || wrapped) expect(estimateGas).to.have.been.calledWithExactly(lpAmount, index, 0.5)
-      else expect(estimateApprove).to.have.been.calledWithExactly(lpAmount)
+      if (approved || wrapped)
+        expect(estimateGas).to.have.been.calledWithExactly(amount, ...(mode === 'one-coin' ? [index] : []), 0.5)
+      else expect(estimateApprove).to.have.been.calledWithExactly(amount)
     },
-    assertSubmit: (lpAmount: Decimal = '1.250000000000000001', index = 0) => {
-      expect(wrapped ? withdrawWrapped : withdraw).to.have.been.calledWithExactly(lpAmount, index, 0.5)
+    assertSubmit: (amount: Decimal | Decimal[] = '1.250000000000000001', index = 0) => {
+      expect(wrapped ? withdrawWrapped : withdraw).to.have.been.calledWithExactly(
+        amount,
+        ...(mode === 'one-coin' ? [index] : []),
+        0.5,
+      )
       expect(withdraw.callCount).to.equal(wrapped ? 0 : 1)
       expect(withdrawWrapped.callCount).to.equal(wrapped ? 1 : 0)
       expect(approve.callCount).to.equal(approved || wrapped ? 0 : 1)
-      if (!approved && !wrapped) expect(approve).to.have.been.calledWithExactly(lpAmount)
+      if (!approved && !wrapped) expect(approve).to.have.been.calledWithExactly(amount)
     },
   }
 }
