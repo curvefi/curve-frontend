@@ -63,7 +63,11 @@ export const useAdvancedDetailsData = ({
     isLeverageEnabled && isEquityLeverage,
   )
   const maxLeverage = isEquityLeverage ? maxEquityLeverage : maxTotalLeverage
-  const apiMaxLeverage = mapQuery(apiMarket, market => (isEquityLeverage ? market?.maxEquityLeverage : market?.leverage))
+  // null means the market has no zap V2: the API value would be wrong, so don't fall back to it
+  const hasNoZapV2 = isEquityLeverage && maxEquityLeverage.data === null
+  const apiMaxLeverage = mapQuery(apiMarket, market =>
+    hasNoZapV2 ? null : isEquityLeverage ? market?.maxEquityLeverage : market?.leverage,
+  )
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
