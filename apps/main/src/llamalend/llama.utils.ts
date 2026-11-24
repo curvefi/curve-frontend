@@ -77,6 +77,9 @@ export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Ad
     maybe(getMarketAssetsType(chainId, controllerAddress), type => SLIPPAGE_KEY_BY_ASSETS_TYPE[type]) ?? 'leverage'
   ].default
 
+export const getMarketLeverageConfig = (chainId: number, controllerAddress: Address) =>
+  MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]
+
 /**
  * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their
  * explicitly tested providers on Stable/Legacy, while unlisted markets remain disabled.
@@ -86,7 +89,7 @@ export const getMarketLeverageProviders = (
   controllerAddress: Address | undefined,
   releaseChannel: ReleaseChannel,
 ) => {
-  const config = controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]
+  const config = controllerAddress && getMarketLeverageConfig(chainId, controllerAddress)
   return maybe(config, config => (releaseChannel === ReleaseChannel.Beta ? RouteProviders : config.providers))
 }
 

@@ -8,6 +8,8 @@ import {
   calculateMarketSolvency,
   calculateMintMarketTvlUsd,
   createGetBadDebtMarket,
+  getMarketLeverageConfig,
+  isZapV0MintMarket,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
 import {
@@ -22,6 +24,7 @@ import { type Chain } from '@curvefi/prices-api'
 import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lending-vaults.query'
 import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
+import { requireChainId } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -35,7 +38,7 @@ import { useQueries } from '@ui/features/queries/query-hooks'
 import { DISABLED_Q, type Query } from '@ui/features/queries/util'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
+import { DEPRECATED_LLAMAS } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import { type LendingPosition } from './lending-vaults'
@@ -259,7 +262,7 @@ const convertLendingVault = (
       lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: NO_LEVERAGE_LEND[blockchainId]?.includes(controller) ? null : leverage,
+    leverage: getMarketLeverageConfig(requireChainId(blockchainId), controller) ? leverage : null,
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: !!hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -403,7 +406,8 @@ const convertMintMarket = (
     url: crvUsdPages.market({ blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
-    leverage,
+    leverage:
+      getMarketLeverageConfig(requireChainId(chain), address) || isZapV0MintMarket(chain, address) ? leverage : null,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: llamma,
