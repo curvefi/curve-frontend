@@ -17,7 +17,7 @@ export const CampaignRewardsBanner = ({ campaignRewards, message }: CampaignRewa
         <Stack component="span" direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           {campaignRewards.map((reward, index) => (
             // eslint-disable-next-line @eslint-react/no-array-index-key -- Campaigns can contain multiple rewards for the same address.
-            <CampaignRewardBadge key={`${reward.address}-${index}`} rewardsPool={reward} color="highlight" banner />
+            <CampaignRewardBadge key={`${reward.address}-${index}`} rewardsPool={reward} color="highlight" />
           ))}
         </Stack>
       }

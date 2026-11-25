@@ -11,29 +11,22 @@ import type { CampaignRewards } from './types'
 
 const { Spacing } = SizesAndSpaces
 
-type CampaignRewardBadgeProps = {
-  rewardsPool: CampaignRewards
-  color?: BadgeProps['color']
-  mobile?: boolean
-  banner?: boolean
-}
+type CampaignRewardBadgeProps = { rewardsPool: CampaignRewards; color?: BadgeProps['color'] }
 
-export const CampaignRewardBadge = ({ rewardsPool, color, mobile, banner }: CampaignRewardBadgeProps) => {
-  const { platform, reward, platformImageId, action, symbol, lock, campaignName } = rewardsPool
-
+export const CampaignRewardBadge = ({ rewardsPool, color }: CampaignRewardBadgeProps) => {
+  const { platform, reward, platformImageId, action, symbol, lock } = rewardsPool
   return (
     <Tooltip
       clickable
       mobileDrawer
       title={<CampaignTooltipContent campaign={rewardsPool} showRate={false} />}
-      placement={mobile ? 'top' : banner ? 'left' : 'bottom'}
-      slotProps={{ tooltip: { sx: { maxWidth: '25rem' } } }}
+      placement="left"
+      slotProps={{ tooltip: { sx: { maxWidth: SizesAndSpaces.MaxWidth.tooltip } } }}
     >
       <Badge
         component="span"
         color={color}
         size="extraSmall"
-        tabIndex={0}
         icon={<RewardIcon src={platformImageId} alt={platform} size="xs" />}
         label={
           <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
