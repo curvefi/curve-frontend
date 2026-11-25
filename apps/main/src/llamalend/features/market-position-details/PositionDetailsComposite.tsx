@@ -89,7 +89,7 @@ export const PositionDetailsComposite = (props: PositionDetailsCompositeProps) =
         {props.type === MarketRateType.Borrow && (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <LlamaMonitorBotButton />
-            {isNewLlamalendHealth && props.hasPosition && <PositionDetailsToggle />}
+            {isNewLlamalendHealth && props.hasPosition && <PositionDetailsToggle disabled={tab.value !== 'position'} />}
           </Stack>
         )}
       </Stack>
