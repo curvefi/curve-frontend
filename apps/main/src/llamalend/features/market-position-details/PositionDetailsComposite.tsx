@@ -11,6 +11,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { type TabItem, useTabs } from '@ui/hooks/useTabs'
@@ -26,7 +27,7 @@ type PositionEvents = {
 }
 
 type PositionDetailsCompositeProps = {
-  [T in MarketRateType]: { type: T; hasPosition: boolean | undefined; events: QueryProp<PositionEvents[T]> }
+  [T in MarketRateType]: { type: T; position: QueryProp<boolean>; events: QueryProp<PositionEvents[T]> }
 }[MarketRateType]
 
 const { Spacing } = SizesAndSpaces
@@ -50,11 +51,19 @@ const POSITION_CONFIG: {
   [MarketRateType.Supply]: { Details: SupplyPositionDetails, Activity: UserVaultEventsTable },
 }
 
-const PositionTab = ({ type, hasPosition }: PositionDetailsCompositeProps) => {
+const PositionTab = ({ type, position: { data: hasPosition, isLoading } }: PositionDetailsCompositeProps) => {
   const { Details } = POSITION_CONFIG[type]
   return (
     <Card size="small">
-      <CardContent>{hasPosition ? <Details /> : <MarketEmptyPosition type={type} />}</CardContent>
+      <CardContent>
+        {hasPosition ? (
+          <Details />
+        ) : (
+          <WithSkeleton loading={isLoading} variant="rectangular" sx={{ width: '100%', maxWidth: 'none' }}>
+            <MarketEmptyPosition type={type} />
+          </WithSkeleton>
+        )}
+      </CardContent>
     </Card>
   )
 }
@@ -72,7 +81,7 @@ const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps>[] = [
   {
     value: 'position',
     label: t`Your position`,
-    visible: ({ hasPosition, events }) => hasPosition !== false || !events.data?.length,
+    visible: ({ position, events }) => position.data !== false || !events.data?.length,
     component: PositionTab,
   },
   { value: 'activity', label: t`Activity`, visible: ({ events }) => !!events.data?.length, component: ActivityTab },
@@ -89,7 +98,9 @@ export const PositionDetailsComposite = (props: PositionDetailsCompositeProps) =
         {props.type === MarketRateType.Borrow && (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <LlamaMonitorBotButton />
-            {isNewLlamalendHealth && props.hasPosition && <PositionDetailsToggle disabled={tab.value !== 'position'} />}
+            {isNewLlamalendHealth && props.position.data && (
+              <PositionDetailsToggle disabled={tab.value !== 'position'} />
+            )}
           </Stack>
         )}
       </Stack>

@@ -49,8 +49,10 @@ export const Page = () => {
     },
     marketQuery,
   )
-  const { data: balances } = useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress })
-  const hasPosition = balances && +(balances.totalShares ?? 0) > 0
+  const position = mapQuery(
+    useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress }),
+    balances => +(balances.totalShares ?? 0) > 0,
+  )
   const events = useUserVaultEvents({
     chainId,
     userAddress,
@@ -85,7 +87,7 @@ export const Page = () => {
             rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
           />
           <MarketSection id="position-details">
-            <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
+            <PositionDetailsComposite type={MarketRateType.Supply} position={position} events={events} />
           </MarketSection>
           <MarketInformationComposite rateType={MarketRateType.Supply} />
         </DetailPageLayout>

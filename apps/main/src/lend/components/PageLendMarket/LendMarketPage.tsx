@@ -29,7 +29,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import { PageState } from '@ui/features/layout/PageState'
 import type { Range } from '@ui/features/queries/util'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -50,7 +50,8 @@ export const LendMarketPage = () => {
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m?.id), userAddress }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
+  const loanExistsQuery = q(useLoanExists(queryParams))
+  const { data: loanExists, isLoading: isLoanExistsLoading } = loanExistsQuery
   const { data: collateralRewardsEnabled } = useMarketCollateralRewardsEnabled(queryParams)
   const showCollateralClaim = collateralRewardsEnabled === true
 
@@ -119,7 +120,7 @@ export const LendMarketPage = () => {
           <MarketSection id="position-details">
             <PositionDetailsComposite
               type={MarketRateType.Borrow}
-              hasPosition={loanExists}
+              position={loanExistsQuery}
               events={mapQuery(collateralEvents, data => data.events)}
             />
           </MarketSection>
