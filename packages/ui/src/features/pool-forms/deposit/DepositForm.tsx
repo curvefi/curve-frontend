@@ -43,7 +43,7 @@ export const DepositForm = <TValues extends PoolDepositForm>({
     ...maybe(maxAmounts, amounts => fromEntries(amounts.map((max, index) => [poolMaxAmountField(index), max.data]))),
   })
   return (
-    <Form {...form} onSubmit={onSubmit} footer={footer}>
+    <Form onSubmit={onSubmit} footer={footer}>
       {children}
       {canDepositWrapped && <WrappedDepositCheckbox form={form} disabled={isPending || inputsDisabled !== false} />}
       <FormButton

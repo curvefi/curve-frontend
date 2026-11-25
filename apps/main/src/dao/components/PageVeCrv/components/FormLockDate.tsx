@@ -35,7 +35,6 @@ export const FormLockDate = ({ chainId }: { chainId: ChainId }) => {
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <VeCrvActionInfo

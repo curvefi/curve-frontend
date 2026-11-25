@@ -43,7 +43,7 @@ export const OneCoinWithdrawForm = ({
 }) => {
   const token = tokens?.[index]
   return (
-    <Form {...form} onSubmit={onSubmit} footer={footer}>
+    <Form onSubmit={onSubmit} footer={footer}>
       <FormTokenInput
         form={form}
         name="amount"

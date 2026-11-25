@@ -10,7 +10,7 @@ import { t } from '@ui/lib/i18n'
 
 export type OneCoinWithdrawQuoteQuery = {
   amount: Decimal
-  maxLpAmount: Decimal
+  supply: Decimal
   decimals: number[]
   index: number
   slippage: Decimal
@@ -20,19 +20,19 @@ const QUOTES_PER_ROUND = 4
 const MAX_ROUNDS = 8
 const QUOTE_TOLERANCE_FACTOR = 0.1
 
-/** Refine contract quotes until excess output is within the quote tolerance. */
+/** Search the pool's LP supply independently of the user's balance. */
 export const estimateOneCoinWithdraw = async ({
   amount,
-  maxLpAmount,
+  supply,
   decimals,
   slippage,
   quote,
-}: Pick<OneCoinWithdrawQuoteQuery, 'amount' | 'maxLpAmount' | 'slippage'> & {
+}: Pick<OneCoinWithdrawQuoteQuery, 'amount' | 'supply' | 'slippage'> & {
   decimals: number
   quote: (amounts: bigint[]) => Promise<(bigint | null)[]>
 }) => {
   const target = BigInt(toWei(amount, decimals))
-  const maximum = BigInt(toWei(maxLpAmount, LP_TOKEN_DECIMALS))
+  const maximum = BigInt(toWei(supply, LP_TOKEN_DECIMALS))
   const tolerance = BigInt(
     BigNumber.max(1, new BigNumber(target.toString()).times(slippage).times(QUOTE_TOLERANCE_FACTOR).div(100))
       .integerValue(BigNumber.ROUND_FLOOR)

@@ -46,7 +46,7 @@ export const SwapForm = ({
   lowExchangeRate: QueryProp<boolean>
   lowRateModal: Omit<ComponentProps<typeof LowExchangeRateModal>, 'disabled'>
 }) => (
-  <Form {...form} onSubmit={onSubmit} footer={footer}>
+  <Form onSubmit={onSubmit} footer={footer}>
     <Stack sx={{ gap: Spacing.xxs }}>
       <SwapTokenInput form={form} tokens={tokens} side="pay" balance={inputAmount} max={max} disabled={isPending} />
       <IconButton
