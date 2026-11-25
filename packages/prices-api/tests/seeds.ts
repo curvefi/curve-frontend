@@ -16,7 +16,13 @@ import * as yieldBasis from '../src/yield-basis'
 import { getEndpointCatalogSkipReason } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
 
-type PoolSeed = { blockchainId: Chain; mainToken: Address; poolAddress: Address; referenceToken: Address }
+type PoolSeed = {
+  blockchainId: Chain
+  lpToken: Address
+  mainToken: Address
+  poolAddress: Address
+  referenceToken: Address
+}
 
 type MarketSeed = { blockchainId: Chain; controller: Address; llamma: Address }
 
@@ -136,7 +142,7 @@ export const getPoolSeed = once(async (): Promise<PoolSeed> => {
     const mainToken = requireSeed(pool.coins[0]?.address, `pools.getPools(${chain}) main token`)
     const referenceToken = requireSeed(pool.coins[1]?.address, `pools.getPools(${chain}) reference token`)
 
-    return { blockchainId: chain, mainToken, poolAddress: pool.address, referenceToken }
+    return { blockchainId: chain, lpToken: pool.lpTokenAddress, mainToken, poolAddress: pool.address, referenceToken }
   }
 
   throw new Error('Missing live seed from pools.getPools pool')
