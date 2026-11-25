@@ -19,7 +19,7 @@ export const resetLlamaTestContext = () => {
   globalLibs.hydrated = {}
 }
 
-export const setupMockedLlamalendComponentTest = () => {
+export const setupMockedComponentTest = () => {
   resetLlamaTestContext()
   const unsubscribe = queryClient.getQueryCache().subscribe(event => {
     if (event.type !== 'updated' || (event.action.type !== 'failed' && event.action.type !== 'error')) return
@@ -36,6 +36,10 @@ export const setupMockedLlamalendComponentTest = () => {
   blockUnmockedApis(req => {
     throw new Error(`Unmocked API request: ${req.method} ${req.url}`)
   })
+}
+
+export const setupMockedLlamalendComponentTest = () => {
+  setupMockedComponentTest()
   cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', { fixture: 'minting-snapshots.json' })
   mockLendingSnapshots('ethereum')
   mockCollateralEvents()

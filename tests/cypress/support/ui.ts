@@ -89,3 +89,6 @@ export const cyMap = <T, R>(items: readonly T[], callback: (item: T) => Cypress.
 
 export const closeTo = (expected: number, tolerance: number) => (value: string | undefined) =>
   expect(Number(value?.replaceAll(',', ''))).to.be.closeTo(expected, tolerance)
+
+export const checkNoValidationErrors = () =>
+  cy.get('[data-testid="helper-message-error"], [data-testid="loan-form-errors"]').should('not.exist')
