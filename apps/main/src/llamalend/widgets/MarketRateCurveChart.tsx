@@ -172,7 +172,7 @@ export const MarketRateCurveChart = () => {
               xTickFormatter={value => formatNumber(+value, 'percent.rate')}
               yTickFormatter={value => formatNumber(+value, 'percent.rate')}
               yPaddingRatio={0.05}
-              renderTooltip={RateCurveTooltip}
+              renderTooltip={props => <RateCurveTooltip {...props} />}
             />
           )}
         </EvmChartStateWrapper>

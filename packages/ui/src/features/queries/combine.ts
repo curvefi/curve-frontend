@@ -71,6 +71,7 @@ export const combineQueriesToObject = <TData, K extends string = string>(results
 
 /**
  * Returns the minimum value from multiple queries returning Decimal values.
+ * @deprecated prefer `combineQueries`
  */
 export const queryMinimum = (...queries: Query<Decimal>[]) => ({
   data: queries.some(d => d.data == null) ? undefined : decimalMin(...queries.map(d => d.data!)),

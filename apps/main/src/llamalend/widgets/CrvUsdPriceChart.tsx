@@ -184,7 +184,7 @@ export const CrvUsdPriceChart = () => {
               xTickFormatter={(value: CrvUsdPriceChartPoint['timestamp'] | string) => formatDate(value)}
               yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
               yPaddingRatio={0.25}
-              renderTooltip={CrvUsdPriceTooltip}
+              renderTooltip={props => <CrvUsdPriceTooltip {...props} />}
             />
           )}
         </EvmChartStateWrapper>

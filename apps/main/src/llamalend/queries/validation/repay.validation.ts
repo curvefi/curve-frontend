@@ -93,6 +93,7 @@ const repayValidationGroup = (
     leverageProviders,
     validateLeverageProviders = false,
     requireControllerApproval = false,
+    requireIsFull = true,
   }: {
     leverageRequired: boolean
     validateMax: boolean
@@ -100,6 +101,7 @@ const repayValidationGroup = (
     leverageProviders?: readonly RouteProvider[]
     validateLeverageProviders?: boolean
     requireControllerApproval?: boolean
+    requireIsFull?: boolean
   },
 ) => {
   const market = tryGetMarket(marketId)
@@ -116,7 +118,7 @@ const repayValidationGroup = (
   )
   validateSlippage({ slippage })
   validateLeverageSupported(market, { required: leverageRequired })
-  validateIsFull(isFull)
+  if (requireIsFull) validateIsFull(isFull)
   validateControllerApproval(isControllerApproved, { required: requireControllerApproval })
 
   skipWhen(!validateMax, () => {
@@ -130,6 +132,7 @@ export const repayValidationSuite = (options: {
   validateMax: boolean
   requireLeverageValue?: boolean
   requireControllerApproval?: boolean
+  requireIsFull?: boolean
   leverageProviders?: readonly RouteProvider[]
 }) => {
   const {
@@ -137,6 +140,7 @@ export const repayValidationSuite = (options: {
     validateMax,
     requireLeverageValue = leverageRequired,
     requireControllerApproval = false,
+    requireIsFull = true,
     leverageProviders,
   } = options
   return createValidationSuite(
@@ -149,6 +153,7 @@ export const repayValidationSuite = (options: {
         leverageProviders,
         validateLeverageProviders: 'leverageProviders' in options, // If omitted skips provider validation for queries
         requireControllerApproval,
+        requireIsFull,
       })
       validateLeverageValuesSupported(market, requireLeverageValue)
     },

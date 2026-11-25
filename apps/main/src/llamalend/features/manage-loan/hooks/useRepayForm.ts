@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayControllerApproval } from '@/llamalend/queries/repay/repay-controller-approval.query'
-import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import {
+  resetRepayExpectedBorrowed,
+  useRepayExpectedBorrowed,
+} from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
@@ -14,59 +16,25 @@ import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impac
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
-import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
+import type { RepayFormValues } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { useControllerDelegationAction } from '@/llamalend/widgets/action-card/hooks/useControllerDelegationAction'
 import { marketFormActions } from '@/llamalend/widgets/action-card/marketFormActions'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, notFalsy, pick } from '@primitives/objects.utils'
-import { useCallbackSync, useForm } from '@ui/features/forms'
+import { useCallbackSync, useFormSync, useOnChangeCallback } from '@ui/features/forms'
+import { useFormValidation } from '@ui/features/forms/useFormValidation'
+import { useFormValues } from '@ui/features/forms/useFormValues'
 import { type AllowUndefined, mapQuery, q, type Range } from '@ui/features/queries/util'
-import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { t } from '@ui/lib/i18n'
 import { useMarketContext } from '../../market-context'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
-const useRepayParams = ({
-  chainId,
-  marketId,
-  userAddress,
-  stateCollateral,
-  userBorrowed,
-  maxStateCollateral,
-  maxBorrowed,
-  isFull,
-  slippage,
-  routeId,
-}: RepayFormParams) =>
-  useFormDebounce(
-    {
-      chainId,
-      marketId,
-      userAddress,
-      stateCollateral,
-      userBorrowed,
-      maxStateCollateral,
-      maxBorrowed,
-      isFull,
-      slippage,
-      routeId,
-    },
-    userDefaultValues,
-  )
-
-const userDefaultValues = { stateCollateral: undefined, userBorrowed: undefined }
-
-const defaultValues = {
-  ...userDefaultValues,
-  routeId: undefined,
-  maxStateCollateral: undefined,
-  maxBorrowed: undefined,
-  isFull: false,
-}
+const userDefaultValues = { stateCollateral: undefined, userBorrowed: undefined, routeId: undefined }
 
 const isRepayRouteRequired = (
   market: MarketTemplate | Nullish,
@@ -92,26 +60,36 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     leverageProviders,
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
-  const form = useForm<RepayFormData>({
-    defaultValues: { ...defaultValues, slippage: defaultSlippage },
-    validation: useMemo(() => repayFormValidationSuite(market), [market]),
+  const inputs = useFormValues<RepayFormValues, UserMarketParams<ChainId>>({
+    defaultValues: { ...userDefaultValues, slippage: defaultSlippage },
+    context: { chainId, marketId, userAddress },
   })
-  useSyncMarketLeverageSlippage(form, defaultSlippage)
-
-  const { values, formState } = form
-  const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
+  const { isFull, max } = useMaxRepayTokenValues({ borrowTokenAddress: borrowToken?.address, params: inputs.params })
 
   const {
     onSubmit: repay,
-    isPending: isRepaying,
+    isPending,
     error: repayError,
   } = useRepayMutation({
     network: networks[chainId],
     marketId,
-    onReset: () => form.reset({ ...userDefaultValues, routeId: undefined }),
+    onReset: () => inputs.reset(userDefaultValues),
     userAddress,
     leverageProviders,
   })
+
+  const form = useFormValidation({
+    inputs,
+    validation: useMemo(() => repayFormValidationSuite(market), [market]),
+    computed: { maxBorrowed: max.userBorrowed, maxStateCollateral: max.stateCollateral, isFull },
+    isSubmitting: isPending,
+    disabled: isFull.isLoading,
+  })
+  const { values, params, formState } = form
+
+  // some repay queries depend on LL internal cache for expected collateral, reset when new market data arrives
+  useOnChangeCallback(market, () => resetRepayExpectedBorrowed(params))
+  useFormSync(form, { slippage: defaultSlippage }, !form.isTouched('slippage'))
 
   const isControllerApproved = useRepayControllerApproval({ chainId, marketId, userAddress, ...values })
 
@@ -124,21 +102,17 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useRepayPrices(params), onPricesUpdated)
 
   const { data: isAvailable } = useRepayIsAvailable(params)
-  const { isFull, max } = useMaxRepayTokenValues({ market, borrowTokenAddress: borrowToken?.address, params, form })
-
-  const isPending = formState.isSubmitting || isRepaying
   return {
     form,
     values,
     params,
     isPending,
-    isLoading: !market || formActions.isLoading,
-    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
+    isLoading: !market || form.isLoading || formActions.isLoading,
     userAddress,
     onSubmit,
     borrowToken,
     collateralToken,
-    repayError: formActions.error ?? repayError,
+    repayError: formActions.error ?? repayError ?? form.error,
     isControllerApproved: q(isControllerApproved),
     delegationModal,
     isApproved: q(useRepayIsApproved(params)),
@@ -154,7 +128,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       ...pick(params, 'slippage'),
       enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
-        form.update({ routeId: route?.id })
+        form.update({ routeId: route?.id }, { mode: 'immediate' })
         await invalidateRepayRouteQueries(route, params)
       },
       getRouteGasOptions: (routeId: string | undefined) =>

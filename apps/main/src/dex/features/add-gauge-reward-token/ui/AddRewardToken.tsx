@@ -57,7 +57,7 @@ export const AddRewardToken = () => {
   const isDisabled = isLoading || !isRewardsAvailable
 
   return (
-    <Form {...form} onSubmit={handleSubmit(onSubmit)} footer={<ActionInfoGasEstimate gas={q(gas)} />}>
+    <Form onSubmit={handleSubmit(onSubmit)} footer={<ActionInfoGasEstimate gas={q(gas)} />}>
       <Stack sx={{ gap: Spacing.sm }}>
         <Stack direction={{ mobile: 'column', tablet: 'row' }} sx={{ gap: Spacing.sm }}>
           <TokenSelector

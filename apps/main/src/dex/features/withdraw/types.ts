@@ -1,5 +1,6 @@
 import type { PoolQuery, UserQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { OneCoinWithdrawQuoteQuery } from '@ui/features/pool-forms/withdraw/one-coin-withdraw-quote'
 import type { WithdrawMode } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import type { DeepPartial } from '@ui/features/queries/util'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -27,3 +28,6 @@ export type WithdrawLpQuery = PoolQuery & { isWrapped: boolean; lpAmount: Decima
 export type WithdrawLpParams = FieldsOf<WithdrawLpQuery>
 export type WithdrawMaxQuery = WithdrawLpQuery & { index: number }
 export type WithdrawMaxParams = FieldsOf<WithdrawMaxQuery>
+
+export type WithdrawOneCoinQuery = PoolQuery & OneCoinWithdrawQuoteQuery & { isWrapped: boolean }
+export type WithdrawOneCoinParams = FieldsOf<DeepPartial<WithdrawOneCoinQuery>>

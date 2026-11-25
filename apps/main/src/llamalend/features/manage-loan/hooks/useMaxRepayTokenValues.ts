@@ -1,48 +1,27 @@
-import { useEffect } from 'react'
-import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { resetRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
-import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
+import type { RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
-import { type Nullish, maybe } from '@primitives/objects.utils'
-import type { UseFormReturn } from '@ui/features/forms'
-import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { queryMinimum } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 
 export function useMaxRepayTokenValues({
-  market,
   borrowTokenAddress,
   params,
-  form,
 }: {
-  market: MarketTemplate | Nullish
   borrowTokenAddress: Address | undefined
   params: RepayParams
-  form: UseFormReturn<RepayFormData>
 }) {
-  const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserBorrowed = useTokenBalance({ chainId, userAddress, tokenAddress: borrowTokenAddress })
   const userState = useUserState(params)
-  // required for isFull query
   const isFull = useRepayIsFull(params)
 
   const maxBorrowed = queryMinimum(
     maxUserBorrowed,
     mapQuery(userState, d => d.debt),
   )
-
-  useFormSync(form, { maxBorrowed: maxBorrowed.data, maxStateCollateral: userState.data?.collateral })
-  useEffect(
-    () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
-    [isFull.data, updateForm],
-  )
-
-  // some repay queries depend on LL internal cache for expected collateral, reset when new market data arrives
-  useOnChangeCallback(market, () => resetRepayExpectedBorrowed(params))
 
   return {
     isFull,

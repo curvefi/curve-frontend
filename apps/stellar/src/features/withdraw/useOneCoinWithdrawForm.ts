@@ -8,29 +8,29 @@ import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
 import { oneCoinWithdrawFormValidationSuite } from '@/stellar/queries/validation/withdraw.validation'
-import { useWithdrawExpectedLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
 import { useWithdrawMaxAmount } from '@/stellar/queries/withdraw/withdraw-max-amounts.query'
+import { useWithdrawOneCoinQuote } from '@/stellar/queries/withdraw/withdraw-one-coin-quote.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
+import { useWithdrawQuoteQueries } from '@ui/features/pool-forms/withdraw/useWithdrawQuoteQueries'
 import {
-  getOneCoinWithdrawParams,
+  oneCoinWithdrawDefaultValues as userDefaultValues,
   type OneCoinWithdrawFormValues,
 } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { decimalEqual } from '@ui/lib/decimal'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
-import type { WithdrawQuoteParams } from './types'
 import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
 
-const userDefaultValues = { amount: undefined, isMax: false }
 const formOptions = {
   validation: oneCoinWithdrawFormValidationSuite,
   defaultValues: {
     ...userDefaultValues,
+    quotedAmount: undefined,
     tokenIndex: 0,
     poolReserve: undefined,
     maxLpAmount: undefined,
@@ -53,12 +53,19 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
   const lpBalance = q(useTokenBalance({ network, token: pool, account, decimals: LP_TOKEN_DECIMALS }))
   const form = useForm<OneCoinWithdrawFormValues>(formOptions)
   const { values, formState, reset, update, handleSubmit } = form
-  const index = values.tokenIndex
-  const max = q(useWithdrawMaxAmount({ ...poolParams, index, decimals: decimals?.[index], lpAmount: lpBalance }))
   const [debounced, isDebouncing] = useFormDebounce(values, userDefaultValues)
-  const params: WithdrawQuoteParams = { ...getOneCoinWithdrawParams(debounced), ...poolParams, account }
-  const expectedLp = useWithdrawExpectedLp(params)
-  const priceImpact = useWithdrawPriceImpact(params, expectedLp)
+  const index = values.tokenIndex
+  const { max, expectedLp, quotedAmount, minimumReceived, params, priceImpact } = useWithdrawQuoteQueries({
+    poolParams: { ...poolParams, account },
+    values,
+    debounced,
+    isDebouncing,
+    decimals,
+    lpBalance,
+    useWithdrawMaxAmount,
+    useWithdrawOneCoinQuote,
+    useWithdrawPriceImpact,
+  })
 
   useFormSync(form, {
     decimals: decimalsData,
@@ -67,6 +74,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     maxLpAmount: lpBalance.data,
     poolReserve: reserves?.[index],
     expectedLp: expectedLp.data,
+    quotedAmount: quotedAmount.data,
   })
   useFormSync(form, { amount: max.data }, values.isMax)
   useEffect(() => reset(userDefaultValues), [reset, network, pool, account])
@@ -90,20 +98,21 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     index,
     max,
     params,
+    network,
+    minimumReceived,
+    expectedLp,
+    lpBalance: q(lpBalance),
+    priceImpact,
+    toSymbol: tokens?.[index]?.data?.symbol,
     isPending,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply || !+supply,
-    isDisabled:
-      isPending ||
-      isDebouncing ||
-      !formState.isValid ||
-      shouldBlockTransaction(priceImpact) ||
-      (values.isMax && !max.data),
-    isLoading: isPending || config.isLoading || priceImpact.isLoading,
+    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
+    isLoading: isPending || config.isLoading || priceImpact.isLoading || expectedLp.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
     error,
     formErrors: formState.visibleErrors,
-    onSubmit: handleSubmit(values => onSubmit(getOneCoinWithdrawParams(values))),
+    onSubmit: handleSubmit(onSubmit),
     onSlippageChange: (slippage: Decimal) => update({ slippage }),
     onCoinChange: (tokenIndex: number) => update({ ...userDefaultValues, tokenIndex }),
     onMax,
