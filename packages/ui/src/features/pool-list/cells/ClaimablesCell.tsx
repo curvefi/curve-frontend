@@ -1,9 +1,9 @@
-import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ErrorIconButton } from '@ui/components/ErrorIconButton'
+import { Skeleton } from '@ui/components/Skeleton'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -53,8 +53,8 @@ export const ClaimablesCell = ({
       <Stack sx={{ alignItems: 'end', gap: Spacing.xs }}>
         {claimables.isLoading ? (
           <>
-            <Skeleton width="5rem" />
-            <Skeleton variant="circular" width="1rem" height="1rem" />
+            <Skeleton category="table.value" />
+            <Skeleton category="table.rewardIcon" />
           </>
         ) : (
           <>

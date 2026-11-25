@@ -5,10 +5,10 @@ import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 import type { MarketRateType } from '@evm-ui/types/market'
 import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
+import { Skeleton } from '@ui/components/Skeleton'
 import { DesignSystem } from '@ui/features/themes/design'
 import { t } from '@ui/lib/i18n'
 import { useMarketRateHistory } from '../hooks/useMarketRateHistory'
@@ -84,7 +84,9 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
           style={{ width: graphSize.width, height: graphSize.height }}
         />
       ) : isLoading && !error ? (
-        <Skeleton {...graphSize} />
+        <Skeleton>
+          <Box style={graphSize} />
+        </Skeleton>
       ) : (
         <Typography
           sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }}

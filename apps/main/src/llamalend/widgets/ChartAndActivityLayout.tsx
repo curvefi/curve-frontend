@@ -231,8 +231,9 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
     <Card size="small" data-testid="market-price-chart">
       <CardHeader
         title={
-          <WithSkeleton loading={isMarketLoading} width="7rem" height="2lh">
-            {tokenPair}
+          // The skeleton is put inside the card header's title typography which gives it color. Sorry for the hack!
+          <WithSkeleton loading={isMarketLoading} sx={{ ...(isMarketLoading && { color: 'transparent' }) }}>
+            {tokenPair || t`Card Title`}
           </WithSkeleton>
         }
         action={

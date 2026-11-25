@@ -28,6 +28,12 @@ import { isolatedPackagesRule } from './.eslint/isolated-packages.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const skeletonImportMessage = "Use Skeleton from '@ui/components/Skeleton' instead."
+const restrictedSkeletonImports = [
+  { name: '@mui/material/Skeleton', allowTypeImports: true, message: skeletonImportMessage },
+  { name: '@mui/material', importNames: ['Skeleton'], allowTypeImports: true, message: skeletonImportMessage },
+]
+
 const config = [
   // Global ignores — must be its own object with no `files` key
   {
@@ -242,10 +248,7 @@ const config = [
   },
 
   // Override (replaces legacy `overrides`)
-  {
-    files: ['tests/cypress/**/*.{ts,tsx}'],
-    rules: { 'local/no-redundant-cypress-assertion': 'error' },
-  },
+  { files: ['tests/cypress/**/*.{ts,tsx}'], rules: { 'local/no-redundant-cypress-assertion': 'error' } },
   {
     files: ['apps/**', 'packages/**'],
     ignores: ['packages/evm-ui/src/features/forms/**', 'packages/ui/src/features/forms/**'],
@@ -263,6 +266,7 @@ const config = [
       ],
     },
   },
+  { rules: { '@typescript-eslint/no-restricted-imports': ['error', { paths: restrictedSkeletonImports }] } },
   {
     ignores: ['packages/ui/src/features/queries/query-hooks.ts'],
     rules: {
@@ -270,6 +274,7 @@ const config = [
         'error',
         {
           paths: [
+            ...restrictedSkeletonImports,
             {
               name: '@tanstack/react-query',
               importNames: ['useQuery', 'useQueries', 'UseQueryOptions'],

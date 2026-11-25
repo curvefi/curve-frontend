@@ -59,7 +59,7 @@ export const MarketPageHeader = () => {
         )}
         disableUpperCase
         icon={
-          <WithSkeleton loading={tokens.isLoading} variant="rectangular" width={35} height={35}>
+          <WithSkeleton loading={tokens.isLoading} category="header.tokenIcon">
             {maybe(tokens.data, ({ collateralToken, borrowToken }) => (
               <TokenIcons
                 blockchainId={blockchainId}
@@ -71,7 +71,7 @@ export const MarketPageHeader = () => {
         }
         titleItems={
           <>
-            <WithSkeleton loading={tokens.isLoading} width={24}>
+            <WithSkeleton loading={tokens.isLoading}>
               <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
                 <ChainIcon blockchainId={blockchainId} />
                 <Badge size="extraSmall" label={t`${marketType}`} />

@@ -24,7 +24,7 @@ const NotionalTypographyWithSkeleton = ({
   isLoading: boolean
   bold?: boolean
 }) => (
-  <WithSkeleton loading={isLoading} sx={{ maxWidth: 'none', width: '3rem', height: '1lh', display: 'inline-block' }}>
+  <WithSkeleton loading={isLoading} category="table.value" sx={{ display: 'inline-block' }}>
     <Typography
       variant={bold ? 'tableCellValueStrong' : 'tableCellValue'}
       color="textPrimary"

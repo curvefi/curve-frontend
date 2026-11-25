@@ -45,7 +45,6 @@ export const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage 
     <DetailInfo
       isBold={isBold}
       loading={loading}
-      loadingSkeleton={[50, 23]}
       variant={variant}
       label={label}
       tooltip={tip ? <IconTooltip placement="top-end">{tip}</IconTooltip> : null}

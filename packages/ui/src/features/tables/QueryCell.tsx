@@ -10,8 +10,7 @@ import { ErrorCell } from './ErrorCell'
 const { Spacing } = SizesAndSpaces
 
 // Inline, so the skeleton follows the cell's text alignment like the loaded value
-// TODO: delete this in the task to create skeleton categories
-const skeletonProps = { width: 40, sx: { display: 'inline-block' } } as const
+const skeletonProps = { category: 'table.value', sx: { display: 'inline-block' } } as const
 
 /**
  * Skeleton while the query loads without data, spinner next to the data when it loads with data.
