@@ -15,10 +15,10 @@ export const useBandsData = ({
   enabled,
 }: {
   chainId: IChainId
-  market: QueryProp<MarketTemplate>
+  market: QueryProp<MarketTemplate | null>
   enabled?: boolean
 }) => {
-  const marketId = mapQuery(market, m => m.id)
+  const marketId = mapQuery(market, m => m?.id)
   const { address: userAddress } = useConnection()
   const loanExists = q(useLoanExists({ chainId, marketId, userAddress }, enabled))
   const liquidationBand = q(useMarketLiquidationBand({ chainId, marketId }, enabled))

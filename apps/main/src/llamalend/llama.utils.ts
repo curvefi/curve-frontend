@@ -95,7 +95,7 @@ export const getMarketLeverageProviders = (
  * - ZapV2 is available
  * - A static legacy Mint market has its own V0 leverage zap
  */
-export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
+export const hasLeverage = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => hasZapV2(market) || hasLegacyMintLeverage(market))
 
 /**
@@ -146,10 +146,10 @@ export const hasResetPosition = (market: MarketTemplate | Nullish): market is Le
 export const isPositionLeveraged = (leverage: Amount | Nullish) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
-export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
+export const canRepayFromStateCollateral = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => (isMintMarket(market) ? hasDeleverage(market) : hasLeverage(market)))
 
-export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
+export const canLeverageUserBorrowed = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, market => hasLegacyMintLeverage(market))
 
 export const hasVault = (market: MarketTemplate) => isLendMarket(market) && 'vault' in market
@@ -210,7 +210,7 @@ type MarketOrApiValue<T, Value> = T extends MarketTemplate ? Value : Value | und
 
 const getMarketOrApiValue = <T extends MarketTemplate | Nullish, Value>(
   market: T,
-  apiMarket: LlamaMarket | undefined,
+  apiMarket: LlamaMarket | Nullish,
   getMarketValue: (market: MarketTemplate) => Value,
   getApiValue: (apiMarket: LlamaMarket) => Value,
 ): MarketOrApiValue<T, Value> =>
@@ -218,7 +218,7 @@ const getMarketOrApiValue = <T extends MarketTemplate | Nullish, Value>(
 
 export const getMarketType = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, MarketType> =>
   getMarketOrApiValue(
     market,
@@ -232,7 +232,7 @@ export const getMarketEndpoint = (marketType: MarketType) =>
 
 export const getTokens = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, MarketTokens> =>
   getMarketOrApiValue(
     market,
@@ -262,7 +262,7 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
 
-export const getTokensQuery = (market: QueryProp<MarketTemplate>, apiMarket: QueryProp<LlamaMarket>) => ({
+export const getTokensQuery = (market: QueryProp<MarketTemplate | null>, apiMarket: QueryProp<LlamaMarket | null>) => ({
   ...fallbackQ(market, apiMarket),
   data: getTokens(market.data, apiMarket.data),
 })
@@ -290,7 +290,7 @@ export const getActivityToken = (blockchainId: Chain, token: Token | Nullish): A
 
 export const getAmmAddress = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, Address> =>
   getMarketOrApiValue(
     market,
@@ -301,7 +301,7 @@ export const getAmmAddress = <T extends MarketTemplate | Nullish>(
 
 export const getControllerAddress = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, Address> =>
   getMarketOrApiValue(
     market,
@@ -312,7 +312,7 @@ export const getControllerAddress = <T extends MarketTemplate | Nullish>(
 
 export const getVaultAddress = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, Address | null> =>
   getMarketOrApiValue(
     market,
@@ -323,7 +323,7 @@ export const getVaultAddress = <T extends MarketTemplate | Nullish>(
 
 export const getGaugeAddress = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, Address | null> =>
   getMarketOrApiValue(
     market,
@@ -335,7 +335,7 @@ export const getGaugeAddress = <T extends MarketTemplate | Nullish>(
 
 export const getVaultToken = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, MarketToken | undefined> =>
   maybe(getVaultAddress(market, apiMarket), address => ({
     address,
@@ -348,7 +348,7 @@ export type BandRangeOrEmpty = AllOrNone<BandRange>
 
 export const getMarketBandRange = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, BandRange | undefined> =>
   getMarketOrApiValue(
     market,
@@ -362,7 +362,7 @@ export const getCrvTokenAddress = (market: MarketTemplate | Nullish): Address | 
 
 export const getMonetaryPolicy = <T extends MarketTemplate | Nullish>(
   market: T,
-  apiMarket?: LlamaMarket,
+  apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, Address | undefined> =>
   getMarketOrApiValue(
     market,
@@ -589,7 +589,7 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     ? t`This market is deprecated due to low solvency`
     : null
 
-export const getZapAddress = <T extends MarketTemplate | undefined>(market: T) =>
+export const getZapAddress = <T extends MarketTemplate | Nullish>(market: T) =>
   maybe(market, m => (hasZapV2(m) ? (m.getZapAddress() as Address) : undefined))
 
 /** Builds Metric props for a token-denominated value with the matching USD notional shown below it. */

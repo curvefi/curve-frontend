@@ -1,7 +1,10 @@
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { getChainId } from '@/loan/utils/utilsRouter'
+import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { ETHEREUM_ONLY_NETWORK_SWITCH } from '@ui/features/layout/switch-chain/switch-policies'
 import { redirectTo } from '@ui/hooks/router'
+import { assertValidity } from '@ui/lib/validation/lib'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 
@@ -39,6 +42,12 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId',
+    loader: ({ params }: { params: CollateralUrlParams }) => {
+      assertValidity(marketIdValidationSuite, { chainId: getChainId(params), marketId: params.collateralId }, [
+        'chainId',
+        'marketId',
+      ])
+    },
     component: MintMarketPage,
     head: ({ params: { collateralId } }: { params: CollateralUrlParams }) => ({
       meta: [{ title: `${collateralId} - Curve Llamalend` }],

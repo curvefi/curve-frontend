@@ -13,7 +13,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import type { UseFormReturn } from '@ui/features/forms'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -28,7 +28,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
 }: {
   params: BorrowMoreMaxReceiveParams<ChainId>
   form: UseFormReturn<BorrowMoreForm>
-  market: MarketTemplate | undefined
+  market: MarketTemplate | Nullish
   borrowTokenAddress: Address | undefined
   collateralTokenAddress: Address | undefined
   collateralEvents: QueryProp<UserCollateralEvents>

@@ -133,7 +133,7 @@ export const resetValidationSuite = createValidationSuite(
   },
 )
 
-export const resetFormValidationSuite = (market: MarketTemplate | undefined) =>
+export const resetFormValidationSuite = (market: MarketTemplate | Nullish) =>
   createValidationSuite((params: ResetForm) => {
     validateResetSupported(market)
     resetValidationGroup(params, { requireLoadedAvailability: false })
