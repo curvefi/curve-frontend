@@ -90,9 +90,9 @@ describe('Pool Withdraw (mocked)', () => {
       .find('[data-testid="helper-message-error"]')
       .should('contain.text', 'Maximum LP required exceeds')
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-    getActionValue('pool-swap-minimum-received', 'mock.simulation').should(
+    getActionValue('pool-minimum-received', 'mock.simulation').should(
       'equal',
-      formatToken('10.945', coins[0].symbol, 'balance'),
+      `~${formatToken('10.945', coins[0].symbol, 'balance')}`,
     )
     checkPoolWithdrawDetail('projected-lp', '-1')
     checkPriceImpact()
@@ -164,9 +164,9 @@ describe('Pool Withdraw (mocked)', () => {
           )
         } else {
           writePoolWithdrawAmount(coins[0].address, '1.25')
-          getActionValue('pool-swap-minimum-received', 'mock.simulation').should(
+          getActionValue('pool-minimum-received', 'mock.simulation').should(
             'equal',
-            formatToken('1.24375', coins[0].symbol, 'balance'),
+            `~${formatToken('1.24375', coins[0].symbol, 'balance')}`,
           )
         }
         checkPriceImpact()
