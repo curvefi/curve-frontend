@@ -1,7 +1,7 @@
 import { getMarket, isLendMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import type { MarketQuery, UserQuery } from '@evm-ui/queries/query-types'
-import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
+import { userMarketValidationSuite } from '@evm-ui/queries/validation/user-market-validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import type { QueryData } from '@ui/features/queries/util'
@@ -38,7 +38,7 @@ export const { useQuery: useUserBalances } = queryFactory({
     }
   },
   category: 'llamalend.user',
-  validationSuite: marketIdValidationSuite,
+  validationSuite: userMarketValidationSuite,
 })
 
 export type UserBalances = QueryData<typeof useUserBalances>
