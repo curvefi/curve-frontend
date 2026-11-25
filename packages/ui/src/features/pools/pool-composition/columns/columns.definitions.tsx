@@ -46,6 +46,7 @@ export const POOL_COMPOSITION_COLUMNS = columnHelper.columns([
     cell: ({ getValue, row }) => (
       <TokenCell
         source={getValue()}
+        address={getValue().token.address}
         displayAddress={row.original.displayAddress}
         explorerUrl={row.original.explorerUrl}
       />

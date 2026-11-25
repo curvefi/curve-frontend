@@ -15,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 
 type TokenCellProps = {
   source: TokenInfoProps
-  /** Used when a custom source icon does not include a token. */
+  /** The address copied when the displayed address is clicked. */
   address?: Address
   /** The address to display in the cell. */
   displayAddress?: string
@@ -27,9 +27,7 @@ type TokenCellProps = {
 
 /** Displays token information with copy-address and optional explorer interactions. */
 export const TokenCell = ({ source, address, explorerUrl, endAdornment, displayAddress }: TokenCellProps) => {
-  const copyAddress = useCopyToClipboard({
-    copyText: address ?? ('token' in source ? source.token?.address : undefined),
-  })
+  const copyAddress = useCopyToClipboard({ copyText: address })
 
   return (
     <InlineTableCell>
