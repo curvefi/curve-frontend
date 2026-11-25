@@ -46,7 +46,7 @@ export const WithdrawActionInfoList = ({
       onSlippageChange={onSlippageChange}
       userAddress={userAddress}
       slippageType={getSlippageType(pool)}
-      minimumWithdrawAmounts={getWithdrawMinimumAmounts(params, tokens, expectedLp)}
+      minimumReceived={getWithdrawMinimumAmounts({ ...params, isApproximate: true }, tokens, expectedLp)}
     />
   )
 }
