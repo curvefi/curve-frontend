@@ -1,6 +1,7 @@
 import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { useGasEstimation } from '@/stellar/lib/gas'
 import type { StellarNetwork } from '@/stellar/lib/networks'
+import { STELLAR_SLIPPAGE_TYPE } from '@/stellar/lib/pool.constants'
 import { useWithdrawSimulation } from '@/stellar/queries/withdraw/withdraw-simulation.query'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -38,7 +39,7 @@ export const WithdrawActionInfoList = ({
       {...(params.mode === 'unbalanced' && {
         maximumLp: mapQuery(expectedLp, value => calculateMaximumBurn(value, params.slippage)), // Other modes burn a fixed LP amount.
       })}
-      slippageType="stable"
+      slippageType={STELLAR_SLIPPAGE_TYPE}
       currentLp={lpBalance}
       currentLpTestId="pool-withdraw-current-lp"
       projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}

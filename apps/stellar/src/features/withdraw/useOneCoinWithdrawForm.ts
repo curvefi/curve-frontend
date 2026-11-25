@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
+import { STELLAR_DEFAULT_SLIPPAGE } from '@/stellar/lib/pool.constants'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
@@ -13,7 +14,6 @@ import { useWithdrawOneCoinQuote } from '@/stellar/queries/withdraw/withdraw-one
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { useWithdrawQuoteQueries } from '@ui/features/pool-forms/withdraw/useWithdrawQuoteQueries'
 import {
@@ -38,7 +38,7 @@ const formOptions = {
     supply: undefined,
     seedLock: undefined,
     expectedLp: undefined,
-    slippage: SLIPPAGE.stable.default,
+    slippage: STELLAR_DEFAULT_SLIPPAGE,
   },
 }
 
