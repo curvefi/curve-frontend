@@ -4,7 +4,6 @@ import {
   calculateMintMarketTvlUsd,
   getControllerAddress,
   getTokensQuery,
-  isLeverageAllowed,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
@@ -52,16 +51,9 @@ export const useAdvancedDetailsData = ({
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
   const isEquityLeverage = useLlamalendEquityLeverage()
-  const isLeverageEnabled = !!isLeverageAllowed(chainId, controllerAddress)
   const minBands = mapQuery(marketQuery, m => m?.minBands)
-  const maxLegacyLeverage = useMarketMaxLeverage(
-    { chainId, marketId, range: minBands },
-    isLeverageEnabled && !isEquityLeverage,
-  )
-  const maxEquityLeverage = useMarketMaxEquityLeverage(
-    { chainId, marketId, range: minBands },
-    isLeverageEnabled && isEquityLeverage,
-  )
+  const maxLegacyLeverage = useMarketMaxLeverage({ chainId, marketId, range: minBands }, !isEquityLeverage)
+  const maxEquityLeverage = useMarketMaxEquityLeverage({ chainId, marketId, range: minBands }, isEquityLeverage)
   const maxLeverage = isEquityLeverage ? maxEquityLeverage : maxLegacyLeverage
   const apiMaxLeverage = mapQuery(apiMarket, market =>
     isEquityLeverage ? market?.maxEquityLeverage : market?.maxLegacyLeverage,
