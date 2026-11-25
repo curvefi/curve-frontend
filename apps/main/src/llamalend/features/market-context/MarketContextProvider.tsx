@@ -19,8 +19,8 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
 }: {
   children: ReactNode
   network: { blockchainId: LlamaNetworkId; chainId: ChainId }
-  marketQuery: QueryProp<MarketTemplate>
-  apiMarket: QueryProp<LlamaMarket>
+  marketQuery: QueryProp<MarketTemplate | null>
+  apiMarket: QueryProp<LlamaMarket | null>
   marketType: MarketType
 }) => {
   const { address: userAddress } = useConnection()

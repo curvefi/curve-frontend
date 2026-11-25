@@ -47,7 +47,7 @@ export const readSwapAmounts = (editedSide: SwapSide) =>
 
 /** Read the minimum received and exchange rate displayed before submitting a swap. */
 export const readSwapRates = () =>
-  getActionDecimal('pool-swap-minimum-received', 'stellar.simulation').then(minimumOutputAmount =>
+  getActionDecimal('pool-minimum-received', 'stellar.simulation').then(minimumOutputAmount =>
     getActionDecimal('pool-swap-exchange-rate', 'stellar.simulation', { valueIndex: 1 }).then(exchangeRate => ({
       minimumOutputAmount,
       exchangeRate,
@@ -68,7 +68,7 @@ export const checkSwapDetails = (
     useUserProfileStore.getState().maxSlippage.stable,
     toToken.decimals,
   )
-  getActionValue('pool-swap-minimum-received', 'stellar.simulation').should(
+  getActionValue('pool-minimum-received', 'stellar.simulation').should(
     'equal',
     `${formatNumber(minimum, 'token.balance')} ${toToken.symbol}`,
   )

@@ -73,13 +73,13 @@ export type QueryData<TQuery> = TQuery extends (...args: never[]) => Query<infer
 export type QueryOptionsData<T> = T extends QueryOptions<infer TData, any, any, any> ? TData : never
 
 /**
- * Takes the first query with data, then the first query with an error, then the first query that is loading,
- * and finally the first query in the list. Use the disabled query property to ignore a query and use the fallback.
+ * Takes the first query with data, then loading, then an error, then null, and finally the first query.
  */
 export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(...queries: TQueries) =>
   (queries.find(q => q.data != null) ??
-    queries.find(q => q.error) ??
     queries.find(q => q.isLoading) ??
+    queries.find(q => q.error) ??
+    queries.find(q => q.data === null) ??
     queries[0]) as QueryProp<TQueries[number]['data']>
 
 /** The future query, or the current one while the future query is idle (disabled, e.g. empty inputs) */

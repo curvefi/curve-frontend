@@ -1,8 +1,11 @@
 import type { MarketUrlParams } from '@/lend/types/lend.types'
+import { parseMarketParams } from '@/lend/utils/utilsRouter'
+import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { NETWORK_SWITCH_UNAVAILABLE } from '@ui/features/layout/switch-chain/switch-policies'
 import { redirectTo } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
+import { assertValidity } from '@ui/lib/validation/lib'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 
@@ -20,6 +23,11 @@ const layoutProps = { getParentRoute: () => lendLayoutRoute }
 const toastTitle = (networkName?: string) =>
   networkName ? t`This market is only available on ${networkName}` : NETWORK_SWITCH_UNAVAILABLE
 
+const marketLoader = ({ params }: { params: MarketUrlParams }) => {
+  const { chainId, rMarket: marketId } = parseMarketParams(params)
+  assertValidity(marketIdValidationSuite, { chainId, marketId }, ['chainId', 'marketId'])
+}
+
 export const lendRoutes = lendLayoutRoute.addChildren([
   ...createSharedRoutes('lend', layoutProps),
   createRoute({
@@ -34,6 +42,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market',
+    loader: marketLoader,
     staticData: { networkSwitch: { type: 'locked', toastTitle } },
     component: LendMarketPage,
     head: ({ params: { market } }: { params: MarketUrlParams }) => ({
@@ -60,6 +69,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market/vault',
+    loader: marketLoader,
     staticData: { networkSwitch: { type: 'locked', toastTitle } },
     component: PageVault,
     head: ({ params: { market } }: { params: MarketUrlParams }) => ({

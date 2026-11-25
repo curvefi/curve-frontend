@@ -79,7 +79,7 @@ const validateBorrowMoreFieldsForMarket = ({
 }
 
 // Form validation suite (for real-time form validation)
-export const borrowMoreFormValidationSuite = (market: MarketTemplate | undefined) =>
+export const borrowMoreFormValidationSuite = (market: MarketTemplate | Nullish) =>
   createValidationSuite(
     ({
       userCollateral = '0',

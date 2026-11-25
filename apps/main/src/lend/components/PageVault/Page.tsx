@@ -14,12 +14,11 @@ import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
-import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
-import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
+import { PageState } from '@ui/features/layout/PageState'
 import { mapQuery } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
@@ -32,9 +31,8 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, chainId } = parseMarketParams(params)
-  const { isInitialized } = useCurve()
   const marketQuery = useLendMarket({ chainId, rMarket })
-  const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
+  const { data: market } = marketQuery
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
   const isMobileFormDrawer = useMarketMobileFormDrawer()
@@ -42,18 +40,17 @@ export const Page = () => {
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
-  const isLoading = !isInitialized || isMarketLoading
-  const apiMarket = useLlamaMarket(
+  const { query, apiMarket } = useLlamaMarket(
     {
       rMarket,
       network: params.network,
       userAddress,
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
-    !isLoading && !market, // only enable API data when wallet is disconnected
+    marketQuery,
   )
-  const { data: balances } = useUserBalances({ marketId: mapQuery(marketQuery, m => m.id), chainId, userAddress })
-  const hasPosition = market && balances && +(balances.totalShares ?? 0) > 0
+  const { data: balances } = useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress })
+  const hasPosition = balances && +(balances.totalShares ?? 0) > 0
   const events = useUserVaultEvents({
     chainId,
     userAddress,
@@ -61,40 +58,38 @@ export const Page = () => {
     vaultToken: getVaultToken(market, apiMarket.data),
   })
 
-  const error = marketError ?? apiMarket.error
-  return error && !(market ?? apiMarket.data) ? (
-    <ErrorPage
-      title={t`Error`}
-      subtitle={error.message}
-      error={error}
+  return (
+    <PageState
+      query={query}
+      notFound={t`Market Not Found`}
       continueUrl={getCollateralListPathname(params)}
       userAddress={userAddress}
-    />
-  ) : (
-    <MarketContextProvider
-      network={network}
-      marketQuery={marketQuery}
-      apiMarket={apiMarket}
-      marketType={MarketType.Lend}
     >
-      <DetailPageLayout
-        formTabs={{
-          content: (market ?? apiMarket.data) && <VaultTabs />,
-          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
-        }}
-        header={<MarketPageHeader />}
-        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
+      <MarketContextProvider
+        network={network}
+        marketQuery={marketQuery}
+        apiMarket={apiMarket}
+        marketType={MarketType.Lend}
       >
-        <MarketBanners
-          chainId={chainId}
-          market={market}
-          rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
-        />
-        <MarketSection id="position-details">
-          <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
-        </MarketSection>
-        <MarketInformationComposite rateType={MarketRateType.Supply} />
-      </DetailPageLayout>
-    </MarketContextProvider>
+        <DetailPageLayout
+          formTabs={{
+            content: query.data && <VaultTabs />,
+            placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          }}
+          header={<MarketPageHeader />}
+          {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
+        >
+          <MarketBanners
+            chainId={chainId}
+            market={market}
+            rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
+          />
+          <MarketSection id="position-details">
+            <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
+          </MarketSection>
+          <MarketInformationComposite rateType={MarketRateType.Supply} />
+        </DetailPageLayout>
+      </MarketContextProvider>
+    </PageState>
   )
 }

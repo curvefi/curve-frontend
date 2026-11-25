@@ -29,7 +29,7 @@ export const SwapActionInfoList = ({ onSlippageChange, ...params }: SwapActionIn
     <PoolActionInfoList
       slippageType={STELLAR_SLIPPAGE_TYPE}
       exchangeRate={exchangeRate}
-      minimumReceived={minimum}
+      minimumReceived={[mapQuery(minimum, amount => ({ amount, symbol: toSymbol, isApproximate: false }))]}
       priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, expectedOutput)}
       gas={useGasEstimation(params, simulation)}
       slippage={slippage}

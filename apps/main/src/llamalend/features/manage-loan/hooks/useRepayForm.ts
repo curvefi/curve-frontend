@@ -24,7 +24,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { notFalsy, pick } from '@primitives/objects.utils'
+import { type Nullish, notFalsy, pick } from '@primitives/objects.utils'
 import { useCallbackSync, useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { useFormValidation } from '@ui/features/forms/useFormValidation'
 import { useFormValues } from '@ui/features/forms/useFormValues'
@@ -37,7 +37,7 @@ const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment 
 const userDefaultValues = { stateCollateral: undefined, userBorrowed: undefined, routeId: undefined }
 
 const isRepayRouteRequired = (
-  market: MarketTemplate | undefined,
+  market: MarketTemplate | Nullish,
   { stateCollateral = '0', userBorrowed = '0' }: AllowUndefined<RepayFormFields>,
 ) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userBorrowed }))
 

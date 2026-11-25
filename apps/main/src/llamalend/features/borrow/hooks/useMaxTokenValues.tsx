@@ -6,6 +6,7 @@ import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leve
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import type { FormValues } from '@ui/features/forms/useFormValues'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
@@ -19,7 +20,7 @@ export function useMaxTokenValues({
   collateralTokenAddress,
   inputs: { update: updateForm, values, params, resetVersion },
 }: {
-  market: MarketTemplate | undefined
+  market: MarketTemplate | Nullish
   collateralTokenAddress: Address | undefined
   inputs: FormValues<CreateLoanFormValues, CreateLoanMaxReceiveParams>
 }) {

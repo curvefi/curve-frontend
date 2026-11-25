@@ -36,9 +36,9 @@ export const useAdvancedDetailsData = ({
   marketType,
   apiMarket,
 }: MarketParams & {
-  marketQuery: QueryProp<MarketTemplate>
+  marketQuery: QueryProp<MarketTemplate | null>
   marketType: MarketType
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
 }) => {
   const tokens = getTokensQuery(marketQuery, apiMarket)
   const { collateralToken, borrowToken } = tokens.data ?? {}
@@ -48,7 +48,7 @@ export const useAdvancedDetailsData = ({
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
-  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: mapQuery(marketQuery, m => m.minBands) })
+  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: mapQuery(marketQuery, m => m?.minBands) })
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
@@ -77,7 +77,7 @@ export const useAdvancedDetailsData = ({
             value: calculateMintMarketTvlUsd({ collateralAmountUsd: +collateral * collateralUsdRate }),
           })),
         ),
-    mapQuery(apiMarket, ({ tvl }) => ({ value: tvl })),
+    mapQuery(apiMarket, market => maybe(market, ({ tvl }) => ({ value: tvl }))),
   )
 
   return {
@@ -99,23 +99,25 @@ export const useAdvancedDetailsData = ({
           borrowedUsdRate,
         }),
       ),
-      mapQuery(apiMarket, ({ assets, totalCollateralUsd }) => ({
-        collateralSymbol: assets.collateral.symbol,
-        totalCollateral: decimal(assets.collateral.balance ?? 0),
-        borrowedSymbol: assets.borrowed.symbol,
-        totalBorrowed: decimal(assets.borrowed.balance ?? 0),
-        combinedCollateralUsdValue: totalCollateralUsd,
-        collateralUsdRate: maybes([assets.collateral.balance, assets.collateral.balanceUsd], (balance, balanceUsd) =>
-          balance ? balanceUsd / balance : undefined,
-        ),
-        borrowedUsdRate: maybes([assets.borrowed.balance, assets.borrowed.balanceUsd], (balance, balanceUsd) =>
-          balance ? balanceUsd / balance : undefined,
-        ),
-      })),
+      mapQuery(apiMarket, market =>
+        maybe(market, ({ assets, totalCollateralUsd }) => ({
+          collateralSymbol: assets.collateral.symbol,
+          totalCollateral: decimal(assets.collateral.balance ?? 0),
+          borrowedSymbol: assets.borrowed.symbol,
+          totalBorrowed: decimal(assets.borrowed.balance ?? 0),
+          combinedCollateralUsdValue: totalCollateralUsd,
+          collateralUsdRate: maybes([assets.collateral.balance, assets.collateral.balanceUsd], (balance, balanceUsd) =>
+            balance ? balanceUsd / balance : undefined,
+          ),
+          borrowedUsdRate: maybes([assets.borrowed.balance, assets.borrowed.balanceUsd], (balance, balanceUsd) =>
+            balance ? balanceUsd / balance : undefined,
+          ),
+        })),
+      ),
     ),
     maxLeverage: fallbackQ(
       mapQuery(maxLeverage, value => ({ value })),
-      mapQuery(apiMarket, ({ leverage }) => maybe(leverage, value => ({ value }))),
+      mapQuery(apiMarket, market => maybe(market?.leverage, value => ({ value }))),
     ),
     maxReturnOnEquity: fallbackQ(
       combineQueries([maxLeverage, snapshots], (leverage, snapshots) =>
@@ -123,8 +125,10 @@ export const useAdvancedDetailsData = ({
           maxReturnOnEquity(+leverage, collateralToken.rebasingYield, borrowApy),
         ),
       ),
-      mapQuery(apiMarket, ({ leverage, assets, rates }) =>
-        maxReturnOnEquity(leverage, assets.collateral.rebasingYield, rates.borrowApy),
+      mapQuery(apiMarket, market =>
+        maybe(market, ({ leverage, assets, rates }) =>
+          maxReturnOnEquity(leverage, assets.collateral.rebasingYield, rates.borrowApy),
+        ),
       ),
     ),
     availableLiquidity: fallbackQ(
@@ -134,12 +138,14 @@ export const useAdvancedDetailsData = ({
         borrowCap,
         borrowSymbol: borrowToken?.symbol,
       })),
-      mapQuery(apiMarket, ({ debtCeiling, liquidity }) => ({
-        available: decimal(liquidity),
-        totalAssets: maybe(debtCeiling, decimal),
-        borrowCap: maybe(debtCeiling, decimal),
-        borrowSymbol: borrowToken?.symbol,
-      })),
+      mapQuery(apiMarket, market =>
+        maybe(market, ({ debtCeiling, liquidity }) => ({
+          available: decimal(liquidity),
+          totalAssets: maybe(debtCeiling, decimal),
+          borrowCap: maybe(debtCeiling, decimal),
+          borrowSymbol: borrowToken?.symbol,
+        })),
+      ),
     ),
     totalBorrowers: mapQuery(marketOverview, ({ totalBorrowers }) => totalBorrowers),
     borrowedUsdRate: q(borrowedUsdRate),

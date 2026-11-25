@@ -1,8 +1,17 @@
+import { zeroAddress } from 'viem'
 import { oneOf } from '@cy/support/generators'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
 
 describe('Basic Access Test', () => {
   const path = oneOf('/', '/dex', '/dex/ethereum')
+  const {
+    address: poolAddress,
+    title,
+    message,
+  } = oneOf(
+    { address: '404', title: 'Unexpected Error', message: 'Invalid pool address' },
+    { address: zeroAddress, title: '404', message: 'Pool Not Found' },
+  )
 
   it('should support default networks if the lite API is offline', () => {
     cy.intercept('https://api2.curve.finance/get_platforms', { statusCode: 500 }).as('error')
@@ -34,12 +43,16 @@ describe('Basic Access Test', () => {
     cy.contains(/USDT0\/sUSDe/i, TIMEOUTS['curveLite.pools']).should('be.visible')
   })
 
-  it('shows 404 on /dex/:network/pools/404', () => {
-    cy.visit('/dex/ethereum/pools/404', { failOnStatusCode: false })
-    cy.get('[data-testid="error-subtitle"]', TIMEOUTS['ui.render']).should('contain.text', 'Not Found')
-    cy.url().should('include', '/dex/ethereum/pools/404')
-    cy.get('[data-testid="continue-button"]').click()
-    cy.get('[data-testid="data-table-head"]', TIMEOUTS['ui.render']).should('be.visible') // on the pools list page
-    cy.get('[data-testid="error-subtitle"]').should('not.exist')
+  it(`shows an error on /dex/:network/pools/${poolAddress}`, () => {
+    cy.visit(`/dex/ethereum/pools/${poolAddress}`, { failOnStatusCode: false })
+    cy.get('[data-testid="error-title"]', TIMEOUTS['ui.render']).should('have.text', title)
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', message)
+    cy.url().should('include', `/dex/ethereum/pools/${poolAddress}`)
+    // '404' fails in the route loader, whose error page has no Continue link.
+    if (poolAddress === zeroAddress) {
+      cy.get('[data-testid="continue-button"]').click()
+      cy.get('[data-testid="data-table-head"]', TIMEOUTS['ui.render']).should('be.visible') // on the pools list page
+      cy.get('[data-testid="error-subtitle"]').should('not.exist')
+    }
   })
 })

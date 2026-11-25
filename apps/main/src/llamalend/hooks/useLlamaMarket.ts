@@ -1,30 +1,22 @@
-import { useCallback, useMemo } from 'react'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
-import { maybe } from '@primitives/objects.utils'
-import { useMappedQuery } from '@ui/features/queries/util'
-import { t } from '@ui/lib/i18n'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { fallbackQ, mapQuery, q, type Query } from '@ui/features/queries/util'
+import type { MarketTemplate } from '../llamalend.types'
 import { type LlamaMarketParams, useLlamaMarkets } from '../queries/market-list/llama-markets'
 
 export const useLlamaMarket = (
   { rMarket, network, ...params }: LlamaMarketParams & { rMarket: string; network: string },
-  enabled?: boolean,
+  marketQuery: Query<MarketTemplate | null>,
 ) => {
-  const markets = useLlamaMarkets(params, enabled)
-
-  const market = useMappedQuery(
+  const { isInitialized } = useCurve()
+  const markets = useLlamaMarkets(params, isInitialized && !marketQuery.isLoading && !marketQuery.data)
+  const blockchainId = getPricesApiBlockchainId(network)
+  const apiMarket = mapQuery(
     markets,
-    useCallback(
-      ({ markets }) =>
-        maybe(getPricesApiBlockchainId(network), chain =>
-          markets.find(m => m.blockchainId === chain && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)),
-        ),
-      [network, rMarket],
-    ),
-  )
-  const error = useMemo(
-    () => markets.data && !market.data && new Error(`${t`Market`} ${rMarket} ${t`Not Found`}`),
-    [markets.data, market.data, rMarket],
+    ({ markets }) =>
+      markets.find(m => m.blockchainId === blockchainId && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)) ??
+      null,
   )
 
-  return { ...market, ...(error && { error }) }
+  return { query: fallbackQ(q(marketQuery), apiMarket), apiMarket }
 }
