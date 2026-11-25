@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import {
   useVaultMaxRedeemShares,
   useVaultMaxWithdrawAmount,
@@ -50,16 +50,13 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
 
   const isFull = useCombinedQueries(
     [userBalances, maxWithdrawAmount, maxRedeemShares],
-    useCallback(
-      ({ depositedShares }: VaultUserBalances, maxWithdrawAmount: Decimal, maxRedeemShares: Decimal) =>
-        getIsWithdrawFull({
-          withdrawAmount: params.withdrawAmount ?? undefined,
-          depositedShares,
-          maxRedeemShares,
-          maxWithdrawAmount,
-        }),
-      [params.withdrawAmount],
-    ),
+    ({ depositedShares }: VaultUserBalances, maxWithdrawAmount: Decimal, maxRedeemShares: Decimal) =>
+      getIsWithdrawFull({
+        withdrawAmount: params.withdrawAmount ?? undefined,
+        depositedShares,
+        maxRedeemShares,
+        maxWithdrawAmount,
+      }),
   )
 
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data, userVaultShares: userBalances.data?.depositedShares })

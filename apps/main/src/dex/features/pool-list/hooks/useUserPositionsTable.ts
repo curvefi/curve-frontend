@@ -42,15 +42,24 @@ export const useUserPositionsTable = (
   const { address: userAddress } = useConnection()
   const isLite = isLiteChain(chainId)
 
-  const campaigns = usePoolCampaigns({ blockchainId })
+  const { data: campaigns, isLoading: isCampaignsLoading } = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const litePoolList = useLitePoolList({ chainId }, enabled && isLite && !!userAddress)
   const poolAddresses = useMappedQuery(
     positions,
     useCallback(positions => positions.map(({ address }) => address), []),
   )
-  const boosts = useUserPoolBoosts({ chainId, userAddress, poolAddresses }, enabled && !isLite)
-  const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses }, enabled)
+  const {
+    data: boosts,
+    error: boostsError,
+    isPending: isBoostsPending,
+  } = useUserPoolBoosts({ chainId, userAddress, poolAddresses }, enabled && !isLite)
+  const {
+    data: claimables,
+    error: claimablesError,
+    isLoading: isClaimablesLoading,
+    isFetching: isClaimablesFetching,
+  } = useUserPoolClaimables({ chainId, userAddress, poolAddresses }, enabled)
 
   const tokenAddresses = useMappedQuery(
     positions,
@@ -58,59 +67,42 @@ export const useUserPositionsTable = (
   )
   const tokenRates = useTokenUsdRates({ chainId, tokenAddresses: tokenAddresses.data }, enabled && !!userAddress)
 
-  const tableQuery = useCombinedQueries(
-    [positions, isLite ? litePoolList : constQ(null)],
-    useCallback(
-      (positions, litePools) =>
-        positions
-          .map(position => ({
+  const tableQuery = useCombinedQueries([positions, isLite ? litePoolList : constQ(null)], (positions, litePools) =>
+    positions
+      .map(position => ({
+        position,
+        pool: isLite
+          ? maybe(
+              litePools?.pools.find(pool => isAddressEqual(pool.address, position.address)),
+              litePoolToRowData,
+            )
+          : poolToRowData(position as UserFullPoolPosition),
+      }))
+      .filter(({ pool }) => pool != null)
+      .flatMap(({ position, pool }) => [
+        enrichPoolRow(
+          pool!,
+          network,
+          campaigns,
+          getPoolUserPosition(
             position,
-            pool: isLite
-              ? maybe(
-                  litePools?.pools.find(pool => isAddressEqual(pool.address, position.address)),
-                  litePoolToRowData,
-                )
-              : poolToRowData(position as UserFullPoolPosition),
-          }))
-          .filter(({ pool }) => pool != null)
-          .flatMap(({ position, pool }) => [
-            enrichPoolRow(
-              pool!,
-              network,
-              campaigns.data,
-              getPoolUserPosition(
-                position,
-                tokenRates[position.lpTokenAddress],
-                { data: claimables.data, isLoading: claimables.isLoading, error: claimables.error },
-                mapQuery(
-                  // isPending because we want to show loading state during hydration (but not when the query is disabled)
-                  { data: boosts.data, error: boosts.error, isLoading: enabled && !isLite && boosts.isPending },
-                  values => values[position.address],
-                ),
-              ),
+            tokenRates[position.lpTokenAddress],
+            { data: claimables, isLoading: isClaimablesLoading, error: claimablesError },
+            mapQuery(
+              // isPending because we want to show loading state during hydration (but not when the query is disabled)
+              { data: boosts, error: boostsError, isLoading: enabled && !isLite && isBoostsPending },
+              values => values[position.address],
             ),
-          ])
-          .toSorted((a, b) =>
-            decimalCompare(b.userPosition?.depositsUsd.data ?? ZERO, a.userPosition?.depositsUsd.data ?? ZERO),
           ),
-      [
-        isLite,
-        network,
-        campaigns.data,
-        tokenRates,
-        claimables.data,
-        claimables.isLoading,
-        claimables.error,
-        boosts.data,
-        boosts.error,
-        boosts.isPending,
-        enabled,
-      ],
-    ),
+        ),
+      ])
+      .toSorted((a, b) =>
+        decimalCompare(b.userPosition?.depositsUsd.data ?? ZERO, a.userPosition?.depositsUsd.data ?? ZERO),
+      ),
   )
 
   return {
-    isFetching: positions.isFetching || campaigns.isLoading || claimables.isFetching || litePoolList.isFetching,
+    isFetching: positions.isFetching || isCampaignsLoading || isClaimablesFetching || litePoolList.isFetching,
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
     alerts: getPoolListAlerts(tableQuery.data, blockchainId),

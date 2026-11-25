@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { group, test } from 'vest'
 import { ethAddress } from 'viem'
 import { getLib, useWallet } from '@evm-ui/features/connect-wallet'
@@ -396,14 +395,9 @@ const useEstimateGas = (chainId: number | Nullish, estimate: QueryResult<GasEsti
   const ethRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
   const gasInfo = useGasInfoAndUpdateLib({ chainId }, enabled)
   const networkSymbol = maybe(chainId, chainId => getChainNativeCurrency(chainId)?.symbol)
-  return useCombinedQueries(
-    [estimate, gasInfo, ethRate],
-    useCallback(
-      (estimate, gasInfo, ethRate) =>
-        maybes([chainId, networkSymbol], (chainId, networkSymbol) =>
-          calculateGas(estimate, gasInfo, ethRate, chainId, networkSymbol),
-        ),
-      [chainId, networkSymbol],
+  return useCombinedQueries([estimate, gasInfo, ethRate], (estimate, gasInfo, ethRate) =>
+    maybes([chainId, networkSymbol], (chainId, networkSymbol) =>
+      calculateGas(estimate, gasInfo, ethRate, chainId, networkSymbol),
     ),
   )
 }
