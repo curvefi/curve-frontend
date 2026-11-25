@@ -29,7 +29,7 @@ export const useMarketTokens = ({
   const collateralLpCoins = useLpCoins({ blockchainId, tokenAddress: tokens?.collateralToken.address })
   const borrowLpCoins = useLpCoins({ blockchainId, tokenAddress: tokens?.borrowToken.address })
   return maybe(tokens, ({ collateralToken, borrowToken }) => ({
-    collateralToken: { ...collateralToken, lpCoins: collateralLpCoins },
-    borrowToken: { ...borrowToken, lpCoins: borrowLpCoins },
+    collateralToken: { ...collateralToken, lpCoins: collateralToken.lpCoins ?? collateralLpCoins },
+    borrowToken: { ...borrowToken, lpCoins: borrowToken.lpCoins ?? borrowLpCoins },
   }))
 }
