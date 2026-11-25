@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { BuyCollateralLink } from '@/llamalend/features/borrow/components/BuyCollateralLink'
-import { fetchLpTokenPools } from '@/llamalend/queries/lp-token-pool.query'
+import { fetchTokenMetadata } from '@/llamalend/queries/token-metadata.query'
 import { oneOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -12,6 +12,9 @@ import { Chain } from '@primitives/network.utils'
 import { disconnect } from '@wagmi/core'
 
 const LP_LEND_COLLATERAL: Token = { symbol: 'reusdsfrx', address: '0xed785Af60bEd688baa8990cD5c4166221599A441' }
+// older pools have an LP token that is not the pool itself
+const OLD_LP_TOKEN: Token = { symbol: '3Crv', address: '0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490' }
+const OLD_LP_POOL = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7'
 const LEND_COLLATERAL: Token = { symbol: 'sreUSD', address: '0x557ab1e003951a73c12d16f0fea8490e39c33c35' }
 const MINT_COLLATERAL: Token = { symbol: 'WBTC', address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599' }
 
@@ -26,6 +29,7 @@ const testCases: TestCase[] = [
       token: LP_LEND_COLLATERAL,
       href: `/dex/ethereum/pools/${LP_LEND_COLLATERAL.address}`,
     },
+    { title: 'links an older LP token to its pool', token: OLD_LP_TOKEN, href: `/dex/ethereum/pools/${OLD_LP_POOL}` },
     {
       title: 'links the lend market collateral to the swap page',
       token: LEND_COLLATERAL,
@@ -44,11 +48,12 @@ const testCases: TestCase[] = [
 const WalletStatus = () => <span data-testid="wallet-status">{useConnection().status}</span>
 
 describe('BuyCollateralLink', () => {
-  // pools and balance are loaded before mounting, so hidden links are checked after they could have rendered
-  beforeEach(() => cy.then(TIMEOUTS['prices.pools'], () => fetchLpTokenPools({ blockchainId: 'ethereum' })))
-
   testCases.forEach(({ title, token, href, balance = 0n, connected = true }) =>
     it(title, () => {
+      // the token and balance are loaded before mounting, so hidden links are checked after they could have rendered
+      cy.then(TIMEOUTS['prices.tokens'], () =>
+        fetchTokenMetadata({ blockchainId: 'ethereum', tokenAddress: token.address }),
+      )
       seedErc20BalanceForAddresses({
         chainId: Chain.Ethereum,
         tokenAddress: token.address,

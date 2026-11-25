@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { useLpTokenPool } from '@/llamalend/queries/lp-token-pool.query'
+import { useTokenMetadata } from '@/llamalend/queries/token-metadata.query'
 import type { Chain } from '@curvefi/prices-api'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { dexPages } from '@evm-ui/shared/routes'
@@ -27,11 +27,12 @@ export const BuyCollateralLink = ({
   // TODO: Errors should be shown in the status bar
   const { data: balance } = useTokenBalance({ chainId, userAddress, tokenAddress: token?.address })
   const hasNoBalance = maybe(balance, Number) === 0
-  const { data: poolAddress } = useLpTokenPool({ blockchainId, tokenAddress: token?.address }, hasNoBalance)
+  const { data: tokenMetadata } = useTokenMetadata({ blockchainId, tokenAddress: token?.address }, hasNoBalance)
+  const poolAddress = tokenMetadata?.poolAddress
 
   return (
     token && (
-      <Collapse in={hasNoBalance && poolAddress !== undefined} unmountOnExit>
+      <Collapse in={hasNoBalance && !!tokenMetadata} unmountOnExit>
         <ExternalLink
           href={
             poolAddress
