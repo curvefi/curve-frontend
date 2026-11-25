@@ -54,7 +54,7 @@ export const useAdvancedDetailsData = ({
   const isEquityLeverage = useLlamalendEquityLeverage()
   const isLeverageEnabled = !!isLeverageAllowed(chainId, controllerAddress)
   const minBands = mapQuery(marketQuery, m => m?.minBands)
-  const maxTotalLeverage = useMarketMaxLeverage(
+  const maxLegacyLeverage = useMarketMaxLeverage(
     { chainId, marketId, range: minBands },
     isLeverageEnabled && !isEquityLeverage,
   )
@@ -62,8 +62,10 @@ export const useAdvancedDetailsData = ({
     { chainId, marketId, range: minBands },
     isLeverageEnabled && isEquityLeverage,
   )
-  const maxLeverage = isEquityLeverage ? maxEquityLeverage : maxTotalLeverage
-  const apiMaxLeverage = mapQuery(apiMarket, market => (isEquityLeverage ? market?.maxEquityLeverage : market?.leverage))
+  const maxLeverage = isEquityLeverage ? maxEquityLeverage : maxLegacyLeverage
+  const apiMaxLeverage = mapQuery(apiMarket, market =>
+    isEquityLeverage ? market?.maxEquityLeverage : market?.maxLegacyLeverage,
+  )
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })

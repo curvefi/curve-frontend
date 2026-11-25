@@ -13,7 +13,7 @@ export type MaxReturnOnEquity = {
 
 export const MaxReturnOnEquityTooltipContent = ({
   market,
-  leverage = market?.leverage,
+  leverage = market?.maxLegacyLeverage,
   collateralApy = market?.assets.collateral.rebasingYield,
   borrowApy = market?.rates.borrowApy,
 }: {

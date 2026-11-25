@@ -110,7 +110,8 @@ export type LlamaMarket = {
   url: string
   rewards: CampaignRewards[]
   isFavorite: boolean
-  leverage: number | null
+  /** The theoretical max leverage from the Max LTV, 1 / (1 - Max LTV) */
+  maxLegacyLeverage: number | null
   /** The highest equity leverage a user can open, collateral value ÷ equity */
   maxEquityLeverage: number | null
   deprecatedMessage: string | null
@@ -132,11 +133,11 @@ const scaledFractionToPercent = (value: number): Decimal =>
 const getAllowedLeverage = (
   blockchainId: Chain,
   controllerAddress: Address,
-  { leverage, maxEquityLeverage }: Pick<LlamaMarket, 'leverage' | 'maxEquityLeverage'>,
-): Pick<LlamaMarket, 'leverage' | 'maxEquityLeverage'> => {
+  { leverage, maxEquityLeverage }: { leverage: number | null; maxEquityLeverage: number | null },
+): Pick<LlamaMarket, 'maxLegacyLeverage' | 'maxEquityLeverage'> => {
   const chainId = requireChainId(blockchainId)
   return {
-    leverage: isLeverageAllowed(chainId, controllerAddress) ? leverage : null,
+    maxLegacyLeverage: isLeverageAllowed(chainId, controllerAddress) ? leverage : null,
     maxEquityLeverage: getMarketLeverageConfig(chainId, controllerAddress) ? maxEquityLeverage : null,
   }
 }

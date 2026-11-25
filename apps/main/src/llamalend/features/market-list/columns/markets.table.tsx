@@ -84,16 +84,16 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
       }),
     ]),
     ...inGroup(t`Markets`, [
-      columnHelper.accessor<(row: LlamaMarketRow) => LlamaMarketRow['leverage'], LlamaMarketRow['leverage']>(
-        row => row.leverage,
-        {
-          id: MarketColumnId.MaxLeverage,
-          header: MARKET_TITLES[MarketColumnId.MaxLeverage],
-          cell: MaxLeverageCell,
-          meta: { type: 'numeric' },
-          sortUndefined: 'last',
-        },
-      ),
+      columnHelper.accessor<
+        (row: LlamaMarketRow) => LlamaMarketRow['maxLegacyLeverage'],
+        LlamaMarketRow['maxLegacyLeverage']
+      >(row => row.maxLegacyLeverage, {
+        id: MarketColumnId.MaxLeverage,
+        header: MARKET_TITLES[MarketColumnId.MaxLeverage],
+        cell: MaxLeverageCell,
+        meta: { type: 'numeric' },
+        sortUndefined: 'last',
+      }),
       columnHelper.accessor(row => row.maxLtv ?? undefined, {
         id: MarketColumnId.MaxLtv,
         header: MARKET_TITLES[MarketColumnId.MaxLtv],

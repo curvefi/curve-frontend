@@ -15,7 +15,7 @@ import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
 import type { UserState } from '@/llamalend/queries/user/user-state.query'
 import type { Chain } from '@curvefi/prices-api'
-import { useLlamalendEquityLeverage, useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { getTokenUsdRateQueryOptions } from '@evm-ui/queries/token-usd-rate.query'
 import { MarketType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
@@ -177,7 +177,6 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     ),
     combine: results => results.map(q),
   })
-  const isEquityLeverage = useLlamalendEquityLeverage()
   const tokenPriceQueries = useQueries({
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
     combine: results => results.map(q),
@@ -193,16 +192,15 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     const getPriceQuery = (blockchainId: Chain, tokenAddress: Address) =>
       pricesByToken.get(getTokenPriceKey({ chainId: requireChainId(blockchainId), tokenAddress })) ?? DISABLED_Q
 
-    return markets.map(apiMarket => {
-      const market = isEquityLeverage ? { ...apiMarket, leverage: apiMarket.maxEquityLeverage } : apiMarket
+    return markets.map(market => {
       if (!market.userHasPositions) return { ...market, positionQueries: EMPTY_POSITION_QUERIES }
 
-      const stats = mapQuery(statsByMarket.get(apiMarket) ?? DISABLED_Q, stats => normalizeMarketStats(stats, market))
+      const stats = mapQuery(statsByMarket.get(market) ?? DISABLED_Q, stats => normalizeMarketStats(stats, market))
       const prices = {
         borrowed: getPriceQuery(market.blockchainId, market.assets.borrowed.address),
         collateral: getPriceQuery(market.blockchainId, market.assets.collateral.address),
       }
-      const events = eventsByMarket.get(apiMarket) ?? DISABLED_Q
+      const events = eventsByMarket.get(market) ?? DISABLED_Q
       const pnl = combineQueries(
         [stats, mapQuery(events, ({ capital }) => capital)],
         ({ equity, oraclePrice }, capital) =>
@@ -230,14 +228,5 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
         },
       }
     })
-  }, [
-    markets,
-    isEquityLeverage,
-    statsEntries,
-    statsQueries,
-    eventsEntries,
-    eventsQueries,
-    tokenPriceEntries,
-    tokenPriceQueries,
-  ])
+  }, [markets, statsEntries, statsQueries, eventsEntries, eventsQueries, tokenPriceEntries, tokenPriceQueries])
 }
