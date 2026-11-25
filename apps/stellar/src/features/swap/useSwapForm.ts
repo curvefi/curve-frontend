@@ -3,6 +3,7 @@ import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
 import { useQuoteQueries } from '@/stellar/features/swap/useQuoteQueries'
 import { useSwapPriceImpact } from '@/stellar/features/swap/useSwapPriceImpact'
+import { STELLAR_DEFAULT_SLIPPAGE } from '@/stellar/lib/pool.constants'
 import { useSwapMutation } from '@/stellar/mutations/swap.mutation'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
@@ -10,7 +11,6 @@ import type { PoolQuery } from '@/stellar/queries/query-types'
 import { swapFormValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
 import { useSwapFormActions } from '@ui/features/pool-forms/swap/useSwapFormActions'
 import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
@@ -31,7 +31,7 @@ const formOptions = {
     maxAmount: undefined,
     maxOutput: undefined,
     expectedOutput: undefined,
-    slippage: SLIPPAGE.stable.default,
+    slippage: STELLAR_DEFAULT_SLIPPAGE,
   },
 }
 

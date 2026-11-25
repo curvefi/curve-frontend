@@ -1,6 +1,7 @@
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useQuoteQueries } from '@/stellar/features/swap/useQuoteQueries'
 import { useGasEstimation } from '@/stellar/lib/gas'
+import { STELLAR_SLIPPAGE_TYPE } from '@/stellar/lib/pool.constants'
 import { useSwapSimulation } from '@/stellar/queries/swap/swap-simulation.query'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -26,7 +27,7 @@ export const SwapActionInfoList = ({ onSlippageChange, ...params }: SwapActionIn
 
   return (
     <PoolActionInfoList
-      slippageType="stable"
+      slippageType={STELLAR_SLIPPAGE_TYPE}
       exchangeRate={exchangeRate}
       minimumReceived={minimum}
       priceImpact={useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, expectedOutput)}

@@ -1,6 +1,7 @@
 import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { calculateMinimumMint } from '@/stellar/lib/amounts'
 import { useGasEstimation } from '@/stellar/lib/gas'
+import { STELLAR_SLIPPAGE_TYPE } from '@/stellar/lib/pool.constants'
 import { useDepositSimulation } from '@/stellar/queries/deposit/deposit-simulation.query'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
@@ -34,7 +35,7 @@ export const DepositActionInfoList = ({
   const lpBalance = useTokenBalance({ ...params, token: pool, decimals: lpDecimals })
   return (
     <PoolActionInfoList
-      slippageType="stable"
+      slippageType={STELLAR_SLIPPAGE_TYPE}
       expectedLp={expectedLp}
       expectedLpLabel={t`Expected LP received`}
       expectedLpTestId="pool-deposit-expected-lp"
