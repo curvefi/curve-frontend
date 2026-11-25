@@ -2,15 +2,15 @@ import { useMemo } from 'react'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { useTokenLpCoins } from '@/llamalend/queries/token-lp-coins.query'
+import { useTokenMetadata } from '@/llamalend/queries/token-metadata.query'
 import type { Chain } from '@curvefi/prices-api'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { q } from '@ui/features/queries/util'
 
 /** Destructured so the compiler can cache it: `useQuery` returns a new object every render */
-const useLpCoins = (params: Parameters<typeof useTokenLpCoins>[0]) => {
-  const { data, isLoading, error } = useTokenLpCoins(params)
-  return q({ data, isLoading, error })
+const useLpCoins = (params: Parameters<typeof useTokenMetadata>[0]) => {
+  const { data, isLoading, error } = useTokenMetadata(params)
+  return q({ data: data?.lpCoins, isLoading, error })
 }
 
 /** The tokens of a market, with the query of their LP coins, which the contracts don't know */

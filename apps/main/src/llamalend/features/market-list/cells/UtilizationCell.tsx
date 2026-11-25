@@ -28,7 +28,7 @@ const Currency = ({
 }: {
   symbol: string
   address: Address
-  lpCoins?: Token[]
+  lpCoins?: Token[] | null
   balance: number | null
   blockchainId: Chain
 }) => (
