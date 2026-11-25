@@ -35,7 +35,12 @@ const DEFAULT_SORT_OPTION = PROPOSAL_SORT_OPTIONS[0]
 const DEFAULT_SORT: SortingState = [{ id: DEFAULT_SORT_OPTION.id, desc: true }]
 const SORT_COLUMNS = PROPOSAL_SORT_OPTIONS.map(({ id }) => ({ id, accessorKey: 'timestamp' }))
 
-// No columns are needed for the table, as we are not rendering a normal table with headers, but rather a list of proposals. Neither would we use them for sorting or filtering as that happens server-side.
+/**
+ * No columns are needed for the table, as we are not rendering a normal table with headers,
+ * but rather a list of proposals. Neither would we use them for sorting or filtering as that happens server-side.
+ * We want to keep using react table however for the sorting, filtering and pagination logic.
+ * If you squint hard enough it's still a table!
+ */
 const NO_COLUMNS = [] as const
 
 export const Proposals = () => {
