@@ -130,7 +130,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
     ...keyStyles, // key
     ...(restArgs.length ? ['color: #fff;', 'color: #666;', 'color: #fff;'] : []), // args
   ]
-  logMethod(status)(format, ...styles)
+  logMethod(status)(format, ...styles, ...restArgs.filter(arg => arg instanceof Error))
 }
 
 export const logQuery = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.QUERY, ...args)

@@ -92,7 +92,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList

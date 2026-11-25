@@ -35,7 +35,6 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <WithdrawSupplyInfoList

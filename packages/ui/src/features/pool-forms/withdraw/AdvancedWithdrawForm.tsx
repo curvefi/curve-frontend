@@ -44,7 +44,7 @@ export const AdvancedWithdrawForm = ({
   onLpChange: (amount: Decimal | undefined) => void
   onTokenChange: (index: number, amount: Decimal | undefined) => void
 }) => (
-  <Form {...form} onSubmit={onSubmit} footer={footer}>
+  <Form onSubmit={onSubmit} footer={footer}>
     {form.values.isBalanced && (
       <FormTokenInput
         form={form}
