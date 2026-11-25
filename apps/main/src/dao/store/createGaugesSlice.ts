@@ -194,6 +194,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
     castVote: async (userAddress: Address, gaugeAddress: string, voteWeight: number) => {
       const curve = getLib('curveApi')
       const { provider } = useWallet.getState()
+      gaugeAddress = gaugeAddress.toLowerCase()
       const address = getGauges({})?.[gaugeAddress].address
 
       if (!curve || !address) return
