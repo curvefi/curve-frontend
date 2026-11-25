@@ -77,6 +77,8 @@ export const UserPositionsTables = ({
                 isLoading={isLoading}
                 title={t`No active positions`}
                 description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
+                size="sm"
+                direction="horizontal"
               />
             )}
           </CenteredEmptyState>

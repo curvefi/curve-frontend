@@ -67,7 +67,7 @@ export const UserPositionsTable = (props: UserPositionsTableProps) => {
     isFetching,
     onReload,
     alerts,
-    labels: { errorTitle, loading, empty },
+    cardStates: { errorTitle, loading, empty },
     addressDisplay,
     crvToken,
     Actions,
