@@ -8,11 +8,13 @@ import { fromEntries, maybe } from '@primitives/objects.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 
+export type GaugeToken = NonNullable<Gauge['tokens']>[number] & { lpCoins: Token[] | undefined }
+
 export type GaugeFormattedData = Omit<Gauge, 'weight' | 'tokens'> & {
   title: string
   platform: string
   weight: number
-  tokens: (NonNullable<Gauge['tokens']>[number] & { lpCoins: Token[] | undefined })[] | undefined
+  tokens: GaugeToken[] | undefined
 }
 
 export type GaugeMapper = Record<string, GaugeFormattedData>
