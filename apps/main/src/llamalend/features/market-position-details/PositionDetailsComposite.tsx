@@ -1,11 +1,14 @@
 import type { ComponentType } from 'react'
-import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
+import { UserEventsTable } from '@/llamalend/features/user-position-history/UserEventsTable'
+import { UserPositionLiquidationNote } from '@/llamalend/features/user-position-history/UserPositionLiquidationNote'
 import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import type { QueryProp } from '@ui/features/queries/util'
@@ -29,7 +32,12 @@ type PositionDetailsCompositeProps = {
 const { Spacing } = SizesAndSpaces
 
 const BorrowActivity = ({ eventsQuery }: { eventsQuery: QueryProp<ParsedUserCollateralEvent[]> }) => (
-  <UserPositionHistory variant="flat" eventsQuery={eventsQuery} />
+  <>
+    <UserEventsTable eventsQuery={eventsQuery} />
+    <CardContent>
+      <UserPositionLiquidationNote />
+    </CardContent>
+  </>
 )
 
 const POSITION_CONFIG: {
@@ -44,12 +52,20 @@ const POSITION_CONFIG: {
 
 const PositionTab = ({ type, hasPosition }: PositionDetailsCompositeProps) => {
   const { Details } = POSITION_CONFIG[type]
-  return hasPosition ? <Details /> : <MarketEmptyPosition type={type} />
+  return (
+    <Card size="small">
+      <CardContent>{hasPosition ? <Details /> : <MarketEmptyPosition type={type} />}</CardContent>
+    </Card>
+  )
 }
 
 const ActivityTab = <T extends MarketRateType>({ type, events }: { type: T; events: QueryProp<PositionEvents[T]> }) => {
   const { Activity } = POSITION_CONFIG[type]
-  return <Activity eventsQuery={events} />
+  return (
+    <Card size="small">
+      <Activity eventsQuery={events} />
+    </Card>
+  )
 }
 
 const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps>[] = [
@@ -77,7 +93,7 @@ export const PositionDetailsComposite = (props: PositionDetailsCompositeProps) =
           </Stack>
         )}
       </Stack>
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
+      {content}
     </Stack>
   )
 }

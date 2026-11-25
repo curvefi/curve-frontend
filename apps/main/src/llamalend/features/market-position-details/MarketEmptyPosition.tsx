@@ -2,10 +2,7 @@ import { useConnection } from 'wagmi'
 import { EmptyStateEvmCard } from '@evm-ui/shared/ui/EmptyStateEvmCard'
 import { MarketRateType } from '@evm-ui/types/market'
 import { Stack } from '@mui/material'
-import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
-
-const { Spacing } = SizesAndSpaces
 
 type NoPositionProps = { type: MarketRateType }
 
@@ -27,7 +24,7 @@ export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
   const emptyType = useConnection().address ? type : 'disconnected'
   const { title, description } = EMPTY_MARKET_CONFIG[emptyType]
   return (
-    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${emptyType.toLowerCase()}`}>
+    <Stack sx={{ alignItems: 'center' }} data-testid={`no-position-${emptyType.toLowerCase()}`}>
       <EmptyStateEvmCard
         size="sm"
         title={title}
