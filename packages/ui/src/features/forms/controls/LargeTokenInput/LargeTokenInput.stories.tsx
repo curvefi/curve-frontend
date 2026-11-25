@@ -1,6 +1,6 @@
 import { useRef, useState, type ComponentProps } from 'react'
-import { fn } from 'storybook/test'
-import { Select, MenuItem, Typography, Stack } from '@mui/material'
+import { expect, fn, userEvent, within } from 'storybook/test'
+import { Button, Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import {
@@ -8,7 +8,7 @@ import {
   type LargeTokenInputRef,
   type LargeTokenInputProps,
 } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
-import { q } from '@ui/features/queries/util'
+import { q, toQuery } from '@ui/features/queries/util'
 
 // Test options for token selector with corresponding pre-seeded wallet balances
 type Token = { name: string; walletBalance: { symbol: string; balance: Decimal; notionalValueUsd?: Decimal } }
@@ -55,10 +55,7 @@ const TokenSelector = ({
   )
 }
 
-type LargeTokenInputStoryArgs = Omit<ComponentProps<typeof LargeTokenInput>, 'balance'> & {
-  balance?: Decimal
-  isError?: boolean
-}
+type LargeTokenInputStoryArgs = ComponentProps<typeof LargeTokenInput> & { isError?: boolean }
 
 const LargeTokenInputWithTokenSelector = ({ balance, isError, ...props }: LargeTokenInputStoryArgs) => {
   const inputRef = useRef<LargeTokenInputRef>(null)
@@ -67,7 +64,7 @@ const LargeTokenInputWithTokenSelector = ({ balance, isError, ...props }: LargeT
   return (
     <LargeTokenInput
       {...props}
-      balance={isError ? q({ data: balance, isLoading: false, error: new Error('Invalid amount') }) : balance}
+      balance={isError ? q({ ...toQuery(balance), error: new Error('Invalid amount') }) : balance}
       walletBalance={walletBalance}
       tokenSelector={
         <TokenSelector
@@ -98,10 +95,11 @@ const meta: Meta<typeof LargeTokenInputWithTokenSelector> = {
     label: { control: 'text', description: 'Optional label explaining what the input is all about' },
     isError: { control: 'boolean', description: 'Whether to display the input in an error state' },
     tokenSelector: { control: 'object', description: 'React component to use for token selection' },
-    inputBalanceUsd: { control: 'number', description: 'Optional dollar value of the given input balance' },
+    inputBalanceUsd: { control: 'object', description: 'Optional dollar value or query for the input balance' },
     children: { control: 'object', description: 'Optional children to be rendered below the input' },
   },
   args: {
+    name: 'amount',
     walletBalance: TOKEN_OPTIONS[0].walletBalance,
     maxBalance: DEFAULT_MAX_BALANCE,
     message: 'This is a helpful message',
@@ -154,6 +152,142 @@ export const WithError: Story = {
   args: { message: 'This is an error message', isError: true },
   render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: { docs: { description: { story: 'Large token input in an error state with an error message' } } },
+}
+
+export const LoadingInputUsd: Story = {
+  args: { balance: '10', inputBalanceUsd: q<Decimal>({ data: undefined, isLoading: true, error: null }) },
+}
+
+export const LoadingWalletBalance: Story = {
+  args: { walletBalance: { symbol: 'ETH', balance: q<Decimal>({ data: undefined, isLoading: true, error: null }) } },
+}
+
+export const WalletBalanceError: Story = {
+  args: {
+    balance: '10',
+    walletBalance: {
+      symbol: 'ETH',
+      balance: q<Decimal>({ data: '1000', isLoading: false, error: new Error('Failed to load wallet balance') }),
+      usdRate: 2,
+      buttonTestId: 'wallet-balance',
+    },
+  },
+  play: async ({ canvasElement, args }) => {
+    const amount = within(canvasElement).getByPlaceholderText('0.00')
+    await expect(canvasElement.querySelector('[data-error]')).toBeVisible()
+    await expect(within(canvasElement).getByTestId('balance-value')).toBeVisible()
+    await expect(within(canvasElement).getByTestId('balance-value')).toHaveAttribute('data-value', '1000')
+    await expect(canvasElement.querySelector('[data-testid="wallet-balance"]')).toBeNull()
+    await expect(amount).toHaveAttribute('aria-invalid', 'false')
+    await expect(amount).toBeEnabled()
+    await userEvent.clear(amount)
+    await userEvent.type(amount, '5')
+    await expect(args.onBalance).toHaveBeenLastCalledWith('5')
+  },
+}
+
+export const WalletBalanceErrorWithoutData: Story = {
+  args: {
+    walletBalance: {
+      symbol: 'ETH',
+      balance: q<Decimal>({ data: undefined, isLoading: false, error: new Error('Failed to load wallet balance') }),
+    },
+  },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector('[data-error]')).toBeVisible()
+    await expect(canvasElement.querySelector('.MuiSkeleton-root')).toBeNull()
+    await expect(within(canvasElement).getByPlaceholderText('0.00')).toBeEnabled()
+  },
+}
+
+export const WalletBalanceLoadingWithError: Story = {
+  args: {
+    walletBalance: {
+      symbol: 'ETH',
+      balance: q<Decimal>({ data: '1000', isLoading: true, error: new Error('Failed to refresh wallet balance') }),
+    },
+  },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector('[data-error]')).toBeVisible()
+    await expect(within(canvasElement).getByTestId('balance-value').closest('.MuiSkeleton-root')).toBeVisible()
+    await expect(within(canvasElement).getByPlaceholderText('0.00')).toBeEnabled()
+  },
+}
+
+export const LoadingWalletUsdRate: Story = {
+  args: {
+    walletBalance: {
+      symbol: 'ETH',
+      balance: '1000',
+      usdRate: q<number>({ data: undefined, isLoading: true, error: null }),
+    },
+  },
+}
+
+export const LoadingWalletNotional: Story = {
+  args: {
+    walletBalance: {
+      symbol: 'ETH',
+      balance: '1000',
+      usdRate: 2,
+      notionalValueUsd: q<Decimal>({ data: undefined, isLoading: true, error: null }),
+    },
+  },
+}
+
+export const LoadingMaxBalance: Story = {
+  args: {
+    maxBalance: { ...DEFAULT_MAX_BALANCE, balance: q<Decimal>({ data: undefined, isLoading: true, error: null }) },
+  },
+}
+
+export const QueryTransitions: Story = {
+  render: function Render(args) {
+    const [isLoading, setIsLoading] = useState(true)
+    const [amount, setAmount] = useState<Decimal>()
+    const balance = q<Decimal>({ data: isLoading ? undefined : '10', isLoading, error: null })
+    return (
+      <Stack sx={{ width: '30rem', gap: 2 }}>
+        <Button onClick={() => setIsLoading(!isLoading)}>{isLoading ? 'Resolve queries' : 'Reload queries'}</Button>
+        <LargeTokenInput
+          {...args}
+          balance={amount}
+          onBalance={value => {
+            setAmount(value)
+            args.onBalance(value)
+          }}
+          inputBalanceUsd={q<Decimal>({ data: `${+(amount ?? 0) * 2}`, isLoading, error: null })}
+          walletBalance={{ balance, symbol: 'ETH', usdRate: 2 }}
+          maxBalance={{ ...DEFAULT_MAX_BALANCE, balance }}
+          tokenSelector={<Typography>ETH</Typography>}
+        />
+      </Stack>
+    )
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const amount = canvas.getByPlaceholderText('0.00')
+    await expect(amount).toBeEnabled()
+    await expect(amount).toBeVisible()
+    await expect(amount.closest('.MuiSkeleton-root')).toBeNull()
+    await expect(canvasElement.querySelector('.MuiSkeleton-root')).not.toBeNull()
+    await expect(args.onBalance).not.toHaveBeenCalled()
+
+    await userEvent.type(amount, '5')
+    await expect(args.onBalance).toHaveBeenLastCalledWith('5')
+    await userEvent.click(canvas.getByRole('button', { name: 'Resolve queries' }))
+    await expect(amount).toHaveValue('5')
+    await expect(canvas.getByPlaceholderText('0.00')).toBe(amount)
+    await expect(canvasElement.querySelector('.MuiSkeleton-root')).toBeNull()
+    await expect(args.onBalance).toHaveBeenCalledTimes(1)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Reload queries' }))
+    await expect(canvas.getByPlaceholderText('0.00')).toBe(amount)
+    await expect(amount).toHaveValue('5')
+    await userEvent.clear(amount)
+    await expect(amount).toHaveValue('')
+    await expect(amount).toBeEnabled()
+  },
 }
 
 export const WithReactNodeMessage: Story = {

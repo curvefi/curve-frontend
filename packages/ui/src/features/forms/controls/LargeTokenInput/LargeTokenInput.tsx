@@ -3,7 +3,7 @@ import { type ReactNode, type Ref, useCallback, useId, useImperativeHandle } fro
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@primitives/number.utils'
+import { formatNumber, PLACEHOLDER_USD } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
@@ -94,7 +94,7 @@ export type LargeTokenInputProps = {
   }
 
   /** Optional usd value of the balance given as input. */
-  inputBalanceUsd?: Decimal
+  inputBalanceUsd?: QueryOrValue<Decimal>
 
   /**
    * Optional message to display below the input, called the 'helper message'.
@@ -178,12 +178,13 @@ export const LargeTokenInput = ({
   disabled,
   onBalance,
   balance: balanceProp,
-  inputBalanceUsd,
+  inputBalanceUsd: inputBalanceUsdProp,
   testId,
   sliderProps,
   children,
 }: LargeTokenInputProps) => {
   const { data: externalBalance, error } = toQuery(balanceProp)
+  const { data: inputBalanceUsd, isLoading: inputBalanceUsdLoading } = toQuery(inputBalanceUsdProp)
   const [balance, setBalance] = useUnique({
     defaultValue: externalBalance,
     callback: onBalance,
@@ -199,8 +200,8 @@ export const LargeTokenInput = ({
     () => (maxBalanceValue && balance ? calculateNewPercentage(balance, maxBalanceValue) : undefined),
     [maxBalanceValue],
   )
-  const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
-  const chipDisabled = !!disabled || (maxBalance?.balance != null && maxBalanceValue == null)
+  const showSlider = !!maxBalance?.showSlider && (maxBalanceLoading || maxBalanceValue != null)
+  const chipDisabled = !!disabled || maxBalanceLoading || (maxBalance?.balance != null && maxBalanceValue == null)
   const isError = !!maxBalanceError || !!error
 
   const handlePercentageChange = useCallback(
@@ -334,13 +335,16 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Third row containing input and max balances */}
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-        {(walletBalance || inputBalanceUsd) && (
+        {(!!walletBalance || inputBalanceUsd != null || inputBalanceUsdLoading) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
-            {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" sx={{ flexGrow: 1, color: t => t.design.Inputs.Text.MetaSubtle }}>
-                ≈ {formatNumber(inputBalanceUsd, 'usd.amount')}
-              </Typography>
+            {(inputBalanceUsd != null || inputBalanceUsdLoading) && (
+              <Stack sx={{ flexGrow: 1 }}>
+                <WithSkeleton loading={inputBalanceUsdLoading}>
+                  <Typography variant="bodyXsRegular" sx={{ color: t => t.design.Inputs.Text.MetaSubtle }}>
+                    ≈ {formatNumber(inputBalanceUsdLoading ? PLACEHOLDER_USD : inputBalanceUsd, 'usd.amount')}
+                  </Typography>
+                </WithSkeleton>
+              </Stack>
             )}
 
             {walletBalance && <Balance disabled={disabled} {...walletBalance} onClick={onWalletBalance} />}
@@ -349,18 +353,20 @@ export const LargeTokenInput = ({
 
         {/** Fourth row showing optional slider for max balance. */}
         {showSlider && (
-          <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
-            <SliderInput
-              name={name}
-              disabled={disabled}
-              value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={value => handlePercentageChange(value)}
-              sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
-              min={MIN_PERCENTAGE}
-              max={MAX_PERCENTAGE}
-              inputProps={{ variant: 'standard', adornment: 'percentage' }}
-            />
-          </Stack>
+          <WithSkeleton loading={maxBalanceLoading} variant="rectangular" width="100%">
+            <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
+              <SliderInput
+                name={name}
+                disabled={!!disabled || maxBalanceLoading}
+                value={percentage ?? `${MIN_PERCENTAGE}`}
+                onChange={value => handlePercentageChange(value)}
+                sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
+                min={MIN_PERCENTAGE}
+                max={MAX_PERCENTAGE}
+                inputProps={{ variant: 'standard', adornment: 'percentage' }}
+              />
+            </Stack>
+          </WithSkeleton>
         )}
       </Stack>
       {/** Fourth row containing optional helper (or error) message */}

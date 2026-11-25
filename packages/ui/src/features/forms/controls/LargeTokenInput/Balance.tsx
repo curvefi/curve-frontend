@@ -2,14 +2,16 @@ import type { SvgIcon } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { formatNumber, PLACEHOLDER_USD, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { Tooltip } from '@ui/components/Tooltip'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
 import { BalanceAmount } from '@ui/features/forms/controls/LargeTokenInput/BalanceAmount'
 import { BalanceButton } from '@ui/features/forms/controls/LargeTokenInput/BalanceButton'
 import { VERTICAL_CENTER_TEXT } from '@ui/features/forms/controls/LargeTokenInput/large-token-input.utils'
-import { type QueryOrValue, toQuery, toValue } from '@ui/features/queries/util'
+import { combineQueries } from '@ui/features/queries/combine'
+import { type QueryOrValue, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { WalletIcon } from '@ui/icons/WalletIcon'
 import { t } from '@ui/lib/i18n'
@@ -52,19 +54,26 @@ export const Balance = <T extends Amount>({
   buttonTestId,
   inline = false,
 }: Props<T>) => {
-  const { data: balance, isLoading: loading } = toQuery(balanceProp)
-  const usdRate = toValue(usdRateProp)
-  const notionalValueUsd =
-    maybe(notionalValueUsdProp, toValue) ?? maybes([balance, usdRate], (usdRate, balance) => +usdRate * +balance)
+  const { data: balance, isLoading, error } = toQuery(balanceProp)
+  const { data: notionalValueUsd, isLoading: notionalLoading } = toQuery(
+    notionalValueUsdProp ??
+      combineQueries([toQuery(balanceProp), toQuery(usdRateProp)], (balance, rate) => +balance * rate),
+  )
   return (
     <WithWrapper
       Wrapper={BalanceButton}
-      shouldWrap={onClick && balance != null && !loading}
+      shouldWrap={onClick && balance != null && !isLoading && !error}
       onClick={onClick}
       disabled={disabled}
       testId={buttonTestId}
     >
-      <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
+      <WithWrapper
+        Wrapper={Tooltip}
+        shouldWrap={!error}
+        title={tooltip ?? t`Wallet balance`}
+        body={[balance ?? UNAVAILABLE_NOTATION, symbol].join(' ')}
+        clickable
+      >
         <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
           {typeof Prefix === 'string' ? (
             <Typography
@@ -86,7 +95,8 @@ export const Balance = <T extends Amount>({
               />
             )
           )}{' '}
-          <BalanceAmount disabled={disabled} loading={loading} sx={{ ...(inline && { display: 'inline' }) }}>
+          {error && <ErrorIconButton error={error} size="extraExtraSmall" />}
+          <BalanceAmount disabled={disabled} loading={isLoading} sx={{ ...(inline && { display: 'inline' }) }}>
             {balance}
           </BalanceAmount>{' '}
           <Typography
@@ -96,17 +106,19 @@ export const Balance = <T extends Amount>({
           >
             {symbol}
           </Typography>{' '}
-          {!!Number(notionalValueUsd) && !loading && (
-            <Typography
-              variant="bodyXsRegular"
-              sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
-              {...(inline && { component: 'span' })}
-            >
-              {formatNumber(notionalValueUsd, 'usd.notional')}
-            </Typography>
+          {!isLoading && (notionalLoading || !!Number(notionalValueUsd)) && (
+            <WithSkeleton loading={notionalLoading} component={inline ? 'span' : 'div'}>
+              <Typography
+                variant="bodyXsRegular"
+                sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
+                {...(inline && { component: 'span' })}
+              >
+                {formatNumber(notionalLoading ? PLACEHOLDER_USD : notionalValueUsd, 'usd.notional')}
+              </Typography>
+            </WithSkeleton>
           )}{' '}
         </Box>
-      </Tooltip>
+      </WithWrapper>
     </WithWrapper>
   )
 }

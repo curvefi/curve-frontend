@@ -8,7 +8,7 @@ import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 type RelatedField<TFieldName extends string = string> = TFieldName | { field: TFieldName[]; ignoreTouched: boolean }
 
 /**
- * Binds a token input to a form value, using balance query loading/error state and an optional maximum.
+ * Binds a token input to a form value, using query errors and an optional maximum.
  * Touched-field errors take precedence over query errors, which take precedence over the helper message.
  * Related-field errors appear when either the input or the related field is touched, unless ignoreTouched is set.
  */
@@ -50,7 +50,7 @@ export const FormTokenInput = <
     <LargeTokenInput
       {...props}
       name={name}
-      balance={q({ data: values[name], error, isLoading: balance?.isLoading ?? false })}
+      balance={q({ data: values[name], error, isLoading: false })}
       maxBalance={max && { balance: max.balance, chips: max.chips ?? 'max', onMax: max.onMax }}
       message={error?.message ?? message}
     />
