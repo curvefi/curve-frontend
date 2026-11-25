@@ -121,6 +121,8 @@ const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
 )
 
+const ActivityTabsCard = ({ children }: { children: ReactNode }) => <Card size="small">{children}</Card>
+
 const MarketPriceMetrics = () => {
   const { chainId, marketId, apiMarket, tokens } = useMarketContext()
   const valueOptions = {
@@ -179,7 +181,7 @@ export const MarketActivityLayout = <T extends MarketRateType>({
       menu={buildMarketActivityMenu(rateType)}
       params={{ activity }}
       variant="contained"
-      ContentWrapper={ActivityTabsContent}
+      ContentWrapper={ActivityTabsCard}
     />
   </Stack>
 )
