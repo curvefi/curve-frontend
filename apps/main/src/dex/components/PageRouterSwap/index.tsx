@@ -524,11 +524,8 @@ export const QuickSwap = ({
       {/* SWAP FROM */}
       <DebouncedLargeTokenInput
         label={t`Sell`}
-        balance={q({
-          data: decimal(formValues.fromAmount),
-          error: maybe(formValues.fromError, err => (err != '' ? new Error(err) : null)) ?? null,
-          isLoading: false,
-        })}
+        value={decimal(formValues.fromAmount)}
+        validationError={maybe(formValues.fromError, err => (err != '' ? new Error(err) : null))}
         onBalance={setFromAmount}
         name="fromAmount"
         inputBalanceUsd={maybes([decimal(formValues.fromAmount), fromUsdRate.data], decimalMultiply)}
@@ -582,7 +579,7 @@ export const QuickSwap = ({
       {/* SWAP TO */}
       <DebouncedLargeTokenInput
         label={t`Buy`}
-        balance={decimal(formValues.toAmount)}
+        value={decimal(formValues.toAmount)}
         inputBalanceUsd={maybes([decimal(formValues.toAmount), toUsdRate.data], decimalMultiply)}
         onBalance={setToAmount}
         name="toAmount"

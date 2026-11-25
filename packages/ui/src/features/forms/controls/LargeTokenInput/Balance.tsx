@@ -55,70 +55,80 @@ export const Balance = <T extends Amount>({
   inline = false,
 }: Props<T>) => {
   const { data: balance, isLoading, error } = toQuery(balanceProp)
-  const { data: notionalValueUsd, isLoading: notionalLoading } = toQuery(
+  const {
+    data: notionalValueUsd,
+    isLoading: notionalLoading,
+    error: notionalError,
+  } = toQuery(
     notionalValueUsdProp ??
       combineQueries([toQuery(balanceProp), toQuery(usdRateProp)], (balance, rate) => +balance * rate),
   )
   return (
-    <WithWrapper
-      Wrapper={BalanceButton}
-      shouldWrap={onClick && balance != null && !isLoading && !error}
-      onClick={onClick}
-      disabled={disabled}
-      testId={buttonTestId}
+    <Box
+      component={inline ? 'span' : 'div'}
+      {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}
     >
       <WithWrapper
-        Wrapper={Tooltip}
-        shouldWrap={!error}
-        title={tooltip ?? t`Wallet balance`}
-        body={[balance ?? UNAVAILABLE_NOTATION, symbol].join(' ')}
-        clickable
+        Wrapper={BalanceButton}
+        shouldWrap={onClick && balance != null && !isLoading && !error}
+        onClick={onClick}
+        disabled={disabled}
+        testId={buttonTestId}
       >
-        <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
-          {typeof Prefix === 'string' ? (
-            <Typography
-              variant="bodyXsRegular"
-              sx={{ color: t => t.design.Inputs.Text.MetaSubtle }}
-              {...(inline && { component: 'span' })}
-            >
-              {Prefix}
-            </Typography>
-          ) : (
-            Prefix && (
-              <Prefix
-                sx={{
-                  width: LargeTokenInput.BalanceIconSize,
-                  height: LargeTokenInput.BalanceIconSize,
-                  color: t => t.design.Inputs.Text.Meta,
-                  ...(disabled && { color: t => t.design.Inputs.Text.Disabled }),
-                }}
-              />
-            )
-          )}{' '}
-          {error && <ErrorIconButton error={error} size="extraExtraSmall" />}
-          <BalanceAmount disabled={disabled} loading={isLoading} sx={{ ...(inline && { display: 'inline' }) }}>
-            {balance}
-          </BalanceAmount>{' '}
-          <Typography
-            variant="highlightXs"
-            sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text[disabled ? 'Disabled' : 'Unit'] }}
-            {...(inline && { component: 'span' })}
-          >
-            {symbol}
-          </Typography>{' '}
-          {!isLoading && (notionalLoading || !!Number(notionalValueUsd)) && (
-            <WithSkeleton loading={notionalLoading} component={inline ? 'span' : 'div'}>
+        <WithWrapper
+          Wrapper={Tooltip}
+          shouldWrap={!error}
+          title={tooltip ?? t`Wallet balance`}
+          body={[balance ?? UNAVAILABLE_NOTATION, symbol].join(' ')}
+          clickable
+        >
+          <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
+            {typeof Prefix === 'string' ? (
               <Typography
                 variant="bodyXsRegular"
-                sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
+                sx={{ color: t => t.design.Inputs.Text.MetaSubtle }}
                 {...(inline && { component: 'span' })}
               >
-                {formatNumber(notionalLoading ? PLACEHOLDER_USD : notionalValueUsd, 'usd.notional')}
+                {Prefix}
               </Typography>
-            </WithSkeleton>
-          )}{' '}
-        </Box>
+            ) : (
+              Prefix && (
+                <Prefix
+                  sx={{
+                    width: LargeTokenInput.BalanceIconSize,
+                    height: LargeTokenInput.BalanceIconSize,
+                    color: t => t.design.Inputs.Text.Meta,
+                    ...(disabled && { color: t => t.design.Inputs.Text.Disabled }),
+                  }}
+                />
+              )
+            )}{' '}
+            {error && <ErrorIconButton error={error} size="extraExtraSmall" />}
+            <BalanceAmount disabled={disabled} loading={isLoading} sx={{ ...(inline && { display: 'inline' }) }}>
+              {balance}
+            </BalanceAmount>{' '}
+            <Typography
+              variant="highlightXs"
+              sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text[disabled ? 'Disabled' : 'Unit'] }}
+              {...(inline && { component: 'span' })}
+            >
+              {symbol}
+            </Typography>{' '}
+            {!isLoading && (notionalLoading || !!Number(notionalValueUsd)) && (
+              <WithSkeleton loading={notionalLoading} component={inline ? 'span' : 'div'}>
+                <Typography
+                  variant="bodyXsRegular"
+                  sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
+                  {...(inline && { component: 'span' })}
+                >
+                  {formatNumber(notionalLoading ? PLACEHOLDER_USD : notionalValueUsd, 'usd.notional')}
+                </Typography>
+              </WithSkeleton>
+            )}{' '}
+          </Box>
+        </WithWrapper>
       </WithWrapper>
-    </WithWrapper>
+      {notionalError && notionalError !== error && <ErrorIconButton error={notionalError} size="extraExtraSmall" />}
+    </Box>
   )
 }

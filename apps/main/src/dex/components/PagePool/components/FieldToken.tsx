@@ -69,11 +69,8 @@ export const FieldToken = ({
         />
       }
       {...(haveSameTokenName && { label: `${token} ${shortenAddress(tokenAddress)}` })}
-      balance={q({
-        data: decimal(amount),
-        error: isNotEnough ? new Error(t`Not enough tokens`) : null,
-        isLoading: false,
-      })}
+      value={decimal(amount)}
+      validationError={isNotEnough ? new Error(t`Not enough tokens`) : null}
       onBalance={onBalance}
     />
   )

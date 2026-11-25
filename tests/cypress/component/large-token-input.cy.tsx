@@ -15,7 +15,7 @@ function TestComponent() {
       <>
         <LargeTokenInput
           name="amount"
-          balance={balance}
+          value={balance}
           onBalance={newBalance => {
             setBalance(newBalance)
             setFormBalance(newBalance)

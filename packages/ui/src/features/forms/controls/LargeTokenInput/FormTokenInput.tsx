@@ -1,7 +1,7 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import type { FormControl } from '@ui/features/forms/useFormValidation'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import type { QueryProp } from '@ui/features/queries/util'
 import type { FieldName } from '@ui/lib/validation/types'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
@@ -23,15 +23,14 @@ export const FormTokenInput = <
   name,
   relatedFields,
   max,
-  balance,
+  validationError,
   message,
   ...props
-}: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
+}: Omit<LargeTokenInputProps, 'name' | 'value' | 'maxBalance'> & {
   form: TForm
   name: TFieldName
   relatedFields?: RelatedField<FieldName<TForm['formState']['errors']>>[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
-  balance?: QueryProp<Decimal>
 }) => {
   const error =
     notFalsyArray<RelatedField>([name], relatedFields)
@@ -43,14 +42,15 @@ export const FormTokenInput = <
               .find(Boolean),
       )
       .find(error => !!error) ??
-    balance?.error ??
+    validationError ??
     max?.balance.error ??
     null
   return (
     <LargeTokenInput
       {...props}
       name={name}
-      balance={q({ data: values[name], error, isLoading: false })}
+      value={values[name]}
+      validationError={error}
       maxBalance={max && { balance: max.balance, chips: max.chips ?? 'max', onMax: max.onMax }}
       message={error?.message ?? message}
     />
