@@ -4,7 +4,7 @@ import { MarketRateType } from '@evm-ui/types/market'
 import { Stack } from '@mui/material'
 import { t } from '@ui/lib/i18n'
 
-type NoPositionProps = { type: MarketRateType }
+type MarketEmptyPositionProps = { type: MarketRateType }
 
 type EmptyMarketType = MarketRateType | 'disconnected'
 
@@ -20,7 +20,7 @@ const EMPTY_MARKET_CONFIG: Record<EmptyMarketType, { title: string; description:
   disconnected: { title: t`Disconnected`, description: t`Please connect your wallet to view your positions.` },
 }
 
-export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
+export const MarketEmptyPosition = ({ type }: MarketEmptyPositionProps) => {
   const emptyType = useConnection().address ? type : 'disconnected'
   const { title, description } = EMPTY_MARKET_CONFIG[emptyType]
   return (
