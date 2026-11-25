@@ -15,6 +15,7 @@ import {
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
+import type { Nullish } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -50,7 +51,7 @@ const createLoanFormValidationGroup = (
     isLeverageRequired: boolean
     collateralRequired: boolean
     ignoreMaxCollateral: boolean
-    market: MarketTemplate | undefined
+    market: MarketTemplate | Nullish
     requireControllerApproval: boolean
   },
 ) =>

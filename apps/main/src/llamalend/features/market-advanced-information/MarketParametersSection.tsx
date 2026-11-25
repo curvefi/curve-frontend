@@ -18,7 +18,7 @@ type MarketParametersProps = {
   chainId: IChainId
   marketId: string | undefined
   marketType: MarketType
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
   tokens: MarketTokensOrEmpty
   maxLeverage?: QueryProp<{ value: Decimal } | { value: number }>
   maxReturnOnEquity?: QueryProp<MaxReturnOnEquity>

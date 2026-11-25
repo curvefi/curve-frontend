@@ -1,9 +1,11 @@
 import { CreatePoolPage } from '@/stellar/features/create-pool/CreatePoolPage'
 import { PoolPage } from '@/stellar/features/pool/PoolPage'
 import { PoolListPage } from '@/stellar/features/pool-list/PoolListPage'
-import type { NetworkQuery } from '@/stellar/queries/query-types'
+import type { NetworkQuery, PoolQuery } from '@/stellar/queries/query-types'
+import { poolValidationSuite } from '@/stellar/queries/validation/pool.validation'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { redirectTo } from '@ui/hooks/router'
+import { assertValidity } from '@ui/lib/validation/lib'
 import { rootRoute } from './root.routes'
 
 const dexLayoutRoute = createRoute({ getParentRoute: () => rootRoute, path: 'dex', component: Outlet })
@@ -34,6 +36,9 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools/$pool',
+    loader: ({ params }: { params: PoolQuery }) => {
+      assertValidity(poolValidationSuite, params)
+    },
     component: PoolPage,
     head: () => ({ meta: [{ title: title('Pool') }] }),
     ...layoutProps,

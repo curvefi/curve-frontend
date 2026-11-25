@@ -52,7 +52,7 @@ export const useWithdrawQuoteQueries = <TPoolParams extends object>({
     {
       ...poolParams,
       amount: isDebouncing || values.isMax ? undefined : debounced.amount,
-      maxLpAmount: lpBalance,
+      supply: values.supply,
       decimals: poolDecimals,
       index,
       slippage: values.slippage,

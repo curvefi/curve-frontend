@@ -4,6 +4,8 @@ import { useWithdrawEstimateGas } from '@/dex/queries/withdraw/withdraw-estimate
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
+import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
+import { getWithdrawMinimumAmounts } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
@@ -13,21 +15,19 @@ import { getMaximumWithdrawBurn } from '../withdraw.utils'
 
 export const WithdrawActionInfoList = ({
   params,
+  tokens,
   userAddress,
-  minimumReceived,
   expectedLp,
   lpBalance,
   priceImpact,
-  toSymbol,
   onSlippageChange,
 }: {
   params: ReturnType<typeof useAdvancedWithdrawForm | typeof useOneCoinWithdrawForm>['params']
+  tokens: QueryProp<PoolToken>[] | undefined
   userAddress: Address | undefined
-  minimumReceived?: QueryProp<Decimal>
   expectedLp: QueryProp<Decimal>
   lpBalance: QueryProp<Decimal>
   priceImpact: QueryProp<Decimal | null>
-  toSymbol?: string
   onSlippageChange: (slippage: Decimal) => void
 }) => {
   const { data: pool } = usePoolContext().pool
@@ -41,13 +41,12 @@ export const WithdrawActionInfoList = ({
       currentLpTestId="pool-withdraw-current-lp"
       projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}
       priceImpact={priceImpact}
-      minimumReceived={minimumReceived}
-      toSymbol={toSymbol}
       gas={useWithdrawEstimateGas(params)}
       slippage={params.slippage}
       onSlippageChange={onSlippageChange}
       userAddress={userAddress}
       slippageType={getSlippageType(pool)}
+      minimumWithdrawAmounts={getWithdrawMinimumAmounts(params, tokens, expectedLp)}
     />
   )
 }

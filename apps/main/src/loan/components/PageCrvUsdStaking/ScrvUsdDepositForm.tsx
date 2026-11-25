@@ -31,7 +31,6 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
   const networkConfig = networks[chainId]
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <ScrvUsdDepositInfoList

@@ -1,4 +1,5 @@
 import type { PoolAddressParams } from '@/dex/types/main.types'
+import { poolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { createRoute, lazyRouteComponent, redirect } from '@tanstack/react-router'
 import {
   ETHEREUM_ONLY_NETWORK_SWITCH,
@@ -7,6 +8,7 @@ import {
 import { redirectTo } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { EXTERNAL_LINKS } from '@ui/lib/resource.constants'
+import { assertValidity } from '@ui/lib/validation/lib'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 
@@ -72,6 +74,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     path: '$network/pools/$poolAddress',
     staticData: { networkSwitch: { type: 'locked', toastTitle } },
     loader: ({ params: { network, poolAddress } }: { params: PoolAddressParams }) => {
+      assertValidity(poolValidationSuite, { poolAddress }, ['poolAddress'])
       if (network !== 'ethereum') return
       const legacyPoolId = LEGACY_POOLS[poolAddress.toLowerCase()]
       if (legacyPoolId)

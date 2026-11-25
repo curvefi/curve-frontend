@@ -8,7 +8,7 @@ import type { OneCoinWithdrawQuoteQuery } from './one-coin-withdraw-quote'
 
 export const validateOneCoinWithdrawQuote = ({
   amount,
-  maxLpAmount,
+  supply,
   decimals,
   index,
   slippage,
@@ -30,8 +30,8 @@ export const validateOneCoinWithdrawQuote = ({
       .isDecimal({ decimal_digits: `0,${precision ?? 0}` })
       .gt(0)
   })
-  test('maxLpAmount', 'LP balance is unavailable', () => {
-    enforce(maxLpAmount)
+  test('supply', 'Pool supply is unavailable', () => {
+    enforce(supply)
       .isDecimal({ decimal_digits: `0,${LP_TOKEN_DECIMALS}` })
       .gt(0)
   })

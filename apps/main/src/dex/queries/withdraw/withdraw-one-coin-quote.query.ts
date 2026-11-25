@@ -6,34 +6,25 @@ import { estimateOneCoinWithdraw } from '@ui/features/pool-forms/withdraw/one-co
 import { queryFactory } from '@ui/features/queries/factory'
 
 export const { useQuery: useWithdrawOneCoinQuote, invalidate: invalidateWithdrawOneCoinQuote } = queryFactory({
-  queryKey: ({
-    chainId,
-    poolAddress,
-    isWrapped,
-    amount,
-    maxLpAmount,
-    decimals,
-    index,
-    slippage,
-  }: WithdrawOneCoinParams) =>
+  queryKey: ({ chainId, poolAddress, isWrapped, amount, supply, decimals, index, slippage }: WithdrawOneCoinParams) =>
     ({
       name: 'withdrawOneCoinQuote',
       chainId,
       poolAddress,
       isWrapped,
       amount,
-      maxLpAmount,
+      supply,
       decimals,
       index,
       slippage,
     }) as const,
-  queryFn: async ({ poolAddress, isWrapped, index, amount, maxLpAmount, decimals, slippage }: WithdrawOneCoinQuery) => {
+  queryFn: async ({ poolAddress, isWrapped, index, amount, supply, decimals, slippage }: WithdrawOneCoinQuery) => {
     const pool = getPool(poolAddress)
     // Pin all search rounds to one block so cached quote bounds remain comparable.
     const blockTag = await pool.curve.provider.getBlockNumber()
     return estimateOneCoinWithdraw({
       amount,
-      maxLpAmount,
+      supply,
       decimals: decimals[index],
       slippage,
       quote: burns =>
