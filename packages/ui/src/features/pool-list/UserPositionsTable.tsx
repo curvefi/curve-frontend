@@ -6,7 +6,6 @@ import type { ExpandedState } from '@tanstack/react-table'
 import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { Metric } from '@ui/components/Metric'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
-import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
 import { usePoolsVisibility } from '@ui/features/pool-list/hooks/usePoolsVisibility'
@@ -46,12 +45,11 @@ const MOBILE_COLUMNS = {
   residualClaims: PoolColumnId.Claimables,
 } satisfies Record<UserPositionsTableVariant, PoolColumnId>
 
-type UserPositionsTableProps = ConnectionProps &
-  Pick<PoolTableMeta, 'addressDisplay' | 'crvToken'> & {
-    userAddress: Address | undefined
-    onVariantChange: (variant: UserPositionsTableVariant) => void
-    Actions: ExpandedPanelComponent<PoolRow>
-  } & (
+type UserPositionsTableProps = Pick<PoolTableMeta, 'addressDisplay' | 'crvToken'> & {
+  userAddress: Address
+  onVariantChange: (variant: UserPositionsTableVariant) => void
+  Actions: ExpandedPanelComponent<PoolRow>
+} & (
     (UserPositionsTableData & { variant: 'userPositions' }) | (ResidualClaimsTableData & { variant: 'residualClaims' })
   )
 
@@ -62,9 +60,6 @@ const UserPositionsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, tabl
 export const UserPositionsTable = (props: UserPositionsTableProps) => {
   const {
     userAddress,
-    isConnecting,
-    isConnected,
-    connect,
     variant,
     onVariantChange,
     tableQuery,
@@ -77,7 +72,6 @@ export const UserPositionsTable = (props: UserPositionsTableProps) => {
     crvToken,
     Actions,
   } = props
-  const connectionProps = { userAddress, isConnecting, isConnected, connect }
   const isTablet = useIsTablet()
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
@@ -119,70 +113,56 @@ export const UserPositionsTable = (props: UserPositionsTableProps) => {
         visibilitySettings={rowCount > 0 ? { isOpen: visibilitySettingsOpen, open: openVisibilitySettings } : undefined}
       />
       <Stack ref={anchorRef} sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
-        {userAddress ? (
-          rowCount > 0 ? (
-            <>
-              <MetricsGrid
-                variant="fillMobile"
-                sx={{
-                  paddingBlock: Spacing.sm,
-                  paddingInline: Spacing.md,
-                  backgroundColor: t => t.design.Layer[1].Fill,
-                }}
-              >
-                {props.variant === 'userPositions' && (
-                  <Metric
-                    category="dex.poolListSummary"
-                    label={t`Total liquidity provided`}
-                    value={props.totalLiquidityUsd}
-                    valueOptions={{ unit: 'dollar' }}
-                  />
-                )}
+        {rowCount > 0 ? (
+          <>
+            <MetricsGrid
+              variant="fillMobile"
+              sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}
+            >
+              {props.variant === 'userPositions' && (
                 <Metric
                   category="dex.poolListSummary"
-                  label={t`Claimable rewards`}
-                  value={claimablesTotalUsd}
+                  label={t`Total liquidity provided`}
+                  value={props.totalLiquidityUsd}
                   valueOptions={{ unit: 'dollar' }}
                 />
-              </MetricsGrid>
-              <DataTable
-                {...connectionProps}
-                category="limited"
-                table={table}
-                emptyState={empty}
-                errorState={{ title: errorTitle, onReload }}
-                expandedPanel={{ Body: UserPositionsExpandedPanel, Actions }}
-                shouldStickFirstColumn={Boolean(isTablet && rowCount)}
-              />
-              <TableVisibilitySettingsPopover
-                anchorRef={anchorRef}
-                visibilityGroups={columnSettings}
-                toggleVisibility={toggleVisibility}
-                open={visibilitySettingsOpen}
-                onClose={closeVisibilitySettings}
-              />
-            </>
-          ) : (
-            <CenteredEmptyState>
-              {tableQuery.error ? (
-                <ErrorMessage
-                  userAddress={userAddress}
-                  title={errorTitle}
-                  subtitle={tableQuery.error.message}
-                  error={tableQuery.error}
-                  refreshData={onReload}
-                />
-              ) : (
-                <EmptyStateCard {...connectionProps} {...(tableQuery.isLoading ? loading : empty)} />
               )}
-            </CenteredEmptyState>
-          )
+              <Metric
+                category="dex.poolListSummary"
+                label={t`Claimable rewards`}
+                value={claimablesTotalUsd}
+                valueOptions={{ unit: 'dollar' }}
+              />
+            </MetricsGrid>
+            <DataTable
+              category="limited"
+              table={table}
+              emptyState={empty}
+              errorState={{ title: errorTitle, onReload }}
+              expandedPanel={{ Body: UserPositionsExpandedPanel, Actions }}
+              shouldStickFirstColumn={Boolean(isTablet && rowCount)}
+            />
+            <TableVisibilitySettingsPopover
+              anchorRef={anchorRef}
+              visibilityGroups={columnSettings}
+              toggleVisibility={toggleVisibility}
+              open={visibilitySettingsOpen}
+              onClose={closeVisibilitySettings}
+            />
+          </>
         ) : (
           <CenteredEmptyState>
-            <EmptyStateCard
-              {...connectionProps}
-              button={{ type: 'connect-wallet', label: t`Connect to view positions` }}
-            />
+            {tableQuery.error ? (
+              <ErrorMessage
+                userAddress={userAddress}
+                title={errorTitle}
+                subtitle={tableQuery.error.message}
+                error={tableQuery.error}
+                refreshData={onReload}
+              />
+            ) : (
+              <EmptyStateCard {...(tableQuery.isLoading ? loading : empty)} />
+            )}
           </CenteredEmptyState>
         )}
       </Stack>

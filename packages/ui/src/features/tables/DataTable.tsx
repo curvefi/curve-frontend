@@ -54,7 +54,8 @@ export type DataTableProps<TData extends RowData> = {
   anchorRef?: RefObject<HTMLTableSectionElement | null> // anchor for overlays that follow the sticky column headers
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & AllOrNone<ConnectionProps & { userAddress: Address | undefined }> &
+  userAddress?: Address
+} & AllOrNone<ConnectionProps> &
   Omit<DataRowProps<TData>, 'table' | 'row' | 'rowHeight'>
 
 /**
