@@ -2,9 +2,10 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Token } from '@primitives/address.utils'
 import { IconStack } from '@ui/components/IconStack'
+import { toValue } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui/lib/mui'
-import { TokenIcon } from './TokenIcon'
+import { type IconToken, TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
 
@@ -39,12 +40,14 @@ const STACK_ICON_SIZE = {
 } as const satisfies Record<TokenIconsSize, keyof typeof IconSize>
 
 /** The coins' symbols for an LP token, e.g. reUSD/sfrxUSD, otherwise the token's symbol */
-const getTooltip = ({ symbol, lpCoins }: Token) =>
-  lpCoins?.length ? lpCoins.map(coin => coin.symbol).join('/') : symbol
+const getTooltip = ({ symbol, lpCoins }: Token & IconToken) => {
+  const coins = lpCoins && toValue(lpCoins)
+  return coins?.length ? coins.map(coin => coin.symbol).join('/') : symbol
+}
 
 export type TokenIconsProps = {
   blockchainId: string
-  tokens: Token[] | undefined
+  tokens: (Token & IconToken)[] | undefined
   /** Size of the complete token group, not the individual token icons. */
   size?: TokenIconsSize
   showChainIcon?: boolean

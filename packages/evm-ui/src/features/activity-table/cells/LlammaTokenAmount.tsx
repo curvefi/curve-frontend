@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import type { Token } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { TokenInfo } from '@ui/components/TokenInfo'
 
 export const LlammaTokenAmount = ({
@@ -13,7 +14,7 @@ export const LlammaTokenAmount = ({
   amount: number
   blockchainId: Chain
   notional?: ReactNode
-  token: Token | undefined
+  token: (Token & IconToken) | undefined
 }) =>
   token && (
     <TokenInfo

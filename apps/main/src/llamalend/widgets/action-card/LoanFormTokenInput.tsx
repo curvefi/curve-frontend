@@ -7,6 +7,7 @@ import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import type { Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
@@ -24,7 +25,7 @@ export type LoanFormTokenInputProps<
   TMaxFieldName extends FieldName<TForm['formState']['errors']>,
 > = {
   label: string
-  token: Token | undefined
+  token: (Token & IconToken) | undefined
   blockchainId: INetworkName | undefined
   /**
    * Optional max-value query for this field, including loading and error state.

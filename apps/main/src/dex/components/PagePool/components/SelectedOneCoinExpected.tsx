@@ -9,6 +9,7 @@ import { Spacer } from '@legacy-ui/Spacer'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
+import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { amount } from '@ui/lib/decimal'
@@ -55,7 +56,7 @@ export const SelectedOneCoinExpected = ({
                 size="sm"
                 blockchainId={blockchainId}
                 tooltip={symbol}
-                token={{ address: tokenAddress }}
+                token={{ address: tokenAddress as Address }}
               />{' '}
               {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
               <Spacer />

@@ -12,7 +12,7 @@ export type GaugeFormattedData = Omit<Gauge, 'weight' | 'tokens'> & {
   title: string
   platform: string
   weight: number
-  tokens: (NonNullable<Gauge['tokens']>[number] & Pick<Token, 'lpCoins'>)[] | undefined
+  tokens: (NonNullable<Gauge['tokens']>[number] & { lpCoins: Token[] | undefined })[] | undefined
 }
 
 export type GaugeMapper = Record<string, GaugeFormattedData>

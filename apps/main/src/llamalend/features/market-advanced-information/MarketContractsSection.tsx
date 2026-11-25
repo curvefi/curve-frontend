@@ -29,6 +29,7 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
@@ -66,7 +67,7 @@ const AssetRow = ({
   title: ReactNode
   chainId: number
   blockchainId: Chain
-  token: Token | undefined
+  token: (Token & IconToken) | undefined
   testId: string
 }) => {
   const address = token?.address

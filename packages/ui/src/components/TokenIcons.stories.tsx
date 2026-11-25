@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { TokenIcons } from '@ui/components/TokenIcons'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
@@ -33,7 +34,7 @@ const LP_TOKEN = {
     { symbol: 'reUSD', address: '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' },
     { symbol: 'sfrxUSD', address: '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6' },
   ],
-} satisfies Token
+} satisfies Token & IconToken
 
 const TOKEN_COUNT_CASES = [0, 1, 2, 3, 4, 5, 9, 13] as const
 

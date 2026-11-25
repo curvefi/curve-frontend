@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import { q } from '@ui/features/queries/util'
 
 const meta: Meta<typeof TokenIcon> = {
   title: 'UI/Components/TokenIcon',
@@ -53,6 +54,16 @@ export const LpToken: Story = {
     tooltip: 'reUSD/sfrxUSD',
   },
   parameters: { docs: { description: { story: 'An LP token shown as one icon split between its first two coins.' } } },
+}
+
+export const LoadingLpCoins: Story = {
+  args: {
+    token: {
+      address: '0xed785Af60bEd688baa8990cD5c4166221599A441',
+      lpCoins: q({ data: undefined, isLoading: true, error: null }),
+    },
+  },
+  parameters: { docs: { description: { story: 'A skeleton while the coins of a possible LP token load.' } } },
 }
 
 export const WithChainIcon: Story = {

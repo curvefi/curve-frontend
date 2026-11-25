@@ -74,7 +74,7 @@ const { useQuery: useUserPoolClaimablesQuery } = hydratedQueryFactory({
               reward => reward.token,
             ),
           ).map(([token, rewards]) => ({
-            token,
+            token: token as Address,
             symbol: rewards[0]?.symbol,
             price: rewards[0]?.price,
             amount: decimalSum(...rewards.map(reward => reward.amount)),

@@ -14,7 +14,7 @@ import { getLib, requireLib } from '@evm-ui/features/connect-wallet'
 import type { Wallet } from '@evm-ui/features/connect-wallet/lib/types'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
-import { type Address, Hex, type Token } from '@primitives/address.utils'
+import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
 import {
@@ -28,6 +28,7 @@ import {
 } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import { type MetricProps } from '@ui/components/Metric'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, QueryProp, toQuery } from '@ui/features/queries/util'
@@ -196,7 +197,7 @@ export const formatTokenAmounts = (
     userCollateral && +userCollateral && formatToken(userCollateral, getCollateralSymbol(market), 'amount'),
   ).join(', ')
 
-export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals' | 'lpCoins'>
+export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'> & Pick<IconToken, 'lpCoins'>
 
 export type MarketTokens = { collateralToken: MarketToken; borrowToken: MarketToken }
 
@@ -258,9 +259,6 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
           },
     ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
-
-export const withLpCoins = <T extends Token>(token: T, lpCoins: Token[] | Nullish): T =>
-  lpCoins ? { ...token, lpCoins } : token
 
 export const getTokensQuery = (market: QueryProp<MarketTemplate>, apiMarket: QueryProp<LlamaMarket>) => ({
   ...fallbackQ(market, apiMarket),

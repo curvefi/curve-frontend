@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { ethAddress } from 'viem'
 import { shortenAddress } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/DebouncedLargeTokenInput'
@@ -65,7 +66,7 @@ export const FieldToken = ({
           blockchainId={blockchainId}
           label={token}
           tooltip={isNetworkToken ? t`Balance minus estimated gas` : (tokenAddress ?? '')}
-          token={{ address: tokenAddress }}
+          token={{ address: tokenAddress as Address }}
         />
       }
       {...(haveSameTokenName && { label: `${token} ${shortenAddress(tokenAddress)}` })}

@@ -1,6 +1,7 @@
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { IconStack } from '@ui/components/IconStack'
 import { TokenIcon } from '@ui/components/TokenIcon'
@@ -25,7 +26,7 @@ const TOKENS = [
   { symbol: 'USDT', address: '0xdac17f958d2ee523a2206206994597c13d831ec7' },
   { symbol: 'DAI', address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
   { symbol: 'WBTC', address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' },
-]
+] satisfies Token[]
 
 type IconStackSize = Parameters<typeof IconStack>[0]['iconSize']
 

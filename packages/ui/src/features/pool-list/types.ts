@@ -51,7 +51,7 @@ export type PoolRowData = {
   tvlUsd: number | undefined
 }
 
-export type PoolClaimables = { token: string; symbol: string; price: number; amount: Decimal; amountUsd: Decimal }[]
+export type PoolClaimables = { token: Address; symbol: string; price: number; amount: Decimal; amountUsd: Decimal }[]
 
 type PoolUserPosition = {
   /** Both staked and unstaked */

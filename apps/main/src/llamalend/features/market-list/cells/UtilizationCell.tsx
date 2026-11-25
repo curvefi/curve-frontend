@@ -6,7 +6,7 @@ import { MarketType } from '@evm-ui/types/market'
 import { CRVUSD } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Token } from '@primitives/address.utils'
+import type { Address, Token } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { LinearProgress } from '@ui/components/LinearProgress'
@@ -27,7 +27,7 @@ const Currency = ({
   blockchainId,
 }: {
   symbol: string
-  address: string
+  address: Address
   lpCoins?: Token[]
   balance: number | null
   blockchainId: Chain

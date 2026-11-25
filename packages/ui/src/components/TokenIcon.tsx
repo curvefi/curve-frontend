@@ -4,6 +4,7 @@ import type { Theme } from '@mui/material/styles'
 import type { Token } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Tooltip } from '@ui/components/Tooltip'
+import { type QueryOrValue, toQuery } from '@ui/features/queries/util'
 import { handleBreakpoints } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { FallbackIcon } from '@ui/images'
@@ -12,6 +13,7 @@ import { getImageBaseUrl } from '@ui/lib/resource.constants'
 import { BadgeIcon } from './BadgeIcon'
 import { TokenBadge } from './TokenBadge'
 import { TokenChainIcon } from './TokenChainIcon'
+import { WithSkeleton } from './WithSkeleton'
 import { WithWrapper } from './WithWrapper'
 
 const { IconSize } = SizesAndSpaces
@@ -60,9 +62,11 @@ export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xs' | 'lg' | 'xl'
 
 export const DEFAULT_SIZE: Size = 'sm'
 
-// TODO: use `Address` instead of string
-/** The token whose icon is shown. A Curve LP token has `lpCoins`, and its icon is made of its coins. */
-export type IconToken = { address: string; lpCoins?: Token[] }
+/**
+ * The token whose icon is shown. The icon of a Curve LP token is made of its `lpCoins`, which are null for other tokens.
+ * Lists get them with their data, a market page gets them from a query, so the icon shows a skeleton while it loads.
+ */
+export type IconToken = Pick<Token, 'address'> & { lpCoins?: QueryOrValue<Token[] | null> }
 
 export type TokenIconProps = {
   /** Additional CSS class name to apply to the token icon */
@@ -107,7 +111,8 @@ export const TokenIcon = ({
     sx,
     disabled && { filter: 'saturate(0)' },
   )
-  const coins = token?.lpCoins?.length ? token.lpCoins : toArray(token)
+  const { data: lpCoins, isLoading } = toQuery(token?.lpCoins ?? null)
+  const coins = lpCoins?.length ? lpCoins : toArray(token)
   const testId = `token-icon-${tooltip || coins.map(coin => coin.address).join('-')}`
   return (
     <WithWrapper
@@ -117,44 +122,46 @@ export const TokenIcon = ({
         position: 'relative', // to position overlay icons on top of the token icon
       }}
     >
-      <Tooltip title={tooltip} placement="top">
-        {coins.length > 1 ? (
-          // The design only covers two tokens, so the first two are shown as one icon split in half
-          <Box
-            data-testid={testId}
-            className={`${className}`}
-            sx={applySxProps(
-              { position: 'relative', overflow: 'hidden', backgroundColor: t => t.design.Layer[3].Fill },
-              iconSx,
-            )}
-          >
-            {coins.slice(0, 2).map(({ address }, index) => (
-              <TokenImage
-                key={address}
-                blockchainId={blockchainId}
-                address={address}
-                alt={tooltip}
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  ...squareSize('100%'),
-                  /** Shows the left half of the first token and the right half of the second token */
-                  clipPath: ['inset(0 50% 0 0)', 'inset(0 0 0 50%)'][index],
-                }}
-              />
-            ))}
-          </Box>
-        ) : (
-          <TokenImage
-            blockchainId={blockchainId}
-            address={coins[0]?.address}
-            data-testid={testId}
-            className={`${className}`}
-            alt={tooltip}
-            sx={iconSx}
-          />
-        )}
-      </Tooltip>
+      <WithSkeleton loading={isLoading} variant="circular">
+        <Tooltip title={tooltip} placement="top">
+          {coins.length > 1 ? (
+            // The design only covers two tokens, so the first two are shown as one icon split in half
+            <Box
+              data-testid={testId}
+              className={`${className}`}
+              sx={applySxProps(
+                { position: 'relative', overflow: 'hidden', backgroundColor: t => t.design.Layer[3].Fill },
+                iconSx,
+              )}
+            >
+              {coins.slice(0, 2).map(({ address }, index) => (
+                <TokenImage
+                  key={address}
+                  blockchainId={blockchainId}
+                  address={address}
+                  alt={tooltip}
+                  sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    ...squareSize('100%'),
+                    /** Shows the left half of the first token and the right half of the second token */
+                    clipPath: ['inset(0 50% 0 0)', 'inset(0 0 0 50%)'][index],
+                  }}
+                />
+              ))}
+            </Box>
+          ) : (
+            <TokenImage
+              blockchainId={blockchainId}
+              address={coins[0]?.address}
+              data-testid={testId}
+              className={`${className}`}
+              alt={tooltip}
+              sx={iconSx}
+            />
+          )}
+        </Tooltip>
+      </WithSkeleton>
       {showChainIcon && <TokenChainIcon disabled={disabled} chain={blockchainId} />}
       {badgeAddress && (
         <TokenBadge tooltipTitle={badgeAddress} position="br">

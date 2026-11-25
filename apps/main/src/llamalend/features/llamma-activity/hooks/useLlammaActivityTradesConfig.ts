@@ -1,5 +1,4 @@
 import { isAddressEqual } from 'viem'
-import { withLpCoins } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import { LLAMMA_TRADES_COLUMNS } from '@evm-ui/features/activity-table/columns/llamma-trades-columns'
@@ -34,13 +33,12 @@ export const useLlammaActivityTradesConfig = ({
   })
 
   /** The market tokens carry the coins of LP tokens, which the prices API doesn't return */
-  const withMarketLpCoins = (token: Token) =>
-    withLpCoins(
-      token,
-      [collateralToken, borrowToken].find(
-        marketToken => marketToken && isAddressEqual(marketToken.address, token.address),
-      )?.lpCoins,
-    )
+  const withMarketLpCoins = (token: Token) => ({
+    ...token,
+    lpCoins: [collateralToken, borrowToken].find(
+      marketToken => marketToken && isAddressEqual(marketToken.address, token.address),
+    )?.lpCoins,
+  })
 
   const pageCount = getPageCount(tradesQuery.data?.count, DEFAULT_PAGE_SIZE)
 
