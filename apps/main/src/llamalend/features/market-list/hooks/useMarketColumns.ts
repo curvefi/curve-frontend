@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useLlamalendEquityLeverage, useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { fromEntries } from '@primitives/objects.utils'
@@ -26,17 +25,13 @@ export const useMarketColumns = ({
 }: MarketTable) => {
   const isPositionPnl = useLlamalendPositionPnl()
   const isEquityLeverage = useLlamalendEquityLeverage()
-  const columns = useMemo(
-    () =>
-      tableColumns
-        .filter(({ id }) => isPositionPnl || !POSITION_PNL_COLUMNS.includes(id))
-        .map((column): MarketTable['columns'][number] =>
-          isEquityLeverage && column.id === MAX_LEVERAGE_COLUMN
-            ? { ...column, accessorFn: (row: LlamaMarketRow) => row.maxEquityLeverage ?? undefined }
-            : column,
-        ),
-    [tableColumns, isPositionPnl, isEquityLeverage],
-  )
+  const columns = tableColumns
+    .filter(({ id }) => isPositionPnl || !POSITION_PNL_COLUMNS.includes(id))
+    .map((column): MarketTable['columns'][number] =>
+      isEquityLeverage && column.id === MAX_LEVERAGE_COLUMN
+        ? { ...column, accessorFn: (row: LlamaMarketRow) => row.maxEquityLeverage ?? undefined }
+        : column,
+    )
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, { fieldName: sortQueryField, columns })
   const sortField = sorting[0].id
   const [overrides, setOverrides] = useTableColumnOverrides(storageKey, migration)
