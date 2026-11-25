@@ -20,7 +20,7 @@ export const PageState = ({
 }) =>
   data === null || (error && data === undefined) ? (
     <ErrorPage
-      title={(error && t`Error`) ?? '404'}
+      title={error ? t`Error` : '404'}
       subtitle={error?.message ?? notFound}
       error={error}
       continueUrl={continueUrl}
