@@ -94,7 +94,7 @@ const BorrowersCard = () => {
   })
   const totalDebt = fallbackQ(
     q(useMarketTotalDebt({ chainId, marketId })),
-    mapQuery(apiMarket, market => decimal(market?.assets.borrowed.balance)),
+    mapQuery(apiMarket, m => decimal(m?.assets.borrowed.balance)),
   )
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
   const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: tokens.collateralToken?.address })

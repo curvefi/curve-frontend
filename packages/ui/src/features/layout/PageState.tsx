@@ -18,7 +18,7 @@ export const PageState = ({
   userAddress: Address | undefined
   children: ReactNode
 }) =>
-  error || data === null ? (
+  data === null || (error && data === undefined) ? (
     <ErrorPage
       title={(error && t`Error`) ?? '404'}
       subtitle={error?.message ?? notFound}

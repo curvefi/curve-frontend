@@ -69,7 +69,7 @@ export const MarketRateCurveChart = () => {
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalDebt = fallbackQ(
     q(useMarketTotalDebt({ chainId, marketId })),
-    mapQuery(apiMarket, market => decimal(market?.assets.borrowed.balance)),
+    mapQuery(apiMarket, m => decimal(m?.assets.borrowed.balance)),
   )
   const availableLiquidity = useAvailableLiquidity({ chainId, marketQuery, apiMarket })
 

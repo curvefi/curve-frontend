@@ -73,7 +73,7 @@ export const Page = () => {
       >
         <DetailPageLayout
           formTabs={{
-            content: query.data && <VaultTabs />, // TODO: Let VaultTabs render its own skeleton while market data loads.
+            content: query.data && <VaultTabs />,
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
           }}
           header={<MarketPageHeader />}
