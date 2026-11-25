@@ -1,17 +1,20 @@
 import { z } from 'zod/v4'
 import { fromEntries, maybe, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
-import { address, camelizeKeys, chain, decimal, hex, timestamp } from '../schemas'
+import { address, camelizeKeys, chain, decimal, hex, lpCoins, timestamp } from '../schemas'
 
-const token = z
-  .object({
-    symbol: z.string(),
-    address,
-    decimals: z.number(),
-    rebasing_yield: z.number().nullable(),
-    rebasing_yield_apr: z.number().nullable(),
-  })
-  .transform(camelizeKeys)
+const tokenFields = z.object({
+  symbol: z.string(),
+  address,
+  decimals: z.number(),
+  rebasing_yield: z.number().nullable(),
+  rebasing_yield_apr: z.number().nullable(),
+})
+
+const token = tokenFields.transform(camelizeKeys)
+
+/** Only the market lists return the coins of LP tokens, not the snapshots */
+const marketToken = tokenFields.extend({ lp_coins: lpCoins }).transform(camelizeKeys)
 
 const extraRewardApr = z
   .object({ address, symbol: z.string(), apr: z.number() })
@@ -65,8 +68,8 @@ const market = z
     borrowed_balance: z.number(),
     collateral_balance_usd: z.number(),
     borrowed_balance_usd: z.number(),
-    collateral_token: token,
-    borrowed_token: token,
+    collateral_token: marketToken,
+    borrowed_token: marketToken,
     leverage: z.number().nullable(),
     extra_reward_apr: z.array(extraRewardApr),
     created_at: timestamp,

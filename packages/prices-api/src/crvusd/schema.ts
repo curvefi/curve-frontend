@@ -2,22 +2,20 @@ import { z } from 'zod/v4'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
 import { leverage } from '../lending/schema'
-import { address, camelizeKeys, chain, decimal, timestamp } from '../schemas'
+import { address, camelizeKeys, chain, decimal, lpCoins, timestamp } from '../schemas'
 
-const token = z
-  .object({
-    symbol: z.string(),
-    address,
-    decimals: z.number(),
-    rebasing_yield: z.number().nullable().optional(),
-    rebasing_yield_apr: z.number().nullable().optional(),
-  })
-  .transform(camelizeKeys)
-  .transform(({ rebasingYield, rebasingYieldApr, ...data }) => ({
-    ...data,
-    rebasingYield: rebasingYield ?? null,
-    rebasingYieldApr: rebasingYieldApr ?? null,
-  }))
+const tokenFields = z.object({
+  symbol: z.string(),
+  address,
+  decimals: z.number(),
+  rebasing_yield: z.number().nullable().default(null),
+  rebasing_yield_apr: z.number().nullable().default(null),
+})
+
+const token = tokenFields.transform(camelizeKeys)
+
+/** Only the market lists return the coins of LP tokens, not the snapshots */
+const marketToken = tokenFields.extend({ lp_coins: lpCoins }).transform(camelizeKeys)
 
 const market = z
   .object({
@@ -55,8 +53,8 @@ const market = z
     stablecoin_amount: z.number(),
     stablecoin_amount_usd: z.number(),
     volume_24h_usd: z.number(),
-    collateral_token: token,
-    stablecoin_token: token,
+    collateral_token: marketToken,
+    stablecoin_token: marketToken,
     created_at: timestamp,
     max_ltv: z.number().nullable(),
   })

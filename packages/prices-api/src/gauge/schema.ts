@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import type { Chain } from '..'
-import { address, camelizeKeys, timestamp } from '../schemas'
+import { address, camelizeKeys, lpCoins, timestamp } from '../schemas'
 
 const GAUGE_WEIGHT_SCALE = 1e18
 
@@ -15,7 +15,7 @@ const gauge = z
     pool: z
       .object({ address, name: z.string(), chain: z.string(), tvl_usd: z.number(), trading_volume_24h: z.number() })
       .nullable(),
-    tokens: z.array(z.object({ symbol: z.string(), address, precision: z.number() })).nullable(),
+    tokens: z.array(z.object({ symbol: z.string(), address, precision: z.number(), lp_coins: lpCoins })).nullable(),
     market: z.object({ name: z.string(), chain: z.string() }).nullable(),
     is_killed: z.boolean(),
     emissions: z.number(),
@@ -48,7 +48,12 @@ const gauge = z
           tradingVolume24h: data.pool.tradingVolume24h,
         }
       : undefined,
-    tokens: data.tokens?.map(token => ({ symbol: token.symbol, address: token.address, precision: token.precision })),
+    tokens: data.tokens?.map(token => ({
+      symbol: token.symbol,
+      address: token.address,
+      precision: token.precision,
+      lpCoins: token.lpCoins,
+    })),
     market: data.market ? { name: data.market.name, chain: data.market.chain as Chain } : undefined,
     killed: data.isKilled,
     emissions: data.emissions,
