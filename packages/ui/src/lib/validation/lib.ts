@@ -1,6 +1,14 @@
 import { noop } from 'lodash'
 import { create, only, type Suite } from 'vest'
+import { toArray } from '@primitives/array.utils'
 import { FieldsOf, ValidationKey } from '@ui/lib/validation/types'
+
+export class ValidationError extends Error {
+  readonly title = 'Validation failed'
+  constructor(entries: [string, string[]][]) {
+    super(`Validation failed: ${entries.map(([field, error]) => `${field}: ${toArray(error).join(' ')}`).join(', ')}`)
+  }
+}
 
 /**
  * This is using `any` because `vest` will try to match every single field,
@@ -25,8 +33,7 @@ export function assertValidity<D extends object, S extends ValidationSuite>(
 ): D {
   const entries = Object.entries(validate(suite, data, fields))
   if (entries.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
-    throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
+    throw new ValidationError(entries)
   }
   return data as D
 }
