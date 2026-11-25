@@ -74,26 +74,25 @@ export const getWithdrawMinimumAmounts = (
     decimals,
     slippage,
     tokenIndex,
+    isApproximate,
   }: Pick<WithdrawMutation, 'mode' | 'slippage'> & {
     amounts?: QueryOrValue<(Decimal | undefined)[]> | Nullish
     decimals?: QueryOrValue<(number | undefined)[]> | Nullish
     tokenIndex?: number | Nullish
+    isApproximate: boolean
   },
   tokens: QueryProp<PoolToken>[] | undefined,
   expectedLp: QueryProp<Decimal>,
 ) =>
   tokens?.flatMap((token, index) =>
     notFalsy(
-      (mode === 'balanced' || (mode === 'one-coin' && index === tokenIndex)) && {
-        index,
-        value: combineQueries(
-          [token, expectedLp, toQuery(amounts), toQuery(decimals)],
-          ({ symbol }, _, amounts, decimals) =>
-            maybes([amounts?.[index], decimals?.[index]], (amount, precision) => ({
-              amount: calculateMinimumReceived(amount, slippage, precision),
-              symbol,
-            })),
+      (mode === 'balanced' || (mode === 'one-coin' && index === tokenIndex)) &&
+        combineQueries([token, expectedLp, toQuery(amounts), toQuery(decimals)], ({ symbol }, _, amounts, decimals) =>
+          maybes([amounts?.[index], decimals?.[index]], (amount, precision) => ({
+            amount: calculateMinimumReceived(amount, slippage, precision),
+            symbol,
+            isApproximate,
+          })),
         ),
-      },
     ),
   )

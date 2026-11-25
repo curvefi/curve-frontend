@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
+import { notFalsy, type Nullish } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
@@ -31,8 +31,7 @@ type PoolActionInfoListProps = {
   projectedLp?: QueryProp<Decimal>
   seedLock?: QueryProp<Decimal | null>
   exchangeRate?: QueryProp<Decimal>
-  minimumReceived?: QueryProp<Decimal>
-  minimumWithdrawAmounts?: { index: number; value: QueryProp<{ amount: Decimal; symbol: string | undefined }> }[]
+  minimumReceived?: QueryProp<{ amount: Decimal; symbol: string | undefined; isApproximate: boolean }>[]
   fromSymbol?: string | undefined
   toSymbol?: string | undefined
 }
@@ -55,7 +54,6 @@ export const PoolActionInfoList = ({
   seedLock,
   exchangeRate,
   minimumReceived,
-  minimumWithdrawAmounts,
   fromSymbol,
   toSymbol,
 }: PoolActionInfoListProps) => (
@@ -109,14 +107,6 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    {minimumReceived && (
-      <ActionInfo
-        testId="pool-swap-minimum-received"
-        label={t`Minimum received`}
-        value={mapQuery(minimumReceived, value => formatToken(value, toSymbol, 'balance'))}
-        size="small"
-      />
-    )}
     {minimumLp && (
       <ActionInfo
         testId="pool-deposit-minimum-lp"
@@ -133,22 +123,17 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    {!!minimumWithdrawAmounts?.length && (
+    {!!minimumReceived?.length && (
       <ActionInfo
-        testId="pool-withdraw-minimum-received"
+        testId="pool-minimum-received"
         label={t`Minimum received`}
-        sx={{ alignItems: 'flex-start' }}
-        value={combineQueries(
-          minimumWithdrawAmounts.map(({ index, value }) =>
-            mapQuery(value, ({ amount, symbol }) => (
-              <span key={index} data-testid={`pool-withdraw-minimum-received-${index}`}>
-                ~{formatToken(amount, symbol, 'balance')}
-              </span>
-            )),
-          ),
-          (...values) => (
-            <Stack sx={{ alignItems: 'flex-end' }}>{values}</Stack>
-          ),
+        sx={{ alignItems: 'flex-start', '& .ActionInfo-value': { whiteSpace: 'pre-line', textAlign: 'right' } }}
+        value={combineQueries(minimumReceived, (...values) =>
+          values
+            .map(({ amount, symbol, isApproximate }) =>
+              notFalsy(isApproximate && '~', formatToken(amount, symbol, 'balance')).join(''),
+            )
+            .join('\n'),
         )}
         size="small"
       />
