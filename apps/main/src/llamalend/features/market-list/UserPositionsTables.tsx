@@ -1,4 +1,3 @@
-import { useConnection } from 'wagmi'
 import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { lendPages } from '@evm-ui/shared/routes'
@@ -25,7 +24,6 @@ export const UserPositionsTables = ({
   tableQuery,
   tableQuery: { data: queryData, isLoading, error },
 }: UserPositionsTableProps) => {
-  const { address } = useConnection()
   // Tracks whether the user has any positions for each market rate type.
   const hasUserPositions = maybe(queryData?.userHasPositions, userHasPositions =>
     fromEntries(
@@ -40,53 +38,47 @@ export const UserPositionsTables = ({
     <Stack>
       <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
-        {address ? (
-          hasUserPositions ? (
-            <>
-              <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
-              {[hasUserPositions?.[MarketRateType.Borrow], error].some(Boolean) && (
-                <UserPositionsMarketRateTable
-                  tableQuery={mapQuery(tableQuery, ({ markets }) =>
-                    markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
-                  )}
-                  marketRateType={MarketRateType.Borrow}
-                  onReload={onReload}
-                />
-              )}
-              {[hasUserPositions?.[MarketRateType.Supply], error].some(Boolean) && (
-                <UserPositionsMarketRateTable
-                  tableQuery={mapQuery(tableQuery, ({ markets }) =>
-                    markets
-                      .filter(market => market.userHasPositions?.[MarketRateType.Supply])
-                      // For supply positions, navigate to vault page instead of borrow page
-                      .map(market => ({ ...market, url: buildVaultUrl(market) })),
-                  )}
-                  marketRateType={MarketRateType.Supply}
-                  onReload={onReload}
-                />
-              )}
-            </>
-          ) : (
-            <CenteredEmptyState>
-              {error ? (
-                <EvmErrorMessage
-                  title={t`Could not load positions`}
-                  subtitle={error.message}
-                  error={error}
-                  refreshData={onReload}
-                />
-              ) : (
-                <EmptyStateEvmCard
-                  isLoading={isLoading}
-                  title={t`No active positions`}
-                  description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
-                />
-              )}
-            </CenteredEmptyState>
-          )
+        {hasUserPositions ? (
+          <>
+            <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
+            {[hasUserPositions?.[MarketRateType.Borrow], error].some(Boolean) && (
+              <UserPositionsMarketRateTable
+                tableQuery={mapQuery(tableQuery, ({ markets }) =>
+                  markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
+                )}
+                marketRateType={MarketRateType.Borrow}
+                onReload={onReload}
+              />
+            )}
+            {[hasUserPositions?.[MarketRateType.Supply], error].some(Boolean) && (
+              <UserPositionsMarketRateTable
+                tableQuery={mapQuery(tableQuery, ({ markets }) =>
+                  markets
+                    .filter(market => market.userHasPositions?.[MarketRateType.Supply])
+                    // For supply positions, navigate to vault page instead of borrow page
+                    .map(market => ({ ...market, url: buildVaultUrl(market) })),
+                )}
+                marketRateType={MarketRateType.Supply}
+                onReload={onReload}
+              />
+            )}
+          </>
         ) : (
           <CenteredEmptyState>
-            <EmptyStateEvmCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
+            {error ? (
+              <EvmErrorMessage
+                title={t`Could not load positions`}
+                subtitle={error.message}
+                error={error}
+                refreshData={onReload}
+              />
+            ) : (
+              <EmptyStateEvmCard
+                isLoading={isLoading}
+                title={t`No active positions`}
+                description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
+              />
+            )}
           </CenteredEmptyState>
         )}
       </Stack>
