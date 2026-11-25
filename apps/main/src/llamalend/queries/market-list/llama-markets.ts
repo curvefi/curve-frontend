@@ -8,6 +8,7 @@ import {
   calculateMarketSolvency,
   calculateMintMarketTvlUsd,
   createGetBadDebtMarket,
+  isLeverageAllowed,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
 import {
@@ -22,6 +23,7 @@ import { type Chain } from '@curvefi/prices-api'
 import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lending-vaults.query'
 import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
+import { requireChainId } from '@evm-ui/utils'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -35,7 +37,7 @@ import { useQueries } from '@ui/features/queries/query-hooks'
 import { DISABLED_Q, type Query } from '@ui/features/queries/util'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { aprToApy } from '@ui/lib/rates.utils'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
+import { DEPRECATED_LLAMAS } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import { type LendingPosition } from './lending-vaults'
@@ -123,6 +125,9 @@ const toMarketVersion = (version: number): MarketVersion =>
 /** Converts API 1e18-scaled discount fractions to UI percent units (div by 1e18*100). */
 const scaledFractionToPercent = (value: number): Decimal =>
   decimalDiv(assert(decimal(value), `Invalid scaled discount: ${value}`), '10000000000000000')
+
+const getAllowedLeverage = (blockchainId: Chain, controllerAddress: Address, leverage: number | null) =>
+  isLeverageAllowed(requireChainId(blockchainId), controllerAddress) ? leverage : null
 
 const convertLendingVault = (
   {
@@ -260,7 +265,7 @@ const convertLendingVault = (
       lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: NO_LEVERAGE_LEND[blockchainId]?.includes(controller) ? null : leverage,
+    leverage: getAllowedLeverage(blockchainId, controller, leverage),
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: !!hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -406,7 +411,7 @@ const convertMintMarket = (
     url: crvUsdPages.market({ blockchainId: chain, collateralId: name }),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
-    leverage,
+    leverage: getAllowedLeverage(chain, address, leverage),
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: llamma,

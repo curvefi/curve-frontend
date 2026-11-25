@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useCreateLoanEquityLeverage } from '@/llamalend/hooks/useEquityLeverage'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
-import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { getMarketLeverageSlippage, isLeverageAllowed } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanControllerApproval } from '@/llamalend/queries/create-loan/create-loan-controller-approval.query'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import {
@@ -19,8 +19,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type Nullish, maybe, pick } from '@primitives/objects.utils'
-import type { RouteProvider } from '@primitives/router.utils'
+import { pick } from '@primitives/objects.utils'
 import { useCallbackSync, useFormSync, useOnChangeCallback } from '@ui/features/forms'
 import { useFormValidation } from '@ui/features/forms/useFormValidation'
 import { useFormValues } from '@ui/features/forms/useFormValues'
@@ -36,11 +35,6 @@ import { useMarketContext } from '../../market-context'
 import { type CreateLoanFormValues } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
-
-const isLeverageCreateLoanSupported = <T extends MarketTemplate | Nullish>(
-  market: T,
-  leverageProviders: readonly RouteProvider[] | undefined,
-) => maybe(market, market => hasLegacyMintLeverage(market) || (hasZapV2(market) && !!leverageProviders?.length))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   networks,
@@ -80,7 +74,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     defaultValues: { ...userDefaultValues, leverageEnabled: false, slippage: defaultSlippage },
     context: { chainId, marketId, userAddress, leverageProviders, slippageType: LEVERAGE },
   })
-  const isLeverageSupported = isLeverageCreateLoanSupported(market, leverageProviders)
+  const isLeverageSupported = isLeverageAllowed(chainId, controllerAddress)
 
   const maxTokenValues = useMaxTokenValues({ market, collateralTokenAddress: collateralToken?.address, inputs })
 

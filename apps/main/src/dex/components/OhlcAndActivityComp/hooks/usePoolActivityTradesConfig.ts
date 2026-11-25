@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { ChainId } from '@/dex/types/main.types'
@@ -36,13 +35,8 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls = useCombinedQueries(
-    [poolTrades, loadingQ(isHydrated || undefined)],
-    useCallback(
-      tradesData =>
-        maybe(network, blockchainId => tradesData.trades.map(trade => ({ ...trade, chainId, blockchainId }))),
-      [chainId, network],
-    ),
+  const tradesWithUrls = useCombinedQueries([poolTrades, loadingQ(isHydrated || undefined)], tradesData =>
+    maybe(network, blockchainId => tradesData.trades.map(trade => ({ ...trade, chainId, blockchainId }))),
   )
 
   const table = useCurveTable({
