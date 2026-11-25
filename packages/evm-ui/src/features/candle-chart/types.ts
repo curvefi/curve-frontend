@@ -1,11 +1,11 @@
 import type { UTCTimestamp } from 'lightweight-charts'
-import type { PoolCoin } from '@curvefi/prices-api/pools'
+import type { Token } from '@primitives/address.utils'
 import { TIME_OPTIONS } from '@ui/features/charts/chart.utils'
 
 export type TimeOption = (typeof TIME_OPTIONS)[number]
 
 export type ChartSelection =
-  { type: 'lp-usd' } | { type: 'lp-token'; symbol?: string } | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
+  { type: 'lp-usd' } | { type: 'lp-token'; symbol?: string } | { type: 'pair'; mainToken: Token; refToken: Token }
 
 export type LpPriceOhlcDataFormatted = { time: UTCTimestamp; open: number; close: number; high: number; low: number }
 

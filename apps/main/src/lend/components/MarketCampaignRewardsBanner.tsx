@@ -5,11 +5,11 @@ import { useMarketCampaignsByAddress } from '@/llamalend/features/market-advance
 import { getControllerAddress, getVaultAddress } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
-import { notFalsy } from '@primitives/objects.utils'
+import { type Nullish, notFalsy } from '@primitives/objects.utils'
 import { CampaignRewardsBanner } from '@ui/features/campaigns/CampaignRewardsBanner'
 import { t } from '@ui/lib/i18n'
 
-type MarketCampaignRewardsBannerProps = { chainId: ChainId; market: LendMarketTemplate | undefined }
+type MarketCampaignRewardsBannerProps = { chainId: ChainId; market: LendMarketTemplate | Nullish }
 
 export const MarketCampaignRewardsBanner = ({ chainId, market }: MarketCampaignRewardsBannerProps) => {
   const blockchainId = networks[chainId].blockchainId as Chain

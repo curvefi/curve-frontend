@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react'
 import type { Address } from '@primitives/address.utils'
-import { Loading } from '@ui/components/Loading'
 import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
-/** Undefined is unresolved; null and false mean the requested resource is absent. */
+/** Undefined is unresolved; null means the requested resource is absent. */
 export const PageState = ({
-  query: { data, isLoading, error },
+  query: { data, error },
   notFound,
   continueUrl,
   userAddress,
@@ -18,10 +17,8 @@ export const PageState = ({
   continueUrl: string
   userAddress: Address | undefined
   children: ReactNode
-}) => {
-  if (data) return children
-  if (isLoading || (!error && data === undefined)) return <Loading />
-  return (
+}) =>
+  data === null || (error && data === undefined) ? (
     <ErrorPage
       title={error ? t`Error` : '404'}
       subtitle={error?.message ?? notFound}
@@ -29,5 +26,6 @@ export const PageState = ({
       continueUrl={continueUrl}
       userAddress={userAddress}
     />
+  ) : (
+    children
   )
-}

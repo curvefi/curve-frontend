@@ -3,6 +3,7 @@ import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { useDepositPriceImpact } from '@/stellar/features/deposit/useDepositPriceImpact'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
+import { STELLAR_DEFAULT_SLIPPAGE } from '@/stellar/lib/pool.constants'
 import { useDepositMutation } from '@/stellar/mutations/deposit.mutation'
 import { useExpectedLp } from '@/stellar/queries/pool/expected-lp.query'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
@@ -13,7 +14,6 @@ import { depositFormValidationSuite } from '@/stellar/queries/validation/deposit
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import { getPoolAmounts, getPoolDefaultValues, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
@@ -29,7 +29,7 @@ const formOptions = {
     decimals: undefined,
     supply: undefined,
     expectedLp: undefined,
-    slippage: SLIPPAGE.stable.default,
+    slippage: STELLAR_DEFAULT_SLIPPAGE,
   },
 }
 
