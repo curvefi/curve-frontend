@@ -3,6 +3,7 @@ import { networks as lendNetworks } from '@/lend/networks'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mockLendingSnapshots } from '@cy/support/helpers/lending-mocks'
+import { mockTokenMetadata } from '@cy/support/helpers/tokens'
 import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
 import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/queries/gas-info.query'
 import { setTokenUsdRateQueryData } from '@evm-ui/queries/token-usd-rate.query'
@@ -39,6 +40,7 @@ export const setupMockedLlamalendComponentTest = () => {
   cy.intercept('https://prices.curve.finance/v1/crvusd/markets/*/*/snapshots*', { fixture: 'minting-snapshots.json' })
   mockLendingSnapshots('ethereum')
   mockCollateralEvents()
+  mockTokenMetadata()
   cy.intercept({ pathname: '/api/merkl/v1/opportunities' }, { body: [] })
 }
 

@@ -62,3 +62,13 @@ export const mockTokenPrices = () =>
     const data = { address: token.address, usd_price: token.usdPrice, last_updated: '2025-02-11T16:18:47' }
     req.reply({ data })
   })
+
+export const mockTokenMetadata = () =>
+  cy.intercept('https://prices.curve.finance/v1/tokens/*/*', req =>
+    req.reply({
+      address: new URL(req.url).pathname.split('/').at(-1),
+      symbol: 'TOKEN',
+      lp_coins: null,
+      pool_address: null,
+    }),
+  )
