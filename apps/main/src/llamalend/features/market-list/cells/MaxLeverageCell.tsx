@@ -4,7 +4,7 @@ import { formatNumber } from '@primitives/number.utils'
 import type { CellContext } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 
-export const MaxLeverageCell = ({ getValue }: CellContext<CurveTableFeatures, LlamaMarketRow, number | null>) => {
+export const MaxLeverageCell = ({ getValue }: CellContext<CurveTableFeatures, LlamaMarketRow, number | undefined>) => {
   const value = getValue()
   return (
     <Typography variant="tableCellValue">

@@ -1,5 +1,4 @@
 import { sumCollateralYields } from '@/llamalend/collateral-yields'
-import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { MarketRateType } from '@evm-ui/types/market'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui/features/tables/filters'
 import { t } from '@ui/lib/i18n'
@@ -84,10 +83,7 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
       }),
     ]),
     ...inGroup(t`Markets`, [
-      columnHelper.accessor<
-        (row: LlamaMarketRow) => LlamaMarketRow['maxLegacyLeverage'],
-        LlamaMarketRow['maxLegacyLeverage']
-      >(row => row.maxLegacyLeverage, {
+      columnHelper.accessor(row => row.maxLegacyLeverage ?? undefined, {
         id: MarketColumnId.MaxLeverage,
         header: MARKET_TITLES[MarketColumnId.MaxLeverage],
         cell: MaxLeverageCell,

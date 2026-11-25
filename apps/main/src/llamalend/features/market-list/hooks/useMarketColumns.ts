@@ -32,7 +32,7 @@ export const useMarketColumns = ({
         .filter(({ id }) => isPositionPnl || !POSITION_PNL_COLUMNS.includes(id))
         .map((column): MarketTable['columns'][number] =>
           isEquityLeverage && column.id === MAX_LEVERAGE_COLUMN
-            ? { ...column, accessorFn: (row: LlamaMarketRow) => row.maxEquityLeverage }
+            ? { ...column, accessorFn: (row: LlamaMarketRow) => row.maxEquityLeverage ?? undefined }
             : column,
         ),
     [tableColumns, isPositionPnl, isEquityLeverage],
