@@ -9,6 +9,7 @@ import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpac
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -31,6 +32,7 @@ type PoolActionInfoListProps = {
   seedLock?: QueryProp<Decimal | null>
   exchangeRate?: QueryProp<Decimal>
   minimumReceived?: QueryProp<Decimal>
+  minimumWithdrawAmounts?: { index: number; value: QueryProp<{ amount: Decimal; symbol: string | undefined }> }[]
   fromSymbol?: string | undefined
   toSymbol?: string | undefined
 }
@@ -53,6 +55,7 @@ export const PoolActionInfoList = ({
   seedLock,
   exchangeRate,
   minimumReceived,
+  minimumWithdrawAmounts,
   fromSymbol,
   toSymbol,
 }: PoolActionInfoListProps) => (
@@ -127,6 +130,26 @@ export const PoolActionInfoList = ({
         testId="pool-withdraw-maximum-lp"
         label={t`Maximum LP burned`}
         value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
+    {!!minimumWithdrawAmounts?.length && (
+      <ActionInfo
+        testId="pool-withdraw-minimum-received"
+        label={t`Minimum received`}
+        sx={{ alignItems: 'flex-start' }}
+        value={combineQueries(
+          minimumWithdrawAmounts.map(({ index, value }) =>
+            mapQuery(value, ({ amount, symbol }) => (
+              <span key={index} data-testid={`pool-withdraw-minimum-received-${index}`}>
+                ~{formatToken(amount, symbol, 'balance')}
+              </span>
+            )),
+          ),
+          (...values) => (
+            <Stack sx={{ alignItems: 'flex-end' }}>{values}</Stack>
+          ),
+        )}
         size="small"
       />
     )}
