@@ -46,7 +46,7 @@ export const readSwapAmounts = (editedSide: SwapSide) =>
   ).then(([inputAmount, outputAmount]) => ({ inputAmount, outputAmount }))
 
 export const readSwapMinimum = () =>
-  getActionValue('pool-swap-minimum-received', 'stellar.simulation')
+  getActionValue('pool-minimum-received', 'stellar.simulation')
     .should('match', DECIMAL_REGEX)
     .then(value => value!.match(DECIMAL_REGEX)![0] as Decimal)
 
@@ -64,7 +64,7 @@ export const checkSwapDetails = (
     useUserProfileStore.getState().maxSlippage.stable,
     toToken.decimals,
   )
-  getActionValue('pool-swap-minimum-received', 'stellar.simulation').should(
+  getActionValue('pool-minimum-received', 'stellar.simulation').should(
     'equal',
     `${formatNumber(minimum, 'token.balance')} ${toToken.symbol}`,
   )

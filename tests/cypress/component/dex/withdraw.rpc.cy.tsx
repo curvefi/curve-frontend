@@ -49,8 +49,8 @@ const checkPartialOneCoinWithdraw = (symbol: string) => {
   getPoolWithdrawDetail('current-lp').then(current =>
     getPoolWithdrawDetail('projected-lp').should(value => expect(Number(value)).gt(0).and.lt(Number(current))),
   )
-  getActionValue('pool-swap-minimum-received', 'tenderly.simulation').should(value => {
-    expect(Number.parseFloat(value!)).gt(0)
+  getActionValue('pool-minimum-received', 'tenderly.simulation').should(value => {
+    expect(Number.parseFloat(value!.replace(/[~,]/g, ''))).gt(0)
     expect(value).to.include(` ${symbol}`)
   })
   cy.get('[data-testid="high-price-impact-error"]').should('not.exist')
