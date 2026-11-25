@@ -7,7 +7,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { type Nullish, maybe } from '@primitives/objects.utils'
 import { q } from '@ui/features/queries/util'
 
-/** Takes the query fields apart, so the result stays the same between renders and the market context doesn't change */
+/** Destructured so the compiler can cache it: `useQuery` returns a new object every render */
 const useLpCoins = (params: Parameters<typeof useTokenLpCoins>[0]) => {
   const { data, isLoading, error } = useTokenLpCoins(params)
   return q({ data, isLoading, error })

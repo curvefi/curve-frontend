@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
-import { TokenIcon, type IconToken, type Size } from '@ui/components/TokenIcon'
+import { TokenIcon, type Size, type TokenIconProps } from '@ui/components/TokenIcon'
 import { Tooltip } from '@ui/components/Tooltip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { q } from '@ui/features/queries/util'
@@ -18,7 +18,7 @@ type TokenAmountProps = {
   amountUsd: number | Nullish
   blockchainId?: string
   /** Token used to render the token icon */
-  token?: IconToken
+  token?: TokenIconProps['token']
   amountLoading?: boolean
   usdLoading?: boolean
   /** Shown as an error icon, next to the USD amount if there is one */

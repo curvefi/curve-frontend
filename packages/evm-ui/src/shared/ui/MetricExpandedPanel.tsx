@@ -1,9 +1,9 @@
 import { UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { Metric, type MetricProps } from '@ui/components/Metric'
-import { TokenIcon, type IconToken, type TokenIconProps } from '@ui/components/TokenIcon'
+import { TokenIcon, type TokenIconProps } from '@ui/components/TokenIcon'
 
 type MetricExpandedPanelProps = Omit<MetricProps, 'category' | 'icon'> & {
-  icon?: { blockchainId: TokenIconProps['blockchainId']; token?: IconToken | null }
+  icon?: { blockchainId: TokenIconProps['blockchainId']; token?: TokenIconProps['token'] | null }
 }
 
 export const MetricExpandedPanel = ({ icon, valueOptions, ...props }: MetricExpandedPanelProps) => (

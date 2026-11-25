@@ -24,7 +24,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import type { Address, Token } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
@@ -67,7 +67,7 @@ const AssetRow = ({
   title: ReactNode
   chainId: number
   blockchainId: Chain
-  token: (Token & IconToken) | undefined
+  token: IconToken | undefined
   testId: string
 }) => {
   const address = token?.address

@@ -63,10 +63,9 @@ export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xs' | 'lg' | 'xl'
 export const DEFAULT_SIZE: Size = 'sm'
 
 /**
- * The token whose icon is shown. The icon of a Curve LP token is made of its `lpCoins`, which are null for other tokens.
- * Lists get them with their data, a market page gets them from a query, so the icon shows a skeleton while it loads.
+ * The token whose icon is shown. An LP token's icon is made of its `lpCoins`, and shows a skeleton while they load.
  */
-export type IconToken = Pick<Token, 'address'> & { lpCoins?: QueryOrValue<Token[] | null> }
+export type IconToken = Token & { lpCoins?: QueryOrValue<Token[] | null> }
 
 export type TokenIconProps = {
   /** Additional CSS class name to apply to the token icon */
@@ -78,7 +77,7 @@ export type TokenIconProps = {
   /** Size variant for the token icon */
   size?: Size
   /** Token used for fetching the icon image */
-  token?: IconToken
+  token?: Omit<IconToken, 'symbol'>
   /** Secondary token contract address used for fetching the badge image */
   badgeAddress?: string | null
   /** Whether the icon should appear disabled (greyed out) */

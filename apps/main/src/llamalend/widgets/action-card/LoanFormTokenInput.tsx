@@ -4,7 +4,6 @@ import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import type { Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import type { IconToken } from '@ui/components/TokenIcon'
@@ -25,7 +24,7 @@ export type LoanFormTokenInputProps<
   TMaxFieldName extends FieldName<TForm['formState']['errors']>,
 > = {
   label: string
-  token: (Token & IconToken) | undefined
+  token: IconToken | undefined
   blockchainId: INetworkName | undefined
   /**
    * Optional max-value query for this field, including loading and error state.

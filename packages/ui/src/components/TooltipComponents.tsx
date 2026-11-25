@@ -4,7 +4,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import type { SxProps } from '@mui/material/styles'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { type IconToken, TokenIcon, type Size } from '@ui/components/TokenIcon'
+import { TokenIcon, type Size, type TokenIconProps } from '@ui/components/TokenIcon'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { TRANSITION_FUNCTION } from '@ui/features/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
@@ -94,7 +94,7 @@ type TooltipItemProps = {
   /** Overrides the color of the value, instead of the one of the variant. */
   valueColor?: TypographyProps['color']
   /** Token metadata used to render a token icon before the title. */
-  titleIcon?: IconToken & { blockchainId: string; size: Size }
+  titleIcon?: NonNullable<TokenIconProps['token']> & { blockchainId: string; size: Size }
   /** Custom content rendered before the title. */
   titleAdornment?: ReactNode
   sx?: SxProps
