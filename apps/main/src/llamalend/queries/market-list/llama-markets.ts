@@ -8,8 +8,7 @@ import {
   calculateMarketSolvency,
   calculateMintMarketTvlUsd,
   createGetBadDebtMarket,
-  getMarketLeverageConfig,
-  isZapV0MintMarket,
+  isLeverageAllowed,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
 import {
@@ -126,12 +125,8 @@ const toMarketVersion = (version: number): MarketVersion =>
 const scaledFractionToPercent = (value: number): Decimal =>
   decimalDiv(assert(decimal(value), `Invalid scaled discount: ${value}`), '10000000000000000')
 
-/** Leverage is only shown for markets on the leverage allowlist and V0 zap mint markets */
 const getAllowedLeverage = (blockchainId: Chain, controllerAddress: Address, leverage: number | null) =>
-  getMarketLeverageConfig(requireChainId(blockchainId), controllerAddress) ||
-  isZapV0MintMarket(blockchainId, controllerAddress)
-    ? leverage
-    : null
+  isLeverageAllowed(requireChainId(blockchainId), controllerAddress) ? leverage : null
 
 const convertLendingVault = (
   {
