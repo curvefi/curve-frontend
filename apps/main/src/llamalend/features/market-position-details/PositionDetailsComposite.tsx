@@ -6,6 +6,7 @@ import { UserPositionLiquidationNote } from '@/llamalend/features/user-position-
 import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
+import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -51,13 +52,15 @@ const POSITION_CONFIG: {
   [MarketRateType.Supply]: { Details: SupplyPositionDetails, Activity: UserVaultEventsTable },
 }
 
-const PositionTab = ({ type, position: { data: hasPosition, isLoading } }: PositionDetailsCompositeProps) => {
+const PositionTab = ({ type, position: { data: hasPosition, isLoading, error } }: PositionDetailsCompositeProps) => {
   const { Details } = POSITION_CONFIG[type]
   return (
     <Card size="small">
       <CardContent>
         {hasPosition ? (
           <Details />
+        ) : error && hasPosition === undefined ? (
+          <EvmErrorMessage title={t`Could not load your position`} subtitle={error.message} error={error} size="sm" />
         ) : (
           <WithSkeleton loading={isLoading} variant="rectangular" sx={{ width: '100%', maxWidth: 'none' }}>
             <MarketEmptyPosition type={type} />
