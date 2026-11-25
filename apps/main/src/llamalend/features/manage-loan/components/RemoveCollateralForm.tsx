@@ -77,7 +77,12 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['userCollateral']} userAddress={userAddress} />
+      <FormAlerts
+        error={error}
+        formErrors={formErrors}
+        handledErrors={['userCollateral', 'maxCollateral']}
+        userAddress={userAddress}
+      />
 
       <EvmFormButton
         pending={isPending}

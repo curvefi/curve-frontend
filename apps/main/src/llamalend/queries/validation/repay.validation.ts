@@ -39,13 +39,13 @@ const validateRepayBorrowedField = (userBorrowed: Decimal | Nullish): void => {
   )
 }
 
-const validateRepayHasValue = (stateCollateral: Decimal | Nullish, userBorrowed: Decimal | Nullish) => {
-  test('root', 'Enter an amount to repay', () => {
-    enforce(stateCollateral ?? userBorrowed)
-      .isDecimal()
-      .greaterThan(0)
-  })
-}
+/** Require either amount and attach errors to both fields so the active, touched input shows them inline. */
+const validateRepayHasValue = (stateCollateral: Decimal | Nullish, userBorrowed: Decimal | Nullish) =>
+  ['stateCollateral', 'userBorrowed'].forEach(field =>
+    test(field, 'Enter an amount to repay', () => {
+      enforce(+(stateCollateral ?? '0') > 0 || +(userBorrowed ?? '0') > 0).isTruthy()
+    }),
+  )
 
 const validateRepayFieldsForMarket = (
   marketId: MarketTemplate | string | Nullish,

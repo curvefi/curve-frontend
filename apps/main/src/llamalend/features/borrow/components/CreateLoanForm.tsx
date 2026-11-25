@@ -183,7 +183,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <FormAlerts
         error={error}
         formErrors={formErrors}
-        handledErrors={['userCollateral', 'debt', 'maxDebt']}
+        handledErrors={['userCollateral', 'maxCollateral', 'debt', 'maxDebt']}
         userAddress={userAddress}
       />
     </Form>
