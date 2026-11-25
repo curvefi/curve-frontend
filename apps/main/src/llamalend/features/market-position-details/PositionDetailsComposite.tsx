@@ -7,11 +7,13 @@ import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Stack from '@mui/material/Stack'
+import { TabsSwitcher } from '@ui/components/Tabs/TabsSwitcher'
 import type { QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
+import { type TabItem, useTabs } from '@ui/hooks/useTabs'
+import { t } from '@ui/lib/i18n'
 import { BorrowPositionDetails } from './BorrowPositionDetails'
 import { MarketEmptyPosition } from './MarketEmptyPosition'
-import { PositionDetailsCard } from './PositionDetailsCard'
 import { PositionDetailsToggle } from './PositionDetailsToggle'
 import { SupplyPositionDetails } from './SupplyPositionDetails'
 
@@ -41,31 +43,40 @@ const POSITION_CONFIG: {
   },
 }
 
-export const PositionDetailsComposite = <T extends MarketRateType>({
-  type,
-  hasPosition,
-  events,
-}: PositionDetailsCompositeProps<T>) => {
+const PositionTab = ({ type, hasPosition }: PositionDetailsCompositeProps<MarketRateType>) => {
+  const { Details } = POSITION_CONFIG[type]
+  return hasPosition ? <Details /> : <MarketEmptyPosition type={type} />
+}
+
+const ActivityTab = <T extends MarketRateType>({ type, events }: PositionDetailsCompositeProps<T>) =>
+  POSITION_CONFIG[type].renderActivity(events)
+
+const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps<MarketRateType>>[] = [
+  {
+    value: 'position',
+    label: t`Your position`,
+    visible: ({ hasPosition, events }) => hasPosition !== false || !events.data?.length,
+    component: PositionTab,
+  },
+  { value: 'activity', label: t`Activity`, visible: ({ events }) => !!events.data?.length, component: ActivityTab },
+]
+
+export const PositionDetailsComposite = <T extends MarketRateType>(props: PositionDetailsCompositeProps<T>) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
-  const hasEvents = !!events.data?.length
-  const { Details, renderActivity } = POSITION_CONFIG[type]
+  const { tab, tabs, onChange, content } = useTabs({ menu: POSITION_TABS, params: props })
 
   return (
-    <PositionDetailsCard
-      type={type}
-      hasPosition={hasPosition}
-      hasEvents={hasEvents}
-      headerAction={
-        type === MarketRateType.Borrow && (
+    <Stack>
+      <Stack direction="row" sx={{ alignItems: 'end', justifyContent: 'space-between', width: '100%' }}>
+        <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
+        {props.type === MarketRateType.Borrow && (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <LlamaMonitorBotButton />
-            {isNewLlamalendHealth && hasPosition && <PositionDetailsToggle />}
+            {isNewLlamalendHealth && props.hasPosition && <PositionDetailsToggle />}
           </Stack>
-        )
-      }
-      activity={renderActivity(events)}
-    >
-      {hasPosition ? <Details /> : <MarketEmptyPosition type={type} />}
-    </PositionDetailsCard>
+        )}
+      </Stack>
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
+    </Stack>
   )
 }
