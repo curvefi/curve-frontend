@@ -62,7 +62,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
   const isWrapped = values.isWrapped! // isWrapped is optional but always passed in this app.
   const poolParams = { chainId, poolAddress, isWrapped, userAddress }
   const { tokens, tokenCount, decimals } = usePoolTokens({ chainId, blockchainId, pool, userAddress, isWrapped })
-  const { lpTokenBalance: lpBalance } = usePoolTokenDepositBalances(poolParams)
+  const { lpTokenBalance: lpBalance, gaugeTokenBalance } = usePoolTokenDepositBalances(poolParams)
   const reserves = mapQuery(usePoolCurrencyReserves(poolParams), data => data.tokens.map(token => token.balance))
   const supply = mapQuery(usePoolParameters(poolParams), data => data.lpTokenSupply as Decimal)
 
@@ -110,6 +110,7 @@ export const useAdvancedWithdrawForm = ({ maxSlippage }: { maxSlippage: Decimal 
     lpBalance,
     expectedLp,
     priceImpact,
+    hasStaked: Number(gaugeTokenBalance.data) > 0,
     canBalance,
     lpAmountUsd: lpAmountUsd.data,
     canWithdrawWrapped: !!hasWrapped(pool),
