@@ -10,7 +10,7 @@ export const poolValidationGroup = ({ chainId, poolAddress }: PoolParams) =>
     chainValidationGroup({ chainId })
 
     test('poolAddress', () => {
-      enforce(poolAddress).message('Pool address is required').isNotEmpty()
+      enforce(poolAddress).message('Pool address is required').isNotEmpty().message('Invalid pool address').isAddress()
     })
   })
 

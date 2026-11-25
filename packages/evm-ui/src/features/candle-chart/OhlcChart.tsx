@@ -1,17 +1,20 @@
-import { CandleChart } from '@evm-ui/features/candle-chart/CandleChart'
-import { useChartPalette } from '@evm-ui/features/candle-chart/hooks/useChartPalette'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { AllOrNone } from '@primitives/objects.utils'
 import type { ChartSelections } from '@ui/features/charts/ChartHeader'
-import type { ChartEmptyState } from '@ui/features/charts/ChartStateWrapper'
+import { ChartStateWrapper, type ChartEmptyState } from '@ui/features/charts/ChartStateWrapper'
+import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
+import { CandleChart } from './CandleChart'
+import { useChartPalette } from './hooks/useChartPalette'
 import type { LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
 export type OhlcSeries = { ohlcData: LpPriceOhlcDataFormatted[] | undefined; oraclePriceData?: OraclePriceData[] }
 
-export type OhlcChartProps = {
+export type OhlcChartProps = AllOrNone<ConnectionProps> & {
+  userAddress?: Address
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
@@ -39,15 +42,22 @@ export const OhlcChart = ({
   chartHeight,
   selectChartList,
   selectedChartKey,
+  userAddress,
+  isConnecting,
+  isConnected,
+  connect,
   ...candleProps
 }: OhlcChartProps) => {
   const colors = useChartPalette()
+  const connectionProps = connect ? { connect, isConnecting, isConnected } : {}
 
   const selectedChartLabel = selectChartList.find(c => c.key === selectedChartKey)?.label
 
   return (
     <Stack direction="column" sx={{ width: '100%', minWidth: 0 }}>
-      <EvmChartStateWrapper
+      <ChartStateWrapper
+        {...connectionProps}
+        userAddress={userAddress}
         query={series}
         height={chartHeight}
         emptyState={{
@@ -71,7 +81,7 @@ export const OhlcChart = ({
             colors={colors}
           />
         )}
-      </EvmChartStateWrapper>
+      </ChartStateWrapper>
     </Stack>
   )
 }

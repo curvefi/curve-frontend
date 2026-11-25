@@ -141,7 +141,7 @@ const MarketPriceMetrics = () => {
         }}
         value={fallbackQ(
           q(useMarketOraclePrice({ chainId, marketId })),
-          mapQuery(apiMarket, market => decimal(market.oraclePrice)),
+          mapQuery(apiMarket, m => decimal(m?.oraclePrice)),
         )}
         valueOptions={valueOptions}
         testId="market-price-chart-oracle-metric"
@@ -154,7 +154,7 @@ const MarketPriceMetrics = () => {
         }}
         value={fallbackQ(
           q(useMarketPrice({ chainId, marketId })),
-          mapQuery(apiMarket, market => market.ammPrice || undefined),
+          mapQuery(apiMarket, m => m?.ammPrice || undefined),
         )}
         valueOptions={valueOptions}
         testId="market-price-chart-current-metric"
