@@ -12,6 +12,7 @@ import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Amount } from '@primitives/decimal.utils'
@@ -252,7 +253,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
         }
         slotProps={{ title: { style: { textTransform: 'none' } } }}
       />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+      <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <MarketPriceMetrics />
         <Stack
           sx={{
@@ -282,7 +283,7 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
           legendSets={chartFooterLegendSets}
           description={useNewLlamalendHealth() ? SOFT_LIQUIDATION_DESCRIPTION : LEGACY_SOFT_LIQUIDATION_DESCRIPTION}
         />
-      </Stack>
+      </CardContent>
     </Card>
   )
 }
