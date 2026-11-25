@@ -95,7 +95,7 @@ type UserPositionQueries = {
   prices: { borrowed: QueryProp<TokenPrice>; collateral: QueryProp<TokenPrice> }
   /** Equity in USD, at the borrowed token's USD rate */
   equityUsd: QueryProp<number>
-  pnl: QueryProp<PositionPnlAndRoi>
+  pnl: QueryProp<PositionPnlAndRoi | null>
   /** PNL in the debt token, in USD at the borrowed token's USD rate */
   pnlUsd: QueryProp<number>
   /** The open position borrowed through the leverage zap, null when the history can't tell */

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { getAddress, isAddress, isAddressEqual } from 'viem'
+import { getAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -11,24 +11,22 @@ import type { PoolAddressParams } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
-import { ErrorPage } from '@ui/features/errors/ErrorPage'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
-import { loadingQ, mapQuery } from '@ui/features/queries/util'
+import { PageState } from '@ui/features/layout/PageState'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
 
 export const PagePool = () => {
-  const { curveApi, isHydrated } = useCurve()
+  const { curveApi } = useCurve()
   const props = useParams<PoolAddressParams>()
   const { poolAddress: rPoolAddress, network: blockchainId } = props
-  const poolAddress = isAddress(rPoolAddress, { strict: false }) ? getAddress(rPoolAddress) : undefined
+  const poolAddress = getAddress(rPoolAddress)
   const chainId = useChainId(blockchainId)
   const { data: network } = useNetworkByChain({ chainId })
 
-  const lookup = usePool({ chainId, poolAddress })
-  // We want to have a loading state during hydration (pool is unavailable until then)
-  const pool = isHydrated || lookup.error ? lookup : loadingQ(undefined)
+  const pool = usePool({ chainId, poolAddress })
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
@@ -53,22 +51,16 @@ export const PagePool = () => {
       />
     )
 
-  // Strict check with null as `undefined` means unresolved; null means 'doesn't exist'.
-  if (pool.data === null || !poolAddress || (!pool.data && pool.error))
-    return (
-      <ErrorPage
-        title={pool.error ? t`Error` : '404'}
-        subtitle={pool.error?.message ?? t`Pool Not Found`}
-        error={pool.error}
-        continueUrl={ROUTE.pools({ blockchainId: props.network })}
-        userAddress={curveApi?.signerAddress}
-      />
-    )
-
-  // Typescript is not smart enough to narrow the type of pool to exclude `null`
   return (
-    <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)} poolAddress={poolAddress}>
-      <Transfer params={props} />
-    </PoolContextProvider>
+    <PageState
+      query={q(pool)}
+      notFound={t`Pool Not Found`}
+      continueUrl={ROUTE.pools({ blockchainId: props.network })}
+      userAddress={curveApi?.signerAddress}
+    >
+      <PoolContextProvider network={network} pool={mapQuery(pool, data => data ?? undefined)} poolAddress={poolAddress}>
+        <Transfer params={props} />
+      </PoolContextProvider>
+    </PageState>
   )
 }

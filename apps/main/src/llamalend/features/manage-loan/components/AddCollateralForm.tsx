@@ -40,7 +40,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <AddCollateralInfoList

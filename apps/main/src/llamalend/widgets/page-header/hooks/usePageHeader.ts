@@ -113,10 +113,10 @@ const useBorrowRate = ({
 }: {
   chainId: number
   controllerAddress: Address | undefined
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
   marketRates: QueryProp<MarketRates>
   marketType: MarketType
-  marketQuery: QueryProp<MarketTemplate>
+  marketQuery: QueryProp<MarketTemplate | null>
   snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
   campaigns: CampaignRewards[]
 }) => {
@@ -126,7 +126,7 @@ const useBorrowRate = ({
     [
       marketRates,
       snapshot,
-      useCollateralYields({ chainId, marketId: mapQuery(marketQuery, m => m.id), marketType, controllerAddress }),
+      useCollateralYields({ chainId, marketId: mapQuery(marketQuery, m => m?.id), marketType, controllerAddress }),
       marketQuery,
     ],
     ({ borrowApr }, snapshots, collateralYields): BorrowRate => ({
@@ -148,15 +148,17 @@ const useBorrowRate = ({
     { type: MarketRateType.Borrow, category: RATE_CATEGORY },
     useApiMarket,
   )
-  const apiBorrowRate = mapQuery(apiMarket, (d): BorrowRate => ({
-    rate: d.rates.borrowApr,
-    averageRate: averageApr,
-    averageCategory: RATE_CATEGORY,
-    collateralYields: d.collateralYields,
-    totalBorrowRate: d.rates.borrowTotalApr,
-    totalAverageBorrowRate: totalAverageBorrowApr,
-    extraRewards: borrowCampaigns,
-  }))
+  const apiBorrowRate = mapQuery(apiMarket, market =>
+    maybe(market, (d): BorrowRate => ({
+      rate: d.rates.borrowApr,
+      averageRate: averageApr,
+      averageCategory: RATE_CATEGORY,
+      collateralYields: d.collateralYields,
+      totalBorrowRate: d.rates.borrowTotalApr,
+      totalAverageBorrowRate: totalAverageBorrowApr,
+      extraRewards: borrowCampaigns,
+    })),
+  )
 
   return fallbackQ(onChainBorrowRate, apiBorrowRate)
 }
@@ -176,13 +178,13 @@ const useSupplyRate = ({
   useApiMarket: boolean
   marketRates: QueryProp<MarketRates>
   snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
-  marketQuery: QueryProp<MarketTemplate>
+  marketQuery: QueryProp<MarketTemplate | null>
   blockchainId: Chain | undefined
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
   marketType: MarketType
   campaigns: CampaignRewards[]
 }) => {
-  const marketId = mapQuery(marketQuery, m => m.id)
+  const marketId = mapQuery(marketQuery, m => m?.id)
   const enabled = marketType === MarketType.Lend
   const apiSupplySnapshots = useMarketRateHistory<LendingSnapshot>(
     apiMarket.data,
@@ -207,25 +209,27 @@ const useSupplyRate = ({
         category: RATE_CATEGORY,
       }),
   )
-  const apiSupplyRate = mapQuery(apiMarket, ({ rates, assets }) =>
-    buildSupplyRate({
-      supplyApy: rates.lendApy,
-      rebasingYieldApy: assets.borrowed.rebasingYield,
-      marketOnChainRewards: {
-        crvRates:
-          maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max) => [min, max] as Range<number>) ??
-          null,
-        rewardsApr: rates.incentives.map(({ percentage, title, address }) => ({
-          apy: percentage,
-          symbol: title,
-          tokenAddress: address,
-        })),
-      },
-      lendingSnapshots: apiSupplySnapshots.snapshots ?? undefined,
-      campaigns: apiSupplyCampaigns,
-      blockchainId,
-      category: RATE_CATEGORY,
-    }),
+  const apiSupplyRate = mapQuery(apiMarket, market =>
+    maybe(market, ({ rates, assets }) =>
+      buildSupplyRate({
+        supplyApy: rates.lendApy,
+        rebasingYieldApy: assets.borrowed.rebasingYield,
+        marketOnChainRewards: {
+          crvRates:
+            maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max) => [min, max] as Range<number>) ??
+            null,
+          rewardsApr: rates.incentives.map(({ percentage, title, address }) => ({
+            apy: percentage,
+            symbol: title,
+            tokenAddress: address,
+          })),
+        },
+        lendingSnapshots: apiSupplySnapshots.snapshots ?? undefined,
+        campaigns: apiSupplyCampaigns,
+        blockchainId,
+        category: RATE_CATEGORY,
+      }),
+    ),
   )
   return enabled ? fallbackQ(onChainSupplyRate, apiSupplyRate) : undefined
 }
@@ -236,11 +240,11 @@ export const useAvailableLiquidity = ({
   apiMarket,
 }: {
   chainId: number
-  marketQuery: QueryProp<MarketTemplate>
-  apiMarket: QueryProp<LlamaMarket>
+  marketQuery: QueryProp<MarketTemplate | null>
+  apiMarket: QueryProp<LlamaMarket | null>
 }) => {
   const borrowTokenAddress = mapQuery(getTokensQuery(marketQuery, apiMarket), t => t.borrowToken.address)
-  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: mapQuery(marketQuery, m => m.id) })
+  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: mapQuery(marketQuery, m => m?.id) })
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
 
   const onChainLiquidity = combineQueries([capAndAvailable, marketQuery], ({ available, totalAssets }) => ({
@@ -249,11 +253,13 @@ export const useAvailableLiquidity = ({
   }))
   const value = fallbackQ(
     mapQuery(onChainLiquidity, d => d.value),
-    mapQuery(apiMarket, d => d.liquidity),
+    mapQuery(apiMarket, d => d?.liquidity),
   )
   const total = fallbackQ(
     mapQuery(onChainLiquidity, d => d.total),
-    mapQuery(apiMarket, d => ({ Lend: d.assets.collateral.balance, Mint: d.debtCeiling })[d.type]),
+    mapQuery(apiMarket, market =>
+      maybe(market, d => ({ Lend: d.assets.collateral.balance, Mint: d.debtCeiling })[d.type]),
+    ),
   )
   return {
     value,
@@ -291,7 +297,7 @@ export const usePageHeaderRates = () => {
     blockchainId,
     range: { kind: 'limit', limit: RATE_WINDOW },
   })
-  const marketRates = q(useMarketRates({ chainId, marketId: mapQuery(marketQuery, m => m.id) }))
+  const marketRates = q(useMarketRates({ chainId, marketId: mapQuery(marketQuery, m => m?.id) }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 

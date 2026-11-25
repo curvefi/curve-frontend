@@ -8,6 +8,7 @@ import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { BlockchainIds } from '@evm-ui/utils/network'
 import { AlertType } from '@legacy-ui/AlertBox/types'
 import Stack from '@mui/material/Stack'
+import type { Nullish } from '@primitives/objects.utils'
 import { DeprecatedMarketBanner } from './DeprecatedMarketBanner'
 import { LowSolvencyBanner } from './LowSolvencyBanner'
 import { MarketAlertBanner } from './MarketAlertBanner'
@@ -26,7 +27,7 @@ export const MarketBanners = <ChainId extends IChainId>({
   rewardsBanner,
 }: {
   chainId: ChainId
-  market: MarketTemplate | undefined
+  market: MarketTemplate | Nullish
   // additional banner not shared across all markets type and hidden if market alert has high severity
   rewardsBanner?: ReactNode
 }) => {

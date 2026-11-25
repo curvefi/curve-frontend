@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { useState } from 'react'
-import { changedKeys, fromEntries } from '@primitives/objects.utils'
+import { changedKeys, fromEntries, isEmpty } from '@primitives/objects.utils'
 import { useDebounced } from '@ui/hooks/useDebounce'
 import { useShallowData } from '@ui/hooks/useShallowData'
 
@@ -53,6 +53,11 @@ export function useFormValues<TValues extends object, TContext extends object = 
   const [state, setState] = useState<FormState<TValues>>(() => initialState(defaultValues))
 
   const { params, resetVersion, values, touched, defaults } = state
+  const dirtyFields = useShallowData(
+    fromEntries<keyof TValues, true>(
+      [...touched].filter(field => !isEqual(values[field], defaults[field])).map(field => [field, true]),
+    ),
+  )
 
   const debounce = useDebounced(
     // Each call restarts the timer; when it fires, copy the latest values into params.
@@ -64,7 +69,8 @@ export function useFormValues<TValues extends object, TContext extends object = 
     params: useShallowData<TValues & TContext>({ ...params, ...context }),
     resetVersion,
     touchedFields: fromEntries<keyof TValues, true>([...touched].map(field => [field, true])),
-    isDirty: [...touched].some(field => !isEqual(values[field], defaults[field])),
+    dirtyFields,
+    isDirty: !isEmpty(dirtyFields),
     isDebouncing: !isEqual(values, params),
     isTouched: (...fields: (keyof TValues)[]) => fields.some(field => touched.has(field)),
     update: (updates: Partial<TValues>, { mode = 'debounced' }: { mode?: UpdateMode } = {}) => {

@@ -38,8 +38,8 @@ export const createMarketContextValue = <ChainId extends IChainId>({
   releaseChannel: ReleaseChannel
   /** The market tokens, with the coins of LP tokens, see `useMarketTokens` */
   tokens: MarketTokens | undefined
-  marketQuery: QueryProp<MarketTemplate>
-  apiMarket: QueryProp<LlamaMarket>
+  marketQuery: QueryProp<MarketTemplate | null>
+  apiMarket: QueryProp<LlamaMarket | null>
   marketType: MarketType
 }) => {
   const controllerAddress = getControllerAddress(marketQuery.data, apiMarket.data)

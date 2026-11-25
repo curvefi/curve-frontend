@@ -1,3 +1,4 @@
+import { useConnection } from 'wagmi'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { getDexChartSelectionKey, useDexOhlcQuery } from '@/dex/queries/ohlc-chart.query'
 import type { ChainId } from '@/dex/types/main.types'
@@ -8,6 +9,7 @@ import { useDexChartList } from '@evm-ui/features/candle-chart/hooks/useDexChart
 import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import type { OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { LpPriceOhlcDataFormatted } from '@evm-ui/features/candle-chart/types'
+import { useWallet } from '@evm-ui/features/connect-wallet'
 import { q } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -19,6 +21,8 @@ type UseOhlcChartStateArgs = { chainId: ChainId; pricesApiPoolData: V2PoolDetail
 const selectDexOhlcData = (page: { ohlcData: LpPriceOhlcDataFormatted[] }) => page.ohlcData
 
 export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
+  const { address: userAddress, isConnecting, isConnected } = useConnection()
+  const { connect } = useWallet()
   const { data: networkData } = useNetworkByChain({ chainId })
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
@@ -50,6 +54,10 @@ export const useOhlcChartState = ({ chainId, pricesApiPoolData }: UseOhlcChartSt
   const isLoading = !isAnchorEndReady || isQueryLoading
 
   const ohlcChartProps: OhlcChartProps = {
+    userAddress,
+    isConnecting,
+    isConnected,
+    connect,
     hideCandleSeriesLabel: false,
     chartHeight: Height.chart.lg,
     series: q({ data: { ohlcData }, isLoading, error }),

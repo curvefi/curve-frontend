@@ -1,42 +1,54 @@
-import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { calculateMaximumBurn } from '@/stellar/lib/amounts'
 import { useGasEstimation } from '@/stellar/lib/gas'
-import { useTokenBalance } from '@/stellar/queries/token/token-balance.query'
-import { useWithdrawExpectedLp } from '@/stellar/queries/withdraw/withdraw-lp.query'
+import type { StellarNetwork } from '@/stellar/lib/networks'
+import { STELLAR_SLIPPAGE_TYPE } from '@/stellar/lib/pool.constants'
 import { useWithdrawSimulation } from '@/stellar/queries/withdraw/withdraw-simulation.query'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { PoolActionInfoList } from '@ui/features/pool-forms/PoolActionInfoList'
+import type { PoolToken } from '@ui/features/pool-forms/PoolTokenInput'
+import { getWithdrawMinimumAmounts } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimalMinus } from '@ui/lib/decimal'
-import type { WithdrawQuoteParams } from './types'
-import { useWithdrawPriceImpact } from './useWithdrawPriceImpact'
+import type { useAdvancedWithdrawForm } from './useAdvancedWithdrawForm'
+import type { useOneCoinWithdrawForm } from './useOneCoinWithdrawForm'
 
 export const WithdrawActionInfoList = ({
   params,
+  tokens,
+  network,
+  userAddress,
+  expectedLp,
+  lpBalance,
+  priceImpact,
   onSlippageChange,
 }: {
-  params: WithdrawQuoteParams
+  params: ReturnType<typeof useAdvancedWithdrawForm | typeof useOneCoinWithdrawForm>['params']
+  tokens: QueryProp<PoolToken>[] | undefined
+  network: StellarNetwork
+  userAddress: Address | undefined
+  expectedLp: QueryProp<Decimal>
+  lpBalance: QueryProp<Decimal>
+  priceImpact: QueryProp<Decimal | null>
   onSlippageChange: (slippage: Decimal) => void
 }) => {
-  const expectedLp = useWithdrawExpectedLp(params)
-  const lpBalance = q(useTokenBalance({ ...params, token: params.pool, decimals: LP_TOKEN_DECIMALS }))
   const simulation = useWithdrawSimulation({ ...params, expectedLp })
   return (
     <PoolActionInfoList
       {...(params.mode === 'unbalanced' && {
         maximumLp: mapQuery(expectedLp, value => calculateMaximumBurn(value, params.slippage)), // Other modes burn a fixed LP amount.
       })}
-      slippageType="stable"
+      slippageType={STELLAR_SLIPPAGE_TYPE}
       currentLp={lpBalance}
       currentLpTestId="pool-withdraw-current-lp"
       projectedLp={combineQueries([lpBalance, expectedLp], decimalMinus)}
-      priceImpact={useWithdrawPriceImpact(params, expectedLp)}
-      gas={useGasEstimation(params, simulation)}
+      priceImpact={priceImpact}
+      gas={useGasEstimation({ network }, simulation)}
       slippage={params.slippage}
       onSlippageChange={onSlippageChange}
-      userAddress={asAddress(params.account)}
+      userAddress={userAddress}
+      minimumReceived={getWithdrawMinimumAmounts({ ...params, isApproximate: true }, tokens, expectedLp)}
     />
   )
 }

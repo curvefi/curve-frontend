@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fromEntries, notFalsy, type Nullish } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { DISABLED_Q, fallbackQ, q, Query, QueryProp } from '@ui/features/queries/util'
 import { decimalMin } from '@ui/lib/decimal'
 
@@ -24,17 +24,14 @@ const getQueriesData = <const TQueries extends Queries>(queries: TQueries) =>
 
 const combineQueryData = <const TQueries extends Queries, TResult>(
   data: QueriesDataInput<TQueries>,
-  selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
+  selector: (...data: QueriesData<TQueries>) => TResult,
 ) => (data.some(value => value === undefined) ? undefined : selector(...(data as QueriesData<TQueries>)))
 
 export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
+  selector: (...data: QueriesData<TQueries>) => TResult,
 ) =>
-  ({
-    data: combineQueryData<TQueries, TResult>(getQueriesData(queries), selector),
-    ...combineQueryState(...queries),
-  }) as QueryProp<TResult>
+  q({ data: combineQueryData<TQueries, TResult>(getQueriesData(queries), selector), ...combineQueryState(...queries) })
 
 /** Maps a query's data to another query, and combines the results into a single one. */
 export const combineSubQueries = <Q1, Q2, R>(
@@ -59,13 +56,13 @@ export const pickQuery = <TData>(
 
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueriesData<TQueries>) => TResult | Nullish,
+  selector: (...data: QueriesData<TQueries>) => TResult,
 ) => {
   const data = useShallow(getQueriesData<TQueries>)(queries)
-  return {
+  return q({
     data: useMemo(() => combineQueryData<TQueries, TResult>(data, selector), [data, selector]),
     ...combineQueryState(...queries),
-  } as QueryProp<TResult>
+  })
 }
 
 /** Keys individual queries without merging their data, loading, or error states. */
@@ -74,6 +71,7 @@ export const combineQueriesToObject = <TData, K extends string = string>(results
 
 /**
  * Returns the minimum value from multiple queries returning Decimal values.
+ * @deprecated prefer `combineQueries`
  */
 export const queryMinimum = (...queries: Query<Decimal>[]) => ({
   data: queries.some(d => d.data == null) ? undefined : decimalMin(...queries.map(d => d.data!)),

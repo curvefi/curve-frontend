@@ -4,7 +4,7 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useTokenLpCoins } from '@/llamalend/queries/token-lp-coins.query'
 import type { Chain } from '@curvefi/prices-api'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { q } from '@ui/features/queries/util'
 
 /** Takes the query fields apart, so the result stays the same between renders and the market context doesn't change */
@@ -20,8 +20,8 @@ export const useMarketTokens = ({
   apiMarket,
 }: {
   blockchainId: Chain
-  market: MarketTemplate | undefined
-  apiMarket: LlamaMarket | undefined
+  market: MarketTemplate | Nullish
+  apiMarket: LlamaMarket | Nullish
 }) => {
   // without useMemo, the React compiler doesn't cache `tokens`: it's passed to functions after the hook calls,
   // so the compiler assumes they may modify it, and a cached block can't contain hooks

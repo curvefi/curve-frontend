@@ -73,10 +73,8 @@ export const RepayForm = <ChainId extends IChainId>({
   const {
     form,
     values,
-    params,
     isPending,
     isLoading,
-    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -131,15 +129,12 @@ export const RepayForm = <ChainId extends IChainId>({
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
           controllerAddress={controllerAddress}
           marketType={marketType}
           form={form}
-          params={params}
-          values={values}
           isControllerApproved={isControllerApproved.data}
           tokens={{ collateralToken, borrowToken }}
           showLeverage={showLeverage}
@@ -185,7 +180,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <LoanActionSettings
         show={showLeverage}
         slippage={values.slippage}
-        onSlippageChange={slippage => updateForm({ slippage })}
+        onSlippageChange={slippage => updateForm({ slippage }, { mode: 'immediate' })}
         routes={routes}
         exchangeRate={exchangeRate}
         priceImpact={priceImpact}
@@ -198,7 +193,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
+        disabled={form.isDisabled || shouldBlockTransaction(priceImpact, isRepayLeveraged(values))}
         label={[
           [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),

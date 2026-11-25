@@ -2,13 +2,14 @@ import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import type { Nullish } from '@primitives/objects.utils'
+import { notFalsy, type Nullish } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { ActionInfoGasEstimate, type TxGasInfo } from '@ui/features/forms/action-info/ActionInfoGasEstimate'
 import { PriceImpactActionInfo } from '@ui/features/forms/action-info/PriceImpactActionInfo'
 import { HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
 import type { SlippageType } from '@ui/features/forms/slippage/slippage.utils'
 import { SlippageToleranceActionInfo } from '@ui/features/forms/slippage/SlippageToleranceActionInfo'
+import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -30,7 +31,7 @@ type PoolActionInfoListProps = {
   projectedLp?: QueryProp<Decimal>
   seedLock?: QueryProp<Decimal | null>
   exchangeRate?: QueryProp<Decimal>
-  minimumReceived?: QueryProp<Decimal>
+  minimumReceived?: QueryProp<{ amount: Decimal; symbol: string | undefined; isApproximate: boolean }>[]
   fromSymbol?: string | undefined
   toSymbol?: string | undefined
 }
@@ -106,14 +107,6 @@ export const PoolActionInfoList = ({
         size="small"
       />
     )}
-    {minimumReceived && (
-      <ActionInfo
-        testId="pool-swap-minimum-received"
-        label={t`Minimum received`}
-        value={mapQuery(minimumReceived, value => formatToken(value, toSymbol, 'balance'))}
-        size="small"
-      />
-    )}
     {minimumLp && (
       <ActionInfo
         testId="pool-deposit-minimum-lp"
@@ -127,6 +120,21 @@ export const PoolActionInfoList = ({
         testId="pool-withdraw-maximum-lp"
         label={t`Maximum LP burned`}
         value={mapQuery(maximumLp, value => formatNumber(value, 'token.balance'))}
+        size="small"
+      />
+    )}
+    {!!minimumReceived?.length && (
+      <ActionInfo
+        testId="pool-minimum-received"
+        label={t`Minimum received`}
+        sx={{ alignItems: 'flex-start', '& .ActionInfo-value': { whiteSpace: 'pre-line', textAlign: 'right' } }}
+        value={combineQueries(minimumReceived, (...values) =>
+          values
+            .map(({ amount, symbol, isApproximate }) =>
+              notFalsy(isApproximate && '~', formatToken(amount, symbol, 'balance')).join(''),
+            )
+            .join('\n'),
+        )}
         size="small"
       />
     )}

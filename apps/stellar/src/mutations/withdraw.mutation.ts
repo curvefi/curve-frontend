@@ -6,8 +6,13 @@ import {
   fetchWithdrawSimulation,
   invalidateWithdrawSimulation,
 } from '@/stellar/queries/withdraw/withdraw-simulation.query'
-import type { WithdrawMutation } from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
-import type { DeepPartial } from '@ui/features/queries/util'
+import {
+  getAdvancedWithdrawParams,
+  getOneCoinWithdrawParams,
+  type AdvancedWithdrawFormValues,
+  type OneCoinWithdrawFormValues,
+  type WithdrawMutation,
+} from '@ui/features/pool-forms/withdraw/withdraw-form.utils'
 import { t } from '@ui/lib/i18n'
 import { invalidatePoolLiquidity } from './invalidatePoolLiquidity'
 import { useStellarMutation } from './useStellarMutation'
@@ -37,6 +42,14 @@ export const useWithdrawMutation = ({ onReset, tokens, expectedLp, ...params }: 
       ])
     },
   })
-  const onSubmit = useCallback((values: DeepPartial<WithdrawMutation>) => mutate(values as WithdrawMutation), [mutate])
+  const onSubmit = useCallback(
+    (values: OneCoinWithdrawFormValues | AdvancedWithdrawFormValues) =>
+      mutate(
+        ('tokenIndex' in values
+          ? getOneCoinWithdrawParams(values)
+          : getAdvancedWithdrawParams(values)) as WithdrawMutation,
+      ),
+    [mutate],
+  )
   return { onSubmit, mutate, error, isPending }
 }

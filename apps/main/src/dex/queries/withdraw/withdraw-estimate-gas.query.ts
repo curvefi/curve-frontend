@@ -4,6 +4,7 @@ import { getPool } from '@/dex/pool.utils'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import { createApprovedEstimateGasHook } from '@evm-ui/queries/gas-info.query'
 import { wrappedMethod } from '@ui/features/pool-forms/pool-form.utils'
+import type { FieldsOrQueries } from '@ui/features/queries/util'
 import { useWithdrawIsApproved } from './withdraw-approved.query'
 
 const { useQuery: useWithdrawApproveEstimate } = hydratedQueryFactory({
@@ -83,5 +84,5 @@ const useWithdrawEstimateGasQuery = createApprovedEstimateGasHook({
   useActionEstimate: useWithdrawEstimate,
 })
 
-export const useWithdrawEstimateGas = (params: UserWithdrawParams, enabled?: boolean) =>
+export const useWithdrawEstimateGas = (params: FieldsOrQueries<UserWithdrawParams>, enabled?: boolean) =>
   useWithdrawEstimateGasQuery(params, enabled)

@@ -35,7 +35,6 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <ResetPositionInfoList

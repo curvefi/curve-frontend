@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import type { Chain } from '@curvefi/prices-api'
 import { useChartLegendToggles } from '@evm-ui/features/candle-chart/hooks/useChartLegendToggles'
 import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useChartTimeSettings'
@@ -6,6 +7,7 @@ import { useLiquidationRange } from '@evm-ui/features/candle-chart/hooks/useLiqu
 import { useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import type { OhlcChartProps } from '@evm-ui/features/candle-chart/OhlcChart'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@evm-ui/features/candle-chart/types'
+import { useWallet } from '@evm-ui/features/connect-wallet'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
@@ -72,6 +74,8 @@ export const useLlammaOhlcChartStateModel = ({
   previewPrices,
   userPrices,
 }: LlammaOhlcChartStateModelParams) => {
+  const { address: userAddress, isConnecting, isConnected } = useConnection()
+  const { connect } = useWallet()
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId ?? '', timeOption)
 
@@ -132,6 +136,10 @@ export const useLlammaOhlcChartStateModel = ({
   })
 
   const ohlcChartProps: OhlcChartProps = {
+    userAddress,
+    isConnecting,
+    isConnected,
+    connect,
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart.md,
     series: q({ data: { ohlcData, oraclePriceData }, isLoading, error: currentError }),

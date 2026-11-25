@@ -52,8 +52,8 @@ type AddressItem = {
 type MarketContractsProps = {
   chainId: IChainId
   blockchainId: Chain
-  market: QueryProp<MarketTemplate>
-  apiMarket: QueryProp<LlamaMarket>
+  market: QueryProp<MarketTemplate | null>
+  apiMarket: QueryProp<LlamaMarket | null>
   tokens: MarketTokensOrEmpty
 }
 
