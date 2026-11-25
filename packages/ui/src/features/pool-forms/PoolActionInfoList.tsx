@@ -31,7 +31,7 @@ type PoolActionInfoListProps = {
   projectedLp?: QueryProp<Decimal>
   seedLock?: QueryProp<Decimal | null>
   exchangeRate?: QueryProp<Decimal>
-  minimumReceived?: QueryProp<{ amount: Decimal; symbol: string | undefined; isApproximate: boolean }>[]
+  minimumReceived?: QueryProp<{ amount: Decimal | undefined; symbol: string | undefined; isApproximate: boolean }>[]
   fromSymbol?: string | undefined
   toSymbol?: string | undefined
 }

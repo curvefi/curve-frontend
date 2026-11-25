@@ -30,9 +30,13 @@ export const SwapActionInfoList = ({
   return (
     <PoolActionInfoList
       exchangeRate={exchangeRate}
-      minimumReceived={mapQuery(expectedOutput, output =>
-        maybe(decimals?.[toIndex], precision => calculateMinimumReceived(output, slippage, precision)),
-      )}
+      minimumReceived={[
+        mapQuery(expectedOutput, output => ({
+          amount: maybe(decimals?.[toIndex], precision => calculateMinimumReceived(output, slippage, precision)),
+          symbol: toSymbol,
+          isApproximate: false,
+        })),
+      ]}
       priceImpact={q(useSwapPriceImpact(params))}
       gas={useSwapEstimateGas(params)}
       slippage={slippage}
