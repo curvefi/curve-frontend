@@ -11,6 +11,6 @@ export const useIsRegisteredPool = (
   litePool: Query<LitePool | null>,
 ) => {
   const registration = usePoolRegistration({ pool, network, factory: mapQuery(config, config => config.factory) })
-  const data = !!litePool.data || mapQuery(registration, r => r?.pool === pool).data
+  const data = !!litePool.data || mapQuery(registration, r => r?.pool === pool || null).data
   return q({ data, ...combineQueryState(config, registration, litePool) })
 }

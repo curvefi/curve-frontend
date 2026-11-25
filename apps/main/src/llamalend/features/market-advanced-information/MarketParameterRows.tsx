@@ -17,7 +17,7 @@ type MarketPricesRowsProps = {
   chainId: IChainId
   marketId: string | undefined
   enablePricePerShare: boolean
-  apiMarket: QueryProp<LlamaMarket>
+  apiMarket: QueryProp<LlamaMarket | null>
   tokens: MarketTokensOrEmpty
 }
 
@@ -32,7 +32,7 @@ export const MarketPricesRows = ({
   const pricePerShare = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
   const oraclePrice = fallbackQ(
     q(oraclePriceOnChain),
-    mapQuery(apiMarket, m => decimal(m.oraclePrice)),
+    mapQuery(apiMarket, m => decimal(m?.oraclePrice)),
   )
   return (
     <>

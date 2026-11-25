@@ -5,6 +5,7 @@ import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/queries/crvusd-snaps
 import { LendingSnapshot, useLendingSnapshots } from '@evm-ui/queries/lending-snapshots.query'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@evm-ui/utils'
+import type { Nullish } from '@primitives/objects.utils'
 
 type UseRateHistoryResult<T> = {
   snapshots: T[] | null
@@ -24,7 +25,7 @@ const RateKeys = { [MarketRateType.Borrow]: 'borrowApr', [MarketRateType.Supply]
 >
 
 export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>(
-  market: LlamaMarket | undefined,
+  market: LlamaMarket | Nullish,
   { type, category }: { type: MarketRateType; category: AverageCategory },
   enabled: boolean,
 ): UseRateHistoryResult<T> {
