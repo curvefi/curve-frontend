@@ -35,8 +35,8 @@ export const createMarketContextValue = <ChainId extends IChainId>({
   userAddress: Address | undefined
   api: LlamaApi | null
   releaseChannel: ReleaseChannel
-  marketQuery: QueryProp<MarketTemplate>
-  apiMarket: QueryProp<LlamaMarket>
+  marketQuery: QueryProp<MarketTemplate | null>
+  apiMarket: QueryProp<LlamaMarket | null>
   marketType: MarketType
 }) => {
   const controllerAddress = getControllerAddress(marketQuery.data, apiMarket.data)

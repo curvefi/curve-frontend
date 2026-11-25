@@ -33,7 +33,7 @@ import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import type { RouteResponse } from '@evm-ui/queries/router-api/types'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, pick } from '@primitives/objects.utils'
+import { type Nullish, maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import { useCallbackSync, useForm } from '@ui/features/forms'
 import { futureOrCurrentQ, mapQuery, q, type QueryProp, type Range } from '@ui/features/queries/util'
@@ -95,13 +95,13 @@ const emptyBorrowMoreForm = (slippage: Decimal): BorrowMoreForm => ({
 })
 
 /** Checks if we need a route for borrowing more */
-const isRouteRequired = (market: MarketTemplate | undefined, leverageEnabled: boolean | undefined) => {
+const isRouteRequired = (market: MarketTemplate | Nullish, leverageEnabled: boolean | undefined) => {
   const [implementation] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
   return !!implementation && isRouterRequired(implementation)
 }
 
 const isLeverageBorrowMoreSupported = (
-  market: MarketTemplate | undefined,
+  market: MarketTemplate | Nullish,
   leverageProviders: readonly RouteProvider[] | undefined,
 ) => maybe(leverageProviders, providers => hasZapV2(market) && providers.length > 0)
 

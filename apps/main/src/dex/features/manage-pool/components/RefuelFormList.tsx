@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe } from '@primitives/objects.utils'
+import { type Nullish, maybe } from '@primitives/objects.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
@@ -20,7 +20,7 @@ type RefuelFormListProps = {
   poolTvl: QueryProp<number>
 }
 
-const formatPercentage = (value: number | undefined) =>
+const formatPercentage = (value: number | Nullish) =>
   formatNumber(value, { unit: 'percentage', decimals: 2, abbreviate: false, fallback: '-' })
 
 const extrapolateYearly = (value: number | null, donationsPerYear: number) =>

@@ -37,7 +37,6 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <DepositSupplyInfoList

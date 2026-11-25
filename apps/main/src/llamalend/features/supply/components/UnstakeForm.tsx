@@ -35,7 +35,6 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
 
   return (
     <Form
-      {...form}
       onSubmit={onSubmit}
       footer={
         <UnstakeSupplyInfoList

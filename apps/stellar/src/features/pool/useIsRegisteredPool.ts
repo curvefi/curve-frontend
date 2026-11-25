@@ -6,13 +6,11 @@ import { combineQueryState } from '@ui/features/queries/combine'
 import { mapQuery, q, type Query, type QueryData } from '@ui/features/queries/util'
 
 export const useIsRegisteredPool = (
-  params: PoolQuery,
+  { pool, network }: PoolQuery,
   config: Query<QueryData<typeof usePoolConfig>>,
   litePool: Query<LitePool | null>,
-): Query<boolean> => {
-  const registration = usePoolRegistration({ ...params, factory: mapQuery(config, config => config.factory) })
-  return q({
-    data: !!litePool.data || registration.data?.pool === params.pool,
-    ...combineQueryState(config, registration, litePool),
-  })
+) => {
+  const registration = usePoolRegistration({ pool, network, factory: mapQuery(config, config => config.factory) })
+  const data = !!litePool.data || mapQuery(registration, r => r?.pool === pool || null).data
+  return q({ data, ...combineQueryState(config, registration, litePool) })
 }

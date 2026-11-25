@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js'
 import { readContract } from '@/stellar/features/connect-wallet/stellar-wallet-kit/contract'
 import {
   type ExpectedLpParams,
@@ -9,13 +8,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { LP_TOKEN_DECIMALS } from '@ui/features/pool-forms/pool-form.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { decimalRound, fromWei, toBigIntArray, toWeiArray } from '@ui/lib/decimal'
-
-/** The imbalance quote excludes the smallest LP amount added by execution. */
-const calculateExpectedLp = (quote: Decimal): Decimal =>
-  new BigNumber(quote)
-    .decimalPlaces(LP_TOKEN_DECIMALS, BigNumber.ROUND_DOWN)
-    .plus(`1e-${LP_TOKEN_DECIMALS}`)
-    .toFixed() as Decimal
 
 export const { useQuery: useExpectedLp, invalidate: invalidateExpectedLp } = queryFactory({
   queryKey: ({
@@ -58,14 +50,13 @@ export const { useQuery: useExpectedLp, invalidate: invalidateExpectedLp } = que
     if (!isDeposit && (isBalanced || isExactBurn)) {
       return decimalRound(lpAmount!, LP_TOKEN_DECIMALS)
     }
-    const quote = fromWei(
+    return fromWei(
       await readContract<bigint>(network, pool, 'calc_token_amount', [
         toBigIntArray(toWeiArray(amounts, decimals)).map(amount => amount ?? 0n),
         isDeposit,
       ]),
       LP_TOKEN_DECIMALS,
     )
-    return isDeposit ? quote : calculateExpectedLp(quote)
   },
   category: 'dex.deposit',
   validationSuite: quoteValidationSuite,

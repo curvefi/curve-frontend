@@ -187,7 +187,7 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
             label={modeConfig.currentRateLabel}
             value={fallbackQ(
               mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates))),
-              mapQuery(apiMarket, market => toRateNumber(modeConfig.getApiRate(market))),
+              mapQuery(apiMarket, market => maybe(market, market => toRateNumber(modeConfig.getApiRate(market)))),
             )}
             valueOptions={{ unit: 'percentage' }}
             testId={`historical-${rateMode.toLowerCase()}-current-rate`}
@@ -228,7 +228,7 @@ export const MarketHistoricalRatesChart = ({ rateMode, timeOption, snapshots }: 
               xTickFormatter={(value: RateChartPoint['timestamp'] | string) => formatDate(value)}
               yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
               yPaddingRatio={0.05}
-              renderTooltip={HistoricalRatesTooltip}
+              renderTooltip={props => <HistoricalRatesTooltip {...props} />}
             />
           )}
         </EvmChartStateWrapper>

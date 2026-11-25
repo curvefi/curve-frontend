@@ -16,6 +16,7 @@ import { useNullishTypeRule } from './.eslint/use-nullish-type.rule.mjs'
 import { useNotFalsyPatternRule } from './.eslint/use-not-falsy-pattern.rule.mjs'
 import { stableHookCallbacksRule } from './.eslint/stable-hook-callbacks.rule.mjs'
 import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
+import { noComponentTooltipCallbackRule } from './.eslint/no-component-tooltip-callback.rule.mjs'
 import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-braces.rule.mjs'
 import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
 import { noMutableArrayMethodsRule } from './.eslint/no-mutable-array-methods.rule.mjs'
@@ -78,6 +79,7 @@ const config = [
           'use-not-falsy-pattern': useNotFalsyPatternRule,
           'stable-hook-callbacks': stableHookCallbacksRule,
           'no-double-negative': noDoubleNegativeRule,
+          'no-component-tooltip-callback': noComponentTooltipCallbackRule,
           'no-jsx-string-literal-braces': noJsxStringLiteralBracesRule,
           'no-query-component-props': noQueryComponentPropsRule,
           'no-mutable-array-methods': noMutableArrayMethodsRule,
@@ -108,6 +110,7 @@ const config = [
       'local/use-nullish-type': 'error',
       'local/stable-hook-callbacks': 'error',
       'local/no-double-negative': 'error',
+      'local/no-component-tooltip-callback': 'error',
       'local/no-jsx-string-literal-braces': 'error',
       'local/no-query-component-props': 'error',
       'local/no-mutable-array-methods': 'error',

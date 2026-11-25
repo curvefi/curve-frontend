@@ -4,6 +4,7 @@ import { asAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { usePoolTokens } from '@/stellar/features/pool/usePoolTokens'
 import { useWithdrawPriceImpact } from '@/stellar/features/withdraw/useWithdrawPriceImpact'
+import { STELLAR_CAN_WITHDRAW_UNBALANCED, STELLAR_DEFAULT_SLIPPAGE } from '@/stellar/lib/pool.constants'
 import { useWithdrawMutation } from '@/stellar/mutations/withdraw.mutation'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
 import { usePoolSnapshot } from '@/stellar/queries/pool/pool-snapshot.query'
@@ -14,7 +15,6 @@ import { useWithdrawExpectedLp } from '@/stellar/queries/withdraw/withdraw-lp.qu
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries, maybe, range } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
-import { SLIPPAGE } from '@ui/features/forms/slippage/slippage.utils'
 import {
   getPoolDefaultValues,
   LP_TOKEN_DECIMALS,
@@ -40,7 +40,7 @@ const formOptions = {
     supply: undefined,
     seedLock: undefined,
     expectedLp: undefined,
-    slippage: SLIPPAGE.stable.default,
+    slippage: STELLAR_DEFAULT_SLIPPAGE,
   },
 }
 
@@ -120,9 +120,12 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onTokenChange: (index: number, amount: Decimal | undefined) =>
       update({ ...(values.isBalanced && getUpdatesFromTokenAmount(index, amount)), [poolAmountField(index)]: amount }),
     form,
+    expectedLp,
+    priceImpact,
     params,
+    network,
     lpBalance: q(lpBalance),
-    onSubmit: handleSubmit(values => onSubmit(getAdvancedWithdrawParams(values))),
+    onSubmit: handleSubmit(onSubmit),
     isPending,
     isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
     isLoading: isPending || config.isLoading || priceImpact.isLoading,
@@ -133,5 +136,6 @@ export function useAdvancedWithdrawForm(poolParams: PoolQuery) {
     onSlippageChange: (newSlippage: Decimal) => update({ slippage: newSlippage }),
     tokens,
     canWithdrawWrapped: false,
+    canWithdrawUnbalanced: STELLAR_CAN_WITHDRAW_UNBALANCED,
   }
 }

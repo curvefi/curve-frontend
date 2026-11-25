@@ -73,7 +73,6 @@ export const DepositReward = () => {
 
   return (
     <Form
-      {...form}
       onSubmit={form.handleSubmit(onSubmit)}
       footer={
         <Stack sx={{ gap: Spacing.xs }}>
