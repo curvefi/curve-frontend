@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react'
+import type { ComponentType } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
@@ -22,36 +22,37 @@ type PositionEvents = {
   [MarketRateType.Supply]: ParsedUserVaultEvent[]
 }
 
-type PositionDetailsCompositeProps<T extends MarketRateType> = {
-  type: T
-  hasPosition: boolean | undefined
-  events: QueryProp<PositionEvents[NoInfer<T>]>
-}
+type PositionDetailsCompositeProps = {
+  [T in MarketRateType]: { type: T; hasPosition: boolean | undefined; events: QueryProp<PositionEvents[T]> }
+}[MarketRateType]
 
 const { Spacing } = SizesAndSpaces
 
+const BorrowActivity = ({ eventsQuery }: { eventsQuery: QueryProp<ParsedUserCollateralEvent[]> }) => (
+  <UserPositionHistory variant="flat" eventsQuery={eventsQuery} />
+)
+
 const POSITION_CONFIG: {
-  [T in MarketRateType]: { Details: ComponentType; renderActivity: (events: QueryProp<PositionEvents[T]>) => ReactNode }
+  [T in MarketRateType]: {
+    Details: ComponentType
+    Activity: ComponentType<{ eventsQuery: QueryProp<PositionEvents[T]> }>
+  }
 } = {
-  [MarketRateType.Borrow]: {
-    Details: BorrowPositionDetails,
-    renderActivity: events => <UserPositionHistory variant="flat" eventsQuery={events} />,
-  },
-  [MarketRateType.Supply]: {
-    Details: SupplyPositionDetails,
-    renderActivity: events => <UserVaultEventsTable eventsQuery={events} />,
-  },
+  [MarketRateType.Borrow]: { Details: BorrowPositionDetails, Activity: BorrowActivity },
+  [MarketRateType.Supply]: { Details: SupplyPositionDetails, Activity: UserVaultEventsTable },
 }
 
-const PositionTab = ({ type, hasPosition }: PositionDetailsCompositeProps<MarketRateType>) => {
+const PositionTab = ({ type, hasPosition }: PositionDetailsCompositeProps) => {
   const { Details } = POSITION_CONFIG[type]
   return hasPosition ? <Details /> : <MarketEmptyPosition type={type} />
 }
 
-const ActivityTab = <T extends MarketRateType>({ type, events }: PositionDetailsCompositeProps<T>) =>
-  POSITION_CONFIG[type].renderActivity(events)
+const ActivityTab = <T extends MarketRateType>({ type, events }: { type: T; events: QueryProp<PositionEvents[T]> }) => {
+  const { Activity } = POSITION_CONFIG[type]
+  return <Activity eventsQuery={events} />
+}
 
-const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps<MarketRateType>>[] = [
+const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps>[] = [
   {
     value: 'position',
     label: t`Your position`,
@@ -61,7 +62,7 @@ const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps<MarketRateTyp
   { value: 'activity', label: t`Activity`, visible: ({ events }) => !!events.data?.length, component: ActivityTab },
 ]
 
-export const PositionDetailsComposite = <T extends MarketRateType>(props: PositionDetailsCompositeProps<T>) => {
+export const PositionDetailsComposite = (props: PositionDetailsCompositeProps) => {
   const isNewLlamalendHealth = useNewLlamalendHealth()
   const { tab, tabs, onChange, content } = useTabs({ menu: POSITION_TABS, params: props })
 
