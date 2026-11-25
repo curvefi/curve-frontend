@@ -49,10 +49,11 @@ export const useUserPositionsTable = (
     positions,
     useCallback(positions => positions.map(({ address }) => address), []),
   )
-  const { data: boosts, error: boostsError, isPending: isBoostsPending } = useUserPoolBoosts(
-    { chainId, userAddress, poolAddresses },
-    enabled && !isLite,
-  )
+  const {
+    data: boosts,
+    error: boostsError,
+    isPending: isBoostsPending,
+  } = useUserPoolBoosts({ chainId, userAddress, poolAddresses }, enabled && !isLite)
   const {
     data: claimables,
     error: claimablesError,
