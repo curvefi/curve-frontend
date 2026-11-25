@@ -28,14 +28,14 @@ export const validate = <D extends object, S extends ValidationSuite>(
 
 export function assertValidity<D extends object, S extends ValidationSuite>(
   suite: S,
-  data: FieldsOf<D>,
-  fields?: ValidationKey<D>[],
+  data: D,
+  fields?: ValidationKey<NoInfer<D>>[],
 ): D {
   const entries = Object.entries(validate(suite, data, fields))
   if (entries.length > 0) {
     throw new ValidationError(entries)
   }
-  return data as D
+  return data
 }
 
 export const createValidationSuite = <T extends object, TGroupName extends string = string>(

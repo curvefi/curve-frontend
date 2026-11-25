@@ -73,17 +73,20 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   createRoute({
     path: '$network/pools/$poolAddress',
     staticData: { networkSwitch: { type: 'locked', toastTitle } },
-    loader: ({ params: { network, poolAddress } }: { params: PoolAddressParams }) => {
-      assertValidity(poolValidationSuite, { poolAddress }, ['poolAddress'])
+    params: {
+      parse: (params: Record<keyof PoolAddressParams, string>) => ({
+        ...params,
+        ...assertValidity(poolValidationSuite, params, ['poolAddress']),
+      }),
+    },
+    loader: ({ params: { network, poolAddress } }) => {
       if (network !== 'ethereum') return
       const legacyPoolId = LEGACY_POOLS[poolAddress.toLowerCase()]
       if (legacyPoolId)
         redirect({ href: `${EXTERNAL_LINKS.curve.classic}${legacyPoolId}/withdraw`, replace: true, throw: true })
     },
     component: PagePool,
-    head: ({ params: { poolAddress } }: { params: PoolAddressParams }) => ({
-      meta: [{ title: `Curve - Pool - ${poolAddress} - Curve` }],
-    }),
+    head: ({ params: { poolAddress } }) => ({ meta: [{ title: `Curve - Pool - ${poolAddress} - Curve` }] }),
     ...layoutProps,
   }),
   createRoute({

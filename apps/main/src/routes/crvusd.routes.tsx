@@ -42,16 +42,18 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId',
-    loader: ({ params }: { params: CollateralUrlParams }) => {
-      assertValidity(marketIdValidationSuite, { chainId: getChainId(params), marketId: params.collateralId }, [
-        'chainId',
-        'marketId',
-      ])
+    params: {
+      parse: (params: Record<keyof CollateralUrlParams, string>) => ({
+        ...params,
+        ...assertValidity(
+          marketIdValidationSuite,
+          { chainId: getChainId(params as CollateralUrlParams), marketId: params.collateralId },
+          ['chainId', 'marketId'],
+        ),
+      }),
     },
     component: MintMarketPage,
-    head: ({ params: { collateralId } }: { params: CollateralUrlParams }) => ({
-      meta: [{ title: `${collateralId} - Curve Llamalend` }],
-    }),
+    head: ({ params: { collateralId } }) => ({ meta: [{ title: `${collateralId} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
   createRoute({

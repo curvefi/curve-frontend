@@ -1,10 +1,10 @@
 import '@/global-extensions'
 import { EvmErrorPage } from '@evm-ui/pages/EvmErrorPage'
 import { createRoute, createRouter } from '@tanstack/react-router'
+import { PathParamError } from '@tanstack/router-core'
 import { Loading } from '@ui/components/Loading'
 import { Duration } from '@ui/features/themes/design/0_primitives'
 import { t } from '@ui/lib/i18n'
-import { ValidationError } from '@ui/lib/validation/lib'
 import { analyticsRoutes } from './analytics.routes'
 import { bridgeRoutes } from './bridge.routes'
 import { crvusdRoutes } from './crvusd.routes'
@@ -44,7 +44,7 @@ export const router = createRouter({
         <title>{t`Error` + ' - Curve'}</title>
       </head>
       <EvmErrorPage
-        title={(error as ValidationError).title ?? t`Unexpected Error`}
+        title={error instanceof PathParamError ? t`Validation failed` : t`Unexpected Error`}
         subtitle={(error as Error).message || t`An unexpected error occurred`}
         error={error}
       />
