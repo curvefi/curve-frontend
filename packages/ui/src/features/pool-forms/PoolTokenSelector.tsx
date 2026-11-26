@@ -8,7 +8,6 @@ import { useSwitch } from '@ui/hooks/useSwitch'
 export function PoolTokenSelector({
   tokens,
   onToken,
-  excludedIndex,
   selectedIndex,
   disabled,
   label,
@@ -18,7 +17,6 @@ export function PoolTokenSelector({
   selectedIndex: number
   disabled: boolean
   label: string
-  excludedIndex?: number
   testId?: string
   onToken: (index: number) => void
 }) {
@@ -41,11 +39,7 @@ export function PoolTokenSelector({
       size="small"
       testId={testId}
     >
-      <PoolTokenList
-        tokens={options}
-        excludedIndex={excludedIndex}
-        onToken={index => index !== selectedIndex && onToken(index)}
-      />
+      <PoolTokenList tokens={options} onToken={index => index !== selectedIndex && onToken(index)} />
     </TokenSelector>
   )
 }

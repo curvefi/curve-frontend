@@ -9,15 +9,14 @@ import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
 import { Decimal } from '@primitives/decimal.utils'
+import { isLowExchangeRate, LOW_EXCHANGE_RATE } from '@ui/features/pool-forms/swap/swap.utils'
 import { decimal, decimalDiv } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { isHighPriceImpact } from '@ui/lib/price-impact.util'
 import { getToken, type TokenMapper } from '../queries/tokens.query'
 
-const LOW_EXCHANGE_RATE = 0.98
-
 // exclude these pairs from displaying Exchange rate is low
-export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: string, routes: Route[]) {
+export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: string, routes: Route[] = []) {
   // if routes does not have a pool, exclude from low exchange rate check
   if (Array.isArray(routes) && routes.some(r => r.routeUrlId === '')) {
     return true
@@ -62,13 +61,8 @@ function getIsLowExchangeRate(
 }
 
 // pool swap
-export function getSwapIsLowExchangeRate(isCrypto: boolean, firstExchangeRate: string) {
-  if (isCrypto || !firstExchangeRate) {
-    return false
-  } else {
-    return +firstExchangeRate < LOW_EXCHANGE_RATE
-  }
-}
+export const getSwapIsLowExchangeRate = (isCrypto: boolean, firstExchangeRate: string) =>
+  !isCrypto && isLowExchangeRate(firstExchangeRate)
 
 export function getSwapActionModalType(isHighImpact: boolean, isLowExchangeRate: boolean) {
   const modalType: { type: 'priceImpactLowExchangeRate' | 'priceImpact' | 'lowExchangeRate' | ''; title: string } = {

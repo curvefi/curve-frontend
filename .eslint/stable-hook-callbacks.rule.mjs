@@ -4,7 +4,6 @@
  */
 const hooksWithStableCallbacks = {
   useCallbackSync: { callbackIndex: 1 },
-  useCombinedQueries: { callbackIndex: 1 },
   useMappedQuery: { callbackIndex: 1 },
   useOhlcPagesAdapter: { objectIndex: 0, propertyName: 'selectData' },
   useOhlcQueryAdapter: { objectIndex: 0, propertyName: 'selectItems' },

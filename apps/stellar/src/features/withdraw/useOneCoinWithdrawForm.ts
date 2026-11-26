@@ -103,6 +103,7 @@ export function useOneCoinWithdrawForm(poolParams: PoolQuery) {
     expectedLp,
     lpBalance: q(lpBalance),
     priceImpact,
+    hasStaked: false,
     toSymbol: tokens?.[index]?.data?.symbol,
     isPending,
     inputDisabled: isPending || !tokens?.[index]?.data || !supply || !+supply,

@@ -9,42 +9,44 @@ import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
-import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
+import type {
+  BorrowMoreCalculatedValues,
+  BorrowMoreFormValues,
+} from '@/llamalend/queries/validation/borrow-more.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLlamalendEquityLeverage, useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
-import type { UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, mapQuery, q } from '@ui/features/queries/util'
 import { decimalSum, ZERO } from '@ui/lib/decimal'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
-  params,
-  values: { userCollateral, debt },
   isControllerApproved,
   tokens: { collateralToken, borrowToken },
-  leverageEnabled,
-  form,
+  form: {
+    params,
+    values: { userCollateral, debt, leverageEnabled },
+    isTouched,
+  },
   controllerAddress,
   marketType,
 }: {
-  params: BorrowMoreParams<ChainId>
-  values: BorrowMoreForm
   isControllerApproved: boolean | undefined
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   controllerAddress: Address | undefined
   marketType: MarketType
-  leverageEnabled: boolean | undefined
-  form: UseFormReturn<BorrowMoreForm>
+  form: ValidatedForm<BorrowMoreFormValues, UserMarketParams<ChainId>, BorrowMoreCalculatedValues>
 }) {
   const isNewLlamalendHealth = useNewLlamalendHealth()
-  const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
+  const isOpen = isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
 

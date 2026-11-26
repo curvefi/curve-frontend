@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
@@ -39,13 +38,10 @@ export const usePoolActivityEventsConfig = () => {
   // Transform liquidity data with block explorer URLs and pool tokens
   const liquidityWithUrls = useCombinedQueries(
     [poolLiquidityEvents, apiPool, loadingQ(isHydrated || undefined)],
-    useCallback(
-      (liquidityData, { coins: poolTokens }) =>
-        maybe(network, blockchainId =>
-          liquidityData.events.map(event => ({ ...event, chainId, blockchainId, poolTokens })),
-        ),
-      [network, chainId],
-    ),
+    (liquidityData, { coins: poolTokens }) =>
+      maybe(network, blockchainId =>
+        liquidityData.events.map(event => ({ ...event, chainId, blockchainId, poolTokens })),
+      ),
   )
 
   const table = useCurveTable({

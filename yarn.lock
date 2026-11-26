@@ -644,7 +644,7 @@ __metadata:
     "@cypress/react": "npm:10.0.1"
     "@cypress/vite-dev-server": "npm:8.0.0"
     "@vitejs/plugin-react": "npm:6.1.2"
-    cypress: "npm:16.2.0"
+    cypress: "npm:16.3.0"
     main: "workspace:^"
     stellar: "workspace:^"
     vite: "npm:8.3.5"
@@ -8989,9 +8989,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:16.2.0":
-  version: 16.2.0
-  resolution: "cypress@npm:16.2.0"
+"cypress@npm:16.3.0":
+  version: 16.3.0
+  resolution: "cypress@npm:16.3.0"
   dependencies:
     "@cypress/request": "npm:^4.0.0"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -9027,14 +9027,14 @@ __metadata:
     proxy-from-env: "npm:1.0.0"
     request-progress: "npm:^3.0.0"
     supports-color: "npm:^8.1.1"
-    systeminformation: "npm:^5.31.1"
+    systeminformation: "npm:^5.33.16"
     tmp: "npm:~0.2.4"
     tree-kill: "npm:1.2.2"
     untildify: "npm:^4.0.0"
     yauzl: "npm:^3.3.1"
   bin:
     cypress: bin/cypress
-  checksum: 10c0/ebc26bb60dd5441421232e5bc290dd13ee98d30d5aa7e6c1931311a59b142d4359c72f7c46a8b7fbb950c950a1808fe5c884d2652def7e60512b5f05c2d229e4
+  checksum: 10c0/b655ece0f8f4e2456b1c829c06bddb366347f21f4a21e6ad5e882ff2e67a69fb325ccd54112dff4fcf666419edc295ae7e0aa46ce400c4e5642d04d5fd5f2f70
   languageName: node
   linkType: hard
 
@@ -14559,12 +14559,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.31.1":
-  version: 5.33.17
-  resolution: "systeminformation@npm:5.33.17"
+"systeminformation@npm:^5.33.16":
+  version: 5.33.23
+  resolution: "systeminformation@npm:5.33.23"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10c0/72f54ff1306c11fee324522623b90705a5a917bedf6bce58a02c36d868e9d1839660889eb79bb82bcf2193bcab738323f8d9304455a379ade66d777083aa5a05
+  checksum: 10c0/bb40b125c3d427b7c4bd09b8aa82d0022bbb6a288b4954afafe8d0653125631596da5258b104fca22c188180c1be4e08d666f7ba1109eeb0196539740e3bcefc
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard

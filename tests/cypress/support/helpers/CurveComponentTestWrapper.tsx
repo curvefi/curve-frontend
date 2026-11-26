@@ -14,18 +14,25 @@ const WalletStateSync = () => {
   return null
 }
 
-export const CurveComponentTestWrapper = ({ children, curve }: { children: ReactElement; curve: CurveApi }) => (
-  <ComponentTestWrapper config={mockedWagmiConfig} autoConnect>
+export const CurveComponentTestWrapper = ({
+  children,
+  curve,
+  connected = true,
+}: {
+  children: ReactElement
+  curve: CurveApi
+  connected?: boolean
+}) => (
+  <ComponentTestWrapper config={mockedWagmiConfig} autoConnect={connected}>
     <CurveContext
       value={{
         connectState: ConnectState.SUCCESS,
         curveApi: curve,
         isHydrated: true,
         isInitialized: true,
-        wallet: {
-          provider: { request: () => Promise.resolve(undefined) },
-          address: curve.signerAddress ?? zeroAddress,
-        },
+        wallet: connected
+          ? { provider: { request: () => Promise.resolve(undefined) }, address: curve.signerAddress ?? zeroAddress }
+          : undefined,
         provider: {} as never,
       }}
     >

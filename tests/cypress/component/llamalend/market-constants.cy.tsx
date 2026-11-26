@@ -7,7 +7,6 @@ import {
   DEPRECATED_LLAMAS,
   MARKETS_ALERTS,
   MARKETS_LEVERAGE_CONFIG,
-  NO_LEVERAGE_LEND,
 } from '@/llamalend/markets.constants'
 import { ALIASES_ETHEREUM } from '@curvefi/llamalend-api/lib/constants/aliases'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -80,14 +79,6 @@ describe('llama market constants', () => {
         for (const controllerAddress of Object.keys(chainMarkets)) {
           expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
         }
-      }
-    }
-  })
-
-  it('keeps every no leverage lend address checksummed', () => {
-    for (const chainMarkets of recordValues(NO_LEVERAGE_LEND)) {
-      for (const controllerAddress of chainMarkets) {
-        expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
       }
     }
   })

@@ -10,26 +10,27 @@ import { usePoolReserves } from '@/stellar/queries/pool/pool-reserves.query'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { swapFormValidationSuite } from '@/stellar/queries/validation/swap.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { useForm, useFormSync } from '@ui/features/forms'
 import type { SwapFormValues } from '@ui/features/pool-forms/swap/swap-form.utils'
-import { calculateMinimumReceived } from '@ui/features/pool-forms/swap/swap.utils'
-import { mapQuery } from '@ui/features/queries/util'
+import { useSwapFormActions } from '@ui/features/pool-forms/swap/useSwapFormActions'
+import { DISABLED_Q, mapQuery } from '@ui/features/queries/util'
 import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
 import type { SwapFormQuery } from './types'
+import { useSwapLowExchangeRate } from './useSwapLowExchangeRate'
 
 const userDefaultValues = { inputAmount: undefined, outputAmount: undefined, editedSide: 'pay' } as const
 const formOptions = {
   validation: swapFormValidationSuite,
   defaultValues: {
     ...userDefaultValues,
+    isWrapped: false,
     fromIndex: 0,
     toIndex: 1,
     decimals: undefined,
     maxAmount: undefined,
     maxOutput: undefined,
-    minimum: undefined,
+    expectedOutput: undefined,
     slippage: STELLAR_DEFAULT_SLIPPAGE,
   },
 }
@@ -44,40 +45,25 @@ export function useSwapForm(poolParams: PoolQuery) {
   const form = useForm<SwapFormValues>(formOptions)
   const { formState, reset, values } = form
   const { fromIndex, toIndex, editedSide } = values
-  const maxAmount = maxAmounts?.[fromIndex]?.data
+  const max = maxAmounts?.[fromIndex] ?? DISABLED_Q
+  const maxAmount = max.data
   const maxOutput = reserves.data?.[toIndex]
 
   const [params, isDebouncing] = useFormDebounce<SwapFormQuery, 'inputAmount' | 'outputAmount' | 'editedSide'>(
-    {
-      network,
-      pool,
-      account,
-      inputAmount: values.inputAmount,
-      outputAmount: values.outputAmount,
-      fromIndex,
-      toIndex,
-      editedSide,
-      decimals: decimalsData,
-      maxAmount,
-      maxOutput,
-      slippage: values.slippage,
-    },
+    { ...values, network, pool, account },
     userDefaultValues,
   )
 
-  const { inputAmount, outputAmount } = useQuoteQueries(params)
-  const priceImpact = useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, outputAmount)
-  const minimum = mapQuery(outputAmount, value =>
-    maybe(params.decimals?.[toIndex], precision => calculateMinimumReceived(value, params.slippage, precision)),
-  )
-  useFormSync(form, { decimals: decimalsData, maxAmount, maxOutput, minimum: minimum.data })
+  const { inputAmount, expectedOutput, exchangeRate } = useQuoteQueries(params)
+  const lowExchangeRate = useSwapLowExchangeRate(params, exchangeRate)
+  const priceImpact = useSwapPriceImpact({ ...params, inputAmount: inputAmount.data }, expectedOutput)
+  useFormSync(form, { decimals: decimalsData, maxAmount, maxOutput, expectedOutput: expectedOutput.data })
 
-  // Don't overwrite form while a changed pair or amount is being debounced
-  useFormSync(form, { inputAmount: inputAmount.data }, !isDebouncing && editedSide === 'receive')
-  useFormSync(form, { outputAmount: outputAmount.data }, !isDebouncing && editedSide === 'pay')
+  useFormSync(form, { inputAmount: inputAmount.data }, editedSide === 'receive')
+  useFormSync(form, { outputAmount: expectedOutput.data }, editedSide === 'pay')
 
   const {
-    onSubmit,
+    onSubmit: submit,
     isPending: isSwapping,
     error: swapError,
   } = useSwapMutation({
@@ -86,24 +72,47 @@ export function useSwapForm(poolParams: PoolQuery) {
     tokens: tokenAddresses.data ?? [],
     onReset: () => reset(userDefaultValues),
   })
-
+  const { onSubmit, lowRateModal } = useSwapFormActions({
+    handleSubmit: form.handleSubmit,
+    lowExchangeRate,
+    onConfirmed: submit,
+  })
   const isPending = isSwapping || formState.isSubmitting
+  const fromSymbol = tokens?.[fromIndex]?.data?.symbol
+  const toSymbol = tokens?.[toIndex]?.data?.symbol
   return {
     form,
     tokens,
-    fromSymbol: tokens?.[fromIndex]?.data?.symbol,
-    toSymbol: tokens?.[toIndex]?.data?.symbol,
+    fromSymbol,
+    toSymbol,
     params,
     inputAmount,
-    outputAmount,
+    expectedOutput,
+    max,
+    canSwapWrapped: false,
+    lowExchangeRate,
+    lowRateModal: {
+      ...lowRateModal,
+      exchangeRate: exchangeRate.data,
+      expectedOutput: expectedOutput.data,
+      fromSymbol,
+      toSymbol,
+    },
     isPending,
-    isDisabled: isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact),
-    isLoading: isPending || config.isLoading || priceImpact.isLoading,
+    isDisabled:
+      isPending || isDebouncing || !formState.isValid || shouldBlockTransaction(priceImpact) || !!lowExchangeRate.error,
+    isLoading:
+      isPending ||
+      config.isLoading ||
+      inputAmount.isLoading ||
+      expectedOutput.isLoading ||
+      priceImpact.isLoading ||
+      lowExchangeRate.isLoading,
     wallet: { connect, isConnected, isConnecting },
     userAddress: asAddress(account),
-    error: swapError,
+    error: swapError ?? lowExchangeRate.error,
     formErrors: formState.visibleErrors,
     onSlippageChange: (newSlippage: Decimal) => form.update({ slippage: newSlippage }),
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit,
   }
 }
