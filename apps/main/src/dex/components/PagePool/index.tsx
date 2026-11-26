@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
-import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import { PoolCampaignRewardsBanner } from '@/dex/components/PagePool/components/PoolCampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
@@ -319,7 +319,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           ),
         }}
       >
-        <CampaignRewardsBanner />
+        <PoolCampaignRewardsBanner />
         <UserPosition />
         {!isLiteChain(chainId) && apiPool.data && (
           <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={apiPool.data} />
