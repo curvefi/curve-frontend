@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- Implements the shared Skeleton.
+// eslint-disable-next-line no-restricted-imports -- Implements the shared Skeleton.
 import MuiSkeleton, { type SkeletonProps as MuiSkeletonProps } from '@mui/material/Skeleton'
 import { Sizing } from '@ui/features/themes/design/0_primitives'
 

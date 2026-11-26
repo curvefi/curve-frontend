@@ -28,12 +28,6 @@ import { isolatedPackagesRule } from './.eslint/isolated-packages.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const skeletonImportMessage = "Use Skeleton from '@ui/components/Skeleton' instead."
-const restrictedSkeletonImports = [
-  { name: '@mui/material/Skeleton', allowTypeImports: true, message: skeletonImportMessage },
-  { name: '@mui/material', importNames: ['Skeleton'], allowTypeImports: true, message: skeletonImportMessage },
-]
-
 const config = [
   // Global ignores — must be its own object with no `files` key
   {
@@ -173,9 +167,9 @@ const config = [
         'warn',
         {
           paths: [
-            ...['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select'].map(component => ({
+            ...['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select', 'Skeleton'].map(component => ({
               name: `@mui/material/${component}`,
-              message: `Use \`import { ${component} } from '@evm-ui/shared/ui/${component}'\` instead.`,
+              message: `Use \`import { ${component} } from the @ui package instead.`,
             })),
             {
               name: '@mui/material/Chip',
@@ -266,7 +260,6 @@ const config = [
       ],
     },
   },
-  { rules: { '@typescript-eslint/no-restricted-imports': ['error', { paths: restrictedSkeletonImports }] } },
   {
     ignores: ['packages/ui/src/features/queries/query-hooks.ts'],
     rules: {
@@ -274,7 +267,6 @@ const config = [
         'error',
         {
           paths: [
-            ...restrictedSkeletonImports,
             {
               name: '@tanstack/react-query',
               importNames: ['useQuery', 'useQueries', 'UseQueryOptions'],
