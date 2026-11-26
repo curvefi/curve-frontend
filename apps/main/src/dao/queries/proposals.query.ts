@@ -22,11 +22,12 @@ const flipSortOrder = (order: ProposalSortOrder) => (order === 'asc' ? 'desc' : 
 export const { useQuery: useProposalsQuery } = queryFactory({
   queryKey: (params: ProposalsParams) => ({ name: 'proposals', ...params }) as const,
   queryFn: async ({ page, pageSize, search, status, sortBy, sortOrder }: ProposalsParams) => {
-    // Flip the sort order just before sending out the API request when sorting by ending soon.
-    // We want the opposite order to happen without the UI or URL having to change. A bit weird but it's better UX.
-    sortOrder = sortBy === 'ending_soon' ? flipSortOrder(sortOrder) : sortOrder
-
-    const { proposals, count } = await getProposals(page, pageSize, search, 'all', status, { sortBy, sortOrder })
+    const { proposals, count } = await getProposals(page, pageSize, search, 'all', status, {
+      sortBy,
+      // Flip the sort order just before sending out the API request when sorting by ending soon.
+      // We want the opposite order to happen without the UI or URL having to change. A bit weird but it's better UX.
+      sortOrder: sortBy === 'ending_soon' ? flipSortOrder(sortOrder) : sortOrder,
+    })
     return { proposals: proposals.map(parseProposalData), count }
   },
   category: 'dao.proposals',
