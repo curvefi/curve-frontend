@@ -19,7 +19,7 @@ export const RowExpansionToggle = <TData extends RowData>({
       <ButtonBase
         aria-expanded={isExpanded}
         onClick={() => row.toggleExpanded()}
-        sx={{ gap: Spacing.xxs, textAlign: 'start', '&.Mui-focusVisible': { outline: '1px solid' } }}
+        sx={{ gap: Spacing.xs, textAlign: 'start', '&.Mui-focusVisible': { outline: '1px solid' } }}
       >
         <ChevronRightIcon
           fontSize="small"

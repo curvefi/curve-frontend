@@ -5,6 +5,7 @@ import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
 import { ActivityActionCell } from '../cells/ActivityActionCell'
 import { ActivityUsdValueCell } from '../cells/ActivityUsdValueCell'
 import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
+import { IndentBox } from '../IndentBox'
 import type { ActivityRow } from '../types'
 import { ActivityColumnId } from './columns.enum'
 import { ACTIVITY_TITLES } from './columns.titles'
@@ -23,7 +24,7 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
   }),
   columnHelper.display({
     id: ActivityColumnId.Action,
-    header: ACTIVITY_TITLES[ActivityColumnId.Action],
+    header: () => <IndentBox isColumnHeader>{ACTIVITY_TITLES[ActivityColumnId.Action]}</IndentBox>,
     cell: ActivityActionCell,
   }),
   columnHelper.display({
