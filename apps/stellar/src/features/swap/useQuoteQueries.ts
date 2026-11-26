@@ -1,15 +1,20 @@
 import { useSwapQuote } from '@/stellar/queries/swap/swap-quote.query'
 import { combineQueries } from '@ui/features/queries/combine'
 import { constQ, q } from '@ui/features/queries/util'
+import { decimalDiv } from '@ui/lib/decimal'
 import type { SwapFormQuery } from './types'
 
-/** Run the swap quote query for both directions and return the input and output amounts. */
+/** Resolve the input amount and its expected output using both quote directions. */
 export function useQuoteQueries(params: SwapFormQuery) {
   const isReceive = params.editedSide === 'receive'
   const inverseQuote = useSwapQuote(params, isReceive)
   const inputAmount = isReceive ? q(inverseQuote) : constQ(params.inputAmount)
   // get_dx is approximate: use get_dy for the output this input will actually buy.
   const forwardQuote = useSwapQuote({ ...params, inputAmount, editedSide: 'pay' })
-  const outputAmount = combineQueries([inputAmount, forwardQuote], (_, output) => output)
-  return { inputAmount, outputAmount }
+  const expectedOutput = combineQueries([inputAmount, forwardQuote], (_, output) => output)
+  return {
+    inputAmount,
+    expectedOutput,
+    exchangeRate: combineQueries([inputAmount, expectedOutput], (input, output) => decimalDiv(output, input)),
+  }
 }

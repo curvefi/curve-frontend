@@ -1,12 +1,11 @@
 import { type Address, ethAddress, isAddressEqual } from 'viem'
+import { GAS_BUFFER } from '@/dex/constants'
 import { useDepositEstimateGas } from '@/dex/queries/deposit/deposit-estimate-gas.query'
 import type { INetworkConstants } from '@curvefi/api/lib/interfaces'
 import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { mapQuery } from '@ui/features/queries/util'
 import { decimalMax, decimalMinus, decimalMultiply, ZERO } from '@ui/lib/decimal'
 import type { DepositParams } from '../types'
-
-const GAS_BUFFER = '1.8'
 
 export const useDepositMaxAmounts = ({
   params,
@@ -31,7 +30,7 @@ export const useDepositMaxAmounts = ({
         ),
       },
       nativeIndex >= 0,
-    ).data?.estGasCost ?? ZERO
+    ).data?.estGasCost ?? ZERO // If estimation or USD pricing is unavailable, keep balance usable
 
   return tokenAddresses.map((address, index) =>
     mapQuery(balances[address], balance =>

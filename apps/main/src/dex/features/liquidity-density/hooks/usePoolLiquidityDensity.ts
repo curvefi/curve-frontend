@@ -25,7 +25,7 @@ export const usePoolLiquidityDensity = ([inputCoin, outputCoin]: LiquidityPair, 
   const snapshots = usePoolSnapshots(params, enabled)
   const balances = usePoolWrappedBalances(params, enabled)
   const parameters = usePoolParameters(params, enabled)
-  const storedRates = usePoolStoredRates(params, enabled)
+  const storedRates = usePoolStoredRates({ ...params, isWrapped: true }, enabled)
   const invariant = usePoolInvariant(params, enabled)
   const amplification = usePoolAmplification(params, enabled)
   const inputAmount = combineQueries([pool, balances], (pool, balances) =>

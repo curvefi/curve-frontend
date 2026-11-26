@@ -1,6 +1,7 @@
 import { dexPages } from '@evm-ui/shared/routes'
 
 export const LARGE_RATE = 5000
+export const GAS_BUFFER = '1.8'
 
 const MAIN_ROUTE = { ...dexPages, PAGE_LOCKER: '/locker', PAGE_404: '/404' }
 
