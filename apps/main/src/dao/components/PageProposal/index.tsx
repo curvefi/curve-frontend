@@ -74,7 +74,7 @@ export const Proposal = () => {
   )
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <DetailPageLayout>
       <BackButton path={daoPages.proposals()} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>

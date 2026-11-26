@@ -84,7 +84,7 @@ export const Proposals = () => {
   const rows = table.getRowModel().rows
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <DetailPageLayout>
       <Stack
         ref={tableTopRef}
         sx={{ backgroundColor: theme => theme.design.Layer[1].Fill, scrollMarginTop: `${navHeight}px` }}
