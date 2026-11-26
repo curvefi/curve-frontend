@@ -4,7 +4,7 @@ import { queryFactory } from '@ui/features/queries/factory'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 import { parseProposalData } from '../utils/proposal'
 
-export const { useQuery: useProposal, invalidate: invalidateProposal } = queryFactory({
+const { useQuery: useProposal, invalidate } = queryFactory({
   queryKey: ({
     proposalId,
     proposalType,
@@ -40,3 +40,8 @@ export const { useQuery: useProposal, invalidate: invalidateProposal } = queryFa
   category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,
 })
+
+export { useProposal }
+
+export const invalidateProposal = ({ proposalId, proposalType }: { proposalId: number; proposalType: ProposalType }) =>
+  invalidate({ proposalId, proposalType }, { partial: true })
