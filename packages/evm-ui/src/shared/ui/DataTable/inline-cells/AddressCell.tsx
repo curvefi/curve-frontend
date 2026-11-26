@@ -1,4 +1,3 @@
-import { getAddress } from 'viem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
@@ -19,12 +18,14 @@ type AddressCellProps = {
   label?: string
   /** Optional explorer URL for the address. */
   explorerUrl?: string
+  /** Formatter applied when copying the address. */
+  formatAddress: (address: string) => string
 }
 
 /**
  * Cell component for displaying blockchain addresses with truncation.
  */
-export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) => (
+export const AddressCell = ({ address, label, explorerUrl, formatAddress }: AddressCellProps) => (
   <InlineTableCell>
     {label && (
       <Typography variant="bodyXsRegular" className={TABLE_SECONDARY_TEXT_CLASS}>
@@ -39,7 +40,7 @@ export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) =
       <Stack direction="row" sx={{ gap: Spacing.xs }}>
         <Typography
           variant="tableCellValueStrong"
-          onClick={useCopyToClipboard({ copyText: address, format: getAddress })}
+          onClick={useCopyToClipboard({ copyText: address, format: formatAddress })}
           sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
         >
           {shortenString(address)}
