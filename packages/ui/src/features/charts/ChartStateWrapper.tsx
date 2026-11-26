@@ -33,7 +33,7 @@ export type ChartStateWrapperProps<T> = AllOrNone<ConnectionProps> & {
   emptyState?: ChartEmptyState<T>
   errorState?: ChartErrorState
   children: (data: T) => ReactNode
-  userAddress?: Address
+  userAddress: Address | undefined
 }
 
 const isEmptyArray = (data: unknown) => Array.isArray(data) && data.length === 0
