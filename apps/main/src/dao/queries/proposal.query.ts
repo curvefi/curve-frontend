@@ -25,7 +25,7 @@ export const { useQuery: useProposal, invalidate: invalidateProposal } = queryFa
     txHash?: string
   }) => {
     const proposal = await getProposal(proposalId, proposalType, txHash)
-    const parsedProposal = {
+    return {
       ...parseProposalData(proposal),
       votes: proposal.votes
         .map(vote => ({
@@ -36,8 +36,6 @@ export const { useQuery: useProposal, invalidate: invalidateProposal } = queryFa
         }))
         .toSorted((a, b) => b.stake - a.stake),
     }
-
-    return parsedProposal
   },
   category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,
