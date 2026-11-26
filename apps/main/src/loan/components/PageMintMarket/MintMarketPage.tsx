@@ -44,8 +44,7 @@ export const MintMarketPage = () => {
   const { data: market } = marketQuery
 
   const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m?.id), userAddress: address }
-  const hasPosition = q(useLoanExists(queryParams))
-  const { data: loanExists, isLoading: isLoanExistsLoading } = hasPosition
+  const loanExists = q(useLoanExists(queryParams))
 
   const network = networks[chainId]
   const { query, apiMarket } = useLlamaMarket(
@@ -67,7 +66,7 @@ export const MintMarketPage = () => {
     userAddress: address,
     tokens,
   })
-  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
+  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists.data)
 
   return (
     <PageState
@@ -87,9 +86,9 @@ export const MintMarketPage = () => {
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
             content:
               !query.isLoading &&
-              !isLoanExistsLoading &&
-              !(loanExists && isLiquidationLoading) &&
-              (loanExists ? (
+              !loanExists.isLoading &&
+              !(loanExists.data && isLiquidationLoading) &&
+              (loanExists.data ? (
                 <ManageLoanTabs
                   onPricesUpdated={setPreviewPrices}
                   collateralEvents={collateralEvents}
@@ -106,7 +105,7 @@ export const MintMarketPage = () => {
           <MarketSection id="position-details">
             <PositionDetailsComposite
               type={MarketRateType.Borrow}
-              hasPosition={hasPosition}
+              hasPosition={loanExists}
               events={mapQuery(collateralEvents, data => data.events)}
             />
           </MarketSection>
