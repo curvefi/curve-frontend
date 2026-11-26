@@ -28,7 +28,7 @@ type PositionEvents = {
 }
 
 type PositionDetailsCompositeProps = {
-  [T in MarketRateType]: { type: T; position: QueryProp<boolean>; events: QueryProp<PositionEvents[T]> }
+  [T in MarketRateType]: { type: T; hasPosition: QueryProp<boolean>; events: QueryProp<PositionEvents[T]> }
 }[MarketRateType]
 
 const { Spacing } = SizesAndSpaces
@@ -52,14 +52,14 @@ const POSITION_CONFIG: {
   [MarketRateType.Supply]: { Details: SupplyPositionDetails, Activity: UserVaultEventsTable },
 }
 
-const PositionTab = ({ type, position: { data: hasPosition, isLoading, error } }: PositionDetailsCompositeProps) => {
+const PositionTab = ({ type, hasPosition: { data, isLoading, error } }: PositionDetailsCompositeProps) => {
   const { Details } = POSITION_CONFIG[type]
   return (
     <Card size="small">
       <CardContent>
-        {hasPosition ? (
+        {data ? (
           <Details />
-        ) : error && hasPosition === undefined ? (
+        ) : error && data === undefined ? (
           <EvmErrorMessage title={t`Could not load your position`} subtitle={error.message} error={error} size="sm" />
         ) : (
           <WithSkeleton loading={isLoading} variant="rectangular" sx={{ width: '100%', maxWidth: 'none' }}>
@@ -84,7 +84,7 @@ const POSITION_TABS: TabItem<string, PositionDetailsCompositeProps>[] = [
   {
     value: 'position',
     label: t`Your position`,
-    visible: ({ position, events }) => position.data !== false || !events.data?.length,
+    visible: ({ hasPosition, events }) => hasPosition.data !== false || !events.data?.length,
     component: PositionTab,
   },
   { value: 'activity', label: t`Activity`, visible: ({ events }) => !!events.data?.length, component: ActivityTab },
@@ -101,7 +101,7 @@ export const PositionDetailsComposite = (props: PositionDetailsCompositeProps) =
         {props.type === MarketRateType.Borrow && (
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <LlamaMonitorBotButton />
-            {isNewLlamalendHealth && props.position.data && (
+            {isNewLlamalendHealth && props.hasPosition.data && (
               <PositionDetailsToggle disabled={tab.value !== 'position'} />
             )}
           </Stack>

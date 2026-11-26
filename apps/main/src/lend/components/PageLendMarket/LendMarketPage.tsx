@@ -50,8 +50,8 @@ export const LendMarketPage = () => {
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m?.id), userAddress }
-  const loanExistsQuery = q(useLoanExists(queryParams))
-  const { data: loanExists, isLoading: isLoanExistsLoading } = loanExistsQuery
+  const hasPosition = q(useLoanExists(queryParams))
+  const { data: loanExists, isLoading: isLoanExistsLoading } = hasPosition
   const { data: collateralRewardsEnabled } = useMarketCollateralRewardsEnabled(queryParams)
   const showCollateralClaim = collateralRewardsEnabled === true
 
@@ -120,7 +120,7 @@ export const LendMarketPage = () => {
           <MarketSection id="position-details">
             <PositionDetailsComposite
               type={MarketRateType.Borrow}
-              position={loanExistsQuery}
+              hasPosition={hasPosition}
               events={mapQuery(collateralEvents, data => data.events)}
             />
           </MarketSection>

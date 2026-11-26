@@ -44,8 +44,8 @@ export const MintMarketPage = () => {
   const { data: market } = marketQuery
 
   const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m?.id), userAddress: address }
-  const loanExistsQuery = q(useLoanExists(queryParams))
-  const { data: loanExists, isLoading: isLoanExistsLoading } = loanExistsQuery
+  const hasPosition = q(useLoanExists(queryParams))
+  const { data: loanExists, isLoading: isLoanExistsLoading } = hasPosition
 
   const network = networks[chainId]
   const { query, apiMarket } = useLlamaMarket(
@@ -106,7 +106,7 @@ export const MintMarketPage = () => {
           <MarketSection id="position-details">
             <PositionDetailsComposite
               type={MarketRateType.Borrow}
-              position={loanExistsQuery}
+              hasPosition={hasPosition}
               events={mapQuery(collateralEvents, data => data.events)}
             />
           </MarketSection>
