@@ -7,6 +7,7 @@ import {
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
+import { useMaxLeverage } from '@/llamalend/queries/market/market-max-equity-leverage.query'
 import { useMarketOverview } from '@/llamalend/queries/market/market-overview.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { useMarketTotalCollateral } from '@/llamalend/queries/market/market-total-collateral.query'
@@ -20,7 +21,6 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
-import { useMaxLeverage } from './useMaxLeverage'
 
 const maxReturnOnEquity = (leverage: number | null, collateralApy: number | null, borrowApy: number | null) => ({
   value: getReturnOnEquity(leverage, collateralApy, borrowApy),
