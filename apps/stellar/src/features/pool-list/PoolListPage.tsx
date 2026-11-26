@@ -22,7 +22,7 @@ const PoolActions: ExpandedPanelComponent<PoolRow> = ({ row: { original: pool } 
 
 export const PoolListPage = () => {
   const { network } = useParams<NetworkQuery>()
-  const { address, connect, isConnected, isConnecting } = useWallet()
+  const { address } = useWallet()
   const { isLite } = STELLAR_NETWORKS[network]
   const pagination = usePoolsPagination()
   const filters = usePoolsFilters()
@@ -47,9 +47,6 @@ export const PoolListPage = () => {
         addressDisplay={stellarAddressDisplay}
         Actions={PoolActions}
         userAddress={asAddress(address)}
-        connect={connect}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
       />
     </ListPageLayout>
   )

@@ -9,7 +9,7 @@ const { Spacing, MaxWidth, MinHeight } = SizesAndSpaces
 
 export const ListPageLayout = ({ footer, children }: { children: ReactNode; footer?: ReactNode }) => (
   <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
-    <Stack sx={{ gap: Spacing.xxl, ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.table, minHeight: MinHeight.pageContent }}>
+    <Stack sx={{ gap: Spacing.xl, ...PAGE_BLOCK_MARGIN, maxWidth: MaxWidth.table, minHeight: MinHeight.pageContent }}>
       {children}
     </Stack>
 
