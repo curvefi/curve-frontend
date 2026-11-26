@@ -17,7 +17,7 @@ import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { Form } from '@ui/features/forms/components/Form'
 import { Balance } from '@ui/features/forms/controls/LargeTokenInput/Balance'
 import { FormAlerts, HighPriceImpactAlert } from '@ui/features/forms/FormAlerts'
-import { mapQuery, q, type QueryProp, type Range, toQuery } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp, type Range, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { shouldBlockTransaction } from '@ui/lib/price-impact.util'
@@ -45,7 +45,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isPending,
     isLoading,
     onSubmit,
-    isDisabled,
     borrowToken,
     collateralToken,
     error,
@@ -80,7 +79,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     <LoanActionSettings
       show={values.leverageEnabled === true}
       slippage={values.slippage}
-      onSlippageChange={slippage => updateForm({ slippage })}
+      onSlippageChange={slippage => updateForm({ slippage }, { mode: 'immediate' })}
       routes={routes}
       exchangeRate={exchangeRate}
       priceImpact={priceImpact}
@@ -97,12 +96,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         <BorrowMoreLoanInfoList
           controllerAddress={controllerAddress}
           form={form}
-          params={params}
-          values={values}
           isControllerApproved={isControllerApproved.data}
           tokens={{ collateralToken, borrowToken }}
           marketType={marketType}
-          leverageEnabled={values.leverageEnabled}
         />
       }
     >
@@ -113,7 +109,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           blockchainId={network.blockchainId}
           name="userCollateral"
           form={form}
-          max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
+          max={max.userCollateral}
           testId="borrow-more-input-collateral"
           network={network}
         />
@@ -124,7 +120,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.blockchainId}
             name="userBorrowed"
             form={form}
-            max={{ ...q(max.userBorrowed), fieldName: max.userBorrowed.field }}
+            max={max.userBorrowed}
             testId="borrow-more-input-user-borrowed"
             network={network}
           />
@@ -136,7 +132,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           blockchainId={network.blockchainId}
           name="debt"
           form={form}
-          max={{ ...maxDebt, fieldName: max.debt.field, onMax }}
+          max={{ ...maxDebt, fieldName: max.debt.fieldName, onMax }}
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
@@ -158,7 +154,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             {settings}
             <BorrowToWalletCheckbox
               checked={mapQuery(leverageEnabled, enabled => enabled === false)}
-              onChange={event => updateForm({ leverageEnabled: !event.target.checked, routeId: undefined })}
+              onChange={event =>
+                updateForm({ leverageEnabled: !event.target.checked, routeId: undefined }, { mode: 'immediate' })
+              }
             />
           </>
         ) : (
@@ -166,7 +164,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             <LeverageInput
               checked={leverageEnabled}
               leverage={leverage}
-              onToggle={event => updateForm({ leverageEnabled: event.target.checked, routeId: undefined })}
+              onToggle={event =>
+                updateForm({ leverageEnabled: event.target.checked, routeId: undefined }, { mode: 'immediate' })
+              }
             />
             {settings}
           </>
@@ -175,7 +175,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       <EvmFormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
+        disabled={form.isDisabled || shouldBlockTransaction(priceImpact, params.leverageEnabled ?? false)}
         label={[
           [isControllerApproved.data, isApproved.data].includes(false) && t`Approve`,
           Number(values.userCollateral) && t`Add`,
@@ -192,11 +192,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         formErrors={formErrors}
         handledErrors={notFalsy(
           'userCollateral',
-          max.userCollateral.field,
+          max.userCollateral.fieldName,
           showUserBorrowed && 'userBorrowed',
-          showUserBorrowed && max.userBorrowed.field,
+          showUserBorrowed && max.userBorrowed.fieldName,
           'debt',
-          max.debt.field,
+          max.debt.fieldName,
         )}
         userAddress={userAddress}
       />
