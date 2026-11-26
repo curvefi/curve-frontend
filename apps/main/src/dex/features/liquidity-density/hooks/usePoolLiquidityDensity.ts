@@ -1,5 +1,4 @@
 import { maxBy } from 'lodash'
-import { useCallback } from 'react'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { usePoolContext } from '@/dex/features/pool-context'
@@ -36,17 +35,10 @@ export const usePoolLiquidityDensity = ([inputCoin, outputCoin]: LiquidityPair, 
 
   const onchainProfile = useCombinedQueries(
     [pool, balances, parameters, storedRates, invariant, amplification, metadata, quote, inputAmount],
-    useCallback(
-      (...results) => processConnectedLiquidity(...results, [inputCoin, outputCoin]),
-      [inputCoin, outputCoin],
-    ),
+    (...results) => processConnectedLiquidity(...results, [inputCoin, outputCoin]),
   )
-  const apiProfile = useCombinedQueries(
-    [apiPool, metadata, snapshots],
-    useCallback(
-      (pool, metadata, snapshots) => processApiLiquidity(pool, metadata, snapshots, [inputCoin, outputCoin]),
-      [inputCoin, outputCoin],
-    ),
+  const apiProfile = useCombinedQueries([apiPool, metadata, snapshots], (pool, metadata, snapshots) =>
+    processApiLiquidity(pool, metadata, snapshots, [inputCoin, outputCoin]),
   )
 
   return {

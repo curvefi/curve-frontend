@@ -1,5 +1,4 @@
 import { capitalize } from 'lodash'
-import { useCallback } from 'react'
 import { isAddressEqual } from 'viem'
 import { useConnection } from 'wagmi'
 import { usePoolCampaigns } from '@/dex/hooks/usePoolCampaigns'
@@ -38,46 +37,41 @@ export const useResidualClaimsTable = (
   const { address: userAddress } = useConnection()
   const { curveApi, isHydrated } = useCurve()
 
-  const campaigns = usePoolCampaigns({ blockchainId })
+  const { data: campaigns, isLoading: isCampaignsLoading } = usePoolCampaigns({ blockchainId })
   const positions = useUserPoolPositions({ chainId, userAddress }, enabled)
   const poolAddresses = usePoolAddresses({ chainId }, enabled)
   const claimables = useUserPoolClaimables({ chainId, userAddress, poolAddresses: q(poolAddresses) }, enabled)
 
-  const tableQuery = useCombinedQueries(
-    [positions, poolAddresses, claimables],
-    useCallback(
-      (positions, addresses, rewards) =>
-        // Out of all pools, we want those that have claimable rewards but no LP balance for the user.
-        isHydrated
-          ? addresses
-              .filter(
-                address =>
-                  hasClaimableRewards(rewards[address]) &&
-                  !positions.some(
-                    position =>
-                      isAddressEqual(position.address, address) && decimalGreaterThan(position.totalBalance, ZERO),
-                  ),
-              )
-              .map(address =>
-                enrichPoolRow(
-                  curvePoolToRowData(getPool(address, curveApi)),
-                  network,
-                  campaigns.data,
-                  getPoolUserPosition(rewards[address]),
-                ),
-              )
-              .toSorted((a, b) =>
-                decimalCompare(b.userPosition?.claimablesUsd.data ?? ZERO, a.userPosition?.claimablesUsd.data ?? ZERO),
-              )
-          : undefined,
-      [isHydrated, curveApi, network, campaigns.data],
-    ),
+  const tableQuery = useCombinedQueries([positions, poolAddresses, claimables], (positions, addresses, rewards) =>
+    // Out of all pools, we want those that have claimable rewards but no LP balance for the user.
+    isHydrated
+      ? addresses
+          .filter(
+            address =>
+              hasClaimableRewards(rewards[address]) &&
+              !positions.some(
+                position =>
+                  isAddressEqual(position.address, address) && decimalGreaterThan(position.totalBalance, ZERO),
+              ),
+          )
+          .map(address =>
+            enrichPoolRow(
+              curvePoolToRowData(getPool(address, curveApi)),
+              network,
+              campaigns,
+              getPoolUserPosition(rewards[address]),
+            ),
+          )
+          .toSorted((a, b) =>
+            decimalCompare(b.userPosition?.claimablesUsd.data ?? ZERO, a.userPosition?.claimablesUsd.data ?? ZERO),
+          )
+      : undefined,
   )
 
   const scanPoolCount = poolAddresses.data?.length
 
   return {
-    isFetching: positions.isFetching || campaigns.isLoading || poolAddresses.isFetching || claimables.isFetching,
+    isFetching: positions.isFetching || isCampaignsLoading || poolAddresses.isFetching || claimables.isFetching,
     onReload: () => resetPoolLists({ chainId, userAddress }),
     tableQuery,
     alerts: getPoolListAlerts(tableQuery.data, blockchainId),

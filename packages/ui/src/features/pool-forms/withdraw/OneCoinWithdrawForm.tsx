@@ -1,16 +1,18 @@
+import type { ComponentProps } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { Form } from '@ui/features/forms/components/Form'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { FormAlerts } from '@ui/features/forms/FormAlerts'
 import { FormButton } from '@ui/features/forms/FormButton'
+import type { FormControl } from '@ui/features/forms/useFormValidation'
 import type { PoolFormProps } from '@ui/features/pool-forms/pool-form.types'
 import { PoolTokenSelector } from '@ui/features/pool-forms/PoolTokenSelector'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
-import type { OneCoinWithdrawFormValues } from './withdraw-form.utils'
+import type { OneCoinWithdrawFormValues, OneCoinWithdrawValues } from './withdraw-form.utils'
 import { WrappedWithdrawCheckbox } from './WrappedWithdrawCheckbox'
 
 export const OneCoinWithdrawForm = ({
@@ -31,9 +33,12 @@ export const OneCoinWithdrawForm = ({
   error,
   formErrors,
   userAddress,
-  canWithdrawWrapped,
-}: PoolFormProps<OneCoinWithdrawFormValues> & {
-  canWithdrawWrapped?: boolean
+  wrapped,
+  hasStaked,
+}: Omit<PoolFormProps<OneCoinWithdrawFormValues>, 'form'> & {
+  form: FormControl<OneCoinWithdrawValues>
+  hasStaked: boolean
+  wrapped?: Omit<ComponentProps<typeof WrappedWithdrawCheckbox>, 'disabled'>
   index: number
   max: QueryProp<Decimal>
   onMax: () => void
@@ -47,7 +52,7 @@ export const OneCoinWithdrawForm = ({
       <FormTokenInput
         form={form}
         name="amount"
-        relatedFields={['poolReserve']}
+        relatedFields={['decimals', 'poolReserve', 'expectedLp', 'lpAmount', 'maxLpAmount']}
         max={{ balance: max, onMax }}
         balance={token && mapQuery(token, () => form.values.amount)}
         label={t`Expected amount to withdraw`}
@@ -71,8 +76,9 @@ export const OneCoinWithdrawForm = ({
             testId="withdraw-token-select"
           />
         }
+        {...(hasStaked && { message: t`You have staked LP tokens. Use the Unstake tab before withdrawing them.` })}
       />
-      {canWithdrawWrapped && <WrappedWithdrawCheckbox form={form} disabled={isPending} />}
+      {wrapped && <WrappedWithdrawCheckbox {...wrapped} disabled={isPending} />}
       <FormButton
         {...wallet}
         pending={isPending}
@@ -85,7 +91,7 @@ export const OneCoinWithdrawForm = ({
       <FormAlerts
         error={error}
         formErrors={formErrors}
-        handledErrors={['amount', 'poolReserve']}
+        handledErrors={['amount', 'decimals', 'poolReserve', 'expectedLp', 'lpAmount', 'maxLpAmount']}
         userAddress={userAddress}
       />
     </Form>

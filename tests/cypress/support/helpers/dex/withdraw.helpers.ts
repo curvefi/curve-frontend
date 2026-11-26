@@ -1,6 +1,6 @@
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { submitAndExpectToast } from '@cy/support/helpers/toast.helpers'
-import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { getTimeoutCategory, TIMEOUTS } from '@cy/support/timeout-categories'
 import { cyMap } from '@cy/support/ui'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -60,6 +60,13 @@ export const selectPoolWithdrawMax = (address: Address) => {
   checkPoolWithdrawDetail('projected-lp', '0')
 }
 
+export const submitPoolWithdraw = (isMocked = false) =>
+  submitAndExpectToast(
+    () => poolWithdrawSubmit().click(),
+    { message: 'Withdrawal successful!', approvalMessage: 'Approved withdrawal' },
+    getTimeoutCategory('tenderly', 'submit', isMocked),
+  )
+
 /** Submit through the form and compare the refreshed LP balance with its preview. */
 export const submitPoolWithdrawAndCheck = () => {
   poolWithdrawSubmit().should('be.enabled')
@@ -70,11 +77,7 @@ export const submitPoolWithdrawAndCheck = () => {
     getPoolWithdrawDetail('projected-lp')
       .should(value => expect(Number(value)).to.be.at.least(0).and.lessThan(Number(current)))
       .then(projected => {
-        submitAndExpectToast(
-          () => poolWithdrawSubmit().click(),
-          { message: 'Withdrawal successful!', approvalMessage: 'Approved withdrawal' },
-          'tenderly.submit',
-        )
+        submitPoolWithdraw()
         cy.get('[data-testid^="pool-token-input-"] input:visible').should(inputs => {
           inputs.each((_, input) => {
             expect(input).to.have.value('')
