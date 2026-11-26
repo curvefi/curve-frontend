@@ -7,7 +7,7 @@ import type { QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { PoolToken } from '../PoolTokenInput'
-import { SWAP_FIELDS, type SwapFormValues, type SwapSide } from './swap-form.utils'
+import { reverseSwap, SWAP_FIELDS, type SwapFormValues, type SwapSide } from './swap-form.utils'
 
 const INPUT_BY_SIDE = {
   pay: { label: t`You pay`, testId: 'pool-swap-pay', selectorLabel: t`Token to sell` },
@@ -19,12 +19,14 @@ export const SwapTokenInput = ({
   tokens,
   side,
   balance,
+  max,
   disabled,
 }: {
   form: UseFormReturn<SwapFormValues>
   tokens: QueryProp<PoolToken>[] | undefined
   side: SwapSide
-  balance: QueryProp<Decimal>
+  balance: QueryProp<Decimal | null>
+  max: QueryProp<Decimal>
   disabled: boolean
 }) => {
   const { amountField: name, amountIndexField, calculatedIndexField } = SWAP_FIELDS[side]
@@ -45,8 +47,11 @@ export const SwapTokenInput = ({
           selectedIndex={values[amountIndexField]}
           disabled={disabled}
           label={selectorLabel}
-          excludedIndex={values[calculatedIndexField]}
-          onToken={index => form.update({ [amountIndexField]: index })}
+          onToken={index =>
+            form.update(
+              index === values[calculatedIndexField] ? reverseSwap(form.getValues()) : { [amountIndexField]: index },
+            )
+          }
         />
       }
       validationError={tokenError ?? balance.error}
@@ -56,7 +61,7 @@ export const SwapTokenInput = ({
       }}
       inputBalanceUsd={maybes([values[name], token?.usdRate], decimalMultiply)}
       walletBalance={token && { symbol: token.symbol, balance: token.balance }}
-      {...(side === 'pay' && token && { max: { balance: token.balance } })}
+      {...(side === 'pay' && { max: { balance: max } })}
       disabled={disabled}
     />
   )

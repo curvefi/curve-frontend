@@ -1,5 +1,4 @@
 import { meanBy, sumBy } from 'lodash'
-import { useCallback } from 'react'
 import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
@@ -37,26 +36,20 @@ export const CrvStats = () => {
     canCreateVote: sumBy(holders, holder => (+holder.weight > PROPOSAL_MIN_VECRV ? 1 : 0)),
   }))
 
-  const veCrvApr = useCombinedQueries(
-    [statsQuery, crvUsdRate, feesQuery],
-    useCallback(
-      (veCrvData, crvPrice, fees) => {
-        if (!isMainnet) return { current: 0, fourWeekAverage: 0 }
+  const veCrvApr = useCombinedQueries([statsQuery, crvUsdRate, feesQuery], (veCrvData, crvPrice, fees) => {
+    if (!isMainnet) return { current: 0, fourWeekAverage: 0 }
 
-        const totalVeCrvUsd = +veCrvData.totalVeCrv * crvPrice
-        if (!totalVeCrvUsd) return { current: 0, fourWeekAverage: 0 }
+    const totalVeCrvUsd = +veCrvData.totalVeCrv * crvPrice
+    if (!totalVeCrvUsd) return { current: 0, fourWeekAverage: 0 }
 
-        const completedFees = fees.slice(1, VECRV_APR_AVERAGE_WEEKS + 1)
+    const completedFees = fees.slice(1, VECRV_APR_AVERAGE_WEEKS + 1)
 
-        return {
-          current: weeklyRateToApr(+(fees[1]?.feesUsd ?? 0) / totalVeCrvUsd),
-          fourWeekAverage:
-            completedFees.length && meanBy(completedFees, fee => weeklyRateToApr(+fee.feesUsd / totalVeCrvUsd)),
-        }
-      },
-      [isMainnet],
-    ),
-  )
+    return {
+      current: weeklyRateToApr(+(fees[1]?.feesUsd ?? 0) / totalVeCrvUsd),
+      fourWeekAverage:
+        completedFees.length && meanBy(completedFees, fee => weeklyRateToApr(+fee.feesUsd / totalVeCrvUsd)),
+    }
+  })
 
   return (
     <Wrapper>

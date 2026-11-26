@@ -116,7 +116,7 @@ export function RepayLoanInfoList({
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
     { params, showLeverage, prevDebt },
-    { isFull: params.isFull, userBorrowed },
+    { isFull, userBorrowed },
     isOpen,
   )
 

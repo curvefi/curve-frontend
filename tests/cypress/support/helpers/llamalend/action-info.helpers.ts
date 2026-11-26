@@ -16,6 +16,29 @@ export const getActionValue = (name: string, category: TimeoutCategory, field?: 
     .not('.MuiSkeleton-root *', TIMEOUTS[category])
     .invoke(TIMEOUTS[category], 'attr', 'data-value')
 
+/** Extract plain decimal tokens with comma grouping; abbreviated values are unsupported. */
+const extractDecimalValues = (text: string) =>
+  text
+    .replaceAll(',', '')
+    .split(/\s+/)
+    .filter(value => FULL_DECIMAL_REGEX.test(value)) as Decimal[]
+
+/** Read a numeric value by position: valueIndex 1 selects "0.98" in "1 USDZ = 0.98 USDX". */
+export const getActionDecimal = (
+  name: string,
+  category: TimeoutCategory,
+  { valueIndex = 0 }: { valueIndex?: number } = {},
+) =>
+  getActionValue(name, category)
+    .should(value => {
+      expect(value, `${name} text`).to.be.a('string')
+      expect(
+        extractDecimalValues(value!)[valueIndex],
+        `${name}: numeric value #${valueIndex + 1} in "${value}"`,
+      ).to.be.a('string')
+    })
+    .then(value => extractDecimalValues(value!)[valueIndex])
+
 export const getMetricValue = (name: string, category: TimeoutCategory) =>
   cy.get(`[data-testid="${name}-value"]`, TIMEOUTS[category]).invoke(TIMEOUTS[category], 'attr', 'data-value')
 

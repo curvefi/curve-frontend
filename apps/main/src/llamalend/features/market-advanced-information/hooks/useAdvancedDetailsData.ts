@@ -4,6 +4,7 @@ import {
   calculateMintMarketTvlUsd,
   getControllerAddress,
   getTokensQuery,
+  isLeverageAllowed,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
@@ -48,7 +49,10 @@ export const useAdvancedDetailsData = ({
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
-  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: mapQuery(marketQuery, m => m?.minBands) })
+  const maxLeverage = useMarketMaxLeverage(
+    { chainId, marketId, range: mapQuery(marketQuery, m => m?.minBands) },
+    !!isLeverageAllowed(chainId, controllerAddress),
+  )
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })

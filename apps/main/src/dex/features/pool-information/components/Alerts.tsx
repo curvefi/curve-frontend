@@ -1,17 +1,10 @@
-import type { AlertType, PoolAlert } from '@/dex/types/main.types'
-import Alert, { type AlertProps } from '@mui/material/Alert'
+import type { PoolAlert } from '@/dex/types/main.types'
+import { alertTypeToSeverity } from '@/dex/utils/alert.utils'
+import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
-
-const alertTypeToSeverity: Record<AlertType, AlertProps['severity']> = {
-  danger: 'error',
-  error: 'error',
-  warning: 'warning',
-  info: 'info',
-  '': 'info',
-}
 
 export const Alerts = ({ poolAlert, tokenAlert }: { poolAlert: PoolAlert | null; tokenAlert: PoolAlert | null }) => (
   <Stack sx={{ gap: Spacing.sm, paddingBlockStart: Spacing.md, ':empty': { display: 'none' } }}>

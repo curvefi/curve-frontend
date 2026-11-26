@@ -14,7 +14,7 @@ import type { ActivityToken } from '@evm-ui/features/activity-table/types'
 import { getLib, requireLib } from '@evm-ui/features/connect-wallet'
 import type { Wallet } from '@evm-ui/features/connect-wallet/lib/types'
 import { MarketType, MarketVersion } from '@evm-ui/types/market'
-import { CRVUSD } from '@evm-ui/utils'
+import { CRVUSD, requireBlockchainId } from '@evm-ui/utils'
 import { type Address, Hex, type Token } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { MarketAssetsType } from '@primitives/llamalend/markets.constants'
@@ -77,6 +77,9 @@ export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Ad
     maybe(getMarketAssetsType(chainId, controllerAddress), type => SLIPPAGE_KEY_BY_ASSETS_TYPE[type]) ?? 'leverage'
   ].default
 
+export const getMarketLeverageConfig = (chainId: number, controllerAddress: Address) =>
+  MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]
+
 /**
  * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their
  * explicitly tested providers on Stable/Legacy, while unlisted markets remain disabled.
@@ -86,7 +89,7 @@ export const getMarketLeverageProviders = (
   controllerAddress: Address | undefined,
   releaseChannel: ReleaseChannel,
 ) => {
-  const config = controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]
+  const config = controllerAddress && getMarketLeverageConfig(chainId, controllerAddress)
   return maybe(config, config => (releaseChannel === ReleaseChannel.Beta ? RouteProviders : config.providers))
 }
 
@@ -121,6 +124,15 @@ export const hasLegacyMintLeverage = (market: MarketTemplate) =>
 export const isZapV0MintMarket = (blockchainId: Chain | Nullish, controllerAddress: Address | Nullish) =>
   maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
     ZAP_V0_MINT_MARKETS[blockchainId]?.includes(controllerAddress.toLowerCase() as Address),
+  )
+
+/** Leverage can be opened on allowlisted markets, and on the legacy mint markets through their V0 zap */
+export const isLeverageAllowed = (chainId: number | Nullish, controllerAddress: Address | Nullish) =>
+  maybes(
+    [chainId, controllerAddress],
+    (chainId, controllerAddress) =>
+      !!getMarketLeverageConfig(chainId, controllerAddress) ||
+      !!isZapV0MintMarket(requireBlockchainId(chainId), controllerAddress),
   )
 
 const hasV1Deleverage = (market: MarketTemplate) =>
