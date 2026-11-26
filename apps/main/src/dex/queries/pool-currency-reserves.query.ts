@@ -81,10 +81,10 @@ export const invalidatePoolCurrencyReserves = (params: PoolParams) =>
   )
 
 /** Hook to fetch reserves for the selected pool token representation. */
-export const usePoolCurrencyReserves = (params: Omit<PoolCurrencyReservesParams, 'useApi'>) =>
+export const usePoolCurrencyReserves = (params: Omit<PoolCurrencyReservesParams, 'useApi'>, enabled = true) =>
   usePoolCurrencyReservesQuery(
     { ...params, useApi: !useCurve()?.curveApi?.signerAddress },
-    useCurve().curveApi?.isNoRPC === false,
+    useCurve().curveApi?.isNoRPC === false && enabled,
   )
 
 export type CurrencyReserves = QueryData<typeof usePoolCurrencyReservesQuery>

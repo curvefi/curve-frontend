@@ -19,7 +19,7 @@ import {
   checkSwapDetails,
   checkSwapResult,
   readSwapAmounts,
-  readSwapMinimum,
+  readSwapRates,
   selectSwapToken,
   submitSwapForm,
   swapInput,
@@ -31,6 +31,7 @@ import { TIMEOUTS } from '@cy/support/timeout-categories'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import { range } from '@primitives/objects.utils'
 import { SWAP_FIELDS, type SwapSide } from '@ui/features/pool-forms/swap/swap-form.utils'
+import { isLowExchangeRate } from '@ui/features/pool-forms/swap/swap.utils'
 
 const [DEFAULT_FROM_INDEX, DEFAULT_TO_INDEX] = [0, 1]
 
@@ -102,8 +103,8 @@ describe('Stellar testnet swap', () => {
       checkEstimatedTxCost({ category: 'stellar.simulation' })
       checkPoolSlippage()
       checkPoolPriceImpact()
-      readSwapMinimum().then(minimumOutputAmount => {
-        submitSwapForm()
+      readSwapRates().then(({ minimumOutputAmount, exchangeRate }) => {
+        submitSwapForm({ lowRate: isLowExchangeRate(exchangeRate) })
         checkSwapResult(
           state,
           {

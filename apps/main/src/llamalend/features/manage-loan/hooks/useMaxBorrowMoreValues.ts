@@ -1,37 +1,22 @@
 import { PRESET_RANGES } from '@/llamalend/constants'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { isPositionLeveraged } from '@/llamalend/llama.utils'
-import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { resetBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import {
   type BorrowMoreMaxReceiveParams,
   useBorrowMoreMaxReceiveQueries,
 } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
-import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import type { Address } from '@primitives/address.utils'
-import { type Nullish, maybe } from '@primitives/objects.utils'
-import { useFormSync, useOnChangeCallback } from '@ui/features/forms'
-import type { UseFormReturn } from '@ui/features/forms'
-import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   params,
-  form,
-  market,
   borrowTokenAddress,
   collateralTokenAddress,
-  collateralEvents,
 }: {
   params: BorrowMoreMaxReceiveParams<ChainId>
-  form: UseFormReturn<BorrowMoreForm>
-  market: MarketTemplate | Nullish
   borrowTokenAddress: Address | undefined
   collateralTokenAddress: Address | undefined
-  collateralEvents: QueryProp<UserCollateralEvents>
 }) {
   const { chainId, userAddress, marketId } = params
 
@@ -41,31 +26,10 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   const maxReceive = useBorrowMoreMaxReceiveQueries(params)
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv })
 
-  useFormSync(form, {
-    maxCollateral: maxUserCollateral.data,
-    maxBorrowed: maxUserBorrowed.data,
-    maxDebt: maxReceive.data?.maxDebt,
-  })
-  const isEquityLeverage = useLlamalendEquityLeverage()
-  // purposefully override the value if the backend changes. Without the position history it stays unknown, a plain borrow.
-  useFormSync(form, {
-    leverageEnabled: maybe(
-      params.leverageProviders,
-      providers =>
-        providers.length > 0 &&
-        maybe(collateralEvents.data, events =>
-          isEquityLeverage ? !!events.isZapLeveraged : isPositionLeveraged(events.originalLeverage),
-        ),
-    ),
-  })
-
-  // some borrow queries depend on LL internal cache for expected collateral, reset when new market data arrives
-  useOnChangeCallback(market, () => resetBorrowMoreExpectedCollateral(params))
-
   return {
-    userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
-    userBorrowed: { ...maxUserBorrowed, field: 'maxBorrowed' as const },
-    debt: { ...mapQuery(maxReceive, ({ maxDebt, router }) => ({ maxDebt, router })), field: 'maxDebt' as const },
+    userCollateral: { ...q(maxUserCollateral), fieldName: 'maxCollateral' as const },
+    userBorrowed: { ...q(maxUserBorrowed), fieldName: 'maxBorrowed' as const },
+    debt: { ...mapQuery(maxReceive, ({ maxDebt, router }) => ({ maxDebt, router })), fieldName: 'maxDebt' as const },
     maxLeverage,
   }
 }

@@ -24,7 +24,7 @@ import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
-import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
+import { MarketCampaignRewardsBanner } from '../MarketCampaignRewardsBanner'
 
 const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
@@ -82,7 +82,7 @@ export const Page = () => {
           <MarketBanners
             chainId={chainId}
             market={market}
-            rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
+            rewardsBanner={<MarketCampaignRewardsBanner chainId={chainId} market={market} />}
           />
           <MarketSection id="position-details">
             <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />
