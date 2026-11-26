@@ -15,10 +15,10 @@ type LendBalances = { collateral: Decimal; borrowed: Decimal; vaultShares: Decim
 export const { useQuery: useUserBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) =>
     ({ name: 'wallet.balances', chainId, marketId, userAddress }) as const,
-  queryFn: async ({ marketId }: UserBalancesQuery) => {
+  queryFn: async ({ marketId, userAddress }: UserBalancesQuery) => {
     const market = getMarket(marketId)
     if (isLendMarket(market)) {
-      const { collateral, borrowed, vaultShares, gauge } = (await market.wallet.balances()) as LendBalances
+      const { collateral, borrowed, vaultShares, gauge } = (await market.wallet.balances(userAddress)) as LendBalances
       const [vaultSharesConverted, gaugeConverted] = await Promise.all(
         [vaultShares, gauge].map(async v => (+v === 0 ? v : await market.vault.convertToAssets(v)) as Decimal),
       )
@@ -33,7 +33,7 @@ export const { useQuery: useUserBalances } = queryFactory({
         stakedPercentage: decimalPercent(gauge, decimalSum(vaultShares, gauge)),
       }
     } else {
-      const { stablecoin, collateral } = await market.wallet.balances()
+      const { stablecoin, collateral } = await market.wallet.balances(userAddress)
       return { collateral: collateral as Decimal, borrowed: stablecoin as Decimal }
     }
   },
