@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { V2PoolDetails } from '@curvefi/prices-api/pools'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
@@ -46,7 +46,7 @@ const TradesTab = ({ tradesTable }: OhlcTabsParams) => (
 const ChartTab = ({
   chart: { isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart },
 }: OhlcTabsParams) => (
-  <Stack sx={{ gap: Spacing.md, padding: Spacing.sm }}>
+  <Stack sx={{ gap: Spacing.md, padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
     <ChartHeader
       flipChart={flipChart}
       chartOptionVariant="select"
@@ -68,10 +68,6 @@ const menu = [
   { value: 'events', label: t`Liquidity`, component: EventsTab },
 ]
 
-const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
-)
-
 export const OhlcAndActivityComp = ({
   chainId,
   pricesApiPoolData,
@@ -89,7 +85,6 @@ export const OhlcAndActivityComp = ({
         menu={menu}
         params={useMemo(() => ({ chart, liquidityTable, tradesTable }), [chart, liquidityTable, tradesTable])}
         variant="contained"
-        ContentWrapper={OhlcTabsContent}
       />
     </Stack>
   )

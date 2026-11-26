@@ -22,7 +22,7 @@ export const BorrowPositionDetails = () => {
     getPositionStatusContent(collateralToken?.symbol, borrowToken?.symbol)[liquidationStatus.data]
   const softLiquidation = mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')
   return (
-    <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
+    <Stack sx={{ gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
         {isNewLlamalendHealth ? (
           <BorrowInformation params={params} tokens={tokens} />

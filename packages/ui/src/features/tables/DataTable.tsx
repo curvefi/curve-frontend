@@ -120,7 +120,12 @@ export const DataTable = <TData extends RowData>({
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={height} sx={{ height, overflowY: 'auto' }} ref={containerRef}>
+    <WithWrapper
+      Wrapper={Box}
+      shouldWrap={height}
+      sx={{ height, overflowY: 'auto', backgroundColor: t => t.design.Layer[1].Fill }}
+      ref={containerRef}
+    >
       {/* Wrapper used to scroll back to the table without hiding it behind the sticky nav. */}
       <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }}>
         {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
