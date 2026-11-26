@@ -1,4 +1,3 @@
-import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { useLlamalendEquityLeverage, useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { fromEntries } from '@primitives/objects.utils'
 import { useTableColumnOverrides } from '@ui/features/storage/useLocalStorage'
@@ -9,7 +8,6 @@ import { getColumnSettings, getColumnVisibility } from '../columns/market-table'
 import type { MarketTable } from '../columns/shared.columns'
 
 const POSITION_PNL_COLUMNS: string[] = [MarketColumnId.UserEquity, MarketColumnId.UserPnl]
-const MAX_LEVERAGE_COLUMN: string = MarketColumnId.MaxLeverage
 
 /**
  * The columns of a market table with their sorting and visibility.
@@ -25,13 +23,10 @@ export const useMarketColumns = ({
 }: MarketTable) => {
   const isPositionPnl = useLlamalendPositionPnl()
   const isEquityLeverage = useLlamalendEquityLeverage()
-  const columns = tableColumns
-    .filter(({ id }) => isPositionPnl || !POSITION_PNL_COLUMNS.includes(id))
-    .map((column): MarketTable['columns'][number] =>
-      isEquityLeverage && column.id === MAX_LEVERAGE_COLUMN
-        ? { ...column, accessorFn: (row: LlamaMarketRow) => row.maxEquityLeverage ?? undefined }
-        : column,
-    )
+  const hiddenLeverageColumn: string = isEquityLeverage ? MarketColumnId.MaxLeverage : MarketColumnId.MaxEquityLeverage
+  const columns = tableColumns.filter(
+    ({ id }) => (isPositionPnl || !POSITION_PNL_COLUMNS.includes(id)) && id !== hiddenLeverageColumn,
+  )
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, { fieldName: sortQueryField, columns })
   const sortField = sorting[0].id
   const [overrides, setOverrides] = useTableColumnOverrides(storageKey, migration)

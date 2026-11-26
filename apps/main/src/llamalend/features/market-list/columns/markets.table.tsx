@@ -90,6 +90,13 @@ export const MARKETS_TABLE: MarketTable = defineMarketTable({
         meta: { type: 'numeric' },
         sortUndefined: 'last',
       }),
+      columnHelper.accessor(row => row.maxEquityLeverage ?? undefined, {
+        id: MarketColumnId.MaxEquityLeverage,
+        header: MARKET_TITLES[MarketColumnId.MaxEquityLeverage],
+        cell: MaxLeverageCell,
+        meta: { type: 'numeric' },
+        sortUndefined: 'last',
+      }),
       columnHelper.accessor(row => row.maxLtv ?? undefined, {
         id: MarketColumnId.MaxLtv,
         header: MARKET_TITLES[MarketColumnId.MaxLtv],
