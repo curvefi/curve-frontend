@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
@@ -24,7 +25,11 @@ export const POOL_LIQUIDITY_COLUMNS = columnHelper.columns([
     id: PoolLiquidityColumnId.User,
     header: t`Address`,
     cell: ({ getValue, row }) => (
-      <AddressCell address={getValue()} explorerUrl={scanAddressPath(row.original.chainId, row.original.provider)} />
+      <AddressCell
+        formatAddress={getAddress}
+        address={getValue()}
+        explorerUrl={scanAddressPath(row.original.chainId, row.original.provider)}
+      />
     ),
   }),
   columnHelper.display({

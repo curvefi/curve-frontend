@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import type { Address } from '@primitives/address.utils'
@@ -41,7 +42,9 @@ export const createRecentRefuelsColumns = (tokens: RecentRefuelsToken[]) =>
     columnHelper.accessor('donor', {
       id: RecentRefuelsColumnId.Refueler,
       header: headers[RecentRefuelsColumnId.Refueler],
-      cell: ({ getValue, row }) => <AddressCell address={getValue() ?? ''} explorerUrl={row.original.donorUrl} />,
+      cell: ({ getValue, row }) => (
+        <AddressCell formatAddress={getAddress} address={getValue() ?? ''} explorerUrl={row.original.donorUrl} />
+      ),
       enableSorting: false,
     }),
     columnHelper.accessor('lpSharesMinted', {
