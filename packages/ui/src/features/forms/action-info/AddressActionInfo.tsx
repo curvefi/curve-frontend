@@ -6,13 +6,8 @@ import { maybe } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import type { TypographyVariantKey } from '@ui/features/themes/typography'
+import type { AddressDisplay } from '@ui/lib/address'
 import { t } from '@ui/lib/i18n'
-
-/** Addresses are normalized by the caller; this only controls their presentation. */
-export type AddressDisplay = {
-  shortenAddress: (address: Address) => string
-  scanAddressPath: (chainId: number, address: Address) => string | undefined
-}
 
 export type AddressActionInfoProps = {
   chainId: number

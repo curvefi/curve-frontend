@@ -1,7 +1,7 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getProposals, type Proposal, type ProposalType } from '@curvefi/prices-api/proposal'
-import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import { queryFactory } from '@ui/features/queries/factory'
+import { DEFAULT_PAGE_START_INDEX } from '@ui/features/tables/activity-table/utils'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { EmptyValidationSuite } from '@ui/lib/validation/lib'
 

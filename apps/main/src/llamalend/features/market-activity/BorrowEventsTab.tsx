@@ -1,4 +1,4 @@
-import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
+import { ActivityTable } from '@ui/features/tables/activity-table/ActivityTable'
 import { useMarketActivityBorrowEventsTable } from './hooks/useMarketActivityBorrowEventsTable'
 import type { MarketBorrowActivityProps } from './types'
 

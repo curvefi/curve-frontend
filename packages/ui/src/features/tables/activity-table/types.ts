@@ -1,7 +1,14 @@
-import type { Chain } from '@curvefi/prices-api'
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import type { Token } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
+import type { TableMeta } from '@tanstack/react-table'
+import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import type { AddressDisplay } from '@ui/lib/address'
+
+export type ActivityDisplay = AddressDisplay & {
+  formatAddress: (address: string) => string
+  scanTxPath: (chainId: number, txHash: string) => string | undefined
+}
 
 /** A token of an activity row, whose address can be a token pair so its icon shows both tokens */
 export type ActivityToken = Omit<Token, 'address'> & { address: Token['address'] | Token['address'][] }
@@ -20,7 +27,7 @@ export type ActivityTokenDelta = {
 
 export type ActivityRow = {
   chainId: number
-  blockchainId: Chain
+  blockchainId: string
   txHash: string | null
   timestamp: Timestamp
   address: Token['address']
@@ -29,3 +36,5 @@ export type ActivityRow = {
   valueUsd: number | Nullish
   deltas: ActivityTokenDelta[]
 }
+
+export type ActivityTableMeta = TableMeta<CurveTableFeatures, ActivityRow> & { addressDisplay: ActivityDisplay }

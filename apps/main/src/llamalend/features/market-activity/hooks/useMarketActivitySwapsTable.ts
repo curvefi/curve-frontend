@@ -1,15 +1,17 @@
+import { getAddress } from 'viem'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { Chain } from '@curvefi/prices-api'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
-import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
-import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
-import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
-import type { ActivityRow, ActivityToken } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE, getSwapDeltas } from '@evm-ui/features/activity-table/utils'
-import { getPageCount } from '@evm-ui/utils'
+import { evmAddressDisplay, getPageCount } from '@evm-ui/utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
 import { mapQuery, q } from '@ui/features/queries/util'
+import { useActivityTable } from '@ui/features/tables/activity-table/hooks/useActivityTable'
+import { useActivityVisibility } from '@ui/features/tables/activity-table/hooks/useActivityVisibility'
+import { useManualPagination } from '@ui/features/tables/activity-table/hooks/useManualPagination'
+import type { ActivityRow, ActivityToken } from '@ui/features/tables/activity-table/types'
+import { DEFAULT_PAGE_SIZE, getSwapDeltas } from '@ui/features/tables/activity-table/utils'
 import { t } from '@ui/lib/i18n'
 import type { MarketBorrowActivityProps } from '../types'
 
@@ -75,6 +77,7 @@ export const useMarketActivitySwapsTable = ({
   )
 
   const table = useActivityTable({
+    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
     query: q({
       data: activityQuery.data,
       isLoading: activityQuery.isLoading || !ammAddress,

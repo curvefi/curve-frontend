@@ -1,9 +1,12 @@
+import { getAddress } from 'viem'
 import { fromDate } from '@curvefi/prices-api/timestamp'
-import { ActivityStoryProviders, ActivityStoryTable } from '@evm-ui/features/activity-table/ActivityTable.stories'
+import { evmAddressDisplay } from '@evm-ui/utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ } from '@ui/features/queries/util'
+import { ActivityStoryProviders, ActivityStoryTable } from '@ui/features/tables/activity-table/ActivityTable.stories'
 import { type PoolLiquidityRow, toActivityRow as toLiquidityActivityRow } from './hooks/usePoolActivityLiquidityTable'
 import { type PoolSwapRow, toActivityRow as toSwapActivityRow } from './hooks/usePoolActivitySwapsTable'
 
@@ -129,11 +132,13 @@ export const DexPoolActivity: StoryObj<typeof meta> = {
     <>
       <ActivityStoryTable
         query={swapsQuery}
+        addressDisplay={{ ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }}
         emptyTitle="No trades data found."
         errorTitle="Could not load trades data."
       />
       <ActivityStoryTable
         query={liquidityQuery}
+        addressDisplay={{ ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }}
         hasValue={false}
         emptyTitle="No liquidity data found."
         errorTitle="Could not load liquidity data."

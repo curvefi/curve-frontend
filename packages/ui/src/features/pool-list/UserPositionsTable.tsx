@@ -9,7 +9,7 @@ import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { ErrorMessage } from '@ui/features/errors/ErrorMessage'
 import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
 import { usePoolsVisibility } from '@ui/features/pool-list/hooks/usePoolsVisibility'
-import { getPoolTableMeta, createPoolTableMeta } from '@ui/features/pool-list/table-meta'
+import { getPoolTableMeta } from '@ui/features/pool-list/table-meta'
 import type {
   PoolRow,
   PoolTableMeta,
@@ -83,10 +83,11 @@ export const UserPositionsTable = (props: UserPositionsTableProps) => {
     mobileColumn: MOBILE_COLUMNS[variant],
   })
 
+  const meta = { getRowHref: ({ url }) => url, variant, alerts, addressDisplay, crvToken } satisfies PoolTableMeta
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: createPoolTableMeta({ getRowHref: ({ url }) => url, variant, alerts, addressDisplay, crvToken }),
+    meta,
     getRowId: row => row.address,
     state: { expanded, columnVisibility },
     initialState: { pagination: { pageIndex: 0, pageSize: MAX_PAGE_SIZE } },

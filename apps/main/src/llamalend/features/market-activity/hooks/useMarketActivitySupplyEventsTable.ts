@@ -1,13 +1,15 @@
+import { getAddress } from 'viem'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketSupplyEvents } from '@/llamalend/queries/market/market-supply-events.query'
 import type { VaultEvent } from '@curvefi/prices-api/llamalend'
-import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
-import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
-import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
-import type { ActivityRow, ActivityToken } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
-import { getPageCount } from '@evm-ui/utils'
+import { evmAddressDisplay, getPageCount } from '@evm-ui/utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import { mapQuery } from '@ui/features/queries/util'
+import { useActivityTable } from '@ui/features/tables/activity-table/hooks/useActivityTable'
+import { useActivityVisibility } from '@ui/features/tables/activity-table/hooks/useActivityVisibility'
+import { useManualPagination } from '@ui/features/tables/activity-table/hooks/useManualPagination'
+import type { ActivityRow, ActivityToken } from '@ui/features/tables/activity-table/types'
+import { DEFAULT_PAGE_SIZE } from '@ui/features/tables/activity-table/utils'
 import { t } from '@ui/lib/i18n'
 import type { MarketSupplyActivityProps } from '../types'
 
@@ -73,6 +75,7 @@ export const useMarketActivitySupplyEventsTable = ({
 
   return {
     table: useActivityTable({
+      meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
       query,
       state: { columnVisibility, pagination },
       manualPagination: true,

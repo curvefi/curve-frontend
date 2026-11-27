@@ -4,9 +4,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { TableMeta } from '@tanstack/react-table'
 import type { EmptyStateCardProps } from '@ui/components/EmptyStateCard'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
-import type { AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
 import type { QueryProp } from '@ui/features/queries/util'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
+import type { AddressDisplay } from '@ui/lib/address'
 import type { POOLS_COLUMN_OPTIONS } from './columns/column.options'
 
 type PoolRowGauge = { address: Address; isKilled: boolean }

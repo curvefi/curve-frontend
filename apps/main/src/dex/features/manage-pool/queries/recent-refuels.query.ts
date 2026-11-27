@@ -1,9 +1,9 @@
 import { getRefuelDonationEvents } from '@curvefi/prices-api/refuel'
-import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import type { ChainNameQuery } from '@evm-ui/queries/query-types'
 import { contractValidationGroup } from '@evm-ui/queries/validation/contract-validation'
 import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
+import { DEFAULT_PAGE_START_INDEX } from '@ui/features/tables/activity-table/utils'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import { type FieldsOf } from '@ui/lib/validation/types'
 

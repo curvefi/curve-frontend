@@ -1,7 +1,6 @@
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
-import { scanTxPath } from '@legacy-ui/utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
-import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
+import type { Nullish } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
 import type { ActivityToken, ActivityTokenDelta } from './types'
@@ -11,20 +10,8 @@ const PROCESSING_TIMEOUT_MS = REFRESH_INTERVAL['1h']
 export const DEFAULT_PAGE_SIZE = 50
 export const DEFAULT_PAGE_START_INDEX = 1
 
-export const getTransactionActions = (chainId: number, txHash?: string | null) =>
-  notFalsy(
-    maybe(
-      txHash,
-      txHash =>
-        ({
-          id: 'view-transaction',
-          label: t`View Transaction`,
-          href: scanTxPath(chainId, txHash),
-          size: 'extraSmall',
-          color: 'ghost',
-        }) as const,
-    ),
-  )
+export const getTransactionActions = (txUrl: string) =>
+  [{ id: 'view-transaction', label: t`View Transaction`, href: txUrl, size: 'extraSmall', color: 'ghost' }] as const
 
 export type ActivityUsdValueProps = {
   amount: number

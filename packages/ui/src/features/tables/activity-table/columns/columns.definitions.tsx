@@ -1,12 +1,11 @@
-import { getAddress } from 'viem'
-import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
-import { RelativeTimeCell } from '@evm-ui/shared/ui/DataTable/inline-cells/RelativeTimeCell'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { AddressCell } from '../../cells/AddressCell'
+import { RelativeTimeCell } from '../../cells/RelativeTimeCell'
 import { ActivityActionCell } from '../cells/ActivityActionCell'
 import { ActivityUsdValueCell } from '../cells/ActivityUsdValueCell'
 import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
 import { IndentBox } from '../IndentBox'
+import { getActivityTableMeta } from '../table-meta'
 import type { ActivityRow } from '../types'
 import { ActivityColumnId } from './columns.enum'
 import { ACTIVITY_TITLES } from './columns.titles'
@@ -21,7 +20,13 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
       row: {
         original: { timestamp, chainId, txHash },
       },
-    }) => <RelativeTimeCell timestamp={new Date(timestamp)} txUrl={txHash ? scanTxPath(chainId, txHash) : null} />,
+      table,
+    }) => (
+      <RelativeTimeCell
+        timestamp={new Date(timestamp)}
+        txUrl={txHash ? getActivityTableMeta(table).addressDisplay.scanTxPath(chainId, txHash) : undefined}
+      />
+    ),
   }),
   columnHelper.display({
     id: ActivityColumnId.Action,
@@ -58,14 +63,19 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
       row: {
         original: { address, chainId },
       },
-    }) => (
-      <AddressCell
-        formatAddress={getAddress}
-        address={address}
-        explorerUrl={scanAddressPath(chainId, address)}
-        align="end"
-      />
-    ),
+      table,
+    }) => {
+      const { formatAddress, scanAddressPath } = getActivityTableMeta(table).addressDisplay
+
+      return (
+        <AddressCell
+          formatAddress={formatAddress}
+          address={address}
+          explorerUrl={scanAddressPath(chainId, address)}
+          align="end"
+        />
+      )
+    },
     meta: { type: 'numeric' },
   }),
 ])

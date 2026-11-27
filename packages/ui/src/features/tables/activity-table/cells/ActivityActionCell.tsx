@@ -1,8 +1,8 @@
-import { RowExpansionToggle } from '@evm-ui/shared/ui/DataTable/RowExpansionToggle'
 import Typography from '@mui/material/Typography'
 import type { Row } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
+import { RowExpansionToggle } from '../../RowExpansionToggle'
 import { IndentBox } from '../IndentBox'
 import type { ActivityRow } from '../types'
 

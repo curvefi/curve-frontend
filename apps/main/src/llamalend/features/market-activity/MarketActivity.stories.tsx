@@ -1,10 +1,13 @@
+import { getAddress } from 'viem'
 import { fromDate } from '@curvefi/prices-api/timestamp'
-import { ActivityStoryProviders, ActivityStoryTable } from '@evm-ui/features/activity-table/ActivityTable.stories'
+import { evmAddressDisplay } from '@evm-ui/utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address, Token } from '@primitives/address.utils'
 import { Chain } from '@primitives/network.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { constQ } from '@ui/features/queries/util'
+import { ActivityStoryProviders, ActivityStoryTable } from '@ui/features/tables/activity-table/ActivityTable.stories'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import {
   type MarketBorrowEventRow,
@@ -122,12 +125,14 @@ export const LendMarketActivity: StoryObj<typeof meta> = {
     <Stack sx={{ gap: Spacing.md }}>
       <ActivityStoryTable
         query={swapsQuery}
+        addressDisplay={{ ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }}
         hasValue={false}
         emptyTitle="No AMM trades found."
         errorTitle="Could not load AMM trades."
       />
       <ActivityStoryTable
         query={eventsQuery}
+        addressDisplay={{ ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }}
         emptyTitle="No activity data found."
         errorTitle="Could not load activity data."
       />

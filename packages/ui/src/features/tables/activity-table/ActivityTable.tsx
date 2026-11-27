@@ -1,5 +1,5 @@
-import { EvmDataTable, type EvmDataTableProps } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
 import type { RowBreakdownConfig } from '@ui/features/tables/DataRow'
+import { DataTable, DataTableProps } from '@ui/features/tables/DataTable'
 import { ActivityExpandedPanel } from './ActivityExpandedPanel'
 import { ActivityUsdValueCell } from './cells/ActivityUsdValueCell'
 import { BreakdownActionLabelCell } from './cells/BreakdownActionLabelCell'
@@ -8,7 +8,7 @@ import { ActivityColumnId } from './columns/columns.enum'
 import type { ActivityRow, ActivityTokenDelta } from './types'
 import { getActivityDeltaKey } from './utils'
 
-type ActivityTableProps = Pick<EvmDataTableProps<ActivityRow>, 'table' | 'emptyState' | 'errorState'>
+type ActivityTableProps = Pick<DataTableProps<ActivityRow>, 'table' | 'emptyState' | 'errorState'>
 
 const ACTIVITY_BREAKDOWN: RowBreakdownConfig<ActivityRow, ActivityTokenDelta> = {
   getItems: ({ deltas }) => deltas,
@@ -25,7 +25,7 @@ const ACTIVITY_BREAKDOWN: RowBreakdownConfig<ActivityRow, ActivityTokenDelta> = 
 }
 
 export const ActivityTable = ({ table, emptyState, errorState }: ActivityTableProps) => (
-  <EvmDataTable
+  <DataTable
     category="scrollable"
     table={table}
     emptyState={emptyState}

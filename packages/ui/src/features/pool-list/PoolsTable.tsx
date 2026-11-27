@@ -11,7 +11,7 @@ import { usePoolsGlobalFilterFn } from '@ui/features/pool-list/hooks/usePoolsGlo
 import type { usePoolsPagination } from '@ui/features/pool-list/hooks/usePoolsPagination'
 import type { usePoolsSorting } from '@ui/features/pool-list/hooks/usePoolsSorting'
 import { usePoolsVisibility } from '@ui/features/pool-list/hooks/usePoolsVisibility'
-import { getPoolTableMeta, createPoolTableMeta } from '@ui/features/pool-list/table-meta'
+import { getPoolTableMeta } from '@ui/features/pool-list/table-meta'
 import type { PoolRow, PoolsTableData, PoolTableMeta } from '@ui/features/pool-list/types'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { DataTable } from '@ui/features/tables/DataTable'
@@ -79,10 +79,11 @@ export const PoolsTable = ({
     globalFilter,
   )
 
+  const meta = { getRowHref: ({ url }) => url, variant, alerts, addressDisplay, crvToken } satisfies PoolTableMeta
   const table = useCurveTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    meta: createPoolTableMeta({ getRowHref: ({ url }) => url, variant, alerts, addressDisplay, crvToken }),
+    meta,
     state: { expanded, sorting, columnVisibility, globalFilter, ...(!isLite && { pagination, columnFilters }) },
     getRowId: row => row.address,
     onExpandedChange: setExpanded,

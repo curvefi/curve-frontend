@@ -1,6 +1,6 @@
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { ACTIVITY_COLUMNS } from '../columns/columns.definitions'
-import type { ActivityRow } from '../types'
+import type { ActivityRow, ActivityTableMeta } from '../types'
 
 /** Keep expansion tied to the event when a result changes at the same row position. */
 export const getActivityRowId = ({ chainId, txHash, timestamp, address, action, deltas }: ActivityRow, index: number) =>
@@ -15,7 +15,9 @@ export const getActivityRowId = ({ chainId, txHash, timestamp, address, action, 
   ])
 
 export const useActivityTable = (
-  options: Omit<Parameters<typeof useCurveTable<ActivityRow>>[0], 'columns' | 'getRowId'>,
+  options: Omit<Parameters<typeof useCurveTable<ActivityRow>>[0], 'columns' | 'getRowId' | 'meta'> & {
+    meta: ActivityTableMeta
+  },
 ) => {
   const pageIndex = options.manualPagination ? options.state?.pagination?.pageIndex : undefined
 

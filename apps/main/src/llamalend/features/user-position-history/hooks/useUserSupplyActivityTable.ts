@@ -1,12 +1,15 @@
+import { getAddress } from 'viem'
 import { getActivityToken } from '@/llamalend/llama.utils'
-import { ActivityColumnId } from '@evm-ui/features/activity-table/columns/columns.enum'
-import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
-import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
-import type { ActivityRow } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
+import { evmAddressDisplay } from '@evm-ui/utils'
 import { BlockchainIds } from '@evm-ui/utils/network'
+import { scanTxPath } from '@legacy-ui/utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { mapQuery, type QueryProp } from '@ui/features/queries/util'
+import { ActivityColumnId } from '@ui/features/tables/activity-table/columns/columns.enum'
+import { useActivityTable } from '@ui/features/tables/activity-table/hooks/useActivityTable'
+import { useActivityVisibility } from '@ui/features/tables/activity-table/hooks/useActivityVisibility'
+import type { ActivityRow } from '@ui/features/tables/activity-table/types'
+import { DEFAULT_PAGE_SIZE } from '@ui/features/tables/activity-table/utils'
 import { t } from '@ui/lib/i18n'
 import type { ParsedUserSupplyEvent } from './useUserSupplyEvents'
 
@@ -58,6 +61,7 @@ export const useUserSupplyActivityTable = (eventsQuery: QueryProp<ParsedUserSupp
 
   return {
     table: useActivityTable({
+      meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
       query,
       state: { columnVisibility },
       initialState: { pagination: { pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE } },

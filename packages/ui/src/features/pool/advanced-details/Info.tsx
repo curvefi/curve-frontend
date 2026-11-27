@@ -5,8 +5,9 @@ import type { Address } from '@primitives/address.utils'
 import { maybe, type Nullish } from '@primitives/objects.utils'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
-import { AddressActionInfo, type AddressDisplay } from '@ui/features/forms/action-info/AddressActionInfo'
+import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
 import type { QueryOrValue } from '@ui/features/queries/util'
+import type { AddressDisplay } from '@ui/lib/address'
 import { t } from '@ui/lib/i18n'
 
 export type InfoProps = {

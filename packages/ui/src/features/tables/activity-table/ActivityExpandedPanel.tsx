@@ -1,5 +1,3 @@
-import { MetricExpandedPanel } from '@evm-ui/shared/ui/MetricExpandedPanel'
-import { evmAddressDisplay } from '@evm-ui/utils'
 import { Stack } from '@mui/material'
 import { formatDate } from '@primitives/date.utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
@@ -12,8 +10,10 @@ import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
 import { useCurrentDate } from '@ui/hooks/useCurrentDate'
 import { t } from '@ui/lib/i18n'
+import { MetricExpandedPanel } from '../MetricExpandedPanel'
 import { ActivityColumnId } from './columns/columns.enum'
 import { ACTIVITY_TITLES } from './columns/columns.titles'
+import { getActivityTableMeta } from './table-meta'
 import type { ActivityRow } from './types'
 import { formatActivityUsdValue, getActivityDeltaKey, getChangeColor, getTransactionActions } from './utils'
 
@@ -24,6 +24,8 @@ export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
   table,
 }) => {
   const currentDate = useCurrentDate()
+  const { addressDisplay } = getActivityTableMeta(table)
+  const txUrl = txHash ? addressDisplay.scanTxPath(chainId, txHash) : undefined
 
   return (
     <Stack>
@@ -32,7 +34,7 @@ export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
         chainId={chainId}
         title={ACTIVITY_TITLES[ActivityColumnId.Address]}
         address={address}
-        display={evmAddressDisplay}
+        display={addressDisplay}
       />
       <Subscribe
         source={table.atoms.columnVisibility}
@@ -75,7 +77,7 @@ export const ActivityExpandedPanel: ExpandedPanelComponent<ActivityRow> = ({
       ) : (
         <ActionInfo label={t`Amount`} value={UNAVAILABLE_NOTATION} />
       )}
-      <ExpandedPanelActions actions={getTransactionActions(chainId, txHash)} />
+      {txUrl && <ExpandedPanelActions actions={getTransactionActions(txUrl)} />}
     </Stack>
   )
 }

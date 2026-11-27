@@ -1,9 +1,9 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getUserProposalVotes, type ProposalType, type UserProposalVote } from '@curvefi/prices-api/proposal'
-import { DEFAULT_PAGE_START_INDEX } from '@evm-ui/features/activity-table/utils'
 import type { UserParams, UserQuery } from '@evm-ui/queries/query-types'
 import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { queryFactory } from '@ui/features/queries/factory'
+import { DEFAULT_PAGE_START_INDEX } from '@ui/features/tables/activity-table/utils'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 

@@ -1,19 +1,21 @@
+import { getAddress } from 'viem'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import type { Chain } from '@curvefi/prices-api'
 import type { PoolLiquidityEvent } from '@curvefi/prices-api/pools'
-import { useActivityTable } from '@evm-ui/features/activity-table/hooks/useActivityTable'
-import { useActivityVisibility } from '@evm-ui/features/activity-table/hooks/useActivityVisibility'
-import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
-import type { ActivityRow } from '@evm-ui/features/activity-table/types'
-import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { getPageCount } from '@evm-ui/utils'
+import { evmAddressDisplay, getPageCount } from '@evm-ui/utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import type { Token } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { loadingQ } from '@ui/features/queries/util'
+import { useActivityTable } from '@ui/features/tables/activity-table/hooks/useActivityTable'
+import { useActivityVisibility } from '@ui/features/tables/activity-table/hooks/useActivityVisibility'
+import { useManualPagination } from '@ui/features/tables/activity-table/hooks/useManualPagination'
+import type { ActivityRow } from '@ui/features/tables/activity-table/types'
+import { DEFAULT_PAGE_SIZE } from '@ui/features/tables/activity-table/utils'
 import { t } from '@ui/lib/i18n'
 
 export type PoolLiquidityRow = PoolLiquidityEvent & { chainId: number; blockchainId: Chain; poolTokens: Token[] }
@@ -76,6 +78,7 @@ export const usePoolActivityLiquidityTable = () => {
   )
 
   const table = useActivityTable({
+    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
     query,
     state: { columnVisibility, pagination },
     manualPagination: true,
