@@ -3,8 +3,7 @@ import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { ProposalVoteStatusBox } from '@/dao/components/ProposalVoteStatusBox'
 import { SmallLabel } from '@/dao/components/SmallLabel'
-import { ProposalData } from '@/dao/entities/proposals-mapper'
-import { LazyItem } from '@legacy-ui/LazyItem'
+import type { ProposalData } from '@/dao/utils/proposal'
 import { t } from '@ui/lib/i18n'
 
 type Props = { proposalData: ProposalData; handleClick: (rProposalId: string) => void }
@@ -23,36 +22,34 @@ export const Proposal = ({ proposalData, handleClick }: Props) => {
   }, [])
 
   return (
-    <LazyItem defaultHeight="241px">
-      <ProposalContainer onClick={() => handleClick(`${id}-${type}`)}>
-        <InformationWrapper>
-          <ProposalDetailsRow>
+    <ProposalContainer onClick={() => handleClick(`${id}-${type}`)}>
+      <InformationWrapper>
+        <ProposalDetailsRow>
+          <SmallLabel
+            className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
+              status === 'Passed' && 'passed'
+            }`}
+            description={<ProposalStatus className={status}>{status}</ProposalStatus>}
+          />
+          {status === 'Passed' && (
             <SmallLabel
-              className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
-                status === 'Passed' && 'passed'
-              }`}
-              description={<ProposalStatus className={status}>{status}</ProposalStatus>}
+              description={
+                <ExecutedStatus className={executed ? 'executed' : 'executable'}>
+                  {executed ? t`Executed` : t`Executable`}
+                </ExecutedStatus>
+              }
             />
-            {status === 'Passed' && (
-              <SmallLabel
-                description={
-                  <ExecutedStatus className={executed ? 'executed' : 'executable'}>
-                    {executed ? t`Executed` : t`Executable`}
-                  </ExecutedStatus>
-                }
-              />
-            )}
-            <ProposalId>#{id}</ProposalId>
-            <ProposalType>{type}</ProposalType>
-            <Countdown startDate={timestamp} />
-          </ProposalDetailsRow>
-          <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>
-        </InformationWrapper>
-        <VoteWrapper>
-          <StyledProposalVoteStatusBox proposalData={proposalData} />
-        </VoteWrapper>
-      </ProposalContainer>
-    </LazyItem>
+          )}
+          <ProposalId>#{id}</ProposalId>
+          <ProposalType>{type}</ProposalType>
+          <Countdown startDate={timestamp} />
+        </ProposalDetailsRow>
+        <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>
+      </InformationWrapper>
+      <VoteWrapper>
+        <StyledProposalVoteStatusBox proposalData={proposalData} />
+      </VoteWrapper>
+    </ProposalContainer>
   )
 }
 

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { VoteMarker } from '@/dao/components/VoteMarker'
-import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
+import { useProposal } from '@/dao/queries/proposal.query'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { daoPages } from '@evm-ui/shared/routes'
 import { shortenAddress } from '@evm-ui/utils'
@@ -15,10 +15,7 @@ import { formatToken } from '@ui/lib/tokens'
 type Props = { totalVotes: number; voteId: string; proposalType: ProposalType; className?: string }
 
 export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
-  const { data: pricesProposal, isSuccess: pricesProposalSuccess } = useProposalPricesApiQuery({
-    proposalId: +voteId,
-    proposalType,
-  })
+  const { data: pricesProposal, isSuccess: pricesProposalSuccess } = useProposal({ proposalId: +voteId, proposalType })
 
   return (
     <Wrapper className={className}>

@@ -15,7 +15,7 @@ const menu = [
 export const Gauges = () => {
   const { tab, tabs, content, onChange } = useTabs({ menu })
   return (
-    <DetailPageLayout formTabs={null} testId="gauges-page">
+    <DetailPageLayout testId="gauges-page">
       <GaugeWeightDistribution isUserVotes={tab.value === 'gaugeVoting'} />
       <Stack>
         <TabsSwitcher value={tab.value} onChange={onChange} options={tabs} />

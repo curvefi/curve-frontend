@@ -5,8 +5,7 @@ import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
-import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { createProposalKey, useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { invalidateProposal, useProposal } from '@/dao/queries/proposal.query'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
 import { daoPages } from '@evm-ui/shared/routes'
@@ -38,21 +37,12 @@ export const Proposal = () => {
   const { address: userAddress } = useConnection()
 
   const {
-    data: proposalsMapper,
-    isLoading: proposalsListLoading,
-    isSuccess: proposalsListSuccess,
-    dataUpdatedAt,
-  } = useProposalsMapperQuery({})
-  const {
-    data: pricesProposal,
-    isLoading: pricesProposalLoading,
+    data: proposal = null,
+    isLoading: isLoading,
     isError: pricesProposalError,
-    isSuccess: pricesProposalSuccess,
-  } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType })
-  const proposal = proposalsMapper?.[createProposalKey(+voteId, proposalType)] ?? null
-
-  const isLoading = pricesProposalLoading || proposalsListLoading
-  const isFetched = pricesProposalSuccess && proposalsListSuccess
+    isSuccess: isFetched,
+    dataUpdatedAt,
+  } = useProposal({ proposalId: +voteId, proposalType })
 
   const activeProposal = useMemo(
     () =>
@@ -67,14 +57,13 @@ export const Proposal = () => {
     [proposal?.status, proposal?.timestamp, dataUpdatedAt],
   )
 
-  const block = proposal?.block ?? pricesProposal?.block
-  const enabled = !!userAddress && block != null
+  const enabled = !!userAddress && proposal?.block != null
   const { data: votingPower, isLoading: snapshotVeCrvLoading } = useReadContract({
     chainId: Chain.Ethereum,
     abi: ABI_VECRV,
     address: CONTRACT_VECRV,
     functionName: 'balanceOfAt',
-    args: enabled ? ([userAddress, BigInt(block)] as const) : undefined,
+    args: enabled ? ([userAddress, BigInt(proposal.block)] as const) : undefined,
     query: { enabled, select: vecrv => Number(vecrv) / 1e18 },
   })
 
@@ -85,22 +74,17 @@ export const Proposal = () => {
   )
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <DetailPageLayout>
       <BackButton path={daoPages.proposals()} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">
-            <ProposalHeader
-              proposal={proposal}
-              loading={proposalsListLoading}
-              voteId={voteId}
-              proposalType={proposalType}
-            />
+            <ProposalHeader proposal={proposal} loading={isLoading} voteId={voteId} proposalType={proposalType} />
             {pricesProposalError && !isLoading && (
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  onClick={() => void invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
+                  onClick={() => void invalidateProposal({ proposalId: +voteId, proposalType })}
                 />
               </ErrorWrapper>
             )}
@@ -123,7 +107,7 @@ export const Proposal = () => {
                   </Box>
                   <MetaDataParaphraph>{proposal?.metadata}</MetaDataParaphraph>
                 </MetaData>
-                {pricesProposal && <Script script={pricesProposal?.script} />}
+                {proposal?.script && <Script script={proposal.script} />}
 
                 {/* Votes and User Box inline on small screens */}
                 <VotesAndUserBox>
