@@ -32,7 +32,8 @@ export const FieldLockedAmount = ({
     <LargeTokenInput
       name="lockedAmount"
       disabled={disabled}
-      balance={q({ data: lockedAmount, isLoading: false, error: maybe(lockedAmountError, Error) ?? null })}
+      value={lockedAmount}
+      validationError={maybe(lockedAmountError, Error)}
       message={lockedAmountError || (!noCurrentLock && currentLockedAmount && t`CRV Locked: ${currentLockedAmount}`)}
       onBalance={onBalance}
       walletBalance={{ balance: q(crv), symbol: 'CRV' }}

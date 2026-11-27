@@ -1,14 +1,14 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
 import type { FormControl } from '@ui/features/forms/useFormValidation'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import type { QueryProp } from '@ui/features/queries/util'
 import type { FieldName } from '@ui/lib/validation/types'
 import { LargeTokenInput, type LargeTokenInputProps } from './LargeTokenInput'
 
 type RelatedField<TFieldName extends string = string> = TFieldName | { field: TFieldName[]; ignoreTouched: boolean }
 
 /**
- * Binds a token input to a form value, using balance query loading/error state and an optional maximum.
+ * Binds a token input to a form value, using query errors and an optional maximum.
  * Touched-field errors take precedence over query errors, which take precedence over the helper message.
  * Related-field errors appear when either the input or the related field is touched, unless ignoreTouched is set.
  */
@@ -23,15 +23,14 @@ export const FormTokenInput = <
   name,
   relatedFields,
   max,
-  balance,
+  validationError,
   message,
   ...props
-}: Omit<LargeTokenInputProps, 'name' | 'balance' | 'maxBalance'> & {
+}: Omit<LargeTokenInputProps, 'name' | 'value' | 'maxBalance'> & {
   form: TForm
   name: TFieldName
   relatedFields?: RelatedField<FieldName<TForm['formState']['errors']>>[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
-  balance?: QueryProp<Decimal | null>
 }) => {
   const error =
     notFalsyArray<RelatedField>([name], relatedFields)
@@ -43,14 +42,15 @@ export const FormTokenInput = <
               .find(Boolean),
       )
       .find(error => !!error) ??
-    balance?.error ??
+    validationError ??
     max?.balance.error ??
     null
   return (
     <LargeTokenInput
       {...props}
       name={name}
-      balance={q({ data: values[name], error, isLoading: balance?.isLoading ?? false })}
+      value={values[name]}
+      validationError={error}
       maxBalance={max && { balance: max.balance, chips: max.chips ?? 'max', onMax: max.onMax }}
       message={error?.message ?? message}
     />

@@ -3,8 +3,9 @@ import { type ReactNode, type Ref, useCallback, useId, useImperativeHandle } fro
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber } from '@primitives/number.utils'
+import { formatNumber, PLACEHOLDER_USD } from '@primitives/number.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { SelectableChip } from '@ui/components/SelectableChip'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { SliderInput, SliderInputProps } from '@ui/features/forms/controls/SliderInput'
@@ -55,10 +56,13 @@ export type LargeTokenInputProps = {
   ref?: Ref<LargeTokenInputRef>
 
   /**
-   * The current balance value of the input.
+   * The current form value of the input.
    * If undefined, the input is considered uncontrolled.
    */
-  balance?: QueryOrValue<Decimal>
+  value?: Decimal
+
+  /** Validation error for the form value. */
+  validationError?: Error | null
 
   /**
    * The token selector UI element to be rendered.
@@ -94,7 +98,7 @@ export type LargeTokenInputProps = {
   }
 
   /** Optional usd value of the balance given as input. */
-  inputBalanceUsd?: Decimal
+  inputBalanceUsd?: QueryOrValue<Decimal>
 
   /**
    * Optional message to display below the input, called the 'helper message'.
@@ -177,15 +181,21 @@ export const LargeTokenInput = ({
   name,
   disabled,
   onBalance,
-  balance: balanceProp,
-  inputBalanceUsd,
+  value,
+  validationError,
+  inputBalanceUsd: inputBalanceUsdProp,
   testId,
   sliderProps,
   children,
 }: LargeTokenInputProps) => {
-  const { data: externalBalance, error } = toQuery(balanceProp)
+  const {
+    data: inputBalanceUsd,
+    isLoading: inputBalanceUsdLoading,
+    error: inputBalanceUsdError,
+  } = toQuery(inputBalanceUsdProp)
+  const showInputUsd = inputBalanceUsd != null || inputBalanceUsdLoading || !!inputBalanceUsdError
   const [balance, setBalance] = useUnique({
-    defaultValue: externalBalance,
+    defaultValue: value,
     callback: onBalance,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
     equals: bigNumEquals,
@@ -199,9 +209,10 @@ export const LargeTokenInput = ({
     () => (maxBalanceValue && balance ? calculateNewPercentage(balance, maxBalanceValue) : undefined),
     [maxBalanceValue],
   )
-  const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
-  const chipDisabled = !!disabled || (maxBalance?.balance != null && maxBalanceValue == null)
-  const isError = !!maxBalanceError || !!error
+  const showSlider = !!maxBalance?.showSlider && (maxBalanceLoading || maxBalanceValue != null)
+  const maxDisabled =
+    !!disabled || maxBalanceLoading || !!maxBalanceError || (maxBalance?.balance != null && maxBalanceValue == null)
+  const isError = !!maxBalanceError || !!validationError
 
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
@@ -261,7 +272,7 @@ export const LargeTokenInput = ({
     >
       <Stack sx={{ gap: SizesAndSpaces.LargeTokenInput.RowGap, padding: SizesAndSpaces.LargeTokenInput.PaddingX }}>
         {/** First row is an optional label describing the input and/or chips */}
-        {(label || showChips) && (
+        {(label || showChips || maxBalanceError) && (
           <Stack
             direction="row"
             sx={{
@@ -276,6 +287,7 @@ export const LargeTokenInput = ({
                 {label}
               </Typography>
             )}
+            {maxBalanceError && <ErrorIconButton error={maxBalanceError} size="extraExtraSmall" />}
 
             {showChips && (
               <Stack
@@ -302,8 +314,8 @@ export const LargeTokenInput = ({
                           <span>{chip.label}</span>
                         </WithSkeleton>
                       }
-                      data-testid={!chipDisabled && `input-chip-${chip.label}`}
-                      disabled={chipDisabled}
+                      data-testid={!maxDisabled && `input-chip-${chip.label}`}
+                      disabled={maxDisabled}
                       toggle={() => {
                         if (chip.isMax && onMax) return onMax(maxBalanceValue)
                         const newBalance = chip.newBalance(maxBalanceValue)
@@ -334,13 +346,17 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Third row containing input and max balances */}
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
-        {(walletBalance || inputBalanceUsd) && (
+        {(!!walletBalance || showInputUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
-            {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" sx={{ flexGrow: 1, color: t => t.design.Inputs.Text.MetaSubtle }}>
-                ≈ {formatNumber(inputBalanceUsd, 'usd.amount')}
-              </Typography>
+            {showInputUsd && (
+              <Stack direction="row" sx={{ flexGrow: 1, alignItems: 'center', gap: Spacing.xxs }}>
+                {inputBalanceUsdError && <ErrorIconButton error={inputBalanceUsdError} size="extraExtraSmall" />}
+                <WithSkeleton loading={inputBalanceUsdLoading}>
+                  <Typography variant="bodyXsRegular" sx={{ color: t => t.design.Inputs.Text.MetaSubtle }}>
+                    ≈ {formatNumber(inputBalanceUsdLoading ? PLACEHOLDER_USD : inputBalanceUsd, 'usd.amount')}
+                  </Typography>
+                </WithSkeleton>
+              </Stack>
             )}
 
             {walletBalance && <Balance disabled={disabled} {...walletBalance} onClick={onWalletBalance} />}
@@ -349,18 +365,20 @@ export const LargeTokenInput = ({
 
         {/** Fourth row showing optional slider for max balance. */}
         {showSlider && (
-          <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
-            <SliderInput
-              name={name}
-              disabled={disabled}
-              value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={value => handlePercentageChange(value)}
-              sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
-              min={MIN_PERCENTAGE}
-              max={MAX_PERCENTAGE}
-              inputProps={{ variant: 'standard', adornment: 'percentage' }}
-            />
-          </Stack>
+          <WithSkeleton loading={maxBalanceLoading} variant="rectangular" width="100%">
+            <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
+              <SliderInput
+                name={name}
+                disabled={maxDisabled}
+                value={percentage ?? `${MIN_PERCENTAGE}`}
+                onChange={value => handlePercentageChange(value)}
+                sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
+                min={MIN_PERCENTAGE}
+                max={MAX_PERCENTAGE}
+                inputProps={{ variant: 'standard', adornment: 'percentage' }}
+              />
+            </Stack>
+          </WithSkeleton>
         )}
       </Stack>
       {/** Fourth row containing optional helper (or error) message */}

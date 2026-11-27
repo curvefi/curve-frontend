@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DebouncedLargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/DebouncedLargeTokenInput'
-import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
@@ -22,11 +22,8 @@ export const FieldLpToken = ({
     name="lpTokens"
     disabled={disabled}
     walletBalance={{ balance: mapQuery(balance, decimal), symbol: t`LP Tokens` }}
-    balance={q({
-      data: decimal(amount),
-      isLoading: false,
-      error: isNotEnough ? new Error(t`Not enough LP Tokens`) : null,
-    })}
+    value={decimal(amount)}
+    validationError={isNotEnough ? new Error(t`Not enough LP Tokens`) : null}
     onBalance={useCallback((val?: Decimal) => handleAmountChange(val ?? ''), [handleAmountChange])}
   />
 )

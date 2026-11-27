@@ -3,7 +3,7 @@ import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui/features/forms'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import { PoolTokenSelector } from '@ui/features/pool-forms/PoolTokenSelector'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import type { QueryProp } from '@ui/features/queries/util'
 import { decimalMultiply } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import type { PoolToken } from '../PoolTokenInput'
@@ -54,7 +54,7 @@ export const SwapTokenInput = ({
           }
         />
       }
-      balance={q({ ...balance, error: tokenError ?? balance.error })}
+      validationError={tokenError ?? balance.error}
       onBalance={amount => {
         const updates: Partial<SwapFormValues> = { [name]: amount, editedSide: side }
         form.update(updates)

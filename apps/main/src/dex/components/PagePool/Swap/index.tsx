@@ -388,11 +388,8 @@ export const Swap = ({
           label={t`Sell`}
           name="fromAmount"
           onBalance={setFromAmount}
-          balance={q({
-            data: decimal(formValues.fromAmount),
-            isLoading: false,
-            error: formValues.fromError ? new Error(formValues.fromError) : null,
-          })}
+          value={decimal(formValues.fromAmount)}
+          validationError={formValues.fromError ? new Error(formValues.fromError) : null}
           inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
           tokenSelector={
             <TokenSelector
@@ -465,7 +462,7 @@ export const Swap = ({
           name="toAmount"
           onBalance={setToAmount}
           inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
-          balance={decimal(formValues.toAmount)}
+          value={decimal(formValues.toAmount)}
           disabled={!curve?.hasRouter() || isDisabled}
           tokenSelector={
             <TokenSelector

@@ -27,7 +27,8 @@ export const BridgeAmount = ({ disabled, amount, onAmount, walletBalance, inputB
     disabled={disabled}
     // For now FastBride only support bridging crvUSD
     tokenSelector={<TokenLabel blockchainId="ethereum" address={CRVUSD_ADDRESS} label="crvUSD" />}
-    balance={amount}
+    value={amount.data}
+    validationError={amount.error}
     walletBalance={{ ...walletBalance, symbol: 'crvUSD' }}
     inputBalanceUsd={inputBalanceUsd}
     onBalance={onAmount}

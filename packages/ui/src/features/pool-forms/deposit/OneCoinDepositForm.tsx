@@ -20,7 +20,7 @@ export const OneCoinDepositForm = <TValues extends PoolDepositForm>(props: Depos
         max={maybe(maxAmounts?.[index], balance => ({ balance }))}
         relatedFields={[poolMaxAmountField(index) as FieldPath<TValues>]}
         label={t`Deposit`}
-        balance={token && { ...token, data: form.values[field] }}
+        validationError={token?.error}
         disabled={inputsDisabled !== false}
         inputBalanceUsd={maybes([form.values[field], token?.data?.usdRate], decimalMultiply)}
         walletBalance={token?.data && { symbol: token.data.symbol, balance: token.data.balance }}

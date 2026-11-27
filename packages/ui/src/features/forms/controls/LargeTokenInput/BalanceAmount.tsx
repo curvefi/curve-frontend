@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { formatNumber } from '@primitives/number.utils'
+import { formatNumber, PLACEHOLDER } from '@primitives/number.utils'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { VERTICAL_CENTER_TEXT } from '@ui/features/forms/controls/LargeTokenInput/large-token-input.utils'
 import type { SxProps } from '@ui/lib/mui'
@@ -34,7 +34,7 @@ export const BalanceAmount = <T extends Amount>({
         ...sx,
       }}
     >
-      {loading ? '?????' : formatNumber(children, 'token.compact')}
+      {formatNumber(loading ? PLACEHOLDER : children, 'token.compact')}
     </Typography>
   </WithSkeleton>
 )
