@@ -8,6 +8,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { shortenString } from '@primitives/string.utils'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
 import { TokenIcon } from '@ui/components/TokenIcon'
+import { TokenIcons } from '@ui/components/TokenIcons'
 import { Tooltip } from '@ui/components/Tooltip'
 import { type QueryOrValue, toValue } from '@ui/features/queries/util'
 import type { TokenOption as Option } from '@ui/features/select-token/types'
@@ -32,6 +33,7 @@ export const TokenOption = ({
   chain,
   symbol,
   address,
+  tokens,
   addressLabel = shortenString(address),
   balance: balanceProp,
   tokenPrice: tokenPriceProp,
@@ -68,12 +70,16 @@ export const TokenOption = ({
             ...(disabled && { cursor: 'not-allowed' }),
           }}
         >
-          <TokenIcon
-            blockchainId={chain}
-            address={address}
-            size="xl"
-            sx={{ ...(disabled && { filter: 'saturate(0)' }) }}
-          />
+          {tokens && chain ? (
+            <TokenIcons blockchainId={chain} tokens={tokens} size="xl" showTooltips={false} />
+          ) : (
+            <TokenIcon
+              blockchainId={chain}
+              address={address}
+              size="xl"
+              sx={{ ...(disabled && { filter: 'saturate(0)' }) }}
+            />
+          )}
 
           <Stack sx={{ flexGrow: 1, overflow: 'hidden' }}>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule. */}
