@@ -1,3 +1,4 @@
+import { isAddressEqual } from 'viem'
 import {
   type ApiCollateralEvent,
   getOpenPositionEvents,
@@ -51,7 +52,7 @@ const ownFlow = (flow: Decimal): EventFlow => ({ flow, walletBorrowed: ZERO })
 
 /** The user closes the position through a liquidation of their own loan: the wallet pays the debt the AMM crvUSD does not cover and gets the collateral back */
 const closePositionFlow = ({ liquidation, user, oraclePrice }: ApiCollateralEvent) =>
-  liquidation?.liquidator.toLowerCase() === user.toLowerCase()
+  liquidation && isAddressEqual(liquidation.liquidator, user)
     ? ownFlow(
         decimalMinus(
           toDecimal(liquidation.debt),

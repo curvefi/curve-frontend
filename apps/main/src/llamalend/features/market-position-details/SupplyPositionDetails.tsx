@@ -3,7 +3,7 @@ import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketCampaigns } from '@/llamalend/features/market-list/hooks/useMarketCampaigns'
-import { isLendMarket, tokenMetric } from '@/llamalend/llama.utils'
+import { getTokens, isLendMarket, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market/market-rates.query'
 import { useMarketVaultOnChainRewards } from '@/llamalend/queries/market/market-vault-on-chain-rewards.query'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
@@ -105,14 +105,15 @@ export const SupplyPositionDetails = () => {
       }),
   )
 
+  const { borrowToken } = getTokens(market)
   const balances = useUserBalances(params)
   const supplyAsset = combineQueries(
-    [useTokenUsdRate({ chainId, tokenAddress: market.addresses?.borrowed_token }), balances],
+    [useTokenUsdRate({ chainId, tokenAddress: borrowToken.address }), balances],
     (usdRate, { vaultSharesConverted, gaugeConverted }): SupplyAsset => {
       const depositedAmount = decimalSum(vaultSharesConverted, gaugeConverted)
       return {
-        symbol: market.borrowed_token.symbol,
-        address: market.borrowed_token.address as Address,
+        symbol: borrowToken.symbol,
+        address: borrowToken.address,
         usdRate,
         depositedAmount,
         depositedUsdValue: decimalMultiply(depositedAmount, usdRate),

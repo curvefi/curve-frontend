@@ -14,7 +14,7 @@ import type { OnTransactionSuccess } from '@evm-ui/queries/useEvmMutation'
 import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
-import { formatTokenAmounts } from '../llama.utils'
+import { formatTokenAmounts, getTokens } from '../llama.utils'
 
 type DepositOptions = {
   marketId: string | undefined
@@ -61,8 +61,10 @@ export const useDepositMutation = ({
       t`Depositing... ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Deposit successful! ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
-    mutationTokenAddresses: (_mutation, { market }) =>
-      [requireVault(market).borrowed_token.address, requireVault(market).addresses.vault] as Address[],
+    mutationTokenAddresses: (_mutation, { market }) => [
+      getTokens(market).borrowToken.address,
+      requireVault(market).addresses.vault as Address,
+    ],
     onSuccess,
     ...props,
   })

@@ -1,4 +1,4 @@
-import { type Address, erc20Abi, parseUnits } from 'viem'
+import { type Address, erc20Abi, getAddress, parseUnits } from 'viem'
 import { getBadDebtLendMarketsOptions } from '@/llamalend/queries/market/market-bad-debt.query'
 import { oneAddress, oneInt } from '@cy/support/generators'
 import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lending-vaults.query'
@@ -62,12 +62,7 @@ export const seedErc20BalanceForAddresses = ({
   rawBalance: bigint
   decimals?: number
 }) =>
-  addresses.forEach(userAddress => {
-    const userAddresses = new Set<Address>([userAddress, userAddress.toLowerCase() as Address])
-    userAddresses.forEach(address =>
-      seedErc20BalanceQuery({ chainId, tokenAddress, userAddress: address, rawBalance, decimals }),
-    )
-  })
+  addresses.forEach(userAddress => seedErc20BalanceQuery({ chainId, tokenAddress, userAddress, rawBalance, decimals }))
 
 export const seedCrvUsdBalance = ({
   chainId,
@@ -84,7 +79,7 @@ export const seedCrvUsdBalance = ({
 }) =>
   seedErc20BalanceForAddresses({
     chainId,
-    tokenAddress: CRVUSD_ADDRESS,
+    tokenAddress: getAddress(CRVUSD_ADDRESS),
     addresses,
     rawBalance: parseUnits(`${oneInt(Math.ceil(Number(min)), Math.ceil(Number(max)))}`, decimals),
     decimals,

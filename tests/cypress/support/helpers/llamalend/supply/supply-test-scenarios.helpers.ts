@@ -1,5 +1,4 @@
-import { zeroAddress } from 'viem'
-import type { Address } from 'viem'
+import { type Address, getAddress, zeroAddress } from 'viem'
 import { oneAddress } from '@cy/support/generators'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -26,7 +25,7 @@ const seedSupplyMarketBalances = ({
 }) => {
   seedErc20BalanceForAddresses({
     chainId,
-    tokenAddress: borrowedTokenAddress,
+    tokenAddress: getAddress(borrowedTokenAddress),
     addresses: [TEST_ADDRESS],
     rawBalance: 10n ** 22n,
   })

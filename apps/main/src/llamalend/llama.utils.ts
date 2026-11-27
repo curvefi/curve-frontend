@@ -121,7 +121,7 @@ export const hasLegacyMintLeverage = (market: MarketTemplate) =>
 
 export const isZapV0MintMarket = (blockchainId: Chain | Nullish, controllerAddress: Address | Nullish) =>
   maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
-    ZAP_V0_MINT_MARKETS[blockchainId]?.includes(controllerAddress.toLowerCase() as Address),
+    ZAP_V0_MINT_MARKETS[blockchainId]?.some(address => isAddressEqual(address, controllerAddress)),
   )
 
 /** Leverage can be opened on allowlisted markets, and on the legacy mint markets through their V0 zap */
@@ -252,20 +252,20 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
         ? {
             collateralToken: {
               symbol: market.collateralSymbol,
-              address: market.collateral as Address,
+              address: getAddress(market.collateral),
               decimals: market.collateralDecimals,
             },
-            borrowToken: CRVUSD,
+            borrowToken: { ...CRVUSD, address: getAddress(CRVUSD.address) },
           }
         : {
             collateralToken: {
               symbol: market.collateral_token.symbol,
-              address: market.collateral_token.address as Address,
+              address: getAddress(market.collateral_token.address),
               decimals: market.collateral_token.decimals,
             },
             borrowToken: {
               symbol: market.borrowed_token.symbol,
-              address: market.borrowed_token.address as Address,
+              address: getAddress(market.borrowed_token.address),
               decimals: market.borrowed_token.decimals,
             },
           },
@@ -556,8 +556,7 @@ export function calculateReturnToWallet({
 }
 
 export const createGetBadDebtMarket = (badDebtMarkets: BadDebt | undefined) => {
-  const toKey = (blockchainId: Chain, controllerAddress: Address) =>
-    `${blockchainId}:${controllerAddress.toLowerCase()}`
+  const toKey = (blockchainId: Chain, controllerAddress: Address) => `${blockchainId}:${controllerAddress}`
   const badDebtByMarket = new Map(
     (badDebtMarkets ?? []).map(market => [toKey(market.chain, market.controllerAddress), market]),
   )

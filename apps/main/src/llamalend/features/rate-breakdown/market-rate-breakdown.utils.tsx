@@ -1,4 +1,4 @@
-import { getAddress } from 'viem'
+import { getAddress, isAddressEqual } from 'viem'
 import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import { BORROW_RATE_TITLE, SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { hasEstimatedNetBorrowApr, type MarketToken } from '@/llamalend/llama.utils'
@@ -143,7 +143,7 @@ export const buildSupplyRateBreakdown = ({
       maxBoostRate: rate.supplyApyCrvMaxBoost,
     },
   )
-  const directIncentives = rate.extraIncentives.filter(({ address }) => address.toLowerCase() !== MAINNET_CRV_ADDRESS)
+  const directIncentives = rate.extraIncentives.filter(({ address }) => !isAddressEqual(address, MAINNET_CRV_ADDRESS))
   const campaigns = notFalsy(
     ...rate.extraRewards.map(campaign => campaign.reward?.type === 'apr' && { ...campaign, reward: campaign.reward }),
   )
