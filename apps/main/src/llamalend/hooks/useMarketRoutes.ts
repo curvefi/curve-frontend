@@ -14,7 +14,7 @@ import { Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { useShallowData } from '@ui/hooks/useShallowData'
 import { decimalCompare, decimalMax, decimalMultiply, toWei } from '@ui/lib/decimal'
 import { calculatePriceImpact as calculateValuePriceImpact, type PriceImpact } from '@ui/lib/price-impact.util'
@@ -75,7 +75,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   providers,
 }: {
   chainId: number
-  marketAddress: Address | undefined
+  marketAddress: QueryProp<Address>
   controllerAddress: Address | undefined
   tokenIn: MarketToken | undefined
   tokenOut: MarketToken | undefined
@@ -96,7 +96,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     tokenIn: tokenIn?.address,
     tokenOut: tokenOut?.address,
     amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
-    blacklist: toArray(marketAddress),
+    blacklist: mapQuery(marketAddress, toArray),
     controllerAddress,
     userAddress,
     zapAddress,

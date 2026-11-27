@@ -22,7 +22,7 @@ const emptyDepositForm = (): DepositForm => ({ ...userDefaultValues, maxDepositA
 
 const formOptions = { validation: depositFormValidationSuite, defaultValues: emptyDepositForm() }
 export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
-  const { marketId, controllerAddress, tokens, marketType, userAddress } = useMarketContext<ChainId>()
+  const { marketId, marketQuery, controllerAddress, tokens, marketType, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
 
@@ -55,7 +55,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     form,
     params,
     isPending,
-    isLoading: isPending || !marketId || formActions.isLoading,
+    isLoading: isPending || marketQuery.isLoading || formActions.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     userAddress,

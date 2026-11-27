@@ -8,7 +8,7 @@ import { type RouteProvider, type RouterRouteResponse } from '@primitives/router
 import { type QueryKey } from '@tanstack/react-query'
 import { NoRetryError, queryFactory } from '@ui/features/queries/factory'
 import { useQuery, type QueryOptions } from '@ui/features/queries/query-hooks'
-import { q, useMappedQuery } from '@ui/features/queries/util'
+import { type FieldsOrQueries, q, toValue, useMappedQuery } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
@@ -19,6 +19,7 @@ import { routerApiValidation } from './validation'
 
 type RouteByIdQuery = { routeId: string }
 type RouteByIdParams = FieldsOf<RouteByIdQuery>
+type RouterParams = Omit<RoutesParams, 'router' | 'blacklist'> & Pick<FieldsOrQueries<RoutesParams>, 'blacklist'>
 
 const {
   getQueryData: getRouteQueryData,
@@ -150,7 +151,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   category: 'global.routerApi',
 })
 
-function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
+function useRouterQuery(params: RouterParams, router: RouteProvider, enabled?: boolean): RouteQuery {
   const { data, isLoading, error, isFetching, isEnabled } = useRouterApi({ ...params, router }, enabled)
   const route = maybe(data, ([route]) => route) ?? null
   return useMemo(
@@ -165,7 +166,7 @@ export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryK
 
 /** manually add gas cost result to curve route via llamalend.js */
 function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(
-  params: Omit<RoutesParams, 'router'>,
+  params: RouterParams,
   getRouteGasOptions: GetGasCallback<TData, TKey>,
   enabled: boolean | undefined,
 ) {
@@ -192,7 +193,7 @@ function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(
  * Calls the route providers in parallel, returning the first route of each.
  */
 export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKey>(
-  params: Omit<RoutesParams, 'router'>,
+  params: RouterParams,
   getRouteGasOptions: GetGasCallback<TData, TKey>,
   providers: readonly RouteProvider[] | undefined,
   enabled?: boolean,
@@ -204,7 +205,10 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
     '0x': useRouterQuery(params, '0x', !!providers?.includes('0x') && !!params.zapAddress && enabled),
   },
   onRefresh: useCallback(
-    () => Promise.all((providers ?? []).map(router => fetchApiRoutes({ ...params, router }))),
+    () =>
+      Promise.all(
+        (providers ?? []).map(router => fetchApiRoutes({ ...params, blacklist: toValue(params.blacklist), router })),
+      ),
     [providers, params],
   ),
 })

@@ -20,7 +20,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { chainId, marketId, controllerAddress, marketType } = useMarketContext<ChainId>()
+  const { chainId, marketQuery, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -86,7 +86,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
 
       <EvmFormButton
         pending={isPending}
-        loading={!marketId || form.isLoading}
+        loading={marketQuery.isLoading || form.isLoading}
         disabled={form.isDisabled}
         label={t`Remove collateral`}
         testId="remove-collateral-submit-button"

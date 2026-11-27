@@ -35,7 +35,7 @@ import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
 import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
 import { combineQueries } from '@ui/features/queries/combine'
-import { q, type QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
 import { MarketIdRow } from './MarketParameterRows'
@@ -97,7 +97,7 @@ const MarketDataSkeleton = ({
   apiMarket,
   children,
 }: Pick<MarketContractsProps, 'market' | 'apiMarket'> & { children: ReactNode }) => (
-  <WithSkeleton loading={!market.data && !apiMarket.data} variant="rectangular" height="4lh" width="100%">
+  <WithSkeleton loading={fallbackQ(market, apiMarket).isLoading} variant="rectangular" height="4lh" width="100%">
     <Stack>{children}</Stack>
   </WithSkeleton>
 )
@@ -140,7 +140,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
 
   const hasContractData = !!market.data || !!apiMarket.data
   const contractsLoading =
-    !hasContractData || (!!market.data && (oracleAddressIsLoading || borrowGaugeAddressIsLoading))
+    fallbackQ(market, apiMarket).isLoading || (!!market.data && (oracleAddressIsLoading || borrowGaugeAddressIsLoading))
   const supplyGaugeAddress = getGaugeAddress(market.data, apiMarket.data)
   const borrowGaugeAddress = market.data ? onChainBorrowGaugeAddress : null // todo: the prices API should return the borrow gauge
   const vaultAddress = getVaultAddress(market.data, apiMarket.data) ?? undefined
@@ -212,7 +212,13 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
                   />
                 ))}
               </Stack>
-              <MarketIdRow chainId={chainId} marketId={market.data?.id ?? apiMarket.data?.controllerAddress} />
+              <MarketIdRow
+                chainId={chainId}
+                marketId={fallbackQ(
+                  mapQuery(market, m => m?.id),
+                  mapQuery(apiMarket, m => m?.controllerAddress),
+                )}
+              />
             </Stack>
           </WithSkeleton>
         </CardContent>

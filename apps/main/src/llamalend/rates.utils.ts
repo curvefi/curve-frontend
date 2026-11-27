@@ -151,15 +151,22 @@ const toMarketYields = (
 
 /** Collateral yields, the borrowed token yield of the latest snapshot and the borrow campaign rewards of a market. */
 export const getMarketYields = (
-  collateralYields: CollateralYields,
-  snapshots: (LendingSnapshot | CrvUsdSnapshot)[],
-  campaigns: Record<string, CampaignRewards[]>,
-  addresses: MarketCampaignAddresses & { marketType: MarketType },
-): MarketYields =>
-  toMarketYields(
-    collateralYields,
-    getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr),
-    getMarketCampaigns(campaigns, addresses),
+  collateralYields: QueryProp<CollateralYields>,
+  snapshots: QueryProp<(LendingSnapshot | CrvUsdSnapshot)[]>,
+  campaigns: QueryProp<Record<string, CampaignRewards[]>>,
+  {
+    ammAddress,
+    ...addresses
+  }: Omit<MarketCampaignAddresses, 'ammAddress'> & { marketType: MarketType; ammAddress: QueryProp<Address> },
+): QueryProp<MarketYields> =>
+  combineQueries(
+    [collateralYields, snapshots, campaigns, ammAddress],
+    (collateralYields, snapshots, campaigns, ammAddress) =>
+      toMarketYields(
+        collateralYields,
+        getLatestSnapshotValue(snapshots, getSnapshotBorrowedRebasingYieldApr),
+        getMarketCampaigns(campaigns, { ...addresses, ammAddress }),
+      ),
   )
 
 /** Yields and borrow campaign rewards of a market in the market list. */

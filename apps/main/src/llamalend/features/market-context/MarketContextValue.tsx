@@ -2,7 +2,7 @@ import type { IChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalen
 import type { LlamaApi } from '@evm-ui/features/connect-wallet/lib/types'
 import type { MarketType } from '@evm-ui/types/market'
 import type { Address } from '@primitives/address.utils'
-import type { QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, type QueryProp } from '@ui/features/queries/util'
 import type { ReleaseChannel } from '@ui/lib/env'
 import {
   type BandRangeOrEmpty,
@@ -50,7 +50,10 @@ export const createMarketContextValue = <ChainId extends IChainId>({
     apiMarket,
     marketType,
     marketId: marketQuery.data?.id,
-    ammAddress: getAmmAddress(marketQuery.data, apiMarket.data),
+    ammAddress: fallbackQ(
+      mapQuery(marketQuery, getAmmAddress),
+      mapQuery(apiMarket, market => market?.ammAddress),
+    ),
     zapAddress: getZapAddress(marketQuery.data),
     controllerAddress,
     leverageProviders: getMarketLeverageProviders(chainId, controllerAddress, releaseChannel),

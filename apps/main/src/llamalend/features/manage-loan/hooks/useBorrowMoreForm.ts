@@ -81,6 +81,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const {
     chainId,
     market,
+    marketQuery,
     marketId,
     ammAddress,
     zapAddress,
@@ -182,7 +183,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market || form.isLoading || formActions.isLoading,
+    isLoading: marketQuery.isLoading || form.isLoading || formActions.isLoading,
     onSubmit,
     userAddress,
     borrowToken,

@@ -21,7 +21,7 @@ const TEST_ID_PREFIX = 'supply-claim'
 const { Spacing } = SizesAndSpaces
 
 export const SupplyClaimTab = <ChainId extends IChainId>({ networks }: SupplyClaimTabProps<ChainId>) => {
-  const { chainId, marketId } = useMarketContext<ChainId>()
+  const { chainId, marketQuery } = useMarketContext<ChainId>()
   const { isConnected } = useConnection()
   const network = networks[chainId]
 
@@ -63,7 +63,7 @@ export const SupplyClaimTab = <ChainId extends IChainId>({ networks }: SupplyCla
           <Button
             fullWidth
             type="button"
-            loading={isCrvPending || !marketId}
+            loading={isCrvPending || marketQuery.isLoading}
             disabled={isCrvDisabled}
             data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
             onClick={onSubmitCrv}
@@ -75,7 +75,7 @@ export const SupplyClaimTab = <ChainId extends IChainId>({ networks }: SupplyCla
             color="secondary"
             fullWidth
             type="button"
-            loading={isRewardsPending || !marketId}
+            loading={isRewardsPending || marketQuery.isLoading}
             disabled={isRewardsDisabled}
             data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
             onClick={onSubmitRewards}

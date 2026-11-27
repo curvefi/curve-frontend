@@ -106,6 +106,9 @@ const validateDepositAmount = (
 }
 
 const validateDepositMaxAmount = (amount: Decimal | Nullish, maxAmount: Decimal | Nullish) => {
+  test('maxDepositAmount', 'Maximum deposit must be calculated before it can be validated', () => {
+    enforce(maxAmount).isDecimal()
+  })
   skipWhen(amount == null || maxAmount == null, () => {
     test('depositAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
       enforce(amount).lte(maxAmount!)
@@ -182,6 +185,9 @@ const validateWithdrawAmount = (
 }
 
 const validateWithdrawMaxAmount = (amount: Decimal | Nullish, maxAmount: Decimal | Nullish) => {
+  test('maxWithdrawAmount', 'Maximum withdrawal must be calculated before it can be validated', () => {
+    enforce(maxAmount).isDecimal()
+  })
   skipWhen(amount == null || maxAmount == null, () => {
     test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
       enforce(amount).lte(maxAmount!)

@@ -7,7 +7,7 @@ import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useMa
 import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
 import { maybe } from '@primitives/objects.utils'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import { LlammaActivityTradesProps } from '../LlammaActivityTradesTable'
@@ -45,11 +45,7 @@ export const useLlammaActivityTradesConfig = ({
   )
 
   const table = useCurveTable({
-    query: q({
-      data: tradesWithUrlsQuery.data,
-      isLoading: tradesWithUrlsQuery.isLoading || !ammAddress,
-      error: ammAddress ? tradesWithUrlsQuery.error : null,
-    }),
+    query: tradesWithUrlsQuery,
     columns: LLAMMA_TRADES_COLUMNS,
     state: { columnVisibility: tradesColumnVisibility, pagination },
     manualPagination: true,

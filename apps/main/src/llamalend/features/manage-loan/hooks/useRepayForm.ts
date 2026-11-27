@@ -51,6 +51,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const {
     chainId,
     market,
+    marketQuery: { isLoading },
     marketId,
     ammAddress,
     zapAddress,
@@ -107,7 +108,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market || form.isLoading || formActions.isLoading,
+    isLoading: isLoading || form.isLoading || formActions.isLoading,
     userAddress,
     onSubmit,
     borrowToken,

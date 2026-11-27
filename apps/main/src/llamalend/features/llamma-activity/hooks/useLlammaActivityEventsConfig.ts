@@ -6,8 +6,7 @@ import { useLlammaActivityVisibility } from '@evm-ui/features/activity-table/hoo
 import { useManualPagination } from '@evm-ui/features/activity-table/hooks/useManualPagination'
 import { DEFAULT_PAGE_SIZE } from '@evm-ui/features/activity-table/utils'
 import { getPageCount } from '@evm-ui/utils'
-import { combineQueries } from '@ui/features/queries/combine'
-import { loadingQ } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { t } from '@ui/lib/i18n'
 import type { LlammaActivityProps } from '../types'
@@ -26,7 +25,7 @@ export const useLlammaActivityEventsConfig = ({
   const eventsQuery = useLlammaEvents({ blockchainId, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
 
   // Transform events data with block explorer URLs
-  const query = combineQueries([eventsQuery, loadingQ(llamma)], ({ events }) =>
+  const query = mapQuery(eventsQuery, ({ events }) =>
     events.map((event: LlammaEvent) => ({
       ...event,
       chainId,
