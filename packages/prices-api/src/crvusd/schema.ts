@@ -48,6 +48,7 @@ const market = z
     debt_ceiling: z.number(),
     borrowable: z.number(),
     leverage: z.number().nullable(),
+    max_equity_leverage: z.number().nullable(),
     pending_fees: z.number(),
     collected_fees: z.number(),
     collateral_amount: z.number(),

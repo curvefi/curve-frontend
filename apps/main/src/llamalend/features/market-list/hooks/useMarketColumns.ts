@@ -1,4 +1,4 @@
-import { useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
+import { useLlamalendEquityLeverage, useLlamalendPositionPnl } from '@evm-ui/hooks/useFeatureFlags'
 import { fromEntries } from '@primitives/objects.utils'
 import { useTableColumnOverrides } from '@ui/features/storage/useLocalStorage'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
@@ -21,9 +21,12 @@ export const useMarketColumns = ({
   storageKey,
   migration,
 }: MarketTable) => {
-  const columns = useLlamalendPositionPnl()
-    ? tableColumns
-    : tableColumns.filter(({ id }) => !POSITION_PNL_COLUMNS.includes(id))
+  const isPositionPnl = useLlamalendPositionPnl()
+  const isEquityLeverage = useLlamalendEquityLeverage()
+  const hiddenLeverageColumn: string = isEquityLeverage ? MarketColumnId.MaxLeverage : MarketColumnId.MaxEquityLeverage
+  const columns = tableColumns.filter(
+    ({ id }) => (isPositionPnl || !POSITION_PNL_COLUMNS.includes(id)) && id !== hiddenLeverageColumn,
+  )
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, { fieldName: sortQueryField, columns })
   const sortField = sorting[0].id
   const [overrides, setOverrides] = useTableColumnOverrides(storageKey, migration)

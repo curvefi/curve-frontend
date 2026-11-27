@@ -85,6 +85,7 @@ const oneLendingPool = (
     loan_discount: oneFloat(1e18),
     liquidation_discount: oneFloat(1e18),
     leverage: oneFloat(),
+    max_equity_leverage: oneFloat(),
     min_band: minBand,
     max_band: oneInt(minBand),
     collateral_balance: collateralBalance,

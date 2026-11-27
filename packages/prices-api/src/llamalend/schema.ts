@@ -68,6 +68,7 @@ const market = z
     collateral_token: token,
     borrowed_token: token,
     leverage: z.number().nullable(),
+    max_equity_leverage: z.number().nullable(),
     extra_reward_apr: z.array(extraRewardApr),
     created_at: timestamp,
     max_ltv: z.number().nullable(),

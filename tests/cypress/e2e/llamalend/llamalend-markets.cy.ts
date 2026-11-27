@@ -107,7 +107,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       const { toggle, element } = oneOf(
         { toggle: 'tvl', element: 'data-table-header-tvl' },
         { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
-        { toggle: 'maxLeverage', element: 'data-table-header-maxLeverage' },
+        { toggle: 'maxEquityLeverage', element: 'data-table-header-maxEquityLeverage' },
       )
       cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
       cy.get(`[data-testid="${element}"]`).should('be.visible')

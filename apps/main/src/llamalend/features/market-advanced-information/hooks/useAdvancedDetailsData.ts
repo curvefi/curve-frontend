@@ -4,11 +4,10 @@ import {
   calculateMintMarketTvlUsd,
   getControllerAddress,
   getTokensQuery,
-  isLeverageAllowed,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketCapAndAvailable } from '@/llamalend/queries/market/market-cap-and-available.query'
-import { useMarketMaxLeverage } from '@/llamalend/queries/market/market-max-leverage.query'
+import { useMaxLeverage } from '@/llamalend/queries/market/market-max-equity-leverage.query'
 import { useMarketOverview } from '@/llamalend/queries/market/market-overview.query'
 import { useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
 import { useMarketTotalCollateral } from '@/llamalend/queries/market/market-total-collateral.query'
@@ -49,10 +48,7 @@ export const useAdvancedDetailsData = ({
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({ ...marketOverviewQuery, isLoading: marketOverviewQuery.isLoading || isControllerLoading })
 
-  const maxLeverage = useMarketMaxLeverage(
-    { chainId, marketId, range: mapQuery(marketQuery, m => m?.minBands) },
-    !!isLeverageAllowed(chainId, controllerAddress),
-  )
+  const { onChain: maxLeverage, api: apiMaxLeverage } = useMaxLeverage({ chainId, marketId, marketQuery, apiMarket })
   const snapshots = useMarketSnapshots({ blockchainId, controllerAddress, marketType })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
@@ -120,17 +116,17 @@ export const useAdvancedDetailsData = ({
       ),
     ),
     maxLeverage: fallbackQ(
-      mapQuery(maxLeverage, value => ({ value })),
-      mapQuery(apiMarket, market => maybe(market?.leverage, value => ({ value }))),
+      mapQuery(maxLeverage, leverage => maybe(leverage, value => ({ value }))),
+      mapQuery(apiMaxLeverage, leverage => maybe(leverage, value => ({ value }))),
     ),
     maxReturnOnEquity: fallbackQ(
       combineQueries([maxLeverage, snapshots], (leverage, snapshots) =>
-        maybe(snapshots.at(-1), ({ borrowApy, collateralToken }) =>
+        maybes([leverage, snapshots.at(-1)], (leverage, { borrowApy, collateralToken }) =>
           maxReturnOnEquity(+leverage, collateralToken.rebasingYield, borrowApy),
         ),
       ),
-      mapQuery(apiMarket, market =>
-        maybe(market, ({ leverage, assets, rates }) =>
+      combineQueries([apiMaxLeverage, apiMarket], (leverage, market) =>
+        maybe(market, ({ assets, rates }) =>
           maxReturnOnEquity(leverage, assets.collateral.rebasingYield, rates.borrowApy),
         ),
       ),

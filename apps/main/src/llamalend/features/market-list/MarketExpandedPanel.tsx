@@ -1,6 +1,7 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { formatEstimatedNetBorrowRate, formatNetSupplyRate, tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import { useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType } from '@evm-ui/types/market'
 import { AVERAGE_CATEGORIES } from '@evm-ui/utils/average-categories'
 import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
@@ -104,7 +105,8 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
 export const MarketExpandedPanel = ({
   row: { original: market },
 }: Parameters<ExpandedPanelComponent<LlamaMarketRow>>[0]) => {
-  const { assets, leverage, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market
+  const { assets, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market
+  const maxLeverage = useLlamalendEquityLeverage() ? market.maxEquityLeverage : market.maxLegacyLeverage
   const graphSize = useMobileGraphSize()
 
   return (
@@ -122,11 +124,11 @@ export const MarketExpandedPanel = ({
           </Stack>
         </Grid>
         <Grid size={12}>
-          {leverage && (
+          {maxLeverage && (
             <Metric
               category={EXPANDED_DETAILS_METRIC_CATEGORY}
               label={MARKET_TITLES[MarketColumnId.MaxLeverage]}
-              value={leverage}
+              value={maxLeverage}
               valueOptions={{ unit: 'multiplier' }}
             />
           )}

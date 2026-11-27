@@ -1,4 +1,3 @@
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { formatNumber } from '@primitives/number.utils'
 import { maybes } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
@@ -12,12 +11,10 @@ export type MaxReturnOnEquity = {
 }
 
 export const MaxReturnOnEquityTooltipContent = ({
-  market,
-  leverage = market?.leverage,
-  collateralApy = market?.assets.collateral.rebasingYield,
-  borrowApy = market?.rates.borrowApy,
+  leverage,
+  collateralApy,
+  borrowApy,
 }: {
-  market?: LlamaMarket
   leverage?: number | null
   collateralApy?: number | null
   borrowApy?: number | null
