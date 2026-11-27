@@ -9,9 +9,6 @@ import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
-// Inline, so the skeleton follows the cell's text alignment like the loaded value
-const skeletonProps = { category: 'table.value', sx: { display: 'inline-block' } } as const
-
 /**
  * Skeleton while the query loads without data, spinner next to the data when it loads with data.
  * Error icon when it failed, the skeleton or the data stay visible next to the icon.
@@ -37,7 +34,7 @@ export const QueryCell = ({
       {error && <ErrorCell error={error} />}
       {isRefreshing && <Spinner size={12} sx={{ margin: 0, alignSelf: 'center' }} />}
       {(!error || hasContent) && (
-        <WithSkeleton loading={isLoading && !hasData} {...skeletonProps}>
+        <WithSkeleton loading={isLoading && !hasData} category="table.value">
           {children}
         </WithSkeleton>
       )}
