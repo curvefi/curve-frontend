@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { type Cell, type Row, type RowData, Subscribe } from '@tanstack/react-table'
-import { applySxProps } from '@ui/lib/mui'
+import { applySxProps, type SxProps } from '@ui/lib/mui'
 import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import type { RowBreakdownConfig } from './DataRow'
 import { useCellSx } from './hooks/useCellSx'
@@ -36,18 +36,20 @@ export const BreakdownRows = <TData extends RowData, TItem>({
   visibleCells,
   config: { getItemKey, cells },
   shouldStickFirstColumn,
+  rowSx,
 }: {
   row: Row<CurveTableFeatures, TData>
   items: readonly TItem[]
   visibleCells: Cell<CurveTableFeatures, TData>[]
   config: RowBreakdownConfig<TData, TItem>
   shouldStickFirstColumn?: boolean
+  rowSx: SxProps
 }) => (
   <Subscribe source={row.table.atoms.expanded} selector={() => row.getIsExpanded()}>
     {isExpanded =>
       isExpanded &&
       items.map((item, itemIndex) => (
-        <TableRow key={getItemKey(item, itemIndex)} className={BREAKDOWN_ROW_CLASS}>
+        <TableRow key={getItemKey(item, itemIndex)} className={BREAKDOWN_ROW_CLASS} sx={rowSx}>
           {visibleCells.map((cell, index) => (
             <BreakdownCell key={cell.id} cell={cell} isSticky={!!shouldStickFirstColumn && !index}>
               {cells[cell.column.id]?.(item, row.original)}

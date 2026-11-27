@@ -21,7 +21,6 @@ import { TablePagination } from '@ui/features/tables/TablePagination'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { t } from '@ui/lib/i18n'
-import { BREAKDOWN_ROW_CLASS } from './BreakdownRows'
 import { DATA_TABLE_CATEGORIES, type DataTableCategory, type DataTableCategoryConfig } from './categories'
 import { DataTableHeaderHeight, type useCurveTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -169,16 +168,7 @@ export const DataTable = <TData extends RowData>({
                 ))}
               </TableHead>
             )}
-            <TableBody
-              sx={
-                // When a breakdown row is expanded, remove all bottom borders except for the last breakdown row.
-                // We use borderBlockEndWidth and set transitionProperty to eliminate transition color flashing.
-                rowProps.rowBreakdown && {
-                  '& > tr > td': { transitionProperty: { tablet: 'color' } },
-                  [`& > tr:has(+ tr.${BREAKDOWN_ROW_CLASS}) > td`]: { borderBlockEndWidth: 0 },
-                }
-              }
-            >
+            <TableBody>
               {visibleRows.map(row => (
                 <DataRow
                   key={row.id}

@@ -7,7 +7,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { hasParentWithClass } from '@ui/lib/dom'
-import { BreakdownRows } from './BreakdownRows'
+import { BREAKDOWN_ROW_CLASS, BreakdownRows } from './BreakdownRows'
 import type { DataTableRowHeight } from './categories'
 import {
   CLICKABLE_IN_ROW_CLASS,
@@ -20,6 +20,13 @@ import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 const { Height } = SizesAndSpaces
 const ROW_CONTROLS = `.${CLICKABLE_IN_ROW_CLASS}, a[href], button, input, select, textarea, [role=button], [role=link]`
+
+// When a breakdown row is expanded, remove all bottom borders except for the last breakdown row.
+// We use borderBlockEndWidth and set transitionProperty to eliminate transition color flashing.
+const breakdownRowSx = {
+  '& > td': { transitionProperty: { tablet: 'color' } },
+  [`&&:has(+ tr.${BREAKDOWN_ROW_CLASS}) > td`]: { borderBlockEndWidth: 0 },
+}
 
 export type RowBreakdownConfig<TData extends RowData, TItem> = {
   /** Items to render as breakdown rows under the parent row. Fewer than 2 items means no breakdown rows. */
@@ -104,6 +111,7 @@ const DataRowContent = <TData extends RowData>({
               cursor: isInteractive ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
+              ...(rowBreakdown && breakdownRowSx),
               [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
               ...(isInteractive && {
                 [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
@@ -120,7 +128,7 @@ const DataRowContent = <TData extends RowData>({
                 },
               }),
             }),
-            [isInteractive, verticalAlign, rowHeight],
+            [isInteractive, verticalAlign, rowHeight, rowBreakdown],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
@@ -145,6 +153,7 @@ const DataRowContent = <TData extends RowData>({
           visibleCells={visibleCells}
           config={rowBreakdown}
           shouldStickFirstColumn={shouldStickFirstColumn}
+          rowSx={breakdownRowSx}
         />
       )}
 
