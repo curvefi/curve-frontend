@@ -55,7 +55,7 @@ export const DetailInfoEstGas = ({
   const haveUsdRate = !lodash.isUndefined(chainTokenUsdRate) && !lodash.isNaN(chainTokenUsdRate)
 
   return (
-    <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>
+    <DetailInfo isDivider={isDivider} loading={loading} label={Label} tooltip={Tooltip}>
       {estGasCostUsd &&
         (haveUsdRate ? <span>{formatNumber(estGasCostUsd, 'usd.amount')}</span> : t`Unable to get USD rate`)}
     </DetailInfo>

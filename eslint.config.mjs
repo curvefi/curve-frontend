@@ -167,9 +167,9 @@ const config = [
         'warn',
         {
           paths: [
-            ...['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select'].map(component => ({
+            ...['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select', 'Skeleton'].map(component => ({
               name: `@mui/material/${component}`,
-              message: `Use \`import { ${component} } from '@evm-ui/shared/ui/${component}'\` instead.`,
+              message: `Use \`import { ${component} } from the @ui package instead.`,
             })),
             {
               name: '@mui/material/Chip',
@@ -242,10 +242,7 @@ const config = [
   },
 
   // Override (replaces legacy `overrides`)
-  {
-    files: ['tests/cypress/**/*.{ts,tsx}'],
-    rules: { 'local/no-redundant-cypress-assertion': 'error' },
-  },
+  { files: ['tests/cypress/**/*.{ts,tsx}'], rules: { 'local/no-redundant-cypress-assertion': 'error' } },
   {
     files: ['apps/**', 'packages/**'],
     ignores: ['packages/evm-ui/src/features/forms/**', 'packages/ui/src/features/forms/**'],

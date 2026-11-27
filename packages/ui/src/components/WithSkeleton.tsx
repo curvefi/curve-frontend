@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { default as Skeleton, SkeletonProps } from '@mui/material/Skeleton'
+import { Skeleton, type SkeletonProps } from '@ui/components/Skeleton'
 import { WithWrapper } from '@ui/components/WithWrapper'
 
 type WithSkeletonProps = {

@@ -97,7 +97,7 @@ const MarketDataSkeleton = ({
   apiMarket,
   children,
 }: Pick<MarketContractsProps, 'market' | 'apiMarket'> & { children: ReactNode }) => (
-  <WithSkeleton loading={!market.data && !apiMarket.data} variant="rectangular" height="4lh" width="100%">
+  <WithSkeleton loading={!market.data && !apiMarket.data} category="content.fullWidth">
     <Stack>{children}</Stack>
   </WithSkeleton>
 )
@@ -197,7 +197,7 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       <Card size="extraSmall" variant="inline">
         <CardHeader title={t`Contracts`} />
         <CardContent component={SectionContentCard}>
-          <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">
+          <WithSkeleton loading={contractsLoading} category="content.fullWidth">
             <Stack spacing={Spacing.sm}>
               <Stack>
                 {infraAddressItems.map(({ key, label, labelTooltip, address }) => (

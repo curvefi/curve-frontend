@@ -44,7 +44,6 @@ export const DetailInfoExpectedApy = ({
         <DetailInfo
           isBold
           loading={false}
-          loadingSkeleton={[140, 23]}
           label={t`Expected CRV tAPR:`}
           tooltip={
             <TooltipIcon minWidth="200px">{t`As the number of staked LP Tokens increases, the CRV tAPR will decrease.`}</TooltipIcon>

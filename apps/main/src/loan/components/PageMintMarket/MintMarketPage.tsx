@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details/PositionDetailsComposite'
-import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useUserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
@@ -59,7 +59,7 @@ export const MintMarketPage = () => {
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
   const controllerAddress = getControllerAddress(market, apiMarket.data)
 
-  const collateralEvents = useUserCollateralEvents({
+  const collateralEvents = useUserBorrowEvents({
     app: MarketType.Mint,
     chainId,
     controllerAddress,

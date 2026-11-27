@@ -24,28 +24,17 @@ type Props = Pick<ActionInfoProps, 'label' | 'testId'> & {
   isBold?: boolean | null
   isDivider?: boolean
   loading?: boolean
-  loadingSkeleton?: [number, number]
   tooltip?: ReactNode
   variant?: Variant
 }
 
-export const DetailInfo = ({
-  isBold,
-  isDivider,
-  loading,
-  loadingSkeleton,
-  tooltip,
-  variant,
-  children,
-  ...props
-}: Props) => (
+export const DetailInfo = ({ isBold, isDivider, loading, tooltip, variant, children, ...props }: Props) => (
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
     <ActionInfo
       value={q({ data: children || '-', error: null, isLoading: !!loading })}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
-      skeleton={loadingSkeleton}
       {...props}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
     />

@@ -1,11 +1,11 @@
-import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import { noop } from '@tanstack/react-query'
+import { Skeleton } from '@ui/components/Skeleton'
 import { LargeTokenInput } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
 import { t } from '@ui/lib/i18n'
 
 export const LargeTokenInputSkeleton = () => (
-  <Skeleton variant="rectangular" width="100%">
+  <Skeleton category="content.fullWidth">
     <LargeTokenInput
       name="loading"
       onBalance={noop}

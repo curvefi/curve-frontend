@@ -1,4 +1,5 @@
-import { type MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
+import { type MouseEvent, ReactNode, useState } from 'react'
+import type { Theme } from '@mui/material/styles'
 import TableRow from '@mui/material/TableRow'
 import { Subscribe, type Cell, type ReactTable, type Row, type RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
@@ -7,7 +8,7 @@ import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate } from '@ui/hooks/router'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { hasParentWithClass } from '@ui/lib/dom'
-import { BreakdownRows } from './BreakdownRows'
+import { BREAKDOWN_ROW_CLASS, BreakdownRows } from './BreakdownRows'
 import type { DataTableRowHeight } from './categories'
 import {
   CLICKABLE_IN_ROW_CLASS,
@@ -19,12 +20,29 @@ import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 const { Height } = SizesAndSpaces
+const ROW_CONTROLS = `.${CLICKABLE_IN_ROW_CLASS}, a[href], button, input, select, textarea, [role=button], [role=link]`
+
+// When a breakdown row is expanded, remove all bottom borders except for the last breakdown row.
+// We use borderBlockEndWidth and set transitionProperty to eliminate transition color flashing.
+const breakdownRowSx = {
+  '& > td': { transitionProperty: { tablet: 'color' } },
+  [`&&:has(+ tr.${BREAKDOWN_ROW_CLASS}) > td`]: { borderBlockEndWidth: 0 },
+}
+
+const breakdownParentSx = {
+  ...breakdownRowSx,
+  // A CSS selector is easier than subscribing to the expanded state of the atoms.
+  [`&:where(:has(+ tr.${BREAKDOWN_ROW_CLASS}))`]: {
+    backgroundColor: (t: Theme) => t.design.Table.Row.Expanded,
+    '& > td': { backgroundColor: 'inherit' },
+  },
+}
 
 export type RowBreakdownConfig<TData extends RowData, TItem> = {
   /** Items to render as breakdown rows under the parent row. Fewer than 2 items means no breakdown rows. */
   getItems: (data: TData) => readonly TItem[]
   /** Unique key of an item within its parent row */
-  getItemKey: (item: TItem) => string
+  getItemKey: (item: TItem, index: number) => string
   /** Cell renderers keyed by column id. Columns without a renderer are left empty. */
   cells: Partial<Record<string, (item: TItem, data: TData) => ReactNode>>
 }
@@ -52,6 +70,9 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
+const isRowSurfaceClick = ({ currentTarget, defaultPrevented, target }: MouseEvent<HTMLTableRowElement>) =>
+  !defaultPrevented && target instanceof Element && currentTarget.contains(target) && !target.closest(ROW_CONTROLS)
+
 export const DataRow = <TData extends RowData>(props: DataRowProps<TData>) => (
   <Subscribe source={props.row.table.atoms.columnVisibility} selector={() => props.row.getVisibleCells()}>
     {visibleCells => <DataRowContent {...props} visibleCells={visibleCells} />}
@@ -73,11 +94,17 @@ const DataRowContent = <TData extends RowData>({
   const push = useNavigate()
   const href = table.options.meta?.getRowHref?.(row.original)
   const hasExpansionRow = isMobile && !!expandedPanel
-  const isInteractive = !!href || hasExpansionRow
-  const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => href && onCellClick(e.target, href, push),
-    [href, push],
-  )
+  const breakdownItems = isMobile ? undefined : rowBreakdown?.getItems(row.original)
+  const hasBreakdown = !!breakdownItems && breakdownItems.length > 1
+  const isInteractive = !!href || hasExpansionRow || hasBreakdown
+
+  const onClickRow = (event: MouseEvent<HTMLTableRowElement>) => {
+    if (isMobile || hasBreakdown) {
+      if (!rowBreakdown || isRowSurfaceClick(event)) row.toggleExpanded()
+    } else if (href) {
+      onCellClick(event.target, href, push)
+    }
+  }
 
   return (
     <>
@@ -87,35 +114,33 @@ const DataRowContent = <TData extends RowData>({
         disabled={!isInteractive}
       >
         <TableRow
-          sx={useMemo(
-            () => ({
-              marginBlock: 0,
-              minHeight: Height.table.row[rowHeight],
-              cursor: isInteractive ? 'pointer' : 'default',
-              verticalAlign,
-              transition: `border-bottom ${TRANSITION_FUNCTION}`,
-              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
-              ...(isInteractive && {
-                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
-                  opacity: { mobile: 1, desktop: 0 },
-                  transition: `opacity ${TRANSITION_FUNCTION}`,
+          sx={{
+            marginBlock: 0,
+            minHeight: Height.table.row[rowHeight],
+            cursor: isInteractive ? 'pointer' : 'default',
+            verticalAlign,
+            transition: `border-bottom ${TRANSITION_FUNCTION}`,
+            ...(rowBreakdown && breakdownParentSx),
+            [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
+            ...(isInteractive && {
+              [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
+                opacity: { mobile: 1, desktop: 0 },
+                transition: `opacity ${TRANSITION_FUNCTION}`,
+              },
+              '&:hover': {
+                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
+                '& td, & th': {
+                  backgroundColor: t => t.design.Table.Row.Hover,
+                  color: t => t.design.Table.Text.Hover.Primary,
                 },
-                '&:hover': {
-                  [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
-                  '& td, & th': {
-                    backgroundColor: t => t.design.Table.Row.Hover,
-                    color: t => t.design.Table.Text.Hover.Primary,
-                  },
-                  [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Hover.Secondary },
-                },
-              }),
+                [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Hover.Secondary },
+              },
             }),
-            [isInteractive, verticalAlign, rowHeight],
-          )}
+          }}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
-          onClick={isMobile ? () => row.toggleExpanded() : href ? onClickDesktop : undefined}
+          onClick={isMobile || isInteractive ? onClickRow : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell
@@ -128,12 +153,14 @@ const DataRowContent = <TData extends RowData>({
         </TableRow>
       </InvertOnHover>
 
-      {!isMobile && rowBreakdown && (
+      {hasBreakdown && rowBreakdown && (
         <BreakdownRows
           row={row}
+          items={breakdownItems}
           visibleCells={visibleCells}
           config={rowBreakdown}
           shouldStickFirstColumn={shouldStickFirstColumn}
+          rowSx={breakdownRowSx}
         />
       )}
 

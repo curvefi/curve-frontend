@@ -97,7 +97,7 @@ export const EmptyStateCard = ({
   >
     {icon || <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />}
     <Stack sx={{ gap: Spacing.sm, ...(direction === 'horizontal' && { flexDirection: 'row', flexGrow: 1 }) }}>
-      <WithSkeleton loading={!!isLoading} variant="rectangular">
+      <WithSkeleton category="content.block" loading={!!isLoading}>
         <Stack sx={{ ...(direction === 'horizontal' && { justifyContent: 'center', flexGrow: 1 }) }}>
           {title && (
             <Typography component="span" variant="headingXsBold">

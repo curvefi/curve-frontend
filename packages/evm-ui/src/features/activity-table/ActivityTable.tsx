@@ -1,36 +1,36 @@
 import { EvmDataTable, type EvmDataTableProps } from '@evm-ui/shared/ui/DataTable/EvmDataTable'
-import { ExpandedPanelActions } from '@ui/features/tables/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@ui/features/tables/ExpansionRow'
-import { getTransactionActions } from './utils'
+import type { RowBreakdownConfig } from '@ui/features/tables/DataRow'
+import { ActivityExpandedPanel } from './ActivityExpandedPanel'
+import { ActivityUsdValueCell } from './cells/ActivityUsdValueCell'
+import { BreakdownActionLabelCell } from './cells/BreakdownActionLabelCell'
+import { TokenDeltaAmountCell } from './cells/TokenDeltaAmountCell'
+import { ActivityColumnId } from './columns/columns.enum'
+import type { ActivityRow, ActivityTokenDelta } from './types'
+import { getActivityDeltaKey } from './utils'
 
-type ActivityTableItem = { chainId: number; txHash: string | null }
+type ActivityTableProps = Pick<EvmDataTableProps<ActivityRow>, 'table' | 'emptyState' | 'errorState'>
 
-type ActivityTableProps<TData extends ActivityTableItem> = Pick<
-  EvmDataTableProps<TData>,
-  'table' | 'emptyState' | 'errorState' | 'expandedPanel' | 'rowBreakdown'
->
-
-const DefaultExpandedPanelActions = <TData extends ActivityTableItem>({
-  row: {
-    original: { chainId, txHash },
+const ACTIVITY_BREAKDOWN: RowBreakdownConfig<ActivityRow, ActivityTokenDelta> = {
+  getItems: ({ deltas }) => deltas,
+  getItemKey: ({ label, token }, index) => getActivityDeltaKey(label, token?.address, index),
+  cells: {
+    [ActivityColumnId.Action]: ({ label }) => <BreakdownActionLabelCell label={label} />,
+    [ActivityColumnId.Value]: ({ amount, amountUsd }, { timestamp }) =>
+      // Allow amountUsd to be null for the 'processing' state
+      amountUsd !== undefined && <ActivityUsdValueCell amount={amount} amountUsd={amountUsd} timestamp={timestamp} />,
+    [ActivityColumnId.Amount]: (delta, { blockchainId }) => (
+      <TokenDeltaAmountCell blockchainId={blockchainId} deltas={[delta]} />
+    ),
   },
-}: Parameters<ExpandedPanelComponent<TData>>[0]) => (
-  <ExpandedPanelActions actions={getTransactionActions(chainId, txHash)} />
-)
+}
 
-export const ActivityTable = <TData extends ActivityTableItem>({
-  table,
-  emptyState,
-  errorState,
-  expandedPanel,
-  rowBreakdown,
-}: ActivityTableProps<TData>) => (
+export const ActivityTable = ({ table, emptyState, errorState }: ActivityTableProps) => (
   <EvmDataTable
     category="scrollable"
     table={table}
     emptyState={emptyState}
     errorState={errorState}
-    rowBreakdown={rowBreakdown}
-    expandedPanel={expandedPanel && { ...expandedPanel, Actions: expandedPanel.Actions ?? DefaultExpandedPanelActions }}
+    rowBreakdown={ACTIVITY_BREAKDOWN}
+    expandedPanel={{ Body: ActivityExpandedPanel }}
   />
 )

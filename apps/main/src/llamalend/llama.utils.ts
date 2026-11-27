@@ -152,7 +152,7 @@ export const hasResetPosition = (market: MarketTemplate | Nullish): market is Le
  * (prev)Leverage is >0 and <1 when the position has been leveraged in the past or went through soft liquidation.
  * (prev)Leverage is 1 when the position is not leveraged at all (simple borrowing, no leverage).
  * (prev)Leverage is > 1 when the position is leveraged.
- * @deprecated Checks a collateral leverage ratio. Use `isZapLeveraged` from `useUserCollateralEvents` to know if the
+ * @deprecated Checks a collateral leverage ratio. Use `isZapLeveraged` from `useUserBorrowEvents` to know if the
  * position borrowed through the zap, and `useEquityLeverage` for the value.
  **/
 export const isPositionLeveraged = (leverage: Amount | Nullish) =>
@@ -349,11 +349,7 @@ export const getVaultToken = <T extends MarketTemplate | Nullish>(
   market: T,
   apiMarket?: LlamaMarket | null,
 ): MarketOrApiValue<T, MarketToken | undefined> =>
-  maybe(getVaultAddress(market, apiMarket), address => ({
-    address,
-    symbol: t`Vault shares`,
-    decimals: DEFAULT_DECIMALS,
-  }))
+  maybe(getVaultAddress(market, apiMarket), address => ({ address, symbol: t`Shares`, decimals: DEFAULT_DECIMALS }))
 
 export type BandRange = { minBands: number; maxBands: number }
 export type BandRangeOrEmpty = AllOrNone<BandRange>

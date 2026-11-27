@@ -3,7 +3,7 @@ import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayL
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
-import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { UserBorrowEvents } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
 import { getAddressOrPair, hasLeverageValue } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
@@ -67,7 +67,7 @@ export const RepayForm = <ChainId extends IChainId>({
 }: {
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  collateralEvents: QueryProp<UserCollateralEvents>
+  collateralEvents: QueryProp<UserBorrowEvents>
   isInSoftLiquidation?: boolean
 }) => {
   const { chainId, controllerAddress, market, tokens: marketTokens, marketType } = useMarketContext<ChainId>()

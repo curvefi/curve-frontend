@@ -1,21 +1,16 @@
-import type { VaultEvent } from '@curvefi/prices-api/llamalend'
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import { scanTxPath } from '@legacy-ui/utils'
 import { formatNumber, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type Nullish, maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui/lib/time'
-import type { ActivityTokenDelta, MarketEventRow, PoolLiquidityRow } from './types'
+import type { ActivityToken, ActivityTokenDelta } from './types'
 
 const PROCESSING_TIMEOUT_MS = REFRESH_INTERVAL['1h']
 
 export const DEFAULT_PAGE_SIZE = 50
 export const DEFAULT_PAGE_START_INDEX = 1
 
-export const getVaultEventChange = ({ deposit, withdrawal }: VaultEvent) => {
-  const sign = deposit ? 1 : -1
-  return { amounts: deposit ?? withdrawal, sign, valueColor: sign > 0 ? 'success' : 'error' } as const
-}
 export const getTransactionActions = (chainId: number, txHash?: string | null) =>
   notFalsy(
     maybe(
@@ -42,78 +37,25 @@ export type ActivityUsdValueProps = {
 export const formatActivityUsdValue = (
   { amount, amountUsd, timestamp, isSold = false }: ActivityUsdValueProps,
   currentDate: Date,
+  format: 'usd.amount' | 'usd.notional' = 'usd.notional',
 ) =>
   amountUsd == null
     ? amount && currentDate.getTime() < timestamp + PROCESSING_TIMEOUT_MS
       ? t`Processing`
       : UNAVAILABLE_NOTATION
-    : formatNumber(isSold ? -amountUsd : amountUsd, 'usd.notional')
+    : formatNumber(isSold ? -amountUsd : amountUsd, format)
 
 export const getChangeColor = (amount: number, positive: 'success' | 'error', negative: 'success' | 'error') =>
   amount > 0 ? positive : amount < 0 ? negative : 'textPrimary'
 
-/** Formats the USD value of a single token delta, negative when the tokens go out */
-export const formatTokenDeltaUsd = ({ amount, amountUsd, timestamp }: ActivityTokenDelta, currentDate: Date) =>
-  formatActivityUsdValue({ amount, amountUsd, timestamp, isSold: amount < 0 }, currentDate)
+export const getSwapDeltas = (
+  sold: Omit<ActivityTokenDelta, 'label'>,
+  bought: Omit<ActivityTokenDelta, 'label'>,
+): ActivityTokenDelta[] => [
+  { ...sold, amount: -sold.amount, label: t`Sold` },
+  { ...bought, label: t`Bought` },
+]
 
-export const getLlammaEventAction = ({ type }: MarketEventRow) =>
-  ({
-    deposit: { label: t`Deposit`, color: 'success' as const },
-    withdrawal: { label: t`Withdraw`, color: 'error' as const },
-  })[type]
-
-/** Lists the token deltas of a LLAMMA event: the deposited collateral, or the withdrawn collateral and borrowed tokens */
-export const getLlammaEventTokenDeltas = (event: MarketEventRow): ActivityTokenDelta[] => {
-  const { timestamp, blockchainId, collateralToken, borrowToken } = event
-  switch (event.type) {
-    case 'deposit': {
-      const { amount, amountUsd } = event.deposit
-      return [{ label: t`Amount`, token: collateralToken, blockchainId, amount, amountUsd, timestamp }]
-    }
-    case 'withdrawal': {
-      const { amountCollateral, amountCollateralUsd, amountBorrowed, amountBorrowedUsd } = event.withdrawal
-      return notFalsy(
-        !!amountCollateral && {
-          label: t`Collateral`,
-          token: collateralToken,
-          blockchainId,
-          amount: -amountCollateral,
-          amountUsd: amountCollateralUsd,
-          timestamp,
-        },
-        !!amountBorrowed && {
-          label: t`Borrowed`,
-          token: borrowToken,
-          blockchainId,
-          amount: -amountBorrowed,
-          amountUsd: amountBorrowedUsd,
-          timestamp,
-        },
-      )
-    }
-  }
-}
-
-export const getPoolLiquidityEventAction = ({ eventType }: PoolLiquidityRow) =>
-  eventType === 'AddLiquidity'
-    ? { label: t`Add`, color: 'success' as const }
-    : { label: t`Remove`, color: 'error' as const }
-
-/** Lists non-zero pool token deltas in their original token order. */
-export const getPoolLiquidityEventTokenDeltas = ({
-  tokenAmounts,
-  poolTokens,
-  eventType,
-  blockchainId,
-  time,
-}: PoolLiquidityRow): ActivityTokenDelta[] =>
-  tokenAmounts
-    .map((amount, index) => ({
-      label: t`Token ${index + 1}`,
-      token: poolTokens[index],
-      blockchainId,
-      amount: eventType === 'AddLiquidity' ? amount : -amount,
-      amountUsd: undefined,
-      timestamp: time,
-    }))
-    .filter(({ amount }) => amount !== 0)
+/** Give each delta row a specific key in case the query updates with new data so rerendering works correctly. */
+export const getActivityDeltaKey = (label: string, address: ActivityToken['address'] | undefined, index: number) =>
+  JSON.stringify([label, address, index])

@@ -46,10 +46,12 @@ export const HealthMetric = ({ position, thresholds }: HealthMetricProps) => {
           formatter: value => formatNumber(value, 'health'),
         }}
       />
-      <WithSkeleton loading={isLoading} variant="rounded" width="5rem" height={SizesAndSpaces.Badge.Size.extraSmall}>
-        {data && (
-          <Badge data-testid="health-details-status-badge" size="extraSmall" {...POSITION_STATUS_BADGE[data.status]} />
-        )}
+      <WithSkeleton loading={isLoading}>
+        <Badge
+          data-testid="health-details-status-badge"
+          size="extraSmall"
+          {...(data ? POSITION_STATUS_BADGE[data.status] : { label: t`Loading` })}
+        />
       </WithSkeleton>
     </Stack>
   )

@@ -1,9 +1,9 @@
 import type { ComponentType } from 'react'
-import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { ParsedUserVaultEvent } from '@/llamalend/features/user-position-history/hooks/useUserVaultEvents'
-import { UserEventsTable } from '@/llamalend/features/user-position-history/UserEventsTable'
+import type { ParsedUserBorrowEvent } from '@/llamalend/features/user-position-history/hooks/useUserBorrowEvents'
+import type { ParsedUserSupplyEvent } from '@/llamalend/features/user-position-history/hooks/useUserSupplyEvents'
+import { UserBorrowEventsTable } from '@/llamalend/features/user-position-history/UserBorrowEventsTable'
 import { UserPositionLiquidationNote } from '@/llamalend/features/user-position-history/UserPositionLiquidationNote'
-import { UserVaultEventsTable } from '@/llamalend/features/user-position-history/UserVaultEventsTable'
+import { UserSupplyEventsTable } from '@/llamalend/features/user-position-history/UserSupplyEventsTable'
 import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import { useNewLlamalendHealth } from '@evm-ui/hooks/useFeatureFlags'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
@@ -23,8 +23,8 @@ import { PositionDetailsToggle } from './PositionDetailsToggle'
 import { SupplyPositionDetails } from './SupplyPositionDetails'
 
 type PositionEvents = {
-  [MarketRateType.Borrow]: ParsedUserCollateralEvent[]
-  [MarketRateType.Supply]: ParsedUserVaultEvent[]
+  [MarketRateType.Borrow]: ParsedUserBorrowEvent[]
+  [MarketRateType.Supply]: ParsedUserSupplyEvent[]
 }
 
 type PositionDetailsCompositeProps = {
@@ -33,9 +33,9 @@ type PositionDetailsCompositeProps = {
 
 const { Spacing } = SizesAndSpaces
 
-const BorrowActivity = ({ eventsQuery }: { eventsQuery: QueryProp<ParsedUserCollateralEvent[]> }) => (
+const BorrowActivity = ({ eventsQuery }: { eventsQuery: QueryProp<ParsedUserBorrowEvent[]> }) => (
   <>
-    <UserEventsTable eventsQuery={eventsQuery} />
+    <UserBorrowEventsTable eventsQuery={eventsQuery} />
     <CardContent>
       <UserPositionLiquidationNote />
     </CardContent>
@@ -49,7 +49,7 @@ const POSITION_CONFIG: {
   }
 } = {
   [MarketRateType.Borrow]: { Details: BorrowPositionDetails, Activity: BorrowActivity },
-  [MarketRateType.Supply]: { Details: SupplyPositionDetails, Activity: UserVaultEventsTable },
+  [MarketRateType.Supply]: { Details: SupplyPositionDetails, Activity: UserSupplyEventsTable },
 }
 
 const PositionTab = ({ type, hasPosition: { data, isLoading, error } }: PositionDetailsCompositeProps) => {
@@ -62,7 +62,7 @@ const PositionTab = ({ type, hasPosition: { data, isLoading, error } }: Position
         ) : error && data === undefined ? (
           <EvmErrorMessage title={t`Could not load your position`} subtitle={error.message} error={error} size="sm" />
         ) : (
-          <WithSkeleton loading={isLoading} variant="rectangular" sx={{ width: '100%', maxWidth: 'none' }}>
+          <WithSkeleton loading={isLoading} category="content.fullWidth">
             <MarketEmptyPosition type={type} />
           </WithSkeleton>
         )}

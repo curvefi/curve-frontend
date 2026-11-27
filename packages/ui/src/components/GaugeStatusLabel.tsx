@@ -32,8 +32,12 @@ export const GaugeStatusLabel = ({
     {error ? (
       <ErrorIconButton error={error} size="extraSmall" />
     ) : (
-      <WithSkeleton loading={isLoading} width="4rem">
-        {status != null && <Badge size="extraSmall" {...GAUGE_STATUS_BADGE[status]} data-testid={testId} />}
+      <WithSkeleton loading={isLoading}>
+        <Badge
+          size="extraSmall"
+          {...(status ? GAUGE_STATUS_BADGE[status] : { label: t`Loading` })}
+          data-testid={testId}
+        />
       </WithSkeleton>
     )}
   </Stack>

@@ -1,8 +1,8 @@
-import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import type { Column, ReactTable, RowData } from '@tanstack/react-table'
+import { Skeleton } from '@ui/components/Skeleton'
 import { useIncreasingLength, type IncreasingLengthCategory } from '@ui/hooks/useIncreasingLength'
 import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import { useCellSx } from './hooks/useCellSx'
@@ -15,12 +15,8 @@ const SkeletonCell = <TData extends RowData>({
   column: Column<CurveTableFeatures, TData>
 }) => (
   <TableCell sx={useCellSx({ isSticky, columnType: column.columnDef.meta?.type })}>
-    <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
-      <Typography
-        variant={getCellVariant(column.columnDef.meta?.variant)}
-        data-testid={`data-table-cell-${column.id}`}
-        sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
-      >
+    <Skeleton category="content.fullWidth">
+      <Typography variant={getCellVariant(column.columnDef.meta?.variant)} data-testid={`data-table-cell-${column.id}`}>
         0
       </Typography>
     </Skeleton>

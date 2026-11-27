@@ -4,7 +4,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui/components/TooltipComponents'
-import { WithSkeleton } from '@ui/components/WithSkeleton'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -22,7 +21,7 @@ export const CollateralMetricTooltipContent = ({
   collateral,
   borrow,
   totalValue,
-  totalValueUsd: { data: totalValueUsd, isLoading: isTotalValueUsdLoading },
+  totalValueUsd: { data: totalValueUsd },
 }: CollateralMetricTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription
@@ -47,9 +46,7 @@ export const CollateralMetricTooltipContent = ({
     <Stack>
       <TooltipItem title={t`Total collateral value`} variant="independent">
         {formatToken(totalValue, borrow.symbol, 'amount')}
-        <WithSkeleton loading={isTotalValueUsdLoading} width="3rem">
-          {formatNumber(totalValueUsd, 'usd.amount')}
-        </WithSkeleton>
+        {formatNumber(totalValueUsd, 'usd.amount')}
       </TooltipItem>
     </Stack>
   </TooltipWrapper>
