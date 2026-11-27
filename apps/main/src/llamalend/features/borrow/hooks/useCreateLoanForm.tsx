@@ -164,7 +164,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     priceImpact: q(useCreateLoanPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
-      marketAddress: ammAddress.data,
+      marketAddress: ammAddress,
       controllerAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,

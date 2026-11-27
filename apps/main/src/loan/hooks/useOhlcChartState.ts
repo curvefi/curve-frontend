@@ -7,14 +7,14 @@ import { ChainId } from '@/loan/types/loan.types'
 import { getPricesApiBlockchainId } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { Range } from '@ui/features/queries/util'
+import type { QueryProp, Range } from '@ui/features/queries/util'
 
 type OhlcChartStateProps = {
   chainId: ChainId
   marketId: string
   previewPrices: Range<Decimal> | undefined
   controllerAddress: Address | undefined
-  ammAddress: Address | undefined
+  ammAddress: QueryProp<Address>
 }
 
 export const useOhlcChartState = ({

@@ -1,5 +1,5 @@
 import type { Chain } from '@curvefi/prices-api'
-import { getOracle, type Endpoint, type OraclePool } from '@curvefi/prices-api/lending'
+import { type Endpoint, getOracle, type OraclePool } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
 import { useOhlcInfiniteQuery } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import {
@@ -11,6 +11,7 @@ import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@evm
 import { formatCandleOhlcData, formatOraclePriceData } from '@evm-ui/features/candle-chart/utils'
 import type { Address, Token } from '@primitives/address.utils'
 import { assert, maybe } from '@primitives/objects.utils'
+import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
@@ -27,7 +28,7 @@ type BaseOhlcQueryParams = {
 
 type OraclePoolOhlcQueryParams = BaseOhlcQueryParams & { controller: Address | undefined }
 
-type LlammaOhlcQueryParams = BaseOhlcQueryParams & { llamma: Address | undefined }
+type LlammaOhlcQueryParams = BaseOhlcQueryParams & { llamma: QueryProp<Address> }
 
 export type OraclePoolOhlcPage = OhlcPageResult & {
   ohlcData: LpPriceOhlcDataFormatted[]
@@ -116,7 +117,7 @@ export const useLlammaOhlcQuery = ({
       'llamma',
       { endpoint },
       { chain },
-      { llamma },
+      { llamma: llamma.data },
       { interval },
       { units },
       { timeOption },
@@ -124,14 +125,13 @@ export const useLlammaOhlcQuery = ({
     ),
     anchorEnd,
     timeOption,
-    enabled: !!chain && !!llamma && enabled,
+    enabled: !!chain && !!llamma.data && enabled,
     fetchPage: async ({ pageParam, signal }): Promise<LlammaOhlcPage> => {
-      const validChain = assert(chain, t`Cannot fetch LLAMMA OHLC data without a chain.`)
       const ohlc = await getOHLC(
         {
           endpoint,
-          blockchainId: validChain,
-          llamma: llamma!, // validated via `enabled` prop
+          blockchainId: assert(chain, t`Cannot fetch LLAMMA OHLC data without a chain.`),
+          llamma: llamma.data!, // validated via `enabled` prop
           interval,
           units,
           start: pageParam.start,

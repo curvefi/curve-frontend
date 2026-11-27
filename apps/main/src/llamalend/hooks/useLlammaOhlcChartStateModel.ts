@@ -24,7 +24,7 @@ type LlammaOhlcChartStateModelParams = {
   chainKey: string | number
   controllerAddress: Address | undefined
   endpoint: Parameters<typeof useLlammaOhlcChartData>[0]['endpoint']
-  llammaAddress: Address | undefined
+  llammaAddress: QueryProp<Address>
   marketId: string | undefined
   network: Chain | undefined
   oraclePrice: Decimal | undefined
@@ -106,10 +106,13 @@ export const useLlammaOhlcChartStateModel = ({
   const { hasAnySeries, isOracleLineOnly, liquidationFallbackData, ohlcData, oraclePriceData } =
     resolveLlammaChartSeries({ oraclePoolCandles, oraclePoolOracleLine, llammaOracleLine })
 
-  const isLoading = !enabled || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
+  const isLoading =
+    !isAnchorEndReady || llammaAddress.isLoading || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const chartMode = isLoading ? undefined : isOracleLineOnly ? ('oracle-price' as const) : ('oracle-pool' as const)
   const selectedChartKey = maybe(chartMode, mode => (mode === 'oracle-price' ? 'llamma' : 'oracle'))
-  const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
+  const currentError = hasAnySeries
+    ? null
+    : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error ?? llammaAddress.error)
   const emptyMessage = t`No ${isLlammaFallbackEnabled ? 'LLAMMA' : 'oracle'} OHLC data found. Data may be unavailable for this market.`
 
   const oraclePoolLabel = oracleTokens

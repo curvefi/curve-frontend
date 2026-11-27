@@ -198,7 +198,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     priceImpact: q(useBorrowMorePriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
-      marketAddress: ammAddress.data,
+      marketAddress: ammAddress,
       controllerAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,

@@ -10,7 +10,7 @@ import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { applyLatestOraclePrice, flattenOhlcPagesChronologically } from '@evm-ui/features/candle-chart/utils'
 import type { Address } from '@primitives/address.utils'
 import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
-import { q, useMappedQuery } from '@ui/features/queries/util'
+import { q, type QueryProp, useMappedQuery } from '@ui/features/queries/util'
 import {
   type LlammaOhlcPage,
   type OraclePoolOhlcPage,
@@ -29,7 +29,7 @@ type UseLlammaOhlcChartDataParams = {
   enabled?: boolean
   endpoint: Endpoint
   interval: number
-  llamma: Address | undefined
+  llamma: QueryProp<Address>
   oraclePrice: string | undefined
   timeOption: TimeOption
   units: OhlcTimeUnit
@@ -69,7 +69,7 @@ export const useLlammaOhlcChartData = ({
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
   const oraclePoolsHaveOraclePriceData = !!oraclePoolsChartAdapter.data.oraclePriceData?.length
   const oraclePoolsHaveChartData = !!oraclePoolsChartAdapter.data.ohlcData?.length || oraclePoolsHaveOraclePriceData
-  const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
+  const shouldFetchLlammaQuery = enabled && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
     blockchainId,
