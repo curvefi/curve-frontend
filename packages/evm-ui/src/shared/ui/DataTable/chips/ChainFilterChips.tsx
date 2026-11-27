@@ -52,7 +52,6 @@ const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps
       key={`skeleton-chain-chip-${i}`}
       category="content.block"
       component="div"
-      aria-hidden
     >
       <SelectableChip disabled selected={false} size={chipSize} toggle={noop} sx={{ display: 'flex' }} />
     </Skeleton>
