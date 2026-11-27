@@ -30,11 +30,7 @@ export const toActivityRow = ({
 }: MarketSupplyEventRow): ActivityRow => {
   const amounts = deposit ?? withdrawal
   const assetSign = deposit ? -1 : 1
-  const action: ActivityRow['action'] = deposit
-    ? { label: t`Deposit`, color: 'success' }
-    : withdrawal
-      ? { label: t`Withdrawal`, color: 'error' }
-      : { label: '' }
+  const action: ActivityRow['action'] = { label: deposit ? t`Deposit` : withdrawal ? t`Withdrawal` : '' }
 
   return {
     chainId,
