@@ -49,7 +49,7 @@ function createLightSurfaces() {
       Current: { LabelIcon: Grays[950], Fill: Blues[100], Border: Blues[500] },
     },
     Tables: {
-      Row: { Default: Grays[50], Selected: Blues[100], Hover: Grays[10] },
+      Row: { Default: Grays[50], Selected: Blues[100], Hover: Grays[10], Expanded: Grays[25] },
       Header: { Fill: Grays[200], Label: { Default: Grays[800], Hover: Blues[500], Active: Grays[950] } },
     },
     Badges: {
@@ -132,7 +132,7 @@ function createDarkSurfaces() {
       Current: { LabelIcon: Grays[50], Fill: Grays[850], Border: Blues[500] },
     },
     Tables: {
-      Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[900] },
+      Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[900], Expanded: Grays[900] },
       Header: { Fill: Grays[800], Label: { Default: Grays[200], Hover: Blues[400], Active: Grays[50] } },
     },
     Badges: {
@@ -214,7 +214,7 @@ function createChadSurfaces() {
       Current: { LabelIcon: Violets[600], Fill: Violets[50], Border: Violets[500] },
     },
     Tables: {
-      Row: { Default: Grays[150], Selected: Violets[50], Hover: Violets[50] },
+      Row: { Default: Grays[150], Selected: Violets[50], Hover: Violets[50], Expanded: Grays[100] },
       Header: { Fill: Grays[300], Label: { Default: Grays[850], Hover: Violets[600], Active: Grays[950] } },
     },
     Badges: {
@@ -296,7 +296,7 @@ function createLightInvertedSurfaces() {
       Current: { LabelIcon: Grays[50], Fill: Blues[100], Border: Blues[500] },
     },
     Tables: {
-      Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[750] },
+      Row: { Default: Grays[950], Selected: Grays[850], Hover: Grays[750], Expanded: Grays[25] },
       Header: { Fill: Grays[800], Label: { Default: Grays[50], Hover: Blues[300], Active: Grays[300] } },
     },
     Badges: {
@@ -378,7 +378,7 @@ function createDarkInvertedSurfaces() {
       Current: { LabelIcon: Grays[950], Fill: Grays[850], Border: Blues[500] },
     },
     Tables: {
-      Row: { Default: Grays[75], Selected: Blues[50], Hover: Blues[100] },
+      Row: { Default: Grays[75], Selected: Blues[50], Hover: Blues[100], Expanded: Grays[900] },
       Header: { Fill: Grays[200], Label: { Default: Grays[750], Hover: Blues[500], Active: Grays[950] } },
     },
     Badges: {
@@ -460,7 +460,7 @@ function createChadInvertedSurfaces() {
       Current: { LabelIcon: Violets[400], Fill: Violets[400], Border: Violets[500] },
     },
     Tables: {
-      Row: { Default: Violets[950], Selected: Violets[900], Hover: Violets[800] },
+      Row: { Default: Violets[950], Selected: Violets[900], Hover: Violets[800], Expanded: Grays[100] },
       Header: { Fill: Violets[700], Label: { Default: Grays[300], Hover: Violets[400], Active: Grays[50] } },
     },
     Badges: {

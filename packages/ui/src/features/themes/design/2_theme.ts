@@ -363,7 +363,12 @@ export const createLightDesign = (
         Active: Light.Tables.Header.Label.Active,
       },
     },
-    Row: { Default: Light.Tables.Row.Default, Selected: Light.Tables.Row.Selected, Hover: Light.Tables.Row.Hover },
+    Row: {
+      Default: Light.Tables.Row.Default,
+      Selected: Light.Tables.Row.Selected,
+      Hover: Light.Tables.Row.Hover,
+      Expanded: Light.Tables.Row.Expanded,
+    },
     Text: {
       Default: { Primary: Light.Text.Primary, Secondary: Light.Text.Secondary },
       Hover: { Primary: Light.Text.Primary, Secondary: Light.Text.Secondary },
@@ -750,7 +755,12 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         Active: Dark.Tables.Header.Label.Active,
       },
     },
-    Row: { Default: Dark.Tables.Row.Default, Selected: Dark.Tables.Row.Selected, Hover: Dark.Tables.Row.Hover },
+    Row: {
+      Default: Dark.Tables.Row.Default,
+      Selected: Dark.Tables.Row.Selected,
+      Hover: Dark.Tables.Row.Hover,
+      Expanded: Dark.Tables.Row.Expanded,
+    },
     Text: {
       Default: { Primary: Dark.Text.Primary, Secondary: Dark.Text.Secondary },
       Hover: { Primary: Dark.Text.Primary, Secondary: Dark.Text.Secondary },
@@ -1098,7 +1108,12 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Active: Chad.Tables.Header.Label.Active,
       },
     },
-    Row: { Default: Chad.Tables.Row.Default, Selected: Chad.Tables.Row.Selected, Hover: Chad.Tables.Row.Hover },
+    Row: {
+      Default: Chad.Tables.Row.Default,
+      Selected: Chad.Tables.Row.Selected,
+      Hover: Chad.Tables.Row.Hover,
+      Expanded: Chad.Tables.Row.Expanded,
+    },
     Text: {
       Default: { Primary: Chad.Text.Primary, Secondary: Chad.Text.Secondary },
       Hover: { Primary: Chad.Text.Primary, Secondary: Chad.Text.Secondary },
