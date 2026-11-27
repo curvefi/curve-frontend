@@ -3,22 +3,19 @@ import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.m
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import { resetUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
-import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
-import {
-  addCollateralFormValidationSuite,
-  type CollateralForm,
-} from '@/llamalend/queries/validation/manage-loan.validation'
+import type { CollateralCalculatedValues, CollateralFormValues } from '@/llamalend/queries/validation/manage-loan.types'
+import { addCollateralFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCallbackSync, useForm, useFormSync, useOnChangeCallback } from '@ui/features/forms'
+import { useCallbackSync, useOnChangeCallback } from '@ui/features/forms'
+import { useFormValidation } from '@ui/features/forms/useFormValidation'
+import { useFormValues } from '@ui/features/forms/useFormValues'
 import { q, type Range } from '@ui/features/queries/util'
-import { useFormDebounce } from '@ui/hooks/useDebounce'
 import { useMarketContext } from '../../market-context'
 
-const userDefaultValues = { userCollateral: undefined }
-const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
-const formOptions = { validation: addCollateralFormValidationSuite, defaultValues }
+const defaultValues = { userCollateral: undefined }
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   network,
@@ -32,47 +29,40 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
-  const maxCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
+  const inputs = useFormValues<CollateralFormValues, UserMarketParams<ChainId>>({
+    defaultValues,
+    context: { chainId, marketId, userAddress },
+  })
+  const maxCollateral = useTokenBalance({ ...inputs.params, tokenAddress: collateralToken?.address })
 
-  const form = useForm<CollateralForm>(formOptions)
-
-  const { values, formState } = form
-
-  const [params, isDebouncing] = useFormDebounce(
-    {
-      chainId,
-      marketId,
-      userAddress,
-      userCollateral: values.userCollateral,
-      maxCollateral: values.maxCollateral,
-    } satisfies CollateralParams<ChainId>,
-    userDefaultValues,
-  )
-
-  const { onSubmit, ...action } = useAddCollateralMutation({
+  const { onSubmit, isPending, error } = useAddCollateralMutation({
     marketId,
     network,
-    onReset: () => form.reset(userDefaultValues),
+    onReset: () => inputs.reset(defaultValues),
     userAddress,
   })
 
-  useCallbackSync(useAddCollateralPrices(params), onPricesUpdated)
+  const form = useFormValidation<CollateralFormValues, UserMarketParams<ChainId>, CollateralCalculatedValues>({
+    inputs,
+    validation: addCollateralFormValidationSuite,
+    computed: { maxCollateral },
+    isSubmitting: isPending,
+  })
+  const { values, params, formState } = form
 
-  useFormSync(form, { maxCollateral: maxCollateral.data })
+  useCallbackSync(useAddCollateralPrices(params), onPricesUpdated)
 
   // `addCollateralFutureLeverage` depends on LL internal cache for currentLeverage, reset when new market data arrives
   useOnChangeCallback(market, () => resetUserCurrentLeverage(params))
 
-  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
     isPending,
-    isDisabled: !formState.isValid || isPending || isDebouncing,
     userAddress,
     onSubmit: form.handleSubmit(onSubmit),
-    action,
+    error: error ?? form.error,
     collateralToken,
     borrowToken,
     isApproved: q(useAddCollateralIsApproved(params)),

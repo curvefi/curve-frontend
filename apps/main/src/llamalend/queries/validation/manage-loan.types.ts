@@ -3,6 +3,9 @@ import type { UserMarketQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@ui/lib/validation/types'
 
+export type CollateralFormValues = { userCollateral: Decimal | undefined }
+export type CollateralCalculatedValues = { maxCollateral?: Decimal }
+
 export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & { userCollateral: Decimal; maxCollateral?: Decimal }
 
 export type CollateralHealthQuery<T = IChainId> = CollateralQuery<T> & { isFull: boolean }

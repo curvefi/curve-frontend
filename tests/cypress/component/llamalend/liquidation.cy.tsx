@@ -2,6 +2,7 @@
 import { ClosePositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
 import { ResetPositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ResetPositionForm'
+import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
@@ -33,6 +34,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { TIMEOUTS } from '@cy/support/timeout-categories'
+import { queryClient } from '@ui/features/queries/query-client'
 import { constQ } from '@ui/features/queries/util'
 
 const CHAIN_ID = 1
@@ -115,6 +117,26 @@ describe('Soft Liquidation Forms (mocked)', () => {
   })
 
   describe('ClosePositionForm', () => {
+    it('blocks direct submission when wallet funds are insufficient', () => {
+      const { llamaApi, market, stubs } = createSoftLiquidationScenario({ chainId: CHAIN_ID, approved: true })
+      market.userState = cy.stub().resolves({ collateral: '1', stablecoin: '0', debt: '100' })
+      market.wallet.balances = cy.stub().resolves({ collateral: '1', stablecoin: '0' })
+      setLlamaApi(llamaApi)
+      setGasInfo({ chainId: CHAIN_ID })
+
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+          <ClosePositionForm networks={llamaNetworks} />
+        </MockLoanTestWrapper>,
+      )
+
+      cy.get('[data-testid="close-position-submit-button"]').should('be.disabled').closest('form').submit()
+      cy.then(() => {
+        expect(stubs.selfLiquidateApprove).to.not.have.been.called
+        expect(stubs.selfLiquidate).to.not.have.been.called
+      })
+    })
+
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
         const { debt, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({
@@ -153,6 +175,34 @@ describe('Soft Liquidation Forms (mocked)', () => {
   })
 
   describe('ResetPositionForm', () => {
+    it('revalidates updated converted collateral without replacing the wallet input', () => {
+      const { convertedBorrowed, debt, llamaApi, market, moreUserBorrowed, stubs } = createResetPositionScenario({
+        chainId: CHAIN_ID,
+        approved: true,
+      })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: moreUserBorrowed })
+      mountResetPositionForm({ llamaApi, market })
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      writeResetPositionWalletAmount({ amount: moreUserBorrowed })
+      cy.get('[data-testid="reset-position-submit-button"]').should('not.be.disabled')
+
+      cy.then(() =>
+        queryClient.setQueryData(
+          [getUserStateKey({ chainId: CHAIN_ID, marketId: market.id, userAddress: TEST_ADDRESS })],
+          { collateral: '10', convertedBorrowed: '8500', debt },
+        ),
+      )
+
+      cy.get('[data-testid="reset-position-input-converted-borrowed"] input').should('have.value', '8500')
+      checkResetPositionWalletAmount({ amount: moreUserBorrowed })
+      cy.get('[data-testid="reset-position-input-user-borrowed"]').should(
+        'contain.text',
+        'Use the close tab to fully repay and close this position',
+      )
+      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled').closest('form').submit()
+      cy.then(() => expect(stubs.repay).to.not.have.been.called)
+    })
+
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
         const { convertedBorrowed, debt, expected, futureDebt, llamaApi, market, stubs, userBorrowed } =
@@ -199,6 +249,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
           }
           expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
         })
+        checkResetPositionInputsLoaded({ convertedBorrowed })
       })
     })
 

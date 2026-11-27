@@ -23,6 +23,7 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
     claimableTokens,
     totalNotionals,
     usdRateLoading,
+    isClaimablesLoading,
     isLoading,
     onSubmit,
     isDisabled,
@@ -38,7 +39,7 @@ export const BorrowClaimForm = <ChainId extends IChainId>({ networks }: BorrowCl
         emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}
         footerRow={
           !!claimableTokens.length &&
-          !isLoading && (
+          !isClaimablesLoading && (
             <TotalNotionalRow
               sx={{ backgroundColor: t => t.design.Table.Row.Hover }}
               totalNotionals={totalNotionals}
