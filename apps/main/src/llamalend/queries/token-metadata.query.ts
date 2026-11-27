@@ -10,12 +10,7 @@ import type { FieldsOf } from '@ui/lib/validation/types'
 /** The metadata of a token, with the coins and the pool of LP tokens */
 export const { useQuery: useTokenMetadata, fetchQuery: fetchTokenMetadata } = queryFactory({
   queryKey: ({ blockchainId, tokenAddress }: FieldsOf<ChainNameQuery & { tokenAddress: Address }>) =>
-    ({
-      name: 'token-metadata',
-      blockchainId,
-      // the market list and llamalend-js use different cases for the same address
-      tokenAddress: tokenAddress?.toLowerCase() as Address | undefined,
-    }) as const,
+    ({ name: 'token-metadata', blockchainId, tokenAddress }) as const,
   queryFn: ({ blockchainId, tokenAddress }: ChainNameQuery & { tokenAddress: Address }) =>
     getToken(blockchainId, tokenAddress),
   validationSuite: createValidationSuite(

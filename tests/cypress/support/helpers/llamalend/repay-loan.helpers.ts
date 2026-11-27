@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { waitForRoutesLoaded } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { TIMEOUTS, getTimeoutCategory } from '@cy/support/timeout-categories'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -16,7 +17,7 @@ export function selectRepayToken({
   tokenAddress: string
   hasLeverageManagement: boolean
 }) {
-  const tokenIconTestId = `token-icon-${tokenAddress.toLowerCase()}`
+  const tokenIconTestId = `token-icon-${getAddress(tokenAddress)}`
   if (!hasLeverageManagement) {
     return cy.get(`[data-testid="${tokenIconTestId}"]`, TIMEOUTS['ui.render']).should('be.visible')
   }

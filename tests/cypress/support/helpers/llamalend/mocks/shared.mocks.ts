@@ -1,4 +1,4 @@
-import type { Address, Hex } from 'viem'
+import { type Address, getAddress, type Hex } from 'viem'
 import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
 import type { RoutesQuery } from '@evm-ui/queries/router-api/types'
@@ -33,12 +33,14 @@ export const seedMarketBalances = (chainId: number, collateralAddress: Address) 
     { tokenAddress: CRVUSD_ADDRESS, rawBalance: 10n ** 22n },
   ] as const
 
-  balances.forEach(({ tokenAddress, rawBalance }) => {
-    const tokenAddresses = new Set<Address>([tokenAddress, tokenAddress.toLowerCase() as Address])
-    tokenAddresses.forEach(address =>
-      seedErc20BalanceForAddresses({ chainId, tokenAddress: address, addresses: [TEST_ADDRESS], rawBalance }),
-    )
-  })
+  balances.forEach(({ tokenAddress, rawBalance }) =>
+    seedErc20BalanceForAddresses({
+      chainId,
+      tokenAddress: getAddress(tokenAddress),
+      addresses: [TEST_ADDRESS],
+      rawBalance,
+    }),
+  )
 }
 
 export const generateMarketRates = () => ({

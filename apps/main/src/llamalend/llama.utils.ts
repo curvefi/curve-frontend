@@ -252,20 +252,20 @@ export const getTokens = <T extends MarketTemplate | Nullish>(
         ? {
             collateralToken: {
               symbol: market.collateralSymbol,
-              address: market.collateral as Address,
+              address: getAddress(market.collateral),
               decimals: market.collateralDecimals,
             },
-            borrowToken: CRVUSD,
+            borrowToken: { ...CRVUSD, address: getAddress(CRVUSD.address) },
           }
         : {
             collateralToken: {
               symbol: market.collateral_token.symbol,
-              address: market.collateral_token.address as Address,
+              address: getAddress(market.collateral_token.address),
               decimals: market.collateral_token.decimals,
             },
             borrowToken: {
               symbol: market.borrowed_token.symbol,
-              address: market.borrowed_token.address as Address,
+              address: getAddress(market.borrowed_token.address),
               decimals: market.borrowed_token.decimals,
             },
           },
