@@ -2,6 +2,7 @@ import { zeroAddress } from 'viem'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import type { MarketQuery, MarketParams } from '@evm-ui/queries/query-types'
 import { marketIdValidationSuite } from '@evm-ui/queries/validation/market-id-validation'
+import type { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui/features/queries/factory'
 import { type Range } from '@ui/features/queries/util'
 import { USE_API } from './market.constants'
@@ -17,7 +18,10 @@ export const { useQuery: useMarketVaultOnChainRewards } = queryFactory({
       vault.rewardsApr(USE_API),
       addresses.gauge == zeroAddress ? [0, 0] : vault.crvApr(USE_API),
     ])
-    return { rewardsApr, crvRates: crvRates as Range<number> }
+    return {
+      rewardsApr: rewardsApr.map(reward => ({ ...reward, tokenAddress: reward.tokenAddress as Address })),
+      crvRates: crvRates as Range<number>,
+    }
   },
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,

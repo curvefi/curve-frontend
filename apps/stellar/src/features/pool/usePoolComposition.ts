@@ -39,7 +39,12 @@ export function usePoolComposition({
       (addresses, symbols, amounts, amountsUsd, prices) =>
         zip(addresses, symbols, amounts, amountsUsd, prices).map(
           ([address, symbol, amount, amountUsd, price]): PoolCompositionRow => ({
-            source: { address: asAddress(address), blockchainId: network, iconPosition: 'left', primary: symbol },
+            source: {
+              token: { address: asAddress(address) },
+              blockchainId: network,
+              iconPosition: 'left',
+              primary: symbol,
+            },
             displayAddress: shortenAddress(address),
             amount: toQuery(amount, reserves),
             price: q(price),

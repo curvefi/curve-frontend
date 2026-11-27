@@ -14,7 +14,7 @@ export const TokensCell = ({ pool }: { pool: PoolRow }) => (
     {pool.tradeableCoins.map(({ address, symbol }) => (
       <TokenInfo
         key={address}
-        address={address}
+        token={{ address }}
         blockchainId={pool.blockchainId}
         iconPosition="right"
         iconSize="mui-sm"

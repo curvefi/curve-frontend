@@ -1,13 +1,12 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getAddressOrPair } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fromEntries } from '@primitives/objects.utils'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { FormTokenInput } from '@ui/features/forms/controls/LargeTokenInput/FormTokenInput'
 import type { LargeTokenInputProps } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInput'
@@ -25,7 +24,7 @@ export type LoanFormTokenInputProps<
   TMaxFieldName extends FieldName<TForm['formState']['errors']>,
 > = {
   label: string
-  token: { address: Address; symbol?: string } | undefined
+  token: IconToken | undefined
   blockchainId: INetworkName | undefined
   /**
    * Optional max-value query for this field, including loading and error state.
@@ -119,12 +118,7 @@ export const LoanFormTokenInput = <
       testId={testId}
       tokenSelector={
         tokenSelector ?? (
-          <TokenLabel
-            blockchainId={blockchainId}
-            tooltip={token?.symbol}
-            address={getAddressOrPair(blockchainId, token?.address) ?? null}
-            label={token?.symbol ?? '?'}
-          />
+          <TokenLabel blockchainId={blockchainId} tooltip={token?.symbol} token={token} label={token?.symbol ?? '?'} />
         )
       }
       balance={q({ data: value, isLoading: value == null, error: balanceError })}

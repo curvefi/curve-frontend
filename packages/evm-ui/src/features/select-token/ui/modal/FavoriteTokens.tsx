@@ -25,7 +25,7 @@ export const FavoriteTokens = <T extends TokenOption>({ tokens, onToken }: Props
         ) => (
           <SelectableChip
             key={token.address}
-            icon={<TokenIcon blockchainId={token.chain} tooltip={token.symbol} address={token.address} size="mui-md" />}
+            icon={<TokenIcon blockchainId={token.chain} tooltip={token.symbol} token={token} size="mui-md" />}
             label={token.symbol}
             toggle={() => onToken(token)}
             selected={false}

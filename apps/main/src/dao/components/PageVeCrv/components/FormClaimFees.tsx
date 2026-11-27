@@ -38,7 +38,7 @@ export const FormClaimFees = ({ chainId }: { chainId: ChainId }) => {
             >
               <TokenLabel
                 blockchainId="ethereum"
-                address={CLAIM_TOKEN_ADDRESSES[token]}
+                token={{ address: CLAIM_TOKEN_ADDRESSES[token] }}
                 label={token}
                 size="sm"
                 typographyVariant="bodyMRegular"

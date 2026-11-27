@@ -1,13 +1,12 @@
 import { ReactNode } from 'react'
 import { getAddress } from 'viem'
 import {
-  getAddressOrPair,
   getAmmAddress,
   getControllerAddress,
   getGaugeAddress,
   getMonetaryPolicy,
-  getTokens,
   getVaultAddress,
+  type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketBorrowGaugeAddress } from '@/llamalend/queries/market/market-borrow-gauge-address.query'
@@ -30,6 +29,7 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { GaugeStatusLabel } from '@ui/components/GaugeStatusLabel'
 import { SectionContentCard } from '@ui/components/SectionContentCard'
+import type { IconToken } from '@ui/components/TokenIcon'
 import { TokenLabel } from '@ui/components/TokenLabel'
 import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { ActionInfo, type ActionInfoProps } from '@ui/features/forms/action-info/ActionInfo'
@@ -54,6 +54,7 @@ type MarketContractsProps = {
   blockchainId: Chain
   market: QueryProp<MarketTemplate | null>
   apiMarket: QueryProp<LlamaMarket | null>
+  tokens: MarketTokensOrEmpty
 }
 
 const AssetRow = ({
@@ -66,7 +67,7 @@ const AssetRow = ({
   title: ReactNode
   chainId: number
   blockchainId: Chain
-  token: { symbol?: string; address?: Address } | undefined
+  token: IconToken | undefined
   testId: string
 }) => {
   const address = token?.address
@@ -78,7 +79,7 @@ const AssetRow = ({
         <TokenLabel
           blockchainId={blockchainId}
           tooltip={token?.symbol}
-          address={getAddressOrPair(blockchainId, address)}
+          token={token}
           label={token?.symbol ?? ''}
           size="mui-md"
         />
@@ -102,30 +103,32 @@ const MarketDataSkeleton = ({
   </WithSkeleton>
 )
 
-const MarketAssets = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
-  const { collateralToken, borrowToken } = getTokens(market.data, apiMarket.data) ?? {}
+const MarketAssets = ({
+  chainId,
+  blockchainId,
+  market,
+  apiMarket,
+  tokens: { collateralToken, borrowToken },
+}: MarketContractsProps) => (
+  <MarketDataSkeleton market={market} apiMarket={apiMarket}>
+    <AssetRow
+      testId="market-contract-collateral-token"
+      chainId={chainId}
+      blockchainId={blockchainId}
+      title={t`Collateral`}
+      token={collateralToken}
+    />
+    <AssetRow
+      testId="market-contract-borrow-token"
+      chainId={chainId}
+      blockchainId={blockchainId}
+      title={t`Borrowed`}
+      token={borrowToken}
+    />
+  </MarketDataSkeleton>
+)
 
-  return (
-    <MarketDataSkeleton market={market} apiMarket={apiMarket}>
-      <AssetRow
-        testId="market-contract-collateral-token"
-        chainId={chainId}
-        blockchainId={blockchainId}
-        title={t`Collateral`}
-        token={collateralToken}
-      />
-      <AssetRow
-        testId="market-contract-borrow-token"
-        chainId={chainId}
-        blockchainId={blockchainId}
-        title={t`Borrowed`}
-        token={borrowToken}
-      />
-    </MarketDataSkeleton>
-  )
-}
-
-export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarket }: MarketContractsProps) => {
+export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarket, tokens }: MarketContractsProps) => {
   const { data: onChainOracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market.data?.id,
@@ -190,7 +193,13 @@ export const MarketContractsSection = ({ chainId, blockchainId, market, apiMarke
       <Card size="extraSmall" variant="inline" data-testid="market-assets-section">
         <CardHeader title={t`Assets`} />
         <CardContent component={SectionContentCard}>
-          <MarketAssets chainId={chainId} blockchainId={blockchainId} market={market} apiMarket={apiMarket} />
+          <MarketAssets
+            chainId={chainId}
+            blockchainId={blockchainId}
+            market={market}
+            apiMarket={apiMarket}
+            tokens={tokens}
+          />
         </CardContent>
       </Card>
 

@@ -41,7 +41,7 @@ export const {
   getQueryData: getGauges,
   refetchQuery: refetchGauges,
 } = queryFactory({
-  queryKey: () => ({ name: 'gauges', version: 2 }) as const,
+  queryKey: () => ({ name: 'gauges', version: 4 }) as const,
   queryFn: async () => {
     const gauges = await getPricesGauges()
 

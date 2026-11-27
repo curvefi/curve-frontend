@@ -2,14 +2,13 @@ import type { ReactNode } from 'react'
 import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import type { Address } from '@primitives/address.utils'
 import { PLACEHOLDER, UNAVAILABLE_NOTATION } from '@primitives/number.utils'
 import { type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { applySxProps, SxProps } from '@ui/lib/mui'
 import { ErrorIconButton } from './ErrorIconButton'
 import { Spinner } from './Spinner'
-import { TokenIcon, type Size } from './TokenIcon'
+import { TokenIcon, type Size, type TokenIconProps } from './TokenIcon'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing } = SizesAndSpaces
@@ -23,7 +22,7 @@ type TokenInfoBaseProps = {
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
-  address: Address | Address[]
+  token: NonNullable<TokenIconProps['token']>
   blockchainId: string
   showChainIcon?: boolean
   iconSize?: Size
@@ -33,7 +32,7 @@ export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
 
 type TokenInfoCustomIconProps = TokenInfoBaseProps & {
   icon?: ReactNode
-  address?: never
+  token?: never
   blockchainId?: never
   showChainIcon?: never
   iconSize?: never
@@ -61,10 +60,10 @@ const TokenInfoItem = ({
 export const TokenInfo = (props: TokenInfoProps) => {
   const { iconPosition, iconAlignment = 'center', primary, secondary, boldPrimary } = props
   const tokenIcon =
-    'address' in props ? (
+    'token' in props ? (
       <TokenIcon
         blockchainId={props.blockchainId}
-        address={props.address}
+        token={props.token}
         size={props.iconSize ?? 'lg'}
         showChainIcon={props.showChainIcon}
       />

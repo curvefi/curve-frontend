@@ -4,7 +4,7 @@ import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-liqu
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getAddressOrPair, hasLeverageValue } from '@/llamalend/llama.utils'
+import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { LeverageDelegationModal } from '@/llamalend/widgets/action-card/LeverageDelegationModal'
@@ -38,11 +38,9 @@ function RepayTokenSelector<ChainId extends IChainId>({
   const [isOpen, onOpen, onClose] = useSwitch(false)
   if (props.tokens.length === 1) {
     const {
-      tokens: [{ address, chain, symbol }],
+      tokens: [singleToken],
     } = props
-    return (
-      <TokenLabel blockchainId={chain} address={getAddressOrPair(props.network.blockchainId, address)} label={symbol} />
-    )
+    return <TokenLabel blockchainId={singleToken.chain} token={singleToken} label={singleToken.symbol} />
   }
   return (
     <TokenSelector

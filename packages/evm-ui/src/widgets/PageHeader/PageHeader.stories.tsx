@@ -114,7 +114,7 @@ export const SavingsCrvUsd: Story = {
   args: {
     title: constQ('Savings crvUSD'),
     subtitle: constQ('Let your idle crvUSD do more for you.'),
-    icon: <TokenIcon blockchainId="ethereum" address={TOKENS.scrvUSD.address} tooltip="scrvUSD" size="xl" />,
+    icon: <TokenIcon blockchainId="ethereum" token={TOKENS.scrvUSD} tooltip="scrvUSD" size="xl" />,
   },
 }
 

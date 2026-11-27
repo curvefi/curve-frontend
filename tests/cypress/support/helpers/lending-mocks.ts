@@ -17,6 +17,7 @@ const oneApiToken = (token: ReturnType<typeof oneToken>) => ({
   decimals: DEFAULT_DECIMALS,
   rebasing_yield: null,
   rebasing_yield_apr: null,
+  lp_coins: null,
 })
 
 const oneLendingPool = (

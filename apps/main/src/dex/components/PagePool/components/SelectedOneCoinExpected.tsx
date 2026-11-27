@@ -9,6 +9,7 @@ import { Spacer } from '@legacy-ui/Spacer'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
+import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { amount } from '@ui/lib/decimal'
@@ -51,8 +52,13 @@ export const SelectedOneCoinExpected = ({
               aria-label={`Withdraw from ${symbol} for ${amounts[idx]?.value ?? '0'}`}
               value={tokenAddress}
             >
-              <StyledTokenIcon size="sm" blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}{' '}
-              {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
+              <StyledTokenIcon
+                size="sm"
+                blockchainId={blockchainId}
+                tooltip={symbol}
+                token={{ address: tokenAddress as Address }}
+              />{' '}
+              {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
               <Spacer />
               {loading ? (
                 <Loader skeleton={[90, 20]} />

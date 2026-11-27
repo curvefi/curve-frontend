@@ -1,4 +1,5 @@
 import { getAddress } from 'viem'
+import type { MarketToken } from '@/llamalend/llama.utils'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
 import type { ColumnVisibilityState } from '@tanstack/react-table'
@@ -33,8 +34,8 @@ const supplierColumnHelper = createAppColumnHelper<SupplierRow>()
 
 export const getBorrowerColumns = (
   blockchainId: BorrowerRow['blockchainId'],
-  collateralTokenAddress: string | undefined,
-  borrowTokenAddress: string | undefined,
+  collateralToken: MarketToken | undefined,
+  borrowToken: MarketToken | undefined,
 ) =>
   borrowerColumnHelper.columns([
     borrowerColumnHelper.accessor('address', {
@@ -47,9 +48,7 @@ export const getBorrowerColumns = (
     }),
     borrowerColumnHelper.accessor('collateral', {
       id: BorrowerColumnId.Collateral,
-      header: () => (
-        <TokenHeader label={t`Collateral`} blockchainId={blockchainId} tokenAddress={collateralTokenAddress} />
-      ),
+      header: () => <TokenHeader label={t`Collateral`} blockchainId={blockchainId} token={collateralToken} />,
       cell: ({ row }) => (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <TokenAmount amount={row.original.collateral} amountUsd={row.original.collateralUsd} abbreviate={false} />
@@ -60,7 +59,7 @@ export const getBorrowerColumns = (
     }),
     borrowerColumnHelper.accessor('debt', {
       id: BorrowerColumnId.Loan,
-      header: () => <TokenHeader label={t`Loan`} blockchainId={blockchainId} tokenAddress={borrowTokenAddress} />,
+      header: () => <TokenHeader label={t`Loan`} blockchainId={blockchainId} token={borrowToken} />,
       cell: ({ row }) => (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <TokenAmount amount={row.original.debt} amountUsd={row.original.debtUsd} abbreviate={false} />
@@ -89,7 +88,7 @@ export const getBorrowerColumns = (
     }),
   ])
 
-export const getSupplierColumns = (blockchainId: SupplierRow['blockchainId'], borrowTokenAddress: string | undefined) =>
+export const getSupplierColumns = (blockchainId: SupplierRow['blockchainId'], borrowToken: MarketToken | undefined) =>
   supplierColumnHelper.columns([
     supplierColumnHelper.accessor('address', {
       id: SupplierColumnId.Address,
@@ -101,7 +100,7 @@ export const getSupplierColumns = (blockchainId: SupplierRow['blockchainId'], bo
     }),
     supplierColumnHelper.accessor('assets', {
       id: SupplierColumnId.Supply,
-      header: () => <TokenHeader label={t`Supply`} blockchainId={blockchainId} tokenAddress={borrowTokenAddress} />,
+      header: () => <TokenHeader label={t`Supply`} blockchainId={blockchainId} token={borrowToken} />,
       cell: ({ row }) => (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <TokenAmount amount={row.original.assets} amountUsd={row.original.assetsUsd} abbreviate={false} />

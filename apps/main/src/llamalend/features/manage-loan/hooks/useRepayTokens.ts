@@ -32,18 +32,12 @@ const getRepayTokenOptions = ({
   hasLeverageProvider: boolean
 }) =>
   notFalsy<RepayTokenOption>(
-    borrowToken && {
-      address: borrowToken.address,
-      chain: blockchainId,
-      symbol: borrowToken.symbol,
-      field: 'userBorrowed',
-    },
+    borrowToken && { ...borrowToken, chain: blockchainId, field: 'userBorrowed' },
     collateralToken &&
       canRepayFromStateCollateral(market) &&
       (!hasZapV2(market) || hasLeverageProvider) && {
-        address: collateralToken.address,
+        ...collateralToken,
         chain: blockchainId,
-        symbol: collateralToken.symbol,
         field: 'stateCollateral',
       },
   )
@@ -76,9 +70,9 @@ export const useRepayTokens = ({
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find(t => t.field === field)
   const [token, setToken] = useState(defaultToken)
-  const [previousDefaultToken, setPreviousDefaultToken] = useState(defaultToken)
-  if (!Object.is(previousDefaultToken, defaultToken)) {
-    setPreviousDefaultToken(defaultToken)
+  const [previousDefaultField, setPreviousDefaultField] = useState(defaultToken?.field)
+  if (previousDefaultField !== defaultToken?.field) {
+    setPreviousDefaultField(defaultToken?.field)
     // override the user's choice when we get to know they have a (non)-leveraged position
     if (defaultToken) setToken(defaultToken)
   }

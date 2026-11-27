@@ -28,9 +28,11 @@ export const RewardsIcons = ({
         data-testid="rewards-icons"
         sx={{ minWidth: IconSize.md, '& svg, & img': { '&:not(:last-child)': { marginInline: '-8px' } } }}
       >
-        {showCollateralCrv && <TokenIcon blockchainId="ethereum" address={MAINNET_CRV_ADDRESS} size="mui-sm" />}
+        {showCollateralCrv && (
+          <TokenIcon blockchainId="ethereum" token={{ address: MAINNET_CRV_ADDRESS }} size="mui-sm" />
+        )}
         {extraIncentives.map(({ title, address, blockchainId }) => (
-          <TokenIcon key={title} blockchainId={blockchainId} address={address} size="mui-sm" />
+          <TokenIcon key={title} blockchainId={blockchainId} token={{ address }} size="mui-sm" />
         ))}
         {lodash.uniqBy(filteredRewards, 'platformImageId').map(({ platformImageId, platform }) => (
           <RewardIcon size="sm" key={platformImageId} src={platformImageId} alt={platform} />

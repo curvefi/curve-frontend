@@ -1,3 +1,5 @@
+import type { Address } from '@primitives/address.utils'
+
 export enum MarketType {
   Mint = 'Mint',
   Lend = 'Lend',
@@ -13,4 +15,4 @@ export enum MarketRateType {
   Supply = 'Supply',
 }
 
-export type ExtraIncentive = { title: string; percentage: number; address: string; blockchainId: string }
+export type ExtraIncentive = { title: string; percentage: number; address: Address; blockchainId: string }

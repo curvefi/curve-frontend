@@ -52,7 +52,7 @@ function buildSupplyRate({
   supplyApy?: number | string | null
   rebasingYieldApy?: number | string | null
   marketOnChainRewards:
-    | { crvRates?: Range<number> | null; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
+    | { crvRates?: Range<number> | null; rewardsApr?: { apy: number; symbol: string; tokenAddress: Address }[] }
     | undefined
   lendingSnapshots: LendingSnapshot[] | undefined
   campaigns: CampaignRewards[]

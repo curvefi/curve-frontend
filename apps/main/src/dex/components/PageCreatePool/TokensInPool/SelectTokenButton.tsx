@@ -168,7 +168,7 @@ export const SelectTokenButton = ({
             <ButtonTokenIcon
               blockchainId={blockchainId}
               tooltip={selectedToken.symbol}
-              address={selectedToken.address}
+              token={{ address: selectedToken.address as Address }}
             />
             <LabelTextWrapper>
               <SelectedLabelText>

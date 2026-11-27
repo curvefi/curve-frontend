@@ -127,8 +127,8 @@ const BorrowersCard = () => {
   const table = useCurveTable({
     query,
     columns: useMemo(
-      () => getBorrowerColumns(blockchainId, tokens.collateralToken?.address, tokens.borrowToken?.address),
-      [blockchainId, tokens.borrowToken?.address, tokens.collateralToken?.address],
+      () => getBorrowerColumns(blockchainId, tokens.collateralToken, tokens.borrowToken),
+      [blockchainId, tokens.borrowToken, tokens.collateralToken],
     ),
     state: { columnVisibility: isMobile ? mobileBorrowerVisibility : undefined, pagination },
     getRowId: row => row.address,
@@ -212,10 +212,7 @@ const SuppliersCard = () => {
   )
   const table = useCurveTable({
     query,
-    columns: useMemo(
-      () => getSupplierColumns(blockchainId, tokens.borrowToken?.address),
-      [blockchainId, tokens.borrowToken?.address],
-    ),
+    columns: useMemo(() => getSupplierColumns(blockchainId, tokens.borrowToken), [blockchainId, tokens.borrowToken]),
     state: { columnVisibility: isMobile ? mobileSupplierVisibility : undefined, pagination },
     getRowId: row => row.address,
     manualPagination: true,

@@ -32,6 +32,7 @@ export const TokenOption = ({
   chain,
   symbol,
   address,
+  lpCoins,
   addressLabel = shortenString(address),
   balance: balanceProp,
   tokenPrice: tokenPriceProp,
@@ -70,7 +71,7 @@ export const TokenOption = ({
         >
           <TokenIcon
             blockchainId={chain}
-            address={address}
+            token={{ address, lpCoins }}
             size="xl"
             sx={{ ...(disabled && { filter: 'saturate(0)' }) }}
           />

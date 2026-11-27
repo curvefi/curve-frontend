@@ -24,7 +24,7 @@ import { getLendingVaultsOptions, type LendingVault } from '@evm-ui/queries/lend
 import { crvUsdPages, lendPages } from '@evm-ui/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@evm-ui/types/market'
 import { requireChainId } from '@evm-ui/utils'
-import type { Address } from '@primitives/address.utils'
+import type { Address, Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
@@ -55,6 +55,7 @@ export type AssetDetails = {
   balanceUsd: number | null
   rebasingYield: number | null
   rebasingYieldApr: number | null
+  lpCoins: Token[] | null
 }
 
 export type LlamaMarket = {
@@ -354,6 +355,7 @@ const convertMintMarket = (
         balanceUsd: borrowedUsd,
         rebasingYield: stablecoinToken.rebasingYield,
         rebasingYieldApr: stablecoinToken.rebasingYieldApr,
+        lpCoins: stablecoinToken.lpCoins,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -364,6 +366,7 @@ const convertMintMarket = (
         balanceUsd: collateralAmountUsd,
         rebasingYield: collateralToken.rebasingYield,
         rebasingYieldApr: collateralToken.rebasingYieldApr,
+        lpCoins: collateralToken.lpCoins,
       },
     },
     collateralYields,

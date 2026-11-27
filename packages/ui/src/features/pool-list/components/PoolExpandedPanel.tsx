@@ -61,7 +61,7 @@ const PoolTokens = ({ pool, addressDisplay }: { pool: PoolRow; addressDisplay: A
           title={
             <TokenLabel
               blockchainId={pool.blockchainId}
-              address={address}
+              token={{ address }}
               label={symbol}
               size="mui-md"
               typographyVariant="bodyMRegular"

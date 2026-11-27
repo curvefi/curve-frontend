@@ -28,7 +28,7 @@ export const CLAIM_TAB_COLUMNS = columnHelper.columns([
     cell: ({ getValue, row }) => (
       <InlineTableCell>
         <TokenInfo
-          address={row.original.token}
+          token={{ address: row.original.token }}
           blockchainId={row.original.blockchainId}
           iconPosition="left"
           primary={formatNumber(getValue(), { abbreviate: false })}

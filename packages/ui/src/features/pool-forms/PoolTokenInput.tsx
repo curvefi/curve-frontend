@@ -13,7 +13,7 @@ import { poolAmountField, poolMaxAmountField, type PoolForm, type PoolTokenField
 export type PoolToken = {
   blockchainId: string | undefined
   address: Address
-  symbol: string | undefined
+  symbol: string
   balance: QueryProp<Decimal>
   usdRate: number | undefined
 }
@@ -58,7 +58,7 @@ export const PoolTokenInput = <TValues extends PoolForm>({
       relatedFields={[maxField as FieldPath<TValues>]}
       max={max && { balance: max, onMax: onMax && (() => onMax(index)) }}
       tokenSelector={
-        <TokenLabel blockchainId={blockchainId} address={address} label={symbol} size="mui-md" disabled={disabled} />
+        <TokenLabel blockchainId={blockchainId} token={{ address }} label={symbol} size="mui-md" disabled={disabled} />
       }
       onBalance={useCallback((value: Decimal | undefined) => onValueChange(index, value), [index, onValueChange])}
       disabled={disabled}

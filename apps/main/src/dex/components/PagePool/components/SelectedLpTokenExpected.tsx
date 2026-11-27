@@ -8,6 +8,7 @@ import { Loader } from '@legacy-ui/Loader'
 import { Spacer } from '@legacy-ui/Spacer'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
+import type { Address } from '@primitives/address.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { amount } from '@ui/lib/decimal'
@@ -34,7 +35,12 @@ export const SelectedLpTokenExpected = ({
 
         return (
           <Box key={tokenAddress} as="li" flex flexAlignItems="center">
-            <StyledTokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> {symbol}
+            <StyledTokenIcon
+              blockchainId={blockchainId}
+              tooltip={symbol}
+              token={{ address: tokenAddress as Address }}
+            />{' '}
+            {symbol}
             {haveSameTokenName && <Chip>{shortenAddress(tokenAddress)}</Chip>}
             <Spacer />
             {loading ? (

@@ -13,7 +13,7 @@ export const {
   getQueryOptions: getLendingVaultsOptions,
   reset: resetLendingVaults,
 } = queryFactory({
-  queryKey: () => ({ name: 'lending-vaults', version: 6 }) as const,
+  queryKey: () => ({ name: 'lending-vaults', version: 7 }) as const,
   queryFn: async (): Promise<LendingVault[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),
   category: 'llamalend.marketList',

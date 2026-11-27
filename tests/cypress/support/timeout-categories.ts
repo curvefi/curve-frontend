@@ -24,6 +24,7 @@ export const TIMEOUTS = {
   'prices.activity': long,
   'prices.refuel': long,
   'prices.pools': long, // prices.curve.finance/v1/chains/:chain
+  'prices.tokens': long, // prices.curve.finance/v1/tokens/:chain/:address
   'curveLite.pools': long, // api2.curve.finance/get_pools/:chainId
   'router.tokens': long, // /api/router/v1/tokens
   'router.routes': extended, // /api/router/v1/routes

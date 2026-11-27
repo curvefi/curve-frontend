@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details/PositionDetailsComposite'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import { useMarketTokens } from '@/llamalend/hooks/useMarketTokens'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user/user-loan-exists.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMarketSections'
@@ -56,7 +57,7 @@ export const MintMarketPage = () => {
     },
     marketQuery,
   )
-  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
+  const tokens = useMarketTokens({ blockchainId: network.blockchainId, market, apiMarket: apiMarket.data }) ?? {}
   const controllerAddress = getControllerAddress(market, apiMarket.data)
 
   const collateralEvents = useUserCollateralEvents({

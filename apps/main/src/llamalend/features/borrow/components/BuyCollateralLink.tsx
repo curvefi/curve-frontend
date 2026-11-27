@@ -1,11 +1,13 @@
 import { useConnection } from 'wagmi'
-import { useLpTokenPool } from '@/llamalend/queries/lp-token-pool.query'
+import { useTokenMetadata } from '@/llamalend/queries/token-metadata.query'
 import type { Chain } from '@curvefi/prices-api'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { dexPages } from '@evm-ui/shared/routes'
 import Collapse from '@mui/material/Collapse'
+import Stack from '@mui/material/Stack'
 import type { Token } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
+import { ErrorIconButton } from '@ui/components/ErrorIconButton'
 import { ExternalLink } from '@ui/components/ExternalLink'
 import { t } from '@ui/lib/i18n'
 
@@ -27,21 +29,25 @@ export const BuyCollateralLink = ({
   // TODO: Errors should be shown in the status bar
   const { data: balance } = useTokenBalance({ chainId, userAddress, tokenAddress: token?.address })
   const hasNoBalance = maybe(balance, Number) === 0
-  const { data: poolAddress } = useLpTokenPool({ blockchainId, tokenAddress: token?.address }, hasNoBalance)
+  const { data: tokenMetadata, error } = useTokenMetadata({ blockchainId, tokenAddress: token?.address }, hasNoBalance)
+  const poolAddress = tokenMetadata?.poolAddress
 
   return (
     token && (
-      <Collapse in={hasNoBalance && poolAddress !== undefined} unmountOnExit>
-        <ExternalLink
-          href={
-            poolAddress
-              ? dexPages.pool({ blockchainId, poolAddress })
-              : dexPages.swap({ blockchainId, to: token.address })
-          }
-          label={t`Get ${token.symbol}`}
-          fullWidth
-          data-testid="buy-collateral-link"
-        />
+      <Collapse in={hasNoBalance && (!!tokenMetadata || !!error)} unmountOnExit>
+        <Stack direction="row" sx={{ alignItems: 'center' }}>
+          <ExternalLink
+            href={
+              poolAddress
+                ? dexPages.pool({ blockchainId, poolAddress })
+                : dexPages.swap({ blockchainId, to: token.address })
+            }
+            label={t`Get ${token.symbol}`}
+            fullWidth
+            data-testid="buy-collateral-link"
+          />
+          {error && <ErrorIconButton error={error} size="extraSmall" />}
+        </Stack>
       </Collapse>
     )
   )

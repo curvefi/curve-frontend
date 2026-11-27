@@ -33,6 +33,7 @@ import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Chip } from '@legacy-ui/Typography'
 import { scanAddressPath } from '@legacy-ui/utils'
+import type { Address } from '@primitives/address.utils'
 import { ArrowTopRightIcon } from '@ui/icons/ArrowTopRightIcon'
 import { t } from '@ui/lib/i18n'
 
@@ -191,7 +192,11 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
   const { data: network } = useNetworkByChain({ chainId })
   return (
     <TokenRow>
-      <ButtonTokenIcon blockchainId={blockchainId} tooltip={token.symbol} address={token.address} />
+      <ButtonTokenIcon
+        blockchainId={blockchainId}
+        tooltip={token.symbol}
+        token={{ address: token.address as Address }}
+      />
       <Box flex flexColumn>
         <TokenSymbol className="token-symbol">
           {token.symbol}
