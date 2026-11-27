@@ -23,10 +23,10 @@ const layoutProps = { getParentRoute: () => lendLayoutRoute }
 const toastTitle = (networkName?: string) =>
   networkName ? t`This market is only available on ${networkName}` : NETWORK_SWITCH_UNAVAILABLE
 
-const marketLoader = ({ params }: { params: MarketUrlParams }) => {
-  const { chainId, rMarket: marketId } = parseMarketParams(params)
-  assertValidity(marketIdValidationSuite, { chainId, marketId }, ['chainId', 'marketId'])
-}
+const validateMarketParams = (params: Record<keyof MarketUrlParams, string>) => ({
+  ...params,
+  ...assertValidity(marketIdValidationSuite, parseMarketParams(params), ['chainId', 'marketId']),
+})
 
 export const lendRoutes = lendLayoutRoute.addChildren([
   ...createSharedRoutes('lend', layoutProps),
@@ -42,12 +42,10 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market',
-    loader: marketLoader,
+    params: { parse: validateMarketParams },
     staticData: { networkSwitch: { type: 'locked', toastTitle } },
     component: LendMarketPage,
-    head: ({ params: { market } }: { params: MarketUrlParams }) => ({
-      meta: [{ title: `${market} - Curve Llamalend` }],
-    }),
+    head: ({ params: { market } }) => ({ meta: [{ title: `${market} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
   createRoute({
@@ -69,12 +67,10 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market/vault',
-    loader: marketLoader,
+    params: { parse: validateMarketParams },
     staticData: { networkSwitch: { type: 'locked', toastTitle } },
     component: PageVault,
-    head: ({ params: { market } }: { params: MarketUrlParams }) => ({
-      meta: [{ title: `Supply - ${market} - Curve Llamalend` }],
-    }),
+    head: ({ params: { market } }) => ({ meta: [{ title: `Supply - ${market} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
 ])

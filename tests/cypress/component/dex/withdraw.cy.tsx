@@ -3,7 +3,6 @@ import { AdvancedWithdrawTab } from '@/dex/features/withdraw/components/Advanced
 import { OneCoinWithdrawTab } from '@/dex/features/withdraw/components/OneCoinWithdrawTab'
 import { MockPoolTestWrapper } from '@cy/support/helpers/dex/MockPoolTestWrapper'
 import { createWithdrawScenario } from '@cy/support/helpers/dex/mocks/withdraw.mocks'
-import { setupMockedPoolComponentTest } from '@cy/support/helpers/dex/test-context.helpers'
 import {
   checkPoolWithdrawDetail,
   poolWithdrawInput,
@@ -16,6 +15,7 @@ import {
   writePoolWithdrawLp,
 } from '@cy/support/helpers/dex/withdraw.helpers'
 import { checkEstimatedTxCost, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { setupMockedComponentTest } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { formatNumber } from '@primitives/number.utils'
 import { formatToken } from '@ui/lib/tokens'
@@ -37,7 +37,7 @@ const checkNoValidationErrors = () =>
   cy.get('[data-testid="helper-message-error"], [data-testid="loan-form-errors"]').should('not.exist')
 
 describe('Pool Withdraw (mocked)', () => {
-  beforeEach(setupMockedPoolComponentTest)
+  beforeEach(setupMockedComponentTest)
 
   ;[true, false].forEach(approved => {
     it(approved ? 'fills and submits (already approved)' : 'fills, approves, and submits', () => {

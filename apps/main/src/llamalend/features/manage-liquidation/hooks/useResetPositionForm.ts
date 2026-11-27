@@ -5,56 +5,17 @@ import { useResetIsApproved } from '@/llamalend/queries/reset/reset-is-approved.
 import { useResetIsAvailable } from '@/llamalend/queries/reset/reset-is-available.query'
 import { useTokensToShrink } from '@/llamalend/queries/reset/tokens-to-shrink.query'
 import { useUserState } from '@/llamalend/queries/user/user-state.query'
-import {
-  type ResetForm,
-  type ResetParams,
-  resetFormValidationSuite,
-} from '@/llamalend/queries/validation/reset.validation'
+import { type ResetFormValues, resetFormValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
-import type { Address } from '@primitives/address.utils'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { maybe } from '@primitives/objects.utils'
-import { useForm, useFormSync } from '@ui/features/forms'
-import { q } from '@ui/features/queries/util'
-import { useFormDebounce } from '@ui/hooks/useDebounce'
+import { useFormValidation } from '@ui/features/forms/useFormValidation'
+import { useFormValues } from '@ui/features/forms/useFormValues'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useMarketContext } from '../../market-context'
 
-const userDefaultValues = { userBorrowed: undefined } satisfies Partial<ResetForm>
-
-const defaultValues = {
-  ...userDefaultValues,
-  convertedBorrowed: undefined,
-  maxBorrowed: undefined,
-  maxTotalBorrowed: undefined,
-  minBorrowed: undefined,
-  resetAvailable: undefined,
-}
-
-const useResetParams = <ChainId extends LlamaChainId>({
-  chainId,
-  marketId,
-  userAddress,
-  convertedBorrowed,
-  userBorrowed,
-  maxBorrowed,
-  maxTotalBorrowed,
-  minBorrowed,
-  resetAvailable,
-}: ResetForm & { chainId: ChainId; marketId: string | undefined; userAddress: Address | undefined }) =>
-  useFormDebounce(
-    {
-      chainId,
-      marketId,
-      userAddress,
-      convertedBorrowed,
-      userBorrowed,
-      maxBorrowed,
-      maxTotalBorrowed,
-      minBorrowed,
-      resetAvailable,
-    } satisfies ResetParams<ChainId>,
-    userDefaultValues,
-  )
+const defaultValues = { userBorrowed: undefined } satisfies ResetFormValues
 
 export const useResetPositionForm = <ChainId extends LlamaChainId>({
   networks,
@@ -70,49 +31,48 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
     userAddress,
   } = useMarketContext<ChainId>()
 
-  const form = useForm<ResetForm>({
+  const inputs = useFormValues<ResetFormValues, UserMarketParams<ChainId>>({
     defaultValues,
-    validation: useMemo(() => resetFormValidationSuite(market), [market]),
+    context: { chainId, marketId, userAddress },
   })
-  const { values, formState } = form
-  const [params, isDebouncing] = useResetParams({ chainId, marketId, userAddress, ...values })
 
-  const userState = useUserState({ chainId, marketId, userAddress })
+  const userState = useUserState(inputs.params)
   const walletBorrowed = useTokenBalance({ chainId, userAddress, tokenAddress: borrowToken?.address })
-  const resetAvailable = useResetIsAvailable({ chainId, marketId, userAddress })
-  const tokensToShrink = useTokensToShrink({ chainId, marketId, userAddress })
+  const resetAvailable = useResetIsAvailable(inputs.params)
+  const tokensToShrink = useTokensToShrink(inputs.params)
 
-  useFormSync(form, {
-    convertedBorrowed: userState.data?.convertedBorrowed,
-    maxBorrowed: walletBorrowed.data,
-    maxTotalBorrowed: userState.data?.debt,
-    minBorrowed: tokensToShrink.data,
-    resetAvailable: resetAvailable.data,
-  })
-
-  const {
-    onSubmit,
-    isPending: isResetting,
-    error,
-  } = useResetMutation({
+  const { onSubmit, isPending, error } = useResetMutation({
     network: networks[chainId],
     marketId,
-    onReset: () => form.reset(userDefaultValues),
+    onReset: () => inputs.reset(defaultValues),
     userAddress,
   })
 
-  const isPending = formState.isSubmitting || isResetting
+  const form = useFormValidation({
+    inputs,
+    validation: useMemo(() => resetFormValidationSuite(market), [market]),
+    computed: {
+      convertedBorrowed: mapQuery(userState, state => state.convertedBorrowed),
+      maxBorrowed: walletBorrowed,
+      maxTotalBorrowed: mapQuery(userState, state => state.debt),
+      minBorrowed: tokensToShrink,
+      resetAvailable,
+    },
+    isSubmitting: isPending,
+    disabled: !userAddress || !resetAvailable.data,
+  })
+  const { values, params, formState } = form
 
   return {
     form,
     values,
     params,
     isPending,
-    isLoading: isLoading || resetAvailable.isLoading,
-    isDisabled: !userAddress || !resetAvailable.data || !formState.isValid || isPending || isDebouncing,
+    isLoading: isLoading || form.isLoading,
+    isDisabled: form.isDisabled,
     userAddress,
     onSubmit: form.handleSubmit(onSubmit),
-    error,
+    error: error ?? form.error,
     formErrors: formState.visibleErrors,
     borrowToken,
     collateralToken,

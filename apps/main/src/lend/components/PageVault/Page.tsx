@@ -30,7 +30,7 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, chainId } = parseMarketParams(params)
+  const { marketId: rMarket, chainId } = parseMarketParams(params)
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market } = marketQuery
   const network = networks[chainId]
@@ -49,8 +49,10 @@ export const Page = () => {
     },
     marketQuery,
   )
-  const { data: balances } = useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress })
-  const hasPosition = balances && +(balances.totalShares ?? 0) > 0
+  const hasPosition = mapQuery(
+    useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress }),
+    balances => +(balances.totalShares ?? 0) > 0,
+  )
   const events = useUserVaultEvents({
     chainId,
     userAddress,

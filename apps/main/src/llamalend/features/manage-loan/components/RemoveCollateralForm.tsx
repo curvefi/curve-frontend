@@ -27,10 +27,9 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
-    isDisabled,
     userAddress,
     onSubmit,
-    action,
+    error,
     values,
     maxRemovable,
     positionCollateral,
@@ -79,16 +78,16 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
       </Stack>
 
       <FormAlerts
-        error={action.error}
+        error={error}
         formErrors={formErrors}
-        handledErrors={['userCollateral']}
+        handledErrors={['userCollateral', 'maxCollateral']}
         userAddress={userAddress}
       />
 
       <EvmFormButton
         pending={isPending}
-        loading={marketQuery.isLoading}
-        disabled={isDisabled}
+        loading={marketQuery.isLoading || form.isLoading}
+        disabled={form.isDisabled}
         label={t`Remove collateral`}
         testId="remove-collateral-submit-button"
       />

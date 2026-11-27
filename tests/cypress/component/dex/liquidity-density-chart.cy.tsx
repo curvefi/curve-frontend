@@ -6,7 +6,6 @@ import {
 } from '@/dex/features/liquidity-density/LiquidityDensityChart'
 import { oneOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -27,6 +26,10 @@ const stableCurve = createStableSwapCurve([1_400_000, 600_000], [1, 1], 200)!
 const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0])!, 1, 1)
 const loadingQuery = { ...constQ(undefined), isLoading: true }
 const chartProps: LiquidityDensityChartProps = {
+  userAddress: undefined,
+  isConnected: false,
+  isConnecting: false,
+  connect: () => Promise.resolve(),
   profile: constQ(usdProfile),
   inputSymbol: 'WBTC',
   outputSymbol: 'USDC',
@@ -48,7 +51,7 @@ const mountChart = ({
   ...props
 }: Partial<LiquidityDensityChartProps> & { theme?: keyof typeof themes } = {}) =>
   cy.mount(
-    <ComponentTestWrapper config={mockedWagmiConfig} autoConnect={false}>
+    <ComponentTestWrapper>
       <ThemeProvider theme={theme}>
         <Card size="small">
           <CardContent>
@@ -227,10 +230,24 @@ allViewports().forEach(([VIEWPORT_WIDTH, VIEWPORT_HEIGHT, BREAKPOINT]) => {
     })
 
     it('requests a wallet connection when samples are empty', () => {
-      mountChart({ profile: constQ({ ...usdProfile, samples: [] }) })
+      mountChart({ profile: constQ({ ...usdProfile, samples: [] }), connect: cy.stub().as('connect').resolves() })
       cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('be.visible')
       cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('not.exist')
       cy.get(PLOT).find('.echarts-for-react').should('not.exist')
+      cy.get(PLOT).find('button').click()
+      cy.get('@connect').should('have.been.calledOnce')
+    })
+
+    it('shows unavailable when connected without samples', () => {
+      mountChart({ profile: constQ({ ...usdProfile, samples: [] }), isConnected: true })
+      cy.get(PLOT).find('[data-testid="liquidity-density-unavailable"]').should('be.visible')
+      cy.get(PLOT).find('[data-testid="liquidity-density-connect-wallet"]').should('not.exist')
+      cy.get(PLOT).find('.echarts-for-react').should('not.exist')
+    })
+
+    it('disables the wallet button while connecting', () => {
+      mountChart({ profile: constQ(undefined), isConnecting: true })
+      cy.get(PLOT).find('button').should('be.disabled')
     })
 
     it('shows query errors without drawing a chart', () => {

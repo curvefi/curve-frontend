@@ -9,16 +9,20 @@ import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collatera
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market/market-oracle-price.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user/user-current-leverage.query'
-import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
-import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import type {
+  CollateralCalculatedValues,
+  CollateralFormValues,
+  CollateralParams,
+} from '@/llamalend/queries/validation/manage-loan.types'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useNewLlamalendHealth, useLlamalendEquityLeverage } from '@evm-ui/hooks/useFeatureFlags'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import type { MarketType } from '@evm-ui/types/market'
 import { type Address, type Token } from '@primitives/address.utils'
-import type { UseFormReturn } from '@ui/features/forms'
+import type { ValidatedForm } from '@ui/features/forms/useFormValidation'
 import { useQuery } from '@ui/features/queries/query-hooks'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
@@ -34,10 +38,10 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   marketType,
 }: {
   params: CollateralParams<ChainId>
-  values: CollateralForm
+  values: CollateralFormValues
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  form: UseFormReturn<CollateralForm>
+  form: ValidatedForm<CollateralFormValues, UserMarketParams<ChainId>, CollateralCalculatedValues>
   controllerAddress: Address | undefined
   marketType: MarketType
 }) {

@@ -29,7 +29,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import { PageState } from '@ui/features/layout/PageState'
 import type { Range } from '@ui/features/queries/util'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -40,7 +40,7 @@ const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
 
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, chainId } = parseMarketParams(params)
+  const { marketId: rMarket, chainId } = parseMarketParams(params)
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market } = marketQuery
   const { address: userAddress } = useConnection()
@@ -50,7 +50,7 @@ export const LendMarketPage = () => {
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m?.id), userAddress }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
+  const loanExists = q(useLoanExists(queryParams))
   const { data: collateralRewardsEnabled } = useMarketCollateralRewardsEnabled(queryParams)
   const showCollateralClaim = collateralRewardsEnabled === true
 
@@ -74,7 +74,7 @@ export const LendMarketPage = () => {
     tokens,
   })
   const showReset = useMarketResetPosition() && hasResetPosition(market)
-  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
+  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists.data)
 
   return (
     <PageState
@@ -94,9 +94,9 @@ export const LendMarketPage = () => {
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
             content:
               !query.isLoading &&
-              !isLoanExistsLoading &&
-              !(loanExists && isLiquidationLoading) &&
-              (loanExists ? (
+              !loanExists.isLoading &&
+              !(loanExists.data && isLiquidationLoading) &&
+              (loanExists.data ? (
                 <ManageLoanTabs
                   onPricesUpdated={setPreviewPrices}
                   collateralEvents={collateralEvents}

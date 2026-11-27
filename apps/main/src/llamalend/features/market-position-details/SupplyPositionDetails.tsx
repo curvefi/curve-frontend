@@ -136,7 +136,7 @@ export const SupplyPositionDetails = () => {
   )
 
   return (
-    <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm }}>
+    <Grid container spacing={Spacing.md}>
       <MetricGrid>
         <Metric
           category={METRIC_CATEGORY}

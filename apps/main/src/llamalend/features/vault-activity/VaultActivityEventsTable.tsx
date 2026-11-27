@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { getAddress } from 'viem'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketVaultEvents } from '@/llamalend/queries/market/market-vault-events.query'
 import { ActivityTable } from '@evm-ui/features/activity-table/ActivityTable'
@@ -31,6 +32,7 @@ const VAULT_ACTIVITY_COLUMNS = columnHelper.columns([
     header: t`Address`,
     cell: ({ row }) => (
       <AddressCell
+        formatAddress={getAddress}
         address={row.original.provider}
         explorerUrl={scanAddressPath(row.original.chainId, row.original.provider)}
       />

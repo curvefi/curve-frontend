@@ -54,7 +54,8 @@ export type DataTableProps<TData extends RowData> = {
   anchorRef?: RefObject<HTMLTableSectionElement | null> // anchor for overlays that follow the sticky column headers
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & AllOrNone<ConnectionProps & { userAddress: Address | undefined }> &
+  userAddress?: Address
+} & AllOrNone<ConnectionProps> &
   Omit<DataRowProps<TData>, 'table' | 'row' | 'rowHeight'>
 
 /**
@@ -119,7 +120,12 @@ export const DataTable = <TData extends RowData>({
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={height} sx={{ height, overflowY: 'auto' }} ref={containerRef}>
+    <WithWrapper
+      Wrapper={Box}
+      shouldWrap={height}
+      sx={{ height, overflowY: 'auto', backgroundColor: t => t.design.Layer[1].Fill }}
+      ref={containerRef}
+    >
       {/* Wrapper used to scroll back to the table without hiding it behind the sticky nav. */}
       <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }}>
         {/* Children are placed outside the table header when the table content is horizontally scrollable in order to

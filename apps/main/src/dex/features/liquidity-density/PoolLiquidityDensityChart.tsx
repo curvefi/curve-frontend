@@ -1,6 +1,8 @@
 import { isEqual } from 'lodash'
 import { useMemo, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { usePoolContext } from '@/dex/features/pool-context'
+import { useWallet } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
 import { ChartSelect } from '@ui/features/charts/ChartSelect'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
@@ -12,6 +14,8 @@ import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
 export const PoolLiquidityDensityChart = () => {
+  const { address, isConnected, isConnecting } = useConnection()
+  const { connect } = useWallet()
   const { pool } = usePoolContext()
   const { data: poolData, isLoading } = pool
   // Default to pricing the second wrapped coin in the first.
@@ -44,6 +48,10 @@ export const PoolLiquidityDensityChart = () => {
 
   return (
     <LiquidityDensityChart
+      userAddress={address}
+      isConnected={isConnected}
+      isConnecting={isConnecting}
+      connect={connect}
       profile={combineQueries([pool, valuedProfile], (_pool, profile) => profile)}
       inputSymbol={inputSymbol}
       outputSymbol={outputSymbol}

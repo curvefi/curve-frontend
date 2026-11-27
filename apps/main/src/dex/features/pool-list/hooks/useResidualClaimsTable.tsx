@@ -19,7 +19,9 @@ import { t } from '@ui/lib/i18n'
 import { curvePoolToRowData, enrichPoolRow, getPoolListAlerts } from '../utils'
 import { useUserPoolPositions } from './useUserPoolPositions'
 
-const { IconSize } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
+
+const CARD_SIZE = { size: 'sm', direction: 'horizontal' } as const
 
 const getPoolUserPosition = (claimables: PoolClaimables) => ({
   lpBalance: ZERO,
@@ -78,16 +80,18 @@ export const useResidualClaimsTable = (
     claimablesTotalUsd: mapQuery({ ...tableQuery, error: null }, rows =>
       decimalSum(...rows.map(row => row.userPosition?.claimablesUsd.data)),
     ),
-    labels: {
+    cardStates: {
       errorTitle: t`Could not scan pools for unclaimed rewards`,
       loading: {
         title: t`Searching for your residual rewards`,
         description: t`Scanning ${scanPoolCount ? scanPoolCount.toString() : 'all'} ${capitalize(blockchainId)} pools. This may take a while.`,
-        icon: <PongLoader sx={{ '--ldr-size': IconSize.xxl }} />,
+        icon: <PongLoader sx={{ '--ldr-size': IconSize.lg, marginInlineEnd: Spacing.md }} />,
+        ...CARD_SIZE,
       },
       empty: {
         title: t`No residual rewards`,
         description: t`You have claimed all your rewards on ${capitalize(blockchainId)}`,
+        ...CARD_SIZE,
       },
     },
   }

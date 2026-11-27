@@ -7,11 +7,11 @@ import { UserPositionsTables } from './UserPositionsTables'
 
 /** Page for displaying the lending markets table. */
 export const MarketsList = () => {
-  const { address } = useConnection()
-  const { tableQuery, onReload } = useMarketsTable(address)
+  const { address: userAddress } = useConnection()
+  const { tableQuery, onReload } = useMarketsTable(userAddress)
   return (
     <ListPageLayout footer={<MarketsTableFooter />}>
-      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      {userAddress && <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />}
       <MarketsTable onReload={onReload} tableQuery={tableQuery} />
     </ListPageLayout>
   )

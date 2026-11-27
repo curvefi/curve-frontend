@@ -1,6 +1,4 @@
-import { http } from 'viem'
-import { mainnet } from 'viem/chains'
-import { WagmiProvider } from 'wagmi'
+import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { peakPrice } from '@ui/features/pools/liquidity-density/curve'
@@ -8,7 +6,6 @@ import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liqu
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
 import { createTwoCryptoCurve } from '@ui/features/pools/liquidity-density/twocrypto'
 import { constQ } from '@ui/features/queries/util'
-import { createConfig } from '@wagmi/core'
 import { LiquidityDensityChart } from './LiquidityDensityChart'
 
 const cryptoCurve = createTwoCryptoCurve([20_000_000, 180], 110_000, 40, 0.001)!
@@ -18,27 +15,23 @@ const stableProfile = valueLiquidityProfile(liquidityProfile(stableCurve, [1, 0]
 const loadingQuery = { ...constQ(undefined), isLoading: true }
 const missingUsdRateQuery = { ...constQ(undefined), error: new globalThis.Error('Unable to load token USD rate') }
 const queryClient = new QueryClient()
-const wagmiConfig = createConfig({
-  chains: [mainnet],
-  connectors: [],
-  transports: { [mainnet.id]: http() },
-  multiInjectedProviderDiscovery: false,
-})
 
 const meta = {
   title: 'DEX/Charts/LiquidityDensityChart',
   component: LiquidityDensityChart,
   decorators: [
     Story => (
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
-          <Story />
-        </QueryClientProvider>
-      </WagmiProvider>
+      <QueryClientProvider client={queryClient}>
+        <Story />
+      </QueryClientProvider>
     ),
   ],
   parameters: { layout: 'fullscreen' },
   args: {
+    userAddress: undefined,
+    isConnected: true,
+    isConnecting: false,
+    connect: fn<() => Promise<void>>().mockResolvedValue(undefined),
     profile: constQ(valueLiquidityProfile(cryptoProfile, 111_124.75, 1)),
     inputSymbol: 'WBTC',
     outputSymbol: 'USDC',
@@ -98,6 +91,8 @@ export const Loading: Story = { args: { profile: loadingQuery, centerPrice: load
 export const Unavailable: Story = {
   args: { profile: constQ(undefined), centerPrice: constQ(undefined), oraclePrice: constQ(undefined) },
 }
+export const Disconnected: Story = { args: { ...Unavailable.args, isConnected: false } }
+export const Connecting: Story = { args: { ...Disconnected.args, isConnecting: true } }
 export const Error: Story = {
   args: { profile: { ...constQ(undefined), error: new globalThis.Error('Unable to load pool state') } },
 }
