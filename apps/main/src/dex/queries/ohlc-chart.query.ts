@@ -1,15 +1,15 @@
 import type { Chain } from '@curvefi/prices-api'
 import { getLpOHLC, getOHLC, type GetLpOHLCParams } from '@curvefi/prices-api/ohlc'
-import { useOhlcInfiniteQuery } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
+import { assert } from '@primitives/objects.utils'
+import { useOhlcInfiniteQuery } from '@ui/features/candle-chart/hooks/useOhlcQueries'
 import {
   createCandleChartQueryKey,
   createOhlcPageResult,
   type OhlcPageParam,
   type OhlcPageResult,
-} from '@evm-ui/features/candle-chart/query-utils'
-import type { ChartSelection, LpPriceOhlcDataFormatted, TimeOption } from '@evm-ui/features/candle-chart/types'
-import { formatCandleOhlcData } from '@evm-ui/features/candle-chart/utils'
-import { assert } from '@primitives/objects.utils'
+} from '@ui/features/candle-chart/query-utils'
+import type { ChartSelection, LpPriceOhlcDataFormatted, TimeOption } from '@ui/features/candle-chart/types'
+import { formatCandleOhlcData } from '@ui/features/candle-chart/utils'
 import { t } from '@ui/lib/i18n'
 
 type DexOhlcQueryParams = {

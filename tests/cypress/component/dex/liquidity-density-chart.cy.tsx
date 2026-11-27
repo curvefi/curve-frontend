@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { getInstanceByDom, type ECharts } from 'echarts'
-import {
-  LiquidityDensityChart,
-  type LiquidityDensityChartProps,
-} from '@/dex/features/liquidity-density/LiquidityDensityChart'
 import { oneOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { allViewports } from '@cy/support/ui'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import { peakPrice } from '@ui/features/pools/liquidity-density/curve'
+import {
+  LiquidityDensityChart,
+  type LiquidityDensityChartProps,
+} from '@ui/features/pools/liquidity-density/LiquidityDensityChart'
 import { liquidityProfile, valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import { createStableSwapCurve } from '@ui/features/pools/liquidity-density/stableswap'
 import { createTwoCryptoCurve } from '@ui/features/pools/liquidity-density/twocrypto'

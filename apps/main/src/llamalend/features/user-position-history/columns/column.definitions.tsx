@@ -1,6 +1,6 @@
-import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanTxPath } from '@legacy-ui/utils'
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
+import { TimestampCell } from '@ui/features/tables/TimestampCell'
 import { t } from '@ui/lib/i18n'
 import { CollateralChangeCell } from '../cells/CollateralChangeCell'
 import { DebtChangeCell } from '../cells/DebtChangeCell'

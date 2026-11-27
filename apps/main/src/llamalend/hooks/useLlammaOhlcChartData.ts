@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
+import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
 import {
   fetchMoreOhlcQueries,
   refetchOhlcQueries,
   useOhlcPagesAdapter,
   useOhlcQueryAdapter,
-} from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
-import type { TimeOption } from '@evm-ui/features/candle-chart/types'
-import { applyLatestOraclePrice, flattenOhlcPagesChronologically } from '@evm-ui/features/candle-chart/utils'
-import type { Address } from '@primitives/address.utils'
-import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
+} from '@ui/features/candle-chart/hooks/useOhlcQueries'
+import type { TimeOption } from '@ui/features/candle-chart/types'
+import { applyLatestOraclePrice, flattenOhlcPagesChronologically } from '@ui/features/candle-chart/utils'
 import { q, useMappedQuery } from '@ui/features/queries/util'
 import {
   type LlammaOhlcPage,
