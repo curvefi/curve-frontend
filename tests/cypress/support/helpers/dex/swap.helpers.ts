@@ -42,11 +42,11 @@ export const checkPoolSwapDetails = (fromSymbol: string, toSymbol: string, isMoc
       const deviation = decimalPercent(decimalMinus(rate, expectedRate), expectedRate)
       expect(Math.abs(Number(deviation)), 'exchange rate matches the quoted amounts').lte(Number(TEST_SLIPPAGE))
     })
-    getActionDecimal('pool-swap-minimum-received', category).should(minimum => {
+    getActionDecimal('pool-minimum-received', category).should(minimum => {
       expect(Number(minimum), 'minimum received').gt(0).and.lte(Number(output))
     })
   })
-  getActionValue('pool-swap-minimum-received', category).should('include', ` ${toSymbol}`)
+  getActionValue('pool-minimum-received', category).should('include', ` ${toSymbol}`)
   getActionValue('borrow-slippage', category).should('equal', formatNumber(TEST_SLIPPAGE, 'percent.rate'))
   getActionValue('pool-price-impact', category).should('include', '%')
   getActionValue('estimated-tx-cost', category).should('include', '$')
@@ -74,7 +74,7 @@ export const submitPoolSwapAndCheck = () =>
           poolSwapAmount('receive')
             .invoke('attr', 'data-value')
             .then(output =>
-              getActionDecimal('pool-swap-minimum-received', 'tenderly.simulation').then(minimum => {
+              getActionDecimal('pool-minimum-received', 'tenderly.simulation').then(minimum => {
                 submitPoolSwap()
                 getPoolSwapBalance('pay').should('equal', decimalMinus(payBalance as Decimal, input as Decimal))
                 getPoolSwapBalance('receive').should(balance => {
