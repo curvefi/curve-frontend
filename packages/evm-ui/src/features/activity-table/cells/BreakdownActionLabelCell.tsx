@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
 /** Action label of a breakdown row, indented under the action of its parent row */
 export const BreakdownActionLabelCell = ({ label }: { label: string }) => (
   <InlineTableCell>
-    <Typography variant="tableCellValue">
+    <Typography variant="tableCellValue" color="textSecondary">
       <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
         <IndentIcon fontSize="small" />
         {label}
