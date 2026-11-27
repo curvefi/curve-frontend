@@ -25,6 +25,7 @@ export const MockPoolTestWrapper = ({
           userAddress: curve.signerAddress,
           pool: constQ(pool),
           apiPool: constQ(undefined),
+          litePool: constQ(undefined),
           poolAddress: pool.address as Address,
           api: curve,
           isWrapped,

@@ -10,17 +10,27 @@ import { usePoolGaugeStatus } from '@/dex/queries/pool-gauge-status.query'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
+import type { PoolType } from '@curvefi/prices-api/pools'
 import { evmAddressDisplay } from '@evm-ui/utils'
 import { dayjs } from '@evm-ui/utils/dayjs'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@primitives/number.utils'
-import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { AdvancedDetails } from '@ui/features/pool/advanced-details/AdvancedDetails'
+import { poolTypeClassifications } from '@ui/features/pool-list/cells/PoolTitleCell/classifications'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { amount, decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 
-const getPoolType = ({ pool, tokenCount, isFxSwap }: { pool: PoolTemplate; tokenCount: number; isFxSwap: boolean }) => {
+const getPoolType = ({
+  pool,
+  tokenCount,
+  isFxSwap,
+}: {
+  pool: Pick<PoolTemplate, 'isCrypto' | 'isNg'> & Partial<Pick<PoolTemplate, 'implementation'>>
+  tokenCount: number | undefined
+  isFxSwap: boolean
+}) => {
   if (isFxSwap) return t`FXSwap`
   if ('isLlamma' in pool && pool.isLlamma) return 'Llamma'
   if (!pool.isCrypto && !pool.isNg) return t`Stableswap`
@@ -32,6 +42,26 @@ const getPoolType = ({ pool, tokenCount, isFxSwap }: { pool: PoolTemplate; token
   return pool.implementation ?? undefined
 }
 
+const API_POOL_TYPE_ALIASES: Partial<Record<string, PoolType>> = {
+  factory_stable_ng: 'stableswapng',
+  factory_twocrypto: 'twocryptong',
+}
+
+const getApiPoolType = (registryType: string | Nullish, tokenCount: number | undefined) =>
+  maybe(registryType, registryType => {
+    const type = API_POOL_TYPE_ALIASES[registryType] ?? registryType
+    return maybe(poolTypeClassifications[type as PoolType], classification =>
+      getPoolType({
+        pool: {
+          isCrypto: classification === 'volatile',
+          isNg: ['stableswapng', 'twocryptong', 'factory_tricrypto'].includes(type),
+        },
+        tokenCount,
+        isFxSwap: classification === 'fxswap',
+      }),
+    )
+  })
+
 /** EVM integration boundary for the otherwise chain-agnostic advanced-details feature. */
 export const PoolAdvancedDetails = () => {
   const {
@@ -40,12 +70,12 @@ export const PoolAdvancedDetails = () => {
     poolAddress,
     pool: poolQuery,
     apiPool,
+    litePool,
     lpTokenAddress: { data: lpToken },
     gaugeAddress: { data: gauge },
     tokens: { data: tokens },
     tokenAddresses: { data: tokenAddresses },
   } = usePoolContext()
-  const { data: pool } = poolQuery
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const parameters = usePoolParameters({ chainId, poolAddress })
@@ -66,26 +96,53 @@ export const PoolAdvancedDetails = () => {
     outFee,
   } = snapshots.data?.[0] ?? {}
   const { priceOracle, priceScale, A, initial_A, initial_A_time, future_A, future_A_time } = parameters.data ?? {}
-  const { assetTypes, basePool, coins, hasDonations, metapool, oracles, registry, vyperVersion } = metadata.data ?? {}
-  const isFxSwap = hasDonations ?? false
+  const { assetTypes, coins, oracles, registry } = metadata.data ?? {}
+  const isFxSwap =
+    fallbackQ(
+      mapQuery(metadata, pool => pool.hasDonations),
+      mapQuery(apiPool, pool => pool.info.hasDonations),
+    ).data ?? false
 
   return (
     <AdvancedDetails
       chainId={chainId}
-      isLoading={fallbackQ(poolQuery, apiPool).isLoading}
+      isLoading={fallbackQ(poolQuery, q(metadata), apiPool, litePool).isLoading}
       info={{
-        poolType: notFalsy(
-          maybes([pool, tokens], (pool, tokens) =>
-            getPoolType({ pool, isFxSwap: hasDonations ?? false, tokenCount: coins?.length ?? tokens.length }),
-          ) ?? '-',
-          metapool && t`Metapool`,
-          poolAddress &&
-            basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) &&
-            t`Basepool`,
-        ).join(', '),
-        basePoolAddress: maybe(basePool, getAddress),
+        poolType: mapQuery(
+          fallbackQ(
+            mapQuery(poolQuery, pool =>
+              getPoolType({ pool, isFxSwap, tokenCount: coins?.length ?? pool.wrappedCoins.length }),
+            ),
+            mapQuery(metadata, pool => getApiPoolType(pool.poolType, pool.coins.length)),
+            mapQuery(apiPool, pool => getApiPoolType(pool.registryType ?? pool.poolType, pool.nCoins)),
+            mapQuery(litePool, pool => maybe(pool, pool => getApiPoolType(pool.registryId, pool.coins?.length))),
+          ),
+          type =>
+            notFalsy(
+              type,
+              fallbackQ(
+                mapQuery(poolQuery, pool => pool.isMeta),
+                mapQuery(metadata, pool => pool.metapool),
+                mapQuery(apiPool, pool => pool.isMetapool ?? pool.metapool),
+                mapQuery(litePool, pool => pool?.isMetaPool),
+              ).data && t`Metapool`,
+              poolAddress &&
+                basePools.data?.some(basePool => isAddressEqual(basePool.pool as Address, poolAddress)) &&
+                t`Basepool`,
+            ).join(', '),
+        ),
+        basePoolAddress: maybe(
+          fallbackQ(
+            mapQuery(metadata, pool => pool.basePool),
+            mapQuery(apiPool, pool => pool.basePool),
+          ).data,
+          getAddress,
+        ),
         registryAddress: maybe(registry, getAddress),
-        vyperVersion,
+        vyperVersion: fallbackQ(
+          mapQuery(metadata, pool => pool.vyperVersion),
+          mapQuery(apiPool, pool => pool.vyperVersion),
+        ).data,
       }}
       contracts={{
         poolAddress: maybe(poolAddress, poolAddress => getAddress(poolAddress)),

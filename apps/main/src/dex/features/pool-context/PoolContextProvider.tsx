@@ -1,5 +1,6 @@
 import { type ReactNode, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { useLitePool } from '@/dex/queries/lite-pool.query'
 import { usePoolPricesApi } from '@/dex/queries/pool-prices-api.query'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { useCurve } from '@evm-ui/features/connect-wallet'
@@ -28,6 +29,11 @@ export const PoolContextProvider = ({
     isLoading: isApiPoolLoading,
     error: apiPoolError,
   } = usePoolPricesApi({ chainId, poolAddress }, !isLiteChain(chainId))
+  const {
+    data: litePoolData,
+    isLoading: isLitePoolLoading,
+    error: litePoolError,
+  } = useLitePool({ chainId, poolAddress })
 
   // This is a global pool page toggle that changes many things on the pool page itself, whose toggle sits inside the forms.
   // Alternatives would be prop drilling or yet another zustand store, neither sound pleasant.
@@ -43,6 +49,7 @@ export const PoolContextProvider = ({
             userAddress,
             pool,
             apiPool: q({ data: apiPoolData, isLoading: isApiPoolLoading, error: apiPoolError }),
+            litePool: q({ data: litePoolData, isLoading: isLitePoolLoading, error: litePoolError }),
             poolAddress,
             api,
             isWrapped,
@@ -54,6 +61,9 @@ export const PoolContextProvider = ({
           pool,
           apiPoolData,
           isApiPoolLoading,
+          litePoolData,
+          isLitePoolLoading,
+          litePoolError,
           apiPoolError,
           poolAddress,
           userAddress,

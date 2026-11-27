@@ -20,8 +20,14 @@ const useHydratedQuery = <TParams, TData>(
       isHydrated
         ? { data, error, isLoading, isPending, isFetching }
         : // Cached results can belong to the previous Curve instance while hydration is in progress.
-          { ...DISABLED_Q, error: initializationError ?? null, isPending: !initializationError, isFetching: false },
-    [data, error, isLoading, isPending, isFetching, isHydrated, initializationError],
+          {
+            ...DISABLED_Q,
+            error: initializationError ?? null,
+            isLoading: enabled !== false && !initializationError,
+            isPending: !initializationError,
+            isFetching: false,
+          },
+    [data, error, isLoading, isPending, isFetching, isHydrated, initializationError, enabled],
   )
 }
 

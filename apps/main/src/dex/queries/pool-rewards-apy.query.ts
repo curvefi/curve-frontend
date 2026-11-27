@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import { test } from 'vest'
 import { fetchNetworks } from '@/dex/entities/networks'
-import { invalidatePoolPricesApi, usePoolPricesApi } from '@/dex/queries/pool-prices-api.query'
+import { useLitePool } from '@/dex/queries/lite-pool.query'
+import { usePoolPricesApi } from '@/dex/queries/pool-prices-api.query'
 import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { V2PoolDetails } from '@curvefi/prices-api/pools'
@@ -9,14 +9,14 @@ import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { hydratedQueryFactory } from '@evm-ui/hooks/useHydratedQuery'
 import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
-import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
+import { curvePoolValidationSuite } from '@evm-ui/queries/validation/pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
+import { litePoolToRowData } from '@ui/features/pool-list/utils'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
-import { enforce } from '@ui/lib/validation/enforce-extension'
-import { createValidationSuite } from '@ui/lib/validation/lib'
-import type { FieldsOf } from '@ui/lib/validation/types'
 import { fulfilledValue } from '../utils'
+
+const NO_API = false
 
 type RewardCrv = number
 type RewardOther = {
@@ -49,7 +49,7 @@ function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
   return []
 }
 
-const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi: boolean) => {
+const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate) => {
   const resp = {
     base: { day: '0', week: '0' },
     other: [] as RewardOther[],
@@ -77,7 +77,7 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
 
   // both crv and incentives (others) are in one call
   if (p.rewardsOnly()) {
-    const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy(useApi)])
+    const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy(NO_API)])
     const rewards = fulfilledValue(rewardsResult)
 
     if (rewardsResult.status === 'rejected') {
@@ -98,7 +98,7 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
     return resp
   }
 
-  const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(useApi), p.stats.tokenApy(useApi)])
+  const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(NO_API), p.stats.tokenApy(NO_API)])
 
   // others rewards
   const others = fulfilledValue(otherResult) ?? []
@@ -132,7 +132,12 @@ const poolAllRewardsApy = async (network: NetworkConfig, p: PoolTemplate, useApi
   return resp
 }
 
-const poolPricesApiRewardsApy = (pool: V2PoolDetails) => ({
+const poolPricesApiRewardsApy = (
+  pool: Pick<
+    V2PoolDetails,
+    'baseDailyApr' | 'baseWeeklyApr' | 'extraRewardsApr' | 'crvApr' | 'crvAprBoosted' | 'gauges'
+  >,
+) => ({
   base: {
     // Curve-js converts numbers to string with .toFixed(8) for unknown reason. We probably want to replace this with `decimal` soon.
     day: new BigNumber(pool.baseDailyApr ?? 0).toFixed(8),
@@ -156,36 +161,32 @@ const poolPricesApiRewardsApy = (pool: V2PoolDetails) => ({
   error: {} as Record<string, boolean>,
 })
 
-type PoolRewardsApyQuery = PoolQuery<ChainId> & { useApi: boolean }
-type PoolRewardsApyParams = FieldsOf<PoolRewardsApyQuery>
-
-const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQuery } = hydratedQueryFactory({
+const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApy } = hydratedQueryFactory({
   category: 'dex.pool',
-  queryKey: ({ chainId, poolAddress, useApi }: PoolRewardsApyParams) =>
-    ({ name: 'rewardsApy', chainId, poolAddress, useApi }) as const,
-  queryFn: async ({ chainId, poolAddress, useApi }: PoolRewardsApyQuery) => {
+  queryKey: ({ chainId, poolAddress }: PoolParams<ChainId>) => ({ name: 'rewardsApy', chainId, poolAddress }) as const,
+  queryFn: async ({ chainId, poolAddress }: PoolQuery<ChainId>) => {
     const pool = requireLib('curveApi').getPool(poolAddress)
     const networks = await fetchNetworks()
-    return await poolAllRewardsApy(networks[chainId], pool, useApi)
+    return await poolAllRewardsApy(networks[chainId], pool)
   },
-  validationSuite: createValidationSuite((params: PoolRewardsApyParams) => {
-    curvePoolValidationGroup(params)
-    test('useApi', () => {
-      enforce(params.useApi).isBoolean()
-    })
-  }),
+  validationSuite: curvePoolValidationSuite,
 })
 
-export const invalidatePoolRewardsApy = (params: PoolParams<ChainId>) =>
-  Promise.all([
-    ...[true, false].map(useApi => invalidatePoolRewardsApyQuery({ ...params, useApi })),
-    invalidatePoolPricesApi(params),
-  ])
+export { invalidatePoolRewardsApy }
 
-export const usePoolRewardsApy = (params: PoolParams<ChainId>) => {
-  const useApi = !useCurve().curveApi?.signerAddress
-  const isLite = params.chainId != null && isLiteChain(params.chainId)
-  const rewards = usePoolRewardsApyQuery({ ...params, useApi }, !useApi || isLite)
-  const apiRewards = mapQuery(usePoolPricesApi(params, !isLite), poolPricesApiRewardsApy)
-  return useApi && !isLite ? apiRewards : fallbackQ(q(rewards), apiRewards)
-}
+export const usePoolRewardsApy = (params: PoolParams<ChainId>) =>
+  fallbackQ(
+    q(usePoolRewardsApyQuery(params, useCurve().curveApi?.isNoRPC === false)),
+    mapQuery(usePoolPricesApi(params, params.chainId == null || !isLiteChain(params.chainId)), poolPricesApiRewardsApy),
+    mapQuery(useLitePool(params), pool =>
+      maybe(pool, pool => {
+        const { gauges, ...rates } = litePoolToRowData(pool)
+        return poolPricesApiRewardsApy({
+          ...rates,
+          gauges: gauges.map(gauge => gauge.address),
+          crvApr: pool.gaugeIsKilled ? 0 : rates.crvApr,
+          crvAprBoosted: pool.gaugeIsKilled ? 0 : rates.crvAprBoosted,
+        })
+      }),
+    ),
+  )

@@ -19,6 +19,7 @@ import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import { PageState } from '@ui/features/layout/PageState'
@@ -51,6 +52,7 @@ export const MintMarketPage = () => {
     {
       network: params.network,
       rMarket: rCollateralId,
+      marketType: MarketType.Mint,
       userAddress: address,
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
@@ -84,19 +86,19 @@ export const MintMarketPage = () => {
         <DetailPageLayout
           formTabs={{
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
-            content:
-              !query.isLoading &&
-              !loanExists.isLoading &&
-              !(loanExists.data && isLiquidationLoading) &&
-              (loanExists.data ? (
-                <ManageLoanTabs
-                  onPricesUpdated={setPreviewPrices}
-                  collateralEvents={collateralEvents}
-                  isLiquidation={!!isLiquidation}
-                />
-              ) : (
-                <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
-              )),
+            content: market
+              ? !loanExists.isLoading &&
+                !(loanExists.data && isLiquidationLoading) &&
+                (loanExists.data ? (
+                  <ManageLoanTabs
+                    onPricesUpdated={setPreviewPrices}
+                    collateralEvents={collateralEvents}
+                    isLiquidation={!!isLiquidation}
+                  />
+                ) : (
+                  <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+                ))
+              : marketQuery.error && <AlertDisableForm>{marketQuery.error.message}</AlertDisableForm>,
           }}
           header={<MarketPageHeader />}
           {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}

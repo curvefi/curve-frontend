@@ -1,5 +1,5 @@
 import { PoolCampaigns } from '@/stellar/features/campaigns/PoolCampaigns'
-import { asAddress } from '@/stellar/features/connect-wallet/address'
+import { asAddress, asStellarContract, shortenAddress } from '@/stellar/features/connect-wallet/address'
 import { useWallet } from '@/stellar/features/connect-wallet/useWallet'
 import { AdvancedWithdrawTab } from '@/stellar/features/withdraw/AdvancedWithdrawTab'
 import { usePoolConfig } from '@/stellar/queries/pool/pool-config.query'
@@ -16,7 +16,7 @@ import { PoolCompositionCard } from '@ui/features/pools/PoolCompositionCard'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
 import { combineQueries } from '@ui/features/queries/combine'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useLocation, useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { StellarPages } from '../../routes/routes'
@@ -69,8 +69,9 @@ export const PoolPage = () => {
   const registration = useIsRegisteredPool(params, config, litePool)
   const tokenAddresses = mapQuery(config, config => config.tokens)
   const { tokens, symbols, decimals } = usePoolTokens({ network, account, tokenAddresses }) ?? {}
-  const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals })
+  const composition = usePoolComposition({ ...params, tokenAddresses, symbols, decimals, litePool })
   const tokenName = useTokenName({ network, token: pool })
+  const form = combineQueries([config, supply], (_, supply) => ({ ...params, isSeed: !+supply }))
 
   return (
     <PageState
@@ -83,24 +84,30 @@ export const PoolPage = () => {
         header={
           <PoolDetailsHeader
             backHref={StellarPages.pools({ network })}
-            title={q(tokenName)}
-            tokens={combineQueries([tokenAddresses, ...(tokens ?? [])], (_, ...tokens) => tokens)}
+            title={fallbackQ(
+              q(tokenName),
+              mapQuery(litePool, pool => pool?.name ?? pool?.symbol ?? undefined),
+            )}
+            tokens={fallbackQ(
+              combineQueries([tokenAddresses, ...(tokens ?? [])], (_, ...tokens) => tokens),
+              mapQuery(litePool, pool =>
+                pool?.coins?.map(({ address, symbol }) => ({
+                  address,
+                  symbol: symbol || shortenAddress(asStellarContract(address)),
+                })),
+              ),
+            )}
             blockchainId={network}
             rightItems={<PoolHeaderMetrics tvl={composition.totalUsd} />}
           />
         }
         formTabs={{
           placement: 'inline',
-          content:
-            supply.data == null ? (
-              supply.error && <AlertDisableForm>{supply.error.message}</AlertDisableForm>
-            ) : (
-              <FormTabs
-                menu={menu}
-                params={{ ...params, isSeed: !+supply.data }}
-                defaultValue={defaultTab?.toString()}
-              />
-            ),
+          content: form.data ? (
+            <FormTabs menu={menu} params={form.data} defaultValue={defaultTab?.toString()} />
+          ) : (
+            form.error && <AlertDisableForm>{form.error.message}</AlertDisableForm>
+          ),
         }}
       >
         {!litePool.data && (

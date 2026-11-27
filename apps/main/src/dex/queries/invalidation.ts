@@ -1,7 +1,7 @@
 import type { PoolParams, UserChainParams, UserPoolParams } from '@evm-ui/queries/query-types'
 import { resetCampaignsExternal } from '@ui/features/campaigns/campaigns-external.query'
 import { resetCampaignsPoolsMerkl } from '@ui/features/campaigns/campaigns-pools-merkl.query'
-import { resetLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
+import { invalidateLitePoolList, resetLitePoolList } from '@ui/features/pool-list/lite-pool-list.query'
 import { queryClient } from '@ui/features/queries/query-client'
 import { invalidateDepositBonus } from './deposit/deposit-bonus.query'
 import { invalidateDepositExpectedLp } from './deposit/deposit-expected.query'
@@ -10,6 +10,7 @@ import { invalidatePoolCurrencyReserves } from './pool-currency-reserves.query'
 import { invalidatePoolGaugeStatus } from './pool-gauge-status.query'
 import { getPoolListRootQueryKey, resetPoolChains, resetLitePoolChains } from './pool-list.query'
 import { invalidatePoolParameters } from './pool-parameters.query'
+import { invalidatePoolPricesApi } from './pool-prices-api.query'
 import { invalidatePoolRewardsApy } from './pool-rewards-apy.query'
 import { invalidatePoolTotalStaked } from './pool-total-staked.query'
 import { invalidateSwapPriceImpact } from './swap/swap-price-impact.query'
@@ -53,6 +54,8 @@ export const invalidatePoolInfo = async (params: PoolParams) =>
     invalidatePoolCurrencyReserves(params),
     invalidatePoolGaugeStatus(params),
     invalidatePoolRewardsApy(params),
+    invalidatePoolPricesApi(params),
+    invalidateLitePoolList(params),
     invalidatePoolTotalStaked(params),
   ])
 

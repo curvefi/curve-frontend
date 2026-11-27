@@ -436,26 +436,33 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getFavoriteMarketOptions>,
 ]
 
-export type LlamaMarketParams = { userAddress: Address | undefined; enableDeprecatedMarkets: boolean }
+export type LlamaMarketParams = {
+  userAddress: Address | undefined
+  enableDeprecatedMarkets: boolean
+  marketType?: MarketType
+}
 
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (without the details).
  */
-export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaMarketParams, enabled = true) => {
+export const useLlamaMarkets = (
+  { userAddress, enableDeprecatedMarkets, marketType }: LlamaMarketParams,
+  enabled = true,
+) => {
   const userPositions = useUserLlamaPositions({ userAddress }, enabled)
   return useQueries({
     queries: useMemo<LlamaMarketsQueries>(
       () => [
-        getLendingVaultsOptions({}, enabled),
-        getMintMarketOptions({}, enabled),
+        getLendingVaultsOptions({}, enabled && marketType !== MarketType.Mint),
+        getMintMarketOptions({}, enabled && marketType !== MarketType.Lend),
         getBadDebtLendMarketsOptions(enabled),
         getBadDebtMintMarketsOptions(enabled),
         getCampaignsExternalOptions(getAddress, enabled),
         getCampaignsMarketsMerklOptions(getAddress, enabled),
         getFavoriteMarketOptions({}, enabled),
       ],
-      [enabled],
+      [enabled, marketType],
     ),
     combine: useCallback(
       (results: QueriesResults<LlamaMarketsQueries>): Query<LlamaMarketsResult> => {
@@ -476,9 +483,13 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
         const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
         const getMintMarketBadDebt = createGetBadDebtMarket(badDebtMintMarkets.data)
 
-        const marketsReady = [lendingVaults, mintMarkets].every(q => q.data ?? q.error)
+        const marketQueries = {
+          [MarketType.Lend]: [lendingVaults],
+          [MarketType.Mint]: [mintMarkets],
+          all: [lendingVaults, mintMarkets],
+        }[marketType ?? 'all']
 
-        const data: LlamaMarketsResult | undefined = marketsReady
+        const data: LlamaMarketsResult | undefined = marketQueries.every(q => q.data ?? q.error)
           ? {
               userHasPositions,
               markets: [
@@ -510,9 +521,9 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
               ),
             }
           : undefined
-        return { data, ...combineQueryState(userPositions, ...results) }
+        return { data, ...combineQueryState(...(marketType ? marketQueries : [userPositions, ...results])) }
       },
-      [enabled, enableDeprecatedMarkets, userPositions],
+      [enabled, enableDeprecatedMarkets, userPositions, marketType],
     ),
   })
 }

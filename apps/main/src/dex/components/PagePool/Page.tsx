@@ -5,6 +5,7 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
+import { useLitePool } from '@/dex/queries/lite-pool.query'
 import { usePoolPricesApi } from '@/dex/queries/pool-prices-api.query'
 import { usePool } from '@/dex/queries/pool.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
@@ -29,6 +30,7 @@ export const PagePool = () => {
 
   const pool = usePool({ chainId, poolAddress })
   const apiPool = usePoolPricesApi({ chainId, poolAddress }, !isLiteChain(chainId))
+  const litePool = useLitePool({ chainId, poolAddress })
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
@@ -53,7 +55,7 @@ export const PagePool = () => {
 
   return (
     <PageState
-      query={fallbackQ(q({ ...pool, isLoading: pool.isPending }), q(apiPool))}
+      query={fallbackQ(q(pool), q(apiPool), litePool)}
       notFound={t`Pool Not Found`}
       continueUrl={ROUTE.pools({ blockchainId: props.network })}
       userAddress={curveApi?.signerAddress}

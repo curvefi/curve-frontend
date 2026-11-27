@@ -142,11 +142,10 @@ const useBorrowRate = ({
     }),
   )
 
-  const useApiMarket = !!apiMarket.data && !marketQuery.data
   const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useMarketRateHistory(
     apiMarket.data,
     { type: MarketRateType.Borrow, category: RATE_CATEGORY },
-    useApiMarket,
+    !!apiMarket.data,
   )
   const apiBorrowRate = mapQuery(apiMarket, market =>
     maybe(market, (d): BorrowRate => ({
@@ -164,7 +163,6 @@ const useBorrowRate = ({
 }
 
 const useSupplyRate = ({
-  useApiMarket,
   marketRates,
   snapshot,
   marketQuery,
@@ -175,7 +173,6 @@ const useSupplyRate = ({
   campaigns,
 }: {
   chainId: number
-  useApiMarket: boolean
   marketRates: QueryProp<MarketRates>
   snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
   marketQuery: QueryProp<MarketTemplate | null>
@@ -189,7 +186,7 @@ const useSupplyRate = ({
   const apiSupplySnapshots = useMarketRateHistory<LendingSnapshot>(
     apiMarket.data,
     { type: MarketRateType.Supply, category: RATE_CATEGORY },
-    useApiMarket && enabled,
+    !!apiMarket.data && enabled,
   )
   const onChainRewards = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
 
@@ -299,7 +296,6 @@ export const usePageHeaderRates = () => {
   })
   const marketRates = q(useMarketRates({ chainId, marketId: mapQuery(marketQuery, m => m?.id) }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
-  const useApiMarket = !!apiMarket.data && !marketQuery.data
 
   return {
     borrowRate: useBorrowRate({
@@ -316,7 +312,6 @@ export const usePageHeaderRates = () => {
       marketRates,
       marketQuery,
       apiMarket,
-      useApiMarket,
       snapshot,
       marketType,
       chainId,

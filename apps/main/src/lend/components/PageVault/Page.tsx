@@ -16,6 +16,7 @@ import { getMarketSections } from '@/llamalend/widgets/market-section-nav/getMar
 import { MarketPageHeader } from '@/llamalend/widgets/page-header/MarketPageHeader'
 import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketRateType, MarketType } from '@evm-ui/types/market'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import { PageState } from '@ui/features/layout/PageState'
@@ -43,6 +44,7 @@ export const Page = () => {
   const { query, apiMarket } = useLlamaMarket(
     {
       rMarket,
+      marketType: MarketType.Lend,
       network: params.network,
       userAddress,
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
@@ -75,7 +77,11 @@ export const Page = () => {
       >
         <DetailPageLayout
           formTabs={{
-            content: query.data && <VaultTabs />,
+            content: market ? (
+              <VaultTabs />
+            ) : (
+              marketQuery.error && <AlertDisableForm>{marketQuery.error.message}</AlertDisableForm>
+            ),
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
           }}
           header={<MarketPageHeader />}

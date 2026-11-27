@@ -25,6 +25,7 @@ import {
 } from '@evm-ui/hooks/useFeatureFlags'
 import { MarketType, MarketRateType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
+import { AlertDisableForm } from '@ui/features/forms/AlertDisableForm'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import { PageState } from '@ui/features/layout/PageState'
@@ -58,6 +59,7 @@ export const LendMarketPage = () => {
   const { query, apiMarket } = useLlamaMarket(
     {
       rMarket,
+      marketType: MarketType.Lend,
       network: params.network,
       userAddress,
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
@@ -92,21 +94,21 @@ export const LendMarketPage = () => {
         <DetailPageLayout
           formTabs={{
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
-            content:
-              !query.isLoading &&
-              !loanExists.isLoading &&
-              !(loanExists.data && isLiquidationLoading) &&
-              (loanExists.data ? (
-                <ManageLoanTabs
-                  onPricesUpdated={setPreviewPrices}
-                  collateralEvents={collateralEvents}
-                  showReset={showReset}
-                  showCollateralClaim={showCollateralClaim}
-                  isLiquidation={!!isLiquidation}
-                />
-              ) : (
-                <CreateLoanTabs onPricesUpdated={setPreviewPrices} showCollateralClaim={showCollateralClaim} />
-              )),
+            content: market
+              ? !loanExists.isLoading &&
+                !(loanExists.data && isLiquidationLoading) &&
+                (loanExists.data ? (
+                  <ManageLoanTabs
+                    onPricesUpdated={setPreviewPrices}
+                    collateralEvents={collateralEvents}
+                    showReset={showReset}
+                    showCollateralClaim={showCollateralClaim}
+                    isLiquidation={!!isLiquidation}
+                  />
+                ) : (
+                  <CreateLoanTabs onPricesUpdated={setPreviewPrices} showCollateralClaim={showCollateralClaim} />
+                ))
+              : marketQuery.error && <AlertDisableForm>{marketQuery.error.message}</AlertDisableForm>,
           }}
           header={<MarketPageHeader />}
           {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}

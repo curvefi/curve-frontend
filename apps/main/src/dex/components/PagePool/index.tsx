@@ -214,6 +214,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     name,
     pool,
     apiPool,
+    litePool,
     api: curve,
     isWrapped,
     setIsWrapped,
@@ -299,6 +300,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                 tvl={fallbackQ(
                   mapQuery(tvl, tvl => amount(tvl)),
                   mapQuery(apiPool, pool => amount(pool.tvlUsd)),
+                  mapQuery(litePool, pool => amount(pool?.tvl)),
                 )}
                 volume24h={fallbackQ(
                   mapQuery(volume, volume => amount(volume)),
