@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { isAddressEqual } from 'viem'
 import { sumCollateralYields } from '@/llamalend/collateral-yields'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { type MarketSnapshotsQuery, useMarketSnapshots } from '@/llamalend/queries/market/market-snapshots.query'
@@ -69,7 +70,7 @@ const MarketSupplyHistoricalRates = ({ timeOption, snapshots }: HistoricalRatesT
         supplyRate?.data?.rebasingYield != null && borrowToken?.address,
         ...notFalsyArray(
           supplyRate?.data?.extraIncentives.map(
-            ({ address }) => address.toLowerCase() !== MAINNET_CRV_ADDRESS && address,
+            ({ address }) => !isAddressEqual(address, MAINNET_CRV_ADDRESS) && address,
           ),
         ),
       ),
