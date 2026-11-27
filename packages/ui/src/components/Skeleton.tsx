@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports -- Implements the shared Skeleton.
 import MuiSkeleton, { type SkeletonProps as MuiSkeletonProps } from '@mui/material/Skeleton'
+import { PLACEHOLDER } from '@primitives/number.utils'
 import { Sizing } from '@ui/features/themes/design/0_primitives'
 
 type SkeletonPreset = Pick<MuiSkeletonProps, 'width' | 'height' | 'variant'>
@@ -11,7 +12,7 @@ const SKELETON_CATEGORIES = {
   'table.value': { width: Sizing[700] },
   'table.rewardIcon': { variant: 'circular', width: Sizing[200], height: Sizing[200] },
   'header.tokenIcon': { variant: 'circular', width: Sizing[500], height: Sizing[500] },
-  'actionInfo.value': { width: '4ch', height: '1rem' },
+  'actionInfo.value': { width: `${PLACEHOLDER.toString().length}ch`, height: '1rem' },
 } as const satisfies Record<string, SkeletonPreset>
 
 export type SkeletonProps = Omit<MuiSkeletonProps, 'width' | 'height' | 'variant'> & {
