@@ -1,4 +1,4 @@
-import { type MouseEvent, ReactNode, useMemo, useState } from 'react'
+import { type MouseEvent, ReactNode, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { Subscribe, type Cell, type ReactTable, type Row, type RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
@@ -104,32 +104,29 @@ const DataRowContent = <TData extends RowData>({
         disabled={!isInteractive}
       >
         <TableRow
-          sx={useMemo(
-            () => ({
-              marginBlock: 0,
-              minHeight: Height.table.row[rowHeight],
-              cursor: isInteractive ? 'pointer' : 'default',
-              verticalAlign,
-              transition: `border-bottom ${TRANSITION_FUNCTION}`,
-              ...(rowBreakdown && breakdownRowSx),
-              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
-              ...(isInteractive && {
-                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
-                  opacity: { mobile: 1, desktop: 0 },
-                  transition: `opacity ${TRANSITION_FUNCTION}`,
+          sx={{
+            marginBlock: 0,
+            minHeight: Height.table.row[rowHeight],
+            cursor: isInteractive ? 'pointer' : 'default',
+            verticalAlign,
+            transition: `border-bottom ${TRANSITION_FUNCTION}`,
+            ...(rowBreakdown && breakdownRowSx),
+            [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
+            ...(isInteractive && {
+              [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
+                opacity: { mobile: 1, desktop: 0 },
+                transition: `opacity ${TRANSITION_FUNCTION}`,
+              },
+              '&:hover': {
+                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
+                '& td, & th': {
+                  backgroundColor: t => t.design.Table.Row.Hover,
+                  color: t => t.design.Table.Text.Hover.Primary,
                 },
-                '&:hover': {
-                  [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
-                  '& td, & th': {
-                    backgroundColor: t => t.design.Table.Row.Hover,
-                    color: t => t.design.Table.Text.Hover.Primary,
-                  },
-                  [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Hover.Secondary },
-                },
-              }),
+                [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Hover.Secondary },
+              },
             }),
-            [isInteractive, verticalAlign, rowHeight, rowBreakdown],
-          )}
+          }}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           // eslint-disable-next-line local/no-router-navigate-on-click -- A `<tr>` cannot be a link.
