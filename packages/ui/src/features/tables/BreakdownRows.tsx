@@ -49,7 +49,11 @@ export const BreakdownRows = <TData extends RowData, TItem>({
     {isExpanded =>
       isExpanded &&
       items.map((item, itemIndex) => (
-        <TableRow key={getItemKey(item, itemIndex)} className={BREAKDOWN_ROW_CLASS} sx={rowSx}>
+        <TableRow
+          key={getItemKey(item, itemIndex)}
+          className={BREAKDOWN_ROW_CLASS}
+          sx={applySxProps(rowSx, { backgroundColor: t => t.design.Table.Row.Expanded })}
+        >
           {visibleCells.map((cell, index) => (
             <BreakdownCell key={cell.id} cell={cell} isSticky={!!shouldStickFirstColumn && !index}>
               {cells[cell.column.id]?.(item, row.original)}

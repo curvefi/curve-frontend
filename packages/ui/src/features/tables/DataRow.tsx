@@ -1,4 +1,5 @@
 import { type MouseEvent, ReactNode, useState } from 'react'
+import type { Theme } from '@mui/material/styles'
 import TableRow from '@mui/material/TableRow'
 import { Subscribe, type Cell, type ReactTable, type Row, type RowData } from '@tanstack/react-table'
 import { InvertOnHover } from '@ui/components/InvertOnHover'
@@ -26,6 +27,15 @@ const ROW_CONTROLS = `.${CLICKABLE_IN_ROW_CLASS}, a[href], button, input, select
 const breakdownRowSx = {
   '& > td': { transitionProperty: { tablet: 'color' } },
   [`&&:has(+ tr.${BREAKDOWN_ROW_CLASS}) > td`]: { borderBlockEndWidth: 0 },
+}
+
+const breakdownParentSx = {
+  ...breakdownRowSx,
+  // A CSS selector is easier than subscribing to the expanded state of the atoms.
+  [`&:where(:has(+ tr.${BREAKDOWN_ROW_CLASS}))`]: {
+    backgroundColor: (t: Theme) => t.design.Table.Row.Expanded,
+    '& > td': { backgroundColor: 'inherit' },
+  },
 }
 
 export type RowBreakdownConfig<TData extends RowData, TItem> = {
@@ -110,7 +120,7 @@ const DataRowContent = <TData extends RowData>({
             cursor: isInteractive ? 'pointer' : 'default',
             verticalAlign,
             transition: `border-bottom ${TRANSITION_FUNCTION}`,
-            ...(rowBreakdown && breakdownRowSx),
+            ...(rowBreakdown && breakdownParentSx),
             [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: { color: t => t.design.Table.Text.Default.Secondary },
             ...(isInteractive && {
               [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
