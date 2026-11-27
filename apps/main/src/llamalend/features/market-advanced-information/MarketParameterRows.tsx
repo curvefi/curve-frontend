@@ -8,7 +8,7 @@ import { evmAddressDisplay } from '@evm-ui/utils'
 import { formatNumber } from '@primitives/number.utils'
 import { ActionInfo } from '@ui/features/forms/action-info/ActionInfo'
 import { AddressActionInfo } from '@ui/features/forms/action-info/AddressActionInfo'
-import { loadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q, type QueryProp } from '@ui/features/queries/util'
 import { decimal } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
 import { formatToken } from '@ui/lib/tokens'
@@ -62,15 +62,15 @@ export const MarketPricesRows = ({
 
 const MARKET_ID = { testId: 'market-id', label: t`Market ID` }
 
-export const MarketIdRow = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) =>
-  marketId && isAddress(marketId) ? (
+export const MarketIdRow = ({ chainId, marketId }: { chainId: IChainId; marketId: QueryProp<string> }) =>
+  marketId.data && isAddress(marketId.data) ? (
     <AddressActionInfo
       chainId={chainId}
       testId={MARKET_ID.testId}
       title={MARKET_ID.label}
-      address={marketId}
+      address={marketId.data}
       display={evmAddressDisplay}
     />
   ) : (
-    <ActionInfo testId={MARKET_ID.testId} label={MARKET_ID.label} value={loadingQ(marketId)} />
+    <ActionInfo testId={MARKET_ID.testId} label={MARKET_ID.label} value={marketId} />
   )

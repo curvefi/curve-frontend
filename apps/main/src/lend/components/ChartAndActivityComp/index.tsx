@@ -36,7 +36,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     setTimeOption,
     legendSets,
     ohlcChartProps,
-  } = useOhlcChartState({ chainId, marketId, previewPrices, controllerAddress, ammAddress })
+  } = useOhlcChartState({ chainId, marketId, previewPrices, controllerAddress, ammAddress: ammAddress.data })
 
   const bands = useBandsData({ chainId, market: marketQuery, enabled: isBandsVisible })
 

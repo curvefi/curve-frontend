@@ -81,6 +81,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const {
     chainId,
     market,
+    marketQuery,
     marketId,
     ammAddress,
     zapAddress,
@@ -182,7 +183,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market || form.isLoading || formActions.isLoading,
+    isLoading: marketQuery.isLoading || form.isLoading || formActions.isLoading,
     onSubmit,
     userAddress,
     borrowToken,
@@ -197,7 +198,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     priceImpact: q(useBorrowMorePriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
-      marketAddress: ammAddress,
+      marketAddress: ammAddress.data,
       controllerAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,

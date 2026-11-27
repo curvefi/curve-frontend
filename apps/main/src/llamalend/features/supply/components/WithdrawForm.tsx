@@ -15,7 +15,7 @@ type WithdrawFormProps<ChainId extends IChainId> = { networks: NetworkDict<Chain
 const TEST_ID_PREFIX = 'supply-withdraw'
 
 export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFormProps<ChainId>) => {
-  const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
+  const { chainId, marketQuery, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -63,7 +63,7 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
 
       <EvmFormButton
         pending={isPending}
-        loading={!marketId}
+        loading={marketQuery.isLoading}
         disabled={isDisabled}
         label={isFull.data ? t`Withdraw All` : t`Withdraw`}
         testId={`${TEST_ID_PREFIX}-submit-button`}

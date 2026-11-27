@@ -19,7 +19,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { chainId, marketId, controllerAddress, marketType } = useMarketContext<ChainId>()
+  const { chainId, marketQuery, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -75,7 +75,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
 
       <EvmFormButton
         pending={isPending}
-        loading={!marketId}
+        loading={marketQuery.isLoading}
         disabled={isDisabled}
         label={[isApproved.data === false && t`Approve`, t`Add collateral`]}
         testId="add-collateral-submit-button"

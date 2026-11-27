@@ -15,7 +15,7 @@ type UnstakeFormProps<ChainId extends IChainId> = { networks: NetworkDict<ChainI
 const TEST_ID_PREFIX = 'supply-unstake'
 
 export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormProps<ChainId>) => {
-  const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
+  const { chainId, marketQuery, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.blockchainId
 
@@ -61,7 +61,7 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
 
       <EvmFormButton
         pending={isPending}
-        loading={!marketId}
+        loading={marketQuery.isLoading}
         disabled={isDisabled}
         label={t`Unstake`}
         testId={`${TEST_ID_PREFIX}-submit-button`}

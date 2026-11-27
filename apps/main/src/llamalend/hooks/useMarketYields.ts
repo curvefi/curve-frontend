@@ -24,7 +24,7 @@ export function useMarketYields(enabled: boolean): QueryProp<MarketYields> {
         marketType,
         controllerAddress,
         vaultAddress: vaultToken?.address,
-        ammAddress,
+        ammAddress: ammAddress.data,
       }),
   )
 }

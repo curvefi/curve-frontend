@@ -51,6 +51,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const {
     chainId,
     market,
+    marketQuery: { isLoading },
     marketId,
     ammAddress,
     zapAddress,
@@ -107,7 +108,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market || form.isLoading || formActions.isLoading,
+    isLoading: isLoading || form.isLoading || formActions.isLoading,
     userAddress,
     onSubmit,
     borrowToken,
@@ -120,7 +121,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     priceImpact: q(useRepayPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
-      marketAddress: ammAddress,
+      marketAddress: ammAddress.data,
       controllerAddress,
       tokenIn: collateralToken,
       tokenOut: borrowToken,

@@ -44,7 +44,7 @@ const { useQuery: useStakeAssetsToShares } = queryFactory({
 })
 
 export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
-  const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
+  const { marketId, marketQuery, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const gaugeStatus = useMarketSupplyGaugeStatus({ chainId, marketId })
   const gauge = gaugeAddress && gaugeAddress !== zeroAddress ? { status: gaugeStatus.data } : undefined
@@ -97,7 +97,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     values,
     params,
     isPending,
-    isLoading: isPending || !marketId || formActions.isLoading,
+    isLoading: isPending || marketQuery.isLoading || formActions.isLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !gauge || isPending || isDebouncing,
     userAddress,

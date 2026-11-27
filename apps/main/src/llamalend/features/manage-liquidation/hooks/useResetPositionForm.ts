@@ -64,6 +64,7 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
   const {
     chainId,
     market,
+    marketQuery: { isLoading },
     marketId,
     tokens: { borrowToken, collateralToken },
     userAddress,
@@ -107,7 +108,7 @@ export const useResetPositionForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: !market || resetAvailable.isLoading,
+    isLoading: isLoading || resetAvailable.isLoading,
     isDisabled: !userAddress || !resetAvailable.data || !formState.isValid || isPending || isDebouncing,
     userAddress,
     onSubmit: form.handleSubmit(onSubmit),
