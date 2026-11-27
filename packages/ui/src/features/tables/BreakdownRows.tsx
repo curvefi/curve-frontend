@@ -7,6 +7,8 @@ import { getCellVariant, type CurveTableFeatures } from './data-table.utils'
 import type { RowBreakdownConfig } from './DataRow'
 import { useCellSx } from './hooks/useCellSx'
 
+export const BREAKDOWN_ROW_CLASS = 'table-breakdown-row'
+
 const BreakdownCell = <TData extends RowData>({
   cell: { column },
   isSticky,
@@ -45,7 +47,7 @@ export const BreakdownRows = <TData extends RowData, TItem>({
     {isExpanded =>
       isExpanded &&
       items.map((item, itemIndex) => (
-        <TableRow key={getItemKey(item, itemIndex)}>
+        <TableRow key={getItemKey(item, itemIndex)} className={BREAKDOWN_ROW_CLASS}>
           {visibleCells.map((cell, index) => (
             <BreakdownCell key={cell.id} cell={cell} isSticky={!!shouldStickFirstColumn && !index}>
               {cells[cell.column.id]?.(item, row.original)}
