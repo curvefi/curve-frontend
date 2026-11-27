@@ -1,19 +1,20 @@
 import ReactECharts from 'echarts-for-react'
 import { type ReactNode, useMemo, useRef } from 'react'
-import { useConnection } from 'wagmi'
-import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import Box from '@mui/material/Box'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import type { Address } from '@primitives/address.utils'
 import { Metric } from '@ui/components/Metric'
 import { formatCategory } from '@ui/components/metric.utils'
 import { MetricsGrid } from '@ui/components/MetricsGrid'
 import { CHART_LINE_DASH_PATTERNS } from '@ui/features/charts/chart.utils'
 import { ChartFooter } from '@ui/features/charts/ChartFooter'
+import { ChartStateWrapper } from '@ui/features/charts/ChartStateWrapper'
 import { LegendLine } from '@ui/features/charts/LegendSet'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
+import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import type { LiquidityProfile } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries } from '@ui/features/queries/combine'
 import { mapQuery, q, type QueryProp } from '@ui/features/queries/util'
@@ -35,7 +36,8 @@ export type LiquidityPriceMarker = {
   dash: number[]
 }
 
-export type LiquidityDensityChartProps = {
+export type LiquidityDensityChartProps = ConnectionProps & {
+  userAddress: Address | undefined
   /** Density, sampled prices, range bounds and spot are valued in USD. */
   profile: QueryProp<LiquidityProfile>
   inputSymbol: string
@@ -53,12 +55,15 @@ export const LiquidityDensityChart = ({
   oraclePrice,
   centerPrice,
   action,
+  userAddress,
+  isConnected,
+  isConnecting,
+  connect,
 }: LiquidityDensityChartProps) => {
   const { data: profileData, isLoading: profileLoading, error: profileError } = profile
   const { data: oracle, isLoading: oracleLoading, error: oracleError } = oraclePrice
   const { data: center, isLoading: centerLoading, error: centerError } = centerPrice
   const theme = useTheme()
-  const { isConnected } = useConnection()
   const { Chart, Color, Layer } = theme.design
   const { spot, samples } = profileData ?? {}
   const priceLabel = t`USD per ${inputSymbol}`
@@ -165,7 +170,11 @@ export const LiquidityDensityChart = ({
         role={samples?.length ? 'img' : undefined}
         aria-label={t`Liquidity density: ${priceLabel}. ${liquidityLabel}.`}
       >
-        <EvmChartStateWrapper
+        <ChartStateWrapper
+          userAddress={userAddress}
+          isConnected={isConnected}
+          isConnecting={isConnecting}
+          connect={connect}
           query={mapQuery(profile, ({ samples }) => samples)}
           height={CHART_HEIGHT}
           emptyState={
@@ -192,7 +201,7 @@ export const LiquidityDensityChart = ({
               style={{ width: width || '100%', height: CHART_HEIGHT }}
             />
           )}
-        </EvmChartStateWrapper>
+        </ChartStateWrapper>
       </Box>
       <ChartFooter
         testId="liquidity-density-legend"

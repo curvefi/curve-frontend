@@ -1,26 +1,30 @@
 import { BigNumber } from 'bignumber.js'
-import { sum } from 'lodash'
-import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
+import { noop, sum } from 'lodash'
 import { getMarketLeverageSlippage } from '@/llamalend/llama.utils'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
-import { useUserBalances, type UserBalances } from '@/llamalend/queries/user/user-balances.query'
-import { useUserState, type UserState } from '@/llamalend/queries/user/user-state.query'
+import { type UserBalances, useUserBalances } from '@/llamalend/queries/user/user-balances.query'
+import { type UserState, useUserState } from '@/llamalend/queries/user/user-state.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { type TokenUsdRate, useTokenUsdRate } from '@evm-ui/queries/token-usd-rate.query'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
-import { useForm } from '@ui/features/forms'
+import { useFormSync } from '@ui/features/forms'
+import { useFormValidation } from '@ui/features/forms/useFormValidation'
+import { useFormValues } from '@ui/features/forms/useFormValues'
 import { useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery, q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { decimal, decimalNegate } from '@ui/lib/decimal'
 import { t } from '@ui/lib/i18n'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import { useMarketContext } from '../../market-context'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const userDefaultValues = {}
+const closePositionValidationSuite = createValidationSuite<CloseLoanMutation>(noop)
 
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
@@ -34,30 +38,24 @@ export function useClosePositionForm({
 
   // Token data
   const { borrowToken, collateralToken } = tokens
+  const inputs = useFormValues<CloseLoanMutation, UserMarketParams<LlamaChainId>>({
+    defaultValues: { slippage: defaultSlippage },
+    context: { chainId, marketId, userAddress },
+  })
 
   const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
 
   const collateralTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
 
-  const userBalancesQuery = useUserBalances({ chainId, marketId, userAddress })
+  const userBalancesQuery = useUserBalances(inputs.params)
 
-  const userStateQuery = useUserState({ chainId, marketId, userAddress })
+  const userStateQuery = useUserState(inputs.params)
 
-  // Form state
-  const form = useForm<CloseLoanMutation>({ defaultValues: { ...userDefaultValues, slippage: defaultSlippage } })
-  useSyncMarketLeverageSlippage(form, defaultSlippage)
-
-  const {
-    values,
-    formState: { isSubmitting, visibleErrors },
-  } = form
   const {
     onSubmit,
-    isPending: isClosing,
+    isPending,
     error: closeError,
-  } = useClosePositionMutation({ network, marketId, onReset: () => form.reset(userDefaultValues), userAddress })
-
-  const isPending = isSubmitting || isClosing
+  } = useClosePositionMutation({ network, marketId, onReset: () => inputs.reset(userDefaultValues), userAddress })
 
   const selectTableData = (
     { collateral, debt, convertedBorrowed }: UserState,
@@ -186,12 +184,21 @@ export function useClosePositionForm({
   const missing = closePositionData?.missing
 
   const table = useCurveTable({ columns: CLOSE_POSITION_COLUMNS, query: mapQuery(tableDataQuery, ({ rows }) => rows) })
+  const form = useFormValidation<CloseLoanMutation, UserMarketParams<LlamaChainId>, object>({
+    inputs,
+    validation: closePositionValidationSuite,
+    computed: {},
+    isSubmitting: isPending,
+    disabled: !!table.error || Number(missing) > 0,
+  })
+  useFormSync(form, { slippage: defaultSlippage }, !form.isTouched('slippage'))
 
   return {
     form,
-    values,
+    values: form.values,
     isPending,
-    isDisabled: isPending || !!table.error || Number(missing) > 0,
+    isLoading: form.isLoading,
+    isDisabled: form.isDisabled,
     userAddress,
     table,
     debtTokenSymbol: borrowToken?.symbol,
@@ -199,9 +206,9 @@ export function useClosePositionForm({
     hasBadDebt: closePositionData?.hasBadDebt ?? false,
     missing,
     borrowedBalance: closePositionData?.borrowedBalance,
-    closeError,
-    formErrors: visibleErrors,
-    isApproved: q(useCloseLoanIsApproved({ chainId, marketId, userAddress })),
+    closeError: closeError ?? form.error,
+    formErrors: form.formState.visibleErrors,
+    isApproved: q(useCloseLoanIsApproved(form.params)),
     onSubmit: form.handleSubmit(onSubmit),
   }
 }
