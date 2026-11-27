@@ -9,7 +9,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui/lib/i18n'
-import { formatTokenAmounts } from '../llama.utils'
+import { formatTokenAmounts, getTokens } from '../llama.utils'
 
 type WithdrawOptions = {
   marketId: string | undefined
@@ -42,8 +42,10 @@ export const useWithdrawMutation = ({
       t`Withdrawing... ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Withdraw successful! ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
-    mutationTokenAddresses: (_variables, { market }) =>
-      [requireVault(market).borrowed_token.address, requireVault(market).addresses.vault] as Address[],
+    mutationTokenAddresses: (_variables, { market }) => [
+      getTokens(market).borrowToken.address,
+      requireVault(market).addresses.vault as Address,
+    ],
     ...props,
   })
 
