@@ -59,7 +59,7 @@ export const toActivityRow = (event: MarketBorrowEventRow): ActivityRow => {
     txHash,
     timestamp,
     address,
-    action: type === 'deposit' ? { label: t`Deposit`, color: 'success' } : { label: t`Withdraw`, color: 'error' },
+    action: type === 'deposit' ? { label: t`Deposit` } : { label: t`Withdraw` },
     valueUsd: type === 'deposit' ? valueUsd : (maybe(valueUsd, x => -x) ?? null),
     deltas,
   }

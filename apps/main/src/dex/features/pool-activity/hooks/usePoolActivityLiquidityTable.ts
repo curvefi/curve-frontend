@@ -36,7 +36,7 @@ export const toActivityRow = ({
     txHash,
     timestamp,
     address,
-    action: isAdd ? { label: t`Add liquidity`, color: 'success' } : { label: t`Remove liquidity`, color: 'error' },
+    action: isAdd ? { label: t`Add liquidity` } : { label: t`Remove liquidity` },
     valueUsd: null,
     deltas: tokenAmounts
       .map((amount, index) => ({

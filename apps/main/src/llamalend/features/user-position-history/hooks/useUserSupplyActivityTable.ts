@@ -11,10 +11,10 @@ import { t } from '@ui/lib/i18n'
 import type { ParsedUserSupplyEvent } from './useUserSupplyEvents'
 
 const actions = {
-  Deposit: { label: t`Supply`, color: 'success' },
-  Withdraw: { label: t`Withdraw`, color: 'error' },
-  TransferIn: { label: t`Transfer in`, color: 'success' },
-  TransferOut: { label: t`Transfer out`, color: 'error' },
+  Deposit: { label: t`Supply` },
+  Withdraw: { label: t`Withdraw` },
+  TransferIn: { label: t`Transfer in` },
+  TransferOut: { label: t`Transfer out` },
 } satisfies Record<ParsedUserSupplyEvent['type'], ActivityRow['action']>
 
 const toActivityRow = ({
