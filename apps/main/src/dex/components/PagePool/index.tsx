@@ -25,17 +25,23 @@ import { AdvancedDepositTab, OneCoinDepositTab } from '@/dex/features/deposit/co
 import { DepositReward } from '@/dex/features/deposit-gauge-reward/ui/DepositReward'
 import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
+import { Alerts } from '@/dex/features/pool-information/components/Alerts'
 import { PointsCampaigns } from '@/dex/features/pool-information/components/points-campaigns'
+import { PoolComposition } from '@/dex/features/pool-information/components/PoolComposition'
+import { useMetrics } from '@/dex/features/pool-information/hooks/useMetrics'
+import { usePointsCampaigns } from '@/dex/features/pool-information/hooks/usePointsCampaigns'
 import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { SwapTab } from '@/dex/features/swap/components/SwapTab'
 import { UserPosition } from '@/dex/features/user-position'
 import { AdvancedWithdrawTab } from '@/dex/features/withdraw/components/AdvancedWithdrawTab'
 import { OneCoinWithdrawTab } from '@/dex/features/withdraw/components/OneCoinWithdrawTab'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
+import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { hasWrapped } from '@/dex/pool.utils'
 import { usePoolCurrencyReserves } from '@/dex/queries/pool-currency-reserves.query'
 import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
+import { alertTypeToSeverity } from '@/dex/utils/alert.utils'
 import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { useNewPoolForms } from '@evm-ui/hooks/useFeatureFlags'
 import { dexPages } from '@evm-ui/shared/routes'
@@ -49,6 +55,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { NetRateTooltipContent } from '@ui/features/pool-list/cells/NetRateTooltipContent'
 import { PoolDetailsHeader } from '@ui/features/pools/PoolDetailsHeader'
 import { PoolHeaderMetrics } from '@ui/features/pools/PoolHeaderMetrics'
+import { Metrics } from '@ui/features/pools/PoolInformationMetrics'
 import { YieldBreakdown } from '@ui/features/pools/yield-breakdown/YieldBreakdown'
 import { combineQueries } from '@ui/features/queries/combine'
 import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
@@ -218,6 +225,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     setIsWrapped,
     tokens,
     tokenAddresses,
+    tokenAddressesAll: { data: tokenAddressesAll },
   } = usePoolContext()
 
   const poolAlert = usePoolAlert({
@@ -225,6 +233,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     poolAddress,
     hasVyperVulnerability: pool.data?.hasVyperVulnerability(),
   })
+  const tokenAlert = useTokenAlert(tokenAddressesAll)
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(pool.data) ?? 'stable'])
 
   const { state } = useLocation()
@@ -234,6 +243,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const tvl = usePoolTvl({ chainId, poolAddress })
   const volume = usePoolVolume({ chainId, poolAddress })
   const { tooltipData: netAprTooltip, ...yieldBreakdown } = useYieldBreakdown({ chainId, poolAddress })
+  const metrics = useMetrics()
+  const pointsCampaigns = usePointsCampaigns({ chainId, poolAddress })
 
   const currentSeed = mapQuery(
     fallbackQ(
@@ -332,9 +343,30 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               <NetRateTooltipContent {...data} crvToken={MAINNET_CRV} />
             ))}
           />
-          <PointsCampaigns />
+          <PointsCampaigns {...pointsCampaigns} />
         </Stack>
-        <PoolInformation poolAlert={poolAlert} />
+        <PoolInformation
+          metrics={<Metrics {...metrics} />}
+          composition={<PoolComposition />}
+          alerts={
+            <Alerts
+              poolAlert={
+                !!poolAlert &&
+                !poolAlert.isDisableDeposit &&
+                !poolAlert.isInformationOnlyAndShowInForm && {
+                  severity: alertTypeToSeverity[poolAlert.alertType],
+                  message: poolAlert.message ?? poolAlert.banner?.subtitle,
+                }
+              }
+              tokenAlert={
+                !!tokenAlert?.isInformationOnly && {
+                  severity: alertTypeToSeverity[tokenAlert.alertType],
+                  message: tokenAlert.message ?? poolAlert?.banner?.subtitle,
+                }
+              }
+            />
+          }
+        />
         <PoolAdvancedDetails />
       </DetailPageLayout>
     </>

@@ -1,32 +1,26 @@
-import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import type { PoolAlert } from '@/dex/types/main.types'
+import type { ReactNode } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { Metrics } from '@ui/features/pools/PoolInformationMetrics'
 import { t } from '@ui/lib/i18n'
 import { stackedCardHeadersSx } from '@ui/lib/mui'
-import { usePoolContext } from '../pool-context'
-import { Alerts } from './components/Alerts'
-import { PoolComposition } from './components/PoolComposition'
-import { useMetrics } from './hooks/useMetrics'
 
-export const PoolInformation = ({ poolAlert }: { poolAlert: PoolAlert | null }) => {
-  const {
-    tokenAddressesAll: { data: tokenAddressesAll },
-  } = usePoolContext()
-
-  return (
-    <Stack sx={stackedCardHeadersSx}>
-      <Card size="small">
-        <CardHeader title={t`Pool Information`} />
-        <CardContent component={Stack}>
-          <Metrics {...useMetrics()} />
-        </CardContent>
-      </Card>
-      <PoolComposition />
-      <Alerts poolAlert={poolAlert} tokenAlert={useTokenAlert(tokenAddressesAll)} />
-    </Stack>
-  )
-}
+export const PoolInformation = ({
+  metrics,
+  composition,
+  alerts,
+}: {
+  metrics: ReactNode
+  composition: ReactNode
+  alerts: ReactNode
+}) => (
+  <Stack sx={stackedCardHeadersSx}>
+    <Card size="small">
+      <CardHeader title={t`Pool Information`} />
+      <CardContent component={Stack}>{metrics}</CardContent>
+    </Card>
+    {composition}
+    {alerts}
+  </Stack>
+)

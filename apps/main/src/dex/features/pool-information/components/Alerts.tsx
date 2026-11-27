@@ -1,22 +1,29 @@
-import type { PoolAlert } from '@/dex/types/main.types'
-import { alertTypeToSeverity } from '@/dex/utils/alert.utils'
-import Alert from '@mui/material/Alert'
+import type { ReactNode } from 'react'
+import Alert, { type AlertColor } from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const Alerts = ({ poolAlert, tokenAlert }: { poolAlert: PoolAlert | null; tokenAlert: PoolAlert | null }) => (
+type AlertMessage = { severity: AlertColor; message: ReactNode }
+
+export const Alerts = ({
+  poolAlert,
+  tokenAlert,
+}: {
+  poolAlert: AlertMessage | false
+  tokenAlert: AlertMessage | false
+}) => (
   <Stack sx={{ gap: Spacing.sm, paddingBlockStart: Spacing.md, ':empty': { display: 'none' } }}>
-    {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
-      <Alert variant="filled" severity={alertTypeToSeverity[poolAlert.alertType]}>
-        {poolAlert.message ?? poolAlert.banner?.subtitle}
+    {poolAlert && (
+      <Alert variant="filled" severity={poolAlert.severity}>
+        {poolAlert.message}
       </Alert>
     )}
 
-    {tokenAlert && tokenAlert.isInformationOnly && (
-      <Alert variant="filled" severity={alertTypeToSeverity[tokenAlert.alertType]}>
-        {tokenAlert.message ?? poolAlert?.banner?.subtitle}
+    {tokenAlert && (
+      <Alert variant="filled" severity={tokenAlert.severity}>
+        {tokenAlert.message}
       </Alert>
     )}
   </Stack>
