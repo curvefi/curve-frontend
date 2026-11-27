@@ -1,5 +1,6 @@
 import { sumBy } from 'lodash'
 import { getAddress } from 'viem'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { Chain } from '@curvefi/prices-api'
@@ -75,6 +76,7 @@ export const useMarketActivityBorrowEventsTable = ({
   ammAddress: llamma,
   endpoint,
 }: MarketBorrowActivityProps) => {
+  const { userAddress } = useMarketContext()
   const columnVisibility = useActivityVisibility({ hasValue: true })
   const { pagination, onPaginationChange, apiPage: page } = useManualPagination()
 
@@ -94,7 +96,7 @@ export const useMarketActivityBorrowEventsTable = ({
 
   return {
     table: useActivityTable({
-      meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
+      meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }, userAddress },
       query,
       state: { columnVisibility, pagination },
       manualPagination: true,

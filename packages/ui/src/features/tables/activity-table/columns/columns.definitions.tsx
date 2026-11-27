@@ -1,11 +1,10 @@
 import { createAppColumnHelper } from '@ui/features/tables/data-table.utils'
-import { AddressCell } from '../../cells/AddressCell'
-import { RelativeTimeCell } from '../../cells/RelativeTimeCell'
 import { ActivityActionCell } from '../cells/ActivityActionCell'
+import { ActivityAddressCell } from '../cells/ActivityAddressCell'
+import { ActivityTimeCell } from '../cells/ActivityTimeCell'
 import { ActivityUsdValueCell } from '../cells/ActivityUsdValueCell'
 import { TokenDeltaAmountCell } from '../cells/TokenDeltaAmountCell'
 import { IndentBox } from '../IndentBox'
-import { getActivityTableMeta } from '../table-meta'
 import type { ActivityRow } from '../types'
 import { ActivityColumnId } from './columns.enum'
 import { ACTIVITY_TITLES } from './columns.titles'
@@ -16,17 +15,7 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
   columnHelper.display({
     id: ActivityColumnId.Time,
     header: ACTIVITY_TITLES[ActivityColumnId.Time],
-    cell: ({
-      row: {
-        original: { timestamp, chainId, txHash },
-      },
-      table,
-    }) => (
-      <RelativeTimeCell
-        timestamp={new Date(timestamp)}
-        txUrl={txHash ? getActivityTableMeta(table).addressDisplay.scanTxPath(chainId, txHash) : undefined}
-      />
-    ),
+    cell: ActivityTimeCell,
   }),
   columnHelper.display({
     id: ActivityColumnId.Action,
@@ -59,23 +48,7 @@ export const ACTIVITY_COLUMNS = columnHelper.columns([
   columnHelper.display({
     id: ActivityColumnId.Address,
     header: ACTIVITY_TITLES[ActivityColumnId.Address],
-    cell: ({
-      row: {
-        original: { address, chainId },
-      },
-      table,
-    }) => {
-      const { formatAddress, scanAddressPath } = getActivityTableMeta(table).addressDisplay
-
-      return (
-        <AddressCell
-          formatAddress={formatAddress}
-          address={address}
-          explorerUrl={scanAddressPath(chainId, address)}
-          align="end"
-        />
-      )
-    },
+    cell: ActivityAddressCell,
     meta: { type: 'numeric' },
   }),
 ])

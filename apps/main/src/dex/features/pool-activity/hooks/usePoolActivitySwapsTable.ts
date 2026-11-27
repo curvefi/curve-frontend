@@ -47,7 +47,7 @@ export const toActivityRow = ({
 
 /** Create an ActivityTable for pool swap events. */
 export const usePoolActivitySwapsTable = () => {
-  const { chainId, poolAddress } = usePoolContext()
+  const { chainId, poolAddress, userAddress } = usePoolContext()
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = getPricesApiBlockchainId(networkConfig?.blockchainId)
   const { isHydrated } = useCurve()
@@ -65,7 +65,7 @@ export const usePoolActivitySwapsTable = () => {
   )
 
   const table = useActivityTable({
-    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
+    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }, userAddress },
     query,
     state: { columnVisibility, pagination },
     manualPagination: true,

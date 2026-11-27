@@ -52,7 +52,7 @@ export const toActivityRow = ({
 
 /** Create an ActivityTable for pool liquidity events. */
 export const usePoolActivityLiquidityTable = () => {
-  const { chainId, blockchainId, poolAddress, apiPool } = usePoolContext()
+  const { chainId, blockchainId, poolAddress, apiPool, userAddress } = usePoolContext()
   const { isHydrated } = useCurve()
   const network = getPricesApiBlockchainId(blockchainId)
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
@@ -78,7 +78,7 @@ export const usePoolActivityLiquidityTable = () => {
   )
 
   const table = useActivityTable({
-    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
+    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }, userAddress },
     query,
     state: { columnVisibility, pagination },
     manualPagination: true,

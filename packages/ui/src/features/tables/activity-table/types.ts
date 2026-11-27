@@ -1,5 +1,5 @@
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
-import type { Token } from '@primitives/address.utils'
+import type { Address, Token } from '@primitives/address.utils'
 import type { Nullish } from '@primitives/objects.utils'
 import type { TableMeta } from '@tanstack/react-table'
 import type { CurveTableFeatures } from '@ui/features/tables/data-table.utils'
@@ -37,4 +37,7 @@ export type ActivityRow = {
   deltas: ActivityTokenDelta[]
 }
 
-export type ActivityTableMeta = TableMeta<CurveTableFeatures, ActivityRow> & { addressDisplay: ActivityDisplay }
+export type ActivityTableMeta = TableMeta<CurveTableFeatures, ActivityRow> & {
+  addressDisplay: ActivityDisplay
+  userAddress?: Address
+}

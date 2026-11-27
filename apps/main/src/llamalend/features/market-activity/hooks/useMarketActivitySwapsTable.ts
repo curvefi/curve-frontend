@@ -1,4 +1,5 @@
 import { getAddress } from 'viem'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { Chain } from '@curvefi/prices-api'
@@ -49,6 +50,7 @@ export const useMarketActivitySwapsTable = ({
   ammAddress,
   endpoint,
 }: MarketBorrowActivityProps) => {
+  const { userAddress } = useMarketContext()
   const columnVisibility = useActivityVisibility({ hasValue: false })
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
@@ -77,7 +79,7 @@ export const useMarketActivitySwapsTable = ({
   )
 
   const table = useActivityTable({
-    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
+    meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }, userAddress },
     query: q({
       data: activityQuery.data,
       isLoading: activityQuery.isLoading || !ammAddress,

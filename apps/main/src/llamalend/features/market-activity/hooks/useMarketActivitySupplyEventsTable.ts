@@ -1,4 +1,5 @@
 import { getAddress } from 'viem'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { getActivityToken } from '@/llamalend/llama.utils'
 import { useMarketSupplyEvents } from '@/llamalend/queries/market/market-supply-events.query'
 import type { VaultEvent } from '@curvefi/prices-api/llamalend'
@@ -57,6 +58,7 @@ export const useMarketActivitySupplyEventsTable = ({
   borrowToken,
   vaultToken,
 }: MarketSupplyActivityProps) => {
+  const { userAddress } = useMarketContext()
   const columnVisibility = useActivityVisibility({ hasValue: false })
   const { pagination, onPaginationChange, apiPage: page } = useManualPagination()
   const eventsQuery = useMarketSupplyEvents({
@@ -75,7 +77,7 @@ export const useMarketActivitySupplyEventsTable = ({
 
   return {
     table: useActivityTable({
-      meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath } },
+      meta: { addressDisplay: { ...evmAddressDisplay, formatAddress: getAddress, scanTxPath }, userAddress },
       query,
       state: { columnVisibility, pagination },
       manualPagination: true,
