@@ -51,8 +51,6 @@ export type ActionInfoProps = {
   futureValue?: QueryOrValue<ReactNode>
   /** Custom color for the current value text. */
   currentValueColor?: TypographyProps['color']
-  /** Skeleton dimensions or a representative value used to infer its dimensions */
-  skeleton?: [number, number] | string
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -126,7 +124,6 @@ export const ActionInfo = (props: ActionInfoProps) => {
     format,
     testId = 'action-info',
     sx,
-    skeleton,
   } = props
   const { data: givenCurrentValue, isLoading: valueLoading, error: valueError } = toQuery(propValue)
   const givenFutureValue = toQuery(propFutureValue)
@@ -139,12 +136,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
   const isLoading = valueLoading || givenFutureValue?.isLoading
   const futureValue = givenFutureValue?.data ?? givenCurrentValue
   const value = futureValue === givenCurrentValue ? null : givenCurrentValue
-  const skeletonDimensions = Array.isArray(skeleton)
-    ? { width: skeleton[0], height: skeleton[1] }
-    : typeof skeleton === 'string'
-      ? {}
-      : { width: '2ch', height: '1rem' }
-  const displayedValue = isLoading && typeof skeleton === 'string' ? skeleton : error ? '' : (futureValue ?? '-')
+  const displayedValue = error ? '' : (futureValue ?? '-')
 
   const copyToClipboard = useCopyToClipboard({ copyText: copyValue, format })
 
@@ -196,7 +188,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
               >
                 <ValueDecorator value={valueLeft} size={size} valueColor={valueColor} testId={`${testId}-left`} />
 
-                <WithSkeleton component="div" loading={isLoading} {...skeletonDimensions}>
+                <WithSkeleton loading={isLoading} category="actionInfo.value">
                   <ValueTypography
                     size={size}
                     valueColor={valueColor}

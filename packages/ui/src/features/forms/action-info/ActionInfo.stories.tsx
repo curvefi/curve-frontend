@@ -44,10 +44,6 @@ const meta: Meta<typeof ActionInfoStory> = {
     currentValueColor: { control: 'color', description: 'Custom color for the current value text' },
     copyValue: { control: 'text', description: 'The value to be copied when clicking the value' },
     size: { control: 'select', options: SIZES, description: 'The size of the component' },
-    skeleton: {
-      control: 'text',
-      description: 'Skeleton dimensions or representative value used to infer its dimensions',
-    },
     loading: { control: 'boolean', description: 'Whether the component is in a loading state' },
     errorMessage: { control: 'text', description: 'Error message to display instead of the value' },
   },

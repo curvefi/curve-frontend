@@ -62,7 +62,7 @@ const PositionTab = ({ type, hasPosition: { data, isLoading, error } }: Position
         ) : error && data === undefined ? (
           <EvmErrorMessage title={t`Could not load your position`} subtitle={error.message} error={error} size="sm" />
         ) : (
-          <WithSkeleton loading={isLoading} variant="rectangular" sx={{ width: '100%', maxWidth: 'none' }}>
+          <WithSkeleton loading={isLoading} category="content.fullWidth">
             <MarketEmptyPosition type={type} />
           </WithSkeleton>
         )}

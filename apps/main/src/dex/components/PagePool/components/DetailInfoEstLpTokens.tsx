@@ -36,7 +36,6 @@ export const DetailInfoEstLpTokens = ({
     <DetailInfo
       isBold
       loading={formLpTokenExpected.loading}
-      loadingSkeleton={[85, 23]}
       label={t`Minimum LP Tokens:`}
       tooltip={
         showTooltip ? (

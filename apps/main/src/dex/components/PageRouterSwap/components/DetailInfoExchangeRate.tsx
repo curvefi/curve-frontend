@@ -19,7 +19,6 @@ export const DetailInfoExchangeRate = ({
       </>
     }
     loading={loading}
-    loadingSkeleton={[150, 38]}
     testId="exchange-rate"
   >
     {Array.isArray(exchangeRates) && exchangeRates.length > 0 ? (
@@ -41,6 +40,11 @@ export const DetailInfoExchangeRate = ({
             </Chip>
           </Box>
         ))}
+      </Box>
+    ) : loading ? (
+      <Box grid>
+        <Chip size="md">-</Chip>
+        <Chip size="md">-</Chip>
       </Box>
     ) : (
       '-'

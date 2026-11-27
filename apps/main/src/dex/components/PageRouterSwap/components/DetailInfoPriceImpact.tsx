@@ -14,7 +14,6 @@ export const DetailInfoPriceImpact = ({ priceImpact }: { priceImpact: QueryProp<
         {t`Price change in the market that happens when a trader buys or sells an asset.`}
       </IconTooltip>
     }
-    skeleton={[80, 23]}
     testId="price-impact"
   />
 )

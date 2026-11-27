@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
-import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
+import { Skeleton } from '@ui/components/Skeleton'
 import { FormContent } from '@ui/features/forms/components/FormContent'
 import { BUTTON_FORM_SIZE } from '@ui/features/forms/constants'
 import { LargeTokenInputSkeleton } from '@ui/features/forms/controls/LargeTokenInput/LargeTokenInputSkeleton'
@@ -13,7 +13,7 @@ const menu = [
   {
     value: 'tab',
     label: (
-      <Skeleton variant="rectangular" width={100}>
+      <Skeleton category="content.block">
         <Typography variant="buttonTabsM">{t`Loading`}</Typography>
       </Skeleton>
     ),

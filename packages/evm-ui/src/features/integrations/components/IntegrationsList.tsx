@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack'
 import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 import { getDefaultSelectableChipSize } from '@ui/components/selectable-chip.utils'
 import { SelectableChip } from '@ui/components/SelectableChip'
-import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { useMappedQuery } from '@ui/features/queries/util'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate, useSearchParams } from '@ui/hooks/router'
@@ -66,9 +65,8 @@ const getNetworks = (data: Partner[]) => [
 export const IntegrationsList = ({ blockchainId, searchText }: { blockchainId?: string; searchText?: string }) => {
   const integrationsQuery = useIntegrations({})
   // to do: handle query error
-  const { data: integrations = [], isLoading: integrationsLoading } = integrationsQuery
-  const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
-  const isLoading = integrationsLoading || integrationsTagsLoading
+  const { data: integrations = [] } = integrationsQuery
+  const { data: tags = {} } = useIntegrationsTags({})
   const isMobile = useIsMobile()
 
   const networksQuery = useMappedQuery(integrationsQuery, getNetworks)
@@ -105,51 +103,49 @@ export const IntegrationsList = ({ blockchainId, searchText }: { blockchainId?: 
   )
 
   return (
-    <WithSkeleton loading={isLoading} sx={{ height: Sizing.xxl }}>
-      <Stack direction="column" sx={{ gap: Spacing.sm }}>
-        <ChainFilterChips
-          chainsQuery={networksQuery}
-          selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
-          toggleChain={useCallback(network => updateFilters({ network }), [updateFilters])}
-        />
+    <Stack direction="column" sx={{ gap: Spacing.sm }}>
+      <ChainFilterChips
+        chainsQuery={networksQuery}
+        selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
+        toggleChain={useCallback(network => updateFilters({ network }), [updateFilters])}
+      />
 
-        <Stack direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap' }}>
-          {Object.values(tags).map(tag => (
-            <SelectableChip
-              size={getDefaultSelectableChipSize(isMobile)}
-              key={tag.id}
-              label={
-                <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
-                  {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
-                  {tag.displayName}
-                </Stack>
-              }
-              selected={filterTag == tag.id}
-              toggle={() => updateFilters({ tag: tag.id })}
-              sx={{ width: { mobile: 'auto' } }}
-            />
-          ))}
-        </Stack>
-
-        {integrationsFiltered.length ? (
-          <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
-            {integrationsFiltered.map(app => (
-              <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
-            <Trans>
-              No integration apps found with for{' '}
-              {notFalsy(searchText, filterTag)
-                .map(x => `“${x}”`)
-                .join(t` and `)}
-            </Trans>
-          </Box>
-        )}
+      <Stack direction="row" sx={{ gap: Spacing.xs, flexWrap: 'wrap' }}>
+        {Object.values(tags).map(tag => (
+          <SelectableChip
+            size={getDefaultSelectableChipSize(isMobile)}
+            key={tag.id}
+            label={
+              <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
+                {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
+                {tag.displayName}
+              </Stack>
+            }
+            selected={filterTag == tag.id}
+            toggle={() => updateFilters({ tag: tag.id })}
+            sx={{ width: { mobile: 'auto' } }}
+          />
+        ))}
       </Stack>
-    </WithSkeleton>
+
+      {integrationsFiltered.length ? (
+        <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
+          {integrationsFiltered.map(app => (
+            <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
+              <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
+          <Trans>
+            No integration apps found with for{' '}
+            {notFalsy(searchText, filterTag)
+              .map(x => `“${x}”`)
+              .join(t` and `)}
+          </Trans>
+        </Box>
+      )}
+    </Stack>
   )
 }

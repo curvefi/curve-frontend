@@ -1,13 +1,10 @@
 import ReactECharts from 'echarts-for-react'
 import { useMemo } from 'react'
 import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
+import { WithSkeleton } from '@ui/components/WithSkeleton'
 import { combineQueryState } from '@ui/features/queries/combine'
-import {
-  SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX,
-  SMALL_LIQUIDATION_RANGE_CHART_LOADER,
-} from './small-liquidation-range-chart.constants'
+import { SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX } from './small-liquidation-range-chart.constants'
 import type {
   SmallLiquidationRangeChartOptionProps,
   SmallLiquidationRangeChartProps,
@@ -43,29 +40,23 @@ export const SmallLiquidationRangeChart = (props: SmallLiquidationRangeChartProp
 
   return (
     <Stack sx={{ flexGrow: 1 }}>
-      <Box
-        sx={{
-          alignSelf: 'stretch',
-          height: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
-          minHeight: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
-          ...(isLoading && {
-            display: 'flex',
-            alignItems: 'center',
-            boxSizing: 'border-box',
-            paddingBlock: SMALL_LIQUIDATION_RANGE_CHART_LOADER.padding,
-          }),
-        }}
-      >
-        {isLoading ? (
-          <Skeleton variant="rectangular" width="100%" height={SMALL_LIQUIDATION_RANGE_CHART_LOADER.height} />
-        ) : (
-          <ReactECharts
-            option={option}
-            notMerge
-            style={{ width: '100%', height: SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX }}
-          />
-        )}
-      </Box>
+      <WithSkeleton loading={isLoading} category="content.fullWidth">
+        <Box // Box for skeleton dimension inference
+          sx={{
+            alignSelf: 'stretch',
+            height: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
+            minHeight: `${SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX}px`,
+          }}
+        >
+          {!isLoading && (
+            <ReactECharts
+              option={option}
+              notMerge
+              style={{ width: '100%', height: SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX }}
+            />
+          )}
+        </Box>
+      </WithSkeleton>
     </Stack>
   )
 }

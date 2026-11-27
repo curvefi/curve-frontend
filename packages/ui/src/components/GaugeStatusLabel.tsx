@@ -18,7 +18,7 @@ const GAUGE_STATUS_BADGE = {
 /** Gauge label with an `Active` or `Inactive` badge, no badge for gauges the DAO never approved, or an error icon. */
 export const GaugeStatusLabel = ({
   label,
-  status: { data: status, isLoading, error },
+  status,
   testId,
 }: {
   label: string
@@ -29,11 +29,15 @@ export const GaugeStatusLabel = ({
     <Typography variant="bodyMRegular" color="textSecondary">
       {label}
     </Typography>
-    {error ? (
-      <ErrorIconButton error={error} size="extraSmall" />
+    {status.error ? (
+      <ErrorIconButton error={status.error} size="extraSmall" />
     ) : (
-      <WithSkeleton loading={isLoading} width="4rem">
-        {status != null && <Badge size="extraSmall" {...GAUGE_STATUS_BADGE[status]} data-testid={testId} />}
+      <WithSkeleton query={status}>
+        <Badge
+          size="extraSmall"
+          {...(status.data ? GAUGE_STATUS_BADGE[status.data] : { label: t`Loading` })}
+          data-testid={testId}
+        />
       </WithSkeleton>
     )}
   </Stack>

@@ -1,15 +1,16 @@
 import { useMemo } from 'react'
 import { CHAIN_BLOCKCHAIN_IDS } from '@evm-ui/features/connect-wallet/lib/wagmi/constants'
-import { capitalize, Skeleton, Typography, TypographyProps } from '@mui/material'
+import { capitalize, Typography, TypographyProps } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { Chain } from '@primitives/network.utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { noop } from '@tanstack/react-query'
 import { getDefaultSelectableChipSize } from '@ui/components/selectable-chip.utils'
-import { type SelectableChipProps } from '@ui/components/SelectableChip'
+import { SelectableChip, type SelectableChipProps } from '@ui/components/SelectableChip'
+import { Skeleton } from '@ui/components/Skeleton'
 import { Tooltip } from '@ui/components/Tooltip'
 import { QueryProp } from '@ui/features/queries/util'
 import { GridChip } from '@ui/features/tables/chips/GridChip'
-import { chipSizeClickable } from '@ui/features/themes/components/mui-chip'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useIsMobile } from '@ui/hooks/useBreakpoints'
 import { useIncreasingLength } from '@ui/hooks/useIncreasingLength'
@@ -43,14 +44,17 @@ const TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE: Record<
   extraLarge: 'bodyMRegular',
 }
 
+// Empty chips use the same square sizing as the icon-only filters.
 const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps['size']> }) =>
   Array.from({ length: useIncreasingLength('chips') }).map((_, i) => (
     <Skeleton
       // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       key={`skeleton-chain-chip-${i}`}
-      variant="rectangular"
-      sx={{ height: chipSizeClickable[chipSize].height, width: chipSizeClickable[chipSize].height }}
-    />
+      category="content.block"
+      component="div"
+    >
+      <SelectableChip disabled selected={false} size={chipSize} toggle={noop} sx={{ display: 'flex' }} />
+    </Skeleton>
   ))
 
 /**
