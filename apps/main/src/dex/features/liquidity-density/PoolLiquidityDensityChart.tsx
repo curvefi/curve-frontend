@@ -5,13 +5,13 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { useWallet } from '@evm-ui/features/connect-wallet'
 import { maybe } from '@primitives/objects.utils'
 import { ChartSelect } from '@ui/features/charts/ChartSelect'
+import { LiquidityDensityChart } from '@ui/features/pools/liquidity-density/LiquidityDensityChart'
 import { valueLiquidityProfile } from '@ui/features/pools/liquidity-density/profile'
 import type { LiquidityPair } from '@ui/features/pools/liquidity-density/types'
 import { combineQueries, useCombinedQueries } from '@ui/features/queries/combine'
 import { mapQuery } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
 import { usePoolLiquidityDensity } from './hooks/usePoolLiquidityDensity'
-import { LiquidityDensityChart } from './LiquidityDensityChart'
 
 export const PoolLiquidityDensityChart = () => {
   const { address, isConnected, isConnecting } = useConnection()

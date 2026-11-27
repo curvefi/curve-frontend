@@ -34,6 +34,7 @@
     "external-rewards": "workspace:^",
     "fuse.js": "7.5.0",
     "immer": "11.2.9",
+    "lightweight-charts": "5.2.1",
     "lodash": "4.18.1",
     "memoizee": "0.4.17",
     "react": "19.3.1",

@@ -8,11 +8,11 @@ import type {
   ChartDataPoint,
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
-import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
 import { EvmChartStateWrapper } from '@evm-ui/shared/ui/EvmChartStateWrapper'
 import { Box, useTheme } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type Nullish, notFalsy } from '@primitives/objects.utils'
+import type { LlammaLiquididationRange } from '@ui/features/candle-chart/types'
 import { useEChartsTooltip } from '@ui/features/charts/useEChartsTooltip'
 import type { QueryProp } from '@ui/features/queries/util'
 import { t } from '@ui/lib/i18n'
