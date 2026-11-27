@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { ExpandedState } from '@tanstack/react-table'
-import type { ConnectionProps } from '@ui/features/connect-wallet/ConnectWalletButton'
 import { PoolsChips } from '@ui/features/pool-list/chips/PoolsChips'
 import { PoolExpandedPanel } from '@ui/features/pool-list/components/PoolExpandedPanel'
 import { PoolsFilters } from '@ui/features/pool-list/filters/PoolsFilters'
@@ -34,7 +33,6 @@ const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 
 export type PoolsTableProps = PoolsTableData &
-  ConnectionProps &
   Pick<PoolTableMeta, 'addressDisplay' | 'crvToken'> & {
     userAddress: Address | undefined
     isLite: boolean
@@ -50,9 +48,6 @@ const PoolsExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => 
 
 export const PoolsTable = ({
   userAddress,
-  isConnecting,
-  isConnected,
-  connect,
   isLite,
   filters: { activePoolsFilter, globalFilter, columnFilters, filterProps, onSearch, resetFilters, searchText },
   pagination: { onPaginationChange, pagination },
@@ -112,9 +107,6 @@ export const PoolsTable = ({
       />
       <DataTable
         userAddress={userAddress}
-        isConnecting={isConnecting}
-        isConnected={isConnected}
-        connect={connect}
         table={table}
         anchorRef={anchorRef}
         emptyState={{

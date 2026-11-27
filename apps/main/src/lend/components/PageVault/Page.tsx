@@ -25,13 +25,13 @@ import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { useLendMarket } from '../../hooks/useLendMarket'
-import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
+import { MarketCampaignRewardsBanner } from '../MarketCampaignRewardsBanner'
 
 const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, chainId } = parseMarketParams(params)
+  const { marketId: rMarket, chainId } = parseMarketParams(params)
   const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market } = marketQuery
   const network = networks[chainId]
@@ -50,8 +50,10 @@ export const Page = () => {
     },
     marketQuery,
   )
-  const { data: balances } = useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress })
-  const hasPosition = balances && +(balances.totalShares ?? 0) > 0
+  const hasPosition = mapQuery(
+    useUserBalances({ marketId: mapQuery(marketQuery, m => m?.id), chainId, userAddress }),
+    balances => +(balances.totalShares ?? 0) > 0,
+  )
   const events = useUserVaultEvents({
     chainId,
     userAddress,
@@ -83,7 +85,7 @@ export const Page = () => {
           <MarketBanners
             chainId={chainId}
             market={market}
-            rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
+            rewardsBanner={<MarketCampaignRewardsBanner chainId={chainId} market={market} />}
           />
           <MarketSection id="position-details">
             <PositionDetailsComposite type={MarketRateType.Supply} hasPosition={hasPosition} events={events} />

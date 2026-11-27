@@ -32,6 +32,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
     borrowedBalance,
     isDisabled,
     isPending,
+    isLoading,
     closeError,
     isApproved,
     userAddress,
@@ -66,7 +67,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       />
       <LoanActionSettings
         slippage={values.slippage}
-        onSlippageChange={slippage => form.update({ slippage })}
+        onSlippageChange={slippage => form.update({ slippage }, { mode: 'immediate' })}
         userAddress={userAddress}
       />
       {missing != null && borrowedBalance != null && +missing > 0 ? (
@@ -76,6 +77,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       )}
       <EvmFormButton
         pending={isPending}
+        loading={isLoading}
         disabled={isDisabled}
         label={[
           isApproved.data === false && t`Approve`,

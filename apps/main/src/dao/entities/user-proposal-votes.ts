@@ -6,6 +6,7 @@ import { userAddressValidationGroup } from '@evm-ui/queries/validation/evm-addre
 import { queryFactory } from '@ui/features/queries/factory'
 import { TIME_FRAMES } from '@ui/lib/time'
 import { createValidationSuite } from '@ui/lib/validation/lib'
+import { createProposalKey } from '../utils/proposal'
 
 const { WEEK } = TIME_FRAMES
 
@@ -28,7 +29,7 @@ const _fetchUserProposalVotes = async ({ userAddress }: UserQuery) => {
   )
 
   const userProposalVotesMapper = results.reduce((mapper: UserProposalVotesMapper, vote: UserProposalVote) => {
-    mapper[`${vote.proposal.id}-${vote.proposal.type.toLowerCase()}`] = {
+    mapper[createProposalKey(vote.proposal.id, vote.proposal.type)] = {
       voteId: vote.proposal.id,
       voteType: vote.proposal.type,
       voteFor: Number(vote.votes.find(v => v.supports)?.weight ?? 0) / 1e18,

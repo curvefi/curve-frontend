@@ -77,7 +77,7 @@ export const DetailPageLayout = ({
   footer,
   testId,
 }: {
-  formTabs: DetailPageLayoutFormTabs | null
+  formTabs?: DetailPageLayoutFormTabs
   header?: ReactNode
   /** Ordered hash-addressable sections displayed in the sticky section navigation. */
   sections?: readonly DetailPageSectionOption<string>[]
@@ -133,7 +133,7 @@ export const DetailPageLayout = ({
         {isMobile && (!sidebar || header || hasSections) && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-        {formTabs !== null && !showMobileDrawer && (
+        {formTabs != null && !showMobileDrawer && (
           <Grid
             size={{ mobile: 12, tablet: 5, desktop: 4 }}
             sx={{ maxWidth: { desktop: MaxWidth.actionCard }, ...stickyFormTabsSx(navHeight) }}
@@ -167,7 +167,7 @@ export const DetailPageLayout = ({
         )}
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
-      {formTabs !== null && showMobileDrawer && (
+      {formTabs != null && showMobileDrawer && (
         <FormPlacementProvider placement={placement}>{formTabs?.content}</FormPlacementProvider>
       )}
     </WithWrapper>

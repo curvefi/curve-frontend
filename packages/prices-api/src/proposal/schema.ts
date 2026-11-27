@@ -4,8 +4,11 @@ import { address, camelizeKeys, timestamp } from '../schemas'
 export const proposalType = z.enum(['ownership', 'parameter'])
 export type ProposalType = z.infer<typeof proposalType>
 
-export const proposalStatus = z.enum(['all', 'active', 'denied', 'passed', 'executed'])
+export const proposalStatus = z.enum(['all', 'active', 'denied', 'passed', 'executed', 'executable'])
 export type ProposalStatus = z.infer<typeof proposalStatus>
+
+export type ProposalSortField = 'timestamp' | 'ending_soon'
+export type ProposalSortOrder = 'asc' | 'desc'
 
 const proposalShape = {
   vote_id: z.number(),

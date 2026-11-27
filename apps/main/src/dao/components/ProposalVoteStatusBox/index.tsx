@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { ProgressBar } from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
-import { ProposalData } from '@/dao/entities/proposals-mapper'
+import type { ProposalData } from '@/dao/utils/proposal'
 import { Box } from '@legacy-ui/Box'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'

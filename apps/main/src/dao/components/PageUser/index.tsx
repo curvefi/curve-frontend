@@ -36,7 +36,7 @@ export const User = () => {
   const { data: userEnsName } = useEnsName({ address: userAddress })
 
   return (
-    <DetailPageLayout formTabs={null} testId="user-page">
+    <DetailPageLayout testId="user-page">
       <Box>
         <UserHeader userAddress={userAddress} userEnsName={userEnsName} />
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />

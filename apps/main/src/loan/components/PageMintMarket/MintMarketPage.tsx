@@ -24,7 +24,7 @@ import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPag
 import { DetailPageSection as MarketSection } from '@ui/features/layout/DetailPageLayout/DetailPageSection'
 import { PageState } from '@ui/features/layout/PageState'
 import type { Range } from '@ui/features/queries/util'
-import { mapQuery } from '@ui/features/queries/util'
+import { mapQuery, q } from '@ui/features/queries/util'
 import { useUserProfileStore } from '@ui/features/user-profile/store'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
@@ -45,7 +45,7 @@ export const MintMarketPage = () => {
   const { data: market } = marketQuery
 
   const queryParams = { chainId, marketId: mapQuery(marketQuery, m => m?.id), userAddress: address }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
+  const loanExists = q(useLoanExists(queryParams))
 
   const network = networks[chainId]
   const { query, apiMarket } = useLlamaMarket(
@@ -67,7 +67,7 @@ export const MintMarketPage = () => {
     userAddress: address,
     tokens,
   })
-  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
+  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists.data)
 
   return (
     <PageState
@@ -87,9 +87,9 @@ export const MintMarketPage = () => {
             placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
             content:
               !query.isLoading &&
-              !isLoanExistsLoading &&
-              !(loanExists && isLiquidationLoading) &&
-              (loanExists ? (
+              !loanExists.isLoading &&
+              !(loanExists.data && isLiquidationLoading) &&
+              (loanExists.data ? (
                 <ManageLoanTabs
                   onPricesUpdated={setPreviewPrices}
                   collateralEvents={collateralEvents}

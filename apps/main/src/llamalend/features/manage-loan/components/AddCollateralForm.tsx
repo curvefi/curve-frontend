@@ -26,9 +26,8 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
-    isDisabled,
     onSubmit,
-    action,
+    error,
     values,
     isApproved,
     userAddress,
@@ -67,16 +66,16 @@ export const AddCollateralForm = <ChainId extends IChainId>({
       </Stack>
 
       <FormAlerts
-        error={action.error}
+        error={error}
         formErrors={formErrors}
-        handledErrors={['userCollateral']}
+        handledErrors={['userCollateral', 'maxCollateral']}
         userAddress={userAddress}
       />
 
       <EvmFormButton
         pending={isPending}
-        loading={!marketId}
-        disabled={isDisabled}
+        loading={!marketId || form.isLoading}
+        disabled={form.isDisabled}
         label={[isApproved.data === false && t`Approve`, t`Add collateral`]}
         testId="add-collateral-submit-button"
       />

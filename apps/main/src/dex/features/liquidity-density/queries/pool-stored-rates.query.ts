@@ -4,15 +4,14 @@ import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { poolLiquidityValidationSuite } from './pool-liquidity.validation'
 
-const USE_UNDERLYING = false
-
 export const { useQuery: usePoolStoredRates } = hydratedQueryFactory({
-  queryKey: ({ chainId, poolAddress }: PoolParams) => ({ name: 'pool.storedRates', chainId, poolAddress }) as const,
-  queryFn: async ({ poolAddress }: PoolQuery) => {
+  queryKey: ({ chainId, poolAddress, isWrapped }: PoolParams & { isWrapped: boolean }) =>
+    ({ name: 'pool.storedRates', chainId, poolAddress, isWrapped }) as const,
+  queryFn: async ({ poolAddress, isWrapped }: PoolQuery & { isWrapped: boolean }) => {
     const pool = requireLib('curveApi').getPool(poolAddress)
     return pool.isCrypto || pool.isLending || pool.isLlamma
       ? null
-      : ((await pool.getStoredRates(USE_UNDERLYING)) as Decimal[])
+      : ((await pool.getStoredRates(!isWrapped)) as Decimal[])
   },
   validationSuite: poolLiquidityValidationSuite,
   category: 'dex.pool',

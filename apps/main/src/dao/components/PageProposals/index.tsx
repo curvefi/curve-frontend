@@ -1,20 +1,18 @@
-import { useCallback, useMemo, useRef } from 'react'
-import {
-  createProposalKey,
-  invalidateProposals,
-  type ProposalData,
-  useProposalsMapperQuery,
-} from '@/dao/entities/proposals-mapper'
+import { useCallback, useRef } from 'react'
+import { useProposalsQuery } from '@/dao/queries/proposals.query'
+import { createProposalKey } from '@/dao/utils/proposal'
+import { proposalStatusSchema } from '@curvefi/prices-api/proposal'
 import { daoPages } from '@evm-ui/shared/routes'
 import { EvmErrorMessage } from '@evm-ui/shared/ui/EvmErrorMessage'
+import { getPageCount } from '@evm-ui/utils'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@primitives/objects.utils'
 import type { SortingState } from '@tanstack/react-table'
 import { EmptyStateCard } from '@ui/components/EmptyStateCard'
 import { Spinner } from '@ui/components/Spinner'
 import { DetailPageLayout } from '@ui/features/layout/DetailPageLayout/DetailPageLayout'
 import { useLayoutStore } from '@ui/features/layout/store'
-import { useMappedQuery } from '@ui/features/queries/util'
+import { mapQuery } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
 import { useFilters } from '@ui/features/tables/hooks/useFilters'
 import { useScrollToTopOnPageChange } from '@ui/features/tables/hooks/useTableScroll'
@@ -22,65 +20,57 @@ import { TableHeader } from '@ui/features/tables/TableHeader'
 import { TablePagination } from '@ui/features/tables/TablePagination'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { useNavigate } from '@ui/hooks/router'
-import { useFuzzyFilterFn } from '@ui/hooks/useFuzzySearch'
 import { usePageFromQueryString } from '@ui/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui/hooks/useSortFromQueryString'
 import { t } from '@ui/lib/i18n'
-import { columns, ProposalColumnId } from './columns'
 import { Proposal } from './components/Proposal'
 import { ProposalsToolbar } from './components/ProposalsToolbar'
+import { PROPOSAL_SORT_OPTIONS } from './constants'
 
 const { Spacing } = SizesAndSpaces
 
-const EMPTY_PROPOSALS: ProposalData[] = []
-const PROPOSALS_PAGE_SIZE = 20 as const
-const DEFAULT_SORT: SortingState = [{ id: ProposalColumnId.TimeCreated, desc: true }]
+const PROPOSALS_PAGE_SIZE = 20
 
-const onReload = () => invalidateProposals({})
+const DEFAULT_SORT_OPTION = PROPOSAL_SORT_OPTIONS[0]
+const DEFAULT_SORT: SortingState = [{ id: DEFAULT_SORT_OPTION.id, desc: true }]
+const SORT_COLUMNS = PROPOSAL_SORT_OPTIONS.map(({ id }) => ({ id, accessorKey: 'timestamp' }))
+
+/**
+ * No columns are needed for the table, as we are not rendering a normal table with headers,
+ * but rather a list of proposals. Neither would we use them for sorting or filtering as that happens server-side.
+ * We want to keep using react table however for the sorting, filtering and pagination logic.
+ * If you squint hard enough it's still a table!
+ */
+const NO_COLUMNS = [] as const
 
 export const Proposals = () => {
-  const proposalsQuery = useProposalsMapperQuery({})
-  const tableQuery = useMappedQuery(
-    proposalsQuery,
-    useCallback(proposals => Object.values(proposals), []),
-  )
-
   const {
     globalFilter: search,
     setGlobalFilter: setSearch,
     columnFiltersById,
     setColumnFilter,
     resetFilters,
-  } = useFilters({ columns: { Status: ProposalColumnId.Status }, resetPageOnChange: true })
-
-  const status = columnFiltersById[ProposalColumnId.Status] ?? 'all'
+  } = useFilters({ columns: { Status: 'status' }, resetPageOnChange: true })
+  const status = proposalStatusSchema.safeParse(columnFiltersById.status).data ?? 'all'
 
   const [pagination, onPaginationChange] = usePageFromQueryString(PROPOSALS_PAGE_SIZE)
+  const { pageIndex, pageSize } = pagination
 
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns })
-  const globalFilterFn = useFuzzyFilterFn(tableQuery.data ?? EMPTY_PROPOSALS, search, [
-    { name: 'id', getFn: proposal => String(proposal.id) },
-    'proposer',
-    'type',
-    'metadata',
-  ])
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, { columns: SORT_COLUMNS })
+  const { id: sortField, desc } = sorting[0]
+  const { sortBy } = PROPOSAL_SORT_OPTIONS.find(({ id }) => id === sortField) ?? DEFAULT_SORT_OPTION
+  const sortOrder = desc ? 'desc' : 'asc'
+
+  const proposals = useProposalsQuery({ page: pageIndex + 1, pageSize, search, status, sortBy, sortOrder })
+  const pageCount = getPageCount(proposals.data?.count, pageSize)
 
   const table = useCurveTable({
-    query: tableQuery,
-    columns,
-    state: {
-      // Finished proposals all have undefined for Ending Soon; break that tie by creation time, newest first.
-      sorting: useMemo(() => [...sorting, ...DEFAULT_SORT], [sorting]),
-      columnFilters: useMemo(
-        () => notFalsy(status !== 'all' && { id: ProposalColumnId.Status, value: status }),
-        [status],
-      ),
-      pagination,
-      globalFilter: search,
-    },
-    onSortingChange,
+    query: mapQuery(proposals, result => result.proposals),
+    columns: NO_COLUMNS,
+    state: { pagination },
     onPaginationChange,
-    globalFilterFn,
+    manualPagination: true,
+    pageCount,
     getRowId: proposal => createProposalKey(proposal.id, proposal.type),
   })
 
@@ -94,15 +84,15 @@ export const Proposals = () => {
   const rows = table.getRowModel().rows
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <DetailPageLayout>
       <Stack
         ref={tableTopRef}
         sx={{ backgroundColor: theme => theme.design.Layer[1].Fill, scrollMarginTop: `${navHeight}px` }}
       >
         <TableHeader
           title={t`Proposals`}
-          onReload={onReload}
-          isLoading={proposalsQuery.isFetching}
+          onReload={proposals.refetch}
+          isLoading={proposals.isFetching}
           testId="proposal-title"
         />
 
@@ -111,22 +101,24 @@ export const Proposals = () => {
           resetFilters={resetFilters}
           search={search}
           setSearch={setSearch}
-          setStatus={value => setColumnFilter(ProposalColumnId.Status, value === 'all' ? null : value)}
-          sortBy={sorting[0].id}
-          sortDirection={sorting[0].desc ? 'desc' : 'asc'}
+          setStatus={value => setColumnFilter('status', value === 'all' ? null : value)}
+          sortBy={sortField}
+          sortDirection={sortOrder}
           status={status}
         />
 
         <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md, paddingBlockEnd: Spacing.xxl }}>
-          {tableQuery.error ? (
+          {proposals.error ? (
             <EvmErrorMessage
               title={t`Error fetching proposals`}
-              error={tableQuery.error}
-              refreshData={onReload}
+              error={proposals.error}
+              refreshData={proposals.refetch}
               sx={{ paddingBlock: Spacing.xxl }}
             />
-          ) : tableQuery.isLoading ? (
-            <Spinner />
+          ) : proposals.isLoading ? (
+            <Box sx={{ paddingBlockStart: Spacing.xl }}>
+              <Spinner />
+            </Box>
           ) : rows.length ? (
             rows.map(row => <Proposal key={row.id} proposalData={row.original} handleClick={handleProposalClick} />)
           ) : (

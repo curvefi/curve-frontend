@@ -31,7 +31,7 @@ export const FormTokenInput = <
   name: TFieldName
   relatedFields?: RelatedField<FieldName<TForm['formState']['errors']>>[]
   max?: Pick<NonNullable<LargeTokenInputProps['maxBalance']>, 'chips' | 'onMax'> & { balance: QueryProp<Decimal> }
-  balance?: QueryProp<Decimal>
+  balance?: QueryProp<Decimal | null>
 }) => {
   const error =
     notFalsyArray<RelatedField>([name], relatedFields)

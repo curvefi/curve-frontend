@@ -7,7 +7,8 @@ import { requireVault, supplyUserValidationSuite } from '../validation/supply.va
 export const { useQuery: useVaultMaxWithdrawAmount } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
     ({ name: 'maxWithdraw', chainId, marketId, userAddress }) as const,
-  queryFn: async ({ marketId }: UserMarketQuery) => (await requireVault(marketId).vault.maxWithdraw()) as Decimal,
+  queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
+    (await requireVault(marketId).vault.maxWithdraw(userAddress)) as Decimal,
   category: 'llamalend.supply',
   validationSuite: supplyUserValidationSuite,
 })
@@ -16,7 +17,8 @@ export const { useQuery: useVaultMaxWithdrawAmount } = queryFactory({
 export const { useQuery: useVaultMaxRedeemShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams) =>
     ({ name: 'maxRedeem', chainId, marketId, userAddress }) as const,
-  queryFn: async ({ marketId }: UserMarketQuery) => (await requireVault(marketId).vault.maxRedeem()) as Decimal,
+  queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
+    (await requireVault(marketId).vault.maxRedeem(userAddress)) as Decimal,
   category: 'llamalend.supply',
   validationSuite: supplyUserValidationSuite,
 })

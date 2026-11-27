@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
+import { Box, Button, ButtonProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { type AllOrNone } from '@primitives/objects.utils'
@@ -9,8 +9,9 @@ import { Responsive } from '@ui/features/themes/basic-theme'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { LlamaIcon } from '@ui/icons/LlamaIcon'
 import { applySxProps } from '@ui/lib/mui'
+import { WithSkeleton } from './WithSkeleton'
 
-const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
+const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
 type EmptyStateButtonProps = Omit<ButtonProps, 'type'> & {
   label?: ReactNode
@@ -24,6 +25,7 @@ export type EmptyStateCardProps = AllOrNone<ConnectionProps> & {
   icon?: ReactNode
   isLoading?: boolean
   size?: 'sm' | 'md'
+  direction?: 'horizontal' | 'vertical'
   button?: EmptyStateButtonProps
   secondaryButton?: EmptyStateButtonProps
   testId?: string
@@ -33,13 +35,6 @@ const SIZE_CONFIG: Record<
   NonNullable<EmptyStateCardProps['size']>,
   { icon: Responsive; button: ButtonProps['size'] }
 > = { sm: { icon: IconSize.lg, button: 'small' }, md: { icon: IconSize.xxl, button: 'medium' } }
-
-const Skeletons = () => (
-  <Stack sx={{ gap: Spacing.sm, width: MaxWidth.emptyStateCard }}>
-    <Skeleton variant="rectangular" sx={{ height: LineHeight.sm }} />
-    <Skeleton variant="rectangular" sx={{ height: LineHeight.xl }} />
-  </Stack>
-)
 
 const getConnectionProps = (connectionProps: AllOrNone<ConnectionProps>): ConnectionProps => {
   if (!connectionProps.connect) throw new Error('Missing connectionProps for connect-wallet')
@@ -81,16 +76,29 @@ export const EmptyStateCard = ({
   secondaryButton,
   isLoading,
   size = 'md',
+  direction = 'vertical',
   testId,
   ...connectionProps
 }: EmptyStateCardProps) => (
-  <Stack sx={{ gap: Spacing.xs, alignItems: 'center', maxWidth: MaxWidth.emptyStateCard }} data-testid={testId}>
+  <Stack
+    sx={{
+      gap: Spacing.xs,
+      alignItems: 'center',
+      ...{
+        horizontal: {
+          flexDirection: 'row',
+          paddingInline: Spacing.md,
+          ...((button ?? secondaryButton) && { width: '100%' }),
+        },
+        vertical: { textAlign: 'center', maxWidth: MaxWidth.emptyStateCard },
+      }[direction],
+    }}
+    data-testid={testId}
+  >
     {icon || <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />}
-    {isLoading ? (
-      <Skeletons />
-    ) : (
-      <Stack sx={{ gap: Spacing.sm }}>
-        <Stack sx={{ textAlign: 'center' }}>
+    <Stack sx={{ gap: Spacing.sm, ...(direction === 'horizontal' && { flexDirection: 'row', flexGrow: 1 }) }}>
+      <WithSkeleton loading={!!isLoading} variant="rectangular">
+        <Stack sx={{ ...(direction === 'horizontal' && { justifyContent: 'center', flexGrow: 1 }) }}>
           {title && (
             <Typography component="span" variant="headingXsBold">
               {title}
@@ -102,20 +110,20 @@ export const EmptyStateCard = ({
             </Typography>
           )}
         </Stack>
-        {[button, secondaryButton].some(Boolean) && (
-          <Box
-            sx={{
-              display: 'grid', // Using grid here for equal sized buttons
-              gridTemplateColumns: button && secondaryButton ? { tablet: '1fr 1fr' } : undefined,
-              gap: Spacing.xs,
-              justifyContent: 'center',
-            }}
-          >
-            {button && <EmptyStateButton button={button} size={size} {...connectionProps} />}
-            {secondaryButton && <EmptyStateButton button={secondaryButton} size={size} {...connectionProps} />}
-          </Box>
-        )}
-      </Stack>
-    )}
+      </WithSkeleton>
+      {[button, secondaryButton].some(Boolean) && (
+        <Box
+          sx={{
+            display: 'grid', // Using grid here for equal sized buttons
+            gridTemplateColumns: button && secondaryButton ? { tablet: '1fr 1fr' } : undefined,
+            gap: Spacing.xs,
+            justifyContent: 'center',
+          }}
+        >
+          {button && <EmptyStateButton button={button} size={size} {...connectionProps} />}
+          {secondaryButton && <EmptyStateButton button={secondaryButton} size={size} {...connectionProps} />}
+        </Box>
+      )}
+    </Stack>
   </Stack>
 )

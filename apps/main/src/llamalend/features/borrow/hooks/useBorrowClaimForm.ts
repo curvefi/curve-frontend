@@ -1,4 +1,4 @@
-import { sumBy } from 'lodash'
+import { noop, sumBy } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useBorrowClaimCrvMutation } from '@/llamalend/mutations/borrow-claim.mutation'
@@ -8,13 +8,18 @@ import type { UserMarketParams } from '@evm-ui/queries/query-types'
 import { useTokenUsdRates } from '@evm-ui/queries/token-usd-rate.query'
 import { MAINNET_CRV } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
-import { useForm } from '@ui/features/forms'
+import { useFormValidation } from '@ui/features/forms/useFormValidation'
+import { useFormValues } from '@ui/features/forms/useFormValues'
 import { combineQueryState } from '@ui/features/queries/combine'
 import { q } from '@ui/features/queries/util'
 import { useCurveTable } from '@ui/features/tables/data-table.utils'
+import { createValidationSuite } from '@ui/lib/validation/lib'
 import { useMarketContext } from '../../market-context'
 import { CLAIM_TAB_COLUMNS } from '../../supply/components/columns/column.definitions'
+
+type BorrowClaimComputed = { claimableCrv: Decimal }
 
 const useClaimableTokens = <ChainId extends IChainId>({
   params,
@@ -24,7 +29,8 @@ const useClaimableTokens = <ChainId extends IChainId>({
   crvAddress: Address | undefined
 }) => {
   const { chainId } = params
-  const { data: claimableCrv, isLoading: isClaimablesLoading, error: claimableCrvError } = useBorrowClaimableCrv(params)
+  const claimables = useBorrowClaimableCrv(params)
+  const { data: claimableCrv, isLoading: isClaimablesLoading, error: claimableCrvError } = claimables
   const usdRates = useTokenUsdRates({ chainId, tokenAddresses: notFalsy(crvAddress) })
   const { isLoading: usdRateLoading, error: usdRateError } = combineQueryState(...recordValues(usdRates))
 
@@ -46,6 +52,7 @@ const useClaimableTokens = <ChainId extends IChainId>({
   return {
     claimableTokens,
     totalNotionals: sumBy(claimableTokens, 'notional'),
+    claimables,
     isClaimablesLoading,
     claimableCrvError,
     usdRateLoading,
@@ -57,20 +64,17 @@ const useClaimableTokens = <ChainId extends IChainId>({
 export const useBorrowClaimForm = <ChainId extends IChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
   const { marketId, crvTokenAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId, blockchainId } = network
-  const params = useMemo(
-    (): UserMarketParams<ChainId> => ({ chainId, marketId, userAddress }),
-    [chainId, marketId, userAddress],
-  )
-  const form = useForm({ defaultValues: {} })
+  const inputs = useFormValues({ defaultValues: {}, context: { chainId, marketId, userAddress } })
   const {
     claimableTokens,
     totalNotionals,
+    claimables,
     isClaimablesLoading,
     claimableCrvError,
     usdRateLoading,
     usdRateError,
     hasClaimableCrv,
-  } = useClaimableTokens({ params, crvAddress: crvTokenAddress })
+  } = useClaimableTokens({ params: inputs.params, crvAddress: crvTokenAddress })
 
   const table = useCurveTable({
     columns: CLAIM_TAB_COLUMNS,
@@ -86,23 +90,30 @@ export const useBorrowClaimForm = <ChainId extends IChainId>({ network }: { netw
 
   const {
     onSubmit,
-    isPending: isCrvPending,
+    isPending,
     error: claimCrvError,
   } = useBorrowClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress })
-  const isPending = form.formState.isSubmitting || isCrvPending
+  const form = useFormValidation<object, UserMarketParams<ChainId>, BorrowClaimComputed>({
+    inputs,
+    validation: useMemo(() => createValidationSuite<BorrowClaimComputed>(noop), []),
+    computed: { claimableCrv: claimables },
+    isSubmitting: isPending,
+    disabled: !hasClaimableCrv || !!claimableCrvError || claimableTokens.length === 0,
+  })
 
   return {
     form,
-    params,
+    params: form.params,
     userAddress,
     table,
     claimableTokens,
     totalNotionals,
     usdRateLoading,
+    isClaimablesLoading,
     onSubmit: form.handleSubmit(onSubmit),
-    isLoading: isClaimablesLoading,
-    isDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0, isPending].some(Boolean),
+    isLoading: form.isLoading,
+    isDisabled: form.isDisabled,
     isPending,
-    error: claimCrvError ?? claimableCrvError ?? usdRateError,
+    error: claimCrvError ?? form.error ?? usdRateError,
   }
 }

@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells/TimestampCell'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
@@ -24,6 +25,7 @@ export const POOL_TRADES_COLUMNS = columnHelper.columns([
     header: t`Address`,
     cell: ({ row }) => (
       <AddressCell
+        formatAddress={getAddress}
         address={row.original.buyer}
         explorerUrl={scanAddressPath(row.original.chainId, row.original.buyer)}
       />

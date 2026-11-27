@@ -21,18 +21,21 @@ type ResetInputs = {
   userBorrowed: Decimal
 }
 
-type ResetCalculatedValues = {
+export type ResetCalculatedValues = {
+  /** The amount of borrow tokens already converted from collateral in the user's band */
+  convertedBorrowed?: Decimal
   /** User's wallet balance of the borrow token; caps `userBorrowed` */
-  maxBorrowed: Decimal | undefined
+  maxBorrowed?: Decimal
   /** Current outstanding debt capping convertedBorrowed + userBorrowed (we route users to the close tab for full repayments) */
-  maxTotalBorrowed: Decimal | undefined
+  maxTotalBorrowed?: Decimal
   /** Minimum wallet amount (userBorrowed) required to reset; returned by `tokensToShrink` */
-  minBorrowed: Decimal | undefined
+  minBorrowed?: Decimal
   /** Whether the user's position can be reset with repay shrink */
-  resetAvailable: boolean | undefined
+  resetAvailable?: boolean
 }
 
-export type ResetForm = AllowUndefined<ResetInputs, 'convertedBorrowed' | 'userBorrowed'> & ResetCalculatedValues
+export type ResetFormValues = AllowUndefined<Pick<ResetInputs, 'userBorrowed'>>
+export type ResetForm = ResetFormValues & ResetCalculatedValues
 
 export type ResetQuery<ChainId = IChainId> = UserMarketQuery<ChainId> & ResetInputs & ResetCalculatedValues
 export type ResetParams<ChainId = IChainId> = FieldsOf<ResetQuery<ChainId>>

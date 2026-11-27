@@ -1,3 +1,4 @@
+import { getAddress } from 'viem'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import { AddressCell } from '@evm-ui/shared/ui/DataTable/inline-cells/AddressCell'
 import { TokenAmount } from '@evm-ui/shared/ui/TokenAmount'
@@ -40,7 +41,9 @@ export const getBorrowerColumns = (
     borrowerColumnHelper.accessor('address', {
       id: BorrowerColumnId.Address,
       header: t`Borrower`,
-      cell: ({ row }) => <AddressCell address={row.original.address} explorerUrl={row.original.explorerUrl} />,
+      cell: ({ row }) => (
+        <AddressCell formatAddress={getAddress} address={row.original.address} explorerUrl={row.original.explorerUrl} />
+      ),
       enableSorting: false,
     }),
     borrowerColumnHelper.accessor('collateral', {
@@ -90,7 +93,9 @@ export const getSupplierColumns = (blockchainId: SupplierRow['blockchainId'], bo
     supplierColumnHelper.accessor('address', {
       id: SupplierColumnId.Address,
       header: t`Supplier`,
-      cell: ({ row }) => <AddressCell address={row.original.address} explorerUrl={row.original.explorerUrl} />,
+      cell: ({ row }) => (
+        <AddressCell formatAddress={getAddress} address={row.original.address} explorerUrl={row.original.explorerUrl} />
+      ),
       enableSorting: false,
     }),
     supplierColumnHelper.accessor('assets', {

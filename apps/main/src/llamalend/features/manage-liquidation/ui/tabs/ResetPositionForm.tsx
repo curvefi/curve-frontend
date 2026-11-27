@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { useResetPositionForm } from '@/llamalend/features/manage-liquidation/hooks/useResetPositionForm'
 import { ResetPositionInfoList } from '@/llamalend/features/manage-liquidation/ui/ResetPositionInfoList'
 import { useMarketContext } from '@/llamalend/features/market-context'
@@ -52,7 +53,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           token={borrowToken}
           blockchainId={network.blockchainId}
           name="convertedBorrowed"
-          form={form}
+          form={{ values: { convertedBorrowed: params.convertedBorrowed }, formState: form.formState, update: noop }}
           message={t`Amount of converted collateral used to reset the position`}
           testId="reset-position-input-converted-borrowed"
           network={network}

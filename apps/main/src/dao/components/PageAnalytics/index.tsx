@@ -23,7 +23,7 @@ const menu = [
 ]
 
 export const Analytics = () => (
-  <DetailPageLayout formTabs={null} testId="analytics-page">
+  <DetailPageLayout testId="analytics-page">
     <CrvStats />
     <Stack>
       <Tabs menu={menu} variant="contained" />
