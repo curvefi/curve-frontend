@@ -25,10 +25,12 @@ const seedErc20BalanceQuery = ({
   decimals?: number
 }) => {
   // Keep seeded balances fixed, including after transaction invalidation.
-  cy.stub(QUERY_CATEGORIES, 'global.tokenBalance').value({
-    ...QUERY_CATEGORIES['global.tokenBalance'],
-    staleTime: 'static',
-    refetchInterval: false,
+  ;(['global.tokenBalance', 'global.tokenBalances'] as const).forEach(category => {
+    cy.stub(QUERY_CATEGORIES, category).value({
+      ...QUERY_CATEGORIES[category],
+      staleTime: 'static',
+      refetchInterval: false,
+    })
   })
 
   const { queryKey } = readContractsQueryOptions(mockedWagmiConfig, {
