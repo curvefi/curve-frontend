@@ -211,6 +211,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     chainId,
     blockchainId,
     poolAddress,
+    name,
     pool,
     apiPool,
     api: curve,
@@ -282,7 +283,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         header={
           <PoolDetailsHeader
             backHref={dexPages.pools({ blockchainId })}
-            title={mapQuery(pool, pool => pool.name)}
+            title={name}
             tokens={combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
               zip(tokens, tokenAddresses)
                 .filter(([, address]) => address)
@@ -308,14 +309,18 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           />
         }
         formTabs={{
-          content: newPoolForms ? (
-            seed.data == null ? (
-              seed.error && <AlertDisableForm>{seed.error.message}</AlertDisableForm>
+          content: pool.data ? (
+            newPoolForms ? (
+              seed.data == null ? (
+                seed.error && <AlertDisableForm>{seed.error.message}</AlertDisableForm>
+              ) : (
+                <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />
+              )
             ) : (
-              <FormTabs menu={menu} params={tabParams} defaultValue={defaultTab} />
+              <FormTabs menu={legacyMenu} params={tabParams} defaultValue={defaultTab} />
             )
           ) : (
-            <FormTabs menu={legacyMenu} params={tabParams} defaultValue={defaultTab} />
+            pool.error && <AlertDisableForm>{pool.error.message}</AlertDisableForm>
           ),
         }}
       >

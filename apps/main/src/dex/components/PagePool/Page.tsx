@@ -5,15 +5,16 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { PoolContextProvider } from '@/dex/features/pool-context'
 import { useChainId } from '@/dex/hooks/useChainId'
+import { usePoolPricesApi } from '@/dex/queries/pool-prices-api.query'
 import { usePool } from '@/dex/queries/pool.query'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@evm-ui/features/connect-wallet'
-import { maybe } from '@primitives/objects.utils'
+import { isLiteChain } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { PageBlacklist } from '@ui/features/layout/PageBlacklist'
 import { PageState } from '@ui/features/layout/PageState'
-import { mapQuery, q } from '@ui/features/queries/util'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { useParams } from '@ui/hooks/router'
 import { t } from '@ui/lib/i18n'
 import { CURVE_SOCIALS } from '@ui/lib/resource.constants'
@@ -27,13 +28,12 @@ export const PagePool = () => {
   const { data: network } = useNetworkByChain({ chainId })
 
   const pool = usePool({ chainId, poolAddress })
+  const apiPool = usePoolPricesApi({ chainId, poolAddress }, !isLiteChain(chainId))
 
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: blockchainId as Chain })
   const isBlacklisted = useMemo(
-    () =>
-      maybe(pool.data?.address, address => blacklist?.some(badPool => isAddressEqual(badPool, getAddress(address)))) ??
-      false,
-    [blacklist, pool.data?.address],
+    () => blacklist?.some(badPool => isAddressEqual(badPool, poolAddress)) ?? false,
+    [blacklist, poolAddress],
   )
 
   if (isBlacklisted)
@@ -53,7 +53,7 @@ export const PagePool = () => {
 
   return (
     <PageState
-      query={q(pool)}
+      query={fallbackQ(q({ ...pool, isLoading: pool.isPending }), q(apiPool))}
       notFound={t`Pool Not Found`}
       continueUrl={ROUTE.pools({ blockchainId: props.network })}
       userAddress={curveApi?.signerAddress}

@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { test } from 'vest'
 import { fetchNetworks } from '@/dex/entities/networks'
-import { fetchPoolPricesApi } from '@/dex/queries/pool-prices-api.query'
+import { invalidatePoolPricesApi, usePoolPricesApi } from '@/dex/queries/pool-prices-api.query'
 import type { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { V2PoolDetails } from '@curvefi/prices-api/pools'
@@ -12,6 +12,7 @@ import type { PoolParams, PoolQuery } from '@evm-ui/queries/query-types'
 import { curvePoolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import { isValidAddress } from '@evm-ui/utils'
 import { notFalsy } from '@primitives/objects.utils'
+import { fallbackQ, mapQuery, q } from '@ui/features/queries/util'
 import { enforce } from '@ui/lib/validation/enforce-extension'
 import { createValidationSuite } from '@ui/lib/validation/lib'
 import type { FieldsOf } from '@ui/lib/validation/types'
@@ -163,12 +164,6 @@ const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQu
   queryKey: ({ chainId, poolAddress, useApi }: PoolRewardsApyParams) =>
     ({ name: 'rewardsApy', chainId, poolAddress, useApi }) as const,
   queryFn: async ({ chainId, poolAddress, useApi }: PoolRewardsApyQuery) => {
-    // poolAllRewardsApy has a `useApi` too, but due to migration woes that only works for lite networks atm.
-    // This whole query needs a redo, but we need a stop-gap solution to fix yield breakdown not working without wallet.
-    if (useApi && !isLiteChain(chainId)) {
-      return poolPricesApiRewardsApy(await fetchPoolPricesApi({ chainId, poolAddress }))
-    }
-
     const pool = requireLib('curveApi').getPool(poolAddress)
     const networks = await fetchNetworks()
     return await poolAllRewardsApy(networks[chainId], pool, useApi)
@@ -182,7 +177,15 @@ const { useQuery: usePoolRewardsApyQuery, invalidate: invalidatePoolRewardsApyQu
 })
 
 export const invalidatePoolRewardsApy = (params: PoolParams<ChainId>) =>
-  Promise.all([true, false].map(useApi => invalidatePoolRewardsApyQuery({ ...params, useApi })))
+  Promise.all([
+    ...[true, false].map(useApi => invalidatePoolRewardsApyQuery({ ...params, useApi })),
+    invalidatePoolPricesApi(params),
+  ])
 
-export const usePoolRewardsApy = (params: PoolParams<ChainId>) =>
-  usePoolRewardsApyQuery({ ...params, useApi: !useCurve()?.curveApi?.signerAddress })
+export const usePoolRewardsApy = (params: PoolParams<ChainId>) => {
+  const useApi = !useCurve().curveApi?.signerAddress
+  const isLite = params.chainId != null && isLiteChain(params.chainId)
+  const rewards = usePoolRewardsApyQuery({ ...params, useApi }, !useApi || isLite)
+  const apiRewards = mapQuery(usePoolPricesApi(params, !isLite), poolPricesApiRewardsApy)
+  return useApi && !isLite ? apiRewards : fallbackQ(q(rewards), apiRewards)
+}

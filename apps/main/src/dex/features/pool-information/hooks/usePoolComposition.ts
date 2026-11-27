@@ -30,11 +30,11 @@ export const usePoolComposition = () => {
 
   const reserves = useCurrencyReserves.data
     ? mapQuery(currencyReserves, reserves => reserves.tokens)
-    : combineQueries([apiPool, pricesApiTotalUsd, tokenAddresses], (pool, total, tokenAddresses) =>
+    : combineQueries([apiPool, pricesApiTotalUsd], (pool, total) =>
         // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
-        tokenAddresses.map((tokenAddress, index) => {
-          const balance = pool?.balances[index]
-          const balanceUsd = pool?.balancesUsd[index]
+        pool.coins.map(({ address: tokenAddress, poolIndex }) => {
+          const balance = pool.balances[poolIndex]
+          const balanceUsd = pool.balancesUsd[poolIndex]
 
           return {
             tokenAddress,
@@ -46,8 +46,14 @@ export const usePoolComposition = () => {
         }),
       )
 
-  const rows = combineQueries([reserves, tokens, tokenAddresses], (reserves, tokens, tokenAddresses) =>
-    zip(tokens, tokenAddresses).map<PoolCompositionRow>(([symbol, tokenAddress]) => {
+  const compositionTokens = useCurrencyReserves.data
+    ? combineQueries([tokens, tokenAddresses], (tokens, tokenAddresses) =>
+        zip(tokens, tokenAddresses).map(([symbol, address]) => ({ symbol, address })),
+      )
+    : mapQuery(apiPool, pool => pool.coins.toSorted((a, b) => a.poolIndex - b.poolIndex))
+
+  const rows = combineQueries([reserves, compositionTokens], (reserves, coins) =>
+    coins.map<PoolCompositionRow>(({ symbol, address: tokenAddress }) => {
       const reserve = reserves.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
       return {

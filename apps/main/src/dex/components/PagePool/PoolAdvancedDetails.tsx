@@ -38,11 +38,14 @@ export const PoolAdvancedDetails = () => {
     chainId,
     blockchainId,
     poolAddress,
-    pool: { data: pool, isLoading: poolIsLoading },
-    pool: { data: { lpToken, gauge } = {} },
+    pool: poolQuery,
+    apiPool,
+    lpTokenAddress: { data: lpToken },
+    gaugeAddress: { data: gauge },
     tokens: { data: tokens },
     tokenAddresses: { data: tokenAddresses },
   } = usePoolContext()
+  const { data: pool } = poolQuery
   const basePools = useBasePools({ chainId })
   const metadata = usePoolMetadata({ blockchainId: blockchainId as BlockchainId, poolAddress })
   const parameters = usePoolParameters({ chainId, poolAddress })
@@ -69,7 +72,7 @@ export const PoolAdvancedDetails = () => {
   return (
     <AdvancedDetails
       chainId={chainId}
-      isLoading={poolIsLoading}
+      isLoading={fallbackQ(poolQuery, apiPool).isLoading}
       info={{
         poolType: notFalsy(
           maybes([pool, tokens], (pool, tokens) =>
@@ -88,8 +91,8 @@ export const PoolAdvancedDetails = () => {
         poolAddress: maybe(poolAddress, poolAddress => getAddress(poolAddress)),
         lpTokenAddress: maybe(lpToken, lpToken => getAddress(lpToken)),
         ...(gauge &&
-          !isAddressEqual(gauge.address as Address, zeroAddress) && {
-            gauge: { address: getAddress(gauge.address), status: gaugeStatus },
+          !isAddressEqual(gauge as Address, zeroAddress) && {
+            gauge: { address: getAddress(gauge), status: gaugeStatus },
           }),
         oracles: assetTypes?.flatMap((assetType, index) => {
           const oracle = oracles?.[index]
