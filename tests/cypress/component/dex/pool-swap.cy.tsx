@@ -56,7 +56,7 @@ describe('Pool Swap (mocked)', () => {
         poolSwapSubmit().should('be.enabled')
         const tokens = wrapped ? wrappedCoins : coins
         checkPoolSwapDetails(tokens[0].symbol, tokens[1].symbol, true)
-        getActionValue('pool-swap-minimum-received', 'mock.simulation').should(
+        getActionValue('pool-minimum-received', 'mock.simulation').should(
           'equal',
           formatToken(SWAP_TEST.minimumReceived, tokens[1].symbol, 'balance'),
         )
@@ -198,7 +198,7 @@ describe('Pool Swap (mocked)', () => {
     cy.get('[data-testid="slippage-settings-button"]').click()
     cy.get('[data-testid="slippage-input"] input').clear().type(SWAP_TEST.customSlippage)
     cy.get('[data-testid="slippage-save-button"]').click()
-    getActionValue('pool-swap-minimum-received', 'mock.simulation').should(
+    getActionValue('pool-minimum-received', 'mock.simulation').should(
       'equal',
       formatToken(SWAP_TEST.customMinimumReceived, 'DAI', 'balance'),
     )
@@ -263,7 +263,7 @@ describe('Pool Swap (mocked)', () => {
       poolSwapAmount('receive').should('have.attr', 'data-value', SWAP_TEST.output)
       writePoolSwapAmount('receive', SWAP_TEST.secondOutput)
       poolSwapAmount('pay').should('have.attr', 'data-value', SWAP_TEST.secondInput)
-      getActionValue('pool-swap-minimum-received', 'mock.simulation').should(
+      getActionValue('pool-minimum-received', 'mock.simulation').should(
         'equal',
         formatToken(SWAP_TEST.secondMinimumReceived, 'DAI', 'balance'),
       )
