@@ -5,7 +5,7 @@ import { llamalendRoutes } from '@evm-ui/shared/routes'
 export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
   llamalendRoutes.markets({ blockchainId: network })
 
-export const parseMarketParams = ({ market, network }: MarketUrlParams) => ({
-  rMarket: market.toLowerCase(),
-  chainId: networksIdMapper[network],
+export const parseMarketParams = ({ market, network }: Record<keyof MarketUrlParams, string>) => ({
+  marketId: market.toLowerCase(),
+  chainId: networksIdMapper[network as NetworkUrlParams['network']],
 })

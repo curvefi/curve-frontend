@@ -1,14 +1,15 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy, type Nullish } from '@primitives/objects.utils'
 import { combineQueries } from '@ui/features/queries/combine'
-import { toQuery, type QueryOrValue, type QueryProp } from '@ui/features/queries/util'
+import { type QueryOrValue, type QueryProp, toQuery } from '@ui/features/queries/util'
+import { decimal } from '@ui/lib/decimal'
 import { getPoolAmounts, getPoolMaxAmounts, poolAmountField, type PoolTokenFields } from '../pool-form.utils'
 import type { PoolToken } from '../PoolTokenInput'
 import { calculateMinimumReceived } from '../swap/swap.utils'
 
 export type WithdrawMode = 'balanced' | 'unbalanced' | 'one-coin'
 
-export const oneCoinWithdrawDefaultValues = { amount: undefined, isMax: false }
+export const oneCoinWithdrawDefaultValues = { amount: decimal(undefined), isMax: false }
 
 export type WithdrawMutation = {
   amounts: (Decimal | undefined)[]
@@ -33,13 +34,18 @@ type WithdrawQuoteFields = {
   slippage: Decimal
 }
 
-export type OneCoinWithdrawFormValues = WithdrawQuoteFields & {
+export type OneCoinWithdrawValues = Pick<WithdrawQuoteFields, 'isWrapped' | 'slippage'> & {
   amount: Decimal | undefined
-  quotedAmount: Decimal | undefined
   isMax: boolean
   tokenIndex: number
+}
+
+export type OneCoinWithdrawComputed = Omit<WithdrawQuoteFields, 'isWrapped' | 'slippage'> & {
+  quotedAmount: Decimal | undefined
   poolReserve: Decimal | undefined
 }
+
+export type OneCoinWithdrawFormValues = OneCoinWithdrawValues & Partial<OneCoinWithdrawComputed>
 
 export type AdvancedWithdrawFormValues = WithdrawQuoteFields &
   PoolTokenFields & { lpAmount: Decimal | undefined; isBalanced: boolean }

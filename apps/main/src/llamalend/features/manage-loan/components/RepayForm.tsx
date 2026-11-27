@@ -208,7 +208,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <FormAlerts
         error={repayError}
         formErrors={formErrors}
-        handledErrors={notFalsy(selectedField, max[selectedField]?.fieldName)}
+        handledErrors={notFalsy('userBorrowed', 'stateCollateral', max[selectedField]?.fieldName)}
         userAddress={userAddress}
       />
       <LeverageDelegationModal {...delegationModal} />

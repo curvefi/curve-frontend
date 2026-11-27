@@ -1,7 +1,7 @@
 import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
-import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
+import { invalidateProposal } from '@/dao/queries/proposal.query'
 import type { State } from '@/dao/store/useStore'
 import type { CurveJsProposalType, TransactionState } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
@@ -105,7 +105,7 @@ export const createProposalsSlice = (
           // get new user votes list from api
           const userAddress = curve?.signerAddress
           if (userAddress) {
-            await invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
+            await invalidateProposal({ proposalId: voteId, proposalType: voteType })
             await invalidateUserProposalVotesQuery({ userAddress })
           }
         }
@@ -174,8 +174,7 @@ export const createProposalsSlice = (
           const successNotificationMessage = t`Proposal executed successfully!`
           notify(successNotificationMessage, 'success')
 
-          // update proposal executed status, forcing api to update by providing a transaction hash
-          await invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: transactionHash })
+          await invalidateProposal({ proposalId: voteId, proposalType: voteType })
 
           set(
             produce((state: State) => {

@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useConnection } from 'wagmi'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import { useWallet } from '@evm-ui/features/connect-wallet'
 import { evmAddressDisplay, MAINNET_CRV } from '@evm-ui/utils'
 import { ListPageLayout } from '@ui/features/layout/ListPageLayout'
 import { PoolsTable } from '@ui/features/pool-list/PoolsTable'
@@ -29,21 +28,13 @@ function usePositions(network: NetworkConfig) {
 }
 
 function PoolLists({ network }: { network: NetworkConfig }) {
-  const { address, isConnecting, isConnected } = useConnection()
-  const { connect } = useWallet()
-  const tableProps = {
-    userAddress: address,
-    isConnecting,
-    isConnected,
-    connect,
-    addressDisplay: evmAddressDisplay,
-    crvToken: MAINNET_CRV,
-    Actions: PoolExpandedPanelActions,
-  }
+  const { address: userAddress } = useConnection()
+  const positions = usePositions(network)
+  const tableProps = { addressDisplay: evmAddressDisplay, crvToken: MAINNET_CRV, Actions: PoolExpandedPanelActions }
   return (
     <>
-      <UserPositionsTable {...usePositions(network)} {...tableProps} />
-      <PoolsTable {...usePoolsTable(network)} {...tableProps} />
+      {userAddress && <UserPositionsTable userAddress={userAddress} {...positions} {...tableProps} />}
+      <PoolsTable userAddress={userAddress} {...usePoolsTable(network)} {...tableProps} />
     </>
   )
 }

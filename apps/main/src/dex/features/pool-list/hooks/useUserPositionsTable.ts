@@ -21,6 +21,13 @@ import { t } from '@ui/lib/i18n'
 import { enrichPoolRow, getPoolListAlerts } from '../utils'
 import { type UserPoolPosition, useUserPoolPositions } from './useUserPoolPositions'
 
+const CARD_STATE = {
+  title: t`No active positions`,
+  description: t`Provide liquidity to a pool to see your positions here.`,
+  size: 'sm',
+  direction: 'horizontal',
+} as const
+
 const getPoolUserPosition = (
   position: UserPoolPosition,
   tokenRate: QueryProp<number>,
@@ -108,10 +115,10 @@ export const useUserPositionsTable = (
     alerts: getPoolListAlerts(tableQuery.data, blockchainId),
     claimablesTotalUsd: combineSubQueries(tableQuery, row => row.userPosition?.claimablesUsd, decimalSum),
     totalLiquidityUsd: combineSubQueries(tableQuery, row => row.userPosition?.depositsUsd, decimalSum),
-    labels: {
+    cardStates: {
       errorTitle: t`Could not load pool positions`,
-      loading: { title: t`Loading positions` },
-      empty: { title: t`No active positions`, description: t`Provide liquidity to a pool to see your positions here.` },
+      loading: { ...CARD_STATE, isLoading: true },
+      empty: { ...CARD_STATE, isLoading: false },
     },
   }
 }

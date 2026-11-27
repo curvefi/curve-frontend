@@ -4,7 +4,7 @@ import { curveApiValidationGroup } from '@evm-ui/queries/validation/curve-api-va
 import { evmAddressValidationGroup } from '@evm-ui/queries/validation/evm-address-validation'
 import { poolValidationGroup } from '@evm-ui/queries/validation/pool-validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, range } from '@primitives/objects.utils'
+import { maybe, range, type Nullish } from '@primitives/objects.utils'
 import { LP_TOKEN_DECIMALS, poolAmountField, type PoolAmountField } from '@ui/features/pool-forms/pool-form.utils'
 import {
   type AdvancedWithdrawFormValues,
@@ -26,8 +26,7 @@ import type {
 } from './types'
 import { getMaximumWithdrawBurn } from './withdraw.utils'
 
-// single-coin form has one field named amount; advanced form uses amount_0, amount_1, etc.
-type AmountField = (index: number) => PoolAmountField | 'amount'
+type AmountField = (index: number) => PoolAmountField | 'quotedAmount'
 
 const validateLpAmount = (
   lpAmount: WithdrawLpParams['lpAmount'],
@@ -47,6 +46,20 @@ const validateHasAmount = ({ amounts }: WithdrawParams) =>
       .condition(() => amounts!.some(amount => amount && +amount))
   })
 
+const validateAmountPrecision = (field: string, amount: Decimal | Nullish, decimals: number | Nullish) =>
+  skipWhen(amount == null || decimals == null, () => {
+    test(field, 'Amount exceeds token decimal precision', () => {
+      enforce(amount).isDecimal({ decimal_digits: `0,${decimals}` })
+    })
+  })
+
+const validateMaxAmount = (field: string, amount: Decimal | Nullish, maximum: Decimal | Nullish) =>
+  skipWhen(amount == null || maximum == null, () => {
+    test(field, 'Amount exceeds the maximum withdrawal', () => {
+      enforce(amount).lte(maximum!)
+    })
+  })
+
 const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountField = poolAmountField) => {
   test('decimals', 'Decimals are required', () => {
     enforce(decimals).isArray().isNotEmpty()
@@ -63,11 +76,7 @@ const validateAmounts = ({ amounts, decimals }: WithdrawParams, field: AmountFie
     test(field(index), 'Enter a valid non-negative amount', () => {
       enforce(amount).isDecimal({ decimal_digits: '0,' }).gte(0)
     })
-    skipWhen(decimals?.[index] == null, () => {
-      test(field(index), 'Amount exceeds token decimal precision', () => {
-        enforce(amount).isDecimal({ decimal_digits: `0,${decimals![index]}` })
-      })
-    })
+    validateAmountPrecision(field(index), amount, decimals?.[index])
   })
 }
 
@@ -114,7 +123,7 @@ const validateWithdrawBalance = ({ maxLpAmount, ...params }: WithdrawParams) => 
   })
 }
 
-type FormParams = WithdrawParams & { expectedLp: Decimal | undefined; maxAmounts: (Decimal | undefined)[] | undefined }
+type FormParams = WithdrawParams & { expectedLp?: Decimal; maxAmounts: (Decimal | undefined)[] | undefined }
 
 const validateForm = (params: FormParams, field: AmountField = poolAmountField) => {
   const { expectedLp, maxLpAmount, mode, amounts, maxAmounts } = params
@@ -128,9 +137,15 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
       .gt(0)
   })
   skipWhen(maximumBurn == null, () => {
-    test('root', 'Maximum LP required exceeds the available LP balance. Reduce the token amounts.', () => {
-      enforce(maximumBurn).lte(maxLpAmount!)
-    })
+    const fieldName = mode === 'one-coin' ? 'expectedLp' : mode === 'balanced' ? 'lpAmount' : 'root'
+    test(
+      fieldName,
+      'Maximum LP required exceeds the available LP balance. Reduce the token amounts.',
+      () => {
+        enforce(maximumBurn).lte(maxLpAmount!)
+      },
+      fieldName,
+    )
   })
   skipWhen(params.mode !== 'balanced' && params.mode !== 'one-coin', () => {
     if (params.mode !== 'balanced' && params.mode !== 'one-coin') return // type safety inside skipWhen
@@ -139,11 +154,7 @@ const validateForm = (params: FormParams, field: AmountField = poolAmountField) 
     })
   })
   each(amounts ?? [], (amount, index) => {
-    omitWhen(mode === 'balanced' || maxAmounts?.[index] == null, () => {
-      test(field(index), 'Amount exceeds the maximum withdrawal', () => {
-        enforce(amount).lte(maxAmounts![index]!)
-      })
-    })
+    omitWhen(mode !== 'unbalanced', () => validateMaxAmount(field(index), amount, maxAmounts?.[index]))
   })
 }
 
@@ -152,14 +163,17 @@ export const advancedWithdrawFormValidationSuite = createValidationSuite((values
   validateForm(getAdvancedWithdrawParams(values))
 })
 
-export const oneCoinWithdrawFormValidationSuite = createValidationSuite((values: OneCoinWithdrawFormValues) => {
-  validateForm(getOneCoinWithdrawParams(values), () => 'amount')
-  test('amount', 'Enter an amount to withdraw', () => {
-    enforce(values.amount)
-      .isDecimal({ decimal_digits: `0,${values.decimals?.[values.tokenIndex] ?? 0}` })
-      .gt(0)
-  })
-})
+export const oneCoinWithdrawFormValidationSuite = createValidationSuite(
+  (values: Omit<OneCoinWithdrawFormValues, 'seedLock'>) => {
+    const { amount, tokenIndex, decimals, poolReserve } = values
+    validateForm(getOneCoinWithdrawParams(values), () => 'quotedAmount')
+    test('amount', 'Enter an amount to withdraw', () => {
+      enforce(amount).isDecimal({ decimal_digits: '0,' }).gt(0)
+    })
+    validateAmountPrecision('decimals', amount, decimals?.[tokenIndex])
+    validateMaxAmount('poolReserve', amount, poolReserve)
+  },
+)
 
 export const withdrawQueryValidationSuite = createValidationSuite((params: WithdrawParams) => {
   poolValidationGroup(params)

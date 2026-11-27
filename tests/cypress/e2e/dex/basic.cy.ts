@@ -9,7 +9,7 @@ describe('Basic Access Test', () => {
     title,
     message,
   } = oneOf(
-    { address: '404', title: 'Unexpected Error', message: 'Invalid pool address' },
+    { address: '404', title: 'Validation failed', message: 'Invalid pool address' },
     { address: zeroAddress, title: '404', message: 'Pool Not Found' },
   )
 
@@ -48,7 +48,7 @@ describe('Basic Access Test', () => {
     cy.get('[data-testid="error-title"]', TIMEOUTS['ui.render']).should('have.text', title)
     cy.get('[data-testid="error-subtitle"]').should('contain.text', message)
     cy.url().should('include', `/dex/ethereum/pools/${poolAddress}`)
-    // '404' fails in the route loader, whose error page has no Continue link.
+    // '404' fails route parameter validation, whose error page has no Continue link.
     if (poolAddress === zeroAddress) {
       cy.get('[data-testid="continue-button"]').click()
       cy.get('[data-testid="data-table-head"]', TIMEOUTS['ui.render']).should('be.visible') // on the pools list page

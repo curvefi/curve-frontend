@@ -24,7 +24,7 @@ export const Gauge = () => {
   const tableMinWidth = 21.875
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <DetailPageLayout>
       <BackButton path={daoPages.gauges()} label={t`Back to gauges`} />
       <Stack sx={{ gap: PAGE_SPACING, backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />

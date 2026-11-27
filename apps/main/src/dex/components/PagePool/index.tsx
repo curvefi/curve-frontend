@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
-import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import { PoolCampaignRewardsBanner } from '@/dex/components/PagePool/components/PoolCampaignRewardsBanner'
 import { TabGuard } from '@/dex/components/PagePool/components/TabGuard'
 import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
 import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
 import { LegacyFormDeposit } from '@/dex/components/PagePool/Deposit/components/LegacyFormDeposit'
 import { PoolAdvancedDetails } from '@/dex/components/PagePool/PoolAdvancedDetails'
+import { PoolHistoricalBaseRateChart } from '@/dex/components/PagePool/PoolHistoricalBaseRateChart'
 import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, TransferTabsParams } from '@/dex/components/PagePool/types'
 import {
@@ -26,7 +27,7 @@ import { usePoolContext } from '@/dex/features/pool-context'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { PointsCampaigns } from '@/dex/features/pool-information/components/points-campaigns'
 import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
-import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
+import { SwapTab } from '@/dex/features/swap/components/SwapTab'
 import { UserPosition } from '@/dex/features/user-position'
 import { AdvancedWithdrawTab } from '@/dex/features/withdraw/components/AdvancedWithdrawTab'
 import { OneCoinWithdrawTab } from '@/dex/features/withdraw/components/OneCoinWithdrawTab'
@@ -160,14 +161,14 @@ const menu = [
     visible: ({ seed }) => seed.data === false,
     subTabs: [
       {
+        value: 'withdraw-advanced',
+        label: t`Balanced`,
+        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={AdvancedWithdrawTab} {...props} />,
+      },
+      {
         value: 'withdraw-one-coin',
         label: t`One coin`,
         component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={OneCoinWithdrawTab} {...props} />,
-      },
-      {
-        value: 'withdraw-advanced',
-        label: t`Advanced`,
-        component: props => <TabGuard alert={getWithdrawTabAlert} otherwise={AdvancedWithdrawTab} {...props} />,
       },
       { value: 'UNSTAKE', label: t`Unstake`, component: FormUnstake },
       { value: 'CLAIM', label: t`Claim Rewards`, component: FormClaim },
@@ -177,7 +178,7 @@ const menu = [
     value: 'swap',
     label: t`Swap`,
     visible: ({ seed }) => seed.data === false,
-    component: props => <TabGuard alert={getSwapTabAlert} otherwise={Swap} {...props} />,
+    component: props => <TabGuard alert={getSwapTabAlert} otherwise={SwapTab} {...props} />,
   },
   {
     value: 'manage-gauge',
@@ -318,7 +319,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           ),
         }}
       >
-        <CampaignRewardsBanner />
+        <PoolCampaignRewardsBanner />
         <UserPosition />
         {!isLiteChain(chainId) && apiPool.data && (
           <OhlcAndActivityComp chainId={chainId} pricesApiPoolData={apiPool.data} />

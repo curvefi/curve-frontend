@@ -79,6 +79,7 @@ export type BannerProps = {
   // icon shown before the title, default to severity icon
   icon?: BannerIcons
   learnMoreUrl?: string
+  actions?: ReactNode
   subtitle?: ReactNode
   testId?: string
 }
@@ -93,6 +94,7 @@ export const Banner = ({
   severity = DEFAULT_SEVERITY,
   icon = severity,
   learnMoreUrl,
+  actions,
   subtitle,
   testId,
 }: BannerProps) => (
@@ -112,7 +114,7 @@ export const Banner = ({
         <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
           {BannerIcons[icon]} {children}
         </Typography>
-        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'start' }}>
+        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'start', gap: Spacing.md }}>
           {learnMoreUrl && (
             <Button
               component={LinkMui}
@@ -127,6 +129,7 @@ export const Banner = ({
               {t`Learn more`}
             </Button>
           )}
+          {actions}
           {onClick &&
             (buttonText ? (
               <Button color="ghost" onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].action }}>

@@ -20,7 +20,10 @@ const QUOTES_PER_ROUND = 4
 const MAX_ROUNDS = 8
 const QUOTE_TOLERANCE_FACTOR = 0.1
 
-/** Search the pool's LP supply independently of the user's balance. */
+/**
+ * Search the pool's LP supply independently of the user's balance.
+ * Eventually, this should be replaced by a contract that returns LP burn by token amount in one RPC call.
+ */
 export const estimateOneCoinWithdraw = async ({
   amount,
   supply,

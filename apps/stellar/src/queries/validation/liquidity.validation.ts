@@ -1,4 +1,5 @@
 import { each, skipWhen, test } from 'vest'
+import { STELLAR_POOL_LIMITS as limits } from '@/stellar/features/create-pool/constants'
 import type { PoolQuery } from '@/stellar/queries/query-types'
 import { validatePool } from '@/stellar/queries/validation/pool.validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -47,7 +48,7 @@ export const validateLiquidityInputs = ({
     if (!isDeposit) enforce(supply).gt(0)
   })
   test('root', 'Pool data is unavailable', () => {
-    enforce(decimals?.length).isNumber().gte(2).lte(8).equals(amounts?.length)
+    enforce(decimals?.length).isNumber().gte(limits.tokens.min).lte(limits.tokens.max).equals(amounts?.length)
     decimals?.forEach(precision => enforce(precision).isNumber())
   })
   each(notFalsyArray(amounts), (amount, index) => validateAmount(poolAmountField(index), amount))

@@ -68,17 +68,23 @@ const validateBudget = ({
 const validateMaximumBurn = ({
   lpAmount,
   maximumBurn,
-  isExactBurn,
-}: Pick<WithdrawSimulationParams, 'lpAmount'> & { maximumBurn: Decimal | Nullish; isExactBurn: boolean }) => {
+  mode,
+}: Pick<WithdrawSimulationParams, 'lpAmount' | 'mode'> & { maximumBurn: Decimal | Nullish }) => {
   test('root', 'Withdrawal quote is unavailable', () => {
     enforce(maximumBurn).isDecimal().gt(0)
   })
   skipWhen(maximumBurn == null, () => {
-    test('root', 'Maximum LP required exceeds the available LP balance. Reduce the token amounts.', () => {
-      enforce(maybes([maximumBurn, lpAmount], (burn, budget) => new BigNumber(burn).lte(budget))).isTruthy()
-    })
+    const fieldName = mode === 'one-coin' ? 'expectedLp' : mode === 'balanced' ? 'lpAmount' : 'root'
+    test(
+      fieldName,
+      'Maximum LP required exceeds the available LP balance. Reduce the token amounts.',
+      () => {
+        enforce(maybes([maximumBurn, lpAmount], (burn, budget) => new BigNumber(burn).lte(budget))).isTruthy()
+      },
+      fieldName,
+    )
   })
-  omitWhen(!isExactBurn, () => {
+  omitWhen(mode === 'unbalanced', () => {
     test('root', 'LP burn does not match the selected LP amount', () => {
       enforce(
         maybes([maximumBurn, lpAmount], (burn, amount) => decimalEqual(burn, decimalRound(amount, LP_TOKEN_DECIMALS))),
@@ -117,7 +123,7 @@ const validateWithdrawBudget = ({
   const isExactBurn = mode !== 'unbalanced'
   const maximumBurn = isExactBurn ? expectedLp : maybes([expectedLp, slippage], calculateMaximumBurn)
   validateBudget({ lpAmount: isExactBurn ? lpAmount : maximumBurn, maxLpAmount, supply, seedLock })
-  validateMaximumBurn({ lpAmount: isExactBurn ? lpAmount : maxLpAmount, maximumBurn, isExactBurn })
+  validateMaximumBurn({ lpAmount: isExactBurn ? lpAmount : maxLpAmount, maximumBurn, mode })
 }
 
 /** Keep the editable form and the submitted transaction on the same amount and budget checks. */

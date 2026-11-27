@@ -176,7 +176,7 @@ export const createDepositScenario = ({
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
-      walletBalances: [] as const,
+      walletBalances: [TEST_ADDRESS] as const,
       marketRates: [false, false] as const,
       futureRates: [amount, '0', false] as const,
       maxDeposit: [] as const,
@@ -265,7 +265,7 @@ export const createStakeScenario = ({
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
-      walletBalances: [] as const,
+      walletBalances: [TEST_ADDRESS] as const,
       marketRates: [false, false] as const,
       convertToShares: [assets] as const,
       isApproved: [stakeShares] as const,
@@ -340,11 +340,11 @@ export const createWithdrawScenario = ({
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
-      walletBalances: [] as const,
+      walletBalances: [TEST_ADDRESS] as const,
       marketRates: [false, false] as const,
       futureRates: [decimalMinus('0', amount), '0', false] as const,
-      maxWithdraw: [] as const,
-      maxRedeem: [] as const,
+      maxWithdraw: [TEST_ADDRESS] as const,
+      maxRedeem: [TEST_ADDRESS] as const,
       previewWithdraw: [amount] as const,
       estimateGas: [submitAmount] as const,
       submit: [submitAmount] as const,
@@ -402,7 +402,7 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     market,
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
-      walletBalances: [] as const,
+      walletBalances: [TEST_ADDRESS] as const,
       marketRates: [false, false] as const,
       estimateGas: [unstakeShares] as const,
       submit: [unstakeShares] as const,

@@ -1,13 +1,12 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { formatDate } from '@primitives/date.utils'
 import { formatNumber } from '@primitives/number.utils'
 import { IconStack } from '@ui/components/IconStack'
 import { RewardIcon } from '@ui/components/RewardIcon'
 import { TokenIcon } from '@ui/components/TokenIcon'
 import { Tooltip, type TooltipProps } from '@ui/components/Tooltip'
-import { TooltipDescription, TooltipFooter, TooltipValueLink, TooltipWrapper } from '@ui/components/TooltipComponents'
+import { CampaignTooltipContent } from '@ui/features/campaigns/CampaignTooltipContent'
 import type { CampaignRewards } from '@ui/features/campaigns/types'
 import { SizesAndSpaces } from '@ui/features/themes/design/1_sizes_spaces'
 import { t } from '@ui/lib/i18n'
@@ -33,43 +32,6 @@ const ExtraRewardTooltipBody = ({ reward }: { reward: ExtraReward }) => (
       {t`APR`}: {formatNumber(reward.apr, 'percent.rate')}
     </Typography>
   </Stack>
-)
-
-export const CampaignTooltipContent = ({ campaign, showRate }: { campaign: CampaignRewards; showRate: boolean }) => (
-  <TooltipWrapper>
-    {showRate && campaign.reward?.type === 'apr' && (
-      <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
-        {t`APR`}: {formatNumber(campaign.reward.value, 'percent.rate')}
-      </Typography>
-    )}
-    <Stack>
-      <Typography variant="bodySBold">{campaign.campaignName || campaign.platform}</Typography>
-      {campaign.campaignName && campaign.platform && <TooltipDescription text={t`by ${campaign.platform}`} />}
-    </Stack>
-    {campaign.period && (
-      <Stack>
-        <TooltipDescription text={t`from: ${formatDate(campaign.period[0])}`} />
-        <TooltipDescription text={t`to: ${formatDate(campaign.period[1])}`} />
-      </Stack>
-    )}
-    <TooltipDescription text={campaign.description} />
-    {!!campaign.steps?.length && (
-      <Stack>
-        <Typography variant="bodySBold">{t`Steps:`}</Typography>
-        <Box component="ol" sx={{ margin: 0, paddingInlineStart: '2ch' }}>
-          {campaign.steps.map(step => (
-            <Typography component="li" variant="bodySRegular" key={step} sx={{ listStyle: 'decimal' }}>
-              {step}
-            </Typography>
-          ))}
-        </Box>
-      </Stack>
-    )}
-    <TooltipFooter>
-      {t`External rewards are project dependent, always check with the token issuer to make sure you have taken all the necessary actions to benefit from their rewards program.`}
-    </TooltipFooter>
-    <TooltipValueLink href={campaign.dashboardLink}>{t`Go to issuer`}</TooltipValueLink>
-  </TooltipWrapper>
 )
 
 const CampaignIcon = ({ campaign }: { campaign: CampaignRewards }) => (
